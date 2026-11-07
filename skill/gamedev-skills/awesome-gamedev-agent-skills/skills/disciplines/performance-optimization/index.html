@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>performance-optimization · SkillHub</title>
+    <meta name="description" content="Use it when: your game&#039;s frame rate is low or uneven, it stutters, or it misses a target such as 60 FPS. It does: sets a frame-time budget, profiles a repeatable worst-case scene, decides whether the CPU or the GPU is the bottleneck, fixes the biggest cost, then measures again. You get: one targeted fix at a time, such as object pooling, fewer draw calls or no per-frame allocations, with before and after numbers. Profilers: Godot 4.7&#039;s debugger tabs, Unity 6.3&#039;s Profiler and Frame Debugger, and Unreal 5.8&#039;s stat commands and Insights. Rule: never optimize what you haven&#039;t measured, and profile a release build on target hardware, since editor and debug builds mislead." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=gamedev-skills%2Fawesome-gamedev-agent-skills">gamedev-skills/awesome-gamedev-agent-skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/bundle/gamedev-skills/awesome-gamedev-agent-skills/">Gamedev Agent Skills</a></p>
+      <h1>performance-optimization</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>your game&#39;s frame rate is low or uneven, it stutters, or it misses a target such as 60 FPS</dd></div><div><dt>It does</dt><dd>sets a frame-time budget, profiles a repeatable worst-case scene, decides whether the CPU or the GPU is the bottleneck, fixes the biggest cost, then measures again</dd></div><div><dt>You get</dt><dd>one targeted fix at a time, such as object pooling, fewer draw calls or no per-frame allocations, with before and after numbers</dd></div><div><dt>Profilers</dt><dd>Godot 4.7&#39;s debugger tabs, Unity 6.3&#39;s Profiler and Frame Debugger, and Unreal 5.8&#39;s stat commands and Insights</dd></div><div><dt>Rule</dt><dd>never optimize what you haven&#39;t measured, and profile a release build on target hardware, since editor and debug builds mislead</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 16 of 27 in the <a href="/skillhub/bundle/gamedev-skills/awesome-gamedev-agent-skills/">Gamedev Agent Skills</a> bundle · Before it: <a href="/skillhub/skill/gamedev-skills/awesome-gamedev-agent-skills/skills/disciplines/camera-systems/">camera-systems</a> · After it: <a href="/skillhub/skill/gamedev-skills/awesome-gamedev-agent-skills/skills/genres/platformer/">platformer</a></p>
+    
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A discipline skill from a game-development collection: a measurement method, not a bag of tricks. It turns &#34;feels slow&#34; into a budget, 16.67 ms for the whole frame at 60 FPS, split into slices for scripts, physics, rendering and UI, then reads the profiler&#39;s split between CPU and GPU time, because fixing the wrong side changes nothing. It prefers algorithmic wins, such as doing less work, caching, partitioning space or running less often, over polishing a hot line. Its shared fixes are a pool that hides and reuses bullets and enemies instead of creating and freeing them every shot; fewer draw calls through atlases, shared materials, instancing, static batching and baked lighting; and no allocations in Unity&#39;s Update, so the garbage collector doesn&#39;t stall frames. It ends by setting per-subsystem and asset budgets, adding a performance check to verification and reporting the measured numbers, or saying when it could only measure in the editor. Physics jitter and timestep problems go to the repo&#39;s physics-tuning.</p>
+      <p class="muted">Summarizes <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/tree/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/performance-optimization">the skill at 19d93f9</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/gamedev-skills/awesome-gamedev-agent-skills --skill performance-optimization</code><button type="button" class="copy" data-copy="npx skills add https://github.com/gamedev-skills/awesome-gamedev-agent-skills --skill performance-optimization">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/gamedev-skills/awesome-gamedev-agent-skills/performance-optimization">skills.sh page</a> · <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/tree/HEAD/skills/disciplines/performance-optimization">Source on GitHub</a> · <a href="/skillhub/?repo=gamedev-skills%2Fawesome-gamedev-agent-skills">All skills from gamedev-skills/awesome-gamedev-agent-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>10,600 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>7,309 <span class="muted">gamedev-skills/awesome-gamedev-agent-skills</span></dd></div><div><dt>First seen</dt><dd>Jun 27, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">2.1K</div>
+      <div class="stat-delta">+423% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 393; week to Sep 26: 392; week to Oct 3: 460; week to Oct 10: 481; week to Oct 17: 579; week to Oct 24: 784; week to Oct 31: 1,690; week to Nov 7: 2,054. Use the left and right arrow keys to read each week."
+        data-values="393,392,460,481,579,784,1690,2054" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,41.6 38.6,41.6 71.1,40.1 103.7,39.7 136.3,37.6 168.9,33.2 201.4,13.8 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>393</td></tr><tr><td>Sep 26</td><td>392</td></tr><tr><td>Oct 3</td><td>460</td></tr><tr><td>Oct 10</td><td>481</td></tr><tr><td>Oct 17</td><td>579</td></tr><tr><td>Oct 24</td><td>784</td></tr><tr><td>Oct 31</td><td>1,690</td></tr><tr><td>Nov 7</td><td>2,054</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:games" data-facet="category" title="Make games: design, genres, game feel and game-jam workflows, whatever the engine." href="/skillhub/?tag=category%3Agames">category:games</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Make games: design, genres, game feel and game-jam workflows, whatever the engine.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="performance" data-facet="topic" href="/skillhub/?tag=performance">performance</a><a class="tag" data-tag="debugging" data-facet="topic" href="/skillhub/?tag=debugging">debugging</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/performance-optimization/SKILL.md">gamedev-skills/awesome-gamedev-agent-skills at 19d93f9</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: performance-optimization
+description: &#62;
+  Find and fix game performance problems methodically — measure with the engine profiler first,
+  reason about the frame-time budget, locate the CPU-vs-GPU bottleneck, then apply the right fix:
+  object pooling, draw-call batching, fewer allocations/GC spikes, and asset budgets. Engine-
+  neutral method that pairs with each engine&#39;s profiler. Use when the user mentions performance,
+  optimize, low/dropping FPS, frame drops, stutter, lag, profiler, frame budget, draw calls,
+  batching, garbage collection/GC spikes, object pooling, or &#34;the game runs slow&#34;.</code></pre></details>
+        <div class="markdown"><h3>Performance optimization</h3>
+<p>Performance work is a measurement discipline, not a bag of tricks. The method is always the
+same: <strong>profile → find the one bottleneck → fix that → measure again</strong>. This skill teaches that
+loop and the highest-leverage fixes (pooling, batching, allocation control, asset budgets), and
+points you at each engine's profiler. It pairs with <code>physics-tuning</code> for simulation cost.</p>
+<h4>When to use</h4>
+<ul>
+<li>Use when the frame rate is low or uneven, the game stutters/hitches, or it must hit a target
+(60 FPS desktop, 30/60 mobile) and currently doesn't.</li>
+<li>Use to decide <em>what</em> to optimize: profile, read the frame budget, and identify whether the CPU
+or GPU is the bottleneck before changing any code.</li>
+<li>Use to apply specific fixes: object pooling, draw-call/batch reduction, removing per-frame
+allocations and GC spikes, and setting asset budgets.</li>
+</ul>
+<p><strong>When <em>not</em> to use:</strong> for physics jitter/tunneling/timestep specifically, use <code>physics-tuning</code>.
+For the engine's concrete profiler UI and rendering settings, use that
+engine skill (<code>godot-export</code> covers some build settings; engine cores cover the rest). This skill
+is the cross-engine method and the shared fixes.</p>
+<h4>The golden rule: measure first, never guess</h4>
+<p>Most performance &quot;fixes&quot; applied without profiling target the wrong thing and add complexity for
+no gain. <strong>Do not optimize code you have not measured.</strong> Open the profiler, find the single
+biggest cost in a representative scene on representative hardware, and fix that. Re-measure to
+confirm the fix helped before moving on. Profile a <strong>release/optimized build</strong> where it matters —
+editor and debug builds lie (editor overhead, no compiler optimization).</p>
+<h4>Core workflow</h4>
+<ol>
+<li><strong>Define the target and reproduce.</strong> State the goal (e.g. 60 FPS = 16.67 ms/frame) and find a
+repeatable worst-case scene. &quot;Sometimes slow&quot; is unfixable; a reproducible spike is fixable.</li>
+<li><strong>Profile before touching code.</strong> Run the engine profiler and read the frame: total frame
+time, and the split between CPU (game logic, physics, scripts) and GPU (rendering).</li>
+<li><strong>Find the bottleneck — CPU or GPU.</strong> If GPU time ≫ CPU, attack draw calls/overdraw/shaders/
+resolution. If CPU time dominates, attack scripts/physics/allocations. Fixing the wrong side
+does nothing.</li>
+<li><strong>Fix the single biggest cost.</strong> Prefer an <strong>algorithmic</strong> win (do less work, cache, spatial
+partition, run less often) over micro-optimizing a hot line. Apply the matching shared fix
+(pooling, batching, allocation removal).</li>
+<li><strong>Re-measure on the same scene/hardware.</strong> Confirm the number moved. Keep or revert based on
+data, not intuition.</li>
+<li><strong>Set budgets so it stays fixed.</strong> Per-frame ms budgets per subsystem, plus asset budgets
+(texture sizes, triangle counts, draw-call ceilings); add a perf check to verification.</li>
+<li><strong>Report measured numbers.</strong> State before/after frame time, the bottleneck found, and the fix
+— never &quot;should be faster&quot;. If you could only measure in-editor, say so.</li>
+</ol>
+<h4>Patterns</h4>
+<h5>1. Frame budget math (turn &quot;feels slow&quot; into a number)</h5>
+<pre><code class="language-text">target FPS → frame budget:   60 FPS = 16.67 ms   |   30 FPS = 33.3 ms   |   120 FPS = 8.33 ms
+The WHOLE frame (CPU sim + render submit + GPU) must fit the budget; the GPU runs in parallel,
+so the slower of CPU-frame and GPU-frame sets your FPS. Allocate sub-budgets, e.g. @60 FPS:
+  gameplay/scripts ~5 ms · physics ~3 ms · rendering(CPU submit) ~4 ms · UI/other ~2 ms · slack.
+If one subsystem blows its slice, that's your target — not whatever you assumed.
+</code></pre>
+<h5>2. Measure with the engine profiler (do this before any fix)</h5>
+<pre><code class="language-text">Godot 4.7     : Debugger ▸ Profiler (script/physics time), Visual Profiler (CPU vs GPU render time
+                per pass) and Monitors tab (FPS, draw calls, memory).
+                In code: Performance.get_monitor(Performance.TIME_PROCESS) returns SECONDS
+                (× 1000 for ms); Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME for draw calls.
+Unity 6.3 LTS : Profiler window (CPU/GPU/Memory/Rendering modules) + Frame Debugger for draw calls.
+                In code: ProfilerRecorder on &quot;CPU Main Thread Frame Time&quot; / &quot;GPU Frame Time&quot;
+                (release players need Frame Timing Stats enabled in Player Settings).
+Unreal 5.8    : `stat unit` (Frame / Game / Draw / RHIT / GPU ms), `stat fps`,
+                `stat scenerendering` (draw calls); Unreal Insights for deep traces.
+# Read the split: Game = gameplay thread, Draw = render thread (both CPU), GPU = the graphics card.
+# Whichever is closest to Frame is the bottleneck; that decides the fix.
+</code></pre>
+<h5>3. Object pooling (stop allocating/freeing in hot loops)</h5>
+<pre><code class="language-gdscript"># Bullets, particles, enemies, damage numbers: reuse a fixed set instead of instantiate()/free()
+# every frame — that thrashes memory and (in C#) feeds the GC.
+var _pool: Array[Node2D] = []                     # Node3D for 3D; both have `visible`
+func acquire() -&gt; Node2D:
+    var n: Node2D = _pool.pop_back() if not _pool.is_empty() else bullet_scene.instantiate()
+    n.set_process(true); n.visible = true
+    return n
+func release(n: Node2D) -&gt; void:
+    n.set_process(false); n.visible = false       # disable + hide; DON'T free
+    _pool.append(n)                                # back to the pool for reuse
+# RIGHT: pre-warm the pool at load; reuse. WRONG: instantiate()/queue_free() per shot.
+</code></pre>
+<h5>4. Cut draw calls (the most common GPU-side win)</h5>
+<pre><code class="language-text">Draw calls and render-state changes (material/shader/texture/blend switches) cost CPU submit time;
+thousands of them make the render thread the bottleneck. 2D batchers merge runs of sprites that
+share state (most bind several textures per batch), so ordering and atlasing decide the count.
+- Atlas textures and share materials so sprites/meshes batch into one call.
+- Identical meshes → GPU instancing (Unity; under URP/HDRP the SRP Batcher or GPU Resident Drawer
+  takes precedence), MultiMesh / MultiMeshInstance (Godot), Instanced Static Mesh (Unreal).
+- Static geometry → static batching / baking; mark non-moving objects static.
+- Reduce overdraw: limit large overlapping transparent/particle layers (they re-shade pixels).
+- If fill rate dominates, lower render resolution: 2× pixel ratio means 4× the pixels of 1×.
+  For three.js game defaults and warm-up-aware resolution tuning, read `threejs-scene-setup`.
+- Fewer real-time lights/shadows; bake lighting where it doesn't move.
+Measure draw calls before and after — the count should drop, and so should GPU frame time.
+</code></pre>
+<h5>5. Kill per-frame allocations (GC spikes = stutter)</h5>
+<pre><code class="language-csharp">// Unity 6.3 LTS (C#). Allocating every frame fills the managed heap; the GC then stalls a frame.
+// WRONG (new array + scene walk every call):
+//   foreach (var e in FindObjectsByType&lt;Enemy&gt;(FindObjectsSortMode.None)) ...  // + LINQ, new[]
+// (FindObjectsOfType is obsolete in Unity 6.3; its replacement still allocates.)
+// RIGHT: cache references once, reuse buffers, avoid LINQ/boxing in Update.
+void Update() {
+    _hits = Physics.RaycastNonAlloc(ray, _hitBuffer);   // reuse a preallocated array
+    for (int i = 0; i &lt; _hits; i++) { /* ... */ }       // no per-frame allocation
+}   // hit order is undefined and a full buffer may miss the nearest hit: size it, sort if needed
+// Godot/GDScript: avoid building new arrays/dictionaries every frame in _process; reuse them.
+</code></pre>
+<h4>Pitfalls</h4>
+<ul>
+<li><strong>Optimizing without profiling.</strong> The intuitive culprit is usually wrong. Measure first, every
+time.</li>
+<li><strong>Profiling the editor / a debug build.</strong> Editor overhead and unoptimized code mislead. Profile
+a release build on target hardware for real numbers.</li>
+<li><strong>Fixing the wrong side.</strong> Micro-optimizing CPU code when the GPU is the bottleneck (or vice
+versa) changes nothing. Check the CPU-vs-GPU split first.</li>
+<li><strong>Micro-optimizing over algorithm.</strong> Shaving a function when an O(n²) loop or a per-frame
+full-scene query is the real cost. Reduce the work, don't polish it.</li>
+<li><strong>Instantiate/free in hot loops.</strong> Spawning and destroying bullets/particles every frame causes
+fragmentation and GC spikes. Pool them.</li>
+<li><strong>Per-frame allocations / LINQ / boxing in <code>Update</code></strong> (C#) feed the GC → periodic hitches.
+Cache and reuse.</li>
+<li><strong>Draw-call explosion</strong> from unique materials and unbatched sprites/meshes. Atlas, share
+materials, instance, batch.</li>
+<li><strong>Unity &quot;Enable GPU Instancing&quot; with no effect</strong> under URP/HDRP: the SRP Batcher takes
+precedence for compatible shaders. Check the Frame Debugger; for many identical meshes use the
+GPU Resident Drawer (Forward+, compute-capable APIs, not OpenGL ES).</li>
+<li><strong>Overdraw</strong> from stacked transparents/particles/full-screen effects re-shading pixels.</li>
+<li><strong>No budgets.</strong> Without per-subsystem ms and asset ceilings, performance silently regresses;
+enforce them in your build/CI checks.</li>
+<li><strong>Optimizing too early.</strong> Don't contort a prototype for performance before it's fun or measured.</li>
+</ul>
+<h4>References</h4>
+<ul>
+<li>For per-engine profiler walkthroughs, the CPU-vs-GPU triage flowchart, a complete pooling
+manager, batching/instancing rules per engine, allocation/GC guidance, LOD/culling, and asset
+budgets (texture sizes, triangle counts, audio, mobile thermals), read
+<code>references/profiling-and-budgets.md</code>.</li>
+</ul>
+<h4>Related skills</h4>
+<ul>
+<li><code>physics-tuning</code> — simulation cost, fixed-step budget, sleeping bodies, broadphase layers.</li>
+<li><code>godot-export</code> — release/build settings that affect measured performance.</li>
+<li><code>procedural-gen</code>, <code>game-ai</code> — common CPU hotspots (generation, pathfinding) to budget and defer.</li>
+<li><code>roguelike</code>, <code>tower-defense</code>, <code>survival-crafting</code> — entity-heavy genres that need pooling/budgets.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

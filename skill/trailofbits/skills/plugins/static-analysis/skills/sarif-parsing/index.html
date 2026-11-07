@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sarif-parsing · SkillHub</title>
+    <meta name="description" content="Use it when: you have SARIF output from CodeQL, Semgrep or another scanner and need to query, merge, deduplicate, diff or gate CI on it. It does: picks jq for quick queries, or Python with pysarif, sarif-tools or its bundled helpers for scripts, aggregation and CI checks. Catches: severity gates that only read result.level, which CodeQL never sets, so a repo full of errors passes. Not for: running scans or writing rules; it points to the Semgrep and CodeQL skills for those." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=trailofbits%2Fskills">trailofbits/skills</a></p>
+      <h1>sarif-parsing</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you have SARIF output from CodeQL, Semgrep or another scanner and need to query, merge, deduplicate, diff or gate CI on it</dd></div><div><dt>It does</dt><dd>picks jq for quick queries, or Python with pysarif, sarif-tools or its bundled helpers for scripts, aggregation and CI checks</dd></div><div><dt>Catches</dt><dd>severity gates that only read result.level, which CodeQL never sets, so a repo full of errors passes</dd></div><div><dt>Not for</dt><dd>running scans or writing rules; it points to the Semgrep and CodeQL skills for those</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>From Trail of Bits&#39; static-analysis plugin, alongside its semgrep and codeql skills. SARIF is the standard JSON format static analysis tools use to report findings. The skill&#39;s central warning is that a result&#39;s severity often lives on its rule: CodeQL records it as the rule&#39;s default level, so a CI gate that reads result.level counts zero errors. It resolves severity in the spec&#39;s order, from the result&#39;s kind and level to the matched rule&#39;s default and finally &#34;warning&#34;, and every query it gives starts from that. For deduplication it prefers the tool&#39;s own fingerprints and falls back to hashing rule, full normalized path, line and message, keeping the directory so two files with the same name stay two findings. It also covers normalizing paths across tools, validating against the schema, streaming files over 100MB with ijson, diffing a baseline against a new run, converting to CSV or HTML with sarif-tools, and GitHub Actions steps that upload SARIF and fail on errors. Bundled resources hold 40+ jq queries, a standard-library Python helper module, and two fixtures with exactly one error each to test a gate against.</p>
+      <p class="muted">Summarizes <a href="https://github.com/trailofbits/skills/tree/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/sarif-parsing">the skill at e4dd0bb</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/trailofbits/skills --skill sarif-parsing</code><button type="button" class="copy" data-copy="npx skills add https://github.com/trailofbits/skills --skill sarif-parsing">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/trailofbits/skills/sarif-parsing">skills.sh page</a> · <a href="https://github.com/trailofbits/skills/tree/HEAD/plugins/static-analysis/skills/sarif-parsing">Source on GitHub</a> · <a href="/skillhub/?repo=trailofbits%2Fskills">All skills from trailofbits/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>6,300 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>8,053 <span class="muted">trailofbits/skills</span></dd></div><div><dt>First seen</dt><dd>Jan 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">217</div>
+      <div class="stat-delta">+60% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 136; week to Sep 26: 130; week to Oct 3: 135; week to Oct 10: 136; week to Oct 17: 151; week to Oct 24: 167; week to Oct 31: 213; week to Nov 7: 217. Use the left and right arrow keys to read each week."
+        data-values="136,130,135,136,151,167,213,217" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,22.4 38.6,23.6 71.1,22.6 103.7,22.4 136.3,19.4 168.9,16.1 201.4,6.8 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>136</td></tr><tr><td>Sep 26</td><td>130</td></tr><tr><td>Oct 3</td><td>135</td></tr><tr><td>Oct 10</td><td>136</td></tr><tr><td>Oct 17</td><td>151</td></tr><tr><td>Oct 24</td><td>167</td></tr><tr><td>Oct 31</td><td>213</td></tr><tr><td>Nov 7</td><td>217</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/skillhub/?tag=category%3Asecurity">category:security</a><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/skillhub/?tag=type%3Aguidelines">type:guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a><a class="tag" data-tag="ci" data-facet="topic" href="/skillhub/?tag=ci">ci</a><a class="tag" data-tag="code-review" data-facet="topic" href="/skillhub/?tag=code-review">code-review</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:sarif" data-facet="stack" href="/skillhub/?tag=stack%3Asarif">stack:sarif</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/sarif-parsing/SKILL.md">trailofbits/skills at e4dd0bb</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: sarif-parsing
+description: &#62;-
+  Parses and processes SARIF files from static analysis tools like CodeQL, Semgrep, or other
+  scanners. Triggers on &#34;parse sarif&#34;, &#34;read scan results&#34;, &#34;aggregate findings&#34;, &#34;deduplicate
+  alerts&#34;, or &#34;process sarif output&#34;. Handles filtering, deduplication, format conversion, and
+  CI/CD integration of SARIF data. Does NOT run scans — use the Semgrep or CodeQL skills for that.
+allowed-tools: Bash Read Glob Grep</code></pre></details>
+        <div class="markdown"><h3>SARIF Parsing Best Practices</h3>
+<p>You are a SARIF parsing expert. Your role is to help users effectively read, analyze, and process SARIF files from static analysis tools.</p>
+<h4>When to Use</h4>
+<p>Use this skill when:</p>
+<ul>
+<li>Reading or interpreting static analysis scan results in SARIF format</li>
+<li>Aggregating findings from multiple security tools</li>
+<li>Deduplicating or filtering security alerts</li>
+<li>Extracting specific vulnerabilities from SARIF files</li>
+<li>Integrating SARIF data into CI/CD pipelines</li>
+<li>Converting SARIF output to other formats</li>
+</ul>
+<h4>When NOT to Use</h4>
+<p>Do NOT use this skill for:</p>
+<ul>
+<li>Running static analysis scans (use CodeQL or Semgrep skills instead)</li>
+<li>Writing CodeQL or Semgrep rules (use their respective skills)</li>
+<li>Analyzing source code directly (SARIF is for processing existing scan results)</li>
+<li>Triaging findings without SARIF input (use variant-analysis or audit skills)</li>
+</ul>
+<h4>SARIF Structure Overview</h4>
+<p>SARIF 2.1.0 is the current OASIS standard. Every SARIF file has this hierarchical structure:</p>
+<pre><code>sarifLog
+├── version: &quot;2.1.0&quot;
+├── $schema: (optional, enables IDE validation)
+└── runs[] (array of analysis runs)
+    ├── tool
+    │   ├── driver
+    │   │   ├── name (required)
+    │   │   ├── version
+    │   │   └── rules[] (rule definitions)
+    │   └── extensions[] (plugins)
+    ├── results[] (findings)
+    │   ├── ruleId
+    │   ├── ruleIndex (index into tool.driver.rules[])
+    │   ├── level (OPTIONAL, inherited from the rule when absent)
+    │   ├── message.text
+    │   ├── locations[]
+    │   │   └── physicalLocation
+    │   │       ├── artifactLocation.uri
+    │   │       └── region (startLine, startColumn, etc.)
+    │   ├── fingerprints{}
+    │   └── partialFingerprints{}
+    └── artifacts[] (scanned files metadata)
+</code></pre>
+<h5>Severity Is Not Always on the Result</h5>
+<p><code>result.level</code> is optional. CodeQL omits it on every result and records severity on the
+rule as <code>defaultConfiguration.level</code>, which the result inherits. Read <code>result.level</code>
+directly and a CodeQL run scores as clean however many errors it found, which is how a
+severity gate ends up exiting 0 on a failing repo.</p>
+<p>Resolve severity in this order (SARIF 2.1.0 section 3.27.10):</p>
+<ol>
+<li><code>kind</code> other than <code>&quot;fail&quot;</code> (a pass/notApplicable record), so <code>&quot;none&quot;</code></li>
+<li><code>result.level</code>, when present</li>
+<li>the matched rule's <code>defaultConfiguration.level</code>, joining <code>ruleIndex</code> into
+<code>runs[].tool.driver.rules[]</code>, or matching <code>ruleId</code> against <code>rules[].id</code> when the tool
+omits <code>ruleIndex</code></li>
+<li><code>&quot;warning&quot;</code>, the SARIF default</li>
+</ol>
+<p>Every severity query in this skill starts from that resolution. In jq it is the
+<code>LEVEL_FN</code> definition in <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/sarif-parsing/%7BbaseDir%7D/resources/jq-queries.md">{baseDir}/resources/jq-queries.md</a>;
+in Python it is <code>resolve_level(result, run)</code> in
+<a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/sarif-parsing/%7BbaseDir%7D/resources/sarif_helpers.py">{baseDir}/resources/sarif_helpers.py</a>.</p>
+<h5>Why Fingerprinting Matters</h5>
+<p>Without stable fingerprints, you can't track findings across runs:</p>
+<ul>
+<li><strong>Baseline comparison</strong>: &quot;Is this a new finding or did we see it before?&quot;</li>
+<li><strong>Regression detection</strong>: &quot;Did this PR introduce new vulnerabilities?&quot;</li>
+<li><strong>Suppression</strong>: &quot;Ignore this known false positive in future runs&quot;</li>
+</ul>
+<p>Tools report different paths (<code>/path/to/project/</code> vs <code>/github/workspace/</code>), so path-based matching fails. Fingerprints hash the <em>content</em> (code snippet, rule ID, relative location) to create stable identifiers regardless of environment.</p>
+<h4>Tool Selection Guide</h4>
+<table>
+<thead>
+<tr>
+<th>Use Case</th>
+<th>Tool</th>
+<th>Install / run</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Quick CLI queries</td>
+<td>jq</td>
+<td><code>brew install jq</code> / <code>apt install jq</code></td>
+</tr>
+<tr>
+<td>Python scripting (simple)</td>
+<td>pysarif</td>
+<td><code>uv run --with pysarif python script.py</code></td>
+</tr>
+<tr>
+<td>Python scripting (advanced)</td>
+<td>sarif-tools</td>
+<td><code>uv run --with sarif-tools python script.py</code></td>
+</tr>
+<tr>
+<td>.NET applications</td>
+<td>SARIF SDK</td>
+<td>NuGet package</td>
+</tr>
+<tr>
+<td>JavaScript/Node.js</td>
+<td>sarif-js</td>
+<td>npm package</td>
+</tr>
+<tr>
+<td>Go applications</td>
+<td>garif</td>
+<td><code>go get github.com/chavacava/garif</code></td>
+</tr>
+<tr>
+<td>Validation</td>
+<td>SARIF Validator</td>
+<td>sarifweb.azurewebsites.net</td>
+</tr>
+</tbody>
+</table>
+<h4>Strategy 1: Quick Analysis with jq</h4>
+<p>For rapid exploration and one-off queries:</p>
+<pre><code class="language-bash"># Pretty print the file
+jq '.' results.sarif
+
+# Count total findings
+jq '[.runs[].results[]] | length' results.sarif
+
+# List all rule IDs triggered
+jq '[.runs[].results[].ruleId] | unique' results.sarif
+
+# Severity resolution, needed by every query below that filters on level.
+# See resources/jq-queries.md for the annotated version.
+LEVEL_FN='
+  def rule($run):
+    . as $r
+    | ($run.tool.driver.rules // []) as $rules
+    | (if ($r.ruleIndex | type) == &quot;number&quot; and $r.ruleIndex &gt;= 0
+       then $rules[$r.ruleIndex] else null end)
+      // first($rules[] | select(.id == $r.ruleId))
+      // null;
+  def level($run):
+    . as $r
+    | if ($r.kind // &quot;fail&quot;) != &quot;fail&quot; then &quot;none&quot;
+      else ($r.level // rule($run).defaultConfiguration.level // &quot;warning&quot;) end;
+'
+
+# Extract errors only
+jq &quot;$LEVEL_FN&quot;'.runs[] as $run | $run.results[] | select(level($run) == &quot;error&quot;)' results.sarif
+
+# Get findings with file locations
+jq '.runs[].results[] | {
+  rule: .ruleId,
+  message: .message.text,
+  file: .locations[0].physicalLocation.artifactLocation.uri,
+  line: .locations[0].physicalLocation.region.startLine
+}' results.sarif
+
+# Filter by severity and get count per rule
+jq &quot;$LEVEL_FN&quot;'[.runs[] as $run | $run.results[] | select(level($run) == &quot;error&quot;)] | group_by(.ruleId) | map({rule: .[0].ruleId, count: length})' results.sarif
+
+# Extract findings for a specific file
+jq --arg file &quot;src/auth.py&quot; '.runs[].results[] | select(.locations[].physicalLocation.artifactLocation.uri | contains($file))' results.sarif
+</code></pre>
+<h4>Strategy 2: Python with pysarif</h4>
+<p>For programmatic access with full object model:</p>
+<pre><code class="language-python">from pysarif import load_from_file, save_to_file
+
+# Load SARIF file
+sarif = load_from_file(&quot;results.sarif&quot;)
+
+# Iterate through runs and results
+for run in sarif.runs:
+    tool_name = run.tool.driver.name
+    print(f&quot;Tool: {tool_name}&quot;)
+
+    for result in run.results:
+        # pysarif fills a missing result.level with &quot;warning&quot;, so .level here is NOT the
+        # rule-inherited severity: a CodeQL error (no level on the result, severity on the
+        # rule) reads as &quot;warning&quot;. Gate severity with Strategy 1's level() or with
+        # resolve_level() in resources/sarif_helpers.py, which resolve it from the rule.
+        print(f&quot;  {result.rule_id}: {result.message.text}&quot;)
+
+        if result.locations:
+            loc = result.locations[0].physical_location
+            if loc and loc.artifact_location:
+                print(f&quot;    File: {loc.artifact_location.uri}&quot;)
+                if loc.region:
+                    print(f&quot;    Line: {loc.region.start_line}&quot;)
+
+# Save modified SARIF
+save_to_file(sarif, &quot;modified.sarif&quot;)
+</code></pre>
+<h4>Strategy 3: Python with sarif-tools</h4>
+<p>For aggregation, reporting, and CI/CD integration:</p>
+<pre><code class="language-python">from sarif import loader
+
+# Load single file
+sarif_data = loader.load_sarif_file(&quot;results.sarif&quot;)
+
+# Or load multiple files
+sarif_set = loader.load_sarif_files([&quot;tool1.sarif&quot;, &quot;tool2.sarif&quot;])
+
+# Get summary report
+report = sarif_data.get_report()
+
+# Get histogram by severity
+errors = report.get_issue_type_histogram_for_severity(&quot;error&quot;)
+warnings = report.get_issue_type_histogram_for_severity(&quot;warning&quot;)
+
+# Filter by severity. sarif-tools hands back raw result dicts, and a result's level may
+# live on its rule, so resolve it against the run instead of reading r[&quot;level&quot;].
+from sarif_helpers import extract_findings, filter_by_level, load_sarif
+
+high_severity = filter_by_level(extract_findings(load_sarif(&quot;results.sarif&quot;)), &quot;error&quot;)
+</code></pre>
+<p><strong>sarif-tools CLI commands:</strong></p>
+<pre><code class="language-bash"># Summary of findings
+sarif summary results.sarif
+
+# List all results with details
+sarif ls results.sarif
+
+# Get results by severity
+sarif ls --level error results.sarif
+
+# Diff two SARIF files (find new/fixed issues)
+sarif diff baseline.sarif current.sarif
+
+# Convert to other formats
+sarif csv results.sarif &gt; results.csv
+sarif html results.sarif &gt; report.html
+</code></pre>
+<h4>Strategy 4: Aggregating Multiple SARIF Files</h4>
+<p>When combining results from multiple tools:</p>
+<pre><code class="language-python">import json
+
+from sarif_helpers import deduplicate, extract_findings
+
+def aggregate_sarif_files(sarif_paths: list[str]) -&gt; dict:
+    &quot;&quot;&quot;Combine multiple SARIF files into one.&quot;&quot;&quot;
+    aggregated = {
+        &quot;version&quot;: &quot;2.1.0&quot;,
+        &quot;$schema&quot;: &quot;https://json.schemastore.org/sarif-2.1.0.json&quot;,
+        &quot;runs&quot;: []
+    }
+
+    for path in sarif_paths:
+        with open(path) as f:
+            sarif = json.load(f)
+            aggregated[&quot;runs&quot;].extend(sarif.get(&quot;runs&quot;, []))
+
+    return aggregated
+
+unique = deduplicate(extract_findings(aggregate_sarif_files([&quot;tool1.sarif&quot;, &quot;tool2.sarif&quot;])))
+</code></pre>
+<p><code>deduplicate()</code> prefers whatever <code>fingerprints</code> or <code>partialFingerprints</code> the tool supplied
+and falls back to hashing rule ID, the whole normalized path, line, and message. Keep the
+directory in that key: the same rule at the same line in <code>auth/login.py</code> and
+<code>admin/login.py</code> is two findings, and a basename-only key throws one of them away.</p>
+<h4>Strategy 5: Extracting Actionable Data</h4>
+<p><code>resources/sarif_helpers.py</code> covers this with the standard library alone.
+<code>extract_findings()</code> returns <code>Finding</code> objects whose severity is already resolved, and
+<code>filter_by_level()</code>, <code>sort_by_severity()</code>, <code>deduplicate()</code> and <code>diff_findings()</code> consume
+those:</p>
+<pre><code class="language-python">from sarif_helpers import extract_findings, filter_by_level, load_sarif, sort_by_severity
+
+findings = sort_by_severity(extract_findings(load_sarif(&quot;results.sarif&quot;)))
+for f in filter_by_level(findings, &quot;error&quot;):
+    print(f&quot;{f.file_path}:{f.start_line} [{f.level}] {f.rule_id}: {f.message}&quot;)
+</code></pre>
+<p>Writing your own extractor, severity is the part that goes wrong silently:</p>
+<pre><code class="language-python">def resolve_level(result: dict, run: dict) -&gt; str:
+    &quot;&quot;&quot;Severity of a result: its own level, else its rule's default, else &quot;warning&quot;.&quot;&quot;&quot;
+    if result.get(&quot;kind&quot;, &quot;fail&quot;) != &quot;fail&quot;:
+        return &quot;none&quot;
+    if result.get(&quot;level&quot;):
+        return result[&quot;level&quot;]
+
+    rules = run.get(&quot;tool&quot;, {}).get(&quot;driver&quot;, {}).get(&quot;rules&quot;, [])
+    index = result.get(&quot;ruleIndex&quot;)
+    rule = rules[index] if isinstance(index, int) and 0 &lt;= index &lt; len(rules) else next(
+        (r for r in rules if r.get(&quot;id&quot;) == result.get(&quot;ruleId&quot;)), {}
+    )
+    return rule.get(&quot;defaultConfiguration&quot;, {}).get(&quot;level&quot;) or &quot;warning&quot;
+</code></pre>
+<p>Results carry <code>ruleIndex</code> on some tools and only <code>ruleId</code> on others, so a resolver that
+joins one way alone silently returns the default for every result the other kind of tool
+produces.</p>
+<h4>Common Pitfalls and Solutions</h4>
+<h5>1. Path Normalization Issues</h5>
+<p>Different tools report paths differently (absolute, relative, URI-encoded), so
+<code>file:///src/a%20b.py</code> and <code>src/a b.py</code> can be the same file. Strip the <code>file://</code> scheme,
+percent-decode, resolve against a base path, and normalize separators before comparing or
+hashing anything: <code>normalize_path()</code> in <code>resources/sarif_helpers.py</code> does all four.</p>
+<h5>2. Fingerprint Mismatch Across Runs</h5>
+<p>Fingerprints may not match if:</p>
+<ul>
+<li>File paths differ between environments</li>
+<li>Tool versions changed fingerprinting algorithm</li>
+<li>Code was reformatted (changing line numbers)</li>
+</ul>
+<p><strong>Solution:</strong> Use multiple fingerprint strategies:</p>
+<pre><code class="language-python">def compute_stable_fingerprint(result: dict, file_content: str = None) -&gt; str:
+    &quot;&quot;&quot;Compute environment-independent fingerprint.&quot;&quot;&quot;
+    import hashlib
+
+    components = [
+        result.get(&quot;ruleId&quot;, &quot;&quot;),
+        result.get(&quot;message&quot;, {}).get(&quot;text&quot;, &quot;&quot;)[:100],  # First 100 chars
+    ]
+
+    # Add code snippet if available
+    if file_content and result.get(&quot;locations&quot;):
+        region = result[&quot;locations&quot;][0].get(&quot;physicalLocation&quot;, {}).get(&quot;region&quot;, {})
+        if region.get(&quot;startLine&quot;):
+            lines = file_content.split(&quot;\n&quot;)
+            line_idx = region[&quot;startLine&quot;] - 1
+            if 0 &lt;= line_idx &lt; len(lines):
+                # Normalize whitespace
+                components.append(lines[line_idx].strip())
+
+    return hashlib.sha256(&quot;&quot;.join(components).encode()).hexdigest()[:16]
+</code></pre>
+<h5>3. Missing or Incomplete Data</h5>
+<p>SARIF allows many optional fields. Always use defensive access:</p>
+<pre><code class="language-python">def safe_get_location(result: dict) -&gt; tuple[str, int]:
+    &quot;&quot;&quot;Safely extract file and line from result.&quot;&quot;&quot;
+    try:
+        loc = result.get(&quot;locations&quot;, [{}])[0]
+        phys = loc.get(&quot;physicalLocation&quot;, {})
+        file_path = phys.get(&quot;artifactLocation&quot;, {}).get(&quot;uri&quot;, &quot;unknown&quot;)
+        line = phys.get(&quot;region&quot;, {}).get(&quot;startLine&quot;, 0)
+        return file_path, line
+    except (IndexError, KeyError, TypeError):
+        return &quot;unknown&quot;, 0
+</code></pre>
+<h5>4. Large File Performance</h5>
+<p>For very large SARIF files (100MB+):</p>
+<pre><code class="language-python">import ijson  # run via: uv run --with ijson
+
+def stream_results(sarif_path: str):
+    &quot;&quot;&quot;Stream results without loading entire file.&quot;&quot;&quot;
+    with open(sarif_path, &quot;rb&quot;) as f:
+        # Stream through results arrays
+        for result in ijson.items(f, &quot;runs.item.results.item&quot;):
+            yield result
+</code></pre>
+<h5>5. Schema Validation</h5>
+<p>Validate before processing to catch malformed files:</p>
+<pre><code class="language-bash"># Using ajv-cli
+npm install -g ajv-cli
+ajv validate -s sarif-schema-2.1.0.json -d results.sarif
+
+# Using Python jsonschema
+uv run --with jsonschema python your_script.py   # e.g. the function below
+</code></pre>
+<pre><code class="language-python">from jsonschema import validate, ValidationError
+import json
+
+def validate_sarif(sarif_path: str, schema_path: str) -&gt; bool:
+    &quot;&quot;&quot;Validate SARIF file against schema.&quot;&quot;&quot;
+    with open(sarif_path) as f:
+        sarif = json.load(f)
+    with open(schema_path) as f:
+        schema = json.load(f)
+
+    try:
+        validate(sarif, schema)
+        return True
+    except ValidationError as e:
+        print(f&quot;Validation error: {e.message}&quot;)
+        return False
+</code></pre>
+<h4>CI/CD Integration Patterns</h4>
+<h5>GitHub Actions</h5>
+<pre><code class="language-yaml">- name: Upload SARIF
+  uses: github/codeql-action/upload-sarif@v3
+  with:
+    sarif_file: results.sarif
+
+- name: Check for high severity
+  run: |
+    # select(.level == &quot;error&quot;) counts zero on CodeQL output, which records severity on
+    # the rule instead. Resolve the level or the gate passes on a repo full of errors.
+    HIGH_COUNT=$(jq '
+      def rule($run):
+        . as $r
+        | ($run.tool.driver.rules // []) as $rules
+        | (if ($r.ruleIndex | type) == &quot;number&quot; and $r.ruleIndex &gt;= 0
+           then $rules[$r.ruleIndex] else null end)
+          // first($rules[] | select(.id == $r.ruleId))
+          // null;
+      def level($run):
+        . as $r
+        | if ($r.kind // &quot;fail&quot;) != &quot;fail&quot; then &quot;none&quot;
+          else ($r.level // rule($run).defaultConfiguration.level // &quot;warning&quot;) end;
+      [.runs[] as $run | $run.results[] | select(level($run) == &quot;error&quot;)] | length
+    ' results.sarif)
+    if [ &quot;$HIGH_COUNT&quot; -gt 0 ]; then
+      echo &quot;Found $HIGH_COUNT high severity issues&quot;
+      exit 1
+    fi
+</code></pre>
+<h5>Fail on New Issues</h5>
+<pre><code class="language-python">from sarif import loader
+
+def check_for_regressions(baseline: str, current: str) -&gt; int:
+    &quot;&quot;&quot;Return count of new issues not in baseline.&quot;&quot;&quot;
+    baseline_data = loader.load_sarif_file(baseline)
+    current_data = loader.load_sarif_file(current)
+
+    baseline_fps = {get_fingerprint(r) for r in baseline_data.get_results()}
+    new_issues = [r for r in current_data.get_results()
+                  if get_fingerprint(r) not in baseline_fps]
+
+    return len(new_issues)
+</code></pre>
+<h4>Key Principles</h4>
+<ol>
+<li><strong>Validate first</strong>: Check SARIF structure before processing</li>
+<li><strong>Resolve severity, never read <code>result.level</code></strong>: it is optional, and CodeQL always omits it</li>
+<li><strong>Handle optionals</strong>: Many fields are optional; use defensive access</li>
+<li><strong>Normalize paths</strong>: Tools report paths differently; normalize early</li>
+<li><strong>Fingerprint wisely</strong>: Combine multiple strategies for stable deduplication</li>
+<li><strong>Stream large files</strong>: Use ijson or similar for 100MB+ files</li>
+<li><strong>Aggregate thoughtfully</strong>: Preserve tool metadata when combining files</li>
+</ol>
+<h4>Skill Resources</h4>
+<p>For ready-to-use query templates, see <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/sarif-parsing/%7BbaseDir%7D/resources/jq-queries.md">{baseDir}/resources/jq-queries.md</a>:</p>
+<ul>
+<li>40+ jq queries for common SARIF operations</li>
+<li><code>LEVEL_FN</code> - the severity resolution every filtering query starts from</li>
+<li>Severity filtering, rule extraction, aggregation patterns</li>
+</ul>
+<p>For Python utilities, see <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/sarif-parsing/%7BbaseDir%7D/resources/sarif_helpers.py">{baseDir}/resources/sarif_helpers.py</a>:</p>
+<ul>
+<li><code>resolve_level()</code> - Severity from the result or the rule it inherits from</li>
+<li><code>normalize_path()</code> - Handle tool-specific path formats</li>
+<li><code>compute_fingerprint()</code> - Rule, normalized path, line, and message</li>
+<li><code>deduplicate()</code> - Remove duplicates across runs</li>
+</ul>
+<p>Two SARIF fixtures live in <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/sarif-parsing/%7BbaseDir%7D/resources/fixtures">{baseDir}/resources/fixtures</a>,
+one with severity on the rules only and one with severity on the results. Each contains
+exactly one error, so a gate can be checked against a known answer before it is trusted.</p>
+<h4>Reference Links</h4>
+<ul>
+<li><a href="https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html">OASIS SARIF 2.1.0 Specification</a></li>
+<li><a href="https://github.com/microsoft/sarif-tutorials">Microsoft SARIF Tutorials</a></li>
+<li><a href="https://github.com/microsoft/sarif-sdk">SARIF SDK (.NET)</a></li>
+<li><a href="https://github.com/microsoft/sarif-tools">sarif-tools (Python)</a></li>
+<li><a href="https://github.com/Kjeld-P/pysarif">pysarif (Python)</a></li>
+<li><a href="https://docs.github.com/en/code-security/code-scanning/integrating-with-code-scanning/sarif-support-for-code-scanning">GitHub SARIF Support</a></li>
+<li><a href="https://sarifweb.azurewebsites.net/">SARIF Validator</a></li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

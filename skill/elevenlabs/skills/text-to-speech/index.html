@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>text-to-speech · SkillHub</title>
+    <meta name="description" content="Use it when: you need a voiceover, narration or other spoken audio from text, or are adding speech to an app. It does: calls ElevenLabs text-to-speech with a chosen voice and model, from Python, JavaScript or the elevenlabs CLI. You get: an audio file, MP3 by default, or a stream of audio chunks. Default model: eleven_v4, the highest quality; v4 turbo and the Flash models answer in about 100ms and 75ms for real-time use. Needs: an ElevenLabs API key." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=elevenlabs%2Fskills">elevenlabs/skills</a></p>
+      <h1>text-to-speech</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you need a voiceover, narration or other spoken audio from text, or are adding speech to an app</dd></div><div><dt>It does</dt><dd>calls ElevenLabs text-to-speech with a chosen voice and model, from Python, JavaScript or the elevenlabs CLI</dd></div><div><dt>You get</dt><dd>an audio file, MP3 by default, or a stream of audio chunks</dd></div><div><dt>Default model</dt><dd>eleven_v4, the highest quality; v4 turbo and the Flash models answer in about 100ms and 75ms for real-time use</dd></div><div><dt>Needs</dt><dd>an ElevenLabs API key</dd></div></dl></section>
+      
+      <p class="note">Needs an ElevenLabs API key in ELEVENLABS_API_KEY; without one, it first runs the ElevenLabs CLI&#39;s onboarding, which signs you in and stores a key for the project.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>ElevenLabs&#39; own reference for its text-to-speech API, written for agents. Before any code, if no ELEVENLABS_API_KEY is set, it runs the ElevenLabs CLI&#39;s onboarding, which signs you in and stores a key for the project. It shows the same request in Python, JavaScript and the CLI, where elevenlabs say plays text right away. It compares the models by languages and latency, names a few premade voices by ID, and explains voice settings: stability and similarity boost, plus style and speed on older models only. It also covers forcing a language, how numbers and dates get spoken, audio effects such as reverb, distance, background noise and panning, stitching long audio across requests by passing the text before and after, output formats from MP3 to telephony μ-law, streaming, common errors, and reading character usage from the response headers.</p>
+      <p class="muted">Summarizes <a href="https://github.com/elevenlabs/skills/tree/9763c39a9d7add478b2f2d8229f0caadf5414f5f/text-to-speech">the skill at 9763c39</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/elevenlabs/skills --skill text-to-speech</code><button type="button" class="copy" data-copy="npx skills add https://github.com/elevenlabs/skills --skill text-to-speech">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/elevenlabs/skills/text-to-speech">skills.sh page</a> · <a href="https://github.com/elevenlabs/skills/tree/HEAD/text-to-speech">Source on GitHub</a> · <a href="/skillhub/?repo=elevenlabs%2Fskills">All skills from elevenlabs/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>19,300 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>536 <span class="muted">elevenlabs/skills</span></dd></div><div><dt>First seen</dt><dd>Jan 27, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">1.4K</div>
+      <div class="stat-delta">+215% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 452; week to Sep 26: 458; week to Oct 3: 575; week to Oct 10: 955; week to Oct 17: 1,104; week to Oct 24: 1,124; week to Oct 31: 1,241; week to Nov 7: 1,425. Use the left and right arrow keys to read each week."
+        data-values="452,458,575,955,1104,1124,1241,1425" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,36.0 38.6,35.9 71.1,32.2 103.7,20.5 136.3,15.9 168.9,15.3 201.4,11.7 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>452</td></tr><tr><td>Sep 26</td><td>458</td></tr><tr><td>Oct 3</td><td>575</td></tr><tr><td>Oct 10</td><td>955</td></tr><tr><td>Oct 17</td><td>1,104</td></tr><tr><td>Oct 24</td><td>1,124</td></tr><tr><td>Oct 31</td><td>1,241</td></tr><tr><td>Nov 7</td><td>1,425</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:media" data-facet="category" title="Generate and edit video, images and audio." href="/skillhub/?tag=category%3Amedia">category:media</a></div>
+          <p class="tag-meaning">Generate and edit video, images and audio.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/skillhub/?tag=type%3Atool">type:tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/skillhub/?tag=needs%3Aaccount">needs:account</a></div>
+          <p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="audio" data-facet="topic" href="/skillhub/?tag=audio">audio</a><a class="tag" data-tag="ai-generation" data-facet="topic" href="/skillhub/?tag=ai-generation">ai-generation</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:elevenlabs" data-facet="stack" href="/skillhub/?tag=stack%3Aelevenlabs">stack:elevenlabs</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/elevenlabs/skills/blob/9763c39a9d7add478b2f2d8229f0caadf5414f5f/text-to-speech/SKILL.md">elevenlabs/skills at 9763c39</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: text-to-speech
+description: Convert text to speech using ElevenLabs voice AI. Use when generating audio from text, creating voiceovers, building voice apps, or synthesizing speech in 90+ languages.
+license: MIT
+compatibility: Requires internet access and an ElevenLabs API key (ELEVENLABS_API_KEY).
+metadata: {&#34;openclaw&#34;: {&#34;requires&#34;: {&#34;env&#34;: [&#34;ELEVENLABS_API_KEY&#34;]}, &#34;primaryEnv&#34;: &#34;ELEVENLABS_API_KEY&#34;}}</code></pre></details>
+        <div class="markdown"><h3>ElevenLabs Text-to-Speech</h3>
+<p>Generate natural speech from text - supports 90+ languages, multiple models for quality vs latency tradeoffs. Examples default to <code>eleven_v4</code>, the latest and highest-quality model.</p>
+<blockquote>
+<p><strong>Setup, before writing any code:</strong> if <code>ELEVENLABS_API_KEY</code> isn't set for this project, run <code>npx -y @elevenlabs/cli@latest onboard init</code> from the app's folder first and follow what it prints: it signs the user in and stores a key for the project, so nobody copies one by hand. Otherwise see the <a href="https://github.com/elevenlabs/skills/blob/9763c39a9d7add478b2f2d8229f0caadf5414f5f/text-to-speech/references/installation.md">Installation Guide</a>. For JavaScript, use <code>@elevenlabs/*</code> packages only.</p>
+</blockquote>
+<h4>Quick Start</h4>
+<h5>Python</h5>
+<pre><code class="language-python">from elevenlabs import ElevenLabs
+
+client = ElevenLabs()
+
+audio = client.text_to_speech.convert(
+    text=&quot;Hello, welcome to ElevenLabs!&quot;,
+    voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,  # George
+    model_id=&quot;eleven_v4&quot;
+)
+
+with open(&quot;output.mp3&quot;, &quot;wb&quot;) as f:
+    for chunk in audio:
+        f.write(chunk)
+</code></pre>
+<h5>JavaScript</h5>
+<pre><code class="language-javascript">import { ElevenLabsClient } from &quot;@elevenlabs/elevenlabs-js&quot;;
+import { createWriteStream } from &quot;fs&quot;;
+import { Readable } from &quot;stream&quot;;
+
+const client = new ElevenLabsClient();
+const audio = await client.textToSpeech.convert(&quot;JBFqnCBsd6RMkjVDRZzb&quot;, {
+  text: &quot;Hello, welcome to ElevenLabs!&quot;,
+  modelId: &quot;eleven_v4&quot;,
+});
+// convert() returns a web ReadableStream — bridge it to a Node stream to write to disk
+Readable.fromWeb(audio).pipe(createWriteStream(&quot;output.mp3&quot;));
+</code></pre>
+<h5>CLI</h5>
+<p>Use <code>say</code> to play text immediately with the default voice and <code>eleven_v3</code> model:</p>
+<pre><code class="language-bash">elevenlabs say &quot;Hello!&quot;
+</code></pre>
+<p>Pipe text into <code>say</code> when another command produces the input:</p>
+<pre><code class="language-bash">echo &quot;The build finished successfully.&quot; | elevenlabs say
+</code></pre>
+<p>Use the API command when you need to set request parameters directly:</p>
+<pre><code class="language-bash">elevenlabs text-to-speech convert --voice-id JBFqnCBsd6RMkjVDRZzb \
+  --text &quot;Hello!&quot; --model-id eleven_v4 --output output.mp3
+</code></pre>
+<p>The CLI reads <code>ELEVENLABS_API_KEY</code> from the environment automatically.</p>
+<h4>Models</h4>
+<table>
+<thead>
+<tr>
+<th>Model ID</th>
+<th>Languages</th>
+<th>Latency</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>eleven_v4</code></td>
+<td>90+</td>
+<td>Standard</td>
+<td><strong>Default.</strong> Highest quality, emotional range, audio tags, voice cloning accuracy</td>
+</tr>
+<tr>
+<td><code>eleven_v4_turbo</code></td>
+<td>90+</td>
+<td>~100ms</td>
+<td>Real-time v4 quality for agents and interactive apps (via <a href="https://github.com/elevenlabs/skills/blob/9763c39a9d7add478b2f2d8229f0caadf5414f5f/text-to-speech/references/streaming.md#eleven-v4-turbo-websocket">Text to Dialogue WebSocket</a>)</td>
+</tr>
+<tr>
+<td><code>eleven_flash_v2_5</code></td>
+<td>32</td>
+<td>~75ms</td>
+<td>Lowest latency, lowest cost, <code>stream-input</code> WebSocket</td>
+</tr>
+<tr>
+<td><code>eleven_flash_v2</code></td>
+<td>English</td>
+<td>~75ms</td>
+<td>English-only, lowest latency</td>
+</tr>
+<tr>
+<td><code>eleven_multilingual_v2</code></td>
+<td>29</td>
+<td>Standard</td>
+<td>Previous generation; most stable on very long-form generations</td>
+</tr>
+<tr>
+<td><code>eleven_v3</code></td>
+<td>70+</td>
+<td>Standard</td>
+<td>Previous generation expressive model</td>
+</tr>
+</tbody>
+</table>
+<p><code>eleven_turbo_v2_5</code> and <code>eleven_turbo_v2</code> are superseded by the Flash models (same output, lower latency) — use <code>eleven_flash_v2_5</code> / <code>eleven_flash_v2</code> instead.</p>
+<p><strong>Eleven v4 notes:</strong> supports only <code>stability</code> and <code>similarity_boost</code> voice settings (no <code>style</code> or <code>speed</code>), does not support SSML, and is not available on the <code>stream-input</code> TTS WebSocket. Direct delivery with audio tags such as <code>[whispers]</code>, <code>[laughs]</code>, <code>[sarcastic]</code>.</p>
+<h4>Voice IDs</h4>
+<p>Use pre-made voices or create custom voices in the dashboard.</p>
+<p><strong>Popular voices:</strong></p>
+<ul>
+<li><code>JBFqnCBsd6RMkjVDRZzb</code> - George (male, narrative)</li>
+<li><code>EXAVITQu4vr4xnSDxMaL</code> - Sarah (female, soft)</li>
+<li><code>onwK4e9ZLuTAKqWW03F9</code> - Daniel (male, authoritative)</li>
+<li><code>XB0fDUnXU5powFXDhCwa</code> - Charlotte (female, conversational)</li>
+</ul>
+<pre><code class="language-python">voices = client.voices.get_all()
+for voice in voices.voices:
+    print(f&quot;{voice.voice_id}: {voice.name}&quot;)
+</code></pre>
+<h4>Voice Settings</h4>
+<p>Fine-tune how the voice sounds:</p>
+<ul>
+<li><strong>Stability</strong>: How consistent the voice stays. Lower values = more emotional range and variation, but can sound unstable. Higher = steady, predictable delivery.</li>
+<li><strong>Similarity boost</strong>: How closely to match the original voice sample. Higher values sound more like the original but may amplify audio artifacts.</li>
+<li><strong>Style</strong>: Exaggerates the voice's unique style characteristics (v2/v3 models; not supported on Eleven v4).</li>
+<li><strong>Speed</strong>: Speech speed multiplier (v2/v3 models; not supported on Eleven v4).</li>
+<li><strong>Speaker boost</strong>: Post-processing that enhances clarity and voice similarity.</li>
+</ul>
+<pre><code class="language-python">from elevenlabs import VoiceSettings
+
+audio = client.text_to_speech.convert(
+    text=&quot;Customize my voice settings.&quot;,
+    voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+    model_id=&quot;eleven_v4&quot;,
+    voice_settings=VoiceSettings(
+        stability=0.5,          # Lower = more expressive, higher = more consistent
+        similarity_boost=0.75,  # Higher = closer to the reference voice
+    )
+)
+</code></pre>
+<h4>Language Selection</h4>
+<p>Use <code>language_code</code> with models that support language enforcement to guide pronunciation and text normalization. Unsupported language codes are ignored, and <code>language_code</code> is not supported on <code>eleven_multilingual_v2</code>.</p>
+<pre><code class="language-python">audio = client.text_to_speech.convert(
+    text=&quot;Bonjour, comment allez-vous?&quot;,
+    voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+    model_id=&quot;eleven_v4&quot;,
+    language_code=&quot;fr&quot;  # ISO 639-1 code
+)
+</code></pre>
+<h4>Text Normalization</h4>
+<p>Controls how numbers, dates, and abbreviations are converted to spoken words. For example, &quot;01/15/2026&quot; becomes &quot;January fifteenth, twenty twenty-six&quot;:</p>
+<ul>
+<li><code>&quot;auto&quot;</code> (default): Model decides based on context</li>
+<li><code>&quot;on&quot;</code>: Always normalize (use when you want natural speech)</li>
+<li><code>&quot;off&quot;</code>: Speak literally (use when you want &quot;zero one slash one five...&quot;)</li>
+</ul>
+<pre><code class="language-python">audio = client.text_to_speech.convert(
+    text=&quot;Call 1-800-555-0123 on 01/15/2026&quot;,
+    voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+    model_id=&quot;eleven_v4&quot;,
+    apply_text_normalization=&quot;on&quot;
+)
+</code></pre>
+<h4>Audio Effects</h4>
+<p>Use <code>audio_effects</code> to process the generated audio with a filter preset, perceived distance, a reverb environment, a looped background noise bed, and stereo panning. Effects do not change the cost of a request.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Range</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>filter_preset_id</code></td>
+<td>Catalog ID</td>
+<td>Filter that colors the voice, such as <code>phone</code> or <code>old_radio</code></td>
+</tr>
+<tr>
+<td><code>distance</code></td>
+<td>0-1 (default 0)</td>
+<td>How far the speaker sounds from the microphone</td>
+</tr>
+<tr>
+<td><code>environment_id</code></td>
+<td>Catalog ID</td>
+<td>Reverb environment, such as <code>small_room</code> or <code>hall</code></td>
+</tr>
+<tr>
+<td><code>send_level</code></td>
+<td>0-1 (default 1)</td>
+<td>How much of the voice feeds the reverb; 0 turns reverb off</td>
+</tr>
+<tr>
+<td><code>background_noise_id</code></td>
+<td>Catalog ID</td>
+<td>Background noise looped under the voice, such as <code>cafe</code> or <code>keyboard</code></td>
+</tr>
+<tr>
+<td><code>pan</code></td>
+<td>-1 to 1 (default 0)</td>
+<td>Stereo position of the voice, from hard left to hard right</td>
+</tr>
+</tbody>
+</table>
+<p>List valid filter preset, environment, and background noise IDs with the catalog endpoint (<code>GET /v1/audio-effects/catalog</code>):</p>
+<pre><code class="language-python">from elevenlabs import EffectsSpecInput
+
+catalog = client.audio_effects.get_catalog()
+for environment in catalog.environments:
+    print(f&quot;{environment.environment_id}: {environment.name}&quot;)
+
+audio = client.text_to_speech.convert(
+    text=&quot;Welcome to the concert hall.&quot;,
+    voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+    model_id=&quot;eleven_v4&quot;,
+    audio_effects=EffectsSpecInput(
+        environment_id=&quot;hall&quot;,
+        distance=0.3,
+        pan=-0.5,
+    )
+)
+</code></pre>
+<p>Reverb and non-zero <code>pan</code> produce stereo audio and are rejected for <code>ulaw_*</code>, <code>alaw_*</code>, and <code>pcm_*</code> output formats. Unknown effect IDs return a 404 error.</p>
+<h4>Request Stitching</h4>
+<p>When generating long audio in multiple requests, the audio can have pops, unnatural pauses, or tone shifts at the boundaries. Request stitching solves this by letting each request know what comes before/after it:</p>
+<pre><code class="language-python"># First request
+audio1 = client.text_to_speech.convert(
+    text=&quot;This is the first part.&quot;,
+    voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+    model_id=&quot;eleven_v4&quot;,
+    next_text=&quot;And this continues the story.&quot;
+)
+
+# Second request using previous context
+audio2 = client.text_to_speech.convert(
+    text=&quot;And this continues the story.&quot;,
+    voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+    model_id=&quot;eleven_v4&quot;,
+    previous_text=&quot;This is the first part.&quot;
+)
+</code></pre>
+<h4>Output Formats</h4>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mp3_44100_128</code></td>
+<td>MP3 44.1kHz 128kbps (default) - compressed, good for web/apps</td>
+</tr>
+<tr>
+<td><code>mp3_44100_192</code></td>
+<td>MP3 44.1kHz 192kbps (Creator+) - higher quality compressed</td>
+</tr>
+<tr>
+<td><code>mp3_44100_64</code></td>
+<td>MP3 44.1kHz 64kbps - lower quality, smaller files</td>
+</tr>
+<tr>
+<td><code>mp3_22050_32</code></td>
+<td>MP3 22.05kHz 32kbps - smallest MP3 files</td>
+</tr>
+<tr>
+<td><code>pcm_16000</code></td>
+<td>Raw PCM 16kHz - use for real-time processing</td>
+</tr>
+<tr>
+<td><code>pcm_22050</code></td>
+<td>Raw PCM 22.05kHz</td>
+</tr>
+<tr>
+<td><code>pcm_24000</code></td>
+<td>Raw PCM 24kHz - good balance for streaming</td>
+</tr>
+<tr>
+<td><code>pcm_44100</code></td>
+<td>Raw PCM 44.1kHz (Pro+) - CD quality</td>
+</tr>
+<tr>
+<td><code>pcm_48000</code></td>
+<td>Raw PCM 48kHz (Pro+) - highest quality</td>
+</tr>
+<tr>
+<td><code>ulaw_8000</code></td>
+<td>μ-law 8kHz - standard for phone systems (Twilio, telephony)</td>
+</tr>
+<tr>
+<td><code>alaw_8000</code></td>
+<td>A-law 8kHz - telephony (alternative to μ-law)</td>
+</tr>
+<tr>
+<td><code>opus_48000_64</code></td>
+<td>Opus 48kHz 64kbps - efficient streaming codec</td>
+</tr>
+<tr>
+<td><code>wav_44100</code></td>
+<td>WAV 44.1kHz - uncompressed with headers</td>
+</tr>
+</tbody>
+</table>
+<h4>Streaming</h4>
+<p>Use the <code>stream</code> method to receive audio chunks as they're generated:</p>
+<pre><code class="language-python">audio_stream = client.text_to_speech.stream(
+    text=&quot;This text will be streamed as audio.&quot;,
+    voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;,
+    model_id=&quot;eleven_v4&quot;
+)
+
+for chunk in audio_stream:
+    play_audio(chunk)
+</code></pre>
+<p>For real-time apps where latency matters most, use <code>eleven_v4_turbo</code> (~100ms) over the Text to Dialogue WebSocket, or <code>eleven_flash_v2_5</code> (~75ms) over HTTP streaming or the <code>stream-input</code> WebSocket. See <a href="https://github.com/elevenlabs/skills/blob/9763c39a9d7add478b2f2d8229f0caadf5414f5f/text-to-speech/references/streaming.md">references/streaming.md</a>.</p>
+<h4>Error Handling</h4>
+<pre><code class="language-python">try:
+    audio = client.text_to_speech.convert(
+        text=&quot;Generate speech&quot;,
+        voice_id=&quot;invalid-voice-id&quot;,
+        model_id=&quot;eleven_v4&quot;
+    )
+except Exception as e:
+    print(f&quot;API error: {e}&quot;)
+</code></pre>
+<p>Common errors:</p>
+<ul>
+<li><strong>401</strong>: Invalid API key</li>
+<li><strong>422</strong>: Invalid parameters (check voice_id, model_id)</li>
+<li><strong>429</strong>: Rate limit exceeded</li>
+</ul>
+<h4>Tracking Costs</h4>
+<p>Monitor character usage via response headers (<code>x-character-count</code>, <code>request-id</code>):</p>
+<pre><code class="language-python">response = client.text_to_speech.convert.with_raw_response(
+    text=&quot;Hello!&quot;, voice_id=&quot;JBFqnCBsd6RMkjVDRZzb&quot;, model_id=&quot;eleven_v4&quot;
+)
+audio = response.parse()
+print(f&quot;Characters used: {response.headers.get('x-character-count')}&quot;)
+</code></pre>
+<h4>References</h4>
+<ul>
+<li><a href="https://github.com/elevenlabs/skills/blob/9763c39a9d7add478b2f2d8229f0caadf5414f5f/text-to-speech/references/installation.md">Installation Guide</a></li>
+<li><a href="https://github.com/elevenlabs/skills/blob/9763c39a9d7add478b2f2d8229f0caadf5414f5f/text-to-speech/references/streaming.md">Streaming Audio</a></li>
+<li><a href="https://github.com/elevenlabs/skills/blob/9763c39a9d7add478b2f2d8229f0caadf5414f5f/text-to-speech/references/voice-settings.md">Voice Settings</a></li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>agent-architecture-audit · SkillHub</title>
+    <meta name="description" content="Use it when: an agent or LLM feature works in the playground but misbehaves in your app and you don&#039;t know which layer is at fault, or before shipping one. It does: scopes the system, searches its code, logs, prompts and memory files for known failure patterns, and ties each finding to one of 12 layers. You get: severity-ranked findings with file-and-line evidence and a confidence score, a diagnosis, and an ordered code-first fix plan in a set JSON shape. Looks for: wrapper regressions, memory leaking across conversations, tools required only in prompt text, hidden retry or repair LLM passes, and output mangled in delivery." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <h1>agent-architecture-audit</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>an agent or LLM feature works in the playground but misbehaves in your app and you don&#39;t know which layer is at fault, or before shipping one</dd></div><div><dt>It does</dt><dd>scopes the system, searches its code, logs, prompts and memory files for known failure patterns, and ties each finding to one of 12 layers</dd></div><div><dt>You get</dt><dd>severity-ranked findings with file-and-line evidence and a confidence score, a diagnosis, and an ordered code-first fix plan in a set JSON shape</dd></div><div><dt>Looks for</dt><dd>wrapper regressions, memory leaking across conversations, tools required only in prompt text, hidden retry or repair LLM passes, and output mangled in delivery</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>This ECC skill, adapted from oh-my-agent-check, starts from the idea that the model is often fine and the wrapper around it is not. It splits an agent system into 12 layers that can each corrupt an answer: system prompt, session history, long-term memory, distillation, active recall, tool selection, tool execution, tool interpretation, answer shaping, platform rendering, hidden repair loops and persistence. The audit runs in four phases. Scope sets the target, entrypoints, models, symptoms and layers to check. Evidence collection reads the agent loop, tool router, prompt assembly, logs and memory files, with ripgrep searches for patterns such as tool rules stated only in prompts or LLM calls outside the main loop. Failure mapping records each finding&#39;s symptom, mechanism, layer, root cause, evidence and confidence. The fix strategy puts code before prompts: enforce tool requirements in code, make fallback agents explicit, cut duplicated context, rank user corrections above agent claims in memory, and pass output through untouched. Findings come first, critical to low, with no compliments, then the diagnosis and the fix plan.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/agent-architecture-audit">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/affaan-m/ecc --skill agent-architecture-audit</code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill agent-architecture-audit">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/agent-architecture-audit">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/agent-architecture-audit">Source on GitHub</a> · <a href="/skillhub/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,600 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>298,660 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">496</div>
+      <div class="stat-delta">+66% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 298; week to Sep 26: 277; week to Oct 3: 171; week to Oct 10: 172; week to Oct 17: 257; week to Oct 24: 426; week to Oct 31: 422; week to Nov 7: 496. Use the left and right arrow keys to read each week."
+        data-values="298,277,171,172,257,426,422,496" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.6 38.6,25.4 71.1,34.8 103.7,34.7 136.3,27.2 168.9,12.2 201.4,12.6 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>298</td></tr><tr><td>Sep 26</td><td>277</td></tr><tr><td>Oct 3</td><td>171</td></tr><tr><td>Oct 10</td><td>172</td></tr><tr><td>Oct 17</td><td>257</td></tr><tr><td>Oct 24</td><td>426</td></tr><tr><td>Oct 31</td><td>422</td></tr><tr><td>Nov 7</td><td>496</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/skillhub/?tag=category%3Aagents">category:agents</a><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="agent-development" data-facet="topic" href="/skillhub/?tag=agent-development">agent-development</a><a class="tag" data-tag="debugging" data-facet="topic" href="/skillhub/?tag=debugging">debugging</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/agent-architecture-audit/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: agent-architecture-audit
+description: Full-stack diagnostic for agent and LLM applications. Audits the 12-layer agent stack for wrapper regression, memory pollution, tool discipline failures, hidden repair loops, and rendering corruption. Produces severity-ranked findings with code-first fixes. Essential for developers building agent applications, autonomous loops, or any LLM-powered feature. Use when an agent or LLM feature misbehaves and the failing layer is unknown, or before shipping an agent stack.
+metadata:
+  origin: oh-my-agent-check
+tools: Read, Write, Edit, Bash, Grep, Glob</code></pre></details>
+        <div class="markdown"><h3>Agent Architecture Audit</h3>
+<p>A diagnostic workflow for agent systems that hide failures behind wrapper layers, stale memory, retry loops, or transport/rendering mutations.</p>
+<h4>When to Activate</h4>
+<p><strong>MANDATORY for:</strong></p>
+<ul>
+<li>Releasing any agent or LLM-powered application to production</li>
+<li>Shipping features with tool calling, memory, or multi-step workflows</li>
+<li>Agent behavior degrades after adding wrapper layers</li>
+<li>User reports &quot;the agent is getting worse&quot; or &quot;tools are flaky&quot;</li>
+<li>Same model works in playground but breaks inside your wrapper</li>
+<li>Debugging agent behavior for more than 15 minutes without finding root cause</li>
+</ul>
+<p><strong>Especially critical when:</strong></p>
+<ul>
+<li>You've added new prompt layers, tool definitions, or memory systems</li>
+<li>Different agents in your system behave inconsistently</li>
+<li>The model was fine yesterday but is hallucinating today</li>
+<li>You suspect hidden repair/retry loops silently mutating responses</li>
+</ul>
+<p><strong>Do not use for:</strong></p>
+<ul>
+<li>General code debugging — use <code>agent-introspection-debugging</code></li>
+<li>Code review — use language-specific reviewer agents</li>
+<li>Security scanning — use <code>security-review</code> or <code>security-review/scan</code></li>
+<li>Agent performance benchmarking — use <code>agent-eval</code></li>
+<li>Writing new features — use the appropriate workflow skill</li>
+</ul>
+<h4>The 12-Layer Stack</h4>
+<p>Every agent system has these layers. Any of them can corrupt the answer:</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Layer</th>
+<th>What Goes Wrong</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>System prompt</td>
+<td>Conflicting instructions, instruction bloat</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Session history</td>
+<td>Stale context injection from previous turns</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Long-term memory</td>
+<td>Pollution across sessions, old topics in new conversations</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Distillation</td>
+<td>Compressed artifacts re-entering as pseudo-facts</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Active recall</td>
+<td>Redundant re-summary layers wasting context</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Tool selection</td>
+<td>Wrong tool routing, model skips required tools</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Tool execution</td>
+<td>Hallucinated execution — claims to call but doesn't</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Tool interpretation</td>
+<td>Misread or ignored tool output</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Answer shaping</td>
+<td>Format corruption in final response</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Platform rendering</td>
+<td>Transport-layer mutation (UI, API, CLI mutates valid answers)</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Hidden repair loops</td>
+<td>Silent fallback/retry agents running second LLM pass</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Persistence</td>
+<td>Expired state or cached artifacts reused as live evidence</td>
+</tr>
+</tbody>
+</table>
+<h4>Common Failure Patterns</h4>
+<h5>1. Wrapper Regression</h5>
+<p>The base model produces correct answers, but the wrapper layers make it worse.</p>
+<p><strong>Symptoms:</strong></p>
+<ul>
+<li>Model works fine in playground or direct API call, breaks in your agent</li>
+<li>Added a new prompt layer, existing behavior degraded</li>
+<li>Agent sounds confident but is confidently wrong</li>
+<li>&quot;It was working before the last update&quot;</li>
+</ul>
+<h5>2. Memory Contamination</h5>
+<p>Old topics leak into new conversations through history, memory retrieval, or distillation.</p>
+<p><strong>Symptoms:</strong></p>
+<ul>
+<li>Agent brings up unrelated past topics</li>
+<li>User corrections don't stick (old memory overwrites new)</li>
+<li>Same-session artifacts re-enter as pseudo-facts</li>
+<li>Memory grows without bound, degrading response quality over time</li>
+</ul>
+<h5>3. Tool Discipline Failure</h5>
+<p>Tools are declared in the prompt but not enforced in code. The model skips them or hallucinates execution.</p>
+<p><strong>Symptoms:</strong></p>
+<ul>
+<li>&quot;Must use tool X&quot; in prompt, but model answers without calling it</li>
+<li>Tool results look correct but were never actually executed</li>
+<li>Different tools fight over the same responsibility</li>
+<li>Model uses tool when it shouldn't, or skips it when it must</li>
+</ul>
+<h5>4. Rendering/Transport Corruption</h5>
+<p>The agent's internal answer is correct, but the platform layer mutates it during delivery.</p>
+<p><strong>Symptoms:</strong></p>
+<ul>
+<li>Logs show correct answer, user sees broken output</li>
+<li>Markdown rendering, JSON parsing, or streaming fragments corrupt valid responses</li>
+<li>Hidden fallback agent quietly replaces the answer before delivery</li>
+<li>Output differs between terminal and UI</li>
+</ul>
+<h5>5. Hidden Agent Layers</h5>
+<p>Silent repair, retry, summarization, or recall agents run without explicit contracts.</p>
+<p><strong>Symptoms:</strong></p>
+<ul>
+<li>Output changes between internal generation and user delivery</li>
+<li>&quot;Auto-fix&quot; loops run a second LLM pass the user doesn't know about</li>
+<li>Multiple agents modify the same output without coordination</li>
+<li>Answers get &quot;smoothed&quot; or &quot;corrected&quot; by invisible layers</li>
+</ul>
+<h4>Audit Workflow</h4>
+<h5>Phase 1: Scope</h5>
+<p>Define what you're auditing:</p>
+<ul>
+<li><strong>Target system</strong> — what agent application?</li>
+<li><strong>Entrypoints</strong> — how do users interact with it?</li>
+<li><strong>Model stack</strong> — which LLM(s) and providers?</li>
+<li><strong>Symptoms</strong> — what does the user report?</li>
+<li><strong>Time window</strong> — when did it start?</li>
+<li><strong>Layers to audit</strong> — which of the 12 layers apply?</li>
+</ul>
+<h5>Phase 2: Evidence Collection</h5>
+<p>Gather evidence from the codebase:</p>
+<ul>
+<li><strong>Source code</strong> — agent loop, tool router, memory admission, prompt assembly</li>
+<li><strong>Logs</strong> — historical session traces, tool call records</li>
+<li><strong>Config</strong> — prompt templates, tool schemas, provider settings</li>
+<li><strong>Memory files</strong> — SOPs, knowledge bases, session archives</li>
+</ul>
+<p>Use <code>rg</code> to search for anti-patterns:</p>
+<pre><code class="language-bash"># Tool requirements expressed only in prompt text (not code)
+rg &quot;must.*tool|必须.*工具|required.*call&quot; --type md
+
+# Tool execution without validation
+rg &quot;tool_call|toolCall|tool_use&quot; --type py --type ts
+
+# Hidden LLM calls outside main agent loop
+rg &quot;completion|chat\.create|messages\.create|llm\.invoke&quot;
+
+# Memory admission without user-correction priority
+rg &quot;memory.*admit|long.*term.*update|persist.*memory&quot; --type py --type ts
+
+# Fallback loops that run additional LLM calls
+rg &quot;fallback|retry.*llm|repair.*prompt|re-?prompt&quot; --type py --type ts
+
+# Silent output mutation
+rg &quot;mutate|rewrite.*response|transform.*output|shap&quot; --type py --type ts
+</code></pre>
+<h5>Phase 3: Failure Mapping</h5>
+<p>For each finding, document:</p>
+<ul>
+<li><strong>Symptom</strong> — what the user sees</li>
+<li><strong>Mechanism</strong> — how the wrapper causes it</li>
+<li><strong>Source layer</strong> — which of the 12 layers</li>
+<li><strong>Root cause</strong> — the deepest cause</li>
+<li><strong>Evidence</strong> — file:line or log:row reference</li>
+<li><strong>Confidence</strong> — 0.0 to 1.0</li>
+</ul>
+<h5>Phase 4: Fix Strategy</h5>
+<p>Default fix order (code-first, not prompt-first):</p>
+<ol>
+<li><strong>Code-gate tool requirements</strong> — enforce in code, not just prompt text</li>
+<li><strong>Remove or narrow hidden repair agents</strong> — make fallback explicit with contracts</li>
+<li><strong>Reduce context duplication</strong> — same info through prompt + history + memory + distillation</li>
+<li><strong>Tighten memory admission</strong> — user corrections &gt; agent assertions</li>
+<li><strong>Tighten distillation triggers</strong> — don't compress what shouldn't be compressed</li>
+<li><strong>Reduce rendering mutation</strong> — pass-through, don't transform</li>
+<li><strong>Convert to typed JSON envelopes</strong> — structured internal flow, not freeform prose</li>
+</ol>
+<h4>Severity Model</h4>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Meaning</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>critical</code></td>
+<td>Agent can confidently produce wrong operational behavior</td>
+<td>Fix before next release</td>
+</tr>
+<tr>
+<td><code>high</code></td>
+<td>Agent frequently degrades correctness or stability</td>
+<td>Fix this sprint</td>
+</tr>
+<tr>
+<td><code>medium</code></td>
+<td>Correctness usually survives but output is fragile or wasteful</td>
+<td>Plan for next cycle</td>
+</tr>
+<tr>
+<td><code>low</code></td>
+<td>Mostly cosmetic or maintainability issues</td>
+<td>Backlog</td>
+</tr>
+</tbody>
+</table>
+<h4>Output Format</h4>
+<p>Present findings to the user in this order:</p>
+<ol>
+<li><strong>Severity-ranked findings</strong> (most critical first)</li>
+<li><strong>Architecture diagnosis</strong> (which layer corrupted what, and why)</li>
+<li><strong>Ordered fix plan</strong> (code-first, not prompt-first)</li>
+</ol>
+<p>Do not lead with compliments or summaries. If the system is broken, say so directly.</p>
+<h4>Quick Diagnostic Questions</h4>
+<p>When auditing an agent system, answer these:</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Question</th>
+<th>If Yes →</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Can the model skip a required tool and still answer?</td>
+<td>Tool not code-gated</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Does old conversation content appear in new turns?</td>
+<td>Memory contamination</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Is the same info in system prompt AND memory AND history?</td>
+<td>Context duplication</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Does the platform run a second LLM pass before delivery?</td>
+<td>Hidden repair loop</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Does the output differ between internal generation and user delivery?</td>
+<td>Rendering corruption</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Are &quot;must use tool X&quot; rules only in prompt text?</td>
+<td>Tool discipline failure</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Can the agent's own monologue become persistent memory?</td>
+<td>Memory poisoning</td>
+</tr>
+</tbody>
+</table>
+<h4>Anti-Patterns to Avoid</h4>
+<ul>
+<li>Avoid blaming the model before falsifying wrapper-layer regressions.</li>
+<li>Avoid blaming memory without showing the contamination path.</li>
+<li>Do not let a clean current state erase a dirty historical incident.</li>
+<li>Do not treat markdown prose as a trustworthy internal protocol.</li>
+<li>Do not accept &quot;must use tool&quot; in prompt text when code never enforces it.</li>
+<li>Keep findings direct, evidence-backed, and severity-ranked.</li>
+</ul>
+<h4>Report Schema</h4>
+<p>Audits should produce structured reports following this shape:</p>
+<pre><code class="language-json">{
+  &quot;schema_version&quot;: &quot;ecc.agent-architecture-audit.report.v1&quot;,
+  &quot;executive_verdict&quot;: {
+    &quot;overall_health&quot;: &quot;high_risk&quot;,
+    &quot;primary_failure_mode&quot;: &quot;string&quot;,
+    &quot;most_urgent_fix&quot;: &quot;string&quot;
+  },
+  &quot;scope&quot;: {
+    &quot;target_name&quot;: &quot;string&quot;,
+    &quot;model_stack&quot;: [&quot;string&quot;],
+    &quot;layers_to_audit&quot;: [&quot;string&quot;]
+  },
+  &quot;findings&quot;: [
+    {
+      &quot;severity&quot;: &quot;critical|high|medium|low&quot;,
+      &quot;title&quot;: &quot;string&quot;,
+      &quot;mechanism&quot;: &quot;string&quot;,
+      &quot;source_layer&quot;: &quot;string&quot;,
+      &quot;root_cause&quot;: &quot;string&quot;,
+      &quot;evidence_refs&quot;: [&quot;file:line&quot;],
+      &quot;confidence&quot;: 0.0,
+      &quot;recommended_fix&quot;: &quot;string&quot;
+    }
+  ],
+  &quot;ordered_fix_plan&quot;: [
+    { &quot;order&quot;: 1, &quot;goal&quot;: &quot;string&quot;, &quot;why_now&quot;: &quot;string&quot;, &quot;expected_effect&quot;: &quot;string&quot; }
+  ]
+}
+</code></pre>
+<h4>Related Skills</h4>
+<ul>
+<li><code>agent-introspection-debugging</code> — Debug agent runtime failures (loops, timeouts, state errors)</li>
+<li><code>agent-eval</code> — Benchmark agent performance head-to-head</li>
+<li><code>security-review</code> — Security audit for code and configuration</li>
+<li><code>autonomous-agent-harness</code> — Set up autonomous agent operations</li>
+<li><code>agent-harness-construction</code> — Build agent harnesses from scratch</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

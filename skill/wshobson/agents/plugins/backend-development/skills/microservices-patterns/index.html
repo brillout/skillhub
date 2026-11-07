@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>microservices-patterns · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re splitting a monolith into services, drawing service boundaries, or designing how services talk to each other and survive each other&#039;s failures. It does: gives the agent patterns for cutting services, calling them directly or through events, giving each its own data, and staying up when one fails. You get: designs along those patterns; it adds no steps or files of its own, and a reference file holds Python examples. Terms: a saga is a chain of local transactions with compensating undo steps; a circuit breaker stops calling a failing service for a while." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=wshobson%2Fagents">wshobson/agents</a></p>
+      <h1>microservices-patterns</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re splitting a monolith into services, drawing service boundaries, or designing how services talk to each other and survive each other&#39;s failures</dd></div><div><dt>It does</dt><dd>gives the agent patterns for cutting services, calling them directly or through events, giving each its own data, and staying up when one fails</dd></div><div><dt>You get</dt><dd>designs along those patterns; it adds no steps or files of its own, and a reference file holds Python examples</dd></div><div><dt>Terms</dt><dd>a saga is a chain of local transactions with compensating undo steps; a circuit breaker stops calling a failing service for a while</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A reference, not a workflow. It names three ways to cut services: by business capability (orders, payments, inventory), by subdomain, where each bounded context from domain-driven design becomes a service, and the strangler fig pattern, which moves features out of a monolith gradually behind a proxy. Services talk synchronously over REST, gRPC or GraphQL, or asynchronously through Kafka, RabbitMQ or SQS. Each service owns its database, and transactions that span services become sagas with eventual consistency. Resilience comes from circuit breakers, retries with exponential backoff and bulkheads, which isolate resources so one failure stays contained. The reference file shows each in Python: services that publish events, a FastAPI gateway that combines several services&#39; data behind circuit breakers and tolerates partial failures, an HTTP client with retries and timeouts, an event bus on Kafka, an order-fulfillment saga that runs compensations when a step fails, and a circuit breaker class with closed, open and half-open states.</p>
+      <p class="muted">Summarizes <a href="https://github.com/wshobson/agents/tree/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/backend-development/skills/microservices-patterns">the skill at 4bde316</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/wshobson/agents --skill microservices-patterns</code><button type="button" class="copy" data-copy="npx skills add https://github.com/wshobson/agents --skill microservices-patterns">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/wshobson/agents/microservices-patterns">skills.sh page</a> · <a href="https://github.com/wshobson/agents/tree/HEAD/plugins/backend-development/skills/microservices-patterns">Source on GitHub</a> · <a href="/skillhub/?repo=wshobson%2Fagents">All skills from wshobson/agents</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>13,600 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>42,267 <span class="muted">wshobson/agents</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">232</div>
+      <div class="stat-delta">+17% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 198; week to Sep 26: 212; week to Oct 3: 254; week to Oct 10: 295; week to Oct 17: 249; week to Oct 24: 219; week to Oct 31: 222; week to Nov 7: 232. Use the left and right arrow keys to read each week."
+        data-values="198,212,254,295,249,219,222,232" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,20.5 38.6,18.4 71.1,12.1 103.7,6.0 136.3,12.9 168.9,17.3 201.4,16.9 234.0,15.4" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="15.4" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>198</td></tr><tr><td>Sep 26</td><td>212</td></tr><tr><td>Oct 3</td><td>254</td></tr><tr><td>Oct 10</td><td>295</td></tr><tr><td>Oct 17</td><td>249</td></tr><tr><td>Oct 24</td><td>219</td></tr><tr><td>Oct 31</td><td>222</td></tr><tr><td>Nov 7</td><td>232</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/skillhub/?tag=type%3Aguidelines">type:guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="architecture" data-facet="topic" href="/skillhub/?tag=architecture">architecture</a><a class="tag" data-tag="backend" data-facet="topic" href="/skillhub/?tag=backend">backend</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/wshobson/agents/blob/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/backend-development/skills/microservices-patterns/SKILL.md">wshobson/agents at 4bde316</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: microservices-patterns
+description: Design microservices architectures with service boundaries, event-driven communication, and resilience patterns. Use when building distributed systems, decomposing monoliths, or implementing microservices.</code></pre></details>
+        <div class="markdown"><h3>Microservices Patterns</h3>
+<p>Master microservices architecture patterns including service boundaries, inter-service communication, data management, and resilience patterns for building distributed systems.</p>
+<h4>When to Use This Skill</h4>
+<ul>
+<li>Decomposing monoliths into microservices</li>
+<li>Designing service boundaries and contracts</li>
+<li>Implementing inter-service communication</li>
+<li>Managing distributed data and transactions</li>
+<li>Building resilient distributed systems</li>
+<li>Implementing service discovery and load balancing</li>
+<li>Designing event-driven architectures</li>
+</ul>
+<h4>Core Concepts</h4>
+<h5>1. Service Decomposition Strategies</h5>
+<p><strong>By Business Capability</strong></p>
+<ul>
+<li>Organize services around business functions</li>
+<li>Each service owns its domain</li>
+<li>Example: OrderService, PaymentService, InventoryService</li>
+</ul>
+<p><strong>By Subdomain (DDD)</strong></p>
+<ul>
+<li>Core domain, supporting subdomains</li>
+<li>Bounded contexts map to services</li>
+<li>Clear ownership and responsibility</li>
+</ul>
+<p><strong>Strangler Fig Pattern</strong></p>
+<ul>
+<li>Gradually extract from monolith</li>
+<li>New functionality as microservices</li>
+<li>Proxy routes to old/new systems</li>
+</ul>
+<h5>2. Communication Patterns</h5>
+<p><strong>Synchronous (Request/Response)</strong></p>
+<ul>
+<li>REST APIs</li>
+<li>gRPC</li>
+<li>GraphQL</li>
+</ul>
+<p><strong>Asynchronous (Events/Messages)</strong></p>
+<ul>
+<li>Event streaming (Kafka)</li>
+<li>Message queues (RabbitMQ, SQS)</li>
+<li>Pub/Sub patterns</li>
+</ul>
+<h5>3. Data Management</h5>
+<p><strong>Database Per Service</strong></p>
+<ul>
+<li>Each service owns its data</li>
+<li>No shared databases</li>
+<li>Loose coupling</li>
+</ul>
+<p><strong>Saga Pattern</strong></p>
+<ul>
+<li>Distributed transactions</li>
+<li>Compensating actions</li>
+<li>Eventual consistency</li>
+</ul>
+<h5>4. Resilience Patterns</h5>
+<p><strong>Circuit Breaker</strong></p>
+<ul>
+<li>Fail fast on repeated errors</li>
+<li>Prevent cascade failures</li>
+</ul>
+<p><strong>Retry with Backoff</strong></p>
+<ul>
+<li>Transient fault handling</li>
+<li>Exponential backoff</li>
+</ul>
+<p><strong>Bulkhead</strong></p>
+<ul>
+<li>Isolate resources</li>
+<li>Limit impact of failures</li>
+</ul>
+<h4>Detailed patterns and worked examples</h4>
+<p>Detailed pattern documentation lives in <code>references/details.md</code>. Read that file when the navigation tier above is insufficient.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

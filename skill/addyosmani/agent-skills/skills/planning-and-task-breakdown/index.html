@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>planning-and-task-breakdown · SkillHub</title>
+    <meta name="description" content="Use it when: you have a spec or clear requirements and need tasks an agent can implement, or a task feels too big to start. It does: reads the spec and code without writing any, maps dependencies, slices the work into end-to-end features, then writes and orders the tasks. You get: tasks/plan.md with decisions, risks and open questions, and a task list in tasks/todo.md or your issue tracker, with checkpoints. Won&#039;t: overwrite a plan that still has unchecked tasks for other work; it stops and asks you." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=addyosmani%2Fagent-skills">addyosmani/agent-skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/bundle/addyosmani/agent-skills/">Addy&#39;s Agent Skills</a></p>
+      <h1>planning-and-task-breakdown</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you have a spec or clear requirements and need tasks an agent can implement, or a task feels too big to start</dd></div><div><dt>It does</dt><dd>reads the spec and code without writing any, maps dependencies, slices the work into end-to-end features, then writes and orders the tasks</dd></div><div><dt>You get</dt><dd>tasks/plan.md with decisions, risks and open questions, and a task list in tasks/todo.md or your issue tracker, with checkpoints</dd></div><div><dt>Won&#39;t</dt><dd>overwrite a plan that still has unchecked tasks for other work; it stops and asks you</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 6 of 25 in the <a href="/skillhub/bundle/addyosmani/agent-skills/">Addy&#39;s Agent Skills</a> bundle · Before it: <a href="/skillhub/skill/addyosmani/agent-skills/skills/constraint-driven-development/">constraint-driven-development</a> · After it: <a href="/skillhub/skill/addyosmani/agent-skills/skills/context-engineering/">context-engineering</a></p>
+    
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Planning starts read-only: the agent reads the spec and the relevant code, notes patterns and risks, and maps what depends on what, from database schema up to UI. It then slices vertically, one complete feature path per task (&#34;user can log in&#34;: schema, API and UI together) instead of all the database, then all the API. Each task gets a description, acceptance criteria, verification commands, dependencies, likely files and a size; anything that would touch more than about five files, take more than one session, or need &#34;and&#34; in its title gets split. Tasks are ordered so dependencies come first, risky work comes early and the system works after each one, with a checkpoint every two or three tasks. The plan always goes to tasks/plan.md; tasks go to tasks/todo.md by default, or one item per task in an issue tracker such as GitHub Issues, Jira or Linear when the project&#39;s agent rules or you say so. It also lists which work is safe to run in parallel, such as independent slices, and which must stay sequential, such as migrations. A /build command and other downstream tools expect these default files, and you approve the plan before implementation starts.</p>
+      <p class="muted">Summarizes <a href="https://github.com/addyosmani/agent-skills/tree/301b02b12bff98e4688e6984af6556802322bbde/skills/planning-and-task-breakdown">the skill at 301b02b</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/addyosmani/agent-skills --skill planning-and-task-breakdown</code><button type="button" class="copy" data-copy="npx skills add https://github.com/addyosmani/agent-skills --skill planning-and-task-breakdown">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/addyosmani/agent-skills/planning-and-task-breakdown">skills.sh page</a> · <a href="https://github.com/addyosmani/agent-skills/tree/HEAD/skills/planning-and-task-breakdown">Source on GitHub</a> · <a href="/skillhub/?repo=addyosmani%2Fagent-skills">All skills from addyosmani/agent-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>72,000 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>113,758 <span class="muted">addyosmani/agent-skills</span></dd></div><div><dt>First seen</dt><dd>Feb 16, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">4.6K</div>
+      <div class="stat-delta">+50% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 3,073; week to Sep 26: 4,108; week to Oct 3: 3,816; week to Oct 10: 3,952; week to Oct 17: 5,062; week to Oct 24: 5,728; week to Oct 31: 5,370; week to Nov 7: 4,623. Use the left and right arrow keys to read each week."
+        data-values="3073,4108,3816,3952,5062,5728,5370,4623" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,26.4 38.6,18.4 71.1,20.7 103.7,19.6 136.3,11.1 168.9,6.0 201.4,8.8 234.0,14.5" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="14.5" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>3,073</td></tr><tr><td>Sep 26</td><td>4,108</td></tr><tr><td>Oct 3</td><td>3,816</td></tr><tr><td>Oct 10</td><td>3,952</td></tr><tr><td>Oct 17</td><td>5,062</td></tr><tr><td>Oct 24</td><td>5,728</td></tr><tr><td>Oct 31</td><td>5,370</td></tr><tr><td>Nov 7</td><td>4,623</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:planning" data-facet="category" title="Make the agent question you and write the plan down before it writes code." href="/skillhub/?tag=category%3Aplanning">category:planning</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Make the agent question you and write the plan down before it writes code.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="planning" data-facet="topic" href="/skillhub/?tag=planning">planning</a><a class="tag" data-tag="scope-control" data-facet="topic" href="/skillhub/?tag=scope-control">scope-control</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/addyosmani/agent-skills/blob/301b02b12bff98e4688e6984af6556802322bbde/skills/planning-and-task-breakdown/SKILL.md">addyosmani/agent-skills at 301b02b</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: planning-and-task-breakdown
+description: Breaks work into ordered tasks. Use when you have a spec or clear requirements and need to break work into implementable tasks. Use when a task feels too large to start, when you need to estimate scope, or when parallel work is possible.</code></pre></details>
+        <div class="markdown"><h3>Planning and Task Breakdown</h3>
+<h4>Overview</h4>
+<p>Decompose work into small, verifiable tasks with explicit acceptance criteria. Good task breakdown is the difference between an agent that completes work reliably and one that produces a tangled mess. Every task should be small enough to implement, test, and verify in a single focused session.</p>
+<h4>When to Use</h4>
+<ul>
+<li>You have a spec and need to break it into implementable units</li>
+<li>A task feels too large or vague to start</li>
+<li>Work needs to be parallelized across multiple agents or sessions</li>
+<li>You need to communicate scope to a human</li>
+<li>The implementation order isn't obvious</li>
+</ul>
+<p><strong>When NOT to use:</strong> Single-file changes with obvious scope, or when the spec already contains well-defined tasks.</p>
+<h4>The Planning Process</h4>
+<h5>Step 1: Enter Plan Mode</h5>
+<p>Before writing any code, operate in read-only mode:</p>
+<ul>
+<li>Read the spec and relevant codebase sections</li>
+<li>Identify existing patterns and conventions</li>
+<li>Map dependencies between components</li>
+<li>Note risks and unknowns</li>
+</ul>
+<p><strong>Do NOT write code during planning.</strong> The output is a plan document saved to <code>tasks/plan.md</code> and a task list recorded in the task list target (see Output Files; default <code>tasks/todo.md</code>), not implementation.</p>
+<h5>Step 2: Identify the Dependency Graph</h5>
+<p>Map what depends on what:</p>
+<pre><code>Database schema
+    │
+    ├── API models/types
+    │       │
+    │       ├── API endpoints
+    │       │       │
+    │       │       └── Frontend API client
+    │       │               │
+    │       │               └── UI components
+    │       │
+    │       └── Validation logic
+    │
+    └── Seed data / migrations
+</code></pre>
+<p>Implementation order follows the dependency graph bottom-up: build foundations first.</p>
+<h5>Step 3: Slice Vertically</h5>
+<p>Instead of building all the database, then all the API, then all the UI — build one complete feature path at a time:</p>
+<p><strong>Bad (horizontal slicing):</strong></p>
+<pre><code>Task 1: Build entire database schema
+Task 2: Build all API endpoints
+Task 3: Build all UI components
+Task 4: Connect everything
+</code></pre>
+<p><strong>Good (vertical slicing):</strong></p>
+<pre><code>Task 1: User can create an account (schema + API + UI for registration)
+Task 2: User can log in (auth schema + API + UI for login)
+Task 3: User can create a task (task schema + API + UI for creation)
+Task 4: User can view task list (query + API + UI for list view)
+</code></pre>
+<p>Each vertical slice delivers working, testable functionality.</p>
+<h5>Step 4: Write Tasks</h5>
+<p>Each task follows this structure, whether it lands in the markdown task list or as an item in an external tracker (see Output Files):</p>
+<pre><code class="language-markdown">## Task [N]: [Short descriptive title]
+
+**Description:** One paragraph explaining what this task accomplishes.
+
+**Acceptance criteria:**
+- [ ] [Specific, testable condition]
+- [ ] [Specific, testable condition]
+
+**Verification:**
+- [ ] Tests pass: [the repository's focused-test command]
+- [ ] Build succeeds: [the repository's build command]
+- [ ] Manual check: [description of what to verify]
+
+**Dependencies:** [Task numbers this depends on, or &quot;None&quot;]
+
+**Files likely touched:**
+- `src/path/to/file.ts`
+- `tests/path/to/test.ts`
+
+**Estimated scope:** [Small: 1-2 files | Medium: 3-5 files | Large: 5+ files]
+</code></pre>
+<h5>Step 5: Order and Checkpoint</h5>
+<p>Arrange tasks so that:</p>
+<ol>
+<li>Dependencies are satisfied (build foundation first)</li>
+<li>Each task leaves the system in a working state</li>
+<li>Verification checkpoints occur after every 2-3 tasks</li>
+<li>High-risk tasks are early (fail fast)</li>
+</ol>
+<p>Add explicit checkpoints to the task list target:</p>
+<pre><code class="language-markdown">## Checkpoint: After Tasks 1-3
+- [ ] All tests pass
+- [ ] Application builds without errors
+- [ ] Core user flow works end-to-end
+- [ ] Review with human before proceeding
+</code></pre>
+<h4>Task Sizing Guidelines</h4>
+<table>
+<thead>
+<tr>
+<th>Size</th>
+<th>Files</th>
+<th>Scope</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>XS</strong></td>
+<td>1</td>
+<td>Single function or config change</td>
+<td>Add a validation rule</td>
+</tr>
+<tr>
+<td><strong>S</strong></td>
+<td>1-2</td>
+<td>One component or endpoint</td>
+<td>Add a new API endpoint</td>
+</tr>
+<tr>
+<td><strong>M</strong></td>
+<td>3-5</td>
+<td>One feature slice</td>
+<td>User registration flow</td>
+</tr>
+<tr>
+<td><strong>L</strong></td>
+<td>5-8</td>
+<td>Multi-component feature</td>
+<td>Search with filtering and pagination</td>
+</tr>
+<tr>
+<td><strong>XL</strong></td>
+<td>8+</td>
+<td><strong>Too large — break it down further</strong></td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>If a task is L or larger, it should be broken into smaller tasks. An agent performs best on S and M tasks.</p>
+<p><strong>When to break a task down further:</strong></p>
+<ul>
+<li>It would take more than one focused session (roughly 2+ hours of agent work)</li>
+<li>You cannot describe the acceptance criteria in 3 or fewer bullet points</li>
+<li>It touches two or more independent subsystems (e.g., auth and billing)</li>
+<li>You find yourself writing &quot;and&quot; in the task title (a sign it is two tasks)</li>
+</ul>
+<h4>Output Files</h4>
+<ul>
+<li><strong>Plan document:</strong> Save the implementation plan to <code>tasks/plan.md</code>. This is always a markdown file — design decisions, risks, and open questions don't map cleanly onto individual tracker issues.</li>
+<li><strong>Task list:</strong> Record each task in the <strong>task list target</strong> (defined below).</li>
+</ul>
+<p>Create the <code>tasks/</code> directory if it does not exist.</p>
+<p><strong>Never overwrite an incomplete plan.</strong> Before writing <code>tasks/plan.md</code> or <code>tasks/todo.md</code>, check whether they already exist and still contain unchecked tasks:</p>
+<ul>
+<li>Same work being replanned (the user asked to revise or extend this plan) → update the existing files in place.</li>
+<li>Different work → <strong>stop and ask.</strong> The unchecked tasks may be mid-build in another session. Do not delete, overwrite, or rename the existing files on your own; present the conflict and let the user decide (finish the old plan first, explicitly discard it, or tell you where the new plan should go).</li>
+</ul>
+<p>The same rule applies to an external task list target: never bulk-close or delete another plan's open tracker items to make room for new ones.</p>
+<h5>Task List Target</h5>
+<p>The task list target is where tasks and checkpoints are recorded. It is defined once, here; every other reference in this skill defers to it.</p>
+<ul>
+<li><strong>Default: a checklist-style markdown file at <code>tasks/todo.md</code>.</strong> This is the convention the <code>/build</code> command and other downstream tooling expect. Use it unless the project says otherwise.</li>
+<li><strong>External tracker:</strong> if the project's agent rules (<code>CLAUDE.md</code>, <code>AGENTS.md</code>, etc.) or the user designate an issue tracker (e.g. GitHub Issues, Jira, Linear, <code>bd</code>/beads), create one tracker item per task instead of writing <code>tasks/todo.md</code>. Map the Step 4 structure onto the tracker's fields: acceptance criteria and verification steps in the item body, dependencies via the tracker's linking mechanism (<code>bd dep add</code>, &quot;blocked by&quot;, etc.). Record Step 5 checkpoints as tracker items too, or as a checklist in the plan document if the tracker has no natural equivalent.</li>
+</ul>
+<p>When using an external tracker, note it in <code>tasks/plan.md</code> (e.g. &quot;Tasks tracked in Linear project FOO&quot;) so downstream steps and future sessions know where to look, and keep the plan document's Task List section as an ordered index of tracker item IDs or links rather than a duplicate checklist.</p>
+<h4>Plan Document Template</h4>
+<pre><code class="language-markdown"># Implementation Plan: [Feature/Project Name]
+
+## Overview
+[One paragraph summary of what we're building]
+
+## Architecture Decisions
+- [Key decision 1 and rationale]
+- [Key decision 2 and rationale]
+
+## Task List
+
+### Phase 1: Foundation
+- [ ] Task 1: ...
+- [ ] Task 2: ...
+
+### Checkpoint: Foundation
+- [ ] Tests pass, builds clean
+
+### Phase 2: Core Features
+- [ ] Task 3: ...
+- [ ] Task 4: ...
+
+### Checkpoint: Core Features
+- [ ] End-to-end flow works
+
+### Phase 3: Polish
+- [ ] Task 5: ...
+- [ ] Task 6: ...
+
+### Checkpoint: Complete
+- [ ] All acceptance criteria met
+- [ ] Ready for review
+
+## Risks and Mitigations
+| Risk | Impact | Mitigation |
+|------|--------|------------|
+| [Risk] | [High/Med/Low] | [Strategy] |
+
+## Open Questions
+- [Question needing human input]
+</code></pre>
+<p>When tasks live in an external tracker, keep the Task List section above as an ordered index of tracker item IDs or links instead of a duplicate checklist.</p>
+<h4>Parallelization Opportunities</h4>
+<p>When multiple agents or sessions are available:</p>
+<ul>
+<li><strong>Safe to parallelize:</strong> Independent feature slices, tests for already-implemented features, documentation</li>
+<li><strong>Must be sequential:</strong> Database migrations, shared state changes, dependency chains</li>
+<li><strong>Needs coordination:</strong> Features that share an API contract (define the contract first, then parallelize)</li>
+</ul>
+<h4>Common Rationalizations</h4>
+<table>
+<thead>
+<tr>
+<th>Rationalization</th>
+<th>Reality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;I'll figure it out as I go&quot;</td>
+<td>That's how you end up with a tangled mess and rework. 10 minutes of planning saves hours.</td>
+</tr>
+<tr>
+<td>&quot;The tasks are obvious&quot;</td>
+<td>Write them down anyway. Explicit tasks surface hidden dependencies and forgotten edge cases.</td>
+</tr>
+<tr>
+<td>&quot;Planning is overhead&quot;</td>
+<td>Planning is the task. Implementation without a plan is just typing.</td>
+</tr>
+<tr>
+<td>&quot;I can hold it all in my head&quot;</td>
+<td>Context windows are finite. Written plans survive session boundaries and compaction.</td>
+</tr>
+<tr>
+<td>&quot;The old <code>tasks/plan.md</code> is stale, I'll just replace it&quot;</td>
+<td>Unchecked tasks may be mid-build in another session. Overwriting them destroys work state that exists nowhere else. Stop and ask.</td>
+</tr>
+</tbody>
+</table>
+<h4>Red Flags</h4>
+<ul>
+<li>Starting implementation without a written task list</li>
+<li>Overwriting a <code>tasks/plan.md</code> or <code>tasks/todo.md</code> that still has unchecked tasks for different work, without asking</li>
+<li>Writing <code>tasks/todo.md</code> when the project has designated an external tracker (or scattering tasks across both)</li>
+<li>Tasks that say &quot;implement the feature&quot; without acceptance criteria</li>
+<li>No verification steps in the plan</li>
+<li>All tasks are XL-sized</li>
+<li>No checkpoints between tasks</li>
+<li>Dependency order isn't considered</li>
+</ul>
+<h4>Verification</h4>
+<p>Before starting implementation, confirm:</p>
+<ul>
+<li>[ ] Every task has acceptance criteria</li>
+<li>[ ] Every task has a verification step</li>
+<li>[ ] Task dependencies are identified and ordered correctly</li>
+<li>[ ] Tasks are recorded in the task list target (default <code>tasks/todo.md</code>)</li>
+<li>[ ] No pre-existing incomplete plan was overwritten without explicit user confirmation</li>
+<li>[ ] No task touches more than ~5 files</li>
+<li>[ ] Checkpoints exist between major phases</li>
+<li>[ ] The human has reviewed and approved the plan</li>
+</ul>
+<h4>See Also</h4>
+<p>Acceptance criteria are per-task and answer &quot;did we build the right thing?&quot;. They sit on top of the project-wide Definition of Done, the standing bar every task clears before it counts as done. See <code>../../references/definition-of-done.md</code>.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

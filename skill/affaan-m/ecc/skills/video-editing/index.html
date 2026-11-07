@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>video-editing · SkillHub</title>
+    <meta name="description" content="Use it when: you have raw recordings to cut into a vlog, tutorial, demo or short clips, rather than a video to generate from a prompt. It does: has the agent plan cuts from the transcript, then script FFmpeg trims, Remotion overlays and only the AI assets the footage lacks. You get: an edit decision list, FFmpeg commands, Remotion compositions and assembled or reframed cuts, ready for a final human pass in Descript or CapCut. Unlike: prompt-to-video generators: it edits footage you already have and leaves pacing, captions, color and the final mix to you. Needs: FFmpeg, and Node for Remotion; ElevenLabs or fal.ai keys only for generated voice, music or visuals." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <h1>video-editing</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you have raw recordings to cut into a vlog, tutorial, demo or short clips, rather than a video to generate from a prompt</dd></div><div><dt>It does</dt><dd>has the agent plan cuts from the transcript, then script FFmpeg trims, Remotion overlays and only the AI assets the footage lacks</dd></div><div><dt>You get</dt><dd>an edit decision list, FFmpeg commands, Remotion compositions and assembled or reframed cuts, ready for a final human pass in Descript or CapCut</dd></div><div><dt>Unlike</dt><dd>prompt-to-video generators: it edits footage you already have and leaves pacing, captions, color and the final mix to you</dd></div><div><dt>Needs</dt><dd>FFmpeg, and Node for Remotion; ElevenLabs or fal.ai keys only for generated voice, music or visuals</dd></div></dl></section>
+      
+      <p class="note">Cutting and reframing need FFmpeg, and Remotion needs Node. Generated voiceover, music or b-roll need ElevenLabs or fal.ai keys, fal.ai through the separate fal-ai-media skill.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>ECC&#39;s video skill treats AI as a way to compress real footage, not to generate it. It lays out six layers, each with one job. You capture with Screen Studio or a camera. The agent organizes: it transcribes, finds the strongest segments, dead air and repeated takes, writes an edit decision list of timestamps, and scaffolds the code. FFmpeg does the deterministic work: cuts by timestamp or from a cuts file, concatenation, proxies, audio extraction, loudness normalization, and scene and silence detection for auto-cuts. Remotion handles overlays, titles, lower thirds, animated stats and reusable scenes. Generated assets come last and only where footage is missing: ElevenLabs voiceover, music, sound effects or b-roll through the fal-ai-media skill, or VideoDB when it&#39;s configured. A person then sets pacing, cleans captions, grades color and mixes audio in Descript or CapCut. It also gives FFmpeg crops from 16:9 to 9:16 and 1:1, and asks the agent to save and verify a project checkpoint before and after changing a live editor or DAW project.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/video-editing">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/affaan-m/ecc --skill video-editing</code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill video-editing">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/video-editing">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/video-editing">Source on GitHub</a> · <a href="/skillhub/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>8,200 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>298,660 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">869</div>
+      <div class="stat-delta">+150% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 347; week to Sep 26: 332; week to Oct 3: 299; week to Oct 10: 292; week to Oct 17: 502; week to Oct 24: 790; week to Oct 31: 810; week to Nov 7: 869. Use the left and right arrow keys to read each week."
+        data-values="347,332,299,292,502,790,810,869" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,32.4 38.6,33.2 71.1,34.9 103.7,35.2 136.3,24.6 168.9,10.0 201.4,9.0 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>347</td></tr><tr><td>Sep 26</td><td>332</td></tr><tr><td>Oct 3</td><td>299</td></tr><tr><td>Oct 10</td><td>292</td></tr><tr><td>Oct 17</td><td>502</td></tr><tr><td>Oct 24</td><td>790</td></tr><tr><td>Oct 31</td><td>810</td></tr><tr><td>Nov 7</td><td>869</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:media" data-facet="category" title="Generate and edit video, images and audio." href="/skillhub/?tag=category%3Amedia">category:media</a></div>
+          <p class="tag-meaning">Generate and edit video, images and audio.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="video" data-facet="topic" href="/skillhub/?tag=video">video</a><a class="tag" data-tag="audio" data-facet="topic" href="/skillhub/?tag=audio">audio</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:ffmpeg" data-facet="stack" href="/skillhub/?tag=stack%3Affmpeg">stack:ffmpeg</a><a class="tag" data-tag="stack:remotion" data-facet="stack" href="/skillhub/?tag=stack%3Aremotion">stack:remotion</a><a class="tag" data-tag="stack:elevenlabs" data-facet="stack" href="/skillhub/?tag=stack%3Aelevenlabs">stack:elevenlabs</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/video-editing/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: video-editing
+description: AI-assisted video editing workflows for cutting, structuring, and augmenting real footage. Covers the full pipeline from raw capture through FFmpeg, Remotion, ElevenLabs, fal.ai, and final polish in Descript or CapCut. Use when the user wants to edit video, cut footage, create vlogs, or build video content.
+metadata:
+  origin: ECC</code></pre></details>
+        <div class="markdown"><h3>Video Editing</h3>
+<p>AI-assisted editing for real footage. Not generation from prompts. Editing existing video fast.</p>
+<h4>When to Activate</h4>
+<ul>
+<li>User wants to edit, cut, or structure video footage</li>
+<li>Turning long recordings into short-form content</li>
+<li>Building vlogs, tutorials, or demo videos from raw capture</li>
+<li>Adding overlays, subtitles, music, or voiceover to existing video</li>
+<li>Reframing video for different platforms (YouTube, TikTok, Instagram)</li>
+<li>User says &quot;edit video&quot;, &quot;cut this footage&quot;, &quot;make a vlog&quot;, or &quot;video workflow&quot;</li>
+</ul>
+<h4>Core Thesis</h4>
+<p>AI video editing is useful when you stop asking it to create the whole video and start using it to compress, structure, and augment real footage. The value is not generation. The value is compression.</p>
+<h4>The Pipeline</h4>
+<p>For measured reference-driven work, chain <code>taste-distillation</code> into
+<code>taste-application</code>, then return here for the editor and final-output review.
+The standalone taste skills can use existing footage; generation is optional.</p>
+<p>Before live editor or DAW changes, save a versioned project checkpoint and
+verify the file exists. Save and verify another checkpoint after the changes.
+An API readback proves the current in-memory state, not that it was saved.
+Keep rendered media, editable projects, and creative approval as separate
+states in the handoff.</p>
+<p>For MIDI-driven audio, check pitches against the receiving rack's note mapping
+and audition the result; successful clip creation can still produce silence.
+For reconstructed projects, validate through native load and save, sort events
+in timeline order, verify sample links and mute states, then check and audition
+the exact exported audio for unintended silence. XML parsing alone does not
+prove that the DAW accepted every clip or produced audible output.
+Check a bridge's capability handshake before invoking newer commands. Do not
+enable upload or training-data telemetry as a side effect of a creative task;
+use a supported local control path when consent or capability is absent.</p>
+<pre><code>Screen Studio / raw footage
+  → Claude / Codex
+  → FFmpeg
+  → Remotion
+  → ElevenLabs / fal.ai
+  → Descript or CapCut
+</code></pre>
+<p>Each layer has a specific job. Do not skip layers. Do not try to make one tool do everything.</p>
+<h4>Layer 1: Capture (Screen Studio / Raw Footage)</h4>
+<p>Collect the source material:</p>
+<ul>
+<li><strong>Screen Studio</strong>: polished screen recordings for app demos, coding sessions, browser workflows</li>
+<li><strong>Raw camera footage</strong>: vlog footage, interviews, event recordings</li>
+<li><strong>Desktop capture via VideoDB</strong>: session recording with real-time context (see <code>videodb</code> skill)</li>
+</ul>
+<p>Output: raw files ready for organization.</p>
+<h4>Layer 2: Organization (Claude / Codex)</h4>
+<p>Use Claude Code or Codex to:</p>
+<ul>
+<li><strong>Transcribe and label</strong>: generate transcript, identify topics and themes</li>
+<li><strong>Plan structure</strong>: decide what stays, what gets cut, what order works</li>
+<li><strong>Identify dead sections</strong>: find pauses, tangents, repeated takes</li>
+<li><strong>Generate edit decision list</strong>: timestamps for cuts, segments to keep</li>
+<li><strong>Scaffold FFmpeg and Remotion code</strong>: generate the commands and compositions</li>
+</ul>
+<pre><code>Example prompt:
+&quot;Here's the transcript of a 4-hour recording. Identify the 8 strongest segments
+for a 24-minute vlog. Give me FFmpeg cut commands for each segment.&quot;
+</code></pre>
+<p>This layer is about structure, not final creative taste.</p>
+<h4>Layer 3: Deterministic Cuts (FFmpeg)</h4>
+<p>FFmpeg handles the boring but critical work: splitting, trimming, concatenating, and preprocessing.</p>
+<h5>Extract segment by timestamp</h5>
+<pre><code class="language-bash">ffmpeg -i raw.mp4 -ss 00:12:30 -to 00:15:45 -c copy segment_01.mp4
+</code></pre>
+<h5>Batch cut from edit decision list</h5>
+<pre><code class="language-bash">#!/bin/bash
+# cuts.txt: start,end,label
+while IFS=, read -r start end label; do
+  ffmpeg -i raw.mp4 -ss &quot;$start&quot; -to &quot;$end&quot; -c copy &quot;segments/${label}.mp4&quot;
+done &lt; cuts.txt
+</code></pre>
+<h5>Concatenate segments</h5>
+<pre><code class="language-bash"># Create file list
+for f in segments/*.mp4; do echo &quot;file '$f'&quot;; done &gt; concat.txt
+ffmpeg -f concat -safe 0 -i concat.txt -c copy assembled.mp4
+</code></pre>
+<h5>Create proxy for faster editing</h5>
+<pre><code class="language-bash">ffmpeg -i raw.mp4 -vf &quot;scale=960:-2&quot; -c:v libx264 -preset ultrafast -crf 28 proxy.mp4
+</code></pre>
+<h5>Extract audio for transcription</h5>
+<pre><code class="language-bash">ffmpeg -i raw.mp4 -vn -acodec pcm_s16le -ar 16000 audio.wav
+</code></pre>
+<h5>Normalize audio levels</h5>
+<pre><code class="language-bash">ffmpeg -i segment.mp4 -af loudnorm=I=-16:TP=-1.5:LRA=11 -c:v copy normalized.mp4
+</code></pre>
+<h4>Layer 4: Programmable Composition (Remotion)</h4>
+<p>Remotion turns editing problems into composable code. Use it for things that traditional editors make painful:</p>
+<h5>When to use Remotion</h5>
+<ul>
+<li>Overlays: text, images, branding, lower thirds</li>
+<li>Data visualizations: charts, stats, animated numbers</li>
+<li>Motion graphics: transitions, explainer animations</li>
+<li>Composable scenes: reusable templates across videos</li>
+<li>Product demos: annotated screenshots, UI highlights</li>
+</ul>
+<h5>Basic Remotion composition</h5>
+<pre><code class="language-tsx">import { AbsoluteFill, Sequence, Video, useCurrentFrame } from &quot;remotion&quot;;
+
+export const VlogComposition: React.FC = () =&gt; {
+  const frame = useCurrentFrame();
+
+  return (
+    &lt;AbsoluteFill&gt;
+      {/* Main footage */}
+      &lt;Sequence from={0} durationInFrames={300}&gt;
+        &lt;Video src=&quot;/segments/intro.mp4&quot; /&gt;
+      &lt;/Sequence&gt;
+
+      {/* Title overlay */}
+      &lt;Sequence from={30} durationInFrames={90}&gt;
+        &lt;AbsoluteFill style={{
+          justifyContent: &quot;center&quot;,
+          alignItems: &quot;center&quot;,
+        }}&gt;
+          &lt;h1 style={{
+            fontSize: 72,
+            color: &quot;white&quot;,
+            textShadow: &quot;2px 2px 8px rgba(0,0,0,0.8)&quot;,
+          }}&gt;
+            The AI Editing Stack
+          &lt;/h1&gt;
+        &lt;/AbsoluteFill&gt;
+      &lt;/Sequence&gt;
+
+      {/* Next segment */}
+      &lt;Sequence from={300} durationInFrames={450}&gt;
+        &lt;Video src=&quot;/segments/demo.mp4&quot; /&gt;
+      &lt;/Sequence&gt;
+    &lt;/AbsoluteFill&gt;
+  );
+};
+</code></pre>
+<h5>Render output</h5>
+<pre><code class="language-bash">npx remotion render src/index.ts VlogComposition output.mp4
+</code></pre>
+<p>See the <a href="https://www.remotion.dev/docs">Remotion docs</a> for detailed patterns and API reference.</p>
+<h4>Layer 5: Generated Assets (ElevenLabs / fal.ai)</h4>
+<p>Generate only what you need. Do not generate the whole video.</p>
+<h5>Voiceover with ElevenLabs</h5>
+<pre><code class="language-python">import os
+import requests
+
+resp = requests.post(
+    f&quot;https://api.elevenlabs.io/v1/text-to-speech/{voice_id}&quot;,
+    headers={
+        &quot;xi-api-key&quot;: os.environ[&quot;ELEVENLABS_API_KEY&quot;],
+        &quot;Content-Type&quot;: &quot;application/json&quot;
+    },
+    json={
+        &quot;text&quot;: &quot;Your narration text here&quot;,
+        &quot;model_id&quot;: &quot;eleven_turbo_v2_5&quot;,
+        &quot;voice_settings&quot;: {&quot;stability&quot;: 0.5, &quot;similarity_boost&quot;: 0.75}
+    }
+)
+with open(&quot;voiceover.mp3&quot;, &quot;wb&quot;) as f:
+    f.write(resp.content)
+</code></pre>
+<h5>Music and SFX with fal.ai</h5>
+<p>Use the <code>fal-ai-media</code> skill for:</p>
+<ul>
+<li>Background music generation</li>
+<li>Sound effects (ThinkSound model for video-to-audio)</li>
+<li>Transition sounds</li>
+</ul>
+<h5>Generated visuals with fal.ai</h5>
+<p>Use for insert shots, thumbnails, or b-roll that doesn't exist:</p>
+<pre><code>generate(app_id: &quot;fal-ai/nano-banana-pro&quot;, input_data: {
+  &quot;prompt&quot;: &quot;professional thumbnail for tech vlog, dark background, code on screen&quot;,
+  &quot;image_size&quot;: &quot;landscape_16_9&quot;
+})
+</code></pre>
+<h5>VideoDB generative audio</h5>
+<p>If VideoDB is configured:</p>
+<pre><code class="language-python">voiceover = coll.generate_voice(text=&quot;Narration here&quot;, voice=&quot;alloy&quot;)
+music = coll.generate_music(prompt=&quot;lo-fi background for coding vlog&quot;, duration=120)
+sfx = coll.generate_sound_effect(prompt=&quot;subtle whoosh transition&quot;)
+</code></pre>
+<h4>Layer 6: Final Polish (Descript / CapCut)</h4>
+<p>The last layer is human. Use a traditional editor for:</p>
+<ul>
+<li><strong>Pacing</strong>: adjust cuts that feel too fast or slow</li>
+<li><strong>Captions</strong>: auto-generated, then manually cleaned</li>
+<li><strong>Color grading</strong>: basic correction and mood</li>
+<li><strong>Final audio mix</strong>: balance voice, music, and SFX levels</li>
+<li><strong>Export</strong>: platform-specific formats and quality settings</li>
+</ul>
+<p>This is where taste lives. AI clears the repetitive work. You make the final calls.</p>
+<h4>Social Media Reframing</h4>
+<p>Different platforms need different aspect ratios:</p>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Aspect Ratio</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>YouTube</td>
+<td>16:9</td>
+<td>1920x1080</td>
+</tr>
+<tr>
+<td>TikTok / Reels</td>
+<td>9:16</td>
+<td>1080x1920</td>
+</tr>
+<tr>
+<td>Instagram Feed</td>
+<td>1:1</td>
+<td>1080x1080</td>
+</tr>
+<tr>
+<td>X / Twitter</td>
+<td>16:9 or 1:1</td>
+<td>1280x720 or 720x720</td>
+</tr>
+</tbody>
+</table>
+<h5>Reframe with FFmpeg</h5>
+<pre><code class="language-bash"># 16:9 to 9:16 (center crop)
+ffmpeg -i input.mp4 -vf &quot;crop=ih*9/16:ih,scale=1080:1920&quot; vertical.mp4
+
+# 16:9 to 1:1 (center crop)
+ffmpeg -i input.mp4 -vf &quot;crop=ih:ih,scale=1080:1080&quot; square.mp4
+</code></pre>
+<h5>Reframe with VideoDB</h5>
+<pre><code class="language-python">from videodb import ReframeMode
+
+# Smart reframe (AI-guided subject tracking)
+reframed = video.reframe(start=0, end=60, target=&quot;vertical&quot;, mode=ReframeMode.smart)
+</code></pre>
+<h4>Scene Detection and Auto-Cut</h4>
+<h5>FFmpeg scene detection</h5>
+<pre><code class="language-bash"># Detect scene changes (threshold 0.3 = moderate sensitivity)
+ffmpeg -i input.mp4 -vf &quot;select='gt(scene,0.3)',showinfo&quot; -vsync vfr -f null - 2&gt;&amp;1 | grep showinfo
+</code></pre>
+<h5>Silence detection for auto-cut</h5>
+<pre><code class="language-bash"># Find silent segments (useful for cutting dead air)
+ffmpeg -i input.mp4 -af silencedetect=noise=-30dB:d=2 -f null - 2&gt;&amp;1 | grep silence
+</code></pre>
+<h5>Highlight extraction</h5>
+<p>Use Claude to analyze transcript + scene timestamps:</p>
+<pre><code>&quot;Given this transcript with timestamps and these scene change points,
+identify the 5 most engaging 30-second clips for social media.&quot;
+</code></pre>
+<h4>What Each Tool Does Best</h4>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Strength</th>
+<th>Weakness</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Claude / Codex</td>
+<td>Organization, planning, code generation</td>
+<td>Not the creative taste layer</td>
+</tr>
+<tr>
+<td>FFmpeg</td>
+<td>Deterministic cuts, batch processing, format conversion</td>
+<td>No visual editing UI</td>
+</tr>
+<tr>
+<td>Remotion</td>
+<td>Programmable overlays, composable scenes, reusable templates</td>
+<td>Learning curve for non-devs</td>
+</tr>
+<tr>
+<td>Screen Studio</td>
+<td>Polished screen recordings immediately</td>
+<td>Only screen capture</td>
+</tr>
+<tr>
+<td>ElevenLabs</td>
+<td>Voice, narration, music, SFX</td>
+<td>Not the center of the workflow</td>
+</tr>
+<tr>
+<td>Descript / CapCut</td>
+<td>Final pacing, captions, polish</td>
+<td>Manual, not automatable</td>
+</tr>
+</tbody>
+</table>
+<h4>Key Principles</h4>
+<ol>
+<li><strong>Edit, don't generate.</strong> This workflow is for cutting real footage, not creating from prompts.</li>
+<li><strong>Structure before style.</strong> Get the story right in Layer 2 before touching anything visual.</li>
+<li><strong>FFmpeg is the backbone.</strong> Boring but critical. Where long footage becomes manageable.</li>
+<li><strong>Remotion for repeatability.</strong> If you'll do it more than once, make it a Remotion component.</li>
+<li><strong>Generate selectively.</strong> Only use AI generation for assets that don't exist, not for everything.</li>
+<li><strong>Taste is the last layer.</strong> AI clears repetitive work. You make the final creative calls.</li>
+</ol>
+<h4>Native Fusion Presets</h4>
+<p><a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/video-editing/assets/fusion/ito-production-v1/README.md">ITO Production v1</a> provides restrained highlight bloom, opposing RGB spatial offsets and a luminance/edge halo. The exact files passed prior native import, save/reopen and short motion-render checks after two-source visual review. These are starting values requiring shot-specific review; the halo does not detect or track subjects.</p>
+<p><a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/video-editing/assets/fusion/ito-v28/README.md">ITO V28</a> contains preserved, native-verified Fusion graph snippets and an idempotent Lua installer. These are technical compatibility examples, <strong>not recommended production defaults</strong>: their documented visual limitations require tuning and taste review before use. See the bundle provenance for the scope of prior import and render checks.</p>
+<h4>Related Skills</h4>
+<ul>
+<li><code>fal-ai-media</code> — AI image, video, and audio generation</li>
+<li><code>videodb</code> — Server-side video processing, indexing, and streaming</li>
+<li><code>content-engine</code> — Platform-native content distribution</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

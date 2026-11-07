@@ -1,0 +1,5 @@
+import{n as e}from"../chunks/chunk-4tVxZq34.js";import{i as t}from"../chunks/chunk-CdK6qszE.js";var n=e({default:()=>r}),r=()=>`
+  <div class="page">
+    <h1>Page not found</h1>
+    <p class="lede">There's no page at this address. <a href="${t()}">Browse the skills</a>.</p>
+  </div>`,i={hasServerOnlyHook:{type:`computed`,definedAtData:null,valueSerialized:{type:`js-serialized`,value:!1}},isClientRuntimeLoaded:{type:`computed`,definedAtData:null,valueSerialized:{type:`js-serialized`,value:!1}},onBeforeRenderEnv:{type:`computed`,definedAtData:null,valueSerialized:{type:`js-serialized`,value:null}},dataEnv:{type:`computed`,definedAtData:null,valueSerialized:{type:`js-serialized`,value:null}},guardEnv:{type:`computed`,definedAtData:null,valueSerialized:{type:`js-serialized`,value:null}},Page:{type:`standard`,definedAtData:{filePathToShowToUser:`/pages/_error/+Page.ts`,fileExportPathToShowToUser:[]},valueSerialized:{type:`plus-file`,exportValues:n}}};export{i as configValuesSerialized};

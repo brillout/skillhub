@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>gmgn-holder-analysis · SkillHub</title>
+    <meta name="description" content="Use it when: you want to know who holds a memecoin and whether its holder mix makes it risky to buy. It does: runs a bundled Python script over the token&#039;s top 100 holders and its dev&#039;s record through gmgn-cli, and pastes the report verbatim. You get: concentration, entry costs, whale, dev and KOL behaviour, risk wallets and linked funding, rated from Not Recommended to Normal. Measures against: the tradeable float, the supply minus burned tokens and the DEX pool, not total supply as GMGN&#039;s own site does. Missing data: never reads as safe: an empty holder list or a float under 2% of supply is rated Cannot Assess, and no float percentages print. Needs: gmgn-cli and a GMGN API key; the script is called from ~/.claude/skills." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=gmgnai%2Fgmgn-skills">gmgnai/gmgn-skills</a></p>
+      <h1>gmgn-holder-analysis</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want to know who holds a memecoin and whether its holder mix makes it risky to buy</dd></div><div><dt>It does</dt><dd>runs a bundled Python script over the token&#39;s top 100 holders and its dev&#39;s record through gmgn-cli, and pastes the report verbatim</dd></div><div><dt>You get</dt><dd>concentration, entry costs, whale, dev and KOL behaviour, risk wallets and linked funding, rated from Not Recommended to Normal</dd></div><div><dt>Measures against</dt><dd>the tradeable float, the supply minus burned tokens and the DEX pool, not total supply as GMGN&#39;s own site does</dd></div><div><dt>Missing data</dt><dd>never reads as safe: an empty holder list or a float under 2% of supply is rated Cannot Assess, and no float percentages print</dd></div><div><dt>Needs</dt><dd>gmgn-cli and a GMGN API key; the script is called from ~/.claude/skills</dd></div></dl></section>
+      
+      <p class="note">Needs gmgn-cli and a GMGN API key, from gmgn.ai.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>One of GMGN&#39;s analysis skills for memecoin traders. You give a token address and chain; the agent runs analyze.py, which pulls the top 100 holders, the dev&#39;s holdings and the dev&#39;s other launches through gmgn-cli, then pastes the whole report, in Chinese unless you wrote in English, with no commentary. The report covers top-10 and top-20 concentration, holders&#39; entry cost and profit, whales, dev and KOL wallets, smart-money signals, and risk wallets: rat traders (insider wallets), bundlers (bot-bundled buys) and snipers who bought at launch. It groups wallets funded from the same source at nearly the same time, and flags dev sock puppets: top-100 wallets that received the dev&#39;s tokens or had their gas paid by the dev. The rating is Not Recommended when rat traders hold over 5%, one wallet over 10%, or a sock puppet appears; Caution or Light Position when softer warnings fire, such as the dev still holding over 1%; Normal otherwise. A wallet counts as zero-cost only with no cost evidence at all, since buy counts aren&#39;t indexed on every chain, and the token&#39;s own contract is reported separately, not as a holder.</p>
+      <p class="muted">Summarizes <a href="https://github.com/gmgnai/gmgn-skills/tree/6a04e1f00b5463cfc965e41003ca0c7c2db5b69f/skills/gmgn-holder-analysis">the skill at 6a04e1f</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/gmgnai/gmgn-skills --skill gmgn-holder-analysis</code><button type="button" class="copy" data-copy="npx skills add https://github.com/gmgnai/gmgn-skills --skill gmgn-holder-analysis">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/gmgnai/gmgn-skills/gmgn-holder-analysis">skills.sh page</a> · <a href="https://github.com/gmgnai/gmgn-skills/tree/HEAD/skills/gmgn-holder-analysis">Source on GitHub</a> · <a href="/skillhub/?repo=gmgnai%2Fgmgn-skills">All skills from gmgnai/gmgn-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>11,400 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>650 <span class="muted">gmgnai/gmgn-skills</span></dd></div><div><dt>First seen</dt><dd>Jul 16, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">723</div>
+      <div class="stat-delta">-43% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 1,264; week to Sep 26: 851; week to Oct 3: 793; week to Oct 10: 649; week to Oct 17: 575; week to Oct 24: 513; week to Oct 31: 774; week to Nov 7: 723. Use the left and right arrow keys to read each week."
+        data-values="1264,851,793,649,575,513,774,723" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,20.4 71.1,22.4 103.7,27.4 136.3,30.0 168.9,32.1 201.4,23.1 234.0,24.8" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="24.8" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>1,264</td></tr><tr><td>Sep 26</td><td>851</td></tr><tr><td>Oct 3</td><td>793</td></tr><tr><td>Oct 10</td><td>649</td></tr><tr><td>Oct 17</td><td>575</td></tr><tr><td>Oct 24</td><td>513</td></tr><tr><td>Oct 31</td><td>774</td></tr><tr><td>Nov 7</td><td>723</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:science" data-facet="category" title="Research reproduction, financial data, charts and diagrams." href="/skillhub/?tag=category%3Ascience">category:science</a></div>
+          <p class="tag-meaning">Research reproduction, financial data, charts and diagrams.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/skillhub/?tag=type%3Atool">type:tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/skillhub/?tag=needs%3Aaccount">needs:account</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="web3" data-facet="topic" href="/skillhub/?tag=web3">web3</a><a class="tag" data-tag="finance" data-facet="topic" href="/skillhub/?tag=finance">finance</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:gmgn" data-facet="stack" href="/skillhub/?tag=stack%3Agmgn">stack:gmgn</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/gmgnai/gmgn-skills/blob/6a04e1f00b5463cfc965e41003ca0c7c2db5b69f/skills/gmgn-holder-analysis/SKILL.md">gmgnai/gmgn-skills at 6a04e1f</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: gmgn-holder-analysis
+description: Token holder chip analysis — deep analysis of holder structure including chip distribution, entry cost, whale/dev/KOL behavior, risk wallets (rat traders, bundlers, snipers), related wallets, smart money signals, and an AI rating based purely on token structure. Use when user asks about holder analysis, 筹码分析, 持仓分析, chip structure, who is holding, or whether a token is safe to buy based on its holder composition.
+argument-hint: &#34;--chain &#60;sol|bsc|base|eth|robinhood|arc|stable&#62; --address &#60;token_address&#62;&#34;
+metadata:
+  cliHelp: &#34;gmgn-cli token holders --help &#38;&#38; gmgn-cli portfolio created-tokens --help&#34;</code></pre></details>
+        <div class="markdown"><p><strong>BEFORE RUNNING ANY COMMAND: Run <code>gmgn-cli config --check</code>. If exit code is 0, proceed normally. If exit code is 1, run <code>gmgn-cli config</code> and show output, then apply the key with <code>gmgn-cli config --apply &lt;KEY&gt;</code>. If unknown option, tell user to run <code>npm install -g gmgn-cli</code>.</strong></p>
+<p><strong>IMPORTANT: Always use <code>gmgn-cli</code> commands. Do NOT use curl, WebFetch, or visit gmgn.ai.</strong></p>
+<p>When the user asks to analyze holders for a token, extract <code>--chain</code> and <code>--address</code> from their message, then run the analysis script below. Also detect the user's language: set <code>LANG</code> to <code>'zh'</code> if the user wrote in Chinese, <code>'en'</code> if in English (default <code>'zh'</code>).</p>
+<h4>Analysis Script</h4>
+<p>Run the following command, replacing the placeholders with the actual values:</p>
+<pre><code class="language-bash">python3 ~/.claude/skills/gmgn-holder-analysis/analyze.py &lt;FILL_IN_TOKEN_ADDRESS&gt; &lt;FILL_IN_CHAIN&gt; &lt;FILL_IN_LANG&gt;
+</code></pre>
+<ul>
+<li>FILL_IN_CHAIN: <code>sol</code> for Solana addresses; for EVM <code>0x...</code> addresses use <code>auto</code> unless the user explicitly specifies a chain (<code>bsc</code>/<code>eth</code>/<code>base</code>)</li>
+<li>FILL_IN_LANG: <code>zh</code> if user wrote Chinese, <code>en</code> if English, default <code>zh</code></li>
+</ul>
+<h4>Output Rule</h4>
+<p>After the script finishes, paste the complete stdout verbatim into your reply — every line, every section, nothing omitted or summarized. Do NOT add any introduction, commentary, or summary before or after the output block.</p>
+<h4>Field Reference</h4>
+<p>All holding percentages the script prints are <strong>share of tradeable float</strong> (<code>1 - burn - DEX</code>), not
+share of total supply. <code>amount_percentage</code> from the API is share of total supply; the script
+re-bases it. Because only the top 100 holders are fetched, a float percentage is a floor <strong>when
+those 100 wallets do not cover the whole float</strong>; the footer reports the actual coverage and states
+which case applies — floors when coverage &lt;99.5%, complete values when the top 100 cover all of it.</p>
+<p>When burn + DEX leave less than 2% of supply tradeable (typically a launchpad token before
+migration), the float denominator degenerates: every <code>/ float_share</code> inflates dust wallets to
+double digits or 100%. The script detects this, prints a banner with absolute token/USD figures
+instead, and sets the rating to ⚪ Cannot Assess.</p>
+<p>The same suppression applies when <code>token holders</code> returns an empty list (token has no active
+holders left, or upstream stopped indexing it). Every percentage would render 0.00% and every
+threshold would pass, so the report would otherwise read &quot;✅ Normal — no obvious dump risk&quot;. The
+script prints a no-data banner instead, replaces each &quot;none found 🟢&quot; line with ⚪, and rates
+⚪ Cannot Assess. &quot;No data&quot; is never reported as &quot;no risk&quot;.</p>
+<p>In both cases <strong>no float percentage is printed at all</strong> — every one renders as <code>n/a</code> (<code>无法评估</code>)
+and every percentage flag renders ⚪. Printing the number with a caveat was not enough: a
+divide-by-zero float puts <code>hold 100.00%</code> and <code>hold 0.00%</code> in the same report, and a reader
+skimming past the banner reads <code>Rat Trader 1 hold 100.00%</code> as a finding. Wallet counts, token
+amounts, USD values, and market caps still print — they do not pass through <code>float_share</code>.
+Percentages on a <strong>total-supply</strong> basis also still print (<code>burn</code>, <code>DEX</code>, float share itself, and
+the chip-quality buckets), because those denominators are unaffected.</p>
+<h5>&quot;Zero cost&quot; must be proven, not inferred from a missing buy count</h5>
+<p><code>buy_tx_count_cur == 0</code> does <strong>not</strong> mean the wallet received its chips for free. Measured on
+musebook (robinhood): 38 wallets read <code>buy_tx_count_cur: 0</code> and <code>avg_cost: null</code>, but <strong>34 of them
+carry a finite <code>unrealized_pnl</code> ratio</strong> (+2.7%, +76.5%, +546%) — a ratio that cannot be computed
+without a cost basis — and 32 carry a <code>fomo</code> frontend tag, 2 a <code>gmgn</code> tag, which is the trace of
+active trading, the opposite of receiving an airdrop. What is actually missing is buy-transaction
+indexing on that chain, while the PnL fields come from a separate computation and arrive populated.</p>
+<p>The error was systematic per chain, not per token. Never-bought share of supply, same batch:
+<strong>robinhood 27.0% and 41.2%, arc 26.3%, sol 4.8%.</strong> The 20% airdrop warn gate therefore fired on
+essentially every robinhood/arc token and essentially never on a sol token — a difference in index
+coverage, not in chip structure. Reporting an unpopulated field as a risk conclusion is exactly what
+this skill forbids.</p>
+<p>So a wallet counts as zero-cost only when <strong>no cost evidence exists at all</strong>:</p>
+<pre><code class="language-python">def has_cost_basis(h):
+    return (h.get('avg_cost') or 0) &gt; 0 or h.get('unrealized_pnl') is not None
+</code></pre>
+<p>Wallets with no indexed buy count but a real cost basis are <strong>not dropped from the report</strong> — they
+get their own neutral line, <code>买入未记录 / Buy count unindexed</code>, with their float share. The fact that
+upstream did not index their buys is true and stays visible; it just does not drive a zero-cost gate.
+The same predicate now governs the <code>钻石手 / Diamond</code> cohort (its stated rationale is &quot;a wallet that
+never paid has no cost to hold through&quot;, which a proven cost basis satisfies), the
+<code>转入筹码未动 / Idle airdrop</code> line (its &quot;zero cost&quot; caption was a false statement for those wallets),
+and the Top5 sell-risk classification (which was labelling a wallet at +6.6x as &quot;zero-cost airdrop —
+can dump anytime&quot;).</p>
+<p>Known limit: a genuine airdrop wallet whose <code>unrealized_pnl</code> is a huge ratio computed against a
+dust-level cost would be missed here. No second ratio threshold is set for it — there is no measured
+sample to calibrate one on.</p>
+<h5>The token's own contract address is not a holder wallet</h5>
+<p>Upstream returns it as an ordinary wallet — measured on musebook (robinhood): <code>addr_type: 0</code>,
+0 buys, 0 sells, 15.01% of total supply, $5.06M, carrying a <code>fresh_wallet</code> tag. Left in the wallet
+cohort it pollutes <code>biggest</code>, Top10/Top20, airdrop, fresh, risk wallets and Top5 at once, and on its
+own trips the 🔴 danger gate as &quot;largest wallet holds 16.30% — extreme concentration&quot;. The largest
+genuine wallet on that token is 4.10% of supply. Controls on the same batch — JOLLY (robinhood),
+SI (sol), ARGUS (arc) — carry no such row, so this is a per-token upstream classification gap, not a
+chain convention.</p>
+<p>So the script partitions it out of <code>normal</code> and reports it on its own line, <strong>on a total-supply
+basis</strong> (<code>合约自持 / Contract self-held</code>), with its own warn gate at &gt;10% of supply. It is <strong>not</strong>
+removed from the judgement: contract-held supply reaches the market as soon as one release
+transaction lands, so it stays visible and still counts toward the rating. It is a warn rather than
+a danger because that release is an observable prior step, unlike a whale who can sell at will — and
+there is no higher danger tier, because only one sample has been measured and a second threshold off
+one sample would be a guess.</p>
+<p>It is deliberately <strong>not</strong> deducted from the float denominator. Burn is permanent and the DEX pool is
+the market itself, so neither can dump; self-held supply can. Removing it from the denominator would
+raise every other wallet's percentage on every token carrying this row, manufacturing new false
+positives while fixing one.</p>
+<p>The same address is also excluded from the dev sock-puppet map: chips sent back to the token contract,
+or gas paid to it, is not &quot;transferred to an internal wallet&quot;.</p>
+<h5>Holder object key fields</h5>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>address</code></td>
+<td>string</td>
+<td>Wallet address</td>
+</tr>
+<tr>
+<td><code>balance</code></td>
+<td>float</td>
+<td>Current token balance</td>
+</tr>
+<tr>
+<td><code>amount_percentage</code></td>
+<td>float</td>
+<td>Fraction of total supply (0–1). Multiply by 100 for %.</td>
+</tr>
+<tr>
+<td><code>buy_tx_count_cur</code></td>
+<td>int</td>
+<td>Buy transactions since creation. <strong>Not indexed on every chain — a 0 here is not proof the wallet never bought.</strong> See the cost-basis section above.</td>
+</tr>
+<tr>
+<td><code>usd_value</code></td>
+<td>float</td>
+<td>Current USD value of holdings</td>
+</tr>
+<tr>
+<td><code>avg_cost</code></td>
+<td>float</td>
+<td>Average buy price per token</td>
+</tr>
+<tr>
+<td><code>unrealized_pnl</code></td>
+<td>float</td>
+<td>Unrealized PnL ratio (0.5 = +50%)</td>
+</tr>
+<tr>
+<td><code>unrealized_profit</code></td>
+<td>float</td>
+<td>Unrealized PnL in USD</td>
+</tr>
+<tr>
+<td><code>realized_profit</code></td>
+<td>float</td>
+<td>Realized PnL in USD</td>
+</tr>
+<tr>
+<td><code>profit</code></td>
+<td>float</td>
+<td>Total PnL in USD (realized + unrealized). Also a valid <code>--order-by</code> field.</td>
+</tr>
+<tr>
+<td><code>sell_tx_count_cur</code></td>
+<td>int</td>
+<td>Sell transactions since token creation</td>
+</tr>
+<tr>
+<td><code>sell_amount_percentage</code></td>
+<td>float</td>
+<td>Fraction of total buys that have been sold. Drives the accumulating/distributing verdict.</td>
+</tr>
+<tr>
+<td><code>sell_volume_cur</code></td>
+<td>float</td>
+<td>USD volume sold since token creation</td>
+</tr>
+<tr>
+<td><code>sell_amount_cur</code></td>
+<td>float</td>
+<td>Token amount sold since token creation</td>
+</tr>
+<tr>
+<td><code>history_transfer_out_amount</code></td>
+<td>float</td>
+<td>Token amount transferred out (not sold)</td>
+</tr>
+<tr>
+<td><code>history_transfer_out_income</code></td>
+<td>float</td>
+<td>USD value of transferred-out tokens</td>
+</tr>
+<tr>
+<td><code>token_transfer_out</code></td>
+<td>object</td>
+<td><code>{address}</code> — recipient of a transfer-out. Used to detect dev sock puppets when the recipient is itself in the top 100.</td>
+</tr>
+<tr>
+<td><code>native_transfer</code></td>
+<td>object</td>
+<td><code>{from_address, amount, timestamp}</code> — how the wallet was funded. Also the fallback sock-puppet probe: a top-100 holder whose gas came from the creator.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>string</td>
+<td>Wallet display name if known</td>
+</tr>
+<tr>
+<td><code>start_holding_at</code></td>
+<td>int</td>
+<td>Unix timestamp of first buy</td>
+</tr>
+<tr>
+<td><code>addr_type</code></td>
+<td>int</td>
+<td>0=normal wallet, 1=burn/dead, 2=DEX/pool</td>
+</tr>
+<tr>
+<td><code>maker_token_tags</code></td>
+<td>list</td>
+<td><code>bundler</code>, <code>rat_trader</code>, <code>sniper</code>, <code>whale</code>, <code>top_holder</code>, <code>transfer_in</code>, <code>dev_team</code>, <code>creator</code></td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td>list</td>
+<td><code>smart_degen</code>, <code>pump_smart</code>, <code>renowned</code>, <code>fresh_wallet</code>, <code>wash_trader</code>, <code>kol</code></td>
+</tr>
+<tr>
+<td><code>native_balance</code></td>
+<td>string</td>
+<td>Raw native token balance. May be a <strong>decimal string</strong> — parse with <code>float</code>, not <code>int</code>. Denominator is known only for <code>sol</code> (1e9) and <code>bsc</code>/<code>eth</code>/<code>base</code> (1e18).</td>
+</tr>
+<tr>
+<td><code>native_transfer</code></td>
+<td>object</td>
+<td><code>{from_address, amount, timestamp}</code> — how wallet was funded. Drives 关联资金.</td>
+</tr>
+<tr>
+<td><code>twitter_name</code></td>
+<td>string</td>
+<td>Twitter handle if known</td>
+</tr>
+</tbody>
+</table>
+<h5>Created-tokens response fields</h5>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>inner_count</code></td>
+<td>Unmigrated token count</td>
+</tr>
+<tr>
+<td><code>open_count</code></td>
+<td>Migrated token count</td>
+</tr>
+<tr>
+<td><code>tokens[].market_cap</code></td>
+<td>Current market cap in USD</td>
+</tr>
+<tr>
+<td><code>tokens[].symbol</code></td>
+<td>Token symbol</td>
+</tr>
+<tr>
+<td><code>tokens[].is_open</code></td>
+<td>true = migrated</td>
+</tr>
+<tr>
+<td><code>creator_ath_info.ath_mc</code></td>
+<td>All-time high MC across all created tokens</td>
+</tr>
+<tr>
+<td><code>creator_ath_info.ath_token</code></td>
+<td>Token address of the ATH token</td>
+</tr>
+<tr>
+<td><code>creator_ath_info.token_symbol</code></td>
+<td>Symbol of the ATH token</td>
+</tr>
+<tr>
+<td><code>creator_ath_info.token_name</code></td>
+<td>Name of the ATH token</td>
+</tr>
+</tbody>
+</table>
+<h4>Rating Standard</h4>
+<p>All thresholds below are <strong>share of tradeable float</strong>, matching the script. They are not
+comparable to GMGN's own UI, which reports share of total supply — on a token whose LP holds 56%
+of supply, the same wallet reads 2.4× higher here.</p>
+<p>The Advice section prints <strong>every</strong> triggered reason, not just the first: a ⚠️ Caution rating means
+two or more warns fired by definition, so printing one left the reader unable to see why the rating
+was what it was.</p>
+<p>Entry timing pressure (批次浮盈/出货) does <strong>NOT</strong> affect the overall rating — it only affects section display.</p>
+<table>
+<thead>
+<tr>
+<th>Rating (ZH)</th>
+<th>Rating (EN)</th>
+<th>Emoji</th>
+<th>Condition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>无法评估</td>
+<td>Cannot Assess</td>
+<td>⚪</td>
+<td>Tradeable float &lt;2% of supply, <strong>or</strong> upstream returned zero holders (all percentage rules suppressed; dev sock puppet still escalates to 🔴)</td>
+</tr>
+<tr>
+<td>不建议买</td>
+<td>Not Recommended</td>
+<td>🔴</td>
+<td>Any: rat traders &gt;5% / largest wallet &gt;10% / dev sock puppet</td>
+</tr>
+</tbody>
+</table>
+<p>| 谨慎参与 | Caution | ⚠️ | ≥2 of: Dev still holding &gt;1% / airdrop &gt;20% / risk wallets &gt;35% / linked &gt;15% / contract self-holds &gt;10% of supply |
+| 可轻仓   | Light Position | 🟡 | Exactly 1 of above warns |
+| 正常参与 | Normal | ✅ | None of the above |</p>
+<h5>Per-metric flag thresholds</h5>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>🔴</th>
+<th>🟡</th>
+<th>🟢</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Top10 concentration</td>
+<td>&gt;60%</td>
+<td>&gt;40%</td>
+<td>≤40%</td>
+</tr>
+<tr>
+<td>Top20 concentration</td>
+<td>&gt;75%</td>
+<td>&gt;55%</td>
+<td>≤55%</td>
+</tr>
+<tr>
+<td>Airdropped chips (never bought)</td>
+<td>&gt;25%</td>
+<td>&gt;10%</td>
+<td>≤10%</td>
+</tr>
+<tr>
+<td>Risk wallets</td>
+<td>&gt;35%</td>
+<td>&gt;15%</td>
+<td>≤15%</td>
+</tr>
+<tr>
+<td>Linked funding</td>
+<td>&gt;25%</td>
+<td>&gt;10%</td>
+<td>≤10%</td>
+</tr>
+<tr>
+<td>Zero-balance wallets</td>
+<td>—</td>
+<td>&gt;10%</td>
+<td>≤10%</td>
+</tr>
+</tbody>
+</table>
+<p>Diamond hands invert (more is better) and use their own emoji set: ✅ &gt;60% / 🟡 &gt;35% / ⚠️ ≤35%.
+Diamond hands require a <strong>cost basis</strong> (<code>has_cost_basis</code>, above) — a wallet that never paid has no
+cost to hold through, so genuinely zero-cost recipients are reported separately as
+&quot;转入筹码未动 / Idle airdrop&quot; rather than being credited as diamond hands. The test is the cost
+basis, not <code>buy_tx_count_cur &gt; 0</code>: on chains where buy counts are not indexed the latter discards
+most real diamond hands (measured on JOLLY: 34 → 75 wallets, 21.1% → 55.7% of float).</p>
+<p>Linked funding is escalated to at least 🟡 whenever any group was funded within 60s, regardless of
+size — scripted batch funding is a structural signal, not a magnitude one.</p>
+<h5>Chip quality (footer)</h5>
+<p>Three mutually exclusive buckets over the chips held by observed wallets (denominator is
+<code>normal_pct</code>, i.e. total-supply basis, not float): <strong>bought in with no risk tag</strong> / <strong>zero-cost
+airdrop</strong> (by <code>has_cost_basis</code>, above — not by a missing buy count) / <strong>risk-tagged</strong>. They are reported separately rather than collapsed into one
+&quot;healthy chips&quot; number, because a risk tag means a proven-bad address while zero-cost airdrop only
+means unknown provenance.</p>
+<p>Headline flag, first match wins: 🔴 risk-tagged &gt;30% · 🟢 clean ≥50% · 🟡 clean ≥30% · 🟡 when
+zero-cost airdrop accounts for ≥80% of the non-clean remainder · 🔴 otherwise. So an
+airdrop-distributed token reads 🟡 with its composition spelled out, not &quot;healthy chips 0.0% 🔴&quot;.</p>
+<p>The composition is total-supply based, so it survives a degenerate float and its three percentages
+still print — but the headline flag is neutralized to ⚪ (and the chips' share of supply appended)
+whenever the rating is ⚪ Cannot Assess, since a 🔴/🟢 verdict over dust-level chips would
+contradict the rating above it.</p>
+<h4>Supported Chains</h4>
+<p><code>sol</code>, <code>bsc</code>, <code>base</code>, <code>eth</code>, <code>robinhood</code>, <code>arc</code>, <code>stable</code></p>
+<h4>Dev lookup is dual-source</h4>
+<p><code>token holders --tag dev</code> is the primary source, but it returns <code>{&quot;list&quot;: []}</code> on some launchpads —
+measured on all five bankr tokens in robinhood's 24h trending top 50, while pons_v2 / longxyz tokens
+on the same chain return the creator normally. It can also return rows with no <code>creator</code> tag at all
+(measured on a flap token on bsc). Either way the whole Dev section, <strong>including the dev sock-puppet
+danger gate</strong>, would silently go dead.</p>
+<p>So when no <code>creator</code>-tagged row comes back, the creator address is recovered from <code>token info</code>'s
+<code>dev.creator_address</code>, and <code>dev.creator_token_balance</code> supplies its balance. That call is made only
+when the primary source fails, so it costs nothing on tokens where the tag works.</p>
+<p><code>token info</code> does not carry <code>realized_profit</code> or <code>token_transfer_out</code>, so on the fallback path:</p>
+<ul>
+<li>the realized-profit figure is <strong>omitted entirely</strong> — printing <code>$0</code> would report an unmeasured
+field as a measurement</li>
+<li>the sock-puppet gate switches judge: instead of &quot;dev's chips went to a top-100 wallet&quot;, it asks
+whether any top-100 holder's <code>native_transfer.from_address</code> <strong>is</strong> the creator, i.e. the dev paid
+that wallet's gas. A hit is reported as the danger and names the wallets; a miss is not reported as
+clean, since only 57% of holders carry that field on the measured token.</li>
+</ul>
+<h4>Notes</h4>
+<ul>
+<li><code>balance &gt;= 1</code> threshold avoids dust false positives when identifying dev holdings</li>
+<li>SOL <code>native_balance</code> is in lamports (÷1e9); <code>bsc</code>/<code>eth</code>/<code>base</code> are in wei (÷1e18). Decimals for
+<code>arc</code>/<code>stable</code>/<code>robinhood</code> are unconfirmed, so the buying-power section reports &quot;not assessed&quot;
+on those chains rather than printing a converted figure that would be wrong.</li>
+<li>Holder buying power needs a live native-token price, fetched with <code>token info</code> on the wrapped
+native address (<code>So111…1112</code> / WBNB / WETH / Base WETH). When that call fails, the section falls
+back to native units and prints no USD figure.</li>
+<li><code>total_supply</code> is estimated as the median of <code>balance / amount_percentage</code> across normal wallets</li>
+<li><code>cur_price</code> is estimated as the median of <code>usd_value / balance</code> across normal wallets</li>
+<li>Entry MC = <code>total_supply * avg_cost</code>, shown alongside unrealized PnL for every Top5 wallet</li>
+<li>Top5 displays Twitter name when available; else <code>first4...last4</code> format</li>
+<li>Risk-wallet subtotals are per-category and can exceed the deduped total; the script prints how
+many wallets carry more than one risk tag when that happens.</li>
+<li><code>creator_ath_info.ath_mc</code> can lag behind the token's current MC after a fast pump (upstream
+<code>ath_price</code> has been seen equal to <code>price_24h</code>). The script cannot recompute it, so when the
+reported ATH sits more than 5% below the current MC it prints a staleness warning next to the
+figure instead of presenting it as the dev's peak.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

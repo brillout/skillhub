@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>fuzzing-dictionary · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re fuzzing a parser, protocol or file format, or coverage stalls at checks against fixed strings. It does: writes a dictionary file of quoted tokens, filled by asking an LLM or extracting strings from headers, man pages or binaries, and passes it to the fuzzer. You get: a .dict file, such as HTTP methods and headers or PNG and JPEG magic bytes, plus the flag that loads it. Works with: libFuzzer (-dict), AFL++ (-x) and cargo-fuzz; go-fuzz has no dictionary support, so it turns the entries into seed corpus files instead." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=trailofbits%2Fskills">trailofbits/skills</a></p>
+      <h1>fuzzing-dictionary</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re fuzzing a parser, protocol or file format, or coverage stalls at checks against fixed strings</dd></div><div><dt>It does</dt><dd>writes a dictionary file of quoted tokens, filled by asking an LLM or extracting strings from headers, man pages or binaries, and passes it to the fuzzer</dd></div><div><dt>You get</dt><dd>a .dict file, such as HTTP methods and headers or PNG and JPEG magic bytes, plus the flag that loads it</dd></div><div><dt>Works with</dt><dd>libFuzzer (-dict), AFL++ (-x) and cargo-fuzz; go-fuzz has no dictionary support, so it turns the entries into seed corpus files instead</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>From Trail of Bits&#39; Testing Handbook skills. A dictionary gives the fuzzer domain tokens to splice into its mutations, so it can get past early validation that random changes rarely satisfy. The format is one quoted string or key=&#34;value&#34; pair per line, with hex escapes for binary bytes and # for comments, and the same file works across libFuzzer, AFL++ and cargo-fuzz. It shows how to generate entries with a prompt to ChatGPT or Claude, a grep over header files, a man page for a CLI&#39;s options, or strings over a binary, and gives patterns for protocol keywords, file-format headers and configuration keywords. It keeps dictionaries to 50 to 200 focused, deduplicated tokens rather than thousands or full sentences, and suggests comparing coverage with and without one. It also covers AFL++&#39;s auto-generated dictionaries and combining several files. It isn&#39;t worth it for pure algorithms with no input format, or when the corpus already reaches high coverage.</p>
+      <p class="muted">Summarizes <a href="https://github.com/trailofbits/skills/tree/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/testing-handbook-skills/skills/fuzzing-dictionary">the skill at e4dd0bb</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/trailofbits/skills --skill fuzzing-dictionary</code><button type="button" class="copy" data-copy="npx skills add https://github.com/trailofbits/skills --skill fuzzing-dictionary">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/trailofbits/skills/fuzzing-dictionary">skills.sh page</a> · <a href="https://github.com/trailofbits/skills/tree/HEAD/plugins/testing-handbook-skills/skills/fuzzing-dictionary">Source on GitHub</a> · <a href="/skillhub/?repo=trailofbits%2Fskills">All skills from trailofbits/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,600 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>8,053 <span class="muted">trailofbits/skills</span></dd></div><div><dt>First seen</dt><dd>Jan 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">167</div>
+      <div class="stat-delta">+48% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 113; week to Sep 26: 110; week to Oct 3: 110; week to Oct 10: 96; week to Oct 17: 121; week to Oct 24: 126; week to Oct 31: 154; week to Nov 7: 167. Use the left and right arrow keys to read each week."
+        data-values="113,110,110,96,121,126,154,167" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,20.2 38.6,21.0 71.1,21.0 103.7,24.7 136.3,18.1 168.9,16.8 201.4,9.4 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>113</td></tr><tr><td>Sep 26</td><td>110</td></tr><tr><td>Oct 3</td><td>110</td></tr><tr><td>Oct 10</td><td>96</td></tr><tr><td>Oct 17</td><td>121</td></tr><tr><td>Oct 24</td><td>126</td></tr><tr><td>Oct 31</td><td>154</td></tr><tr><td>Nov 7</td><td>167</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/skillhub/?tag=category%3Asecurity">category:security</a><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="testing" data-facet="topic" href="/skillhub/?tag=testing">testing</a><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/testing-handbook-skills/skills/fuzzing-dictionary/SKILL.md">trailofbits/skills at e4dd0bb</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: fuzzing-dictionary
+type: technique
+description: &#34;Builds and applies fuzzing dictionaries so a fuzzer can produce the keywords, magic bytes, and tokens a target expects. Covers extracting tokens from source, headers, binaries, and specifications, dictionary syntax, and wiring one into libFuzzer or AFL++. Use when fuzzing a parser, protocol, or file format, when coverage stalls at input validation, or when a target compares against fixed strings.&#34;</code></pre></details>
+        <div class="markdown"><h3>Fuzzing Dictionary</h3>
+<p>A fuzzing dictionary provides domain-specific tokens to guide the fuzzer toward interesting inputs. Instead of purely random mutations, the fuzzer incorporates known keywords, magic numbers, protocol commands, and format-specific strings that are more likely to reach deeper code paths in parsers, protocol handlers, and file format processors.</p>
+<h4>Overview</h4>
+<p>Dictionaries are text files containing quoted strings that represent meaningful tokens for your target. They help fuzzers bypass early validation checks and explore code paths that would be difficult to reach through blind mutation alone.</p>
+<h5>Key Concepts</h5>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Dictionary Entry</strong></td>
+<td>A quoted string (e.g., <code>&quot;keyword&quot;</code>) or key-value pair (e.g., <code>kw=&quot;value&quot;</code>)</td>
+</tr>
+<tr>
+<td><strong>Hex Escapes</strong></td>
+<td>Byte sequences like <code>&quot;\xF7\xF8&quot;</code> for non-printable characters</td>
+</tr>
+<tr>
+<td><strong>Token Injection</strong></td>
+<td>Fuzzer inserts dictionary entries into generated inputs</td>
+</tr>
+<tr>
+<td><strong>Cross-Fuzzer Format</strong></td>
+<td>Dictionary files work with libFuzzer, AFL++, and cargo-fuzz</td>
+</tr>
+</tbody>
+</table>
+<h4>When to Apply</h4>
+<p><strong>Apply this technique when:</strong></p>
+<ul>
+<li>Fuzzing parsers (JSON, XML, config files)</li>
+<li>Fuzzing protocol implementations (HTTP, DNS, custom protocols)</li>
+<li>Fuzzing file format handlers (PNG, PDF, media codecs)</li>
+<li>Coverage plateaus early without reaching deeper logic</li>
+<li>Target code checks for specific keywords or magic values</li>
+</ul>
+<p><strong>Skip this technique when:</strong></p>
+<ul>
+<li>Fuzzing pure algorithms without format expectations</li>
+<li>Target has no keyword-based parsing</li>
+<li>Corpus already achieves high coverage</li>
+</ul>
+<h4>Quick Reference</h4>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Command/Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Use with libFuzzer</td>
+<td><code>./fuzz -dict=./dictionary.dict ...</code></td>
+</tr>
+<tr>
+<td>Use with AFL++</td>
+<td><code>afl-fuzz -x ./dictionary.dict ...</code></td>
+</tr>
+<tr>
+<td>Use with cargo-fuzz</td>
+<td><code>cargo fuzz run fuzz_target -- -dict=./dictionary.dict</code></td>
+</tr>
+<tr>
+<td>Extract from header</td>
+<td><code>grep -o '&quot;.*&quot;' header.h &gt; header.dict</code></td>
+</tr>
+<tr>
+<td>Generate from binary</td>
+<td><code>strings ./binary | sed 's/^/&quot;&amp;/; s/$/&amp;&quot;/' &gt; strings.dict</code></td>
+</tr>
+</tbody>
+</table>
+<h4>Step-by-Step</h4>
+<h5>Step 1: Create Dictionary File</h5>
+<p>Create a text file with quoted strings on each line. Use comments (<code>#</code>) for documentation.</p>
+<p><strong>Example dictionary format:</strong></p>
+<pre><code class="language-conf"># Lines starting with '#' and empty lines are ignored.
+
+# Adds &quot;blah&quot; (w/o quotes) to the dictionary.
+kw1=&quot;blah&quot;
+# Use \\ for backslash and \&quot; for quotes.
+kw2=&quot;\&quot;ac\\dc\&quot;&quot;
+# Use \xAB for hex values
+kw3=&quot;\xF7\xF8&quot;
+# the name of the keyword followed by '=' may be omitted:
+&quot;foo\x0Abar&quot;
+</code></pre>
+<h5>Step 2: Generate Dictionary Content</h5>
+<p>Choose a generation method based on what's available:</p>
+<p><strong>From LLM:</strong> Prompt ChatGPT or Claude with:</p>
+<pre><code class="language-text">A dictionary can be used to guide the fuzzer. Write me a dictionary file for fuzzing a &lt;PNG parser&gt;. Each line should be a quoted string or key-value pair like kw=&quot;value&quot;. Include magic bytes, chunk types, and common header values. Use hex escapes like &quot;\xF7\xF8&quot; for binary values.
+</code></pre>
+<p><strong>From header files:</strong></p>
+<pre><code class="language-bash">grep -o '&quot;.*&quot;' header.h &gt; header.dict
+</code></pre>
+<p><strong>From man pages (for CLI tools):</strong></p>
+<pre><code class="language-bash">man curl | grep -oP '^\s*(--|-)\K\S+' | sed 's/[,.]$//' | sed 's/^/&quot;&amp;/; s/$/&amp;&quot;/' | sort -u &gt; man.dict
+</code></pre>
+<p><strong>From binary strings:</strong></p>
+<pre><code class="language-bash">strings ./binary | sed 's/^/&quot;&amp;/; s/$/&amp;&quot;/' &gt; strings.dict
+</code></pre>
+<h5>Step 3: Pass Dictionary to Fuzzer</h5>
+<p>Use the appropriate flag for your fuzzer (see Quick Reference above).</p>
+<h4>Common Patterns</h4>
+<h5>Pattern: Protocol Keywords</h5>
+<p><strong>Use Case:</strong> Fuzzing HTTP or custom protocol handlers</p>
+<p><strong>Dictionary content:</strong></p>
+<pre><code class="language-conf"># HTTP methods
+&quot;GET&quot;
+&quot;POST&quot;
+&quot;PUT&quot;
+&quot;DELETE&quot;
+&quot;HEAD&quot;
+
+# Headers
+&quot;Content-Type&quot;
+&quot;Authorization&quot;
+&quot;Host&quot;
+
+# Protocol markers
+&quot;HTTP/1.1&quot;
+&quot;HTTP/2.0&quot;
+</code></pre>
+<h5>Pattern: Magic Bytes and File Format Headers</h5>
+<p><strong>Use Case:</strong> Fuzzing image parsers, media decoders, archive handlers</p>
+<p><strong>Dictionary content:</strong></p>
+<pre><code class="language-conf"># PNG magic bytes and chunks
+png_magic=&quot;\x89PNG\r\n\x1a\n&quot;
+ihdr=&quot;IHDR&quot;
+plte=&quot;PLTE&quot;
+idat=&quot;IDAT&quot;
+iend=&quot;IEND&quot;
+
+# JPEG markers
+jpeg_soi=&quot;\xFF\xD8&quot;
+jpeg_eoi=&quot;\xFF\xD9&quot;
+</code></pre>
+<h5>Pattern: Configuration File Keywords</h5>
+<p><strong>Use Case:</strong> Fuzzing config file parsers (YAML, TOML, INI)</p>
+<p><strong>Dictionary content:</strong></p>
+<pre><code class="language-conf"># Common config keywords
+&quot;true&quot;
+&quot;false&quot;
+&quot;null&quot;
+&quot;version&quot;
+&quot;enabled&quot;
+&quot;disabled&quot;
+
+# Section headers
+&quot;[general]&quot;
+&quot;[network]&quot;
+&quot;[security]&quot;
+</code></pre>
+<h4>Advanced Usage</h4>
+<h5>Tips and Tricks</h5>
+<table>
+<thead>
+<tr>
+<th>Tip</th>
+<th>Why It Helps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Combine multiple generation methods</td>
+<td>LLM-generated keywords + strings from binary covers broad surface</td>
+</tr>
+<tr>
+<td>Include boundary values</td>
+<td><code>&quot;0&quot;</code>, <code>&quot;-1&quot;</code>, <code>&quot;2147483647&quot;</code> trigger edge cases</td>
+</tr>
+<tr>
+<td>Add format delimiters</td>
+<td><code>:</code>, <code>=</code>, <code>{</code>, <code>}</code> help fuzzer construct valid structures</td>
+</tr>
+<tr>
+<td>Keep dictionaries focused</td>
+<td>50-200 entries perform better than thousands</td>
+</tr>
+<tr>
+<td>Test dictionary effectiveness</td>
+<td>Run with and without dict, compare coverage</td>
+</tr>
+</tbody>
+</table>
+<h5>Auto-Generated Dictionaries (AFL++)</h5>
+<p>When using <code>afl-clang-lto</code> compiler, AFL++ automatically extracts dictionary entries from string comparisons in the binary. This happens at compile time via the AUTODICTIONARY feature.</p>
+<p><strong>Enable auto-dictionary:</strong></p>
+<pre><code class="language-bash">export AFL_LLVM_DICT2FILE=auto.dict
+afl-clang-lto++ target.cc -o target
+# Dictionary saved to auto.dict
+afl-fuzz -x auto.dict -i in -o out -- ./target
+</code></pre>
+<h5>Combining Multiple Dictionaries</h5>
+<p>Some fuzzers support multiple dictionary files:</p>
+<pre><code class="language-bash"># AFL++ with multiple dictionaries
+afl-fuzz -x keywords.dict -x formats.dict -i in -o out -- ./target
+</code></pre>
+<h4>Anti-Patterns</h4>
+<table>
+<thead>
+<tr>
+<th>Anti-Pattern</th>
+<th>Problem</th>
+<th>Correct Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Including full sentences</td>
+<td>Fuzzer needs atomic tokens, not prose</td>
+<td>Break into individual keywords</td>
+</tr>
+<tr>
+<td>Duplicating entries</td>
+<td>Wastes mutation budget</td>
+<td>Use <code>sort -u</code> to deduplicate</td>
+</tr>
+<tr>
+<td>Over-sized dictionaries</td>
+<td>Slows fuzzer, dilutes useful tokens</td>
+<td>Keep focused: 50-200 most relevant entries</td>
+</tr>
+<tr>
+<td>Missing hex escapes</td>
+<td>Non-printable bytes become mangled</td>
+<td>Use <code>\xXX</code> for binary values</td>
+</tr>
+<tr>
+<td>No comments</td>
+<td>Hard to maintain and audit</td>
+<td>Document sections with <code>#</code> comments</td>
+</tr>
+</tbody>
+</table>
+<h4>Tool-Specific Guidance</h4>
+<h5>libFuzzer</h5>
+<pre><code class="language-bash">clang++ -fsanitize=fuzzer,address harness.cc -o fuzz
+./fuzz -dict=./dictionary.dict corpus/
+</code></pre>
+<p><strong>Integration tips:</strong></p>
+<ul>
+<li>Dictionary tokens are inserted/replaced during mutations</li>
+<li>Combine with <code>-max_len</code> to control input size</li>
+<li>Use <code>-print_final_stats=1</code> to see dictionary effectiveness metrics</li>
+<li>Dictionary entries longer than <code>-max_len</code> are ignored</li>
+</ul>
+<h5>AFL++</h5>
+<pre><code class="language-bash">afl-fuzz -x ./dictionary.dict -i input/ -o output/ -- ./target @@
+</code></pre>
+<p><strong>Integration tips:</strong></p>
+<ul>
+<li>AFL++ supports multiple <code>-x</code> flags for multiple dictionaries</li>
+<li>Use <code>AFL_LLVM_DICT2FILE</code> with <code>afl-clang-lto</code> for auto-generated dictionaries</li>
+<li>Dictionary effectiveness shown in fuzzer stats UI</li>
+<li>Tokens are used during deterministic and havoc stages</li>
+</ul>
+<h5>cargo-fuzz (Rust)</h5>
+<pre><code class="language-bash">cargo fuzz run fuzz_target -- -dict=./dictionary.dict
+</code></pre>
+<p><strong>Integration tips:</strong></p>
+<ul>
+<li>cargo-fuzz uses libFuzzer backend, so all libFuzzer dict flags work</li>
+<li>Place dictionary file in <code>fuzz/</code> directory alongside harness</li>
+<li>Reference from harness directory: <code>cargo fuzz run target -- -dict=../dictionary.dict</code></li>
+</ul>
+<h5>go-fuzz (Go)</h5>
+<p>go-fuzz does not have built-in dictionary support, but you can manually seed the corpus with dictionary entries:</p>
+<pre><code class="language-bash"># Convert dictionary to corpus files
+grep -o '&quot;.*&quot;' dict.txt | while read line; do
+    echo -n &quot;$line&quot; | base64 &gt; corpus/$(echo &quot;$line&quot; | md5sum | cut -d' ' -f1)
+done
+
+go-fuzz -bin=./target-fuzz.zip -workdir=.
+</code></pre>
+<h4>Troubleshooting</h4>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Cause</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dictionary file not loaded</td>
+<td>Wrong path or format error</td>
+<td>Check fuzzer output for dict parsing errors; verify file format</td>
+</tr>
+<tr>
+<td>No coverage improvement</td>
+<td>Dictionary tokens not relevant</td>
+<td>Analyze target code for actual keywords; try different generation method</td>
+</tr>
+<tr>
+<td>Syntax errors in dict file</td>
+<td>Unescaped quotes or invalid escapes</td>
+<td>Use <code>\\</code> for backslash, <code>\&quot;</code> for quotes; validate with test run</td>
+</tr>
+<tr>
+<td>Fuzzer ignores long entries</td>
+<td>Entries exceed <code>-max_len</code></td>
+<td>Keep entries under max input length, or increase <code>-max_len</code></td>
+</tr>
+<tr>
+<td>Too many entries slow fuzzer</td>
+<td>Dictionary too large</td>
+<td>Prune to 50-200 most relevant entries</td>
+</tr>
+</tbody>
+</table>
+<h4>Related Skills</h4>
+<h5>Tools That Use This Technique</h5>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>How It Applies</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>libfuzzer</strong></td>
+<td>Native dictionary support via <code>-dict=</code> flag</td>
+</tr>
+<tr>
+<td><strong>aflpp</strong></td>
+<td>Native dictionary support via <code>-x</code> flag; auto-generation with AUTODICTIONARIES</td>
+</tr>
+<tr>
+<td><strong>cargo-fuzz</strong></td>
+<td>Uses libFuzzer backend, inherits <code>-dict=</code> support</td>
+</tr>
+</tbody>
+</table>
+<h5>Related Techniques</h5>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Relationship</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>fuzzing-corpus</strong></td>
+<td>Dictionaries complement corpus: corpus provides structure, dictionary provides keywords</td>
+</tr>
+<tr>
+<td><strong>coverage-analysis</strong></td>
+<td>Use coverage data to validate dictionary effectiveness</td>
+</tr>
+<tr>
+<td><strong>harness-writing</strong></td>
+<td>Harness structure determines which dictionary tokens are useful</td>
+</tr>
+</tbody>
+</table>
+<h4>Resources</h4>
+<h5>Key External Resources</h5>
+<p><strong><a href="https://github.com/AFLplusplus/AFLplusplus/tree/stable/dictionaries">AFL++ Dictionaries</a></strong>
+Pre-built dictionaries for common formats (HTML, XML, JSON, SQL, etc.). Good starting point for format-specific fuzzing.</p>
+<p><strong><a href="https://llvm.org/docs/LibFuzzer.html#dictionaries">libFuzzer Dictionary Documentation</a></strong>
+Official libFuzzer documentation on dictionary format and usage. Explains token insertion strategy and performance implications.</p>
+<h5>Additional Examples</h5>
+<p><strong><a href="https://github.com/google/oss-fuzz/tree/master/projects">OSS-Fuzz Dictionaries</a></strong>
+Real-world dictionaries from Google's continuous fuzzing service. Search project directories for <code>*.dict</code> files to see production examples.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

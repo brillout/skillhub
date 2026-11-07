@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>claude-to-im · SkillHub</title>
+    <meta name="description" content="Use it when: you want to keep talking to your Claude Code or Codex session from your phone, through a messaging app. It does: runs a background daemon that passes your chat messages to the agent and sends its replies and permission requests back to the chat. Commands: setup, start, stop, status, logs, reconfigure and doctor, as in /claude-to-im setup. Needs: a bot or app on each platform you enable, Node.js, and the Claude Code or Codex CLI; WeChat links one account by QR code instead. Keeps: settings and tokens in ~/.claude-to-im/config.env, readable only by you, and shows secrets masked to their last four characters. Runs: in the background, under launchd, setsid or WinSW/NSSM, until you stop it; the config survives across sessions." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=op7418%2Fclaude-to-im-skill">op7418/claude-to-im-skill</a></p>
+      <h1>claude-to-im</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want to keep talking to your Claude Code or Codex session from your phone, through a messaging app</dd></div><div><dt>It does</dt><dd>runs a background daemon that passes your chat messages to the agent and sends its replies and permission requests back to the chat</dd></div><div><dt>Commands</dt><dd>setup, start, stop, status, logs, reconfigure and doctor, as in /claude-to-im setup</dd></div><div><dt>Needs</dt><dd>a bot or app on each platform you enable, Node.js, and the Claude Code or Codex CLI; WeChat links one account by QR code instead</dd></div><div><dt>Keeps</dt><dd>settings and tokens in ~/.claude-to-im/config.env, readable only by you, and shows secrets masked to their last four characters</dd></div><div><dt>Runs</dt><dd>in the background, under launchd, setsid or WinSW/NSSM, until you stop it; the config survives across sessions</dd></div></dl></section>
+      
+      <p class="note">Leaves a bridge daemon running in the background until you stop it. Each platform needs its own bot or app credentials, and a Feishu app also needs admin approval.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A bridge between a coding-agent session and the chat apps on your phone. In Claude Code, setup is a wizard that asks one question at a time: which channels to enable, then each credential, masked when read back, then the runtime (Claude, Codex, or auto, which falls back to Codex when the Claude CLI is missing), working directory, model and mode (code, plan or ask). It writes ~/.claude-to-im/config.env, restricts it to your user and checks each token before you start. In Codex, which can&#39;t ask questions this way, it shows the example config for you to fill in. Channels differ: Telegram gets a streaming preview and permission buttons, Discord access control by server, channel and user, and Feishu streaming cards, tool progress and buttons; QQ supports private chats only and WeChat one linked account, both approving tools with text /perm commands. Telegram and Discord reject every message until you allow a chat, user or channel. Feishu needs two publish rounds with admin approval, the second while the bridge runs. doctor runs a health-check script and suggests fixes, such as reinstalling dependencies or rebuilding the daemon; logs shows the last 50 lines by default.</p>
+      <p class="muted">Summarizes <a href="https://github.com/op7418/claude-to-im-skill/tree/536908f5e9bd65a151ca4cb4b08d3fedc1a43b4d">the skill at 536908f</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/op7418/claude-to-im-skill --skill claude-to-im</code><button type="button" class="copy" data-copy="npx skills add https://github.com/op7418/claude-to-im-skill --skill claude-to-im">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/op7418/claude-to-im-skill/claude-to-im">skills.sh page</a> · <a href="https://github.com/op7418/claude-to-im-skill">Source on GitHub</a> · <a href="/skillhub/?repo=op7418%2Fclaude-to-im-skill">All skills from op7418/claude-to-im-skill</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>7,100 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>2,901 <span class="muted">op7418/claude-to-im-skill</span></dd></div><div><dt>First seen</dt><dd>Mar 5, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">5</div>
+      <div class="stat-delta">-44% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 9; week to Sep 26: 10; week to Oct 3: 8; week to Oct 10: 9; week to Oct 17: 4; week to Oct 24: 14; week to Oct 31: 7; week to Nov 7: 5. Use the left and right arrow keys to read each week."
+        data-values="9,10,8,9,4,14,7,5" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,21.7 38.6,18.6 71.1,24.9 103.7,21.7 136.3,37.4 168.9,6.0 201.4,28.0 234.0,34.3" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="34.3" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>9</td></tr><tr><td>Sep 26</td><td>10</td></tr><tr><td>Oct 3</td><td>8</td></tr><tr><td>Oct 10</td><td>9</td></tr><tr><td>Oct 17</td><td>4</td></tr><tr><td>Oct 24</td><td>14</td></tr><tr><td>Oct 31</td><td>7</td></tr><tr><td>Nov 7</td><td>5</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/skillhub/?tag=category%3Aagents">category:agents</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/skillhub/?tag=type%3Atool">type:tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:remote" data-facet="effect" title="Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service." href="/skillhub/?tag=effect%3Aremote">effect:remote</a></div>
+          <p class="tag-meaning">Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/skillhub/?tag=needs%3Aaccount">needs:account</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="messaging" data-facet="topic" href="/skillhub/?tag=messaging">messaging</a><a class="tag" data-tag="agent-workflows" data-facet="topic" href="/skillhub/?tag=agent-workflows">agent-workflows</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:claude" data-facet="stack" href="/skillhub/?tag=stack%3Aclaude">stack:claude</a><a class="tag" data-tag="stack:codex" data-facet="stack" href="/skillhub/?tag=stack%3Acodex">stack:codex</a><a class="tag" data-tag="stack:telegram" data-facet="stack" href="/skillhub/?tag=stack%3Atelegram">stack:telegram</a><a class="tag" data-tag="stack:discord" data-facet="stack" href="/skillhub/?tag=stack%3Adiscord">stack:discord</a><a class="tag" data-tag="stack:lark" data-facet="stack" href="/skillhub/?tag=stack%3Alark">stack:lark</a><a class="tag" data-tag="stack:qq" data-facet="stack" href="/skillhub/?tag=stack%3Aqq">stack:qq</a><a class="tag" data-tag="stack:wechat" data-facet="stack" href="/skillhub/?tag=stack%3Awechat">stack:wechat</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/op7418/claude-to-im-skill/blob/536908f5e9bd65a151ca4cb4b08d3fedc1a43b4d/SKILL.md">op7418/claude-to-im-skill at 536908f</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: claude-to-im
+description: |
+  Bridge THIS Claude Code or Codex session to Telegram, Discord, Feishu/Lark, QQ, or WeChat so the
+  user can chat with Claude from their phone. Use for: setting up, starting, stopping,
+  or diagnosing the claude-to-im bridge daemon; forwarding Claude replies to a messaging
+  app; any phrase like &#34;claude-to-im&#34;, &#34;bridge&#34;, &#34;消息推送&#34;, &#34;消息转发&#34;, &#34;桥接&#34;,
+  &#34;连上飞书&#34;, &#34;手机上看claude&#34;, &#34;启动后台服务&#34;, &#34;诊断&#34;, &#34;查看日志&#34;, &#34;配置&#34;.
+  Subcommands: setup, start, stop, status, logs, reconfigure, doctor.
+  Do NOT use for: building standalone bots, webhook integrations, or coding with IM
+  platform SDKs — those are regular programming tasks.
+argument-hint: &#34;setup | start | stop | status | logs [N] | reconfigure | doctor&#34;
+allowed-tools:
+  - Bash
+  - Read
+  - Write
+  - Edit
+  - AskUserQuestion
+  - Grep
+  - Glob</code></pre></details>
+        <div class="markdown"><h3>Claude-to-IM Bridge Skill</h3>
+<p>You are managing the Claude-to-IM bridge.
+User data is stored at <code>~/.claude-to-im/</code>.</p>
+<p>The skill directory (SKILL_DIR) is at <code>~/.claude/skills/claude-to-im</code>.
+In Codex installs it may instead be <code>~/.codex/skills/Claude-to-IM-skill</code>.
+If neither path exists, fall back to Glob with pattern <code>**/skills/**/claude-to-im/SKILL.md</code> or <code>**/skills/**/Claude-to-IM-skill/SKILL.md</code> and derive the root from the result.</p>
+<h4>Command parsing</h4>
+<p>Parse the user's intent from <code>$ARGUMENTS</code> into one of these subcommands:</p>
+<table>
+<thead>
+<tr>
+<th>User says (examples)</th>
+<th>Subcommand</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>setup</code>, <code>configure</code>, <code>配置</code>, <code>我想在飞书上用 Claude</code>, <code>帮我连接 Telegram</code>, <code>帮我接微信</code></td>
+<td>setup</td>
+</tr>
+<tr>
+<td><code>start</code>, <code>start bridge</code>, <code>启动</code>, <code>启动桥接</code></td>
+<td>start</td>
+</tr>
+<tr>
+<td><code>stop</code>, <code>stop bridge</code>, <code>停止</code>, <code>停止桥接</code></td>
+<td>stop</td>
+</tr>
+<tr>
+<td><code>status</code>, <code>bridge status</code>, <code>状态</code>, <code>运行状态</code>, <code>怎么看桥接的运行状态</code></td>
+<td>status</td>
+</tr>
+<tr>
+<td><code>logs</code>, <code>logs 200</code>, <code>查看日志</code>, <code>查看日志 200</code></td>
+<td>logs</td>
+</tr>
+<tr>
+<td><code>reconfigure</code>, <code>修改配置</code>, <code>帮我改一下 token</code>, <code>换个 bot</code></td>
+<td>reconfigure</td>
+</tr>
+<tr>
+<td><code>doctor</code>, <code>diagnose</code>, <code>诊断</code>, <code>挂了</code>, <code>没反应了</code>, <code>bot 没反应</code>, <code>出问题了</code></td>
+<td>doctor</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Disambiguation: <code>status</code> vs <code>doctor</code></strong> — Use <code>status</code> when the user just wants to check if the bridge is running (informational). Use <code>doctor</code> when the user reports a problem or suspects something is broken (diagnostic). When in doubt and the user describes a symptom (e.g., &quot;没反应了&quot;, &quot;挂了&quot;), prefer <code>doctor</code>.</p>
+<p>Extract optional numeric argument for <code>logs</code> (default 50).</p>
+<p>Before asking users for any platform credentials, read <code>SKILL_DIR/references/setup-guides.md</code> internally so you know where to find each credential. Do NOT dump the full guide to the user upfront — only mention the specific next step they need to do (e.g., &quot;Go to <a href="https://open.feishu.cn">https://open.feishu.cn</a> → your app → Credentials to find the App ID&quot;). If the user says they don't know how, then show the relevant section of the guide.</p>
+<h4>Runtime detection</h4>
+<p>Before executing any subcommand, detect which environment you are running in:</p>
+<ol>
+<li><strong>Claude Code</strong> — <code>AskUserQuestion</code> tool is available. Use it for interactive setup wizards.</li>
+<li><strong>Codex / other</strong> — <code>AskUserQuestion</code> is NOT available. Fall back to non-interactive guidance: explain the steps, show <code>SKILL_DIR/config.env.example</code>, and ask the user to create <code>~/.claude-to-im/config.env</code> manually.</li>
+</ol>
+<p>You can test this by checking if AskUserQuestion is in your available tools list.</p>
+<h4>Config check (applies to <code>start</code>, <code>stop</code>, <code>status</code>, <code>logs</code>, <code>reconfigure</code>, <code>doctor</code>)</h4>
+<p>Before running any subcommand other than <code>setup</code>, check if <code>~/.claude-to-im/config.env</code> exists:</p>
+<ul>
+<li><strong>If it does NOT exist:</strong>
+<ul>
+<li>In Claude Code: tell the user &quot;No configuration found&quot; and automatically start the <code>setup</code> wizard using AskUserQuestion.</li>
+<li>In Codex: tell the user &quot;No configuration found. Please create <code>~/.claude-to-im/config.env</code> based on the example:&quot; then show the contents of <code>SKILL_DIR/config.env.example</code> and stop. Don't attempt to start the daemon — without config.env the process will crash on startup and leave behind a stale PID file that blocks future starts.</li>
+</ul>
+</li>
+<li><strong>If it exists:</strong> proceed with the requested subcommand.</li>
+</ul>
+<h4>Subcommands</h4>
+<h5><code>setup</code></h5>
+<p>Run an interactive setup wizard. This subcommand requires <code>AskUserQuestion</code>. If it is not available (Codex environment), instead show the contents of <code>SKILL_DIR/config.env.example</code> with field-by-field explanations and instruct the user to create the config file manually.</p>
+<p>When AskUserQuestion IS available, collect input <strong>one field at a time</strong>. After each answer, confirm the value back to the user (masking secrets to last 4 chars only) before moving to the next question.</p>
+<p><strong>Step 1 — Choose channels</strong></p>
+<p>Ask which channels to enable (telegram, discord, feishu, qq, weixin). Accept comma-separated input. Briefly describe each:</p>
+<ul>
+<li><strong>telegram</strong> — Best for personal use. Streaming preview, inline permission buttons.</li>
+<li><strong>discord</strong> — Good for team use. Server/channel/user-level access control.</li>
+<li><strong>feishu</strong> (Lark) — For Feishu/Lark teams. Streaming cards, tool progress, inline permission buttons.</li>
+<li><strong>qq</strong> — QQ C2C private chat only. No inline permission buttons, no streaming preview. Permissions use text <code>/perm ...</code> commands.</li>
+<li><strong>weixin</strong> — WeChat QR login. Single linked account only; a new login replaces the previous one. No inline permission buttons, no streaming preview. Permissions use text <code>/perm ...</code> commands or quick <code>1/2/3</code> replies. Voice messages only use WeChat's own speech-to-text text; raw voice audio is not transcribed by the bridge.</li>
+</ul>
+<p><strong>Step 2 — Collect tokens per channel</strong></p>
+<p>For each enabled channel, collect one credential at a time. Tell the user where to find each value in one sentence. Only show the full guide section (from <code>SKILL_DIR/references/setup-guides.md</code>) if the user asks for help or says they don't know how:</p>
+<ul>
+<li><strong>Telegram</strong>: Bot Token → confirm (masked) → Chat ID (see guide for how to get it) → confirm → Allowed User IDs (optional). <strong>Important:</strong> At least one of Chat ID or Allowed User IDs must be set, otherwise the bot will reject all messages.</li>
+<li><strong>Discord</strong>: Bot Token → confirm (masked) → Allowed User IDs → Allowed Channel IDs (optional) → Allowed Guild IDs (optional). <strong>Important:</strong> At least one of Allowed User IDs or Allowed Channel IDs must be set, otherwise the bot will reject all messages (default-deny).</li>
+<li><strong>Feishu</strong>: App ID → confirm → App Secret → confirm (masked) → Domain (optional) → Allowed User IDs (optional). After collecting credentials, explain the two-phase setup the user must complete:
+<ul>
+<li><strong>Phase 1</strong> (before starting bridge): (A) batch-add permissions, (B) enable bot capability, (C) publish first version + admin approve. This makes permissions and bot effective.</li>
+<li><strong>Phase 2</strong> (requires running bridge): (D) run <code>/claude-to-im start</code>, (E) configure events (<code>im.message.receive_v1</code>) and callback (<code>card.action.trigger</code>) with long connection mode, (F) publish second version + admin approve.</li>
+<li><strong>Why two phases:</strong> Feishu validates WebSocket connection when saving event subscription — if the bridge isn't running, saving will fail. The bridge needs published permissions to connect.</li>
+<li>Keep this to a short checklist — show the full guide only if asked.</li>
+</ul>
+</li>
+<li><strong>QQ</strong>: Collect two required fields, then optional ones:
+<ol>
+<li>QQ App ID (required) → confirm</li>
+<li>QQ App Secret (required) → confirm (masked)</li>
+</ol>
+<ul>
+<li>Tell the user: these two values can be found at <a href="https://q.qq.com/qqbot/openclaw">https://q.qq.com/qqbot/openclaw</a></li>
+</ul>
+<ol start="3">
+<li>Allowed User OpenIDs (optional, press Enter to skip) — note: this is <code>user_openid</code>, NOT QQ number. If the user doesn't have openid yet, they can leave it empty.</li>
+<li>Image Enabled (optional, default true, press Enter to skip) — if the underlying provider doesn't support image input, set to false</li>
+<li>Max Image Size MB (optional, default 20, press Enter to skip)</li>
+</ol>
+<ul>
+<li>Remind user: QQ first version only supports C2C private chat sandbox access. No group/channel support, no inline buttons, no streaming preview.</li>
+</ul>
+</li>
+<li><strong>Weixin</strong>: Do not ask for a static token. Instead:
+<ol>
+<li>Tell the user this channel uses QR login, not manual credential entry.</li>
+<li>Run <code>cd SKILL_DIR &amp;&amp; npm run weixin:login</code></li>
+<li>The helper writes <code>~/.claude-to-im/runtime/weixin-login.html</code> and tries to open it automatically in the local browser.</li>
+<li>If auto-open fails, tell the user to open that HTML file manually and scan the QR code with WeChat.</li>
+<li>Wait for the helper to report success, then confirm that the linked account was saved locally.</li>
+</ol>
+<ul>
+<li>Explain briefly: the linked Weixin account is stored in <code>~/.claude-to-im/data/weixin-accounts.json</code>. Running the helper again replaces the previously linked account.</li>
+<li>Explain briefly: <code>CTI_WEIXIN_MEDIA_ENABLED</code> only controls inbound image/file/video downloads. For voice messages, the bridge only accepts the text returned by WeChat's built-in speech-to-text. If WeChat does not provide a transcript, the bridge replies with an error instead of downloading/transcribing raw audio.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Step 3 — General settings</strong></p>
+<p>Ask for runtime, default working directory, model, and mode:</p>
+<ul>
+<li><strong>Runtime</strong>: <code>claude</code> (default), <code>codex</code>, <code>auto</code>
+<ul>
+<li><code>claude</code> — uses Claude Code CLI + Claude Agent SDK (requires <code>claude</code> CLI installed)</li>
+<li><code>codex</code> — uses OpenAI Codex SDK (requires <code>codex</code> CLI; auth via <code>codex auth login</code> or <code>OPENAI_API_KEY</code>)</li>
+<li><code>auto</code> — tries Claude first, falls back to Codex if Claude CLI not found</li>
+</ul>
+</li>
+<li><strong>Working Directory</strong>: default <code>$CWD</code></li>
+<li><strong>Model</strong> (optional): Leave blank to inherit the runtime's own default model. If the user wants to override, ask them to enter a model name. Do NOT hardcode or suggest specific model names — the available models change over time.</li>
+<li><strong>Mode</strong>: <code>code</code> (default), <code>plan</code>, <code>ask</code></li>
+</ul>
+<p><strong>Step 4 — Write config and validate</strong></p>
+<ol>
+<li>Show a final summary table with all settings (secrets masked to last 4 chars)</li>
+<li>Ask user to confirm before writing</li>
+<li>Use Bash to create directory structure: <code>mkdir -p ~/.claude-to-im/{data,logs,runtime,data/messages}</code></li>
+<li>Use Write to create <code>~/.claude-to-im/config.env</code> with all settings in KEY=VALUE format</li>
+<li>Use Bash to set permissions: <code>chmod 600 ~/.claude-to-im/config.env</code></li>
+<li>Validate tokens — read <code>SKILL_DIR/references/token-validation.md</code> for the exact commands and expected responses for each platform. This catches typos and wrong credentials before the user tries to start the daemon. For Weixin, a successful QR login already counts as validation.</li>
+<li>Report results with a summary table. If any validation fails, explain what might be wrong and how to fix it.</li>
+<li>On success, tell the user: &quot;Setup complete! Run <code>/claude-to-im start</code> to start the bridge.&quot;</li>
+</ol>
+<h5><code>start</code></h5>
+<p><strong>Pre-check:</strong> Verify <code>~/.claude-to-im/config.env</code> exists (see &quot;Config check&quot; above). Without it, the daemon will crash immediately and leave a stale PID file.</p>
+<p>Run: <code>bash &quot;SKILL_DIR/scripts/daemon.sh&quot; start</code></p>
+<p>Show the output to the user. If it fails, tell the user:</p>
+<ul>
+<li>Run <code>doctor</code> to diagnose: <code>/claude-to-im doctor</code></li>
+<li>Check recent logs: <code>/claude-to-im logs</code></li>
+</ul>
+<h5><code>stop</code></h5>
+<p>Run: <code>bash &quot;SKILL_DIR/scripts/daemon.sh&quot; stop</code></p>
+<h5><code>status</code></h5>
+<p>Run: <code>bash &quot;SKILL_DIR/scripts/daemon.sh&quot; status</code></p>
+<h5><code>logs</code></h5>
+<p>Extract optional line count N from arguments (default 50).
+Run: <code>bash &quot;SKILL_DIR/scripts/daemon.sh&quot; logs N</code></p>
+<h5><code>reconfigure</code></h5>
+<ol>
+<li>Read current config from <code>~/.claude-to-im/config.env</code></li>
+<li>Show current settings in a clear table format, with all secrets masked (only last 4 chars visible)</li>
+<li>Use AskUserQuestion to ask what the user wants to change</li>
+<li>When collecting new values, tell the user where to find the value; only show the full guide from <code>SKILL_DIR/references/setup-guides.md</code> if they ask for help</li>
+<li>Update the config file atomically (write to tmp, rename)</li>
+<li>Re-validate any changed tokens</li>
+<li>Remind user: &quot;Run <code>/claude-to-im stop</code> then <code>/claude-to-im start</code> to apply the changes.&quot;</li>
+</ol>
+<p>If the user wants to switch Weixin accounts during <code>reconfigure</code>, run <code>cd SKILL_DIR &amp;&amp; npm run weixin:login</code> again. Each successful scan replaces the previously linked local account.</p>
+<h5><code>doctor</code></h5>
+<p>Run: <code>bash &quot;SKILL_DIR/scripts/doctor.sh&quot;</code></p>
+<p>Show results and suggest fixes for any failures. Common fixes:</p>
+<ul>
+<li>SDK cli.js missing → <code>cd SKILL_DIR &amp;&amp; npm install</code></li>
+<li>dist/daemon.mjs stale → <code>cd SKILL_DIR &amp;&amp; npm run build</code></li>
+<li>Config missing → run <code>setup</code></li>
+<li>Weixin account missing / expired → <code>cd SKILL_DIR &amp;&amp; npm run weixin:login</code></li>
+<li>Weixin voice message reports missing speech-to-text → enable WeChat's own voice transcription and resend; the bridge does not transcribe raw voice audio itself</li>
+</ul>
+<p>For more complex issues (messages not received, permission timeouts, high memory, stale PID files), read <code>SKILL_DIR/references/troubleshooting.md</code> for detailed diagnosis steps.</p>
+<p><strong>Feishu upgrade note:</strong> If the user upgraded from an older version of this skill and Feishu is returning permission errors (e.g. streaming cards not working, typing indicators failing, permission buttons unresponsive), the root cause is almost certainly missing permissions or callbacks in the Feishu backend. Refer the user to the &quot;Upgrading from a previous version&quot; section in <code>SKILL_DIR/references/setup-guides.md</code> — they need to add new scopes (<code>cardkit:card:write</code>, <code>cardkit:card:read</code>, <code>im:message:update</code>, <code>im:message.reactions:read</code>, <code>im:message.reactions:write_only</code>), add the <code>card.action.trigger</code> callback, and re-publish the app. The upgrade requires two publish cycles because adding the callback needs an active WebSocket connection (bridge must be running).</p>
+<h4>Notes</h4>
+<ul>
+<li>Always mask secrets in output (show only last 4 characters) — users often share terminal output in bug reports, so exposed tokens would be a security incident.</li>
+<li>Always check for config.env before starting the daemon — without it the process crashes on startup and leaves a stale PID file that blocks future starts (requiring manual cleanup).</li>
+<li>The daemon runs as a background Node.js process managed by platform supervisor (launchd on macOS, setsid on Linux, WinSW/NSSM on Windows).</li>
+<li>Config persists at <code>~/.claude-to-im/config.env</code> — survives across sessions.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

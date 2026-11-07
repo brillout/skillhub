@@ -1,0 +1,825 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>excalidraw-diagram-generator · SkillHub</title>
+    <meta name="description" content="Use it when: you ask for a flowchart, mind map, architecture, data-flow, swimlane, class, sequence or ER diagram. It does: picks the diagram type, pulls out the steps, entities and relationships, and lays them out as Excalidraw JSON. You get: a .excalidraw file to open at excalidraw.com or in the VS Code extension, plus a summary with its element count. Icons: AWS, GCP or other cloud icons once you download an Excalidraw library and split it with a bundled Python script. Limits: about 20 elements per diagram, no embedded images and no automatic collision detection." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=github%2Fawesome-copilot">github/awesome-copilot</a></p>
+      <h1>excalidraw-diagram-generator</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you ask for a flowchart, mind map, architecture, data-flow, swimlane, class, sequence or ER diagram</dd></div><div><dt>It does</dt><dd>picks the diagram type, pulls out the steps, entities and relationships, and lays them out as Excalidraw JSON</dd></div><div><dt>You get</dt><dd>a .excalidraw file to open at excalidraw.com or in the VS Code extension, plus a summary with its element count</dd></div><div><dt>Icons</dt><dd>AWS, GCP or other cloud icons once you download an Excalidraw library and split it with a bundled Python script</dd></div><div><dt>Limits</dt><dd>about 20 elements per diagram, no embedded images and no automatic collision detection</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>It turns a plain description into a diagram file you can keep editing by hand. The agent first decides the diagram type from your wording, such as &#34;steps&#34; for a flowchart or &#34;database&#34; for an ER diagram, then pulls out what that type needs: decision points for a flowchart, actors and lanes for a swimlane, cardinality for an ER diagram, lifelines and messages for a sequence diagram. It writes rectangles, ellipses, diamonds, arrows and text with set spacing, a consistent color scheme and the hand-drawn Excalifont on every label, then checks unique IDs, overlaps, readability and valid JSON before delivering. For requests with too many parts it suggests an overview plus detailed sub-diagrams. Cloud architecture diagrams can use real service icons: you download a library from libraries.excalidraw.com, a bundled script splits it into one file per icon, and other scripts place icons and arrows without loading the icon data into the agent&#39;s context. Without a library it falls back to labelled shapes.</p>
+      <p class="muted">Summarizes <a href="https://github.com/github/awesome-copilot/tree/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/excalidraw-diagram-generator">the skill at 797337f</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/github/awesome-copilot --skill excalidraw-diagram-generator</code><button type="button" class="copy" data-copy="npx skills add https://github.com/github/awesome-copilot --skill excalidraw-diagram-generator">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/github/awesome-copilot/excalidraw-diagram-generator">skills.sh page</a> · <a href="https://github.com/github/awesome-copilot/tree/HEAD/skills/excalidraw-diagram-generator">Source on GitHub</a> · <a href="/skillhub/?repo=github%2Fawesome-copilot">All skills from github/awesome-copilot</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>34,400 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>40,883 <span class="muted">github/awesome-copilot</span></dd></div><div><dt>First seen</dt><dd>Feb 4, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">1.3K</div>
+      <div class="stat-delta">+207% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 408; week to Sep 26: 508; week to Oct 3: 628; week to Oct 10: 445; week to Oct 17: 423; week to Oct 24: 338; week to Oct 31: 345; week to Nov 7: 1,251. Use the left and right arrow keys to read each week."
+        data-values="408,508,628,445,423,338,345,1251" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,35.6 38.6,32.1 71.1,27.9 103.7,34.3 136.3,35.1 168.9,38.1 201.4,37.9 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>408</td></tr><tr><td>Sep 26</td><td>508</td></tr><tr><td>Oct 3</td><td>628</td></tr><tr><td>Oct 10</td><td>445</td></tr><tr><td>Oct 17</td><td>423</td></tr><tr><td>Oct 24</td><td>338</td></tr><tr><td>Oct 31</td><td>345</td></tr><tr><td>Nov 7</td><td>1,251</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:science" data-facet="category" title="Research reproduction, financial data, charts and diagrams." href="/skillhub/?tag=category%3Ascience">category:science</a></div>
+          <p class="tag-meaning">Research reproduction, financial data, charts and diagrams.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="diagrams" data-facet="topic" href="/skillhub/?tag=diagrams">diagrams</a><a class="tag" data-tag="architecture" data-facet="topic" href="/skillhub/?tag=architecture">architecture</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:excalidraw" data-facet="stack" href="/skillhub/?tag=stack%3Aexcalidraw">stack:excalidraw</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/github/awesome-copilot/blob/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/excalidraw-diagram-generator/SKILL.md">github/awesome-copilot at 797337f</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: excalidraw-diagram-generator
+description: &#39;Generate Excalidraw diagrams from natural language descriptions. Use when asked to &#34;create a diagram&#34;, &#34;make a flowchart&#34;, &#34;visualize a process&#34;, &#34;draw a system architecture&#34;, &#34;create a mind map&#34;, or &#34;generate an Excalidraw file&#34;. Supports flowcharts, relationship diagrams, mind maps, and system architecture diagrams. Outputs .excalidraw JSON files that can be opened directly in Excalidraw.&#39;</code></pre></details>
+        <div class="markdown"><h3>Excalidraw Diagram Generator</h3>
+<p>A skill for generating Excalidraw-format diagrams from natural language descriptions. This skill helps create visual representations of processes, systems, relationships, and ideas without manual drawing.</p>
+<h4>When to Use This Skill</h4>
+<p>Use this skill when users request:</p>
+<ul>
+<li>&quot;Create a diagram showing...&quot;</li>
+<li>&quot;Make a flowchart for...&quot;</li>
+<li>&quot;Visualize the process of...&quot;</li>
+<li>&quot;Draw the system architecture of...&quot;</li>
+<li>&quot;Generate a mind map about...&quot;</li>
+<li>&quot;Create an Excalidraw file for...&quot;</li>
+<li>&quot;Show the relationship between...&quot;</li>
+<li>&quot;Diagram the workflow of...&quot;</li>
+</ul>
+<p><strong>Supported diagram types:</strong></p>
+<ul>
+<li>📊 <strong>Flowcharts</strong>: Sequential processes, workflows, decision trees</li>
+<li>🔗 <strong>Relationship Diagrams</strong>: Entity relationships, system components, dependencies</li>
+<li>🧠 <strong>Mind Maps</strong>: Concept hierarchies, brainstorming results, topic organization</li>
+<li>🏗️ <strong>Architecture Diagrams</strong>: System design, module interactions, data flow</li>
+<li>📈 <strong>Data Flow Diagrams (DFD)</strong>: Data flow visualization, data transformation processes</li>
+<li>🏊 <strong>Business Flow (Swimlane)</strong>: Cross-functional workflows, actor-based process flows</li>
+<li>📦 <strong>Class Diagrams</strong>: Object-oriented design, class structures and relationships</li>
+<li>🔄 <strong>Sequence Diagrams</strong>: Object interactions over time, message flows</li>
+<li>🗃️ <strong>ER Diagrams</strong>: Database entity relationships, data models</li>
+</ul>
+<h4>Prerequisites</h4>
+<ul>
+<li>Clear description of what should be visualized</li>
+<li>Identification of key entities, steps, or concepts</li>
+<li>Understanding of relationships or flow between elements</li>
+</ul>
+<h4>Step-by-Step Workflow</h4>
+<h5>Step 1: Understand the Request</h5>
+<p>Analyze the user's description to determine:</p>
+<ol>
+<li><strong>Diagram type</strong> (flowchart, relationship, mind map, architecture)</li>
+<li><strong>Key elements</strong> (entities, steps, concepts)</li>
+<li><strong>Relationships</strong> (flow, connections, hierarchy)</li>
+<li><strong>Complexity</strong> (number of elements)</li>
+</ol>
+<h5>Step 2: Choose the Appropriate Diagram Type</h5>
+<table>
+<thead>
+<tr>
+<th>User Intent</th>
+<th>Diagram Type</th>
+<th>Example Keywords</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Process flow, steps, procedures</td>
+<td><strong>Flowchart</strong></td>
+<td>&quot;workflow&quot;, &quot;process&quot;, &quot;steps&quot;, &quot;procedure&quot;</td>
+</tr>
+<tr>
+<td>Connections, dependencies, associations</td>
+<td><strong>Relationship Diagram</strong></td>
+<td>&quot;relationship&quot;, &quot;connections&quot;, &quot;dependencies&quot;, &quot;structure&quot;</td>
+</tr>
+<tr>
+<td>Concept hierarchy, brainstorming</td>
+<td><strong>Mind Map</strong></td>
+<td>&quot;mind map&quot;, &quot;concepts&quot;, &quot;ideas&quot;, &quot;breakdown&quot;</td>
+</tr>
+<tr>
+<td>System design, components</td>
+<td><strong>Architecture Diagram</strong></td>
+<td>&quot;architecture&quot;, &quot;system&quot;, &quot;components&quot;, &quot;modules&quot;</td>
+</tr>
+<tr>
+<td>Data flow, transformation processes</td>
+<td><strong>Data Flow Diagram (DFD)</strong></td>
+<td>&quot;data flow&quot;, &quot;data processing&quot;, &quot;data transformation&quot;</td>
+</tr>
+<tr>
+<td>Cross-functional processes, actor responsibilities</td>
+<td><strong>Business Flow (Swimlane)</strong></td>
+<td>&quot;business process&quot;, &quot;swimlane&quot;, &quot;actors&quot;, &quot;responsibilities&quot;</td>
+</tr>
+<tr>
+<td>Object-oriented design, class structures</td>
+<td><strong>Class Diagram</strong></td>
+<td>&quot;class&quot;, &quot;inheritance&quot;, &quot;OOP&quot;, &quot;object model&quot;</td>
+</tr>
+<tr>
+<td>Interaction sequences, message flows</td>
+<td><strong>Sequence Diagram</strong></td>
+<td>&quot;sequence&quot;, &quot;interaction&quot;, &quot;messages&quot;, &quot;timeline&quot;</td>
+</tr>
+<tr>
+<td>Database design, entity relationships</td>
+<td><strong>ER Diagram</strong></td>
+<td>&quot;database&quot;, &quot;entity&quot;, &quot;relationship&quot;, &quot;data model&quot;</td>
+</tr>
+</tbody>
+</table>
+<h5>Step 3: Extract Structured Information</h5>
+<p><strong>For Flowcharts:</strong></p>
+<ul>
+<li>List of sequential steps</li>
+<li>Decision points (if any)</li>
+<li>Start and end points</li>
+</ul>
+<p><strong>For Relationship Diagrams:</strong></p>
+<ul>
+<li>Entities/nodes (name + optional description)</li>
+<li>Relationships between entities (from → to, with label)</li>
+</ul>
+<p><strong>For Mind Maps:</strong></p>
+<ul>
+<li>Central topic</li>
+<li>Main branches (3-6 recommended)</li>
+<li>Sub-topics for each branch (optional)</li>
+</ul>
+<p><strong>For Data Flow Diagrams (DFD):</strong></p>
+<ul>
+<li>Data sources and destinations (external entities)</li>
+<li>Processes (data transformations)</li>
+<li>Data stores (databases, files)</li>
+<li>Data flows (arrows showing data movement from left-to-right or from top-left to bottom-right)</li>
+<li><strong>Important</strong>: Do not represent process order, only data flow</li>
+</ul>
+<p><strong>For Business Flow (Swimlane):</strong></p>
+<ul>
+<li>Actors/roles (departments, systems, people) - displayed as header columns</li>
+<li>Process lanes (vertical lanes under each actor)</li>
+<li>Process boxes (activities within each lane)</li>
+<li>Flow arrows (connecting process boxes, including cross-lane handoffs)</li>
+</ul>
+<p><strong>For Class Diagrams:</strong></p>
+<ul>
+<li>Classes with names</li>
+<li>Attributes with visibility (+, -, #)</li>
+<li>Methods with visibility and parameters</li>
+<li>Relationships: inheritance (solid line + white triangle), implementation (dashed line + white triangle), association (solid line), dependency (dashed line), aggregation (solid line + white diamond), composition (solid line + filled diamond)</li>
+<li>Multiplicity notations (1, 0..1, 1..*, *)</li>
+</ul>
+<p><strong>For Sequence Diagrams:</strong></p>
+<ul>
+<li>Objects/actors (arranged horizontally at top)</li>
+<li>Lifelines (vertical lines from each object)</li>
+<li>Messages (horizontal arrows between lifelines)</li>
+<li>Synchronous messages (solid arrow), asynchronous messages (dashed arrow)</li>
+<li>Return values (dashed arrows)</li>
+<li>Activation boxes (rectangles on lifelines during execution)</li>
+<li>Time flows from top to bottom</li>
+</ul>
+<p><strong>For ER Diagrams:</strong></p>
+<ul>
+<li>Entities (rectangles with entity names)</li>
+<li>Attributes (listed inside entities)</li>
+<li>Primary keys (underlined or marked with PK)</li>
+<li>Foreign keys (marked with FK)</li>
+<li>Relationships (lines connecting entities)</li>
+<li>Cardinality: 1:1 (one-to-one), 1:N (one-to-many), N:M (many-to-many)</li>
+<li>Junction/associative entities for many-to-many relationships (dashed rectangles)</li>
+</ul>
+<h5>Step 4: Generate the Excalidraw JSON</h5>
+<p>Create the <code>.excalidraw</code> file with appropriate elements:</p>
+<p><strong>Available element types:</strong></p>
+<ul>
+<li><code>rectangle</code>: Boxes for entities, steps, concepts</li>
+<li><code>ellipse</code>: Alternative shapes for emphasis</li>
+<li><code>diamond</code>: Decision points</li>
+<li><code>arrow</code>: Directional connections</li>
+<li><code>text</code>: Labels and annotations</li>
+</ul>
+<p><strong>Key properties to set:</strong></p>
+<ul>
+<li><strong>Position</strong>: <code>x</code>, <code>y</code> coordinates</li>
+<li><strong>Size</strong>: <code>width</code>, <code>height</code></li>
+<li><strong>Style</strong>: <code>strokeColor</code>, <code>backgroundColor</code>, <code>fillStyle</code></li>
+<li><strong>Font</strong>: <code>fontFamily: 5</code> (Excalifont - <strong>required for all text elements</strong>)</li>
+<li><strong>Text</strong>: Embedded text for labels</li>
+<li><strong>Connections</strong>: <code>points</code> array for arrows</li>
+</ul>
+<p><strong>Important</strong>: All text elements must use <code>fontFamily: 5</code> (Excalifont) for consistent visual appearance.</p>
+<h5>Step 5: Format the Output</h5>
+<p>Structure the complete Excalidraw file:</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;excalidraw&quot;,
+  &quot;version&quot;: 2,
+  &quot;source&quot;: &quot;https://excalidraw.com&quot;,
+  &quot;elements&quot;: [
+    // Array of diagram elements
+  ],
+  &quot;appState&quot;: {
+    &quot;viewBackgroundColor&quot;: &quot;#ffffff&quot;,
+    &quot;gridSize&quot;: 20
+  },
+  &quot;files&quot;: {}
+}
+</code></pre>
+<h5>Step 6: Save and Provide Instructions</h5>
+<ol>
+<li>Save as <code>&lt;descriptive-name&gt;.excalidraw</code></li>
+<li>Inform user how to open:
+<ul>
+<li>Visit <a href="https://excalidraw.com">https://excalidraw.com</a></li>
+<li>Click &quot;Open&quot; or drag-and-drop the file</li>
+<li>Or use Excalidraw VS Code extension</li>
+</ul>
+</li>
+</ol>
+<h4>Best Practices</h4>
+<h5>Element Count Guidelines</h5>
+<table>
+<thead>
+<tr>
+<th>Diagram Type</th>
+<th>Recommended Count</th>
+<th>Maximum</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Flowchart steps</td>
+<td>3-10</td>
+<td>15</td>
+</tr>
+<tr>
+<td>Relationship entities</td>
+<td>3-8</td>
+<td>12</td>
+</tr>
+<tr>
+<td>Mind map branches</td>
+<td>4-6</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Mind map sub-topics per branch</td>
+<td>2-4</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+<h5>Layout Tips</h5>
+<ol>
+<li><strong>Start positions</strong>: Center important elements, use consistent spacing</li>
+<li><strong>Spacing</strong>:
+<ul>
+<li>Horizontal gap: 200-300px between elements</li>
+<li>Vertical gap: 100-150px between rows</li>
+</ul>
+</li>
+<li><strong>Colors</strong>: Use consistent color scheme
+<ul>
+<li>Primary elements: Light blue (<code>#a5d8ff</code>)</li>
+<li>Secondary elements: Light green (<code>#b2f2bb</code>)</li>
+<li>Important/Central: Yellow (<code>#ffd43b</code>)</li>
+<li>Alerts/Warnings: Light red (<code>#ffc9c9</code>)</li>
+</ul>
+</li>
+<li><strong>Text sizing</strong>: 16-24px for readability</li>
+<li><strong>Font</strong>: Always use <code>fontFamily: 5</code> (Excalifont) for all text elements</li>
+<li><strong>Arrow style</strong>: Use straight arrows for simple flows, curved for complex relationships</li>
+</ol>
+<h5>Complexity Management</h5>
+<p><strong>If user request has too many elements:</strong></p>
+<ul>
+<li>Suggest breaking into multiple diagrams</li>
+<li>Focus on main elements first</li>
+<li>Offer to create detailed sub-diagrams</li>
+</ul>
+<p><strong>Example response:</strong></p>
+<pre><code>&quot;Your request includes 15 components. For clarity, I recommend:
+1. High-level architecture diagram (6 main components)
+2. Detailed diagram for each subsystem
+
+Would you like me to start with the high-level view?&quot;
+</code></pre>
+<h4>Example Prompts and Responses</h4>
+<h5>Example 1: Simple Flowchart</h5>
+<p><strong>User:</strong> &quot;Create a flowchart for user registration&quot;</p>
+<p><strong>Agent generates:</strong></p>
+<ol>
+<li>Extract steps: &quot;Enter email&quot; → &quot;Verify email&quot; → &quot;Set password&quot; → &quot;Complete&quot;</li>
+<li>Create flowchart with 4 rectangles + 3 arrows</li>
+<li>Save as <code>user-registration-flow.excalidraw</code></li>
+</ol>
+<h5>Example 2: Relationship Diagram</h5>
+<p><strong>User:</strong> &quot;Diagram the relationship between User, Post, and Comment entities&quot;</p>
+<p><strong>Agent generates:</strong></p>
+<ol>
+<li>Entities: User, Post, Comment</li>
+<li>Relationships: User → Post (&quot;creates&quot;), User → Comment (&quot;writes&quot;), Post → Comment (&quot;contains&quot;)</li>
+<li>Save as <code>user-content-relationships.excalidraw</code></li>
+</ol>
+<h5>Example 3: Mind Map</h5>
+<p><strong>User:</strong> &quot;Mind map about machine learning concepts&quot;</p>
+<p><strong>Agent generates:</strong></p>
+<ol>
+<li>Center: &quot;Machine Learning&quot;</li>
+<li>Branches: Supervised Learning, Unsupervised Learning, Reinforcement Learning, Deep Learning</li>
+<li>Sub-topics under each branch</li>
+<li>Save as <code>machine-learning-mindmap.excalidraw</code></li>
+</ol>
+<h4>Troubleshooting</h4>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Elements overlap</td>
+<td>Increase spacing between coordinates</td>
+</tr>
+<tr>
+<td>Text doesn't fit in boxes</td>
+<td>Increase box width or reduce font size</td>
+</tr>
+<tr>
+<td>Too many elements</td>
+<td>Break into multiple diagrams</td>
+</tr>
+<tr>
+<td>Unclear layout</td>
+<td>Use grid layout (rows/columns) or radial layout (mind maps)</td>
+</tr>
+<tr>
+<td>Colors inconsistent</td>
+<td>Define color palette upfront based on element types</td>
+</tr>
+</tbody>
+</table>
+<h4>Advanced Techniques</h4>
+<h5>Grid Layout (for Relationship Diagrams)</h5>
+<pre><code class="language-javascript">const columns = Math.ceil(Math.sqrt(entityCount));
+const x = startX + (index % columns) * horizontalGap;
+const y = startY + Math.floor(index / columns) * verticalGap;
+</code></pre>
+<h5>Radial Layout (for Mind Maps)</h5>
+<pre><code class="language-javascript">const angle = (2 * Math.PI * index) / branchCount;
+const x = centerX + radius * Math.cos(angle);
+const y = centerY + radius * Math.sin(angle);
+</code></pre>
+<h5>Auto-generated IDs</h5>
+<p>Use timestamp + random string for unique IDs:</p>
+<pre><code class="language-javascript">const id = Date.now().toString(36) + Math.random().toString(36).substr(2);
+</code></pre>
+<h4>Output Format</h4>
+<p>Always provide:</p>
+<ol>
+<li>✅ Complete <code>.excalidraw</code> JSON file</li>
+<li>📊 Summary of what was created</li>
+<li>📝 Element count</li>
+<li>💡 Instructions for opening/editing</li>
+</ol>
+<p><strong>Example summary:</strong></p>
+<pre><code>Created: user-workflow.excalidraw
+Type: Flowchart
+Elements: 7 rectangles, 6 arrows, 1 title text
+Total: 14 elements
+
+To view:
+1. Visit https://excalidraw.com
+2. Drag and drop user-workflow.excalidraw
+3. Or use File → Open in Excalidraw VS Code extension
+</code></pre>
+<h4>Validation Checklist</h4>
+<p>Before delivering the diagram:</p>
+<ul>
+<li>[ ] All elements have unique IDs</li>
+<li>[ ] Coordinates prevent overlapping</li>
+<li>[ ] Text is readable (font size 16+)</li>
+<li>[ ] <strong>All text elements use <code>fontFamily: 5</code> (Excalifont)</strong></li>
+<li>[ ] Arrows connect logically</li>
+<li>[ ] Colors follow consistent scheme</li>
+<li>[ ] File is valid JSON</li>
+<li>[ ] Element count is reasonable (&lt;20 for clarity)</li>
+</ul>
+<h4>Icon Libraries (Optional Enhancement)</h4>
+<p>For specialized diagrams (e.g., AWS/GCP/Azure architecture diagrams), you can use pre-made icon libraries from Excalidraw. This provides professional, standardized icons instead of basic shapes.</p>
+<h5>When User Requests Icons</h5>
+<p><strong>If user asks for AWS/cloud architecture diagrams or mentions wanting to use specific icons:</strong></p>
+<ol>
+<li>
+<p><strong>Check if library exists</strong>: Look for <code>libraries/&lt;library-name&gt;/reference.md</code></p>
+</li>
+<li>
+<p><strong>If library exists</strong>: Proceed to use icons (see AI Assistant Workflow below)</p>
+</li>
+<li>
+<p><strong>If library does NOT exist</strong>: Respond with setup instructions:</p>
+<pre><code>To use [AWS/GCP/Azure/etc.] architecture icons, please follow these steps:
+
+1. Visit https://libraries.excalidraw.com/
+2. Search for &quot;[AWS Architecture Icons/etc.]&quot; and download the .excalidrawlib file
+3. Create directory: skills/excalidraw-diagram-generator/libraries/[icon-set-name]/
+4. Place the downloaded file in that directory
+5. Run the splitter script:
+   python skills/excalidraw-diagram-generator/scripts/split-excalidraw-library.py skills/excalidraw-diagram-generator/libraries/[icon-set-name]/
+
+This will split the library into individual icon files for efficient use.
+After setup is complete, I can create your diagram using the actual AWS/cloud icons.
+
+Alternatively, I can create the diagram now using simple shapes (rectangles, ellipses) 
+which you can later replace with icons manually in Excalidraw.
+</code></pre>
+</li>
+</ol>
+<h5>User Setup Instructions (Detailed)</h5>
+<p><strong>Step 1: Create Library Directory</strong></p>
+<pre><code class="language-bash">mkdir -p skills/excalidraw-diagram-generator/libraries/aws-architecture-icons
+</code></pre>
+<p><strong>Step 2: Download Library</strong></p>
+<ul>
+<li>Visit: <a href="https://libraries.excalidraw.com/">https://libraries.excalidraw.com/</a></li>
+<li>Search for your desired icon set (e.g., &quot;AWS Architecture Icons&quot;)</li>
+<li>Click download to get the <code>.excalidrawlib</code> file</li>
+<li>Example categories (availability varies; confirm on the site):
+<ul>
+<li>Cloud service icons</li>
+<li>UI/Material icons</li>
+<li>Flowchart symbols</li>
+</ul>
+</li>
+</ul>
+<p><strong>Step 3: Place Library File</strong></p>
+<ul>
+<li>Rename the downloaded file to match the directory name (e.g., <code>aws-architecture-icons.excalidrawlib</code>)</li>
+<li>Move it to the directory created in Step 1</li>
+</ul>
+<p><strong>Step 4: Run Splitter Script</strong></p>
+<pre><code class="language-bash">python skills/excalidraw-diagram-generator/scripts/split-excalidraw-library.py skills/excalidraw-diagram-generator/libraries/aws-architecture-icons/
+</code></pre>
+<p><strong>Step 5: Verify Setup</strong>
+After running the script, verify the following structure exists:</p>
+<pre><code>skills/excalidraw-diagram-generator/libraries/aws-architecture-icons/
+  aws-architecture-icons.excalidrawlib  (original)
+  reference.md                          (generated - icon lookup table)
+  icons/                                (generated - individual icon files)
+    API-Gateway.json
+    CloudFront.json
+    EC2.json
+    Lambda.json
+    RDS.json
+    S3.json
+    ...
+</code></pre>
+<h5>AI Assistant Workflow</h5>
+<p><strong>When icon libraries are available in <code>libraries/</code>:</strong></p>
+<p><strong>RECOMMENDED APPROACH: Use Python Scripts (Efficient &amp; Reliable)</strong></p>
+<p>The repository includes Python scripts that handle icon integration automatically:</p>
+<ol>
+<li>
+<p><strong>Create base diagram structure</strong>:</p>
+<ul>
+<li>Create <code>.excalidraw</code> file with basic layout (title, boxes, regions)</li>
+<li>This establishes the canvas and overall structure</li>
+</ul>
+</li>
+<li>
+<p><strong>Add icons using Python script</strong>:</p>
+<pre><code class="language-bash">python skills/excalidraw-diagram-generator/scripts/add-icon-to-diagram.py \
+  &lt;diagram-path&gt; &lt;icon-name&gt; &lt;x&gt; &lt;y&gt; [--label &quot;Text&quot;] [--library-path PATH]
+</code></pre>
+<ul>
+<li>Edit via <code>.excalidraw.edit</code> is enabled by default to avoid overwrite issues; pass <code>--no-use-edit-suffix</code> to disable.</li>
+</ul>
+<p><strong>Examples</strong>:</p>
+<pre><code class="language-bash"># Add EC2 icon at position (400, 300) with label
+python scripts/add-icon-to-diagram.py diagram.excalidraw EC2 400 300 --label &quot;Web Server&quot;
+
+# Add VPC icon at position (200, 150)
+python scripts/add-icon-to-diagram.py diagram.excalidraw VPC 200 150
+
+# Add icon from different library
+python scripts/add-icon-to-diagram.py diagram.excalidraw Compute-Engine 500 200 \
+  --library-path libraries/gcp-icons --label &quot;API Server&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Add connecting arrows</strong>:</p>
+<pre><code class="language-bash">python skills/excalidraw-diagram-generator/scripts/add-arrow.py \
+  &lt;diagram-path&gt; &lt;from-x&gt; &lt;from-y&gt; &lt;to-x&gt; &lt;to-y&gt; [--label &quot;Text&quot;] [--style solid|dashed|dotted] [--color HEX]
+</code></pre>
+<ul>
+<li>Edit via <code>.excalidraw.edit</code> is enabled by default to avoid overwrite issues; pass <code>--no-use-edit-suffix</code> to disable.</li>
+</ul>
+<p><strong>Examples</strong>:</p>
+<pre><code class="language-bash"># Simple arrow from (300, 250) to (500, 300)
+python scripts/add-arrow.py diagram.excalidraw 300 250 500 300
+
+# Arrow with label
+python scripts/add-arrow.py diagram.excalidraw 300 250 500 300 --label &quot;HTTPS&quot;
+
+# Dashed arrow with custom color
+python scripts/add-arrow.py diagram.excalidraw 400 350 600 400 --style dashed --color &quot;#7950f2&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Workflow summary</strong>:</p>
+<pre><code class="language-bash"># Step 1: Create base diagram with title and structure
+# (Create .excalidraw file with initial elements)
+
+# Step 2: Add icons with labels
+python scripts/add-icon-to-diagram.py my-diagram.excalidraw &quot;Internet-gateway&quot; 200 150 --label &quot;Internet Gateway&quot;
+python scripts/add-icon-to-diagram.py my-diagram.excalidraw VPC 250 250
+python scripts/add-icon-to-diagram.py my-diagram.excalidraw ELB 350 300 --label &quot;Load Balancer&quot;
+python scripts/add-icon-to-diagram.py my-diagram.excalidraw EC2 450 350 --label &quot;EC2 Instance&quot;
+python scripts/add-icon-to-diagram.py my-diagram.excalidraw RDS 550 400 --label &quot;Database&quot;
+
+# Step 3: Add connecting arrows
+python scripts/add-arrow.py my-diagram.excalidraw 250 200 300 250  # Internet → VPC
+python scripts/add-arrow.py my-diagram.excalidraw 300 300 400 300  # VPC → ELB
+python scripts/add-arrow.py my-diagram.excalidraw 400 330 500 350  # ELB → EC2
+python scripts/add-arrow.py my-diagram.excalidraw 500 380 600 400  # EC2 → RDS
+</code></pre>
+</li>
+</ol>
+<p><strong>Benefits of Python Script Approach</strong>:</p>
+<ul>
+<li>✅ <strong>No token consumption</strong>: Icon JSON data (200-1000 lines each) never enters AI context</li>
+<li>✅ <strong>Accurate transformations</strong>: Coordinate calculations handled deterministically</li>
+<li>✅ <strong>ID management</strong>: Automatic UUID generation prevents conflicts</li>
+<li>✅ <strong>Reliable</strong>: No risk of coordinate miscalculation or ID collision</li>
+<li>✅ <strong>Fast</strong>: Direct file manipulation, no parsing overhead</li>
+<li>✅ <strong>Reusable</strong>: Works with any Excalidraw library you provide</li>
+</ul>
+<p><strong>ALTERNATIVE: Manual Icon Integration (Not Recommended)</strong></p>
+<p>Only use this if Python scripts are unavailable:</p>
+<ol>
+<li>
+<p><strong>Check for libraries</strong>:</p>
+<pre><code>List directory: skills/excalidraw-diagram-generator/libraries/
+Look for subdirectories containing reference.md files
+</code></pre>
+</li>
+<li>
+<p><strong>Read reference.md</strong>:</p>
+<pre><code>Open: libraries/&lt;library-name&gt;/reference.md
+This is lightweight (typically &lt;300 lines) and lists all available icons
+</code></pre>
+</li>
+<li>
+<p><strong>Find relevant icons</strong>:</p>
+<pre><code>Search the reference.md table for icon names matching diagram needs
+Example: For AWS diagram with EC2, S3, Lambda → Find &quot;EC2&quot;, &quot;S3&quot;, &quot;Lambda&quot; in table
+</code></pre>
+</li>
+<li>
+<p><strong>Load specific icon data</strong> (WARNING: Large files):</p>
+<pre><code>Read ONLY the needed icon files:
+- libraries/aws-architecture-icons/icons/EC2.json (200-300 lines)
+- libraries/aws-architecture-icons/icons/S3.json (200-300 lines)
+- libraries/aws-architecture-icons/icons/Lambda.json (200-300 lines)
+Note: Each icon file is 200-1000 lines - this consumes significant tokens
+</code></pre>
+</li>
+<li>
+<p><strong>Extract and transform elements</strong>:</p>
+<pre><code>Each icon JSON contains an &quot;elements&quot; array
+Calculate bounding box (min_x, min_y, max_x, max_y)
+Apply offset to all x/y coordinates
+Generate new unique IDs for all elements
+Update groupIds references
+Copy transformed elements into your diagram
+</code></pre>
+</li>
+<li>
+<p><strong>Position icons and add connections</strong>:</p>
+<pre><code>Adjust x/y coordinates to position icons correctly in the diagram
+Update IDs to ensure uniqueness across diagram
+Add connecting arrows and labels as needed
+</code></pre>
+</li>
+</ol>
+<p><strong>Manual Integration Challenges</strong>:</p>
+<ul>
+<li>⚠️ High token consumption (200-1000 lines per icon × number of icons)</li>
+<li>⚠️ Complex coordinate transformation calculations</li>
+<li>⚠️ Risk of ID collision if not handled carefully</li>
+<li>⚠️ Time-consuming for diagrams with many icons</li>
+</ul>
+<h5>Example: Creating AWS Diagram with Icons</h5>
+<p><strong>Request</strong>: &quot;Create an AWS architecture diagram with Internet Gateway, VPC, ELB, EC2, and RDS&quot;</p>
+<p><strong>Recommended Workflow (using Python scripts)</strong>:
+<strong>Request</strong>: &quot;Create an AWS architecture diagram with Internet Gateway, VPC, ELB, EC2, and RDS&quot;</p>
+<p><strong>Recommended Workflow (using Python scripts)</strong>:</p>
+<pre><code class="language-bash"># Step 1: Create base diagram file with title
+# Create my-aws-diagram.excalidraw with basic structure (title, etc.)
+
+# Step 2: Check icon availability
+# Read: libraries/aws-architecture-icons/reference.md
+# Confirm icons exist: Internet-gateway, VPC, ELB, EC2, RDS
+
+# Step 3: Add icons with Python script
+python scripts/add-icon-to-diagram.py my-aws-diagram.excalidraw &quot;Internet-gateway&quot; 150 100 --label &quot;Internet Gateway&quot;
+python scripts/add-icon-to-diagram.py my-aws-diagram.excalidraw VPC 200 200
+python scripts/add-icon-to-diagram.py my-aws-diagram.excalidraw ELB 350 250 --label &quot;Load Balancer&quot;
+python scripts/add-icon-to-diagram.py my-aws-diagram.excalidraw EC2 500 300 --label &quot;Web Server&quot;
+python scripts/add-icon-to-diagram.py my-aws-diagram.excalidraw RDS 650 350 --label &quot;Database&quot;
+
+# Step 4: Add connecting arrows
+python scripts/add-arrow.py my-aws-diagram.excalidraw 200 150 250 200  # Internet → VPC
+python scripts/add-arrow.py my-aws-diagram.excalidraw 265 230 350 250  # VPC → ELB
+python scripts/add-arrow.py my-aws-diagram.excalidraw 415 280 500 300  # ELB → EC2
+python scripts/add-arrow.py my-aws-diagram.excalidraw 565 330 650 350 --label &quot;SQL&quot; --style dashed
+
+# Result: Complete diagram with professional AWS icons, labels, and connections
+</code></pre>
+<p><strong>Benefits</strong>:</p>
+<ul>
+<li>No manual coordinate calculation</li>
+<li>No token consumption for icon data</li>
+<li>Deterministic, reliable results</li>
+<li>Easy to iterate and adjust positions</li>
+</ul>
+<p><strong>Alternative Workflow (manual, if scripts unavailable)</strong>:</p>
+<ol>
+<li>Check: <code>libraries/aws-architecture-icons/reference.md</code> exists → Yes</li>
+<li>Read reference.md → Find entries for Internet-gateway, VPC, ELB, EC2, RDS</li>
+<li>Load:
+<ul>
+<li><code>icons/Internet-gateway.json</code> (298 lines)</li>
+<li><code>icons/VPC.json</code> (550 lines)</li>
+<li><code>icons/ELB.json</code> (363 lines)</li>
+<li><code>icons/EC2.json</code> (231 lines)</li>
+<li><code>icons/RDS.json</code> (similar size)
+<strong>Total: ~2000+ lines of JSON to process</strong></li>
+</ul>
+</li>
+<li>Extract elements from each JSON</li>
+<li>Calculate bounding boxes and offsets for each icon</li>
+<li>Transform all coordinates (x, y) for positioning</li>
+<li>Generate unique IDs for all elements</li>
+<li>Add arrows showing data flow</li>
+<li>Add text labels</li>
+<li>Generate final <code>.excalidraw</code> file</li>
+</ol>
+<p><strong>Challenges with manual approach</strong>:</p>
+<ul>
+<li>High token consumption (~2000-5000 lines)</li>
+<li>Complex coordinate math</li>
+<li>Risk of ID conflicts</li>
+</ul>
+<h5>Supported Icon Libraries (Examples — verify availability)</h5>
+<ul>
+<li>This workflow works with any valid <code>.excalidrawlib</code> file you provide.</li>
+<li>Examples of library categories you may find on <a href="https://libraries.excalidraw.com/:">https://libraries.excalidraw.com/:</a>
+<ul>
+<li>Cloud service icons</li>
+<li>Kubernetes / infrastructure icons</li>
+<li>UI / Material icons</li>
+<li>Flowchart / diagram symbols</li>
+<li>Network diagram icons</li>
+</ul>
+</li>
+<li>Availability and naming can change; verify exact library names on the site before use.</li>
+</ul>
+<h5>Fallback: No Icons Available</h5>
+<p><strong>If no icon libraries are set up:</strong></p>
+<ul>
+<li>Create diagrams using basic shapes (rectangles, ellipses, arrows)</li>
+<li>Use color coding and text labels to distinguish components</li>
+<li>Inform user they can add icons later or set up libraries for future diagrams</li>
+<li>The diagram will still be functional and clear, just less visually polished</li>
+</ul>
+<h4>References</h4>
+<p>See bundled references for:</p>
+<ul>
+<li><code>references/excalidraw-schema.md</code> - Complete Excalidraw JSON schema</li>
+<li><code>references/element-types.md</code> - Detailed element type specifications</li>
+<li><code>templates/flowchart-template.excalidraw</code> - Basic flowchart starter</li>
+<li><code>templates/relationship-template.excalidraw</code> - Relationship diagram starter</li>
+<li><code>templates/mindmap-template.excalidraw</code> - Mind map starter</li>
+<li><code>templates/business-flow-swimlane-template.excalidraw</code> - Business flow swimlane starter</li>
+<li><code>templates/class-diagram-template.excalidraw</code> - Class diagram starter</li>
+<li><code>templates/data-flow-diagram-template.excalidraw</code> - Data flow diagram starter</li>
+<li><code>templates/er-diagram-template.excalidraw</code> - Entity-relationship diagram starter</li>
+<li><code>templates/sequence-diagram-template.excalidraw</code> - Sequence diagram starter</li>
+<li><code>scripts/add-icon-to-diagram.py</code> - Add icons from Excalidraw libraries to diagrams</li>
+<li><code>scripts/add-arrow.py</code> - Add arrows (connections) between elements in diagrams</li>
+<li><code>scripts/split-excalidraw-library.py</code> - Tool to split <code>.excalidrawlib</code> files</li>
+<li><code>scripts/README.md</code> - Documentation for library tools</li>
+<li><code>scripts/.gitignore</code> - Prevents local Python artifacts from being committed</li>
+</ul>
+<h4>Limitations</h4>
+<ul>
+<li>Complex curves are simplified to straight/basic curved lines</li>
+<li>Hand-drawn roughness is set to default (1)</li>
+<li>No embedded images support in auto-generation</li>
+<li>Maximum recommended elements: 20 per diagram</li>
+<li>No automatic collision detection (use spacing guidelines)</li>
+</ul>
+<h4>Future Enhancements</h4>
+<p>Potential improvements:</p>
+<ul>
+<li>Auto-layout optimization algorithms</li>
+<li>Import from Mermaid/PlantUML syntax</li>
+<li>Template library expansion</li>
+<li>Interactive editing after generation</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

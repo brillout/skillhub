@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>excalidraw-diagram · SkillHub</title>
+    <meta name="description" content="Use it when: you want a workflow, architecture or concept drawn as a diagram that teaches, not a grid of labelled boxes. It does: picks simple or comprehensive depth, researches real formats and event names for technical diagrams, maps each concept to a visual pattern, then writes the JSON. You get: a .excalidraw file and a PNG render, checked against a 27-point quality list. Renders: each draft to PNG with a bundled Playwright script, views it and fixes clipped text, overlaps and stray arrows, usually in 2–4 rounds. Brand it: all colors live in references/color-palette.md; edit that one file to restyle every diagram. Needs: uv and Playwright&#039;s Chromium for rendering, set up once with uv sync." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=coleam00%2Fexcalidraw-diagram-skill">coleam00/excalidraw-diagram-skill</a></p>
+      <h1>excalidraw-diagram</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want a workflow, architecture or concept drawn as a diagram that teaches, not a grid of labelled boxes</dd></div><div><dt>It does</dt><dd>picks simple or comprehensive depth, researches real formats and event names for technical diagrams, maps each concept to a visual pattern, then writes the JSON</dd></div><div><dt>You get</dt><dd>a .excalidraw file and a PNG render, checked against a 27-point quality list</dd></div><div><dt>Renders</dt><dd>each draft to PNG with a bundled Playwright script, views it and fixes clipped text, overlaps and stray arrows, usually in 2–4 rounds</dd></div><div><dt>Brand it</dt><dd>all colors live in references/color-palette.md; edit that one file to restyle every diagram</dd></div><div><dt>Needs</dt><dd>uv and Playwright&#39;s Chromium for rendering, set up once with uv sync</dd></div></dl></section>
+      
+      <p class="note">Its render loop needs uv and Playwright&#39;s Chromium, and its commands expect the skill at .claude/skills/excalidraw-diagram.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Its rule is that a diagram should argue, not display: with the text removed, the structure alone should still carry the concept. Technical diagrams must include evidence artifacts, such as real code snippets, JSON payloads, event sequences or UI mockups, and work at three zoom levels: a summary flow, labelled sections, and detail inside them. It favors free-floating text and lines over boxes, keeping under 30% of text inside containers, and draws on patterns such as fan-out, convergence, tree, cycle and assembly line. Large diagrams are built section by section in hand-written JSON, never through a generator script. Elements follow set defaults: font family 3, roughness 0 for a clean look, full opacity. Unlike a skill that only writes the JSON, it can&#39;t finish until it has rendered the diagram, looked at the PNG and repaired what it saw, until the result matches its plan.</p>
+      <p class="muted">Summarizes <a href="https://github.com/coleam00/excalidraw-diagram-skill/tree/8646fcc9f74f38539c6cdb4c969723336a96ddcd">the skill at 8646fcc</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/coleam00/excalidraw-diagram-skill --skill excalidraw-diagram</code><button type="button" class="copy" data-copy="npx skills add https://github.com/coleam00/excalidraw-diagram-skill --skill excalidraw-diagram">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/coleam00/excalidraw-diagram-skill/excalidraw-diagram">skills.sh page</a> · <a href="https://github.com/coleam00/excalidraw-diagram-skill">Source on GitHub</a> · <a href="/skillhub/?repo=coleam00%2Fexcalidraw-diagram-skill">All skills from coleam00/excalidraw-diagram-skill</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>8,800 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>5,206 <span class="muted">coleam00/excalidraw-diagram-skill</span></dd></div><div><dt>First seen</dt><dd>Mar 2, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">103</div>
+      <div class="stat-delta">-28% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 144; week to Sep 26: 137; week to Oct 3: 138; week to Oct 10: 108; week to Oct 17: 99; week to Oct 24: 142; week to Oct 31: 125; week to Nov 7: 103. Use the left and right arrow keys to read each week."
+        data-values="144,137,138,108,99,142,125,103" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,8.1 71.1,7.8 103.7,17.0 136.3,19.8 168.9,6.6 201.4,11.8 234.0,18.5" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="18.5" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>144</td></tr><tr><td>Sep 26</td><td>137</td></tr><tr><td>Oct 3</td><td>138</td></tr><tr><td>Oct 10</td><td>108</td></tr><tr><td>Oct 17</td><td>99</td></tr><tr><td>Oct 24</td><td>142</td></tr><tr><td>Oct 31</td><td>125</td></tr><tr><td>Nov 7</td><td>103</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:science" data-facet="category" title="Research reproduction, financial data, charts and diagrams." href="/skillhub/?tag=category%3Ascience">category:science</a></div>
+          <p class="tag-meaning">Research reproduction, financial data, charts and diagrams.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a><a class="tag" data-tag="needs:browser" data-facet="needs" title="Drives a real Chromium or Chrome browser." href="/skillhub/?tag=needs%3Abrowser">needs:browser</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">Drives a real Chromium or Chrome browser.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="diagrams" data-facet="topic" href="/skillhub/?tag=diagrams">diagrams</a><a class="tag" data-tag="architecture" data-facet="topic" href="/skillhub/?tag=architecture">architecture</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:excalidraw" data-facet="stack" href="/skillhub/?tag=stack%3Aexcalidraw">stack:excalidraw</a><a class="tag" data-tag="stack:playwright" data-facet="stack" href="/skillhub/?tag=stack%3Aplaywright">stack:playwright</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/coleam00/excalidraw-diagram-skill/blob/8646fcc9f74f38539c6cdb4c969723336a96ddcd/SKILL.md">coleam00/excalidraw-diagram-skill at 8646fcc</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: excalidraw-diagram
+description: Create Excalidraw diagram JSON files that make visual arguments. Use when the user wants to visualize workflows, architectures, or concepts.</code></pre></details>
+        <div class="markdown"><h3>Excalidraw Diagram Creator</h3>
+<p>Generate <code>.excalidraw</code> JSON files that <strong>argue visually</strong>, not just display information.</p>
+<p><strong>Setup:</strong> If the user asks you to set up this skill (renderer, dependencies, etc.), see <code>README.md</code> for instructions.</p>
+<h4>Customization</h4>
+<p><strong>All colors and brand-specific styles live in one file:</strong> <code>references/color-palette.md</code>. Read it before generating any diagram and use it as the single source of truth for all color choices — shape fills, strokes, text colors, evidence artifact backgrounds, everything.</p>
+<p>To make this skill produce diagrams in your own brand style, edit <code>color-palette.md</code>. Everything else in this file is universal design methodology and Excalidraw best practices.</p>
+<hr>
+<h4>Core Philosophy</h4>
+<p><strong>Diagrams should ARGUE, not DISPLAY.</strong></p>
+<p>A diagram isn't formatted text. It's a visual argument that shows relationships, causality, and flow that words alone can't express. The shape should BE the meaning.</p>
+<p><strong>The Isomorphism Test</strong>: If you removed all text, would the structure alone communicate the concept? If not, redesign.</p>
+<p><strong>The Education Test</strong>: Could someone learn something concrete from this diagram, or does it just label boxes? A good diagram teaches—it shows actual formats, real event names, concrete examples.</p>
+<hr>
+<h4>Depth Assessment (Do This First)</h4>
+<p>Before designing, determine what level of detail this diagram needs:</p>
+<h5>Simple/Conceptual Diagrams</h5>
+<p>Use abstract shapes when:</p>
+<ul>
+<li>Explaining a mental model or philosophy</li>
+<li>The audience doesn't need technical specifics</li>
+<li>The concept IS the abstraction (e.g., &quot;separation of concerns&quot;)</li>
+</ul>
+<h5>Comprehensive/Technical Diagrams</h5>
+<p>Use concrete examples when:</p>
+<ul>
+<li>Diagramming a real system, protocol, or architecture</li>
+<li>The diagram will be used to teach or explain (e.g., YouTube video)</li>
+<li>The audience needs to understand what things actually look like</li>
+<li>You're showing how multiple technologies integrate</li>
+</ul>
+<p><strong>For technical diagrams, you MUST include evidence artifacts</strong> (see below).</p>
+<hr>
+<h4>Research Mandate (For Technical Diagrams)</h4>
+<p><strong>Before drawing anything technical, research the actual specifications.</strong></p>
+<p>If you're diagramming a protocol, API, or framework:</p>
+<ol>
+<li>Look up the actual JSON/data formats</li>
+<li>Find the real event names, method names, or API endpoints</li>
+<li>Understand how the pieces actually connect</li>
+<li>Use real terminology, not generic placeholders</li>
+</ol>
+<p>Bad: &quot;Protocol&quot; → &quot;Frontend&quot;
+Good: &quot;AG-UI streams events (RUN_STARTED, STATE_DELTA, A2UI_UPDATE)&quot; → &quot;CopilotKit renders via createA2UIMessageRenderer()&quot;</p>
+<p><strong>Research makes diagrams accurate AND educational.</strong></p>
+<hr>
+<h4>Evidence Artifacts</h4>
+<p>Evidence artifacts are concrete examples that prove your diagram is accurate and help viewers learn. Include them in technical diagrams.</p>
+<p><strong>Types of evidence artifacts</strong> (choose what's relevant to your diagram):</p>
+<table>
+<thead>
+<tr>
+<th>Artifact Type</th>
+<th>When to Use</th>
+<th>How to Render</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Code snippets</strong></td>
+<td>APIs, integrations, implementation details</td>
+<td>Dark rectangle + syntax-colored text (see color palette for evidence artifact colors)</td>
+</tr>
+<tr>
+<td><strong>Data/JSON examples</strong></td>
+<td>Data formats, schemas, payloads</td>
+<td>Dark rectangle + colored text (see color palette)</td>
+</tr>
+<tr>
+<td><strong>Event/step sequences</strong></td>
+<td>Protocols, workflows, lifecycles</td>
+<td>Timeline pattern (line + dots + labels)</td>
+</tr>
+<tr>
+<td><strong>UI mockups</strong></td>
+<td>Showing actual output/results</td>
+<td>Nested rectangles mimicking real UI</td>
+</tr>
+<tr>
+<td><strong>Real input content</strong></td>
+<td>Showing what goes IN to a system</td>
+<td>Rectangle with sample content visible</td>
+</tr>
+<tr>
+<td><strong>API/method names</strong></td>
+<td>Real function calls, endpoints</td>
+<td>Use actual names from docs, not placeholders</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example</strong>: For a diagram about a streaming protocol, you might show:</p>
+<ul>
+<li>The actual event names from the spec (not just &quot;Event 1&quot;, &quot;Event 2&quot;)</li>
+<li>A code snippet showing how to connect</li>
+<li>What the streamed data actually looks like</li>
+</ul>
+<p><strong>Example</strong>: For a diagram about a data transformation pipeline:</p>
+<ul>
+<li>Show sample input data (actual format, not &quot;Input&quot;)</li>
+<li>Show sample output data (actual format, not &quot;Output&quot;)</li>
+<li>Show intermediate states if relevant</li>
+</ul>
+<p>The key principle: <strong>show what things actually look like</strong>, not just what they're called.</p>
+<hr>
+<h4>Multi-Zoom Architecture</h4>
+<p>Comprehensive diagrams operate at multiple zoom levels simultaneously. Think of it like a map that shows both the country borders AND the street names.</p>
+<h5>Level 1: Summary Flow</h5>
+<p>A simplified overview showing the full pipeline or process at a glance. Often placed at the top or bottom of the diagram.</p>
+<p><em>Example</em>: <code>Input → Processing → Output</code> or <code>Client → Server → Database</code></p>
+<h5>Level 2: Section Boundaries</h5>
+<p>Labeled regions that group related components. These create visual &quot;rooms&quot; that help viewers understand what belongs together.</p>
+<p><em>Example</em>: Grouping by responsibility (Backend / Frontend), by phase (Setup / Execution / Cleanup), or by team (User / System / External)</p>
+<h5>Level 3: Detail Inside Sections</h5>
+<p>Evidence artifacts, code snippets, and concrete examples within each section. This is where the educational value lives.</p>
+<p><em>Example</em>: Inside a &quot;Backend&quot; section, you might show the actual API response format, not just a box labeled &quot;API Response&quot;</p>
+<p><strong>For comprehensive diagrams, aim to include all three levels.</strong> The summary gives context, the sections organize, and the details teach.</p>
+<h5>Bad vs Good</h5>
+<table>
+<thead>
+<tr>
+<th>Bad (Displaying)</th>
+<th>Good (Arguing)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5 equal boxes with labels</td>
+<td>Each concept has a shape that mirrors its behavior</td>
+</tr>
+<tr>
+<td>Card grid layout</td>
+<td>Visual structure matches conceptual structure</td>
+</tr>
+<tr>
+<td>Icons decorating text</td>
+<td>Shapes that ARE the meaning</td>
+</tr>
+<tr>
+<td>Same container for everything</td>
+<td>Distinct visual vocabulary per concept</td>
+</tr>
+<tr>
+<td>Everything in a box</td>
+<td>Free-floating text with selective containers</td>
+</tr>
+</tbody>
+</table>
+<h5>Simple vs Comprehensive (Know Which You Need)</h5>
+<table>
+<thead>
+<tr>
+<th>Simple Diagram</th>
+<th>Comprehensive Diagram</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Generic labels: &quot;Input&quot; → &quot;Process&quot; → &quot;Output&quot;</td>
+<td>Specific: shows what the input/output actually looks like</td>
+</tr>
+<tr>
+<td>Named boxes: &quot;API&quot;, &quot;Database&quot;, &quot;Client&quot;</td>
+<td>Named boxes + examples of actual requests/responses</td>
+</tr>
+<tr>
+<td>&quot;Events&quot; or &quot;Messages&quot; label</td>
+<td>Timeline with real event/message names from the spec</td>
+</tr>
+<tr>
+<td>&quot;UI&quot; or &quot;Dashboard&quot; rectangle</td>
+<td>Mockup showing actual UI elements and content</td>
+</tr>
+<tr>
+<td>~30 seconds to explain</td>
+<td>~2-3 minutes of teaching content</td>
+</tr>
+<tr>
+<td>Viewer learns the structure</td>
+<td>Viewer learns the structure AND the details</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Simple diagrams</strong> are fine for abstract concepts, quick overviews, or when the audience already knows the details. <strong>Comprehensive diagrams</strong> are needed for technical architectures, tutorials, educational content, or when you want the diagram itself to teach.</p>
+<hr>
+<h4>Container vs. Free-Floating Text</h4>
+<p><strong>Not every piece of text needs a shape around it.</strong> Default to free-floating text. Add containers only when they serve a purpose.</p>
+<table>
+<thead>
+<tr>
+<th>Use a Container When...</th>
+<th>Use Free-Floating Text When...</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>It's the focal point of a section</td>
+<td>It's a label or description</td>
+</tr>
+<tr>
+<td>It needs visual grouping with other elements</td>
+<td>It's supporting detail or metadata</td>
+</tr>
+<tr>
+<td>Arrows need to connect to it</td>
+<td>It describes something nearby</td>
+</tr>
+<tr>
+<td>The shape itself carries meaning (decision diamond, etc.)</td>
+<td>Typography alone creates sufficient hierarchy</td>
+</tr>
+<tr>
+<td>It represents a distinct &quot;thing&quot; in the system</td>
+<td>It's a section title, subtitle, or annotation</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Typography as hierarchy</strong>: Use font size, weight, and color to create visual hierarchy without boxes. A 28px title doesn't need a rectangle around it.</p>
+<p><strong>The container test</strong>: For each boxed element, ask &quot;Would this work as free-floating text?&quot; If yes, remove the container.</p>
+<hr>
+<h4>Design Process (Do This BEFORE Generating JSON)</h4>
+<h5>Step 0: Assess Depth Required</h5>
+<p>Before anything else, determine if this needs to be:</p>
+<ul>
+<li><strong>Simple/Conceptual</strong>: Abstract shapes, labels, relationships (mental models, philosophies)</li>
+<li><strong>Comprehensive/Technical</strong>: Concrete examples, code snippets, real data (systems, architectures, tutorials)</li>
+</ul>
+<p><strong>If comprehensive</strong>: Do research first. Look up actual specs, formats, event names, APIs.</p>
+<h5>Step 1: Understand Deeply</h5>
+<p>Read the content. For each concept, ask:</p>
+<ul>
+<li>What does this concept <strong>DO</strong>? (not what IS it)</li>
+<li>What relationships exist between concepts?</li>
+<li>What's the core transformation or flow?</li>
+<li><strong>What would someone need to SEE to understand this?</strong> (not just read about)</li>
+</ul>
+<h5>Step 2: Map Concepts to Patterns</h5>
+<p>For each concept, find the visual pattern that mirrors its behavior:</p>
+<table>
+<thead>
+<tr>
+<th>If the concept...</th>
+<th>Use this pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Spawns multiple outputs</td>
+<td><strong>Fan-out</strong> (radial arrows from center)</td>
+</tr>
+<tr>
+<td>Combines inputs into one</td>
+<td><strong>Convergence</strong> (funnel, arrows merging)</td>
+</tr>
+<tr>
+<td>Has hierarchy/nesting</td>
+<td><strong>Tree</strong> (lines + free-floating text)</td>
+</tr>
+<tr>
+<td>Is a sequence of steps</td>
+<td><strong>Timeline</strong> (line + dots + free-floating labels)</td>
+</tr>
+<tr>
+<td>Loops or improves continuously</td>
+<td><strong>Spiral/Cycle</strong> (arrow returning to start)</td>
+</tr>
+<tr>
+<td>Is an abstract state or context</td>
+<td><strong>Cloud</strong> (overlapping ellipses)</td>
+</tr>
+<tr>
+<td>Transforms input to output</td>
+<td><strong>Assembly line</strong> (before → process → after)</td>
+</tr>
+<tr>
+<td>Compares two things</td>
+<td><strong>Side-by-side</strong> (parallel with contrast)</td>
+</tr>
+<tr>
+<td>Separates into phases</td>
+<td><strong>Gap/Break</strong> (visual separation between sections)</td>
+</tr>
+</tbody>
+</table>
+<h5>Step 3: Ensure Variety</h5>
+<p>For multi-concept diagrams: <strong>each major concept must use a different visual pattern</strong>. No uniform cards or grids.</p>
+<h5>Step 4: Sketch the Flow</h5>
+<p>Before JSON, mentally trace how the eye moves through the diagram. There should be a clear visual story.</p>
+<h5>Step 5: Generate JSON</h5>
+<p>Only now create the Excalidraw elements. <strong>See below for how to handle large diagrams.</strong></p>
+<h5>Step 6: Render &amp; Validate (MANDATORY)</h5>
+<p>After generating the JSON, you MUST run the render-view-fix loop until the diagram looks right. This is not optional — see the <strong>Render &amp; Validate</strong> section below for the full process.</p>
+<hr>
+<h4>Large / Comprehensive Diagram Strategy</h4>
+<p><strong>For comprehensive or technical diagrams, you MUST build the JSON one section at a time.</strong> Do NOT attempt to generate the entire file in a single pass. This is a hard constraint — Claude Code has a ~32,000 token output limit per response, and a comprehensive diagram easily exceeds that in one shot. Even if it didn't, generating everything at once leads to worse quality. Section-by-section is better in every way.</p>
+<h5>The Section-by-Section Workflow</h5>
+<p><strong>Phase 1: Build each section</strong></p>
+<ol>
+<li><strong>Create the base file</strong> with the JSON wrapper (<code>type</code>, <code>version</code>, <code>appState</code>, <code>files</code>) and the first section of elements.</li>
+<li><strong>Add one section per edit.</strong> Each section gets its own dedicated pass — take your time with it. Think carefully about the layout, spacing, and how this section connects to what's already there.</li>
+<li><strong>Use descriptive string IDs</strong> (e.g., <code>&quot;trigger_rect&quot;</code>, <code>&quot;arrow_fan_left&quot;</code>) so cross-section references are readable.</li>
+<li><strong>Namespace seeds by section</strong> (e.g., section 1 uses 100xxx, section 2 uses 200xxx) to avoid collisions.</li>
+<li><strong>Update cross-section bindings</strong> as you go. When a new section's element needs to bind to an element from a previous section (e.g., an arrow connecting sections), edit the earlier element's <code>boundElements</code> array at the same time.</li>
+</ol>
+<p><strong>Phase 2: Review the whole</strong></p>
+<p>After all sections are in place, read through the complete JSON and check:</p>
+<ul>
+<li>Are cross-section arrows bound correctly on both ends?</li>
+<li>Is the overall spacing balanced, or are some sections cramped while others have too much whitespace?</li>
+<li>Do IDs and bindings all reference elements that actually exist?</li>
+</ul>
+<p>Fix any alignment or binding issues before rendering.</p>
+<p><strong>Phase 3: Render &amp; validate</strong></p>
+<p>Now run the render-view-fix loop from the Render &amp; Validate section. This is where you'll catch visual issues that aren't obvious from JSON — overlaps, clipping, imbalanced composition.</p>
+<h5>Section Boundaries</h5>
+<p>Plan your sections around natural visual groupings from the diagram plan. A typical large diagram might split into:</p>
+<ul>
+<li><strong>Section 1</strong>: Entry point / trigger</li>
+<li><strong>Section 2</strong>: First decision or routing</li>
+<li><strong>Section 3</strong>: Main content (hero section — may be the largest single section)</li>
+<li><strong>Section 4-N</strong>: Remaining phases, outputs, etc.</li>
+</ul>
+<p>Each section should be independently understandable: its elements, internal arrows, and any cross-references to adjacent sections.</p>
+<h5>What NOT to Do</h5>
+<ul>
+<li><strong>Don't generate the entire diagram in one response.</strong> You will hit the output token limit and produce truncated, broken JSON. Even if the diagram is small enough to fit, splitting into sections produces better results.</li>
+<li><strong>Don't use a coding agent</strong> to generate the JSON. The agent won't have sufficient context about the skill's rules, and the coordination overhead negates any benefit.</li>
+<li><strong>Don't write a Python generator script.</strong> The templating and coordinate math seem helpful but introduce a layer of indirection that makes debugging harder. Hand-crafted JSON with descriptive IDs is more maintainable.</li>
+</ul>
+<hr>
+<h4>Visual Pattern Library</h4>
+<h5>Fan-Out (One-to-Many)</h5>
+<p>Central element with arrows radiating to multiple targets. Use for: sources, PRDs, root causes, central hubs.</p>
+<pre><code>        ○
+       ↗
+  □ → ○
+       ↘
+        ○
+</code></pre>
+<h5>Convergence (Many-to-One)</h5>
+<p>Multiple inputs merging through arrows to single output. Use for: aggregation, funnels, synthesis.</p>
+<pre><code>  ○ ↘
+  ○ → □
+  ○ ↗
+</code></pre>
+<h5>Tree (Hierarchy)</h5>
+<p>Parent-child branching with connecting lines and free-floating text (no boxes needed). Use for: file systems, org charts, taxonomies.</p>
+<pre><code>  label
+  ├── label
+  │   ├── label
+  │   └── label
+  └── label
+</code></pre>
+<p>Use <code>line</code> elements for the trunk and branches, free-floating text for labels.</p>
+<h5>Spiral/Cycle (Continuous Loop)</h5>
+<p>Elements in sequence with arrow returning to start. Use for: feedback loops, iterative processes, evolution.</p>
+<pre><code>  □ → □
+  ↑     ↓
+  □ ← □
+</code></pre>
+<h5>Cloud (Abstract State)</h5>
+<p>Overlapping ellipses with varied sizes. Use for: context, memory, conversations, mental states.</p>
+<h5>Assembly Line (Transformation)</h5>
+<p>Input → Process Box → Output with clear before/after. Use for: transformations, processing, conversion.</p>
+<pre><code>  ○○○ → [PROCESS] → □□□
+  chaos              order
+</code></pre>
+<h5>Side-by-Side (Comparison)</h5>
+<p>Two parallel structures with visual contrast. Use for: before/after, options, trade-offs.</p>
+<h5>Gap/Break (Separation)</h5>
+<p>Visual whitespace or barrier between sections. Use for: phase changes, context resets, boundaries.</p>
+<h5>Lines as Structure</h5>
+<p>Use lines (type: <code>line</code>, not arrows) as primary structural elements instead of boxes:</p>
+<ul>
+<li><strong>Timelines</strong>: Vertical or horizontal line with small dots (10-20px ellipses) at intervals, free-floating labels beside each dot</li>
+<li><strong>Tree structures</strong>: Vertical trunk line + horizontal branch lines, with free-floating text labels (no boxes needed)</li>
+<li><strong>Dividers</strong>: Thin dashed lines to separate sections</li>
+<li><strong>Flow spines</strong>: A central line that elements relate to, rather than connecting boxes</li>
+</ul>
+<pre><code>Timeline:           Tree:
+  ●─── Label 1        │
+  │                   ├── item
+  ●─── Label 2        │   ├── sub
+  │                   │   └── sub
+  ●─── Label 3        └── item
+</code></pre>
+<p>Lines + free-floating text often creates a cleaner result than boxes + contained text.</p>
+<hr>
+<h4>Shape Meaning</h4>
+<p>Choose shape based on what it represents—or use no shape at all:</p>
+<table>
+<thead>
+<tr>
+<th>Concept Type</th>
+<th>Shape</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Labels, descriptions, details</td>
+<td><strong>none</strong> (free-floating text)</td>
+<td>Typography creates hierarchy</td>
+</tr>
+<tr>
+<td>Section titles, annotations</td>
+<td><strong>none</strong> (free-floating text)</td>
+<td>Font size/weight is enough</td>
+</tr>
+<tr>
+<td>Markers on a timeline</td>
+<td>small <code>ellipse</code> (10-20px)</td>
+<td>Visual anchor, not container</td>
+</tr>
+<tr>
+<td>Start, trigger, input</td>
+<td><code>ellipse</code></td>
+<td>Soft, origin-like</td>
+</tr>
+<tr>
+<td>End, output, result</td>
+<td><code>ellipse</code></td>
+<td>Completion, destination</td>
+</tr>
+<tr>
+<td>Decision, condition</td>
+<td><code>diamond</code></td>
+<td>Classic decision symbol</td>
+</tr>
+<tr>
+<td>Process, action, step</td>
+<td><code>rectangle</code></td>
+<td>Contained action</td>
+</tr>
+<tr>
+<td>Abstract state, context</td>
+<td>overlapping <code>ellipse</code></td>
+<td>Fuzzy, cloud-like</td>
+</tr>
+<tr>
+<td>Hierarchy node</td>
+<td>lines + text (no boxes)</td>
+<td>Structure through lines</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rule</strong>: Default to no container. Add shapes only when they carry meaning. Aim for &lt;30% of text elements to be inside containers.</p>
+<hr>
+<h4>Color as Meaning</h4>
+<p>Colors encode information, not decoration. Every color choice should come from <code>references/color-palette.md</code> — the semantic shape colors, text hierarchy colors, and evidence artifact colors are all defined there.</p>
+<p><strong>Key principles:</strong></p>
+<ul>
+<li>Each semantic purpose (start, end, decision, AI, error, etc.) has a specific fill/stroke pair</li>
+<li>Free-floating text uses color for hierarchy (titles, subtitles, details — each at a different level)</li>
+<li>Evidence artifacts (code snippets, JSON examples) use their own dark background + colored text scheme</li>
+<li>Always pair a darker stroke with a lighter fill for contrast</li>
+</ul>
+<p><strong>Do not invent new colors.</strong> If a concept doesn't fit an existing semantic category, use Primary/Neutral or Secondary.</p>
+<hr>
+<h4>Modern Aesthetics</h4>
+<p>For clean, professional diagrams:</p>
+<h5>Roughness</h5>
+<ul>
+<li><code>roughness: 0</code> — Clean, crisp edges. Use for modern/technical diagrams.</li>
+<li><code>roughness: 1</code> — Hand-drawn, organic feel. Use for brainstorming/informal diagrams.</li>
+</ul>
+<p><strong>Default to 0</strong> for most professional use cases.</p>
+<h5>Stroke Width</h5>
+<ul>
+<li><code>strokeWidth: 1</code> — Thin, elegant. Good for lines, dividers, subtle connections.</li>
+<li><code>strokeWidth: 2</code> — Standard. Good for shapes and primary arrows.</li>
+<li><code>strokeWidth: 3</code> — Bold. Use sparingly for emphasis (main flow line, key connections).</li>
+</ul>
+<h5>Opacity</h5>
+<p><strong>Always use <code>opacity: 100</code> for all elements.</strong> Use color, size, and stroke width to create hierarchy instead of transparency.</p>
+<h5>Small Markers Instead of Shapes</h5>
+<p>Instead of full shapes, use small dots (10-20px ellipses) as:</p>
+<ul>
+<li>Timeline markers</li>
+<li>Bullet points</li>
+<li>Connection nodes</li>
+<li>Visual anchors for free-floating text</li>
+</ul>
+<hr>
+<h4>Layout Principles</h4>
+<h5>Hierarchy Through Scale</h5>
+<ul>
+<li><strong>Hero</strong>: 300×150 - visual anchor, most important</li>
+<li><strong>Primary</strong>: 180×90</li>
+<li><strong>Secondary</strong>: 120×60</li>
+<li><strong>Small</strong>: 60×40</li>
+</ul>
+<h5>Whitespace = Importance</h5>
+<p>The most important element has the most empty space around it (200px+).</p>
+<h5>Flow Direction</h5>
+<p>Guide the eye: typically left→right or top→bottom for sequences, radial for hub-and-spoke.</p>
+<h5>Connections Required</h5>
+<p>Position alone doesn't show relationships. If A relates to B, there must be an arrow.</p>
+<hr>
+<h4>Text Rules</h4>
+<p><strong>CRITICAL</strong>: The JSON <code>text</code> property contains ONLY readable words.</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;myElement1&quot;,
+  &quot;text&quot;: &quot;Start&quot;,
+  &quot;originalText&quot;: &quot;Start&quot;
+}
+</code></pre>
+<p>Settings: <code>fontSize: 16</code>, <code>fontFamily: 3</code>, <code>textAlign: &quot;center&quot;</code>, <code>verticalAlign: &quot;middle&quot;</code></p>
+<hr>
+<h4>JSON Structure</h4>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;excalidraw&quot;,
+  &quot;version&quot;: 2,
+  &quot;source&quot;: &quot;https://excalidraw.com&quot;,
+  &quot;elements&quot;: [...],
+  &quot;appState&quot;: {
+    &quot;viewBackgroundColor&quot;: &quot;#ffffff&quot;,
+    &quot;gridSize&quot;: 20
+  },
+  &quot;files&quot;: {}
+}
+</code></pre>
+<h4>Element Templates</h4>
+<p>See <code>references/element-templates.md</code> for copy-paste JSON templates for each element type (text, line, dot, rectangle, arrow). Pull colors from <code>references/color-palette.md</code> based on each element's semantic purpose.</p>
+<hr>
+<h4>Render &amp; Validate (MANDATORY)</h4>
+<p>You cannot judge a diagram from JSON alone. After generating or editing the Excalidraw JSON, you MUST render it to PNG, view the image, and fix what you see — in a loop until it's right. This is a core part of the workflow, not a final check.</p>
+<h5>How to Render</h5>
+<pre><code class="language-bash">cd .claude/skills/excalidraw-diagram/references &amp;&amp; uv run python render_excalidraw.py &lt;path-to-file.excalidraw&gt;
+</code></pre>
+<p>This outputs a PNG next to the <code>.excalidraw</code> file. Then use the <strong>Read tool</strong> on the PNG to actually view it.</p>
+<h5>The Loop</h5>
+<p>After generating the initial JSON, run this cycle:</p>
+<p><strong>1. Render &amp; View</strong> — Run the render script, then Read the PNG.</p>
+<p><strong>2. Audit against your original vision</strong> — Before looking for bugs, compare the rendered result to what you designed in Steps 1-4. Ask:</p>
+<ul>
+<li>Does the visual structure match the conceptual structure you planned?</li>
+<li>Does each section use the pattern you intended (fan-out, convergence, timeline, etc.)?</li>
+<li>Does the eye flow through the diagram in the order you designed?</li>
+<li>Is the visual hierarchy correct — hero elements dominant, supporting elements smaller?</li>
+<li>For technical diagrams: are the evidence artifacts (code snippets, data examples) readable and properly placed?</li>
+</ul>
+<p><strong>3. Check for visual defects:</strong></p>
+<ul>
+<li>Text clipped by or overflowing its container</li>
+<li>Text or shapes overlapping other elements</li>
+<li>Arrows crossing through elements instead of routing around them</li>
+<li>Arrows landing on the wrong element or pointing into empty space</li>
+<li>Labels floating ambiguously (not clearly anchored to what they describe)</li>
+<li>Uneven spacing between elements that should be evenly spaced</li>
+<li>Sections with too much whitespace next to sections that are too cramped</li>
+<li>Text too small to read at the rendered size</li>
+<li>Overall composition feels lopsided or unbalanced</li>
+</ul>
+<p><strong>4. Fix</strong> — Edit the JSON to address everything you found. Common fixes:</p>
+<ul>
+<li>Widen containers when text is clipped</li>
+<li>Adjust <code>x</code>/<code>y</code> coordinates to fix spacing and alignment</li>
+<li>Add intermediate waypoints to arrow <code>points</code> arrays to route around elements</li>
+<li>Reposition labels closer to the element they describe</li>
+<li>Resize elements to rebalance visual weight across sections</li>
+</ul>
+<p><strong>5. Re-render &amp; re-view</strong> — Run the render script again and Read the new PNG.</p>
+<p><strong>6. Repeat</strong> — Keep cycling until the diagram passes both the vision check (Step 2) and the defect check (Step 3). Typically takes 2-4 iterations. Don't stop after one pass just because there are no critical bugs — if the composition could be better, improve it.</p>
+<h5>When to Stop</h5>
+<p>The loop is done when:</p>
+<ul>
+<li>The rendered diagram matches the conceptual design from your planning steps</li>
+<li>No text is clipped, overlapping, or unreadable</li>
+<li>Arrows route cleanly and connect to the right elements</li>
+<li>Spacing is consistent and the composition is balanced</li>
+<li>You'd be comfortable showing it to someone without caveats</li>
+</ul>
+<h5>First-Time Setup</h5>
+<p>If the render script hasn't been set up yet:</p>
+<pre><code class="language-bash">cd .claude/skills/excalidraw-diagram/references
+uv sync
+uv run playwright install chromium
+</code></pre>
+<hr>
+<h4>Quality Checklist</h4>
+<h5>Depth &amp; Evidence (Check First for Technical Diagrams)</h5>
+<ol>
+<li><strong>Research done</strong>: Did you look up actual specs, formats, event names?</li>
+<li><strong>Evidence artifacts</strong>: Are there code snippets, JSON examples, or real data?</li>
+<li><strong>Multi-zoom</strong>: Does it have summary flow + section boundaries + detail?</li>
+<li><strong>Concrete over abstract</strong>: Real content shown, not just labeled boxes?</li>
+<li><strong>Educational value</strong>: Could someone learn something concrete from this?</li>
+</ol>
+<h5>Conceptual</h5>
+<ol start="6">
+<li><strong>Isomorphism</strong>: Does each visual structure mirror its concept's behavior?</li>
+<li><strong>Argument</strong>: Does the diagram SHOW something text alone couldn't?</li>
+<li><strong>Variety</strong>: Does each major concept use a different visual pattern?</li>
+<li><strong>No uniform containers</strong>: Avoided card grids and equal boxes?</li>
+</ol>
+<h5>Container Discipline</h5>
+<ol start="10">
+<li><strong>Minimal containers</strong>: Could any boxed element work as free-floating text instead?</li>
+<li><strong>Lines as structure</strong>: Are tree/timeline patterns using lines + text rather than boxes?</li>
+<li><strong>Typography hierarchy</strong>: Are font size and color creating visual hierarchy (reducing need for boxes)?</li>
+</ol>
+<h5>Structural</h5>
+<ol start="13">
+<li><strong>Connections</strong>: Every relationship has an arrow or line</li>
+<li><strong>Flow</strong>: Clear visual path for the eye to follow</li>
+<li><strong>Hierarchy</strong>: Important elements are larger/more isolated</li>
+</ol>
+<h5>Technical</h5>
+<ol start="16">
+<li><strong>Text clean</strong>: <code>text</code> contains only readable words</li>
+<li><strong>Font</strong>: <code>fontFamily: 3</code></li>
+<li><strong>Roughness</strong>: <code>roughness: 0</code> for clean/modern (unless hand-drawn style requested)</li>
+<li><strong>Opacity</strong>: <code>opacity: 100</code> for all elements (no transparency)</li>
+<li><strong>Container ratio</strong>: &lt;30% of text elements should be inside containers</li>
+</ol>
+<h5>Visual Validation (Render Required)</h5>
+<ol start="21">
+<li><strong>Rendered to PNG</strong>: Diagram has been rendered and visually inspected</li>
+<li><strong>No text overflow</strong>: All text fits within its container</li>
+<li><strong>No overlapping elements</strong>: Shapes and text don't overlap unintentionally</li>
+<li><strong>Even spacing</strong>: Similar elements have consistent spacing</li>
+<li><strong>Arrows land correctly</strong>: Arrows connect to intended elements without crossing others</li>
+<li><strong>Readable at export size</strong>: Text is legible in the rendered PNG</li>
+<li><strong>Balanced composition</strong>: No large empty voids or overcrowded regions</li>
+</ol>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

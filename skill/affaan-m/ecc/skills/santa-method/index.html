@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>santa-method · SkillHub</title>
+    <meta name="description" content="Use it when: output will be published, deployed or seen by users, or must meet compliance, brand or accuracy rules; not for drafts or what tests already check. It does: spawns two reviewer subagents with the same rubric and no shared context; if either fails the output, all flagged issues get fixed and fresh reviewers check again. You get: output both reviewers passed or, after three failed rounds, an escalation to you with the open issues. Costs: about two to three times the tokens of generating alone; for batches of 100+ items it reviews a 10–15% sample instead. Unlike: an agent reviewing its own work, which shares the blind spots that produced it." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <h1>santa-method</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>output will be published, deployed or seen by users, or must meet compliance, brand or accuracy rules; not for drafts or what tests already check</dd></div><div><dt>It does</dt><dd>spawns two reviewer subagents with the same rubric and no shared context; if either fails the output, all flagged issues get fixed and fresh reviewers check again</dd></div><div><dt>You get</dt><dd>output both reviewers passed or, after three failed rounds, an escalation to you with the open issues</dd></div><div><dt>Costs</dt><dd>about two to three times the tokens of generating alone; for batches of 100+ items it reviews a 10–15% sample instead</dd></div><div><dt>Unlike</dt><dd>an agent reviewing its own work, which shares the blind spots that produced it</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A verification layer named after its slogan: make a list, check it twice, and fix what&#39;s naughty until it&#39;s nice. The agent produces the deliverable as usual. Then two review agents each get the task spec, the output and the same rubric, never seeing each other&#39;s verdict, and return JSON with a pass or fail per criterion, critical issues and suggestions. The output ships only if both pass; an issue one reviewer catches counts as real. Otherwise every critical issue from both is fixed, with instructions to change nothing else, and two fresh reviewers start over, so earlier rounds don&#39;t anchor them. After three rounds it escalates to a human. The rubric is the key input: each criterion needs an objective pass condition, with defaults for factual accuracy, hallucinations, completeness, compliance, consistency and technical correctness, plus extensions for marketing, code and regulated content. Subagents are the recommended way; without them it falls back to inline reviews with context resets. It also covers failure modes such as rubber-stamping and metrics such as first-pass rate.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/santa-method">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/affaan-m/ecc --skill santa-method</code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill santa-method">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/santa-method">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/santa-method">Source on GitHub</a> · <a href="/skillhub/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,300 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>298,660 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">480</div>
+      <div class="stat-delta">+68% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 285; week to Sep 26: 253; week to Oct 3: 163; week to Oct 10: 139; week to Oct 17: 234; week to Oct 24: 409; week to Oct 31: 401; week to Nov 7: 480. Use the left and right arrow keys to read each week."
+        data-values="285,253,163,139,234,409,401,480" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.9 38.6,26.8 71.1,35.1 103.7,37.3 136.3,28.6 168.9,12.5 201.4,13.2 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>285</td></tr><tr><td>Sep 26</td><td>253</td></tr><tr><td>Oct 3</td><td>163</td></tr><tr><td>Oct 10</td><td>139</td></tr><tr><td>Oct 17</td><td>234</td></tr><tr><td>Oct 24</td><td>409</td></tr><tr><td>Oct 31</td><td>401</td></tr><tr><td>Nov 7</td><td>480</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/skillhub/?tag=category%3Aagents">category:agents</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:subagents" data-facet="needs" title="Relies on the agent being able to spawn subagents." href="/skillhub/?tag=needs%3Asubagents">needs:subagents</a></div>
+          <p class="tag-meaning">Relies on the agent being able to spawn subagents.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="verification" data-facet="topic" href="/skillhub/?tag=verification">verification</a><a class="tag" data-tag="code-review" data-facet="topic" href="/skillhub/?tag=code-review">code-review</a><a class="tag" data-tag="multi-agent" data-facet="topic" href="/skillhub/?tag=multi-agent">multi-agent</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/santa-method/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: santa-method
+description: &#34;Multi-agent adversarial verification: two independent reviewers with the same rubric must both pass before output ships, with a fix-and-re-review convergence loop and human escalation cap. Use when gating publishing, production deploys, compliance or brand-sensitive content, or hallucination-prone claims before they ship.&#34;
+metadata:
+  origin: &#34;Ronald Skelton - Founder, RapportScore.ai&#34;</code></pre></details>
+        <div class="markdown"><h3>Santa Method</h3>
+<p>Multi-agent adversarial verification framework. Make a list, check it twice. If it's naughty, fix it until it's nice.</p>
+<p>The core insight: a single agent reviewing its own output shares the same biases, knowledge gaps, and systematic errors that produced the output. Two independent reviewers with no shared context break this failure mode.</p>
+<h4>When to Activate</h4>
+<p>Invoke this skill when:</p>
+<ul>
+<li>Output will be published, deployed, or consumed by end users</li>
+<li>Compliance, regulatory, or brand constraints must be enforced</li>
+<li>Code ships to production without human review</li>
+<li>Content accuracy matters (technical docs, educational material, customer-facing copy)</li>
+<li>Batch generation at scale where spot-checking misses systemic patterns</li>
+<li>Hallucination risk is elevated (claims, statistics, API references, legal language)</li>
+</ul>
+<p>Do NOT use for internal drafts, exploratory research, or tasks with deterministic verification (use build/test/lint pipelines for those).</p>
+<h4>Architecture</h4>
+<pre><code>┌─────────────┐
+│  GENERATOR   │  Phase 1: Make a List
+│  (Agent A)   │  Produce the deliverable
+└──────┬───────┘
+       │ output
+       ▼
+┌──────────────────────────────┐
+│     DUAL INDEPENDENT REVIEW   │  Phase 2: Check It Twice
+│                                │
+│  ┌───────────┐ ┌───────────┐  │  Two agents, same rubric,
+│  │ Reviewer B │ │ Reviewer C │  │  no shared context
+│  └─────┬─────┘ └─────┬─────┘  │
+│        │              │        │
+└────────┼──────────────┼────────┘
+         │              │
+         ▼              ▼
+┌──────────────────────────────┐
+│        VERDICT GATE           │  Phase 3: Naughty or Nice
+│                                │
+│  B passes AND C passes → NICE  │  Both must pass.
+│  Otherwise → NAUGHTY           │  No exceptions.
+└──────┬──────────────┬─────────┘
+       │              │
+    NICE           NAUGHTY
+       │              │
+       ▼              ▼
+   [ SHIP ]    ┌─────────────┐
+               │  FIX CYCLE   │  Phase 4: Fix Until Nice
+               │              │
+               │ iteration++  │  Collect all flags.
+               │ if i &gt; MAX:  │  Fix all issues.
+               │   escalate   │  Re-run both reviewers.
+               │ else:        │  Loop until convergence.
+               │   goto Ph.2  │
+               └──────────────┘
+</code></pre>
+<h4>Phase Details</h4>
+<h5>Phase 1: Make a List (Generate)</h5>
+<p>Execute the primary task. No changes to your normal generation workflow. Santa Method is a post-generation verification layer, not a generation strategy.</p>
+<pre><code class="language-python"># The generator runs as normal
+output = generate(task_spec)
+</code></pre>
+<h5>Phase 2: Check It Twice (Independent Dual Review)</h5>
+<p>Spawn two review agents in parallel. Critical invariants:</p>
+<ol>
+<li><strong>Context isolation</strong> — neither reviewer sees the other's assessment</li>
+<li><strong>Identical rubric</strong> — both receive the same evaluation criteria</li>
+<li><strong>Same inputs</strong> — both receive the original spec AND the generated output</li>
+<li><strong>Structured output</strong> — each returns a typed verdict, not prose</li>
+</ol>
+<pre><code class="language-python">REVIEWER_PROMPT = &quot;&quot;&quot;
+You are an independent quality reviewer. You have NOT seen any other review of this output.
+
+## Task Specification
+{task_spec}
+
+## Output Under Review
+{output}
+
+## Evaluation Rubric
+{rubric}
+
+## Instructions
+Evaluate the output against EACH rubric criterion. For each:
+- PASS: criterion fully met, no issues
+- FAIL: specific issue found (cite the exact problem)
+
+Return your assessment as structured JSON:
+{
+  &quot;verdict&quot;: &quot;PASS&quot; | &quot;FAIL&quot;,
+  &quot;checks&quot;: [
+    {&quot;criterion&quot;: &quot;...&quot;, &quot;result&quot;: &quot;PASS|FAIL&quot;, &quot;detail&quot;: &quot;...&quot;}
+  ],
+  &quot;critical_issues&quot;: [&quot;...&quot;],   // blockers that must be fixed
+  &quot;suggestions&quot;: [&quot;...&quot;]         // non-blocking improvements
+}
+
+Be rigorous. Your job is to find problems, not to approve.
+&quot;&quot;&quot;
+</code></pre>
+<pre><code class="language-python"># Spawn reviewers in parallel (Claude Code subagents)
+review_b = Agent(prompt=REVIEWER_PROMPT.format(...), description=&quot;Santa Reviewer B&quot;)
+review_c = Agent(prompt=REVIEWER_PROMPT.format(...), description=&quot;Santa Reviewer C&quot;)
+
+# Both run concurrently — neither sees the other
+</code></pre>
+<h5>Rubric Design</h5>
+<p>The rubric is the most important input. Vague rubrics produce vague reviews. Every criterion must have an objective pass/fail condition.</p>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Pass Condition</th>
+<th>Failure Signal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Factual accuracy</td>
+<td>All claims verifiable against source material or common knowledge</td>
+<td>Invented statistics, wrong version numbers, nonexistent APIs</td>
+</tr>
+<tr>
+<td>Hallucination-free</td>
+<td>No fabricated entities, quotes, URLs, or references</td>
+<td>Links to pages that don't exist, attributed quotes with no source</td>
+</tr>
+<tr>
+<td>Completeness</td>
+<td>Every requirement in the spec is addressed</td>
+<td>Missing sections, skipped edge cases, incomplete coverage</td>
+</tr>
+<tr>
+<td>Compliance</td>
+<td>Passes all project-specific constraints</td>
+<td>Banned terms used, tone violations, regulatory non-compliance</td>
+</tr>
+<tr>
+<td>Internal consistency</td>
+<td>No contradictions within the output</td>
+<td>Section A says X, section B says not-X</td>
+</tr>
+<tr>
+<td>Technical correctness</td>
+<td>Code compiles/runs, algorithms are sound</td>
+<td>Syntax errors, logic bugs, wrong complexity claims</td>
+</tr>
+</tbody>
+</table>
+<h6>Domain-Specific Rubric Extensions</h6>
+<p><strong>Content/Marketing:</strong></p>
+<ul>
+<li>Brand voice adherence</li>
+<li>SEO requirements met (keyword density, meta tags, structure)</li>
+<li>No competitor trademark misuse</li>
+<li>CTA present and correctly linked</li>
+</ul>
+<p><strong>Code:</strong></p>
+<ul>
+<li>Type safety (no <code>any</code> leaks, proper null handling)</li>
+<li>Error handling coverage</li>
+<li>Security (no secrets in code, input validation, injection prevention)</li>
+<li>Test coverage for new paths</li>
+</ul>
+<p><strong>Compliance-Sensitive (regulated, legal, financial):</strong></p>
+<ul>
+<li>No outcome guarantees or unsubstantiated claims</li>
+<li>Required disclaimers present</li>
+<li>Approved terminology only</li>
+<li>Jurisdiction-appropriate language</li>
+</ul>
+<h5>Phase 3: Naughty or Nice (Verdict Gate)</h5>
+<pre><code class="language-python">def santa_verdict(review_b, review_c):
+    &quot;&quot;&quot;Both reviewers must pass. No partial credit.&quot;&quot;&quot;
+    if review_b.verdict == &quot;PASS&quot; and review_c.verdict == &quot;PASS&quot;:
+        return &quot;NICE&quot;  # Ship it
+
+    # Merge flags from both reviewers, deduplicate
+    all_issues = dedupe(review_b.critical_issues + review_c.critical_issues)
+    all_suggestions = dedupe(review_b.suggestions + review_c.suggestions)
+
+    return &quot;NAUGHTY&quot;, all_issues, all_suggestions
+</code></pre>
+<p>Why both must pass: if only one reviewer catches an issue, that issue is real. The other reviewer's blind spot is exactly the failure mode Santa Method exists to eliminate.</p>
+<h5>Phase 4: Fix Until Nice (Convergence Loop)</h5>
+<pre><code class="language-python">MAX_ITERATIONS = 3
+
+for iteration in range(MAX_ITERATIONS):
+    verdict, issues, suggestions = santa_verdict(review_b, review_c)
+
+    if verdict == &quot;NICE&quot;:
+        log_santa_result(output, iteration, &quot;passed&quot;)
+        return ship(output)
+
+    # Fix all critical issues (suggestions are optional)
+    output = fix_agent.execute(
+        output=output,
+        issues=issues,
+        instruction=&quot;Fix ONLY the flagged issues. Do not refactor or add unrequested changes.&quot;
+    )
+
+    # Re-run BOTH reviewers on fixed output (fresh agents, no memory of previous round)
+    review_b = Agent(prompt=REVIEWER_PROMPT.format(output=output, ...))
+    review_c = Agent(prompt=REVIEWER_PROMPT.format(output=output, ...))
+
+# Exhausted iterations — escalate
+log_santa_result(output, MAX_ITERATIONS, &quot;escalated&quot;)
+escalate_to_human(output, issues)
+</code></pre>
+<p>Critical: each review round uses <strong>fresh agents</strong>. Reviewers must not carry memory from previous rounds, as prior context creates anchoring bias.</p>
+<h4>Implementation Patterns</h4>
+<h5>Pattern A: Claude Code Subagents (Recommended)</h5>
+<p>Subagents provide true context isolation. Each reviewer is a separate process with no shared state.</p>
+<pre><code class="language-bash"># In a Claude Code session, use the Agent tool to spawn reviewers
+# Both agents run in parallel for speed
+</code></pre>
+<pre><code class="language-python"># Pseudocode for Agent tool invocation
+reviewer_b = Agent(
+    description=&quot;Santa Review B&quot;,
+    prompt=f&quot;Review this output for quality...\n\nRUBRIC:\n{rubric}\n\nOUTPUT:\n{output}&quot;
+)
+reviewer_c = Agent(
+    description=&quot;Santa Review C&quot;,
+    prompt=f&quot;Review this output for quality...\n\nRUBRIC:\n{rubric}\n\nOUTPUT:\n{output}&quot;
+)
+</code></pre>
+<h5>Pattern B: Sequential Inline (Fallback)</h5>
+<p>When subagents aren't available, simulate isolation with explicit context resets:</p>
+<ol>
+<li>Generate output</li>
+<li>New context: &quot;You are Reviewer 1. Evaluate ONLY against this rubric. Find problems.&quot;</li>
+<li>Record findings verbatim</li>
+<li>Clear context completely</li>
+<li>New context: &quot;You are Reviewer 2. Evaluate ONLY against this rubric. Find problems.&quot;</li>
+<li>Compare both reviews, fix, repeat</li>
+</ol>
+<p>The subagent pattern is strictly superior — inline simulation risks context bleed between reviewers.</p>
+<h5>Pattern C: Batch Sampling</h5>
+<p>For large batches (100+ items), full Santa on every item is cost-prohibitive. Use stratified sampling:</p>
+<ol>
+<li>Run Santa on a random sample (10-15% of batch, minimum 5 items)</li>
+<li>Categorize failures by type (hallucination, compliance, completeness, etc.)</li>
+<li>If systematic patterns emerge, apply targeted fixes to the entire batch</li>
+<li>Re-sample and re-verify the fixed batch</li>
+<li>Continue until a clean sample passes</li>
+</ol>
+<pre><code class="language-python">import random
+
+def santa_batch(items, rubric, sample_rate=0.15):
+    sample = random.sample(items, max(5, int(len(items) * sample_rate)))
+
+    for item in sample:
+        result = santa_full(item, rubric)
+        if result.verdict == &quot;NAUGHTY&quot;:
+            pattern = classify_failure(result.issues)
+            items = batch_fix(items, pattern)  # Fix all items matching pattern
+            return santa_batch(items, rubric)   # Re-sample
+
+    return items  # Clean sample → ship batch
+</code></pre>
+<h4>Failure Modes and Mitigations</h4>
+<table>
+<thead>
+<tr>
+<th>Failure Mode</th>
+<th>Symptom</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Infinite loop</td>
+<td>Reviewers keep finding new issues after fixes</td>
+<td>Max iteration cap (3). Escalate.</td>
+</tr>
+<tr>
+<td>Rubber stamping</td>
+<td>Both reviewers pass everything</td>
+<td>Adversarial prompt: &quot;Your job is to find problems, not approve.&quot;</td>
+</tr>
+<tr>
+<td>Subjective drift</td>
+<td>Reviewers flag style preferences, not errors</td>
+<td>Tight rubric with objective pass/fail criteria only</td>
+</tr>
+<tr>
+<td>Fix regression</td>
+<td>Fixing issue A introduces issue B</td>
+<td>Fresh reviewers each round catch regressions</td>
+</tr>
+<tr>
+<td>Reviewer agreement bias</td>
+<td>Both reviewers miss the same thing</td>
+<td>Mitigated by independence, not eliminated. For critical output, add a third reviewer or human spot-check.</td>
+</tr>
+<tr>
+<td>Cost explosion</td>
+<td>Too many iterations on large outputs</td>
+<td>Batch sampling pattern. Budget caps per verification cycle.</td>
+</tr>
+</tbody>
+</table>
+<h4>Integration with Other Skills</h4>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Relationship</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Verification Loop</td>
+<td>Use for deterministic checks (build, lint, test). Santa for semantic checks (accuracy, hallucinations). Run verification-loop first, Santa second.</td>
+</tr>
+<tr>
+<td>Eval Harness</td>
+<td>Santa Method results feed eval metrics. Track pass@k across Santa runs to measure generator quality over time.</td>
+</tr>
+<tr>
+<td>Continuous Learning v2</td>
+<td>Santa findings become instincts. Repeated failures on the same criterion → learned behavior to avoid the pattern.</td>
+</tr>
+<tr>
+<td>Strategic Compact</td>
+<td>Run Santa BEFORE compacting. Don't lose review context mid-verification.</td>
+</tr>
+</tbody>
+</table>
+<h4>Metrics</h4>
+<p>Track these to measure Santa Method effectiveness:</p>
+<ul>
+<li><strong>First-pass rate</strong>: % of outputs that pass Santa on round 1 (target: &gt;70%)</li>
+<li><strong>Mean iterations to convergence</strong>: average rounds to NICE (target: &lt;1.5)</li>
+<li><strong>Issue taxonomy</strong>: distribution of failure types (hallucination vs. completeness vs. compliance)</li>
+<li><strong>Reviewer agreement</strong>: % of issues flagged by both reviewers vs. only one (low agreement = rubric needs tightening)</li>
+<li><strong>Escape rate</strong>: issues found post-ship that Santa should have caught (target: 0)</li>
+</ul>
+<h4>Cost Analysis</h4>
+<p>Santa Method costs approximately 2-3x the token cost of generation alone per verification cycle. For most high-stakes output, this is a bargain:</p>
+<pre><code>Cost of Santa = (generation tokens) + 2×(review tokens per round) × (avg rounds)
+Cost of NOT Santa = (reputation damage) + (correction effort) + (trust erosion)
+</code></pre>
+<p>For batch operations, the sampling pattern reduces cost to ~15-20% of full verification while catching &gt;90% of systematic issues.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

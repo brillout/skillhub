@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>datanalysis-credit-risk · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re preparing raw credit data for a pre-loan risk model and need to choose which variables are worth keeping. It does: runs a bundled Python script through 11 steps, from per-organization bad rates to missing-rate, IV, PSI, noise and correlation screens. You get: one Excel report, its file and sheet names in Chinese, with a sheet per step listing each month or feature flagged for removal and why; your data is only read. Expects: feature columns whose names start with i_, plus the date, label, organization and key columns you name. Asks you: at the terminal for paths, column names, out-of-sample organizations and every threshold, each with a default. Needs: Python with pandas, toad, LightGBM, scikit-learn, joblib and openpyxl, which the script imports but the SKILL.md doesn&#039;t list." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=github%2Fawesome-copilot">github/awesome-copilot</a></p>
+      <h1>datanalysis-credit-risk</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re preparing raw credit data for a pre-loan risk model and need to choose which variables are worth keeping</dd></div><div><dt>It does</dt><dd>runs a bundled Python script through 11 steps, from per-organization bad rates to missing-rate, IV, PSI, noise and correlation screens</dd></div><div><dt>You get</dt><dd>one Excel report, its file and sheet names in Chinese, with a sheet per step listing each month or feature flagged for removal and why; your data is only read</dd></div><div><dt>Expects</dt><dd>feature columns whose names start with i_, plus the date, label, organization and key columns you name</dd></div><div><dt>Asks you</dt><dd>at the terminal for paths, column names, out-of-sample organizations and every threshold, each with a default</dd></div><div><dt>Needs</dt><dd>Python with pandas, toad, LightGBM, scikit-learn, joblib and openpyxl, which the script imports but the SKILL.md doesn&#39;t list</dd></div></dl></section>
+      
+      <p class="note">Needs Python with pandas, numpy, toad, LightGBM, scikit-learn, openpyxl, joblib and tqdm. Its script asks for every path, column and threshold at the terminal, and names the Excel report and its sheets in Chinese.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Credit-risk models start from wide tables of candidate variables, many too sparse, weak or unstable to keep. This skill runs a bundled Python script through that screening. It loads a parquet, CSV, Excel or pickle file, treats -1, -999 and -1111 as missing, and counts samples and bad rates per organization, the column naming each sample&#39;s source institution. It sets aside the out-of-sample organizations you name and flags months with too few bad or total samples. Then, for every feature, it computes missing rates overall and per organization and flags those over a missing-rate threshold (default 0.6); with low information value (IV, how well a feature separates good from bad borrowers); with an unstable population stability index (PSI, how much its distribution drifts month to month); that look like noise under Null Importance, which compares LightGBM gain on real and shuffled labels; and, among highly correlated features, those with lower gain. Each step runs on its own copy of the data rather than on the previous step&#39;s result, so the screens can be compared. IV and PSI calculations run in parallel across CPU cores, and the report, 数据清洗报告.xlsx, goes to the output folder you name.</p>
+      <p class="muted">Summarizes <a href="https://github.com/github/awesome-copilot/tree/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/datanalysis-credit-risk">the skill at 797337f</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/github/awesome-copilot --skill datanalysis-credit-risk</code><button type="button" class="copy" data-copy="npx skills add https://github.com/github/awesome-copilot --skill datanalysis-credit-risk">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/github/awesome-copilot/datanalysis-credit-risk">skills.sh page</a> · <a href="https://github.com/github/awesome-copilot/tree/HEAD/skills/datanalysis-credit-risk">Source on GitHub</a> · <a href="/skillhub/?repo=github%2Fawesome-copilot">All skills from github/awesome-copilot</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>7,300 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>40,883 <span class="muted">github/awesome-copilot</span></dd></div><div><dt>First seen</dt><dd>Mar 2, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">6</div>
+      <div class="stat-delta">-50% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 12; week to Sep 26: 12; week to Oct 3: 12; week to Oct 10: 12; week to Oct 17: 3; week to Oct 24: 1; week to Oct 31: 0; week to Nov 7: 6. Use the left and right arrow keys to read each week."
+        data-values="12,12,12,12,3,1,0,6" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,6.0 71.1,6.0 103.7,6.0 136.3,39.0 168.9,46.3 201.4,50.0 234.0,28.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="28.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>12</td></tr><tr><td>Sep 26</td><td>12</td></tr><tr><td>Oct 3</td><td>12</td></tr><tr><td>Oct 10</td><td>12</td></tr><tr><td>Oct 17</td><td>3</td></tr><tr><td>Oct 24</td><td>1</td></tr><tr><td>Oct 31</td><td>0</td></tr><tr><td>Nov 7</td><td>6</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:science" data-facet="category" title="Research reproduction, financial data, charts and diagrams." href="/skillhub/?tag=category%3Ascience">category:science</a></div>
+          <p class="tag-meaning">Research reproduction, financial data, charts and diagrams.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/skillhub/?tag=type%3Atool">type:tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="finance" data-facet="topic" href="/skillhub/?tag=finance">finance</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:python" data-facet="stack" href="/skillhub/?tag=stack%3Apython">stack:python</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/github/awesome-copilot/blob/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/datanalysis-credit-risk/SKILL.md">github/awesome-copilot at 797337f</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: datanalysis-credit-risk
+description: Credit risk data cleaning and variable screening pipeline for pre-loan modeling. Use when working with raw credit data that needs quality assessment,  missing value analysis, or variable selection before modeling. it covers data loading and formatting, abnormal period filtering, missing rate calculation, high-missing variable removal,low-IV variable filtering, high-PSI variable removal, Null Importance denoising, high-correlation variable removal, and cleaning report generation. Applicable scenarios arecredit risk data cleaning, variable screening, pre-loan modeling preprocessing.</code></pre></details>
+        <div class="markdown"><h3>Data Cleaning and Variable Screening</h3>
+<h4>Quick Start</h4>
+<pre><code class="language-bash"># Run the complete data cleaning pipeline
+python &quot;.github/skills/datanalysis-credit-risk/scripts/example.py&quot;
+</code></pre>
+<h4>Complete Process Description</h4>
+<p>The data cleaning pipeline consists of the following 11 steps, each executed independently without deleting the original data:</p>
+<ol>
+<li><strong>Get Data</strong> - Load and format raw data</li>
+<li><strong>Organization Sample Analysis</strong> - Statistics of sample count and bad sample rate for each organization</li>
+<li><strong>Separate OOS Data</strong> - Separate out-of-sample (OOS) samples from modeling samples</li>
+<li><strong>Filter Abnormal Months</strong> - Remove months with insufficient bad sample count or total sample count</li>
+<li><strong>Calculate Missing Rate</strong> - Calculate overall and organization-level missing rates for each feature</li>
+<li><strong>Drop High Missing Rate Features</strong> - Remove features with overall missing rate exceeding threshold</li>
+<li><strong>Drop Low IV Features</strong> - Remove features with overall IV too low or IV too low in too many organizations</li>
+<li><strong>Drop High PSI Features</strong> - Remove features with unstable PSI</li>
+<li><strong>Null Importance Denoising</strong> - Remove noise features using label permutation method</li>
+<li><strong>Drop High Correlation Features</strong> - Remove high correlation features based on original gain</li>
+<li><strong>Export Report</strong> - Generate Excel report containing details and statistics of all steps</li>
+</ol>
+<h4>Core Functions</h4>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Purpose</th>
+<th>Module</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>get_dataset()</code></td>
+<td>Load and format data</td>
+<td>references.func</td>
+</tr>
+<tr>
+<td><code>org_analysis()</code></td>
+<td>Organization sample analysis</td>
+<td>references.func</td>
+</tr>
+<tr>
+<td><code>missing_check()</code></td>
+<td>Calculate missing rate</td>
+<td>references.func</td>
+</tr>
+<tr>
+<td><code>drop_abnormal_ym()</code></td>
+<td>Filter abnormal months</td>
+<td>references.analysis</td>
+</tr>
+<tr>
+<td><code>drop_highmiss_features()</code></td>
+<td>Drop high missing rate features</td>
+<td>references.analysis</td>
+</tr>
+<tr>
+<td><code>drop_lowiv_features()</code></td>
+<td>Drop low IV features</td>
+<td>references.analysis</td>
+</tr>
+<tr>
+<td><code>drop_highpsi_features()</code></td>
+<td>Drop high PSI features</td>
+<td>references.analysis</td>
+</tr>
+<tr>
+<td><code>drop_highnoise_features()</code></td>
+<td>Null Importance denoising</td>
+<td>references.analysis</td>
+</tr>
+<tr>
+<td><code>drop_highcorr_features()</code></td>
+<td>Drop high correlation features</td>
+<td>references.analysis</td>
+</tr>
+<tr>
+<td><code>iv_distribution_by_org()</code></td>
+<td>IV distribution statistics</td>
+<td>references.analysis</td>
+</tr>
+<tr>
+<td><code>psi_distribution_by_org()</code></td>
+<td>PSI distribution statistics</td>
+<td>references.analysis</td>
+</tr>
+<tr>
+<td><code>value_ratio_distribution_by_org()</code></td>
+<td>Value ratio distribution statistics</td>
+<td>references.analysis</td>
+</tr>
+<tr>
+<td><code>export_cleaning_report()</code></td>
+<td>Export cleaning report</td>
+<td>references.analysis</td>
+</tr>
+</tbody>
+</table>
+<h4>Parameter Description</h4>
+<h5>Data Loading Parameters</h5>
+<ul>
+<li><code>DATA_PATH</code>: Data file path (best are parquet format)</li>
+<li><code>DATE_COL</code>: Date column name</li>
+<li><code>Y_COL</code>: Label column name</li>
+<li><code>ORG_COL</code>: Organization column name</li>
+<li><code>KEY_COLS</code>: Primary key column name list</li>
+</ul>
+<h5>OOS Organization Configuration</h5>
+<ul>
+<li><code>OOS_ORGS</code>: Out-of-sample organization list</li>
+</ul>
+<h5>Abnormal Month Filtering Parameters</h5>
+<ul>
+<li><code>min_ym_bad_sample</code>: Minimum bad sample count per month (default 10)</li>
+<li><code>min_ym_sample</code>: Minimum total sample count per month (default 500)</li>
+</ul>
+<h5>Missing Rate Parameters</h5>
+<ul>
+<li><code>missing_ratio</code>: Overall missing rate threshold (default 0.6)</li>
+</ul>
+<h5>IV Parameters</h5>
+<ul>
+<li><code>overall_iv_threshold</code>: Overall IV threshold (default 0.1)</li>
+<li><code>org_iv_threshold</code>: Single organization IV threshold (default 0.1)</li>
+<li><code>max_org_threshold</code>: Maximum tolerated low IV organization count (default 2)</li>
+</ul>
+<h5>PSI Parameters</h5>
+<ul>
+<li><code>psi_threshold</code>: PSI threshold (default 0.1)</li>
+<li><code>max_months_ratio</code>: Maximum unstable month ratio (default 1/3)</li>
+<li><code>max_orgs</code>: Maximum unstable organization count (default 6)</li>
+</ul>
+<h5>Null Importance Parameters</h5>
+<ul>
+<li><code>n_estimators</code>: Number of trees (default 100)</li>
+<li><code>max_depth</code>: Maximum tree depth (default 5)</li>
+<li><code>gain_threshold</code>: Gain difference threshold (default 50)</li>
+</ul>
+<h5>High Correlation Parameters</h5>
+<ul>
+<li><code>max_corr</code>: Correlation threshold (default 0.9)</li>
+<li><code>top_n_keep</code>: Keep top N features by original gain ranking (default 20)</li>
+</ul>
+<h4>Output Report</h4>
+<p>The generated Excel report contains the following sheets:</p>
+<ol>
+<li><strong>汇总</strong> - Summary information of all steps, including operation results and conditions</li>
+<li><strong>机构样本统计</strong> - Sample count and bad sample rate for each organization</li>
+<li><strong>分离OOS数据</strong> - OOS sample and modeling sample counts</li>
+<li><strong>Step4-异常月份处理</strong> - Abnormal months that were removed</li>
+<li><strong>缺失率明细</strong> - Overall and organization-level missing rates for each feature</li>
+<li><strong>Step5-有值率分布统计</strong> - Distribution of features in different value ratio ranges</li>
+<li><strong>Step6-高缺失率处理</strong> - High missing rate features that were removed</li>
+<li><strong>Step7-IV明细</strong> - IV values of each feature in each organization and overall</li>
+<li><strong>Step7-IV处理</strong> - Features that do not meet IV conditions and low IV organizations</li>
+<li><strong>Step7-IV分布统计</strong> - Distribution of features in different IV ranges</li>
+<li><strong>Step8-PSI明细</strong> - PSI values of each feature in each organization each month</li>
+<li><strong>Step8-PSI处理</strong> - Features that do not meet PSI conditions and unstable organizations</li>
+<li><strong>Step8-PSI分布统计</strong> - Distribution of features in different PSI ranges</li>
+<li><strong>Step9-null importance处理</strong> - Noise features that were removed</li>
+<li><strong>Step10-高相关性剔除</strong> - High correlation features that were removed</li>
+</ol>
+<h4>Features</h4>
+<ul>
+<li><strong>Interactive Input</strong>: Parameters can be input before each step execution, with default values supported</li>
+<li><strong>Independent Execution</strong>: Each step is executed independently without deleting original data, facilitating comparative analysis</li>
+<li><strong>Complete Report</strong>: Generate complete Excel report containing details, statistics, and distributions</li>
+<li><strong>Multi-process Support</strong>: IV and PSI calculations support multi-process acceleration</li>
+<li><strong>Organization-level Analysis</strong>: Support organization-level statistics and modeling/OOS distinction</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

@@ -1,0 +1,887 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>yara-rule-authoring · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re writing a YARA rule from malware samples, reviewing someone else&#039;s, chasing false positives or porting legacy YARA rules to YARA-X. It does: extracts candidate strings with yarGen or FLOSS, discards weak ones, writes the rule with cheap checks first, then lints it and tests it against clean files. You get: a named rule with full metadata, or for a review, the error and warning codes its linter and atom analyzer report. Atoms: the 4-byte pieces YARA matches first; short or repetitive strings make poor atoms and force slow checks on too many files. Needs: the YARA-X CLI (yr) and uv for its scripts." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=trailofbits%2Fskills">trailofbits/skills</a></p>
+      <h1>yara-rule-authoring</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re writing a YARA rule from malware samples, reviewing someone else&#39;s, chasing false positives or porting legacy YARA rules to YARA-X</dd></div><div><dt>It does</dt><dd>extracts candidate strings with yarGen or FLOSS, discards weak ones, writes the rule with cheap checks first, then lints it and tests it against clean files</dd></div><div><dt>You get</dt><dd>a named rule with full metadata, or for a review, the error and warning codes its linter and atom analyzer report</dd></div><div><dt>Atoms</dt><dd>the 4-byte pieces YARA matches first; short or repetitive strings make poor atoms and force slow checks on too many files</dd></div><div><dt>Needs</dt><dd>the YARA-X CLI (yr) and uv for its scripts</dd></div></dl></section>
+      
+      <p class="note">Needs the YARA-X CLI (yr) and uv for its scripts.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>From Trail of Bits. It targets YARA-X, the Rust successor to YARA that runs VirusTotal&#39;s production systems. Its rules come from detection practice: target one family, not a category; reject strings under 4 bytes, API names, common paths and anything found in Windows system files; expect to discard 80% of what yarGen suggests; use nocase or wide only with evidence; anchor and bound every regex; and order conditions from filesize to magic bytes to strings to modules. It warns that uint32() reads little-endian, so a magic-byte check written in file order compiles and never matches. Packed samples call for the unpacked payload or a packer rule, and when strings fail it pivots to entropy, import hashes or PE structure. It says when to give up on a rule, such as one matching six or more clean files, and covers the crx and dex modules for Chrome extensions and Android apps, rule names like MAL_Win_Emotet_Loader_Jan25, and migrating legacy rules. A review script runs yr check, yr fmt, the linter and the atom analyzer in one call and prints one JSON result.</p>
+      <p class="muted">Summarizes <a href="https://github.com/trailofbits/skills/tree/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring">the skill at e4dd0bb</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/trailofbits/skills --skill yara-rule-authoring</code><button type="button" class="copy" data-copy="npx skills add https://github.com/trailofbits/skills --skill yara-rule-authoring">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/trailofbits/skills/yara-rule-authoring">skills.sh page</a> · <a href="https://github.com/trailofbits/skills/tree/HEAD/plugins/yara-authoring/skills/yara-rule-authoring">Source on GitHub</a> · <a href="/skillhub/?repo=trailofbits%2Fskills">All skills from trailofbits/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,400 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>8,053 <span class="muted">trailofbits/skills</span></dd></div><div><dt>First seen</dt><dd>Jan 30, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">172</div>
+      <div class="stat-delta">+51% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 114; week to Sep 26: 105; week to Oct 3: 107; week to Oct 10: 98; week to Oct 17: 120; week to Oct 24: 127; week to Oct 31: 156; week to Nov 7: 172. Use the left and right arrow keys to read each week."
+        data-values="114,105,107,98,120,127,156,172" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,20.8 38.6,23.1 71.1,22.6 103.7,24.9 136.3,19.3 168.9,17.5 201.4,10.1 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>114</td></tr><tr><td>Sep 26</td><td>105</td></tr><tr><td>Oct 3</td><td>107</td></tr><tr><td>Oct 10</td><td>98</td></tr><tr><td>Oct 17</td><td>120</td></tr><tr><td>Oct 24</td><td>127</td></tr><tr><td>Oct 31</td><td>156</td></tr><tr><td>Nov 7</td><td>172</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/skillhub/?tag=category%3Asecurity">category:security</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a><a class="tag" data-tag="code-review" data-facet="topic" href="/skillhub/?tag=code-review">code-review</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:yara" data-facet="stack" href="/skillhub/?tag=stack%3Ayara">stack:yara</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/SKILL.md">trailofbits/skills at e4dd0bb</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: yara-rule-authoring
+description: &#62;
+  Guides authoring of high-quality YARA-X detection rules for malware identification.
+  Use when writing, reviewing, or optimizing YARA rules. Covers naming conventions,
+  string selection, performance optimization, migration from legacy YARA, and false
+  positive reduction. Triggers on: YARA, YARA-X, malware detection, threat hunting,
+  IOC, signature, crx module, dex module.</code></pre></details>
+        <div class="markdown"><h3>YARA-X Rule Authoring</h3>
+<p>Write detection rules that catch malware without drowning in false positives.</p>
+<p>Resolve the <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/scripts/yara_lint.py">linter</a>, <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/scripts/atom_analyzer.py">atom analyzer</a>,
+and <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/scripts/review.sh">review helper</a> from this installed <code>SKILL.md</code>'s directory.
+In commands below, replace each <code>&lt;resolved-...-path&gt;</code> with that script's absolute
+path and keep the quotes. The rule file or directory is still relative to your
+working directory unless you pass an absolute input path.</p>
+<p><strong>This skill targets YARA-X</strong>, the Rust-based successor to legacy YARA — 5-10x faster regex, better errors, built-in formatter, stricter validation, new modules (crx, dex), 99% rule compatibility. It powers VirusTotal's production systems. Install with <code>brew install yara-x</code> or <code>cargo install yara-x</code>; the CLI is <code>yr</code>. See <a href="#migrating-from-legacy-yara">Migrating from Legacy YARA</a> for existing rules.</p>
+<h4>Core Principles</h4>
+<ol>
+<li>
+<p><strong>Strings must generate good atoms</strong> — YARA extracts 4-byte subsequences for fast matching. Strings with repeated bytes, common sequences, or under 4 bytes force slow bytecode verification on too many files.</p>
+</li>
+<li>
+<p><strong>Target specific families, not categories</strong> — &quot;Detects ransomware&quot; catches everything and nothing. &quot;Detects LockBit 3.0 configuration extraction routine&quot; catches what you want.</p>
+</li>
+<li>
+<p><strong>Test against goodware before deployment</strong> — A rule that fires on Windows system files is useless. Validate against VirusTotal's goodware corpus or your own clean file set.</p>
+</li>
+<li>
+<p><strong>Short-circuit with cheap checks first</strong> — <code>filesize</code> (instant), then magic bytes (nearly instant), then strings (cheap), then modules (expensive).</p>
+</li>
+<li>
+<p><strong>Metadata is documentation</strong> — Future you (and your team) need to know what this catches, why, and where the sample came from.</p>
+</li>
+</ol>
+<h4>When to Use</h4>
+<ul>
+<li>Writing new YARA-X rules for malware detection</li>
+<li>Reviewing existing rules for quality or performance issues</li>
+<li>Optimizing slow-running rulesets</li>
+<li>Converting IOCs or threat intel into detection signatures</li>
+<li>Debugging false positive issues</li>
+<li>Preparing rules for production deployment</li>
+<li>Migrating legacy YARA rules to YARA-X</li>
+<li>Analyzing Chrome extensions (crx module) or Android apps (dex module)</li>
+</ul>
+<h4>When NOT to Use</h4>
+<ul>
+<li>Static analysis requiring disassembly → use Ghidra/IDA skills</li>
+<li>Dynamic malware analysis → use sandbox analysis skills</li>
+<li>Network-based detection → use Suricata/Snort skills</li>
+<li>Memory forensics with Volatility → use memory forensics skills</li>
+<li>Simple hash-based detection → just use hash lists</li>
+</ul>
+<h4>Platform Considerations</h4>
+<p>YARA works on any file type. Adapt patterns to your target:</p>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Magic Bytes</th>
+<th>Bad Strings</th>
+<th>Good Strings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Windows PE</strong></td>
+<td><code>uint16(0) == 0x5A4D</code></td>
+<td>API names, Windows paths</td>
+<td>Mutex names, PDB paths</td>
+</tr>
+<tr>
+<td><strong>macOS Mach-O</strong></td>
+<td><code>uint32(0) == 0xFEEDFACE</code> (32-bit), <code>0xFEEDFACF</code> (64-bit), <code>uint32be(0) == 0xCAFEBABE</code> (universal)</td>
+<td>Common Obj-C methods</td>
+<td>Keylogger strings, persistence paths</td>
+</tr>
+<tr>
+<td><strong>JavaScript/Node</strong></td>
+<td>(none needed)</td>
+<td><code>require</code>, <code>fetch</code>, <code>axios</code></td>
+<td>Obfuscator signatures, eval+decode chains</td>
+</tr>
+<tr>
+<td><strong>npm/pip packages</strong></td>
+<td>(none needed)</td>
+<td><code>postinstall</code>, <code>dependencies</code></td>
+<td>Suspicious package names, exfil URLs</td>
+</tr>
+<tr>
+<td><strong>Office docs</strong></td>
+<td><code>uint32(0) == 0x04034B50</code></td>
+<td>VBA keywords</td>
+<td>Macro auto-exec, encoded payloads</td>
+</tr>
+<tr>
+<td><strong>VS Code extensions</strong></td>
+<td>(none needed)</td>
+<td><code>vscode.workspace</code></td>
+<td>Uncommon activationEvents, hidden file access</td>
+</tr>
+<tr>
+<td><strong>Chrome extensions</strong></td>
+<td>Use <code>crx</code> module</td>
+<td>Common Chrome APIs</td>
+<td>Permission abuse, manifest anomalies</td>
+</tr>
+<tr>
+<td><strong>Android apps</strong></td>
+<td>Use <code>dex</code> module</td>
+<td>Standard DEX structure</td>
+<td>Obfuscated classes, suspicious permissions</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong><code>uintNN()</code> reads little-endian.</strong> Write the constant as the bytes <em>reversed</em>, or use <code>uintNNbe()</code> and write them in file order. A ZIP/OOXML file starts with bytes <code>50 4B 03 04</code>, so it is <code>uint32(0) == 0x04034B50</code> — <code>uint32(0) == 0x504B0304</code> compiles cleanly and never matches anything. The same trap catches Mach-O universal binaries: on disk they are <code>CA FE BA BE</code>, so <code>uint32(0) == 0xCAFEBABE</code> is a dead branch; write <code>uint32be(0) == 0xCAFEBABE</code> or <code>uint32(0) == 0xBEBAFECA</code>. Verify with <code>yr scan</code> against one known-good sample before trusting any magic-byte check.</p>
+</blockquote>
+<h5>macOS Malware Detection</h5>
+<p>No dedicated Mach-O module exists yet — use magic bytes plus string patterns. Good indicators:</p>
+<ul>
+<li>Keylogger artifacts: <code>CGEventTapCreate</code>, <code>kCGEventKeyDown</code></li>
+<li>SSH tunnel strings: <code>ssh -D</code>, <code>tunnel</code>, <code>socks</code></li>
+<li>Persistence paths: <code>~/Library/LaunchAgents</code>, <code>/Library/LaunchDaemons</code></li>
+<li>Credential theft: <code>security find-generic-password</code>, <code>keychain</code></li>
+</ul>
+<pre><code class="language-yara">// Pattern from Airbnb BinaryAlert
+rule SUSP_Mac_ProtonRAT
+{
+    strings:
+        $lib1 = &quot;SRWebSocket&quot; ascii          // Library indicators
+        $lib2 = &quot;SocketRocket&quot; ascii
+        $behav1 = &quot;SSH tunnel not launched&quot; ascii   // Behavioral indicators
+        $behav2 = &quot;Keylogger&quot; ascii
+    condition:
+        (uint32(0) == 0xFEEDFACF or uint32be(0) == 0xCAFEBABE) and
+        any of ($lib*) and any of ($behav*)
+}
+</code></pre>
+<h5>JavaScript Detection</h5>
+<table>
+<thead>
+<tr>
+<th>Target</th>
+<th>Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>npm package</td>
+<td><code>package.json</code> patterns, postinstall/preinstall hooks, exfil combination: fetch + env access + credential paths</td>
+</tr>
+<tr>
+<td>Chrome extension</td>
+<td><code>crx</code> module</td>
+</tr>
+<tr>
+<td>Other extension</td>
+<td>Manifest patterns, background script behaviors</td>
+</tr>
+<tr>
+<td>Standalone JS</td>
+<td>Obfuscation markers (eval+atob, fromCharCode chains), unique function/variable names, packed payloads</td>
+</tr>
+<tr>
+<td>Minified/webpack bundle</td>
+<td>Unique strings that survive bundling (URLs, magic values); <strong>avoid function names</strong> — they get mangled</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Good JS strings:</strong> Ethereum function selectors — <code>{ a9 05 9c bb }</code> (<code>transfer(address,uint256)</code>), <code>{ 70 a0 82 31 }</code> (<code>balanceOf(address)</code>); zero-width characters for steganography — <code>{ E2 80 8B E2 80 8C }</code>; obfuscator signatures — <code>_0x</code>, <code>var _0x</code>; specific C2 domains and webhook URLs.</p>
+<p><strong>Bad JS strings:</strong> <code>require</code>, <code>fetch</code>, <code>axios</code> (too common); <code>Buffer</code>, <code>crypto</code> (legitimate uses everywhere); <code>process.env</code> alone (need specific env var names).</p>
+<h4>String Selection</h4>
+<p><strong>Value ranking:</strong> mutex names are gold, C2 paths silver, error messages bronze. Stack strings are almost always unique. If you need more than 6 strings, you're over-fitting.</p>
+<p>Reject a candidate string when any of these holds:</p>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Why it fails</th>
+<th>Do instead</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Under 4 bytes</td>
+<td>No atom</td>
+<td>Find a longer string</td>
+</tr>
+<tr>
+<td>Repeated bytes (<code>0000</code>, <code>9090</code>)</td>
+<td>Weak atom</td>
+<td>Add surrounding context</td>
+</tr>
+<tr>
+<td>API name (<code>VirtualAlloc</code>, <code>CreateRemoteThread</code>)</td>
+<td>Every packer and installer calls it</td>
+<td>Hex pattern of the call site plus a unique marker</td>
+</tr>
+<tr>
+<td>Appears in Windows system files</td>
+<td>Guaranteed FPs</td>
+<td>Find something family-specific</td>
+</tr>
+<tr>
+<td>Common path (<code>C:\Windows\</code>, <code>cmd.exe</code>)</td>
+<td>Ubiquitous</td>
+<td>Find malware-specific paths</td>
+</tr>
+<tr>
+<td>Appears in other malware families</td>
+<td>Not identifying <em>this</em> family</td>
+<td>Combine with a family-specific marker</td>
+</tr>
+</tbody>
+</table>
+<p>Everything left — unique to this family — is what the rule should rest on.</p>
+<h5>Choosing a String Type</h5>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exact ASCII/Unicode text</td>
+<td><code>$s = &quot;MutexName&quot; ascii wide</code></td>
+</tr>
+<tr>
+<td>Specific byte sequence</td>
+<td><code>$h = { 4D 5A 90 00 }</code></td>
+</tr>
+<tr>
+<td>Byte sequence with variation</td>
+<td>Hex wildcards: <code>{ 4D 5A ?? ?? 50 45 }</code></td>
+</tr>
+<tr>
+<td>Pattern with structure (URLs, paths)</td>
+<td>Bounded regex: <code>/https:\/\/[a-z]{5,20}\.onion/</code></td>
+</tr>
+<tr>
+<td>Unknown encoding (XOR, base64)</td>
+<td>Modifier: <code>$s = &quot;config&quot; xor(0x00-0xFF)</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Modifier discipline:</strong> never use <code>nocase</code> or <code>wide</code> speculatively — only with confirmed evidence that case or encoding varies across samples. <code>nocase</code> doubles atom generation; <code>wide</code> doubles string matching. &quot;If you don't have a clear reason for using those modifiers, don't do it&quot; — Kaspersky Applied YARA.</p>
+<h4>Condition Design</h4>
+<p>Order for short-circuit: <code>filesize &lt;</code>, magic bytes, strings, modules. If the condition runs past 5 lines, split into multiple rules.</p>
+<h5>all of vs any of</h5>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Strings are individually unique to the malware</td>
+<td><code>any of them</code> — each alone is suspicious</td>
+</tr>
+<tr>
+<td>Strings are common but the combination is suspicious</td>
+<td><code>all of them</code> — require the full pattern</td>
+</tr>
+<tr>
+<td>Strings have different confidence levels</td>
+<td>Group: <code>all of ($core_*) and any of ($variant_*)</code></td>
+</tr>
+<tr>
+<td>Seeing false positives</td>
+<td>Tighten: <code>any</code> → <code>all</code>, add more required strings</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Lesson from production:</strong> rules using <code>any of ($network_*)</code> where the strings included <code>fetch</code>, <code>axios</code>, and <code>http</code> matched virtually all web applications. Switching to require a credential path AND a network call AND an exfil destination eliminated the FPs.</p>
+<h5>Grouping by Confidence</h5>
+<p>Different indicator types carry different weight — a C2 domain might be definitive while library imports need corroboration. Grouping by prefix lets you express graduated requirements:</p>
+<pre><code class="language-yara">strings:
+    $a1 = &quot;SRWebSocket&quot; ascii            // Category A: library indicators
+    $a2 = &quot;SocketRocket&quot; ascii
+    $b1 = &quot;SSH tunnel&quot; ascii             // Category B: behavioral
+    $b2 = &quot;keylogger&quot; ascii nocase
+    $c1 = /https:\/\/[a-z0-9]{8,16}\.onion/   // Category C: C2
+
+condition:
+    filesize &lt; 10MB and
+    any of ($a*) and any of ($b*)        // Evidence from BOTH categories
+</code></pre>
+<h5>Modules vs Byte Checks</h5>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>imphash, rich header, authenticode</td>
+<td>PE module — too complex to replicate</td>
+</tr>
+<tr>
+<td>Magic bytes or simple offsets</td>
+<td><code>uint16</code>/<code>uint32</code> — faster, no module overhead</td>
+</tr>
+<tr>
+<td>Section names/sizes</td>
+<td>PE module, but put the magic-byte filter FIRST</td>
+</tr>
+<tr>
+<td>Chrome extension permissions</td>
+<td><code>crx</code> module — string parsing is fragile</td>
+</tr>
+<tr>
+<td>LNK target paths</td>
+<td><code>lnk</code> module — the format is complex</td>
+</tr>
+</tbody>
+</table>
+<p>&quot;Avoid the magic module — use explicit hex checks instead&quot; — Neo23x0. Generalize it: if <code>uint32()</code> can do the job, don't load a module.</p>
+<h5>Performance</h5>
+<ul>
+<li><strong>Regex must be anchored to a 4+ byte literal.</strong> Without one it evaluates at <em>every</em> file offset — catastrophic. Write <code>/mshta\.exe http:\/\/.../</code>, not <code>/http:\/\/.../</code>. If you can't anchor, use a hex pattern with wildcards.</li>
+<li><strong>Bound every regex quantifier</strong> — <code>.{0,30}</code>, never <code>.*</code>. Unbounded regex is both a performance disaster and a memory explosion.</li>
+<li><strong>Bound loops with filesize</strong> — <code>filesize &lt; 100KB and for all i in (1..#a) : ...</code>. Unbounded <code>#a</code> can reach thousands in large files.</li>
+<li><strong>Prefer hex over regex</strong> where the bytes are fixed.</li>
+</ul>
+<h4>Before Writing: Is the Sample Packed?</h4>
+<table>
+<thead>
+<tr>
+<th>Signal</th>
+<th>What to do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Entropy &gt; 7.0</td>
+<td>Likely packed — find the unpacked layer first</td>
+</tr>
+<tr>
+<td>Few or no readable strings</td>
+<td>Likely packed — use entropy, PE structure, or packer signatures</td>
+</tr>
+<tr>
+<td>UPX/MPRESS/custom packer detected</td>
+<td>Target the unpacked payload OR detect the packer itself</td>
+</tr>
+<tr>
+<td>Readable strings available</td>
+<td>Proceed with string-based detection</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Don't write rules against packed layers.</strong> The packing changes; the payload doesn't.</p>
+<h5>When Strings Fail, Pivot to Structure</h5>
+<p>If extraction returns only API names and generic paths:</p>
+<table>
+<thead>
+<tr>
+<th>Available signal</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>High entropy sections</td>
+<td><code>math.entropy()</code> on specific sections</td>
+</tr>
+<tr>
+<td>Unusual import pattern</td>
+<td><code>pe.imphash()</code> for import-hash clustering</td>
+</tr>
+<tr>
+<td>PE structure anomalies</td>
+<td>Section names, sizes, characteristics</td>
+</tr>
+<tr>
+<td>Metadata present</td>
+<td>Version info, timestamps, resources</td>
+</tr>
+<tr>
+<td>Nothing unique</td>
+<td>This sample may not be detectable with YARA alone</td>
+</tr>
+</tbody>
+</table>
+<p>&quot;One can try to use other file properties, such as metadata, entropy, import hashes or other data which stays constant.&quot; — Kaspersky Applied YARA Training</p>
+<h4>Debugging False Positives</h4>
+<ol>
+<li><strong>Which string matched?</strong> — <code>yr scan -s rule.yar false_positive.exe</code></li>
+<li><strong>In a legitimate library?</strong> — add a <code>not $fp_vendor_string</code> exclusion</li>
+<li><strong>A common development pattern?</strong> — replace the string with something more specific</li>
+<li><strong>Multiple generic strings matching together?</strong> — tighten to require all, plus a unique marker</li>
+<li><strong>Malware using a common technique?</strong> — target its specific implementation details, not the technique</li>
+</ol>
+<h5>When to Abandon the Approach</h5>
+<ul>
+<li><strong>Extraction returns only API names and paths</strong> → <a href="#when-strings-fail-pivot-to-structure">pivot to structure</a></li>
+<li><strong>Can't find 3 unique strings</strong> → probably packed; target the unpacked version or detect the packer</li>
+<li><strong>Rule matches goodware</strong> → 1-2 matches: investigate and tighten; 3-5: find different indicators; 6+: start over</li>
+<li><strong>Performance is terrible after optimization</strong> → architecture problem; split into focused rules or add strict pre-filters</li>
+<li><strong>The description is hard to write</strong> → the rule is too vague. If you can't explain what it catches, it catches too much</li>
+</ul>
+<h4>Rationalizations to Reject</h4>
+<p>When you catch yourself thinking these, stop and reconsider.</p>
+<table>
+<thead>
+<tr>
+<th>Rationalization</th>
+<th>Expert Response</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;This generic string is unique enough&quot; / &quot;This hex pattern is unique&quot;</td>
+<td>Unique in one sample ≠ unique across the ecosystem. Test against goodware; your intuition is wrong.</td>
+</tr>
+<tr>
+<td>&quot;yarGen gave me these strings&quot;</td>
+<td>yarGen suggests, you validate. Check each one manually — expect to discard 80%.</td>
+</tr>
+<tr>
+<td>&quot;It works on my 10 samples&quot;</td>
+<td>10 samples ≠ production. Use a goodware corpus.</td>
+</tr>
+<tr>
+<td>&quot;One rule to catch all variants&quot;</td>
+<td>Causes FP floods. Target specific families.</td>
+</tr>
+<tr>
+<td>&quot;I'll make it more specific if we get FPs&quot; / &quot;I'll add more conditions later&quot;</td>
+<td>Write tight rules upfront. A weak rule deployed is damage done, and FPs burn trust.</td>
+</tr>
+<tr>
+<td>&quot;This is just for hunting&quot;</td>
+<td>Hunting rules become detection rules. Same quality bar.</td>
+</tr>
+<tr>
+<td>&quot;The API name makes it malicious&quot;</td>
+<td>Legitimate software uses the same APIs. Need behavioral context.</td>
+</tr>
+<tr>
+<td>&quot;<code>any of them</code> is fine for these common strings&quot;</td>
+<td>Common strings + <code>any</code> = FP flood. Use <code>any of</code> only for individually unique strings.</td>
+</tr>
+<tr>
+<td>&quot;This regex is specific enough&quot;</td>
+<td><code>/fetch.*token/</code> matches all auth code. Add an exfil destination requirement.</td>
+</tr>
+<tr>
+<td>&quot;I'll use <code>.*</code> for flexibility&quot;</td>
+<td>Unbounded regex = performance disaster plus memory explosion. Use <code>.{0,30}</code>.</td>
+</tr>
+<tr>
+<td>&quot;The JavaScript looks clean&quot;</td>
+<td>Attackers poison legitimate code with injects. Check for eval+decode chains.</td>
+</tr>
+<tr>
+<td>&quot;Performance doesn't matter&quot;</td>
+<td>One slow rule slows the entire ruleset. Optimize atoms.</td>
+</tr>
+<tr>
+<td>&quot;I'll use <code>--relaxed-re-syntax</code> everywhere&quot;</td>
+<td>Masks real bugs. Fix the regex instead of hiding the problem.</td>
+</tr>
+<tr>
+<td>&quot;PEiD rules still work&quot;</td>
+<td>Obsolete. 32-bit packers aren't relevant.</td>
+</tr>
+</tbody>
+</table>
+<h4>Toolkit</h4>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>yr CLI</strong></td>
+<td><code>yr check</code> (validate), <code>yr fmt</code> (format), <code>yr scan -s</code> (scan, show strings), <code>yr dump -m pe</code> (inspect structure)</td>
+</tr>
+<tr>
+<td><strong>yarGen</strong></td>
+<td>Extract candidate strings: <code>yarGen.py -m samples/ --excludegood</code></td>
+</tr>
+<tr>
+<td><strong>FLOSS</strong></td>
+<td>Extract obfuscated/stack strings: <code>floss sample.exe</code> — when yarGen comes up empty</td>
+</tr>
+<tr>
+<td><strong>signature-base</strong></td>
+<td>Study quality examples</td>
+</tr>
+<tr>
+<td><strong>YARA-CI</strong></td>
+<td>Goodware corpus testing before deployment</td>
+</tr>
+</tbody>
+</table>
+<p>Master these five. Don't get distracted by tool catalogs.</p>
+<p><strong>Development cycle:</strong></p>
+<pre><code class="language-bash">yr check rule.yar                                   # syntax, with precise line numbers
+yr fmt -w rule.yar                                  # standardize formatting
+yr dump -m pe sample.exe --output-format yaml       # inspect structure, no dummy rule needed
+time yr scan -s rule.yar corpus/                    # scan with timing
+</code></pre>
+<p>Reach for <code>yr dump</code> when investigating which module fields are available, debugging why a module condition isn't matching, or exploring a new module (crx, lnk, dotnet) before writing against it. YARA-X error messages carry precise source locations — if <code>yr check</code> says line 15, the problem is on line 15.</p>
+<p><strong>Version-gated features:</strong> <code>private $helper = &quot;pattern&quot;</code> matches but stays out of output (v1.3.0+); <code>// suppress: slow_pattern</code> silences a specific warning inline (v1.4.0+); <code>filesize &lt; 10_000_000</code> numeric underscores (v1.5.0+). <code>$_unused</code> also suppresses unused-string warnings.</p>
+<h4>Chrome Extension Analysis (crx module)</h4>
+<p>Requires YARA-X v1.5.0+, or v1.11.0+ for <code>permhash()</code>.</p>
+<p><strong>Key APIs:</strong> <code>crx.is_crx</code>, <code>crx.permissions</code>, <code>crx.permhash()</code>
+<strong>Red flags:</strong> <code>nativeMessaging</code> + <code>downloads</code>, <code>debugger</code> permission, content scripts on <code>&lt;all_urls&gt;</code></p>
+<pre><code class="language-yara">import &quot;crx&quot;
+
+rule SUSP_CRX_HighRiskPerms {
+    condition:
+        crx.is_crx and
+        for any perm in crx.permissions : (perm == &quot;debugger&quot;)
+}
+</code></pre>
+<p>See <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/references/crx-module.md">crx-module.md</a> for the full API, permission risk assessment, and example rules.</p>
+<h4>Android DEX Analysis (dex module)</h4>
+<p>Requires YARA-X v1.11.0+. <strong>Not compatible with legacy YARA's dex module</strong> — the API is completely different.</p>
+<p><strong>Key APIs:</strong> <code>dex.is_dex</code>, <code>dex.contains_class()</code>, <code>dex.contains_method()</code>, <code>dex.contains_string()</code>
+<strong>Red flags:</strong> single-letter class names (obfuscation), <code>DexClassLoader</code> reflection, encrypted assets</p>
+<pre><code class="language-yara">import &quot;dex&quot;
+
+rule SUSP_DEX_DynamicLoading {
+    condition:
+        dex.is_dex and
+        dex.contains_class(&quot;Ldalvik/system/DexClassLoader;&quot;)
+}
+</code></pre>
+<p>See <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/references/dex-module.md">dex-module.md</a> for the full API, obfuscation detection, and example rules.</p>
+<h4>Migrating from Legacy YARA</h4>
+<p>99% rule compatibility, but stricter validation:</p>
+<pre><code class="language-bash">yr check --relaxed-re-syntax rules/   # identify issues
+# fix each one, then verify without relaxed mode:
+yr check rules/
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Legacy</th>
+<th>YARA-X Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Literal <code>{</code> in regex</td>
+<td><code>/{/</code></td>
+<td><code>/\{/</code></td>
+</tr>
+<tr>
+<td>Invalid escapes</td>
+<td><code>\R</code> silently literal</td>
+<td><code>\\R</code> or <code>R</code></td>
+</tr>
+<tr>
+<td>Base64 strings</td>
+<td>Any length</td>
+<td>3+ chars required</td>
+</tr>
+<tr>
+<td>Negative indexing</td>
+<td><code>@a[-1]</code></td>
+<td><code>@a[#a - 1]</code></td>
+</tr>
+<tr>
+<td>Duplicate modifiers</td>
+<td>Allowed</td>
+<td>Remove duplicates</td>
+</tr>
+</tbody>
+</table>
+<p><code>--relaxed-re-syntax</code> is a diagnostic, not a destination. Fix the regex.</p>
+<h4>Naming and Metadata</h4>
+<pre><code>{CATEGORY}_{PLATFORM}_{FAMILY}_{VARIANT}_{DATE}      e.g. MAL_Win_Emotet_Loader_Jan25
+</code></pre>
+<p><strong>Categories:</strong> <code>MAL_</code> (malware), <code>HKTL_</code> (hacking tool), <code>WEBSHELL_</code>, <code>EXPL_</code>, <code>SUSP_</code> (suspicious), <code>GEN_</code> (generic). <strong>Platforms:</strong> <code>Win_</code>, <code>Lnx_</code>, <code>Mac_</code>, <code>Android_</code>, <code>CRX_</code>.</p>
+<p>Every rule needs <code>description</code> (starting with &quot;Detects&quot;), <code>author</code>, <code>reference</code>, and <code>date</code>:</p>
+<pre><code class="language-yara">meta:
+    description = &quot;Detects Example malware via unique mutex and C2 path&quot;
+    author = &quot;Your Name &lt;email@example.com&gt;&quot;
+    reference = &quot;https://example.com/analysis&quot;
+    date = &quot;2025-01-29&quot;
+</code></pre>
+<p>See <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/references/style-guide.md">style-guide.md</a> for full conventions.</p>
+<h4>Workflow</h4>
+<ol>
+<li><strong>Gather samples</strong> — multiple; single-sample rules are brittle</li>
+<li><strong>Extract candidates</strong> — <code>yarGen -m samples/ --excludegood</code></li>
+<li><strong>Validate quality</strong> — apply the <a href="#string-selection">string selection</a> tests; expect to discard 80% of yarGen output</li>
+<li><strong>Write the rule</strong> — proper metadata, cheap checks first</li>
+<li><strong>Lint and test</strong> — <code>yr check</code>, <code>yr fmt</code>, the linter script</li>
+<li><strong>Goodware validation</strong> — VirusTotal corpus or local clean files</li>
+<li><strong>Deploy</strong> — full metadata, then monitor for FPs</li>
+</ol>
+<p>Quality signals along the way: a rule matching under 50% of known variants is too narrow; one matching goodware is too broad.</p>
+<p><strong>Reviewing a rule someone else wrote</strong> — run both scripts before reading the rule by eye, and quote the codes they emit:</p>
+<pre><code class="language-bash">uv run &quot;&lt;resolved-yara-lint-path&gt;&quot; suspect.yar      # style, metadata, YARA-X compatibility
+uv run &quot;&lt;resolved-atom-analyzer-path&gt;&quot; suspect.yar  # atom quality per string
+</code></pre>
+<p>Shortcut: <code>&quot;&lt;resolved-review-path&gt;&quot; suspect.yar</code> (a rule file or a directory)
+runs <code>yr check</code>, <code>yr fmt --check</code>, the linter and the atom analyzer in one call
+and prints one JSON object, <code>{&quot;target&quot;: ..., &quot;checks&quot;: {&quot;yr_check&quot;, &quot;yr_format&quot;, &quot;lint&quot;, &quot;atoms&quot;}}</code>, each with <code>status</code> (the tool's exit code) and its <code>output</code>.
+It exits 0 when every check passes, 1 when any check fails, and 2 for a missing,
+empty or unreadable input (nothing was inspected). Quote the codes from
+<code>checks.lint.output</code> exactly as with the separate scripts.</p>
+<p>They catch the mechanical faults — short strings, FP-prone substrings, unbounded quantifiers, expensive terms ahead of cheap ones — so your attention goes to the judgement calls they cannot make: whether the strings identify <em>this</em> family, and whether the condition can fire on generic strings alone. Report findings by code (<code>E002</code>, <code>W009</code>) so the author can look each one up in <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/references/style-guide.md">style-guide.md</a>.</p>
+<p>See <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/references/testing.md">testing.md</a> for the validation workflow and <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/workflows/rule-development.md">rule-development.md</a> for the full step-by-step guide.</p>
+<h4>Common Mistakes</h4>
+<table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Bad</th>
+<th>Good</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>API names as indicators</td>
+<td><code>&quot;VirtualAlloc&quot;</code></td>
+<td>Hex pattern of call site + unique mutex</td>
+</tr>
+<tr>
+<td>Unbounded regex</td>
+<td><code>/https?:\/\/.*/</code></td>
+<td><code>/https?:\/\/[a-z0-9]{8,12}\.onion/</code></td>
+</tr>
+<tr>
+<td>Missing file type filter</td>
+<td><code>pe.imports(...)</code> first</td>
+<td><code>uint16(0) == 0x5A4D and filesize &lt; 10MB</code> first</td>
+</tr>
+<tr>
+<td>Short strings</td>
+<td><code>&quot;abc&quot;</code> (3 bytes)</td>
+<td><code>&quot;abcdef&quot;</code> (4+ bytes)</td>
+</tr>
+<tr>
+<td>Unescaped braces (YARA-X)</td>
+<td><code>/config{key}/</code></td>
+<td><code>/config\{key\}/</code></td>
+</tr>
+<tr>
+<td>Wrong-endian magic bytes</td>
+<td><code>uint32(0) == 0xCAFEBABE</code></td>
+<td><code>uint32be(0) == 0xCAFEBABE</code></td>
+</tr>
+</tbody>
+</table>
+<h4>Quality Checklist</h4>
+<p>Before deploying any rule:</p>
+<ul>
+<li>[ ] Name follows <code>{CATEGORY}_{PLATFORM}_{FAMILY}_{VARIANT}_{DATE}</code></li>
+<li>[ ] Description starts with &quot;Detects&quot; and explains what/how</li>
+<li>[ ] All required metadata present (author, reference, date)</li>
+<li>[ ] Strings are unique — not API names, common paths, or format strings</li>
+<li>[ ] All strings 4+ bytes with good atom potential</li>
+<li>[ ] Base64 modifier only on strings with 3+ characters</li>
+<li>[ ] Regex bounded, anchored to a literal, with <code>{</code> escaped</li>
+<li>[ ] Condition starts with cheap checks (filesize, magic bytes)</li>
+<li>[ ] Magic-byte constants verified against a known-good sample</li>
+<li>[ ] Rule matches all target samples</li>
+<li>[ ] Rule produces zero matches on the goodware corpus</li>
+<li>[ ] <code>yr check</code> and <code>yr fmt --check</code> pass</li>
+<li>[ ] Linter passes with no errors</li>
+<li>[ ] Peer review completed</li>
+</ul>
+<h4>Scripts</h4>
+<pre><code class="language-bash">uv run &quot;&lt;resolved-yara-lint-path&gt;&quot; rule.yar      # validate style/metadata
+uv run &quot;&lt;resolved-atom-analyzer-path&gt;&quot; rule.yar  # check string quality
+&quot;&lt;resolved-review-path&gt;&quot; rule.yar                # all four checks, one JSON result
+</code></pre>
+<p>See <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/README.md#scripts">README.md</a> for detailed script documentation.</p>
+<h4>Further Reading</h4>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Document</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Naming and metadata conventions</td>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/references/style-guide.md">style-guide.md</a></td>
+</tr>
+<tr>
+<td>Performance and atom optimization</td>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/references/performance.md">performance.md</a></td>
+</tr>
+<tr>
+<td>String types and judgment</td>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/references/strings.md">strings.md</a></td>
+</tr>
+<tr>
+<td>Testing and validation</td>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/references/testing.md">testing.md</a></td>
+</tr>
+<tr>
+<td>Chrome extension module (crx)</td>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/references/crx-module.md">crx-module.md</a></td>
+</tr>
+<tr>
+<td>Android DEX module (dex)</td>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/references/dex-module.md">dex-module.md</a></td>
+</tr>
+<tr>
+<td>Complete rule development process</td>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/workflows/rule-development.md">rule-development.md</a></td>
+</tr>
+</tbody>
+</table>
+<p>The <code>examples/</code> directory holds real, attributed rules worth reading before writing your own:</p>
+<table>
+<thead>
+<tr>
+<th>Example</th>
+<th>Demonstrates</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/examples/MAL_Win_Remcos_Jan25.yar">MAL_Win_Remcos_Jan25.yar</a></td>
+<td>PE malware: graduated string counts, multiple rules per family</td>
+<td>Elastic Security</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/examples/MAL_Mac_ProtonRAT_Jan25.yar">MAL_Mac_ProtonRAT_Jan25.yar</a></td>
+<td>macOS: Mach-O magic bytes, multi-category grouping</td>
+<td>Airbnb BinaryAlert</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/examples/MAL_NPM_SupplyChain_Jan25.yar">MAL_NPM_SupplyChain_Jan25.yar</a></td>
+<td>npm supply chain: real attack patterns, ERC-20 selectors</td>
+<td>Stairwell Research</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/examples/SUSP_JS_Obfuscation_Jan25.yar">SUSP_JS_Obfuscation_Jan25.yar</a></td>
+<td>JavaScript: obfuscator detection, density-based matching</td>
+<td>imp0rtp3, Nils Kuhnert</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/yara-authoring/skills/yara-rule-authoring/examples/SUSP_CRX_SuspiciousPermissions.yar">SUSP_CRX_SuspiciousPermissions.yar</a></td>
+<td>Chrome extensions: crx module, permissions</td>
+<td>Educational</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rule repositories to learn from:</strong> <a href="https://github.com/Neo23x0/signature-base">Neo23x0/signature-base</a> (17,000+ production rules), <a href="https://github.com/elastic/protections-artifacts">elastic/protections-artifacts</a> (endpoint-tested), <a href="https://github.com/imp0rtp3/js-yara-rules">imp0rtp3/js-yara-rules</a> (JavaScript), <a href="https://github.com/InQuest/awesome-yara">InQuest/awesome-yara</a> (curated index).</p>
+<p><strong>Guides:</strong> <a href="https://github.com/Neo23x0/YARA-Style-Guide">YARA Style Guide</a> and <a href="https://github.com/Neo23x0/YARA-Performance-Guidelines">YARA Performance Guidelines</a> (Neo23x0), <a href="https://virustotal.github.io/yara-x/">YARA-X documentation</a>.</p>
+<p><strong>macOS specifics:</strong> Apple's own production rules ship at <code>/System/Library/CoreServices/XProtect.bundle/</code>; <a href="https://objective-see.org/">objective-see</a> publishes macOS malware research and samples.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

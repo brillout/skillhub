@@ -1,0 +1,8 @@
+import{n as e}from"../chunks/chunk-4tVxZq34.js";import{i as t}from"../chunks/chunk-CdK6qszE.js";import{t as n}from"../chunks/chunk-BtHByGwc.js";import{r}from"../chunks/chunk-rmaATvgx.js";import{c as i,o as a}from"../chunks/chunk-qvzHbnOa.js";var o=[[`tags/`,`Tags`],[`about/`,`About`]];function s(e=``){let n=o.map(([n,r])=>`<a href="${t(n)}"${n===e?` aria-current="page"`:``}>${r}</a>`).join(``);return`
+    <div class="brand-head">
+      <a class="brand" href="${t()}">
+        <img src="${t(`gem.svg`)}" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site">${n}<a href="${r}">GitHub</a></nav>
+    </div>`}var c=e({default:()=>l}),l=()=>i(a(),n(),s()),u={hasServerOnlyHook:{type:`computed`,definedAtData:null,valueSerialized:{type:`js-serialized`,value:!1}},isClientRuntimeLoaded:{type:`computed`,definedAtData:null,valueSerialized:{type:`js-serialized`,value:!1}},onBeforeRenderEnv:{type:`computed`,definedAtData:null,valueSerialized:{type:`js-serialized`,value:null}},dataEnv:{type:`computed`,definedAtData:null,valueSerialized:{type:`js-serialized`,value:null}},guardEnv:{type:`computed`,definedAtData:null,valueSerialized:{type:`js-serialized`,value:null}},Page:{type:`standard`,definedAtData:{filePathToShowToUser:`/pages/index/+Page.ts`,fileExportPathToShowToUser:[]},valueSerialized:{type:`plus-file`,exportValues:c}}};export{u as configValuesSerialized};

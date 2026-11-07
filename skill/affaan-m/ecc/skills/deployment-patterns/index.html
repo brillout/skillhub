@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>deployment-patterns · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re setting up CI/CD, containerizing an app, choosing a rollout strategy or checking a release is ready for production. It does: weighs rolling, blue-green and canary deploys, and gives Dockerfile, GitHub Actions, health check and Kubernetes probe templates. You get: deployment config written to these patterns, plus rollback and production-readiness checklists to clear before shipping. Examples in: Node.js, Go and Python/Django Dockerfiles, TypeScript with Zod, and rollbacks for Kubernetes, Vercel, Railway and Prisma." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <h1>deployment-patterns</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re setting up CI/CD, containerizing an app, choosing a rollout strategy or checking a release is ready for production</dd></div><div><dt>It does</dt><dd>weighs rolling, blue-green and canary deploys, and gives Dockerfile, GitHub Actions, health check and Kubernetes probe templates</dd></div><div><dt>You get</dt><dd>deployment config written to these patterns, plus rollback and production-readiness checklists to clear before shipping</dd></div><div><dt>Examples in</dt><dd>Node.js, Go and Python/Django Dockerfiles, TypeScript with Zod, and rollbacks for Kubernetes, Vercel, Railway and Prisma</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A reference from ECC for getting a web app into production. It weighs three rollout strategies: rolling as the default for backward-compatible changes, blue-green for instant rollback at the cost of double infrastructure, and canary for trying risky changes on a slice of real traffic. Docker gets multi-stage Dockerfiles for Node.js, Go and Python/Django that run as a non-root user with a HEALTHCHECK, plus lists of good and bad practices. The CI/CD section is a GitHub Actions pipeline that lints, type-checks and tests, builds and pushes an image to GitHub&#39;s container registry, then deploys from main, with the stages a pull request and a merge should each run. It covers simple and detailed health endpoints, Kubernetes liveness, readiness and startup probes, twelve-factor configuration validated at startup with Zod, and rollback commands. It ends with a rollback checklist and a production-readiness checklist across application, infrastructure, monitoring, security and operations. It runs no deployment itself.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/deployment-patterns">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/affaan-m/ecc --skill deployment-patterns</code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill deployment-patterns">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/deployment-patterns">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/deployment-patterns">Source on GitHub</a> · <a href="/skillhub/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,700 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>298,660 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">519</div>
+      <div class="stat-delta">+72% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 302; week to Sep 26: 276; week to Oct 3: 187; week to Oct 10: 172; week to Oct 17: 254; week to Oct 24: 446; week to Oct 31: 434; week to Nov 7: 519. Use the left and right arrow keys to read each week."
+        data-values="302,276,187,172,254,446,434,519" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,24.4 38.6,26.6 71.1,34.1 103.7,35.4 136.3,28.5 168.9,12.2 201.4,13.2 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>302</td></tr><tr><td>Sep 26</td><td>276</td></tr><tr><td>Oct 3</td><td>187</td></tr><tr><td>Oct 10</td><td>172</td></tr><tr><td>Oct 17</td><td>254</td></tr><tr><td>Oct 24</td><td>446</td></tr><tr><td>Oct 31</td><td>434</td></tr><tr><td>Nov 7</td><td>519</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:cloud" data-facet="category" title="Deploy, provision, observe and debug cloud apps." href="/skillhub/?tag=category%3Acloud">category:cloud</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Deploy, provision, observe and debug cloud apps.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/skillhub/?tag=type%3Aguidelines">type:guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="deployment" data-facet="topic" href="/skillhub/?tag=deployment">deployment</a><a class="tag" data-tag="ci" data-facet="topic" href="/skillhub/?tag=ci">ci</a><a class="tag" data-tag="infrastructure" data-facet="topic" href="/skillhub/?tag=infrastructure">infrastructure</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:docker" data-facet="stack" href="/skillhub/?tag=stack%3Adocker">stack:docker</a><a class="tag" data-tag="stack:github" data-facet="stack" href="/skillhub/?tag=stack%3Agithub">stack:github</a><a class="tag" data-tag="stack:kubernetes" data-facet="stack" href="/skillhub/?tag=stack%3Akubernetes">stack:kubernetes</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/deployment-patterns/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: deployment-patterns
+description: Deployment workflows, CI/CD pipeline patterns, Docker containerization, health checks, rollback strategies, and production readiness checklists for web applications. Use when setting up CI/CD, containerizing an app, or checking production readiness before a release.
+metadata:
+  origin: ECC</code></pre></details>
+        <div class="markdown"><h3>Deployment Patterns</h3>
+<p>Production deployment workflows and CI/CD best practices.</p>
+<h4>When to Activate</h4>
+<ul>
+<li>Setting up CI/CD pipelines</li>
+<li>Dockerizing an application</li>
+<li>Planning deployment strategy (blue-green, canary, rolling)</li>
+<li>Implementing health checks and readiness probes</li>
+<li>Preparing for a production release</li>
+<li>Configuring environment-specific settings</li>
+</ul>
+<h4>Deployment Strategies</h4>
+<h5>Rolling Deployment (Default)</h5>
+<p>Replace instances gradually — old and new versions run simultaneously during rollout.</p>
+<pre><code>Instance 1: v1 → v2  (update first)
+Instance 2: v1        (still running v1)
+Instance 3: v1        (still running v1)
+
+Instance 1: v2
+Instance 2: v1 → v2  (update second)
+Instance 3: v1
+
+Instance 1: v2
+Instance 2: v2
+Instance 3: v1 → v2  (update last)
+</code></pre>
+<p><strong>Pros:</strong> Zero downtime, gradual rollout
+<strong>Cons:</strong> Two versions run simultaneously — requires backward-compatible changes
+<strong>Use when:</strong> Standard deployments, backward-compatible changes</p>
+<h5>Blue-Green Deployment</h5>
+<p>Run two identical environments. Switch traffic atomically.</p>
+<pre><code>Blue  (v1) ← traffic
+Green (v2)   idle, running new version
+
+# After verification:
+Blue  (v1)   idle (becomes standby)
+Green (v2) ← traffic
+</code></pre>
+<p><strong>Pros:</strong> Instant rollback (switch back to blue), clean cutover
+<strong>Cons:</strong> Requires 2x infrastructure during deployment
+<strong>Use when:</strong> Critical services, zero-tolerance for issues</p>
+<h5>Canary Deployment</h5>
+<p>Route a small percentage of traffic to the new version first.</p>
+<pre><code>v1: 95% of traffic
+v2:  5% of traffic  (canary)
+
+# If metrics look good:
+v1: 50% of traffic
+v2: 50% of traffic
+
+# Final:
+v2: 100% of traffic
+</code></pre>
+<p><strong>Pros:</strong> Catches issues with real traffic before full rollout
+<strong>Cons:</strong> Requires traffic splitting infrastructure, monitoring
+<strong>Use when:</strong> High-traffic services, risky changes, feature flags</p>
+<h4>Docker</h4>
+<h5>Multi-Stage Dockerfile (Node.js)</h5>
+<pre><code class="language-dockerfile"># Stage 1: Install dependencies
+FROM node:22-alpine AS deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --production=false
+
+# Stage 2: Build
+FROM node:22-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN npm run build
+RUN npm prune --production
+
+# Stage 3: Production image
+FROM node:22-alpine AS runner
+WORKDIR /app
+
+RUN addgroup -g 1001 -S appgroup &amp;&amp; adduser -S appuser -u 1001
+USER appuser
+
+COPY --from=builder --chown=appuser:appgroup /app/node_modules ./node_modules
+COPY --from=builder --chown=appuser:appgroup /app/dist ./dist
+COPY --from=builder --chown=appuser:appgroup /app/package.json ./
+
+ENV NODE_ENV=production
+EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
+
+CMD [&quot;node&quot;, &quot;dist/server.js&quot;]
+</code></pre>
+<h5>Multi-Stage Dockerfile (Go)</h5>
+<pre><code class="language-dockerfile">FROM golang:1.22-alpine AS builder
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags=&quot;-s -w&quot; -o /server ./cmd/server
+
+FROM alpine:3.19 AS runner
+RUN apk --no-cache add ca-certificates
+RUN adduser -D -u 1001 appuser
+USER appuser
+
+COPY --from=builder /server /server
+
+EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://localhost:8080/health || exit 1
+CMD [&quot;/server&quot;]
+</code></pre>
+<h5>Multi-Stage Dockerfile (Python/Django)</h5>
+<pre><code class="language-dockerfile">FROM python:3.12-slim AS builder
+WORKDIR /app
+RUN pip install --no-cache-dir uv
+COPY requirements.txt .
+RUN uv pip install --system --no-cache -r requirements.txt
+
+FROM python:3.12-slim AS runner
+WORKDIR /app
+
+RUN useradd -r -u 1001 appuser
+USER appuser
+
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+COPY . .
+
+ENV PYTHONUNBUFFERED=1
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=3s CMD python -c &quot;import urllib.request; urllib.request.urlopen('http://localhost:8000/health/')&quot; || exit 1
+CMD [&quot;gunicorn&quot;, &quot;config.wsgi:application&quot;, &quot;--bind&quot;, &quot;0.0.0.0:8000&quot;, &quot;--workers&quot;, &quot;4&quot;]
+</code></pre>
+<h5>Docker Best Practices</h5>
+<pre><code># GOOD practices
+- Use specific version tags (node:22-alpine, not node:latest)
+- Multi-stage builds to minimize image size
+- Run as non-root user
+- Copy dependency files first (layer caching)
+- Use .dockerignore to exclude node_modules, .git, tests
+- Add HEALTHCHECK instruction
+- Set resource limits in docker-compose or k8s
+
+# BAD practices
+- Running as root
+- Using :latest tags
+- Copying entire repo in one COPY layer
+- Installing dev dependencies in production image
+- Storing secrets in image (use env vars or secrets manager)
+</code></pre>
+<h4>CI/CD Pipeline</h4>
+<h5>GitHub Actions (Standard Pipeline)</h5>
+<pre><code class="language-yaml">name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test -- --coverage
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage
+          path: coverage/
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: ghcr.io/${{ github.repository }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    steps:
+      - name: Deploy to production
+        run: |
+          # Platform-specific deployment command
+          # Railway: railway up
+          # Vercel: vercel --prod
+          # K8s: kubectl set image deployment/app app=ghcr.io/${{ github.repository }}:${{ github.sha }}
+          echo &quot;Deploying ${{ github.sha }}&quot;
+</code></pre>
+<h5>Pipeline Stages</h5>
+<pre><code>PR opened:
+  lint → typecheck → unit tests → integration tests → preview deploy
+
+Merged to main:
+  lint → typecheck → unit tests → integration tests → build image → deploy staging → smoke tests → deploy production
+</code></pre>
+<h4>Health Checks</h4>
+<h5>Health Check Endpoint</h5>
+<pre><code class="language-typescript">// Simple health check
+app.get(&quot;/health&quot;, (req, res) =&gt; {
+  res.status(200).json({ status: &quot;ok&quot; });
+});
+
+// Detailed health check (for internal monitoring)
+app.get(&quot;/health/detailed&quot;, async (req, res) =&gt; {
+  const checks = {
+    database: await checkDatabase(),
+    redis: await checkRedis(),
+    externalApi: await checkExternalApi(),
+  };
+
+  const allHealthy = Object.values(checks).every(c =&gt; c.status === &quot;ok&quot;);
+
+  res.status(allHealthy ? 200 : 503).json({
+    status: allHealthy ? &quot;ok&quot; : &quot;degraded&quot;,
+    timestamp: new Date().toISOString(),
+    version: process.env.APP_VERSION || &quot;unknown&quot;,
+    uptime: process.uptime(),
+    checks,
+  });
+});
+
+async function checkDatabase(): Promise&lt;HealthCheck&gt; {
+  try {
+    await db.query(&quot;SELECT 1&quot;);
+    return { status: &quot;ok&quot;, latency_ms: 2 };
+  } catch (err) {
+    return { status: &quot;error&quot;, message: &quot;Database unreachable&quot; };
+  }
+}
+</code></pre>
+<h5>Kubernetes Probes</h5>
+<pre><code class="language-yaml">livenessProbe:
+  httpGet:
+    path: /health
+    port: 3000
+  initialDelaySeconds: 10
+  periodSeconds: 30
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 3000
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  failureThreshold: 2
+
+startupProbe:
+  httpGet:
+    path: /health
+    port: 3000
+  initialDelaySeconds: 0
+  periodSeconds: 5
+  failureThreshold: 30    # 30 * 5s = 150s max startup time
+</code></pre>
+<h4>Environment Configuration</h4>
+<h5>Twelve-Factor App Pattern</h5>
+<pre><code class="language-bash"># All config via environment variables — never in code
+DATABASE_URL=postgres://user:pass@host:5432/db
+REDIS_URL=redis://host:6379/0
+API_KEY=${API_KEY}           # injected by secrets manager
+LOG_LEVEL=info
+PORT=3000
+
+# Environment-specific behavior
+NODE_ENV=production          # or staging, development
+APP_ENV=production           # explicit app environment
+</code></pre>
+<h5>Configuration Validation</h5>
+<pre><code class="language-typescript">import { z } from &quot;zod&quot;;
+
+const envSchema = z.object({
+  NODE_ENV: z.enum([&quot;development&quot;, &quot;staging&quot;, &quot;production&quot;]),
+  PORT: z.coerce.number().default(3000),
+  DATABASE_URL: z.string().url(),
+  REDIS_URL: z.string().url(),
+  JWT_SECRET: z.string().min(32),
+  LOG_LEVEL: z.enum([&quot;debug&quot;, &quot;info&quot;, &quot;warn&quot;, &quot;error&quot;]).default(&quot;info&quot;),
+});
+
+// Validate at startup — fail fast if config is wrong
+export const env = envSchema.parse(process.env);
+</code></pre>
+<h4>Rollback Strategy</h4>
+<h5>Instant Rollback</h5>
+<pre><code class="language-bash"># Docker/Kubernetes: point to previous image
+kubectl rollout undo deployment/app
+
+# Vercel: promote previous deployment
+vercel rollback
+
+# Railway: redeploy previous commit
+railway up --commit &lt;previous-sha&gt;
+
+# Database: rollback migration (if reversible)
+npx prisma migrate resolve --rolled-back &lt;migration-name&gt;
+</code></pre>
+<h5>Rollback Checklist</h5>
+<ul>
+<li>[ ] Previous image/artifact is available and tagged</li>
+<li>[ ] Database migrations are backward-compatible (no destructive changes)</li>
+<li>[ ] Feature flags can disable new features without deploy</li>
+<li>[ ] Monitoring alerts configured for error rate spikes</li>
+<li>[ ] Rollback tested in staging before production release</li>
+</ul>
+<h4>Production Readiness Checklist</h4>
+<p>Before any production deployment:</p>
+<h5>Application</h5>
+<ul>
+<li>[ ] All tests pass (unit, integration, E2E)</li>
+<li>[ ] No hardcoded secrets in code or config files</li>
+<li>[ ] Error handling covers all edge cases</li>
+<li>[ ] Logging is structured (JSON) and does not contain PII</li>
+<li>[ ] Health check endpoint returns meaningful status</li>
+</ul>
+<h5>Infrastructure</h5>
+<ul>
+<li>[ ] Docker image builds reproducibly (pinned versions)</li>
+<li>[ ] Environment variables documented and validated at startup</li>
+<li>[ ] Resource limits set (CPU, memory)</li>
+<li>[ ] Horizontal scaling configured (min/max instances)</li>
+<li>[ ] SSL/TLS enabled on all endpoints</li>
+</ul>
+<h5>Monitoring</h5>
+<ul>
+<li>[ ] Application metrics exported (request rate, latency, errors)</li>
+<li>[ ] Alerts configured for error rate &gt; threshold</li>
+<li>[ ] Log aggregation set up (structured logs, searchable)</li>
+<li>[ ] Uptime monitoring on health endpoint</li>
+</ul>
+<h5>Security</h5>
+<ul>
+<li>[ ] Dependencies scanned for CVEs</li>
+<li>[ ] CORS configured for allowed origins only</li>
+<li>[ ] Rate limiting enabled on public endpoints</li>
+<li>[ ] Authentication and authorization verified</li>
+<li>[ ] Security headers set (CSP, HSTS, X-Frame-Options)</li>
+</ul>
+<h5>Operations</h5>
+<ul>
+<li>[ ] Rollback plan documented and tested</li>
+<li>[ ] Database migration tested against production-sized data</li>
+<li>[ ] Runbook for common failure scenarios</li>
+<li>[ ] On-call rotation and escalation path defined</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

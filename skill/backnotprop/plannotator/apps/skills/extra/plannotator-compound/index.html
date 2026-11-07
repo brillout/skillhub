@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>plannotator-compound · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;ve rejected many agent plans and want to see what you keep asking for, so agents stop repeating the same mistakes. It does: reads every denied plan in your Plannotator archive with parallel subagents, then sorts your feedback into categories with real counts and quotes. You get: a versioned HTML report in Plannotator&#039;s data folder, ending with numbered planning instructions and the share of denials they would address. Optional hook: saves those instructions to a file Plannotator&#039;s plan-mode hook injects into every future planning session. Without Plannotator: uses the reasons you gave when rejecting plans in Claude Code, parsed from its transcripts by a bundled script. Runs: only when you call it." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=backnotprop%2Fplannotator">backnotprop/plannotator</a></p>
+      <h1>plannotator-compound</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;ve rejected many agent plans and want to see what you keep asking for, so agents stop repeating the same mistakes</dd></div><div><dt>It does</dt><dd>reads every denied plan in your Plannotator archive with parallel subagents, then sorts your feedback into categories with real counts and quotes</dd></div><div><dt>You get</dt><dd>a versioned HTML report in Plannotator&#39;s data folder, ending with numbered planning instructions and the share of denials they would address</dd></div><div><dt>Optional hook</dt><dd>saves those instructions to a file Plannotator&#39;s plan-mode hook injects into every future planning session</dd></div><div><dt>Without Plannotator</dt><dd>uses the reasons you gave when rejecting plans in Claude Code, parsed from its transcripts by a bundled script</dd></div><div><dt>Runs</dt><dd>only when you call it</dd></div></dl></section>
+      
+      <p class="note">Reads every denied plan in your archive, launching parallel Haiku and Sonnet subagents on large ones.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A map-reduce analysis of your plan reviews. It counts approved and denied plans, their date range and your revision rate, and offers an incremental run when an earlier report exists. Past ten files, Haiku subagents extract each denied plan&#39;s topic, feedback, specific asks and recurring phrases, in batches sized to the archive; Sonnet subagents then reduce those into a taxonomy of 8 to 15 denial reasons, the top patterns, your recurring phrases, what you value, what agents keep getting wrong, the plan structure you expect, and how that changed over time. The report has seven editorial sections, from a narrative headline finding to a dark panel holding the corrective prompt with a working copy button, and opens in your browser. Every number and quote must come from your files, and thin data is called preliminary. Afterwards it offers the hook; if one exists, you can replace it, merge the two sets or keep the old one.</p>
+      <p class="muted">Summarizes <a href="https://github.com/backnotprop/plannotator/tree/a35cc47b50e1b42d3538638cb85f237da83660ce/apps/skills/extra/plannotator-compound">the skill at a35cc47</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/backnotprop/plannotator --skill plannotator-compound</code><button type="button" class="copy" data-copy="npx skills add https://github.com/backnotprop/plannotator --skill plannotator-compound">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/backnotprop/plannotator/plannotator-compound">skills.sh page</a> · <a href="https://github.com/backnotprop/plannotator/tree/HEAD/apps/skills/extra/plannotator-compound">Source on GitHub</a> · <a href="/skillhub/?repo=backnotprop%2Fplannotator">All skills from backnotprop/plannotator</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>12,600 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>9,878 <span class="muted">backnotprop/plannotator</span></dd></div><div><dt>First seen</dt><dd>Apr 8, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">678</div>
+      <div class="stat-delta">+49% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 454; week to Sep 26: 469; week to Oct 3: 562; week to Oct 10: 584; week to Oct 17: 796; week to Oct 24: 713; week to Oct 31: 658; week to Nov 7: 678. Use the left and right arrow keys to read each week."
+        data-values="454,469,562,584,796,713,658,678" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,24.9 38.6,24.1 71.1,18.9 103.7,17.7 136.3,6.0 168.9,10.6 201.4,13.6 234.0,12.5" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="12.5" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>454</td></tr><tr><td>Sep 26</td><td>469</td></tr><tr><td>Oct 3</td><td>562</td></tr><tr><td>Oct 10</td><td>584</td></tr><tr><td>Oct 17</td><td>796</td></tr><tr><td>Oct 24</td><td>713</td></tr><tr><td>Oct 31</td><td>658</td></tr><tr><td>Nov 7</td><td>678</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:planning" data-facet="category" title="Make the agent question you and write the plan down before it writes code." href="/skillhub/?tag=category%3Aplanning">category:planning</a><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/skillhub/?tag=category%3Aagents">category:agents</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Make the agent question you and write the plan down before it writes code.</p><p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a><a class="tag" data-tag="needs:subagents" data-facet="needs" title="Relies on the agent being able to spawn subagents." href="/skillhub/?tag=needs%3Asubagents">needs:subagents</a><a class="tag" data-tag="needs:claude-code" data-facet="needs" title="Uses Claude Code features such as hooks or background agents." href="/skillhub/?tag=needs%3Aclaude-code">needs:claude-code</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">Relies on the agent being able to spawn subagents.</p><p class="tag-meaning">Uses Claude Code features such as hooks or background agents.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="planning" data-facet="topic" href="/skillhub/?tag=planning">planning</a><a class="tag" data-tag="self-improvement" data-facet="topic" href="/skillhub/?tag=self-improvement">self-improvement</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:plannotator" data-facet="stack" href="/skillhub/?tag=stack%3Aplannotator">stack:plannotator</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/backnotprop/plannotator/blob/a35cc47b50e1b42d3538638cb85f237da83660ce/apps/skills/extra/plannotator-compound/SKILL.md">backnotprop/plannotator at a35cc47</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: plannotator-compound
+disable-model-invocation: true
+description: &#62;
+  Analyze a user&#39;s Plannotator plan archive to extract denial patterns, feedback
+  taxonomy, evolution over time, and actionable prompt improvements — then produce
+  a polished HTML dashboard report. Falls back to Claude Code ExitPlanMode denial
+  reasons when Plannotator data is unavailable.</code></pre></details>
+        <div class="markdown"><h3>Compound Planning Analysis</h3>
+<p>You are conducting a comprehensive research analysis of a user's Plannotator plan
+archive. The goal: extract patterns from their denied plans, reduce
+them into actionable insights, and produce an elegant HTML dashboard report.</p>
+<p>This is a multi-phase process. Each phase must complete fully before the next begins.
+Research integrity is paramount — every file must be read, no skipping.</p>
+<h4>Source Selection</h4>
+<p>Before starting the analysis, determine which data source is available.</p>
+<ol>
+<li>
+<p><strong>Plannotator mode (first-class)</strong> — Find the Plannotator data directory,
+called <code>&lt;data-dir&gt;</code> from here on. Run:</p>
+<pre><code>plannotator data-dir
+</code></pre>
+<p>It prints the folder's absolute path and creates nothing; use what it
+prints. If it prints nothing or fails (an older Plannotator), use <code>$PLANNOTATOR_DATA_DIR</code> if
+set, else whichever of <code>$XDG_DATA_HOME/plannotator</code> and the home folder's
+<code>.plannotator</code> holds <code>history/</code> or <code>sessions/</code> (the home one if both do),
+and ask the user if neither does.</p>
+<p>Never write into any other folder than <code>&lt;data-dir&gt;</code>. In particular, do not
+create a <code>.plannotator</code> folder in the home folder unless <code>&lt;data-dir&gt;</code> is
+that folder: on an install that keeps its data under <code>$XDG_DATA_HOME</code>, a
+new one can make Plannotator lose sight of the person's plans and history.
+Leave any other Plannotator folder you find alone, and do not suggest
+deleting it: it may hold older data.</p>
+<p>Check the <code>plans/</code> subdirectory of <code>&lt;data-dir&gt;</code>. If it exists and contains
+<code>*-denied.md</code> files, use this mode. The entire workflow below is written for
+Plannotator data.</p>
+</li>
+<li>
+<p><strong>Claude Code fallback mode</strong> — If the Plannotator archive is absent or
+contains no denied plans, check <code>~/.claude/projects/</code>. If present, read
+<a href="https://github.com/backnotprop/plannotator/blob/a35cc47b50e1b42d3538638cb85f237da83660ce/apps/skills/extra/plannotator-compound/references/claude-code-fallback.md">references/claude-code-fallback.md</a>
+before continuing. That reference explains how to use the bundled parser at
+<a href="https://github.com/backnotprop/plannotator/blob/a35cc47b50e1b42d3538638cb85f237da83660ce/apps/skills/extra/plannotator-compound/scripts/extract_exit_plan_mode_outcomes.py">scripts/extract_exit_plan_mode_outcomes.py</a>
+to extract denial reasons from Claude Code JSONL transcripts. Every phase
+below has a short note explaining what changes in fallback mode — the
+reference file has the details.</p>
+</li>
+<li>
+<p><strong>Neither available</strong> — Ask the user for their Plannotator plans directory or
+Claude Code projects directory. Do not guess.</p>
+</li>
+</ol>
+<h4>Phase 0: Locate Plans &amp; Check for Previous Reports</h4>
+<p>Use the mode chosen in Source Selection above.</p>
+<p><strong>Plannotator mode:</strong> Verify the plans directory contains <code>*-denied.md</code> files. If
+none exist, fall back to Claude Code mode before stopping.</p>
+<p><strong>Claude Code fallback mode:</strong> Run the bundled parser per the fallback reference to
+build the denial-reason dataset. Create <code>/tmp/compound-planning/</code> if needed.</p>
+<p>In either mode, proceed to Previous Report Detection below.</p>
+<h5>Previous Report Detection</h5>
+<p>After locating the plans directory, check for existing reports:</p>
+<pre><code>ls &lt;data-dir&gt;/plans/compound-planning-report*.html
+</code></pre>
+<p>(<code>&lt;data-dir&gt;</code> is the folder from Source Selection; put its real path in the command.)</p>
+<p>Reports follow a versioned naming scheme:</p>
+<ul>
+<li>First report: <code>compound-planning-report.html</code></li>
+<li>Subsequent reports: <code>compound-planning-report-v2.html</code>, <code>compound-planning-report-v3.html</code>, etc.</li>
+</ul>
+<p>If one or more reports exist, determine the <strong>latest</strong> one (highest version number).
+Get its filesystem modification date using <code>stat</code> (macOS: <code>stat -f %Sm -t %Y-%m-%d</code>,
+Linux: <code>stat -c %y | cut -d' ' -f1</code>). This is the <strong>cutoff date</strong>.</p>
+<p>Present the user with a choice:</p>
+<blockquote>
+<p>&quot;I found a previous report (<code>compound-planning-report-v{N}.html</code>) last updated
+on {CUTOFF_DATE}. I can either:</p>
+<ol>
+<li><strong>Incremental</strong> — Only analyze files dated after {CUTOFF_DATE}, saving tokens
+and building on previous findings</li>
+<li><strong>Full</strong> — Re-analyze the entire archive from scratch</li>
+</ol>
+<p>Which would you prefer?&quot;</p>
+</blockquote>
+<p>Wait for the user's response before proceeding.</p>
+<p><strong>If incremental:</strong> Filter all subsequent phases to only process files with dates
+after the cutoff date. The new report version will note in its header narrative that
+it covers the period from {CUTOFF_DATE} to present, and reference the previous
+report for earlier findings. The inventory (Phase 1) should still count ALL files
+for overall stats, but clearly separate &quot;new since last report&quot; counts.</p>
+<p><strong>If full:</strong> Proceed normally with all files, but still use the next version number
+for the output filename.</p>
+<p><strong>If no previous report exists:</strong> Proceed normally. The output filename will be
+<code>compound-planning-report.html</code> (no version suffix for the first report).</p>
+<h4>Phase 1: Inventory</h4>
+<p>Count and report the dataset. <strong>Always count ALL files</strong> for overall stats,
+regardless of whether this is an incremental or full run:</p>
+<pre><code>- *-approved.md files (count)
+- *-denied.md files (count)
+- Date range (earliest to latest date found in filenames)
+- Total days spanned
+- Revision rate: denied / (approved + denied) — this is the &quot;X% of plans
+  revised before coding&quot; stat used in dashboard section 1
+</code></pre>
+<p><strong>Note:</strong> Ignore <code>*.annotations.md</code> files entirely. Denied files already contain
+the full plan text plus all reviewer feedback appended after a <code>---</code> separator.
+Annotation files are redundant subsets of this content — reading both would
+double-count feedback.</p>
+<p><strong>If incremental mode:</strong> After the total counts, separately report the counts for
+files dated after the cutoff date only:</p>
+<pre><code>New since {CUTOFF_DATE}:
+- *-denied.md files: X (of Y total)
+- New date range: {CUTOFF_DATE} to {LATEST_DATE}
+- New days spanned: N
+</code></pre>
+<p>If fewer than 3 new denied files exist since the cutoff, warn the user:</p>
+<blockquote>
+<p>&quot;Only {N} new denied plans since the last report. The incremental analysis may
+be thin. Would you like to proceed or switch to a full analysis?&quot;</p>
+</blockquote>
+<p>Also run <code>wc -l</code> across all <code>*-approved.md</code> files to get average lines per
+approved plan. This tells the user whether their plans are staying lightweight
+or bloating over time. You do not need to read approved plan contents — just
+their line counts. If possible, break this down by time period (e.g., monthly)
+to show whether plan size changed.</p>
+<p>Dates appear in filenames in YYYY-MM-DD format, sometimes as a prefix
+(2026-01-07-name-approved.md) and sometimes embedded (name-2026-03-15-approved.md).
+Extract dates from all filenames.</p>
+<p>Tell the user what you found and that you're beginning the extraction.</p>
+<p><strong>Claude Code fallback mode:</strong> The Plannotator inventory fields above do not apply.
+Follow the inventory instructions in
+<a href="https://github.com/backnotprop/plannotator/blob/a35cc47b50e1b42d3538638cb85f237da83660ce/apps/skills/extra/plannotator-compound/references/claude-code-fallback.md">references/claude-code-fallback.md</a> instead —
+report the denial-reason dataset assembled by the parser.</p>
+<h4>Phase 2: Map — Parallel Extraction</h4>
+<p>This is the most time-intensive phase. You must read EVERY <code>*-denied.md</code> file
+<strong>in scope</strong>. Do not skip files. Do not summarize early.</p>
+<p><strong>In scope</strong> means: all denied files if running a full analysis, or only denied
+files dated after the cutoff date if running incrementally. In incremental mode,
+only process files whose embedded YYYY-MM-DD date is strictly after the cutoff.</p>
+<p><strong>Claude Code fallback mode:</strong> The parser output is the clean source dataset. Read
+the fallback reference for the extraction prompt and batching strategy specific to
+JSON part files. Do not go back to raw <code>.jsonl</code> logs unless the parser fails or the
+user asks for audit-level verification.</p>
+<p><strong>Important:</strong> Only read <code>*-denied.md</code> files. Do NOT read approved plans,
+annotation files, or diff files. Each denied file contains the full plan text
+followed by a <code>---</code> separator and the reviewer's feedback — everything needed
+for analysis is in one file.</p>
+<h5>Batching Strategy</h5>
+<p>All extraction agents should use <code>model: &quot;haiku&quot;</code> — they're doing straightforward
+file reading and structured extraction, not reasoning. Haiku is faster and cheaper
+for this work.</p>
+<p>The approach depends on dataset size:</p>
+<p><strong>Tiny datasets (≤ 10 total files):</strong> Read all files directly in the main agent —
+no need for sub-agents. Just read them sequentially and proceed to Phase 3.</p>
+<p><strong>Small datasets (11-30 files):</strong> Launch 2-3 parallel Haiku agents, splitting
+files roughly evenly.</p>
+<p><strong>Medium datasets (31-80 files):</strong> Launch 4-6 parallel Haiku agents (~10-15 files
+each). Split by file type and/or time period.</p>
+<p><strong>Large datasets (80+ files):</strong> Launch as many parallel Haiku agents as needed to
+keep each batch around 10-15 files. Split by the natural time boundaries in the
+data (months, quarters, or whatever groupings produce balanced batches). If one
+time period dominates (e.g., the most recent month has 3x the files), split that
+period into multiple batches.</p>
+<p>Launch all extraction agents in parallel using the Agent tool with
+<code>run_in_background: true</code> and <code>model: &quot;haiku&quot;</code>.</p>
+<h5>Output Files</h5>
+<p>Each extraction agent must write its results to a clean output file rather than
+relying on the agent task output (which contains interleaved JSONL framework
+logs that are difficult to parse). Instruct each agent to write to:</p>
+<pre><code>/tmp/compound-planning/extraction-{batch-name}.md
+</code></pre>
+<p>Create the <code>/tmp/compound-planning/</code> directory before launching agents. The
+reduce agent in Phase 3 will read these clean files directly.</p>
+<h5>Extraction Prompt</h5>
+<p>Each agent receives this instruction (adapt the time period, file list, and
+output path):</p>
+<pre><code>You are extracting structured data from denied plan files for a pattern analysis.
+
+Directory: [PLANS DIRECTORY]
+Files to read: [LIST OF SPECIFIC *-denied.md FILES]
+Output: Write your complete results to [OUTPUT FILE PATH]
+
+Each denied file contains two parts separated by a --- line:
+1. The plan text (above the ---)
+2. The reviewer's feedback and annotations (below the ---)
+
+Read EVERY file in your list. For EACH file, extract:
+- The plan name/topic (from the plan text above the ---)
+- The denial reason or feedback given (from below the --- — capture the actual
+  words used)
+- What was specifically asked to change
+- The type of feedback (let the content determine the category — don't force-fit
+  into predefined types. Common types include things like: scope concerns,
+  approach disagreements, missing information, process requirements, quality
+  concerns, UX/design issues, naming disputes, clarification requests,
+  testing/procedural denials — but the user's actual patterns may differ)
+- Any specific phrases or recurring language from the reviewer
+- Individual annotations if present (numbered feedback items with quoted text
+  and reviewer comments)
+- The date (extracted from the filename)
+
+Do NOT skip any files. One entry per file.
+
+Format each entry as:
+**[filename]**
+- Date: ...
+- Topic: ...
+- Denial reason: ...
+- Feedback type: ...
+- Specific asks: ...
+- Notable phrases: ...
+- Annotations: [count, with brief summary of each]
+---
+
+After processing all files, write the complete results to [OUTPUT FILE PATH].
+State the total file count at the end of the file.
+</code></pre>
+<h5>While Agents Run</h5>
+<p>Track completion. As each agent finishes, note the count of files it processed.
+Verify the total matches the inventory from Phase 1. If any agent's count is
+short, flag it and consider re-launching for the missing files.</p>
+<p>If an agent times out (possible with large batches — a batch of 128 files can
+take 8+ minutes), re-launch it for just the unprocessed files. Check the output
+file to see how far it got before timing out.</p>
+<h4>Phase 3: Reduce — Pattern Analysis</h4>
+<p>Once ALL extraction agents have completed (or all files have been read for tiny
+datasets), proceed with the reduction. Reduction agents should use <code>model: &quot;sonnet&quot;</code>
+— this phase requires real analytical reasoning, not just file reading.</p>
+<h5>Reduction Strategy</h5>
+<p>The approach depends on how many extraction files were produced:</p>
+<p><strong>Standard (≤ 20 extraction files):</strong> Launch a single Sonnet agent to read all
+extraction files and produce the full analysis. This covers most datasets.</p>
+<p><strong>Large (21+ extraction files):</strong> Use a two-stage reduce:</p>
+<ol>
+<li>
+<p><strong>Stage 1 — Partial reduces:</strong> Split the extraction files into groups of 4-6.
+Launch parallel Sonnet agents, each reading one group and producing a partial
+analysis with the same sections listed below. Each writes to
+<code>/tmp/compound-planning/partial-reduce-{N}.md</code>.</p>
+</li>
+<li>
+<p><strong>Stage 2 — Final reduce:</strong> A single Sonnet agent reads all partial reduce
+files and synthesizes them into the final comprehensive analysis. This agent
+merges taxonomies, combines counts, deduplicates patterns, and reconciles any
+conflicting categorizations across partials.</p>
+</li>
+</ol>
+<p><strong>Claude Code fallback mode:</strong> The reduction phase is the same. The only upstream
+difference is that extraction files were derived from normalized denial-reason JSON
+instead of Plannotator markdown files.</p>
+<h5>Reduction Prompt</h5>
+<p>Give each reduction agent this prompt (adapt file paths for single vs multi-stage):</p>
+<pre><code>You are a data scientist conducting the reduction phase of a map-reduce analysis
+across a user's denied plan archive.
+
+Read ALL extraction files at [FILE PATHS]
+
+These files contain structured extractions from every denied plan file. Each
+extraction includes the plan topic, denial feedback, annotations, and reviewer
+language. Your job: aggregate everything, find patterns, cluster into a taxonomy,
+and produce a comprehensive analysis.
+
+Be exhaustive. Use real counts. Quote real phrases from the data. This is
+research — no hand-waving, no fabrication.
+
+Write your complete results to [OUTPUT FILE PATH].
+
+Produce the following sections:
+[... sections listed below ...]
+</code></pre>
+<p>The reduction agent's job is to let the data speak. Do not impose a predetermined
+framework — discover what's actually there. The analysis must produce:</p>
+<h5>1. Denial Reason Taxonomy</h5>
+<p>Categorize every denial into a finite set of types that emerge from the data. Count
+occurrences. Show percentages. Include real example quotes for each type. Aim for
+8-15 categories — enough to be specific, few enough to be scannable. Let the user's
+actual feedback determine what the categories are.</p>
+<h5>2. Top Feedback Patterns (ranked by frequency)</h5>
+<p>The 5-10 most recurring patterns. For each: what the reviewer consistently asks for,
+3+ example quotes from different files, and whether the pattern changed over time.</p>
+<h5>3. Recurring Phrases</h5>
+<p>Exact phrases the reviewer uses repeatedly, with counts and what they signal. These
+are the reviewer's vocabulary — their shorthand for what they care about.</p>
+<h5>4. What the Reviewer Values (implicit preferences)</h5>
+<p>Derived from patterns — what does this specific person care about most? Quality?
+Speed? Narrative? Architecture? Process? Simplicity? Rank by evidence strength.
+This section should feel like a personality profile of the reviewer's standards.</p>
+<h5>5. What Agents Consistently Get Wrong</h5>
+<p>The flip side — what recurring mistakes trigger denials? What should agents stop
+doing for this reviewer?</p>
+<h5>6. Structural Requests</h5>
+<p>What plan structure does the reviewer consistently demand? Required sections,
+ordering, format preferences, level of detail expected.</p>
+<h5>7. Evolution Over Time</h5>
+<p>How feedback patterns changed across the time span. Group by whatever natural time
+boundaries exist in the data (weeks for short spans, months for longer ones). Did
+expectations mature? Did new patterns emerge? What shifted? If the dataset spans
+less than a month, note that evolution analysis is limited but still look for any
+progression from early to late files.</p>
+<h5>8. Actionable Prompt Instructions</h5>
+<p>The most important output. Based on all patterns: specific numbered instructions
+that could be embedded in a planning prompt to prevent the most common denial
+reasons. Write these as actual directives an agent could follow. Be specific to
+this user's patterns — generic advice like &quot;write good plans&quot; is worthless. Each
+instruction should trace back to a real, frequent denial pattern.</p>
+<p>After writing the instructions, calculate what percentage of denials they would
+address (count how many denials fall into categories covered by the instructions
+vs total denials). Report this percentage — it will be different for every user.</p>
+<h4>Phase 4: Generate the HTML Dashboard</h4>
+<p>Build a single, self-contained HTML file as the final deliverable. Save it to
+<code>&lt;data-dir&gt;/plans/</code> (the folder from Source Selection) with a versioned filename:</p>
+<ul>
+<li>First ever report: <code>compound-planning-report.html</code></li>
+<li>Second report: <code>compound-planning-report-v2.html</code></li>
+<li>Third report: <code>compound-planning-report-v3.html</code></li>
+<li>And so on.</li>
+</ul>
+<p>The version number was determined in Phase 0 based on existing reports found.</p>
+<p><strong>If this is an incremental report</strong>, the header should indicate the analysis
+period (e.g., &quot;March 15 – March 31, 2026&quot;) and include a subtitle noting
+&quot;Incremental analysis — see v{N-1} for earlier findings.&quot; The narrative in
+section 1 should frame findings as what's new or changed since the last report,
+not as a complete picture. Overall stats in the header (file counts, revision
+rate) should still reflect the full archive for context.</p>
+<p>Read the template at <code>assets/report-template.html</code> for the <strong>design language
+only</strong>. The template contains example data from a previous analysis — ignore all
+data values, quotes, and percentages in the template. Use only its visual design:
+colors, typography, spacing, component styles, and layout patterns.</p>
+<h5>Design Language (from template)</h5>
+<ul>
+<li><strong>Palette:</strong> Light mode, warm off-white (#FDFCFB), text in slate scale, amber
+for highlights/accents, emerald for positive, rose for negative, indigo for
+action elements</li>
+<li><strong>Typography:</strong> Playfair Display (serif, for narrative headings), Inter (sans,
+for body/data), JetBrains Mono (mono, for code/phrases) — Google Fonts CDN</li>
+<li><strong>Layout:</strong> Single-column, max-width 1024px, generous vertical whitespace (128px
+between major sections), editorial/narrative-first aesthetic</li>
+<li><strong>Tone:</strong> Calm, reflective, authoritative. Like a personal retrospective journal,
+not a monitoring dashboard.</li>
+</ul>
+<h5>Page Frame (header + footer)</h5>
+<p>Before the 7 sections, the page has:</p>
+<ul>
+<li>
+<p><strong>Header:</strong> Report title on the left (Playfair Display, ~36px), project name +
+date range below it in light meta text. On the right: file counts in mono
+(e.g., &quot;223 denials · 71 days&quot;). Separated from content by
+a bottom border. Generous bottom padding before section 1.</p>
+</li>
+<li>
+<p><strong>Footer:</strong> After section 7. Top border, centered italic Playfair Display tagline
+summarizing the corpus (e.g., &quot;Analysis of X denied plans from the Plannotator
+archive.&quot;).</p>
+</li>
+</ul>
+<h5>Dashboard Section Order (7 sections)</h5>
+<p>The report follows this exact section order. Each section builds on the previous
+one — the flow moves from &quot;what happened&quot; through &quot;why&quot; to &quot;what to do about it&quot;:</p>
+<ol>
+<li>
+<p><strong>The story in the data</strong> — An editorial narrative paragraph (Playfair Display
+serif, ~26px) that tells the headline finding in prose. Not bullet points — a
+real paragraph that reads like the opening of an article. Alongside it, a KPI
+sidebar with 3 key metrics (the top denial percentage, the overall revision
+rate, and the number of distinct denial categories found). Use an amber inline
+highlight on the most striking number in the narrative.</p>
+</li>
+<li>
+<p><strong>Why plans get denied</strong> — The taxonomy as a ranked list. Each row: rank number
+(mono), category label, a thin 4px progress bar (top item in amber-500, rest
+in slate-300), percentage (mono), and for the top entries, a real italic quote
+from the data below the label. Show the top 10 categories or however many the
+data supports (minimum 5).</p>
+</li>
+<li>
+<p><strong>How expectations evolved</strong> — One card per natural time period. Each card has:
+the period name in serif, a theme phrase in colored uppercase (different color
+per period to show progression), a description paragraph, and a stat line at
+the bottom (e.g., &quot;X denials · Y narrative requests&quot;). If the data spans less
+than 3 distinct periods, use 2 cards or even a single card with internal
+progression noted.</p>
+</li>
+<li>
+<p><strong>What works vs what doesn't</strong> — Two side-by-side cards. Left: green-tinted
+(emerald-50/50 bg, emerald-100 border) with traits of plans that succeed for
+this reviewer. Right: red-tinted (rose-50/50 bg, rose-100 border) with what
+agents keep getting wrong. Both derived from the reduction analysis. Bulleted
+with small colored dots. 5-8 items per card.</p>
+</li>
+<li>
+<p><strong>The actionable output</strong> — The diagnostic payoff. Opens with a Playfair
+Display narrative sentence stating how many prompt instructions were derived
+and what estimated percentage of denials they address (use the real calculated
+percentage from Phase 3, not a generic number). Then the top 3 most impactful
+improvements as numbered items, each with an amber number, bold title, and
+one-line description. This section bridges the analysis and the full prompt
+that follows.</p>
+</li>
+<li>
+<p><strong>Your most-used phrases</strong> — Grid of chips (2-col mobile, 3-col desktop). Each
+chip: monospace quoted phrase on the left, frequency count on the right. White
+bg, slate-200 border, rounded-12px. Show 9-12 of the most recurring phrases
+found. These should be the reviewer's actual words — their verbal fingerprint.</p>
+</li>
+<li>
+<p><strong>The corrective prompt</strong> — Dark panel (slate-900 bg, white text, rounded-3xl,
+shadow-xl). Opens with a Playfair intro sentence about the instructions. Then
+a dark code block (slate-800/80 bg, amber-200 monospace text) containing the
+full numbered prompt instructions from Phase 3. Include a copy-to-clipboard
+button that works (JS included). Below the code block: a gradient glow card
+(indigo-to-purple blurred halo behind a white card) with a closing message
+that these instructions are personal — derived from the user's own feedback,
+their own language, their own standards.</p>
+</li>
+</ol>
+<h5>Adaptation Rules</h5>
+<ul>
+<li>If the user has &lt; 3 months of data, reduce the evolution section to fewer cards</li>
+<li>If most denied files lack feedback below the <code>---</code> (bare denials with no
+annotations), note this in the narrative — the analysis will be thinner</li>
+<li><strong>Claude Code fallback mode:</strong> Explicitly label the report source as Claude Code
+<code>ExitPlanMode</code> denial reasons. Do not fabricate Plannotator-only fields such as
+annotation counts or approved-plan line counts. See the fallback reference for
+KPI substitutes and footer/provenance guidance.</li>
+<li>If fewer than 5 denial categories emerge, combine the taxonomy and patterns
+sections into one</li>
+<li>If the dataset is very small (&lt; 20 files), the narrative should acknowledge the
+limited sample size and frame findings as preliminary</li>
+<li>The number of prompt instructions will vary per user — could be 8 or 20. Don't
+force exactly 17. Let the data determine the count.</li>
+<li>The top 3 actionable items in section 5 must be the 3 that cover the largest
+share of denials, not the 3 that sound most impressive</li>
+</ul>
+<h5>Key Rules</h5>
+<ol>
+<li>Every number must come from the real analysis — no fabricated data</li>
+<li>Every quote must be a real quote from a real file</li>
+<li>The taxonomy percentages must be calculated from real counts</li>
+<li>The prompt instructions must trace back to actual denial patterns</li>
+<li>The copy button on the prompt block must work (include the JS)</li>
+</ol>
+<p>After generating, open the file in the user's browser.</p>
+<h4>Phase 5: Summary</h4>
+<p>Tell the user:</p>
+<ul>
+<li>How many denied files were analyzed</li>
+<li>If incremental: how many were new since the last report</li>
+<li>The top 3 denial patterns found</li>
+<li>The estimated percentage of denials the prompt instructions would address</li>
+<li>The single most impactful prompt improvement</li>
+<li>Where the report was saved (including version number)</li>
+<li>If incremental: remind the user that earlier findings are in the previous report</li>
+</ul>
+<p><strong>Claude Code fallback mode:</strong> Adapt the summary per the fallback reference —
+report human denial reasons analyzed and total <code>ExitPlanMode</code> attempts scanned
+instead of Plannotator file counts.</p>
+<h4>Phase 6: Improvement Hook</h4>
+<p>After presenting the summary, ask the user if they want to enable an <strong>improvement
+hook</strong> — this takes the corrective prompt instructions from section 7 of the report
+and writes them to a file that Plannotator's <code>EnterPlanMode</code> hook can inject into
+every future planning session automatically.</p>
+<blockquote>
+<p>&quot;Would you like to enable the improvement hook? This will save the corrective
+prompt instructions to a file that gets automatically injected into all future
+planning sessions — so Claude sees your feedback patterns before writing any plan.&quot;</p>
+</blockquote>
+<p><strong>If yes:</strong></p>
+<p>The hook file lives at:</p>
+<pre><code>&lt;data-dir&gt;/hooks/compound/enterplanmode-improve-hook.txt
+</code></pre>
+<p><code>&lt;data-dir&gt;</code> is the folder from Source Selection (<code>plannotator data-dir</code>
+prints it). If you have not found it yet, find it now the same way; never
+guess it. Create the <code>hooks/compound/</code> directory inside <code>&lt;data-dir&gt;</code> if it
+doesn't exist.</p>
+<p>The file contents should be the corrective prompt instructions from Phase 3 —
+the same numbered list that appears in section 7 of the HTML report. Write them
+as plain text, one instruction per line, prefixed with their number. No HTML, no
+markdown fences, no preamble — just the instructions themselves. The hook system
+will inject this file's contents as-is into the planning context.</p>
+<p><strong>If the file already exists:</strong></p>
+<p>Read the existing file and present the user with a choice:</p>
+<blockquote>
+<p>&quot;An improvement hook already exists from a previous analysis. I can:</p>
+<ol>
+<li><strong>Replace</strong> — Overwrite with the new instructions (the old ones are gone)</li>
+<li><strong>Merge</strong> — Combine both, deduplicating overlapping instructions and
+keeping the best version of each</li>
+<li><strong>Keep existing</strong> — Leave the current hook as-is, skip this step</li>
+</ol>
+<p>Which would you prefer?&quot;</p>
+</blockquote>
+<ul>
+<li><strong>Replace:</strong> Overwrite the file with the new instructions.</li>
+<li><strong>Merge:</strong> Read the existing instructions, compare with the new ones, and
+produce a merged set. Remove duplicates (same intent even if worded differently).
+When two instructions cover the same pattern, keep the more specific or
+actionable version. Re-number the final list sequentially. Write the merged
+result to the file. Show the user what changed (added N new, removed N
+redundant, kept N existing).</li>
+<li><strong>Keep existing:</strong> Do nothing, move on.</li>
+</ul>
+<p><strong>If no:</strong> Skip this phase entirely.</p>
+<h4>Important Notes</h4>
+<ul>
+<li><strong>Data source priority:</strong> Plannotator is the first-class path. Claude Code log
+analysis is the secondary path for users without Plannotator archives.</li>
+<li><strong>Research integrity:</strong> Every file must be read. The value of this analysis comes
+from completeness. Sampling or skipping undermines the findings.</li>
+<li><strong>Real data only:</strong> Never fabricate quotes, percentages, or patterns. If the data
+doesn't show a clear pattern, say so honestly rather than inventing one.</li>
+<li><strong>Let the data lead:</strong> The taxonomy, patterns, and instructions should emerge from
+what's actually in the files. Different users will have completely different
+denial patterns. A user building mobile apps will have different feedback than
+one building APIs. Don't assume what the patterns will be.</li>
+<li><strong>Agent parallelization:</strong> For large datasets, maximize parallel agents to reduce
+wall-clock time. The bottleneck is the largest batch — split it.</li>
+<li><strong>Structured extraction format:</strong> Ask extraction agents to return structured text
+with consistent delimiters so the reduce agent can parse reliably.</li>
+<li><strong>The report is the artifact:</strong> The HTML dashboard is what the user keeps. It
+should be beautiful, honest, and useful. Every section should feel like it was
+written about them specifically, because it was.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

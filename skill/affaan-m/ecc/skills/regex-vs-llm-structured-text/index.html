@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>regex-vs-llm-structured-text · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re extracting records from text that follows a pattern, such as exam questions, forms, invoices or tables, and LLM cost matters. It does: parses with regex first, scores each item&#039;s confidence, and sends only the items below 0.95 to the cheapest LLM for correction. You get: a hybrid parser design with Python code for the regex parser, confidence scorer, LLM validator and pipeline. Reports: on a 410-item quiz, regex handled 98% and about five LLM calls fixed the rest, around 95% cheaper than sending everything to an LLM. Unlike: LLM-only extraction; for free-form, highly variable text it says to use an LLM directly." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <h1>regex-vs-llm-structured-text</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re extracting records from text that follows a pattern, such as exam questions, forms, invoices or tables, and LLM cost matters</dd></div><div><dt>It does</dt><dd>parses with regex first, scores each item&#39;s confidence, and sends only the items below 0.95 to the cheapest LLM for correction</dd></div><div><dt>You get</dt><dd>a hybrid parser design with Python code for the regex parser, confidence scorer, LLM validator and pipeline</dd></div><div><dt>Reports</dt><dd>on a 410-item quiz, regex handled 98% and about five LLM calls fixed the rest, around 95% cheaper than sending everything to an LLM</dd></div><div><dt>Unlike</dt><dd>LLM-only extraction; for free-form, highly variable text it says to use an LLM directly</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A decision framework and pattern for structured text. If more than 90% of the text follows a repeating pattern, start with regex; if regex handles 95% or more, no LLM is needed, and otherwise an LLM takes only the edge cases. Free-form text goes straight to an LLM. The pipeline runs a regex parser, a cleaner that strips markers, page numbers and other noise, and a confidence scorer that deducts for signs of a bad extraction, such as too few choices, a missing answer or very short text. Items under the threshold go to an LLM validator, a Haiku-class model in its example, which returns a corrected item or confirms the extraction. Its practices: start with imperfect regex as a baseline, return new objects instead of mutating parsed ones, write tests for known patterns before edge cases, and log the regex success rate and LLM call count.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/regex-vs-llm-structured-text">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/affaan-m/ecc --skill regex-vs-llm-structured-text</code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill regex-vs-llm-structured-text">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/regex-vs-llm-structured-text">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/regex-vs-llm-structured-text">Source on GitHub</a> · <a href="/skillhub/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,300 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>298,660 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">480</div>
+      <div class="stat-delta">+68% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 285; week to Sep 26: 257; week to Oct 3: 158; week to Oct 10: 150; week to Oct 17: 237; week to Oct 24: 415; week to Oct 31: 407; week to Nov 7: 480. Use the left and right arrow keys to read each week."
+        data-values="285,257,158,150,237,415,407,480" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.9 38.6,26.4 71.1,35.5 103.7,36.3 136.3,28.3 168.9,12.0 201.4,12.7 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>285</td></tr><tr><td>Sep 26</td><td>257</td></tr><tr><td>Oct 3</td><td>158</td></tr><tr><td>Oct 10</td><td>150</td></tr><tr><td>Oct 17</td><td>237</td></tr><tr><td>Oct 24</td><td>415</td></tr><tr><td>Oct 31</td><td>407</td></tr><tr><td>Nov 7</td><td>480</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/skillhub/?tag=type%3Aguidelines">type:guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="architecture" data-facet="topic" href="/skillhub/?tag=architecture">architecture</a><a class="tag" data-tag="implementation" data-facet="topic" href="/skillhub/?tag=implementation">implementation</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:python" data-facet="stack" href="/skillhub/?tag=stack%3Apython">stack:python</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/regex-vs-llm-structured-text/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: regex-vs-llm-structured-text
+description: Decision framework for parsing structured text (quizzes, forms, invoices, receipts, tables) with a hybrid regex-first pipeline — regex extraction handles 95%+ cheaply, a confidence scorer flags low-confidence items, and an LLM validator fixes only the edge cases. Use when choosing between regex and LLM for text extraction, building a cheap document parser, or optimizing extraction cost and accuracy.
+metadata:
+  origin: ECC</code></pre></details>
+        <div class="markdown"><h3>Regex vs LLM for Structured Text Parsing</h3>
+<p>A practical decision framework for parsing structured text (quizzes, forms, invoices, documents). The key insight: regex handles 95-98% of cases cheaply and deterministically. Reserve expensive LLM calls for the remaining edge cases.</p>
+<h4>When to Activate</h4>
+<ul>
+<li>Parsing structured text with repeating patterns (questions, forms, tables)</li>
+<li>Deciding between regex and LLM for text extraction</li>
+<li>Building hybrid pipelines that combine both approaches</li>
+<li>Optimizing cost/accuracy tradeoffs in text processing</li>
+</ul>
+<h4>Decision Framework</h4>
+<pre><code>Is the text format consistent and repeating?
+├── Yes (&gt;90% follows a pattern) → Start with Regex
+│   ├── Regex handles 95%+ → Done, no LLM needed
+│   └── Regex handles &lt;95% → Add LLM for edge cases only
+└── No (free-form, highly variable) → Use LLM directly
+</code></pre>
+<h4>Architecture Pattern</h4>
+<pre><code>Source Text
+    │
+    ▼
+[Regex Parser] ─── Extracts structure (95-98% accuracy)
+    │
+    ▼
+[Text Cleaner] ─── Removes noise (markers, page numbers, artifacts)
+    │
+    ▼
+[Confidence Scorer] ─── Flags low-confidence extractions
+    │
+    ├── High confidence (≥0.95) → Direct output
+    │
+    └── Low confidence (&lt;0.95) → [LLM Validator] → Output
+</code></pre>
+<h4>Implementation</h4>
+<h5>1. Regex Parser (Handles the Majority)</h5>
+<pre><code class="language-python">import re
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class ParsedItem:
+    id: str
+    text: str
+    choices: tuple[str, ...]
+    answer: str
+    confidence: float = 1.0
+
+def parse_structured_text(content: str) -&gt; list[ParsedItem]:
+    &quot;&quot;&quot;Parse structured text using regex patterns.&quot;&quot;&quot;
+    pattern = re.compile(
+        r&quot;(?P&lt;id&gt;\d+)\.\s*(?P&lt;text&gt;.+?)\n&quot;
+        r&quot;(?P&lt;choices&gt;(?:[A-D]\..+?\n)+)&quot;
+        r&quot;Answer:\s*(?P&lt;answer&gt;[A-D])&quot;,
+        re.MULTILINE | re.DOTALL,
+    )
+    items = []
+    for match in pattern.finditer(content):
+        choices = tuple(
+            c.strip() for c in re.findall(r&quot;[A-D]\.\s*(.+)&quot;, match.group(&quot;choices&quot;))
+        )
+        items.append(ParsedItem(
+            id=match.group(&quot;id&quot;),
+            text=match.group(&quot;text&quot;).strip(),
+            choices=choices,
+            answer=match.group(&quot;answer&quot;),
+        ))
+    return items
+</code></pre>
+<h5>2. Confidence Scoring</h5>
+<p>Flag items that may need LLM review:</p>
+<pre><code class="language-python">@dataclass(frozen=True)
+class ConfidenceFlag:
+    item_id: str
+    score: float
+    reasons: tuple[str, ...]
+
+def score_confidence(item: ParsedItem) -&gt; ConfidenceFlag:
+    &quot;&quot;&quot;Score extraction confidence and flag issues.&quot;&quot;&quot;
+    reasons = []
+    score = 1.0
+
+    if len(item.choices) &lt; 3:
+        reasons.append(&quot;few_choices&quot;)
+        score -= 0.3
+
+    if not item.answer:
+        reasons.append(&quot;missing_answer&quot;)
+        score -= 0.5
+
+    if len(item.text) &lt; 10:
+        reasons.append(&quot;short_text&quot;)
+        score -= 0.2
+
+    return ConfidenceFlag(
+        item_id=item.id,
+        score=max(0.0, score),
+        reasons=tuple(reasons),
+    )
+
+def identify_low_confidence(
+    items: list[ParsedItem],
+    threshold: float = 0.95,
+) -&gt; list[ConfidenceFlag]:
+    &quot;&quot;&quot;Return items below confidence threshold.&quot;&quot;&quot;
+    flags = [score_confidence(item) for item in items]
+    return [f for f in flags if f.score &lt; threshold]
+</code></pre>
+<h5>3. LLM Validator (Edge Cases Only)</h5>
+<pre><code class="language-python">def validate_with_llm(
+    item: ParsedItem,
+    original_text: str,
+    client,
+) -&gt; ParsedItem:
+    &quot;&quot;&quot;Use LLM to fix low-confidence extractions.&quot;&quot;&quot;
+    response = client.messages.create(
+        model=&quot;claude-haiku-4-5-20251001&quot;,  # Cheapest model for validation
+        max_tokens=500,
+        messages=[{
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: (
+                f&quot;Extract the question, choices, and answer from this text.\n\n&quot;
+                f&quot;Text: {original_text}\n\n&quot;
+                f&quot;Current extraction: {item}\n\n&quot;
+                f&quot;Return corrected JSON if needed, or 'CORRECT' if accurate.&quot;
+            ),
+        }],
+    )
+    # Parse LLM response and return corrected item...
+    return corrected_item
+</code></pre>
+<h5>4. Hybrid Pipeline</h5>
+<pre><code class="language-python">def process_document(
+    content: str,
+    *,
+    llm_client=None,
+    confidence_threshold: float = 0.95,
+) -&gt; list[ParsedItem]:
+    &quot;&quot;&quot;Full pipeline: regex -&gt; confidence check -&gt; LLM for edge cases.&quot;&quot;&quot;
+    # Step 1: Regex extraction (handles 95-98%)
+    items = parse_structured_text(content)
+
+    # Step 2: Confidence scoring
+    low_confidence = identify_low_confidence(items, confidence_threshold)
+
+    if not low_confidence or llm_client is None:
+        return items
+
+    # Step 3: LLM validation (only for flagged items)
+    low_conf_ids = {f.item_id for f in low_confidence}
+    result = []
+    for item in items:
+        if item.id in low_conf_ids:
+            result.append(validate_with_llm(item, content, llm_client))
+        else:
+            result.append(item)
+
+    return result
+</code></pre>
+<h4>Real-World Metrics</h4>
+<p>From a production quiz parsing pipeline (410 items):</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Regex success rate</td>
+<td>98.0%</td>
+</tr>
+<tr>
+<td>Low confidence items</td>
+<td>8 (2.0%)</td>
+</tr>
+<tr>
+<td>LLM calls needed</td>
+<td>~5</td>
+</tr>
+<tr>
+<td>Cost savings vs all-LLM</td>
+<td>~95%</td>
+</tr>
+<tr>
+<td>Test coverage</td>
+<td>93%</td>
+</tr>
+</tbody>
+</table>
+<h4>Best Practices</h4>
+<ul>
+<li><strong>Start with regex</strong> — even imperfect regex gives you a baseline to improve</li>
+<li><strong>Use confidence scoring</strong> to programmatically identify what needs LLM help</li>
+<li><strong>Use the cheapest LLM</strong> for validation (Haiku-class models are sufficient)</li>
+<li><strong>Never mutate</strong> parsed items — return new instances from cleaning/validation steps</li>
+<li><strong>TDD works well</strong> for parsers — write tests for known patterns first, then edge cases</li>
+<li><strong>Log metrics</strong> (regex success rate, LLM call count) to track pipeline health</li>
+</ul>
+<h4>Anti-Patterns to Avoid</h4>
+<ul>
+<li>Sending all text to an LLM when regex handles 95%+ of cases (expensive and slow)</li>
+<li>Using regex for free-form, highly variable text (LLM is better here)</li>
+<li>Skipping confidence scoring and hoping regex &quot;just works&quot;</li>
+<li>Mutating parsed objects during cleaning/validation steps</li>
+<li>Not testing edge cases (malformed input, missing fields, encoding issues)</li>
+</ul>
+<h4>When to Use</h4>
+<ul>
+<li>Quiz/exam question parsing</li>
+<li>Form data extraction</li>
+<li>Invoice/receipt processing</li>
+<li>Document structure parsing (headers, sections, tables)</li>
+<li>Any structured text with repeating patterns where cost matters</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

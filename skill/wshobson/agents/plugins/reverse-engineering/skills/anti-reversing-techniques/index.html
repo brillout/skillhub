@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>anti-reversing-techniques · SkillHub</title>
+    <meta name="description" content="Use it when: you hit anti-debugging, anti-VM, obfuscation or packing while analyzing a binary you&#039;re authorized to. It does: names each protection and where it appears, then gives a specific way past it — a patch address, a hook point or a tool command. You get: protection identification, a strategy per layer, and scripts or GDB/x64dbg command sequences; a reference file adds unpacking and virtualization-based protection. Authorized use: the skill insists on written permission or a legitimate context (malware analysis, CTF, pentest) first." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=wshobson%2Fagents">wshobson/agents</a></p>
+      <h1>anti-reversing-techniques</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you hit anti-debugging, anti-VM, obfuscation or packing while analyzing a binary you&#39;re authorized to</dd></div><div><dt>It does</dt><dd>names each protection and where it appears, then gives a specific way past it — a patch address, a hook point or a tool command</dd></div><div><dt>You get</dt><dd>protection identification, a strategy per layer, and scripts or GDB/x64dbg command sequences; a reference file adds unpacking and virtualization-based protection</dd></div><div><dt>Authorized use</dt><dd>the skill insists on written permission or a legitimate context (malware analysis, CTF, pentest) first</dd></div></dl></section>
+      
+      <p class="note">Covers bypassing software protections; intended only for malware analysis, CTFs, authorized pentests, or software you own — unauthorized circumvention may be illegal.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A reference for the protection mechanisms an analyst meets during authorized reverse engineering, and how to neutralize each. It opens with an authorized-use banner and an input/output contract: you give a binary, platform and goal; it produces named protections with locations, a strategy per layer, an analysis report and code artifacts. A reference file covers Windows anti-debugging (API checks, PEB flags, timing, exceptions), Linux ptrace checks, anti-VM detection (hardware fingerprints, registry and file artifacts, timing), and obfuscation (control-flow flattening, opaque predicates, string and API obfuscation). A second reference file goes further into packers and unpacking, virtualization-based protection and anti-disassembly tricks. The SKILL.md&#39;s troubleshooting notes platform differences (x86 vs ARM), calibrating timing thresholds against false positives, and adjusting a comparison rather than a jump to avoid crashes. It points to the binary-analysis-patterns, memory-forensics and protocol-reverse-engineering skills.</p>
+      <p class="muted">Summarizes <a href="https://github.com/wshobson/agents/tree/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/reverse-engineering/skills/anti-reversing-techniques">the skill at 4bde316</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/wshobson/agents --skill anti-reversing-techniques</code><button type="button" class="copy" data-copy="npx skills add https://github.com/wshobson/agents --skill anti-reversing-techniques">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/wshobson/agents/anti-reversing-techniques">skills.sh page</a> · <a href="https://github.com/wshobson/agents/tree/HEAD/plugins/reverse-engineering/skills/anti-reversing-techniques">Source on GitHub</a> · <a href="/skillhub/?repo=wshobson%2Fagents">All skills from wshobson/agents</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>11,300 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>42,267 <span class="muted">wshobson/agents</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">212</div>
+      <div class="stat-delta">+21% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 175; week to Sep 26: 192; week to Oct 3: 224; week to Oct 10: 299; week to Oct 17: 243; week to Oct 24: 223; week to Oct 31: 237; week to Nov 7: 212. Use the left and right arrow keys to read each week."
+        data-values="175,192,224,299,243,223,237,212" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,24.2 38.6,21.7 71.1,17.0 103.7,6.0 136.3,14.2 168.9,17.2 201.4,15.1 234.0,18.8" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="18.8" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>175</td></tr><tr><td>Sep 26</td><td>192</td></tr><tr><td>Oct 3</td><td>224</td></tr><tr><td>Oct 10</td><td>299</td></tr><tr><td>Oct 17</td><td>243</td></tr><tr><td>Oct 24</td><td>223</td></tr><tr><td>Oct 31</td><td>237</td></tr><tr><td>Nov 7</td><td>212</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/skillhub/?tag=category%3Asecurity">category:security</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/skillhub/?tag=type%3Aguidelines">type:guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/wshobson/agents/blob/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/reverse-engineering/skills/anti-reversing-techniques/SKILL.md">wshobson/agents at 4bde316</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: anti-reversing-techniques
+description: Understand anti-reversing, obfuscation, and protection techniques encountered during software analysis. Use this skill when analyzing malware evasion techniques, when implementing anti-debugging protections for CTF challenges, when reverse engineering packed binaries, or when building security research tools that need to detect virtualized environments.</code></pre></details>
+        <div class="markdown"><blockquote>
+<p><strong>AUTHORIZED USE ONLY</strong>: This skill contains dual-use security techniques. Before proceeding with any bypass or analysis:</p>
+<ol>
+<li><strong>Verify authorization</strong>: Confirm you have explicit written permission from the software owner, or are operating within a legitimate security context (CTF, authorized pentest, malware analysis, security research)</li>
+<li><strong>Document scope</strong>: Ensure your activities fall within the defined scope of your authorization</li>
+<li><strong>Legal compliance</strong>: Understand that unauthorized bypassing of software protection may violate laws (CFAA, DMCA anti-circumvention, etc.)</li>
+</ol>
+<p><strong>Legitimate use cases</strong>: Malware analysis, authorized penetration testing, CTF competitions, academic security research, analyzing software you own/have rights to</p>
+</blockquote>
+<h3>Anti-Reversing Techniques</h3>
+<p>Understanding protection mechanisms encountered during authorized software analysis, security research, and malware analysis. This knowledge helps analysts bypass protections to complete legitimate analysis tasks.</p>
+<p>For advanced techniques, see <a href="https://github.com/wshobson/agents/blob/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/reverse-engineering/skills/anti-reversing-techniques/references/advanced-techniques.md">references/advanced-techniques.md</a></p>
+<hr>
+<h4>Input / Output</h4>
+<p><strong>What you provide:</strong></p>
+<ul>
+<li><strong>Binary path or sample</strong>: the executable, DLL, or firmware image under analysis</li>
+<li><strong>Platform</strong>: Windows x86/x64, Linux, macOS, ARM — affects which checks apply</li>
+<li><strong>Goal</strong>: bypass for dynamic analysis, identify protection type, build detection code, implement for CTF</li>
+</ul>
+<p><strong>What this skill produces:</strong></p>
+<ul>
+<li><strong>Protection identification</strong>: named technique (e.g., RDTSC timing check, PEB BeingDebugged) with location in binary</li>
+<li><strong>Bypass strategy</strong>: specific patch addresses, hook points, or tool commands to neutralize each check</li>
+<li><strong>Analysis report</strong>: structured findings listing each protection layer, severity, and recommended bypass</li>
+<li><strong>Code artifacts</strong>: Python/IDAPython scripts, GDB command sequences, or C stubs for bypassing or implementing checks</li>
+</ul>
+<hr>
+<h4>Detailed patterns and worked examples</h4>
+<p>Detailed pattern documentation lives in <code>references/details.md</code>. Read that file when the navigation tier above is insufficient.</p>
+<h4>Troubleshooting</h4>
+<p><strong>Detection technique works on x86 but not ARM</strong></p>
+<p>RDTSC and CPUID are x86-only. On ARM, use <code>MRS x0, PMCCNTR_EL0</code> (requires kernel PMU access) or <code>clock_gettime(CLOCK_MONOTONIC)</code>. PEB/TEB do not exist on ARM — replace with <code>/proc/self/status</code> (Linux) or <code>task_info</code> (macOS). Rebuild detection logic with platform-specific APIs.</p>
+<p><strong>False positive on legitimate debugger or analysis tool</strong></p>
+<p>Timing checks fire when Process Monitor or AV hooks inflate syscall latency. Calibrate the threshold at startup: measure the guarded path 3 times and use <code>mean + 3*stddev</code>. For ptrace checks, verify the TracerPid comm name via <code>/proc/&lt;pid&gt;/comm</code> before exiting — it may be an unrelated monitoring tool, not a debugger.</p>
+<p><strong>Bypass patch causes crash instead of continuing execution</strong></p>
+<p>Before NOPing a conditional jump, trace the &quot;detected&quot; branch fully. If it initializes or frees heap state needed later, patching the jump skips that setup and corrupts state. Instead, patch the comparison operand to the expected &quot;clean&quot; value, or use x64dbg's &quot;Set condition to always false&quot; on the breakpoint rather than modifying bytes.</p>
+<hr>
+<h4>Related Skills</h4>
+<ul>
+<li><code>binary-analysis-patterns</code> — static and dynamic analysis workflows for ELF/PE/Mach-O</li>
+<li><code>memory-forensics</code> — process memory acquisition, artifact extraction, and live analysis</li>
+<li><code>protocol-reverse-engineering</code> — decoding custom binary protocols and encrypted network traffic</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>gan-style-harness · SkillHub</title>
+    <meta name="description" content="Use it when: you want a whole app or a polished frontend built from a one-line brief and will spend hours and $50–200 on quality. It does: a planner expands the brief into a spec, a generator builds it, and an evaluator clicks through the running app, scores it and sends feedback for the next round. You get: an app that cleared a weighted 7 out of 10 on design, originality, craft and functionality, or stopped at the iteration cap. Based on: Anthropic&#039;s March 2026 post on harness design for long-running apps; GAN refers to generative adversarial networks, where one model creates and another critiques. Needs: Claude Code and the Playwright MCP server; its commands, script and agents ship with the full ECC plugin." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <h1>gan-style-harness</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want a whole app or a polished frontend built from a one-line brief and will spend hours and $50–200 on quality</dd></div><div><dt>It does</dt><dd>a planner expands the brief into a spec, a generator builds it, and an evaluator clicks through the running app, scores it and sends feedback for the next round</dd></div><div><dt>You get</dt><dd>an app that cleared a weighted 7 out of 10 on design, originality, craft and functionality, or stopped at the iteration cap</dd></div><div><dt>Based on</dt><dd>Anthropic&#39;s March 2026 post on harness design for long-running apps; GAN refers to generative adversarial networks, where one model creates and another critiques</dd></div><div><dt>Needs</dt><dd>Claude Code and the Playwright MCP server; its commands, script and agents ship with the full ECC plugin</dd></div></dl></section>
+      
+      <p class="note">Its /project:gan-build and /project:gan-design commands, gan-harness.sh script and planner, generator and evaluator agents come with the full ECC plugin, not with this skill. It puts a build at hours and $50–200.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>An agent harness that keeps building and judging apart, because agents grading their own work are too generous. A planner turns a one-line prompt into an ambitious spec of about 16 features over several sprints, with design direction and evaluation criteria. The generator implements it, agrees a sprint contract with the evaluator before coding, commits between iterations and reads each feedback file. The evaluator, told to be ruthlessly strict, uses Playwright to click through the live app, fill forms and hit endpoints, then scores design quality, originality, craft and functionality from 1 to 10 with weights; 7.0 passes, and it stops after 15 iterations by default. You run it with ECC&#39;s /project:gan-build or /project:gan-design commands, its gan-harness.sh script, or by hand with claude -p steps. Environment variables set the models, iterations, threshold, criteria, dev server and evaluation mode: playwright, screenshot or code-only. It advises stripping harness parts as models improve, and warns against lenient evaluators, generators ignoring feedback and endless loops.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/gan-style-harness">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/affaan-m/ecc --skill gan-style-harness</code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill gan-style-harness">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/gan-style-harness">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/gan-style-harness">Source on GitHub</a> · <a href="/skillhub/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,200 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>298,660 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">468</div>
+      <div class="stat-delta">+63% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 288; week to Sep 26: 257; week to Oct 3: 157; week to Oct 10: 137; week to Oct 17: 229; week to Oct 24: 405; week to Oct 31: 402; week to Nov 7: 468. Use the left and right arrow keys to read each week."
+        data-values="288,257,157,137,229,405,402,468" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,22.9 38.6,25.8 71.1,35.2 103.7,37.1 136.3,28.5 168.9,11.9 201.4,12.2 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>288</td></tr><tr><td>Sep 26</td><td>257</td></tr><tr><td>Oct 3</td><td>157</td></tr><tr><td>Oct 10</td><td>137</td></tr><tr><td>Oct 17</td><td>229</td></tr><tr><td>Oct 24</td><td>405</td></tr><tr><td>Oct 31</td><td>402</td></tr><tr><td>Nov 7</td><td>468</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/skillhub/?tag=category%3Aagents">category:agents</a><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:claude-code" data-facet="needs" title="Uses Claude Code features such as hooks or background agents." href="/skillhub/?tag=needs%3Aclaude-code">needs:claude-code</a><a class="tag" data-tag="needs:subagents" data-facet="needs" title="Relies on the agent being able to spawn subagents." href="/skillhub/?tag=needs%3Asubagents">needs:subagents</a><a class="tag" data-tag="needs:mcp" data-facet="needs" title="Needs an MCP server connected." href="/skillhub/?tag=needs%3Amcp">needs:mcp</a><a class="tag" data-tag="needs:browser" data-facet="needs" title="Drives a real Chromium or Chrome browser." href="/skillhub/?tag=needs%3Abrowser">needs:browser</a></div>
+          <p class="tag-meaning">Uses Claude Code features such as hooks or background agents.</p><p class="tag-meaning">Relies on the agent being able to spawn subagents.</p><p class="tag-meaning">Needs an MCP server connected.</p><p class="tag-meaning">Drives a real Chromium or Chrome browser.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="multi-agent" data-facet="topic" href="/skillhub/?tag=multi-agent">multi-agent</a><a class="tag" data-tag="agent-workflows" data-facet="topic" href="/skillhub/?tag=agent-workflows">agent-workflows</a><a class="tag" data-tag="implementation" data-facet="topic" href="/skillhub/?tag=implementation">implementation</a><a class="tag" data-tag="testing" data-facet="topic" href="/skillhub/?tag=testing">testing</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:playwright" data-facet="stack" href="/skillhub/?tag=stack%3Aplaywright">stack:playwright</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/gan-style-harness/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: gan-style-harness
+description: &#34;GAN-inspired Generator-Evaluator agent harness for building high-quality applications autonomously. Based on Anthropic&#39;s March 2026 harness design paper. Use when a feature should be built autonomously through generator and evaluator iteration until it clears a quality bar.&#34;
+metadata:
+  origin: ECC-community
+tools: Read, Write, Edit, Bash, Grep, Glob, Task</code></pre></details>
+        <div class="markdown"><h3>GAN-Style Harness Skill</h3>
+<blockquote>
+<p>Inspired by <a href="https://www.anthropic.com/engineering/harness-design-long-running-apps">Anthropic's Harness Design for Long-Running Application Development</a> (March 24, 2026)</p>
+</blockquote>
+<p>A multi-agent harness that separates <strong>generation</strong> from <strong>evaluation</strong>, creating an adversarial feedback loop that drives quality far beyond what a single agent can achieve.</p>
+<h4>Core Insight</h4>
+<blockquote>
+<p>When asked to evaluate their own work, agents are pathological optimists — they praise mediocre output and talk themselves out of legitimate issues. But engineering a <strong>separate evaluator</strong> to be ruthlessly strict is far more tractable than teaching a generator to self-critique.</p>
+</blockquote>
+<p>This is the same dynamic as GANs (Generative Adversarial Networks): the Generator produces, the Evaluator critiques, and that feedback drives the next iteration.</p>
+<h4>When to Use</h4>
+<ul>
+<li>Building complete applications from a one-line prompt</li>
+<li>Frontend design tasks requiring high visual quality</li>
+<li>Full-stack projects that need working features, not just code</li>
+<li>Any task where &quot;AI slop&quot; aesthetics are unacceptable</li>
+<li>Projects where you want to invest $50-200 for production-quality output</li>
+</ul>
+<h4>When NOT to Use</h4>
+<ul>
+<li>Quick single-file fixes (use standard <code>claude -p</code>)</li>
+<li>Tasks with tight budget constraints (&lt;$10)</li>
+<li>Simple refactoring (use de-sloppify pattern instead)</li>
+<li>Tasks that are already well-specified with tests (use TDD workflow)</li>
+</ul>
+<h4>Architecture</h4>
+<pre><code>                    ┌─────────────┐
+                    │   PLANNER   │
+                    │  (Sonnet)   │
+                    └──────┬──────┘
+                           │ Product Spec
+                           │ (features, sprints, design direction)
+                           ▼
+              ┌────────────────────────┐
+              │                        │
+              │   GENERATOR-EVALUATOR  │
+              │      FEEDBACK LOOP     │
+              │                        │
+              │  ┌──────────┐          │
+              │  │GENERATOR │--build--&gt;│──┐
+              │  │ (Sonnet) │          │  │
+              │  └────▲─────┘          │  │
+              │       │                │  │ live app
+              │    feedback             │  │
+              │       │                │  │
+              │  ┌────┴─────┐          │  │
+              │  │EVALUATOR │&lt;-test----│──┘
+              │  │ (Sonnet) │          │
+              │  │+Playwright│         │
+              │  └──────────┘          │
+              │                        │
+              │   5-15 iterations      │
+              └────────────────────────┘
+</code></pre>
+<h4>The Three Agents</h4>
+<h5>1. Planner Agent</h5>
+<p><strong>Role:</strong> Product manager — expands a brief prompt into a full product specification.</p>
+<p><strong>Key behaviors:</strong></p>
+<ul>
+<li>Takes a one-line prompt and produces a 16-feature, multi-sprint specification</li>
+<li>Defines user stories, technical requirements, and visual design direction</li>
+<li>Is deliberately <strong>ambitious</strong> — conservative planning leads to underwhelming results</li>
+<li>Produces evaluation criteria that the Evaluator will use later</li>
+</ul>
+<p><strong>Model:</strong> Sonnet by default; raise via <code>GAN_PLANNER_MODEL=opus</code> for deeper spec expansion</p>
+<h5>2. Generator Agent</h5>
+<p><strong>Role:</strong> Developer — implements features according to the spec.</p>
+<p><strong>Key behaviors:</strong></p>
+<ul>
+<li>Works in structured sprints (or continuous mode with newer models)</li>
+<li>Negotiates a &quot;sprint contract&quot; with the Evaluator before writing code</li>
+<li>Uses full-stack tooling: React, FastAPI/Express, databases, CSS</li>
+<li>Manages git for version control between iterations</li>
+<li>Reads Evaluator feedback and incorporates it in next iteration</li>
+</ul>
+<p><strong>Model:</strong> Sonnet by default; raise via <code>GAN_GENERATOR_MODEL=opus</code> for maximum coding capability</p>
+<h5>3. Evaluator Agent</h5>
+<p><strong>Role:</strong> QA engineer — tests the live running application, not just code.</p>
+<p><strong>Key behaviors:</strong></p>
+<ul>
+<li>Uses <strong>Playwright MCP</strong> to interact with the live application</li>
+<li>Clicks through features, fills forms, tests API endpoints</li>
+<li>Scores against four criteria (configurable):
+<ol>
+<li><strong>Design Quality</strong> — Does it feel like a coherent whole?</li>
+<li><strong>Originality</strong> — Custom decisions vs. template/AI patterns?</li>
+<li><strong>Craft</strong> — Typography, spacing, animations, micro-interactions?</li>
+<li><strong>Functionality</strong> — Do all features actually work?</li>
+</ol>
+</li>
+<li>Returns structured feedback with scores and specific issues</li>
+<li>Is engineered to be <strong>ruthlessly strict</strong> — never praises mediocre work</li>
+</ul>
+<p><strong>Model:</strong> Sonnet by default; raise via <code>GAN_EVALUATOR_MODEL=opus</code> for stronger judgment + tool use</p>
+<h4>Evaluation Criteria</h4>
+<p>The default four criteria, each scored 1-10:</p>
+<pre><code class="language-markdown">## Evaluation Rubric
+
+### Design Quality (weight: 0.3)
+- 1-3: Generic, template-like, &quot;AI slop&quot; aesthetics
+- 4-6: Competent but unremarkable, follows conventions
+- 7-8: Distinctive, cohesive visual identity
+- 9-10: Could pass for a professional designer's work
+
+### Originality (weight: 0.2)
+- 1-3: Default colors, stock layouts, no personality
+- 4-6: Some custom choices, mostly standard patterns
+- 7-8: Clear creative vision, unique approach
+- 9-10: Surprising, delightful, genuinely novel
+
+### Craft (weight: 0.3)
+- 1-3: Broken layouts, missing states, no animations
+- 4-6: Works but feels rough, inconsistent spacing
+- 7-8: Polished, smooth transitions, responsive
+- 9-10: Pixel-perfect, delightful micro-interactions
+
+### Functionality (weight: 0.2)
+- 1-3: Core features broken or missing
+- 4-6: Happy path works, edge cases fail
+- 7-8: All features work, good error handling
+- 9-10: Bulletproof, handles every edge case
+</code></pre>
+<h5>Scoring</h5>
+<ul>
+<li><strong>Weighted score</strong> = sum of (criterion_score * weight)</li>
+<li><strong>Pass threshold</strong> = 7.0 (configurable)</li>
+<li><strong>Max iterations</strong> = 15 (configurable, typically 5-15 sufficient)</li>
+</ul>
+<h4>Usage</h4>
+<h5>Via Command</h5>
+<pre><code class="language-bash"># Full three-agent harness
+/project:gan-build &quot;Build a project management app with Kanban boards, team collaboration, and dark mode&quot;
+
+# With custom config
+/project:gan-build &quot;Build a recipe sharing platform&quot; --max-iterations 10 --pass-threshold 7.5
+
+# Frontend design mode (generator + evaluator only, no planner)
+/project:gan-design &quot;Create a landing page for a crypto portfolio tracker&quot;
+</code></pre>
+<h5>Via Shell Script</h5>
+<pre><code class="language-bash"># Basic usage
+./scripts/gan-harness.sh &quot;Build a music streaming dashboard&quot;
+
+# With options
+GAN_MAX_ITERATIONS=10 \
+GAN_PASS_THRESHOLD=7.5 \
+GAN_EVAL_CRITERIA=&quot;functionality,performance,security&quot; \
+./scripts/gan-harness.sh &quot;Build a REST API for task management&quot;
+</code></pre>
+<h5>Via Claude Code (Manual)</h5>
+<pre><code class="language-bash"># Step 1: Plan
+claude -p --model sonnet &quot;You are a Product Planner. Read PLANNER_PROMPT.md. Expand this brief into a full product spec: 'Build a Kanban board app'. Write spec to spec.md&quot;
+
+# Step 2: Generate (iteration 1)
+claude -p --model sonnet &quot;You are a Generator. Read spec.md. Implement Sprint 1. Start the dev server on port 3000.&quot;
+
+# Step 3: Evaluate (iteration 1)
+claude -p --model sonnet --allowedTools &quot;Read,Bash,mcp__playwright__*&quot; &quot;You are an Evaluator. Read EVALUATOR_PROMPT.md. Test the live app at http://localhost:3000. Score against the rubric. Write feedback to feedback-001.md&quot;
+
+# Step 4: Generate (iteration 2 — reads feedback)
+claude -p --model sonnet &quot;You are a Generator. Read spec.md and feedback-001.md. Address all issues. Improve the scores.&quot;
+
+# Repeat steps 3-4 until pass threshold met
+</code></pre>
+<h4>Evolution Across Model Capabilities</h4>
+<p>The harness should simplify as models improve. Following Anthropic's evolution:</p>
+<h5>Stage 1 — Weaker Models (Sonnet-class)</h5>
+<ul>
+<li>Full sprint decomposition required</li>
+<li>Context resets between sprints (avoid context anxiety)</li>
+<li>2-agent minimum: Initializer + Coding Agent</li>
+<li>Heavy scaffolding compensates for model limitations</li>
+</ul>
+<h5>Stage 2 — Capable Models (Opus 4.5-class)</h5>
+<ul>
+<li>Full 3-agent harness: Planner + Generator + Evaluator</li>
+<li>Sprint contracts before each implementation phase</li>
+<li>10-sprint decomposition for complex apps</li>
+<li>Context resets still useful but less critical</li>
+</ul>
+<h5>Stage 3 — Frontier Models (Opus 4.6-class)</h5>
+<ul>
+<li>Simplified harness: single planning pass, continuous generation</li>
+<li>Evaluation reduced to single end-pass (model is smarter)</li>
+<li>No sprint structure needed</li>
+<li>Automatic compaction handles context growth</li>
+</ul>
+<blockquote>
+<p><strong>Key principle:</strong> Every harness component encodes an assumption about what the model can't do alone. When models improve, re-test those assumptions. Strip away what's no longer needed.</p>
+</blockquote>
+<h4>Configuration</h4>
+<h5>Environment Variables</h5>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GAN_MAX_ITERATIONS</code></td>
+<td><code>15</code></td>
+<td>Maximum generator-evaluator cycles</td>
+</tr>
+<tr>
+<td><code>GAN_PASS_THRESHOLD</code></td>
+<td><code>7.0</code></td>
+<td>Weighted score to pass (1-10)</td>
+</tr>
+<tr>
+<td><code>GAN_PLANNER_MODEL</code></td>
+<td><code>sonnet</code></td>
+<td>Model for planning agent</td>
+</tr>
+<tr>
+<td><code>GAN_GENERATOR_MODEL</code></td>
+<td><code>sonnet</code></td>
+<td>Model for generator agent</td>
+</tr>
+<tr>
+<td><code>GAN_EVALUATOR_MODEL</code></td>
+<td><code>sonnet</code></td>
+<td>Model for evaluator agent</td>
+</tr>
+<tr>
+<td><code>GAN_EVAL_CRITERIA</code></td>
+<td><code>design,originality,craft,functionality</code></td>
+<td>Comma-separated criteria</td>
+</tr>
+<tr>
+<td><code>GAN_DEV_SERVER_PORT</code></td>
+<td><code>3000</code></td>
+<td>Port for the live app</td>
+</tr>
+<tr>
+<td><code>GAN_DEV_SERVER_CMD</code></td>
+<td><code>npm run dev</code></td>
+<td>Command to start dev server</td>
+</tr>
+<tr>
+<td><code>GAN_PROJECT_DIR</code></td>
+<td><code>.</code></td>
+<td>Project working directory</td>
+</tr>
+<tr>
+<td><code>GAN_SKIP_PLANNER</code></td>
+<td><code>false</code></td>
+<td>Skip planner, use spec directly</td>
+</tr>
+<tr>
+<td><code>GAN_EVAL_MODE</code></td>
+<td><code>playwright</code></td>
+<td><code>playwright</code>, <code>screenshot</code>, or <code>code-only</code></td>
+</tr>
+</tbody>
+</table>
+<h5>Evaluation Modes</h5>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Tools</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>playwright</code></td>
+<td>Browser MCP + live interaction</td>
+<td>Full-stack apps with UI</td>
+</tr>
+<tr>
+<td><code>screenshot</code></td>
+<td>Screenshot + visual analysis</td>
+<td>Static sites, design-only</td>
+</tr>
+<tr>
+<td><code>code-only</code></td>
+<td>Tests + linting + build</td>
+<td>APIs, libraries, CLI tools</td>
+</tr>
+</tbody>
+</table>
+<h4>Anti-Patterns</h4>
+<ol>
+<li>
+<p><strong>Evaluator too lenient</strong> — If the evaluator passes everything on iteration 1, your rubric is too generous. Tighten scoring criteria and add explicit penalties for common AI patterns.</p>
+</li>
+<li>
+<p><strong>Generator ignoring feedback</strong> — Ensure feedback is passed as a file, not inline. The generator should read <code>feedback-NNN.md</code> at the start of each iteration.</p>
+</li>
+<li>
+<p><strong>Infinite loops</strong> — Always set <code>GAN_MAX_ITERATIONS</code>. If the generator can't improve past a score plateau after 3 iterations, stop and flag for human review.</p>
+</li>
+<li>
+<p><strong>Evaluator testing superficially</strong> — The evaluator must use Playwright to <strong>interact</strong> with the live app, not just screenshot it. Click buttons, fill forms, test error states.</p>
+</li>
+<li>
+<p><strong>Evaluator praising its own fixes</strong> — Never let the evaluator suggest fixes and then evaluate those fixes. The evaluator only critiques; the generator fixes.</p>
+</li>
+<li>
+<p><strong>Context exhaustion</strong> — For long sessions, use Claude Agent SDK's automatic compaction or reset context between major phases.</p>
+</li>
+</ol>
+<h4>Results: What to Expect</h4>
+<p>Based on Anthropic's published results:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Solo Agent</th>
+<th>GAN Harness</th>
+<th>Improvement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Time</td>
+<td>20 min</td>
+<td>4-6 hours</td>
+<td>12-18x longer</td>
+</tr>
+<tr>
+<td>Cost</td>
+<td>$9</td>
+<td>$125-200</td>
+<td>14-22x more</td>
+</tr>
+<tr>
+<td>Quality</td>
+<td>Barely functional</td>
+<td>Production-ready</td>
+<td>Phase change</td>
+</tr>
+<tr>
+<td>Core features</td>
+<td>Broken</td>
+<td>All working</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Design</td>
+<td>Generic AI slop</td>
+<td>Distinctive, polished</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The tradeoff is clear:</strong> ~20x more time and cost for a qualitative leap in output quality. This is for projects where quality matters.</p>
+<h4>References</h4>
+<ul>
+<li><a href="https://www.anthropic.com/engineering/harness-design-long-running-apps">Anthropic: Harness Design for Long-Running Apps</a> — Original paper by Prithvi Rajasekaran</li>
+<li><a href="https://www.epsilla.com/blogs/anthropic-harness-engineering-multi-agent-gan-architecture">Epsilla: The GAN-Style Agent Loop</a> — Architecture deconstruction</li>
+<li><a href="https://martinfowler.com/articles/exploring-gen-ai/harness-engineering.html">Martin Fowler: Harness Engineering</a> — Broader industry context</li>
+<li><a href="https://openai.com/index/harness-engineering/">OpenAI: Harness Engineering</a> — OpenAI's parallel work</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

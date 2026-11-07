@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>audio-design · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re laying out a game&#039;s mixer and volume settings, or music should dip under dialogue, react to play or stay on the beat. It does: routes every sound through a few buses, maps settings sliders to decibels, adds ducking, varies repeated sounds and schedules events on the music&#039;s beat. Ducking means: lowering music or ambience automatically while a voice or important sound plays, then letting it recover. You get: audio code and mixer settings, checked by listening on headphones and speakers rather than trusting the editor meters. Code examples: Godot 4.7, with Unity 6.3 equivalents and notes for FMOD and Wwise." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=gamedev-skills%2Fawesome-gamedev-agent-skills">gamedev-skills/awesome-gamedev-agent-skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/bundle/gamedev-skills/awesome-gamedev-agent-skills/">Gamedev Agent Skills</a></p>
+      <h1>audio-design</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re laying out a game&#39;s mixer and volume settings, or music should dip under dialogue, react to play or stay on the beat</dd></div><div><dt>It does</dt><dd>routes every sound through a few buses, maps settings sliders to decibels, adds ducking, varies repeated sounds and schedules events on the music&#39;s beat</dd></div><div><dt>Ducking means</dt><dd>lowering music or ambience automatically while a voice or important sound plays, then letting it recover</dd></div><div><dt>You get</dt><dd>audio code and mixer settings, checked by listening on headphones and speakers rather than trusting the editor meters</dd></div><div><dt>Code examples</dt><dd>Godot 4.7, with Unity 6.3 equivalents and notes for FMOD and Wwise</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 8 of 27 in the <a href="/skillhub/bundle/gamedev-skills/awesome-gamedev-agent-skills/">Gamedev Agent Skills</a> bundle · Before it: <a href="/skillhub/skill/gamedev-skills/awesome-gamedev-agent-skills/skills/disciplines/save-systems/">save-systems</a> · After it: <a href="/skillhub/skill/gamedev-skills/awesome-gamedev-agent-skills/skills/disciplines/shader-programming/">shader-programming</a></p>
+    
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A discipline skill from a game-development collection that treats game audio as a mixing graph plus a music system. Buses such as Music, SFX, Ambience, UI and Voice feed Master, and the player&#39;s sliders set bus volumes, never hundreds of clip volumes. Levels work in decibels, with peaks at or below -1 dBTP and a loudness target from Sony&#39;s ASWG-R001: -24 LUFS for console and PC, -18 for handheld and mobile, not the -14 LUFS of music streaming. Ducking uses a sidechain compressor, or a separate duck bus so it never overwrites the player&#39;s music setting. Adaptive music fades stems in and out or swaps segments at musical boundaries. Small random pitch and volume changes over a pool of samples keep footsteps from sounding robotic. Beat sync reads the audio playback position, corrected for mix time and output latency, instead of counting frame time. Pitfalls include sliders treated as decibels, sources that bypass the mixer, pumping ducking and one-shot players that leak. Engine audio nodes and asset import are left to engine skills.</p>
+      <p class="muted">Summarizes <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/tree/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/audio-design">the skill at 19d93f9</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/gamedev-skills/awesome-gamedev-agent-skills --skill audio-design</code><button type="button" class="copy" data-copy="npx skills add https://github.com/gamedev-skills/awesome-gamedev-agent-skills --skill audio-design">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/gamedev-skills/awesome-gamedev-agent-skills/audio-design">skills.sh page</a> · <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/tree/HEAD/skills/disciplines/audio-design">Source on GitHub</a> · <a href="/skillhub/?repo=gamedev-skills%2Fawesome-gamedev-agent-skills">All skills from gamedev-skills/awesome-gamedev-agent-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>10,500 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>7,309 <span class="muted">gamedev-skills/awesome-gamedev-agent-skills</span></dd></div><div><dt>First seen</dt><dd>Jun 27, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">2K</div>
+      <div class="stat-delta">+387% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 419; week to Sep 26: 397; week to Oct 3: 440; week to Oct 10: 463; week to Oct 17: 564; week to Oct 24: 781; week to Oct 31: 1,668; week to Nov 7: 2,040. Use the left and right arrow keys to read each week."
+        data-values="419,397,440,463,564,781,1668,2040" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,41.0 38.6,41.4 71.1,40.5 103.7,40.0 136.3,37.8 168.9,33.2 201.4,14.0 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>419</td></tr><tr><td>Sep 26</td><td>397</td></tr><tr><td>Oct 3</td><td>440</td></tr><tr><td>Oct 10</td><td>463</td></tr><tr><td>Oct 17</td><td>564</td></tr><tr><td>Oct 24</td><td>781</td></tr><tr><td>Oct 31</td><td>1,668</td></tr><tr><td>Nov 7</td><td>2,040</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:media" data-facet="category" title="Generate and edit video, images and audio." href="/skillhub/?tag=category%3Amedia">category:media</a><a class="tag" data-tag="category:games" data-facet="category" title="Make games: design, genres, game feel and game-jam workflows, whatever the engine." href="/skillhub/?tag=category%3Agames">category:games</a></div>
+          <p class="tag-meaning">Generate and edit video, images and audio.</p><p class="tag-meaning">Make games: design, genres, game feel and game-jam workflows, whatever the engine.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="audio" data-facet="topic" href="/skillhub/?tag=audio">audio</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/audio-design/SKILL.md">gamedev-skills/awesome-gamedev-agent-skills at 19d93f9</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: audio-design
+description: &#62;
+  Implement game audio practice — bus/mixer architecture and gain in decibels,
+  ducking (sidechain), adaptive/dynamic music via layering and re-sequencing,
+  SFX variation, and beat synchronization. Engine-neutral. Use when the user
+  mentions audio mixing, audio buses, adaptive/dynamic music, ducking, SFX
+  variation, music layers, or syncing gameplay to the beat.</code></pre></details>
+        <div class="markdown"><h3>Audio design</h3>
+<p>Game audio is a <strong>mixing graph plus a music system</strong>. Route every sound through a
+small set of buses so you can balance and process groups; make music <em>react</em> to
+play through layering and re-sequencing rather than looping one track. This skill
+teaches the portable practice; bind it to <code>godot-audio</code>, Unity's AudioMixer, or
+middleware (FMOD/Wwise) for concrete APIs.</p>
+<h4>When to use</h4>
+<ul>
+<li>Use to design a bus/mixer layout, set group volumes, and apply effects (reverb,
+compression, EQ) to groups of sounds.</li>
+<li>Use to duck music/ambience under dialogue or impacts (sidechain).</li>
+<li>Use to build adaptive music that responds to combat/exploration intensity.</li>
+<li>Use to add SFX variation (pitch/sample randomization) and sync events to a beat.</li>
+</ul>
+<p><strong>When <em>not</em> to use:</strong> for the engine's concrete audio nodes/streams, use
+<code>godot-audio</code> or the engine's audio skill. Loading/streaming and asset import are
+engine concerns. For UI sliders that drive bus volume, see the engine UI skill.</p>
+<h4>Core workflow</h4>
+<ol>
+<li><strong>Lay out buses, not per-sound volume.</strong> A typical tree: <code>Master ← {Music, SFX, Ambience, UI, Voice}</code>. Everything plays into a bus; the player's settings
+sliders map to bus volumes. Never set hundreds of clip volumes by hand.</li>
+<li><strong>Work in decibels, not linear.</strong> Perceived loudness is logarithmic. Volume
+controls and automation should operate in dB; convert only at the edges.</li>
+<li><strong>Leave headroom and hit a loudness target.</strong> Keep true peaks at or below -1 dBTP and
+measure integrated loudness over a representative play session with an ITU-R BS.1770 meter.
+Sony's ASWG-R001 recommendation, the usual reference, is -24 LUFS (±2) for console/PC
+played on TVs and speakers and -18 LUFS (±2) for handheld/mobile. Music-streaming targets
+such as -14 LUFS are not game targets.</li>
+<li><strong>Duck competing sources</strong> with a sidechain compressor (or volume automation):
+when voice/important SFX plays, the music bus dips, then recovers.</li>
+<li><strong>Make music adaptive</strong> via <em>vertical</em> layering (stems faded in/out) and/or
+<em>horizontal</em> re-sequencing (swap segments at musical boundaries). See the
+reference.</li>
+<li><strong>Vary repeated SFX</strong> with small random pitch/volume offsets and sample pools
+so footsteps and hits don't sound robotic.</li>
+<li><strong>Verify on real output.</strong> Listen on headphones and speakers; check that the
+mix balances, ducking is audible but not pumping, and music transitions land
+on the beat — never assume from the editor meters alone.</li>
+</ol>
+<h4>Patterns</h4>
+<p>Snippets are Godot 4.7 GDScript; the Unity 6.3 LTS and middleware equivalents are noted
+under each one.</p>
+<h5>1. Bus routing and slider-to-gain mapping</h5>
+<pre><code class="language-gdscript"># Route sounds to named buses; control GROUPS, not individual clips.
+sfx_player.bus = &amp;&quot;SFX&quot;
+music_player.bus = &amp;&quot;Music&quot;
+
+# Map a 0..1 settings slider to bus gain. Squaring the slider first spreads the
+# audible change over the whole travel; a raw linear-amplitude slider puts most of
+# the change in the bottom fifth.
+func set_bus_volume(bus_name: StringName, slider01: float) -&gt; void:
+    var idx := AudioServer.get_bus_index(bus_name)
+    var gain := clampf(slider01, 0.0, 1.0)
+    AudioServer.set_bus_mute(idx, gain &lt;= 0.0)             # true silence at 0
+    AudioServer.set_bus_volume_linear(idx, gain * gain)    # = set_bus_volume_db(idx, linear_to_db(gain * gain))
+# WRONG: AudioServer.set_bus_volume_db(idx, slider01): &quot;0.5&quot; is +0.5 dB (no audible
+# change) and 0 is 0 dB (full volume).
+</code></pre>
+<p>Unity 6.3 LTS: expose the group's Volume as a mixer parameter, then
+<code>mixer.SetFloat(&quot;MusicVolume&quot;, 20f * Mathf.Log10(Mathf.Max(gain * gain, 0.0001f)))</code> (the mixer
+floor is -80 dB). An <code>AudioSource</code> whose Output group is empty plays outside your mixer groups,
+so no category slider or snapshot affects it: route every source.</p>
+<h5>2. Ducking via sidechain (music dips under voice)</h5>
+<p>A compressor on the music bus, keyed by the voice bus, lowers the music while dialogue plays and
+releases afterwards. Starting values: threshold about -30 dB on the voice signal, ratio 4:1 to
+8:1, attack as fast as the effect allows (up to ~10 ms), release 300-500 ms.</p>
+<pre><code class="language-gdscript"># Godot 4.7: AudioEffectCompressor reads its sidechain bus for threshold detection.
+func _ready() -&gt; void:
+    var duck := AudioEffectCompressor.new()
+    duck.sidechain = &amp;&quot;Voice&quot;      # the bus that triggers the dip
+    duck.threshold = -30.0         # dB, range -60..0
+    duck.ratio = 8.0               # range 1..48
+    duck.attack_us = 2000.0        # MICROseconds, range 20..2000 (2 ms is the maximum)
+    duck.release_ms = 400.0        # milliseconds, range 20..2000
+    AudioServer.add_bus_effect(AudioServer.get_bus_index(&amp;&quot;Music&quot;), duck)
+
+# No-compressor alternative: tween a dedicated &quot;MusicDuck&quot; bus that sits between
+# Music and Master, so ducking never overwrites the player's Music slider.
+func duck_music(active: bool) -&gt; void:
+    var idx := AudioServer.get_bus_index(&amp;&quot;MusicDuck&quot;)
+    var from := AudioServer.get_bus_volume_db(idx)
+    var to := -12.0 if active else 0.0
+    create_tween().tween_method(
+        func(db: float) -&gt; void: AudioServer.set_bus_volume_db(idx, db), from, to, 0.25)
+</code></pre>
+<p>Unity 6.3 LTS: add a <strong>Duck Volume</strong> effect to the Music group and a <strong>Send</strong> effect on the Voice
+group targeting it. FMOD Studio and Wwise have sidechain/auto-ducking on buses; prefer those over
+script tweens when the project already uses middleware.</p>
+<h5>3. SFX variation (kill the &quot;machine gun&quot; repeat)</h5>
+<pre><code class="language-gdscript"># Godot 4.7: AudioStreamRandomizer picks a take (no immediate repeats by default)
+# and randomizes pitch and volume on every play. No per-shot node allocation.
+func make_footsteps(samples: Array[AudioStream]) -&gt; void:
+    var rnd := AudioStreamRandomizer.new()
+    for s in samples:
+        rnd.add_stream(-1, s)                 # -1 appends; optional third arg = weight
+    rnd.random_pitch_semitones = 1.0          # up to +/-1 semitone (about 6%)
+    rnd.random_volume_offset_db = 2.0         # up to +/-2 dB
+    $Footsteps.stream = rnd
+    $Footsteps.max_polyphony = 4              # overlapping steps without new players
+</code></pre>
+<p>Unity 6.3 LTS has no built-in randomizer: keep an array of clips, pick one that differs from the
+last, set <code>pitch</code> in a small range, and call <code>PlayOneShot</code> on a pooled <code>AudioSource</code>.</p>
+<h5>4. Beat-synced events (quantize to the music grid)</h5>
+<pre><code class="language-gdscript"># Schedule gameplay/visuals on musical time, not frame time, so they land on beat.
+const BPM := 120.0
+const SECONDS_PER_BEAT := 60.0 / BPM
+
+# What the player HEARS now: playback position, plus time since the last mix
+# (the position only updates once per mixed chunk), minus output latency.
+func song_time() -&gt; float:
+    return ($Music.get_playback_position() + AudioServer.get_time_since_last_mix()
+            - AudioServer.get_output_latency())
+
+func current_beat() -&gt; int:
+    return int(song_time() / SECONDS_PER_BEAT)
+
+# Quantize an action to the NEXT beat boundary instead of firing immediately.
+func time_until_next_beat() -&gt; float:
+    return SECONDS_PER_BEAT - fmod(song_time(), SECONDS_PER_BEAT)
+</code></pre>
+<p>Unity 6.3 LTS: read <code>AudioSettings.dspTime</code> and schedule with <code>AudioSource.PlayScheduled(dspTime)</code>
+for sample-accurate starts.</p>
+<h4>Pitfalls</h4>
+<ul>
+<li><strong>Treating slider values as dB.</strong> Map <code>0..1</code> to gain (<code>linear_to_db</code>, or
+<code>set_bus_volume_linear</code>) and back with <code>db_to_linear</code>. A raw linear-amplitude
+slider sounds almost unchanged over most of its travel and drops off at the
+bottom; squaring (or cubing) the slider before conversion evens it out.</li>
+<li><strong>Per-clip volume instead of buses</strong> makes a global balance pass impossible and
+bloats save/settings. Mix on buses.</li>
+<li><strong>Sources that bypass the mix.</strong> A Unity <code>AudioSource</code> with no Output group, or a
+Godot player left on <code>Master</code>, ignores the category sliders. Route everything.</li>
+<li><strong>Clipping the master.</strong> Summed sounds exceed 0 dBFS and distort. Leave
+headroom; put a limiter on Master as a safety net, not as the mixer.</li>
+<li><strong>Pumping ducking</strong>: too-fast release or too-high ratio makes music audibly
+breathe. Lengthen release; lower ratio.</li>
+<li><strong>Ducking that fights the volume slider.</strong> Tweening the Music bus back to 0 dB
+overwrites the player's setting. Duck a separate bus, or use the compressor.</li>
+<li><strong>Looping a single music track</strong> for the whole game feels flat. Use layers or
+segments that respond to state (see the reference).</li>
+<li><strong>Beat sync off frame time.</strong> <code>delta</code> drifts; read the <strong>audio playback
+position</strong>, add the time since the last mix, and subtract output latency.</li>
+<li><strong>Unbounded one-shot players</strong>: spawning AudioStreamPlayers without freeing
+them leaks. Use <code>max_polyphony</code>/<code>AudioStreamRandomizer</code>, free on <code>finished</code>, or
+pool them.</li>
+</ul>
+<h4>References</h4>
+<ul>
+<li><code>references/adaptive-music.md</code> — vertical layering vs horizontal re-sequencing,
+transition timing (bars/quantize), stingers, intensity mapping, and crossfades.</li>
+</ul>
+<h4>Related skills</h4>
+<ul>
+<li><code>godot-audio</code> — buses, <code>AudioStreamPlayer</code>, effects, and sync-to-beat in Godot.</li>
+<li><code>input-systems</code> — trigger audio from input actions.</li>
+<li><code>physics-tuning</code> — collision events that drive impact SFX.</li>
+<li><code>platformer</code>, <code>roguelike</code> — genres whose feel leans on audio feedback.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

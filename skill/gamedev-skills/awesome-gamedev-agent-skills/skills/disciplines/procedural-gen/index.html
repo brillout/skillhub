@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>procedural-gen · SkillHub</title>
+    <meta name="description" content="Use it when: you want maps, dungeons, terrain or item drops you don&#039;t author by hand, reproducible from a seed for debugging, daily challenges or shared worlds. It does: threads one seeded random generator through all generation, picks noise, room placement or weighted tables by content, fills a plain grid, then checks the result is playable. Seed means: one number that reproduces the same world every time, as long as nothing else random leaks into generation. You get: generation code that fills a data grid, separate from drawing, with reachability checks that reject or repair broken maps. Leaves to others: painting the grid, to the engine tilemap skills, and hand-paced levels, to level-design." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=gamedev-skills%2Fawesome-gamedev-agent-skills">gamedev-skills/awesome-gamedev-agent-skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/bundle/gamedev-skills/awesome-gamedev-agent-skills/">Gamedev Agent Skills</a></p>
+      <h1>procedural-gen</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want maps, dungeons, terrain or item drops you don&#39;t author by hand, reproducible from a seed for debugging, daily challenges or shared worlds</dd></div><div><dt>It does</dt><dd>threads one seeded random generator through all generation, picks noise, room placement or weighted tables by content, fills a plain grid, then checks the result is playable</dd></div><div><dt>Seed means</dt><dd>one number that reproduces the same world every time, as long as nothing else random leaks into generation</dd></div><div><dt>You get</dt><dd>generation code that fills a data grid, separate from drawing, with reachability checks that reject or repair broken maps</dd></div><div><dt>Leaves to others</dt><dd>painting the grid, to the engine tilemap skills, and hand-paced levels, to level-design</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 5 of 27 in the <a href="/skillhub/bundle/gamedev-skills/awesome-gamedev-agent-skills/">Gamedev Agent Skills</a> bundle · Before it: <a href="/skillhub/skill/gamedev-skills/awesome-gamedev-agent-skills/skills/disciplines/ai-behavior-trees-utility-ai/">ai-behavior-trees-utility-ai</a> · After it: <a href="/skillhub/skill/gamedev-skills/awesome-gamedev-agent-skills/skills/disciplines/dialogue-systems/">dialogue-systems</a></p>
+    
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A discipline skill from a game-development collection, built on determinism. Generation code never calls the global random function, which makes worlds impossible to reproduce, and the seed goes in the save. Terrain sums several octaves from a real noise library, normalized and reshaped, with elevation and moisture on different seeds so biomes don&#39;t line up in bands. Dungeons place non-overlapping rooms, with capped attempts, and carve corridors between them. Loot rolls against relative weights. Before the player sees a map, it checks every room is reachable, the spawn is safe and the exit has a path. It tunes with the seed fixed, then sweeps many seeds to check the spread. Pitfalls include Perlin noise that is flat at whole-number coordinates, Python set order leaking into choices, and library generators whose sequences change between versions; for those it suggests shipping your own small generator with a test, or saving the result instead of the seed. Examples are Python with Godot and Unity equivalents; its references hold BSP, caves and wave function collapse.</p>
+      <p class="muted">Summarizes <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/tree/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/procedural-gen">the skill at 19d93f9</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/gamedev-skills/awesome-gamedev-agent-skills --skill procedural-gen</code><button type="button" class="copy" data-copy="npx skills add https://github.com/gamedev-skills/awesome-gamedev-agent-skills --skill procedural-gen">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/gamedev-skills/awesome-gamedev-agent-skills/procedural-gen">skills.sh page</a> · <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/tree/HEAD/skills/disciplines/procedural-gen">Source on GitHub</a> · <a href="/skillhub/?repo=gamedev-skills%2Fawesome-gamedev-agent-skills">All skills from gamedev-skills/awesome-gamedev-agent-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>10,100 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>7,309 <span class="muted">gamedev-skills/awesome-gamedev-agent-skills</span></dd></div><div><dt>First seen</dt><dd>Jun 27, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">2K</div>
+      <div class="stat-delta">+417% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 380; week to Sep 26: 367; week to Oct 3: 435; week to Oct 10: 442; week to Oct 17: 528; week to Oct 24: 733; week to Oct 31: 1,616; week to Nov 7: 1,966. Use the left and right arrow keys to read each week."
+        data-values="380,367,435,442,528,733,1616,1966" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,41.5 38.6,41.8 71.1,40.3 103.7,40.1 136.3,38.2 168.9,33.6 201.4,13.8 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>380</td></tr><tr><td>Sep 26</td><td>367</td></tr><tr><td>Oct 3</td><td>435</td></tr><tr><td>Oct 10</td><td>442</td></tr><tr><td>Oct 17</td><td>528</td></tr><tr><td>Oct 24</td><td>733</td></tr><tr><td>Oct 31</td><td>1,616</td></tr><tr><td>Nov 7</td><td>1,966</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:games" data-facet="category" title="Make games: design, genres, game feel and game-jam workflows, whatever the engine." href="/skillhub/?tag=category%3Agames">category:games</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Make games: design, genres, game feel and game-jam workflows, whatever the engine.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="generative-art" data-facet="topic" href="/skillhub/?tag=generative-art">generative-art</a><a class="tag" data-tag="implementation" data-facet="topic" href="/skillhub/?tag=implementation">implementation</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/procedural-gen/SKILL.md">gamedev-skills/awesome-gamedev-agent-skills at 19d93f9</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: procedural-gen
+description: &#62;
+  Generate game content procedurally — seeded deterministic RNG, value/Perlin/
+  Simplex noise for terrain and heightmaps, grid dungeon generation (rooms +
+  corridors, BSP, random walk, wave function collapse), and weighted loot/drop
+  tables. Engine-neutral algorithms. Use when the user mentions procedural
+  generation, perlin/simplex noise, random seed, dungeon generator, WFC,
+  heightmap/terrain, or loot tables.</code></pre></details>
+        <div class="markdown"><h3>Procedural generation</h3>
+<p>Generate levels, terrain, and loot from compact rules and a seed. The throughline
+of good procgen is <strong>determinism</strong>: a single seed reproduces the same world, so
+bugs are repeatable and players can share seeds. This skill owns the core
+algorithms — noise, seeded RNG, dungeon layout, weighted tables; genres like
+<code>roguelike</code> and <code>survival-crafting</code> consume it.</p>
+<h4>When to use</h4>
+<ul>
+<li>Use to generate maps, dungeons, terrain heightmaps, item drops, or any content
+you do not want to author by hand.</li>
+<li>Use when results must be <strong>reproducible from a seed</strong> (debugging, daily
+challenges, shareable worlds).</li>
+<li>Use to pick weighted random outcomes (loot rarity, spawn tables).</li>
+</ul>
+<p><strong>When <em>not</em> to use:</strong> for the engine's tile API to <em>paint</em> the result, use
+<code>godot-tilemap</code> or <code>unity-tilemap-2d</code>. For routing AI through the generated map,
+use <code>game-ai</code>. For carefully hand-paced levels, use <code>level-design</code> — procgen and
+authored design are complementary, not interchangeable.</p>
+<h4>Core workflow</h4>
+<ol>
+<li><strong>Own your randomness.</strong> Create one seeded RNG instance and pass it
+everywhere. Never call the global/static random in generation code — it makes
+results irreproducible and order-dependent.</li>
+<li><strong>Pick the technique for the content.</strong> Continuous terrain/heightmaps → noise.
+Discrete rooms/corridors → space partitioning or agent-based carving.
+Outcomes with rarities → weighted tables.</li>
+<li><strong>Generate into a plain data grid/array first</strong>, decoupled from rendering.
+Generation fills <code>int[][]</code> or a dict; a separate pass draws it.</li>
+<li><strong>Validate before shipping the result to the player.</strong> Is every room
+reachable? Is the spawn safe? Is there a path to the exit? Reject or repair
+layouts that fail; do not hand the player a broken map.</li>
+<li><strong>Tune with the seed fixed</strong> so each parameter change is visible in isolation,
+then sweep seeds to check the distribution, not just one lucky map.</li>
+</ol>
+<h4>Patterns</h4>
+<h5>1. Seeded, deterministic RNG (the foundation)</h5>
+<pre><code class="language-python">import random
+rng = random.Random(seed)        # a dedicated instance — NOT the global random.*
+room_count = rng.randint(5, 12)  # same seed -&gt; same sequence, every run
+# RIGHT: thread `rng` through every function that makes a choice.
+# WRONG: calling random.randint(...) (global state) — order-dependent, unseedable.
+</code></pre>
+<p>Engine equivalents: Godot 4.7 <code>var rng := RandomNumberGenerator.new(); rng.seed = s</code>
+(save <code>rng.state</code> to resume a sequence mid-way); Unity 6.3
+<code>new Unity.Mathematics.Random(seed)</code> (a <code>uint</code>, must be non-zero) or
+<code>new System.Random(seed)</code>. Avoid <code>UnityEngine.Random.InitState</code> for generation:
+it seeds the one global generator that every other script also draws from.
+Store the seed in the save file so a world can be regenerated.</p>
+<h5>2. Fractal (fBm) noise for heightmaps</h5>
+<pre><code class="language-python"># Sum several octaves: each higher octave has higher frequency, lower amplitude.
+def fbm(noise, x, y, octaves=5, lacunarity=2.0, gain=0.5):
+    total, amp, freq, norm = 0.0, 1.0, 1.0, 0.0
+    for _ in range(octaves):
+        total += amp * noise(x * freq, y * freq)   # noise() returns ~0..1
+        norm  += amp                                # track total amplitude
+        amp   *= gain                               # each octave contributes less
+        freq  *= lacunarity                         # ...at a higher frequency
+    return total / norm                             # normalize back into 0..1
+
+# Redistribute to carve flat valleys / sharpen peaks: higher exp -&gt; more lowland.
+elevation = pow(fbm(noise, nx, ny), 2.2)
+</code></pre>
+<p>Use a real noise library (<code>FastNoiseLite</code>, <code>opensimplex</code>,
+<code>Unity.Mathematics.noise</code>, or <code>Mathf.PerlinNoise</code>) — do not implement gradient
+noise yourself. Seed <strong>elevation and moisture with different seeds</strong> so a
+biome lookup over both fields isn't perfectly correlated. Full biome lookup and
+island shaping are in <code>references/noise.md</code>.</p>
+<h5>3. Weighted loot table (rarity-correct selection)</h5>
+<pre><code class="language-python"># Roll proportional to weight: common drops far more often than legendary.
+def weighted_pick(rng, table):           # table: list of (item, weight)
+    total = sum(w for _, w in table)
+    roll = rng.uniform(0, total)          # a point on the cumulative line
+    upto = 0.0
+    for item, w in table:
+        upto += w
+        if roll &lt; upto:                   # first bucket the roll falls into
+            return item
+    return next(i for i, w in reversed(table) if w &gt; 0)  # roll == total (float edge)
+
+loot = weighted_pick(rng, [(&quot;common&quot;, 70), (&quot;rare&quot;, 25), (&quot;legendary&quot;, 5)])
+</code></pre>
+<p>Weights need not sum to 100 — they are relative, and a weight of 0 never drops.
+Built-ins do the same job: Python <code>rng.choices(items, weights)</code>, Godot
+<code>rng.rand_weighted(PackedFloat32Array(weights))</code> (returns an index). To prevent
+bad streaks, use a &quot;pity&quot;/bag system (see <code>references/dungeon-generation.md</code>
+notes on distributions).</p>
+<h5>4. Rooms-and-corridors dungeon (sketch)</h5>
+<pre><code class="language-python"># 1. Place non-overlapping rooms; 2. connect them; 3. carve into the grid.
+rooms = []
+for _ in range(attempts):
+    r = Rect(rng.randint(1, W-w-1), rng.randint(1, H-h-1), w, h)
+    if not any(r.intersects(o.expand(1)) for o in rooms):  # keep a 1-tile gap
+        rooms.append(r)
+for a, b in zip(rooms, rooms[1:]):       # connect each room to the next
+    carve_l_corridor(grid, a.center, b.center, rng)   # horizontal then vertical
+</code></pre>
+<p>The complete generator (BSP partitioning, L-corridors, reachability check, and
+random-walk caves) is in <code>references/dungeon-generation.md</code>.</p>
+<h4>Pitfalls</h4>
+<ul>
+<li><strong>Using the global RNG</strong> inside generation makes worlds unreproducible and
+breaks the moment call order changes. Always pass a seeded instance.</li>
+<li><strong>Correlated noise fields</strong>: sampling elevation and moisture from the <em>same</em>
+seed/offset produces biomes that line up in bands. Offset or reseed each field.</li>
+<li><strong>Octave artifacts</strong>: adding octaves without renormalizing pushes values out of
+<code>0..1</code>; divide by the summed amplitude (and beware library output ranges — some
+return <code>-1..1</code>, some <code>0..1</code>).</li>
+<li><strong>No connectivity check</strong>: rooms or caves can end up isolated. Flood-fill from
+the spawn and discard/reconnect unreachable regions before play.</li>
+<li><strong>Unbounded placement loops</strong>: &quot;keep trying until N rooms fit&quot; can spin forever
+on a small grid. Cap attempts and accept fewer rooms.</li>
+<li><strong>Seeding once globally, then relying on frame timing</strong>: any non-deterministic
+input (time, physics, hash randomization) leaking into generation destroys
+reproducibility. A common hidden one: <code>rng.choice(list(some_set))</code> over
+strings in Python, whose set order changes per process. Sort first.</li>
+<li><strong>Seeds that stop matching after an update.</strong> Library RNGs promise the same
+sequence only on the same version: Python guarantees only <code>random()</code> across
+versions (not <code>randint</code>/<code>choice</code>), .NET says <code>System.Random</code> may change
+between major versions, and Godot calls its PCG32 an implementation detail.
+If shared seeds, daily challenges or seed-only saves must survive updates,
+ship your own small PRNG (PCG32, xorshift, SplitMix64) with a test that pins
+its first outputs — or save the generated result instead of the seed.</li>
+<li><strong>Flat noise at integer coordinates</strong>: Perlin noise is 0 at every integer
+lattice point, so sampling raw <code>noise(x, y)</code> (e.g. <code>Mathf.PerlinNoise</code>) at
+whole tile coordinates returns the same value everywhere. Scale by a
+non-integer frequency (<code>x / width * f</code>); libraries with a frequency setting,
+such as FastNoiseLite, apply it for you.</li>
+</ul>
+<h4>References</h4>
+<ul>
+<li><code>references/noise.md</code> — octaves/lacunarity/gain, redistribution, island
+shaping, two-axis biome lookup, blue-noise object scatter.</li>
+<li><code>references/dungeon-generation.md</code> — BSP, rooms+corridors, random-walk caves,
+cellular-automata smoothing, wave function collapse, connectivity validation,
+distribution/pity tables.</li>
+</ul>
+<h4>Related skills</h4>
+<ul>
+<li><code>godot-tilemap</code>, <code>unity-tilemap-2d</code> — paint the generated grid into the engine.</li>
+<li><code>game-ai</code> — pathfinding over the generated graph.</li>
+<li><code>level-design</code> — pacing and hand-authored structure that procgen complements.</li>
+<li><code>roguelike</code>, <code>survival-crafting</code> — genres that compose this skill.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

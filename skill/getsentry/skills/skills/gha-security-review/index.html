@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>gha-security-review · SkillHub</title>
+    <meta name="description" content="Use it when: you want a repo&#039;s .github/workflows, its composite actions and the scripts they load checked for exploitable flaws. It does: classifies each workflow&#039;s triggers, loads the matching attack references, runs eight checks from pwn requests and expression injection to supply chain and runners, and traces each attack. You get: findings rated Critical to Medium, each with entry point, payload, how it runs, impact, a proof-of-concept sketch and a fix, plus Needs verification and Reviewed and cleared lists. Threat model: only attackers without write access, who can open fork PRs, issues and comments; workflow_dispatch inputs and protected-branch pushes are out of scope. Won&#039;t flag: safe patterns such as expressions in if: or with:, SHA-pinned actions, or first-party actions on version tags. Unlike security-review: Sentry&#039;s general security review, which hands GitHub Actions workflows to this skill when it&#039;s installed." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=getsentry%2Fskills">getsentry/skills</a></p>
+      <h1>gha-security-review</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want a repo&#39;s .github/workflows, its composite actions and the scripts they load checked for exploitable flaws</dd></div><div><dt>It does</dt><dd>classifies each workflow&#39;s triggers, loads the matching attack references, runs eight checks from pwn requests and expression injection to supply chain and runners, and traces each attack</dd></div><div><dt>You get</dt><dd>findings rated Critical to Medium, each with entry point, payload, how it runs, impact, a proof-of-concept sketch and a fix, plus Needs verification and Reviewed and cleared lists</dd></div><div><dt>Threat model</dt><dd>only attackers without write access, who can open fork PRs, issues and comments; workflow_dispatch inputs and protected-branch pushes are out of scope</dd></div><div><dt>Won&#39;t flag</dt><dd>safe patterns such as expressions in if: or with:, SHA-pinned actions, or first-party actions on version tags</dd></div><div><dt>Unlike security-review</dt><dd>Sentry&#39;s general security review, which hands GitHub Actions workflows to this skill when it&#39;s installed</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Sentry&#39;s review of CI workflows, built from attack patterns in real GitHub Actions exploits, including StepSecurity&#39;s analysis of the HackerBot Claw campaign. It looks for pull_request_target workflows that check out fork code, ${{ }} expressions expanded inside run: blocks, comment-triggered commands with no author check, long-lived tokens reachable by untrusted code, workflows that load CLAUDE.md, AGENTS.md or a Makefile from a PR, unpinned third-party actions in jobs with secrets or write access, over-broad permissions, and self-hosted runners, caches and artifacts. A finding needs a concrete exploitation scenario: with all five elements it is reported, with a broken link it goes under Needs verification, and theoretical issues are dropped. Before reporting, the agent reads each full workflow, traces the trigger and its if: conditions, confirms an outside attacker controls the value, and checks for mitigations. When nothing qualifies, it says no exploitable vulnerabilities were identified.</p>
+      <p class="muted">Summarizes <a href="https://github.com/getsentry/skills/tree/e94f22214528d69899d09c627b3315ddc3544816/skills/gha-security-review">the skill at e94f222</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/getsentry/skills --skill gha-security-review</code><button type="button" class="copy" data-copy="npx skills add https://github.com/getsentry/skills --skill gha-security-review">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/getsentry/skills/gha-security-review">skills.sh page</a> · <a href="https://github.com/getsentry/skills/tree/HEAD/skills/gha-security-review">Source on GitHub</a> · <a href="/skillhub/?repo=getsentry%2Fskills">All skills from getsentry/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,000 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>1,129 <span class="muted">getsentry/skills</span></dd></div><div><dt>First seen</dt><dd>Mar 3, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">111</div>
+      <div class="stat-delta">+109% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 53; week to Sep 26: 52; week to Oct 3: 38; week to Oct 10: 383; week to Oct 17: 72; week to Oct 24: 77; week to Oct 31: 79; week to Nov 7: 111. Use the left and right arrow keys to read each week."
+        data-values="53,52,38,383,72,77,79,111" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,43.9 38.6,44.0 71.1,45.6 103.7,6.0 136.3,41.7 168.9,41.2 201.4,40.9 234.0,37.2" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="37.2" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>53</td></tr><tr><td>Sep 26</td><td>52</td></tr><tr><td>Oct 3</td><td>38</td></tr><tr><td>Oct 10</td><td>383</td></tr><tr><td>Oct 17</td><td>72</td></tr><tr><td>Oct 24</td><td>77</td></tr><tr><td>Oct 31</td><td>79</td></tr><tr><td>Nov 7</td><td>111</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/skillhub/?tag=category%3Asecurity">category:security</a><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a><a class="tag" data-tag="ci" data-facet="topic" href="/skillhub/?tag=ci">ci</a><a class="tag" data-tag="code-review" data-facet="topic" href="/skillhub/?tag=code-review">code-review</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:github" data-facet="stack" href="/skillhub/?tag=stack%3Agithub">stack:github</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/getsentry/skills/blob/e94f22214528d69899d09c627b3315ddc3544816/skills/gha-security-review/SKILL.md">getsentry/skills at e94f222</a>. Checked daily, last changed Nov 7, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: gha-security-review
+description: &#39;GitHub Actions security review for workflow exploitation vulnerabilities. Use when asked to &#34;review GitHub Actions&#34;, &#34;audit workflows&#34;, &#34;check CI security&#34;, &#34;GHA security&#34;, &#34;workflow security review&#34;, or review .github/workflows/ for pwn requests, expression injection, credential theft, and supply chain attacks. Exploitation-focused with concrete PoC scenarios.&#39;
+allowed-tools: Read Grep Glob Bash Task</code></pre></details>
+        <div class="markdown"><p>&lt;!--
+Attack patterns and real-world examples sourced from the HackerBot Claw campaign analysis
+by StepSecurity (2025): <a href="https://www.stepsecurity.io/blog/hackerbot-claw-github-actions-exploitation">https://www.stepsecurity.io/blog/hackerbot-claw-github-actions-exploitation</a>
+--&gt;</p>
+<h3>GitHub Actions Security Review</h3>
+<p>Find exploitable vulnerabilities in GitHub Actions workflows. Every finding MUST include a concrete exploitation scenario — if you can't build the attack, don't report it.</p>
+<p>This skill encodes attack patterns from real GitHub Actions exploits — not generic CI/CD theory.</p>
+<h4>Scope</h4>
+<p>Review the workflows provided (file, diff, or repo). Research the codebase as needed to trace complete attack paths before reporting.</p>
+<h5>Files to Review</h5>
+<ul>
+<li><code>.github/workflows/*.yml</code> — all workflow definitions</li>
+<li><code>action.yml</code> / <code>action.yaml</code> — composite actions in the repo</li>
+<li><code>.github/actions/*/action.yml</code> — local reusable actions</li>
+<li>Config files loaded by workflows: <code>CLAUDE.md</code>, <code>AGENTS.md</code>, <code>Makefile</code>, shell scripts under <code>.github/</code></li>
+</ul>
+<h5>Out of Scope</h5>
+<ul>
+<li>Workflows in other repositories (only note the dependency)</li>
+<li>GitHub App installation permissions (note if relevant)</li>
+</ul>
+<h4>Threat Model</h4>
+<p>Only report vulnerabilities exploitable by an <strong>external attacker</strong> — someone <strong>without</strong> write access to the repository. The attacker can open PRs from forks, create issues, and post comments. They cannot push to branches, trigger <code>workflow_dispatch</code>, or trigger manual workflows.</p>
+<p><strong>Do not flag</strong> vulnerabilities that require write access to exploit:</p>
+<ul>
+<li><code>workflow_dispatch</code> input injection — requires write access to trigger</li>
+<li>Expression injection in <code>push</code>-only workflows on protected branches</li>
+<li><code>workflow_call</code> input injection where all callers are internal</li>
+<li>Secrets in <code>workflow_dispatch</code>/<code>schedule</code>-only workflows</li>
+</ul>
+<h4>Confidence</h4>
+<p>Report only <strong>HIGH</strong> and <strong>MEDIUM</strong> confidence findings. Do not report theoretical issues.</p>
+<table>
+<thead>
+<tr>
+<th>Confidence</th>
+<th>Criteria</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>HIGH</strong></td>
+<td>Traced the full attack path, confirmed exploitable</td>
+<td>Report with exploitation scenario and fix</td>
+</tr>
+<tr>
+<td><strong>MEDIUM</strong></td>
+<td>Attack path partially confirmed, uncertain link</td>
+<td>Report as needs verification</td>
+</tr>
+<tr>
+<td><strong>LOW</strong></td>
+<td>Theoretical or mitigated elsewhere</td>
+<td>Do not report</td>
+</tr>
+</tbody>
+</table>
+<p>For each HIGH finding, provide all five elements:</p>
+<ol>
+<li><strong>Entry point</strong> — How does the attacker get in? (fork PR, issue comment, branch name, etc.)</li>
+<li><strong>Payload</strong> — What does the attacker send? (actual code/YAML/input)</li>
+<li><strong>Execution mechanism</strong> — How does the payload run? (expression expansion, checkout + script, etc.)</li>
+<li><strong>Impact</strong> — What does the attacker gain? (token theft, code execution, repo write access)</li>
+<li><strong>PoC sketch</strong> — Concrete steps an attacker would follow</li>
+</ol>
+<p>If you cannot construct all five, report as MEDIUM (needs verification).</p>
+<hr>
+<h4>Step 1: Classify Triggers and Load References</h4>
+<p>For each workflow, identify triggers and load the appropriate reference:</p>
+<table>
+<thead>
+<tr>
+<th>Trigger / Pattern</th>
+<th>Load Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pull_request_target</code></td>
+<td><code>references/pwn-request.md</code></td>
+</tr>
+<tr>
+<td><code>issue_comment</code> with command parsing</td>
+<td><code>references/comment-triggered-commands.md</code></td>
+</tr>
+<tr>
+<td><code>${{ }}</code> in <code>run:</code> blocks</td>
+<td><code>references/expression-injection.md</code></td>
+</tr>
+<tr>
+<td>PATs / deploy keys / elevated credentials</td>
+<td><code>references/credential-escalation.md</code></td>
+</tr>
+<tr>
+<td>Checkout PR code + config file loading</td>
+<td><code>references/ai-prompt-injection-via-ci.md</code></td>
+</tr>
+<tr>
+<td>Third-party actions (especially unpinned)</td>
+<td><code>references/supply-chain.md</code></td>
+</tr>
+<tr>
+<td><code>permissions:</code> block or secrets usage</td>
+<td><code>references/permissions-and-secrets.md</code></td>
+</tr>
+<tr>
+<td>Self-hosted runners, cache/artifact usage</td>
+<td><code>references/runner-infrastructure.md</code></td>
+</tr>
+<tr>
+<td>Any confirmed finding</td>
+<td><code>references/real-world-attacks.md</code></td>
+</tr>
+</tbody>
+</table>
+<p>Load references selectively — only what's relevant to the triggers found.</p>
+<h4>Step 2: Check for Vulnerability Classes</h4>
+<h5>Check 1: Pwn Request</h5>
+<p>Does the workflow use <code>pull_request_target</code> AND check out fork code?</p>
+<ul>
+<li>Look for <code>actions/checkout</code> with <code>ref:</code> pointing to PR head</li>
+<li>Look for local actions (<code>./.github/actions/</code>) that would come from the fork</li>
+<li>Check if any <code>run:</code> step executes code from the checked-out PR</li>
+</ul>
+<h5>Check 2: Expression Injection</h5>
+<p>Are <code>${{ }}</code> expressions used inside <code>run:</code> blocks in externally-triggerable workflows?</p>
+<ul>
+<li>Map every <code>${{ }}</code> expression in every <code>run:</code> step</li>
+<li>Confirm the value is attacker-controlled (PR title, branch name, comment body — not numeric IDs, SHAs, or repository names)</li>
+<li>Confirm the expression is in a <code>run:</code> block, not <code>if:</code>, <code>with:</code>, or job-level <code>env:</code></li>
+</ul>
+<h5>Check 3: Unauthorized Command Execution</h5>
+<p>Does an <code>issue_comment</code>-triggered workflow execute commands without authorization?</p>
+<ul>
+<li>Is there an <code>author_association</code> check?</li>
+<li>Can any GitHub user trigger the command?</li>
+<li>Does the command handler also use injectable expressions?</li>
+</ul>
+<h5>Check 4: Credential Escalation</h5>
+<p>Are elevated credentials (PATs, deploy keys) accessible to untrusted code?</p>
+<ul>
+<li>What's the blast radius of each secret?</li>
+<li>Could a compromised workflow steal long-lived tokens?</li>
+</ul>
+<h5>Check 5: Config File Poisoning</h5>
+<p>Does the workflow load configuration from PR-supplied files?</p>
+<ul>
+<li>AI agent instructions: <code>CLAUDE.md</code>, <code>AGENTS.md</code>, <code>.cursorrules</code></li>
+<li>Build configuration: <code>Makefile</code>, shell scripts</li>
+</ul>
+<h5>Check 6: Supply Chain</h5>
+<p>Are <strong>third-party</strong> actions securely pinned to full SHAs?</p>
+<ul>
+<li>Pin third-party / external actions and reusable workflows only</li>
+<li>Do <strong>not</strong> flag first-party <code>actions/*</code> or <code>github/*</code> on version tags</li>
+<li>Do <strong>not</strong> flag same-repo / vendored (<code>./.github/actions/...</code>) as supply-chain pinning issues</li>
+<li>Only report when the job has secrets, OIDC, write token, release, deploy, package, or signing power — unprivileged read-only CI is not a finding</li>
+</ul>
+<h5>Check 7: Permissions and Secrets</h5>
+<p>Are workflow permissions minimal? Are secrets properly scoped?</p>
+<h5>Check 8: Runner Infrastructure</h5>
+<p>Are self-hosted runners, caches, or artifacts used securely?</p>
+<h4>Safe Patterns (Do Not Flag)</h4>
+<p>Before reporting, check if the pattern is actually safe:</p>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Why Safe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pull_request_target</code> WITHOUT checkout of fork code</td>
+<td>Never executes attacker code</td>
+</tr>
+<tr>
+<td><code>${{ github.event.pull_request.number }}</code> in <code>run:</code></td>
+<td>Numeric only — not injectable</td>
+</tr>
+<tr>
+<td><code>${{ github.repository }}</code> / <code>github.repository_owner</code></td>
+<td>Repo owner controls this</td>
+</tr>
+<tr>
+<td><code>${{ secrets.* }}</code></td>
+<td>Not an expression injection vector</td>
+</tr>
+<tr>
+<td><code>${{ }}</code> in <code>if:</code> conditions</td>
+<td>Evaluated by Actions runtime, not shell</td>
+</tr>
+<tr>
+<td><code>${{ }}</code> in <code>with:</code> inputs</td>
+<td>Passed as string parameters, not shell-evaluated</td>
+</tr>
+<tr>
+<td>Third-party actions pinned to full SHA</td>
+<td>Immutable reference</td>
+</tr>
+<tr>
+<td>First-party <code>actions/*</code> / <code>github/*</code> on version tags</td>
+<td>Outside third-party pinning policy — do not flag</td>
+</tr>
+<tr>
+<td>Same-repo / vendored local actions</td>
+<td>Not third-party supply chain (review pwn-request separately)</td>
+</tr>
+<tr>
+<td><code>pull_request</code> trigger (not <code>_target</code>)</td>
+<td>Runs in fork context with read-only token</td>
+</tr>
+<tr>
+<td>Any expression in <code>workflow_dispatch</code>/<code>schedule</code>/<code>push</code> to protected branches</td>
+<td>Requires write access — outside threat model</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key distinction:</strong> <code>${{ }}</code> is dangerous in <code>run:</code> blocks (shell expansion) but safe in <code>if:</code>, <code>with:</code>, and <code>env:</code> at the job/step level (Actions runtime evaluation).</p>
+<h4>Step 3: Validate Before Reporting</h4>
+<p>Before including any finding, read the actual workflow YAML and trace the complete attack path:</p>
+<ol>
+<li><strong>Read the full workflow</strong> — don't rely on grep output alone</li>
+<li><strong>Trace the trigger</strong> — confirm the event and check <code>if:</code> conditions that gate execution</li>
+<li><strong>Trace the expression/checkout</strong> — confirm it's in a <code>run:</code> block or actually references fork code</li>
+<li><strong>Confirm attacker control</strong> — verify the value maps to something an external attacker sets</li>
+<li><strong>Check existing mitigations</strong> — env var wrapping, author_association checks, restricted permissions, SHA pinning</li>
+</ol>
+<p>If any link is broken, mark MEDIUM (needs verification) or drop the finding.</p>
+<p><strong>If no checks produced a finding, report zero findings. Do not invent issues.</strong></p>
+<h4>Step 4: Report Findings</h4>
+<pre><code class="language-markdown">## GitHub Actions Security Review
+
+### Findings
+
+#### [GHA-001] [Title] (Severity: Critical/High/Medium)
+- **Workflow**: `.github/workflows/release.yml:15`
+- **Trigger**: `pull_request_target`
+- **Confidence**: HIGH — confirmed through attack path tracing
+- **Exploitation Scenario**:
+  1. [Step-by-step attack]
+- **Impact**: [What attacker gains]
+- **Fix**: [Code that fixes the issue]
+
+### Needs Verification
+[MEDIUM confidence items with explanation of what to verify]
+
+### Reviewed and Cleared
+[Workflows reviewed and confirmed safe]
+</code></pre>
+<p>If no findings: &quot;No exploitable vulnerabilities identified. All workflows reviewed and cleared.&quot;</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>firecrawl-search · SkillHub</title>
+    <meta name="description" content="Use it when: the agent needs web sources for a question, recent news, US legal or regulatory sources, or structured records such as listings, transcripts or datasets. It does: runs firecrawl search, which returns web results with relevant excerpts plus matching tools from Alexandria, Firecrawl&#039;s catalog of data providers and site workflows. You get: results saved as JSON under .firecrawl/, optionally with each page&#039;s full content, and answers with source links. Needs: the Firecrawl CLI; without an API key, searches return web results only. Sends: feedback to Firecrawl after each search, which refunds one of its two credits, unless FIRECRAWL_NO_SEARCH_FEEDBACK=1 is set. Unlike the firecrawl skill: that is the overview of every command; this is the detailed guide to search, tool discovery and feedback." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=firecrawl%2Fcli">firecrawl/cli</a> <span aria-hidden="true">/</span> <a href="/skillhub/bundle/firecrawl/cli@core/">Firecrawl CLI</a></p>
+      <h1>firecrawl-search</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>the agent needs web sources for a question, recent news, US legal or regulatory sources, or structured records such as listings, transcripts or datasets</dd></div><div><dt>It does</dt><dd>runs firecrawl search, which returns web results with relevant excerpts plus matching tools from Alexandria, Firecrawl&#39;s catalog of data providers and site workflows</dd></div><div><dt>You get</dt><dd>results saved as JSON under .firecrawl/, optionally with each page&#39;s full content, and answers with source links</dd></div><div><dt>Needs</dt><dd>the Firecrawl CLI; without an API key, searches return web results only</dd></div><div><dt>Sends</dt><dd>feedback to Firecrawl after each search, which refunds one of its two credits, unless FIRECRAWL_NO_SEARCH_FEEDBACK=1 is set</dd></div><div><dt>Unlike the firecrawl skill</dt><dd>that is the overview of every command; this is the detailed guide to search, tool discovery and feedback</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 2 of 10 in the <a href="/skillhub/bundle/firecrawl/cli@core/">Firecrawl CLI</a> bundle · Before it: <a href="/skillhub/skill/firecrawl/cli/skills/firecrawl/">firecrawl</a> · After it: <a href="/skillhub/skill/firecrawl/cli/skills/firecrawl-scrape/">firecrawl-scrape</a></p>
+    
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>The detailed companion to the main firecrawl skill for its search command. Results come with excerpts relevant to the query; --scrape adds each result&#39;s full page, which the agent reuses instead of scraping again. Other options cover news, time ranges, an index of GitHub issues, merged pull requests, READMEs and docs, and US federal, state and local legal sources through firecrawl gov, which filters by jurisdiction, court or cited statute. Before citing current law it checks the source&#39;s issuer, jurisdiction, status and version. With an API key, each search also matches Alexandria tools, by meaning and by the domains in the results; the agent reads a tool&#39;s contract, its inputs and coverage, before running it through scrape, and falls back to web results when none fits. After using the results it sends rated feedback in the background within about two minutes, listing every result it used and the content it expected but didn&#39;t find.</p>
+      <p class="muted">Summarizes <a href="https://github.com/firecrawl/cli/tree/da25d5cd06db21cb33b100661cea0d9b89d457a3/skills/firecrawl-search">the skill at da25d5c</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/firecrawl/cli --skill firecrawl-search</code><button type="button" class="copy" data-copy="npx skills add https://github.com/firecrawl/cli --skill firecrawl-search">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/firecrawl/cli/firecrawl-search">skills.sh page</a> · <a href="https://github.com/firecrawl/cli/tree/HEAD/skills/firecrawl-search">Source on GitHub</a> · <a href="/skillhub/?repo=firecrawl%2Fcli">All skills from firecrawl/cli</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>85,068 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>678 <span class="muted">firecrawl/cli</span></dd></div><div><dt>First seen</dt><dd>Mar 10, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">414</div>
+      <div class="stat-delta">+29% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 321; week to Sep 26: 464; week to Oct 3: 618; week to Oct 10: 513; week to Oct 17: 546; week to Oct 24: 501; week to Oct 31: 573; week to Nov 7: 414. Use the left and right arrow keys to read each week."
+        data-values="321,464,618,513,546,501,573,414" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,27.1 38.6,17.0 71.1,6.0 103.7,13.5 136.3,11.1 168.9,14.3 201.4,9.2 234.0,20.5" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="20.5" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>321</td></tr><tr><td>Sep 26</td><td>464</td></tr><tr><td>Oct 3</td><td>618</td></tr><tr><td>Oct 10</td><td>513</td></tr><tr><td>Oct 17</td><td>546</td></tr><tr><td>Oct 24</td><td>501</td></tr><tr><td>Oct 31</td><td>573</td></tr><tr><td>Nov 7</td><td>414</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:browser" data-facet="category" title="Drive browsers, scrape pages and search the web." href="/skillhub/?tag=category%3Abrowser">category:browser</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Drive browsers, scrape pages and search the web.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/skillhub/?tag=type%3Atool">type:tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:remote" data-facet="effect" title="Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service." href="/skillhub/?tag=effect%3Aremote">effect:remote</a></div>
+          <p class="tag-meaning">Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/skillhub/?tag=needs%3Aaccount">needs:account</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="web-search" data-facet="topic" href="/skillhub/?tag=web-search">web-search</a><a class="tag" data-tag="research" data-facet="topic" href="/skillhub/?tag=research">research</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:firecrawl" data-facet="stack" href="/skillhub/?tag=stack%3Afirecrawl">stack:firecrawl</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Flags</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="flag:mirror" data-facet="flag" title="The same publisher ships the skill under two sources, which splits its counts." href="/skillhub/?tag=flag%3Amirror">flag:mirror</a></div>
+          <p class="tag-meaning">The same publisher ships the skill under two sources, which splits its counts.</p>
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/firecrawl/cli/blob/da25d5cd06db21cb33b100661cea0d9b89d457a3/skills/firecrawl-search/SKILL.md">firecrawl/cli at da25d5c</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: firecrawl-search
+description: Find web sources with query-relevant page excerpts and optional full-page content, and discover workflows, data APIs, and indexes. Use for web research or finding structured records, listings, transcripts, and datasets. Supports semantic tool discovery, domain matching, and progressive catalogue browsing.
+allowed-tools:
+  - Bash(firecrawl *)
+  - Bash(npx firecrawl-cli *)</code></pre></details>
+        <div class="markdown"><h3>firecrawl search</h3>
+<p>Search naturally using the user’s actual question. Default search returns web results plus relevant Alexandria tools, with optional web content scraping.</p>
+<p>For structured records, filterable listings, transcripts, or datasets, first check <code>firecrawl search alexandria '&lt;data you need&gt;'</code> for a suitable workflow or data provider. For a known website, use <code>firecrawl find-tools &lt;url&gt;</code>. Inspect a selected contract with <code>firecrawl list &lt;provider&gt; &lt;capability&gt; --pretty</code> before executing it through <code>scrape</code>; reuse a complete contract already returned by discovery. If no suitable tool exists, continue with web search or Agent. Use ordinary <code>search</code> for web research and URL <code>scrape</code> for a known page.</p>
+<h4>Quick start</h4>
+<pre><code class="language-bash"># Basic search
+firecrawl search &quot;your query&quot; -o .firecrawl/result.json --json
+
+# Search and scrape full page content from results
+firecrawl search &quot;your query&quot; --scrape -o .firecrawl/scraped.json --json
+
+# News from the past day
+firecrawl search &quot;your query&quot; --sources news --tbs qdr:d -o .firecrawl/news.json --json
+</code></pre>
+<p>Use <code>firecrawl search --help</code> for search options, <code>firecrawl list --help</code> for contract browsing, and <code>firecrawl scrape --help</code> for execution options.</p>
+<p><code>--categories developer</code> searches an index of public repositories, GitHub issues, merged pull requests, repository READMEs, and curated documentation sites. <code>--categories gov</code> searches US federal, state, and local government legal and regulatory sources and cannot be combined with other categories. <code>--categories research</code> is a website filter, not the paper index. Dedicated skills: <a href="https://github.com/firecrawl/cli/blob/da25d5cd06db21cb33b100661cea0d9b89d457a3/skills/firecrawl-developer-index/SKILL.md">firecrawl-developer-index</a> and <a href="https://github.com/firecrawl/cli/blob/da25d5cd06db21cb33b100661cea0d9b89d457a3/skills/firecrawl-research-index/SKILL.md">firecrawl-research-index</a>.</p>
+<h4>Government Index</h4>
+<p>For US legal or regulatory source discovery, use <code>firecrawl gov &quot;&lt;question, jurisdiction, and date&gt;&quot; --limit 10</code>. Use <code>--limit</code> for result count; <code>-k</code> is the API-key option. <code>search --categories gov</code> also uses <code>--limit</code> and returns results in <code>data.web</code>; run other categories separately rather than combining them with <code>gov</code>.</p>
+<p><code>firecrawl gov</code> also takes filters; <code>search --categories gov</code> does not. Narrow with <code>--jurisdiction us-ca</code>, <code>--court ca9</code>, <code>--court-type state-supreme</code>, <code>--cites &quot;42 U.S.C. § 1983&quot;</code>, or <code>--domain irs.gov</code>; see <code>firecrawl gov --help</code> for values. Filters keep only pages the index has labeled, so a filtered search can leave out relevant pages, and no results does not mean none exist. Court labels are most complete for federal courts and case-law collections.</p>
+<p>Read a supplied source URL directly with <code>scrape</code>. Before citing current governing law, verify the source's issuer, jurisdiction, enacted/effective status, and version. Bill text, agency guidance, historical versions, and third-party reproductions need that verification too. Ask for a missing jurisdiction before selecting a rule; use general search for non-US questions or missing coverage. No hits does not prove that no applicable law exists.</p>
+<p><strong>Done when:</strong> relevant results have been inspected, per-call errors and empty results have been checked, the request has been answered with source links, and feedback is sent within the time window unless opted out.</p>
+<h4>Go beyond page content with Alexandria</h4>
+<p>Alexandria is a catalogue of ready-made website workflows, API providers, and specialized indexes. Depending on the tool, it can return structured records, detailed listings, financial data, company information, research, or public records that a search snippet or single scraped page does not contain. Discover current coverage rather than assuming a provider or capability exists.</p>
+<ul>
+<li><strong>Semantic discovery</strong> matches the meaning of the user's question to tool capabilities, even when no relevant provider website appears in the web results. Use <code>firecrawl search alexandria '&lt;data you need&gt;'</code> when you specifically need tools.</li>
+<li><strong>Domain matching</strong> surfaces tools associated with websites in the web results. A matched tool may retrieve richer details, related records, or structured collections beyond the linked page. Domain matching signals relevance, not proof that the tool covers the requested fields or market.</li>
+<li><strong>Combined search</strong> uses both paths alongside web results by default: <code>firecrawl search '&lt;user question&gt;'</code>. Use the web result when sufficient; inspect a matching tool when it offers a more direct route to the required data.</li>
+</ul>
+<h5>Inspect before execution</h5>
+<p>With an API key, search always includes Alexandria: it defaults to <code>web,alexandria</code> with domain-tool matching on, and <code>--sources</code> without <code>alexandria</code> (for example <code>--sources news</code>) gets it added. Preserve the user's location, marketplace, and constraints in the query; do not turn normal research into an artificial tool-discovery query. Inspect <code>data.web</code> and <code>data.tools</code> from the same response.</p>
+<p>Search returns compact tool matches by default: only <code>provider</code>, <code>capability</code>, and <code>description</code>. A match is not executed data. Select a candidate, then run <code>firecrawl list &lt;provider&gt; &lt;capability&gt; --pretty</code> with its provider and capability IDs to read the contract's inputs, coverage, and access requirements.</p>
+<p>Use <code>--tool-detail summary --json</code> for discovery metadata and navigation; inspect the selected contract with <code>list</code> before execution. Use <code>--tool-detail full --json</code> to receive contracts directly in search results and reuse them without another inspection call. Prefer full when several related contracts will be needed immediately. Displayed pricing is informational, not an extra confirmation gate.</p>
+<p>After inspecting the contract, execute with <code>firecrawl scrape &lt;provider/capability&gt; --options '&lt;input JSON&gt;'</code> (<code>--alexandria</code> remains supported). All provider execution goes through Scrape; <code>search --scrape</code> only fetches web result content, not provider tools.</p>
+<p>Use <code>list</code> for category/provider browsing and selected contracts. For a known website, <code>find-tools &lt;url&gt;</code> discovers associated tools without executing them. Run <code>firecrawl find-tools --help</code> for advanced catalogue selectors; avoid broad expansion unless the task needs it.</p>
+<p>If no returned tool covers the country/market/segment or required inputs, continue with ordinary web results. Do not exhaust the catalogue or pay for adjacent tools just to probe coverage. With an API key, <code>--no-domain-tools</code> turns off domain matches only and semantic tool matches stay on; keyless searches return web results only.</p>
+<p>For Alexandria feedback about a provider result or coverage gap (each refunds 1 credit, up to 10 per website and 100 per team each UTC day), see <a href="https://github.com/firecrawl/cli/blob/da25d5cd06db21cb33b100661cea0d9b89d457a3/skills/firecrawl-alexandria/SKILL.md">firecrawl-alexandria</a>.</p>
+<h4>Progressive discovery and output handling</h4>
+<pre><code class="language-bash"># Web + domain matching + semantic tools
+firecrawl search '&lt;user question&gt;'
+
+# Semantic tools only
+firecrawl search alexandria '&lt;user question&gt;'
+
+# Categories → providers → tools → contract
+firecrawl list
+firecrawl list &lt;category-id&gt; --category
+firecrawl list &lt;provider-id&gt;
+firecrawl list &lt;provider-id&gt; &lt;capability-id&gt; --pretty
+
+# Execute a tool
+firecrawl scrape &lt;provider-id&gt;/&lt;capability-id&gt; --options '&lt;JSON matching the selected contract&gt;'
+</code></pre>
+<p>Default search combines web results, domain matches and semantic tools; <code>search alexandria</code> returns semantic tool matches only. Read the selected contract instead of expanding the entire catalogue. Tool discovery is not execution.</p>
+<p>Keep large search responses in <code>--json -o</code> output and select the relevant results. If a subsequent provider execution or URL scrape exceeds the agent's output limit, use its retained ID with the <a href="https://github.com/firecrawl/cli/blob/da25d5cd06db21cb33b100661cea0d9b89d457a3/skills/firecrawl-scrape/references/large-results.md">remote Bash recovery instructions</a>. Search request IDs are not supported Bash inputs. Do not blindly rerun a successful provider because the client could not display its result.</p>
+<h4>Tips</h4>
+<ul>
+<li><strong><code>--highlights</code> on by default:</strong> results are query-relevant excerpts from the page. Use <code>--no-highlights</code> for the original snippets.</li>
+<li><strong><code>--scrape</code> fetches full content</strong> — reuse that content instead of re-scraping result URLs. This saves credits and avoids redundant fetches.</li>
+<li>For large results, use <code>-o</code> and bounded local reads when a filesystem is available. Do not dump the full response into context.</li>
+<li>Use <code>jq</code> to extract URLs <strong>with their source and 1-indexed position</strong> (you'll need both for feedback): <code>jq -r '.data | to_entries[] | select(.key as $k | [&quot;web&quot;,&quot;images&quot;,&quot;news&quot;] | index($k)) | .key as $s | .value | to_entries[] | &quot;\($s):\(.key + 1)\t\(.value.url // &quot;-&quot;)&quot;' .firecrawl/search.json</code>
+Only those three groups are addressable by <code>--valuable-results</code>; <code>data.tools</code> and any other key are skipped, and an image or news result with no <code>url</code> prints <code>-</code> — address it by its position anyway.</li>
+<li>Naming convention: <code>.firecrawl/search-{query}.json</code> or <code>.firecrawl/search-{query}-scraped.json</code></li>
+</ul>
+<h4>Send feedback after every search (refunds 1 credit)</h4>
+<p>Search costs 2 credits. After you've actually used the results (or decided they were useless), send structured feedback with <code>firecrawl search-feedback &lt;id&gt;</code>. The first feedback per search refunds 1 credit and helps us improve search quality. <strong>Do this once per search</strong>, in the background, after you finish processing the results — it does not block your main task.</p>
+<p><strong>Opt out:</strong> if <code>FIRECRAWL_NO_SEARCH_FEEDBACK=1</code> (or <code>FIRECRAWL_DISABLE_SEARCH_FEEDBACK=1</code>) is set, the CLI silently skips the call and never sends anything. Respect that — do not try to work around it. (Team admins can also disable this server-side; the API will return <code>feedbackErrorCode: &quot;TEAM_OPTED_OUT&quot;</code> and the CLI will exit 0 silently.)</p>
+<p><strong>Rules to know before you call this:</strong></p>
+<ul>
+<li><strong>Time window:</strong> must be sent within ~2 minutes of the search. Late feedback is rejected.</li>
+<li><strong><code>--missing-content</code> is the most important field.</strong> It's a list of <em>specific pieces</em> of content you expected but did not find. One topic per entry, each in its own string. These aggregate across teams and tell us what to index next.</li>
+<li><strong><code>--valuable-results</code> marks which results were useful.</strong> Results come back grouped (<code>data.web</code>, <code>data.images</code>, <code>data.news</code>) and <strong>each group is numbered from 1 independently</strong>, so every entry is <code>source:position</code> — <code>web:1</code> and <code>news:1</code> are two different results. <strong>Be exhaustive</strong> — list every result that was actually useful; unlisted results are treated as not useful, so a partial list corrupts the signal. Reserve <code>--valuable-sources</code> for useful URLs that were NOT among the returned results (e.g. a page you found by following a result's link) — never report the same result in both.</li>
+<li><strong>Substantive content required</strong> (zero-effort feedback is rejected with HTTP 400):
+<ul>
+<li><code>good</code> → must include <code>--valuable-results</code> or at least one <code>--valuable-sources</code> entry.</li>
+<li><code>partial</code> → must include <code>--valuable-results</code>, <code>--valuable-sources</code>, or <code>--missing-content</code>.</li>
+<li><code>bad</code> → must include <code>--missing-content</code> or <code>--query-suggestions</code>.</li>
+</ul>
+</li>
+<li><strong>Daily refund cap (per team, per UTC day, default 100 credits).</strong> Once your team has been refunded 100 credits today, further submissions still record feedback but no longer refund credits. The response includes <code>creditsRefundedToday</code> / <code>dailyRefundCap</code> / <code>dailyCapReached</code>. <strong>When <code>dailyCapReached: true</code>, stop calling <code>search-feedback</code> for the rest of the UTC day</strong> — it won't refund anything and you're wasting bandwidth.</li>
+<li><strong>Idempotent:</strong> re-submitting for the same search id returns success but no extra refund.</li>
+<li><strong><code>--silent &amp;</code></strong> is the right pattern — exit code 0 even on failure, so a rejected/expired call never crashes your pipeline.</li>
+</ul>
+<p>Verify the search returned results before reading its <code>id</code>. Zero-result searches write no output file, so the file may be missing — or left over from an earlier search. The guard below skips feedback when the file is missing or has zero results; call <code>search-feedback</code> only inside it:</p>
+<pre><code class="language-bash"># Send once per search. Replace BOTH placeholders: the rating that matches
+# what actually happened, and the exhaustive source:position list of the
+# results that were genuinely useful (from the jq above). Never send the
+# list below as-is -- marking results you did not use corrupts the signal.
+# The two fields shown satisfy the substantive-content rule for every rating.
+if SEARCH_ID=$(jq -er 'select(any(.data[]; length &gt; 0)) | .id' .firecrawl/search-react-hooks.json); then
+  firecrawl search-feedback &quot;$SEARCH_ID&quot; \
+    --rating &quot;&lt;good|partial|bad&gt;&quot; \
+    --valuable-results &quot;&lt;source:position,... - every result you actually used&gt;&quot; \
+    --missing-content '[{&quot;topic&quot;:&quot;useDeferredValue&quot;,&quot;description&quot;:&quot;No example of useDeferredValue with Suspense&quot;}]' \
+    --silent &amp;
+fi
+</code></pre>
+<p><strong><code>--missing-content</code> accepts:</strong></p>
+<ul>
+<li>JSON array of <code>{topic, description?}</code> objects (richest, preferred)</li>
+<li><code>&quot;topic: description&quot;</code> strings (shorthand)</li>
+<li>Plain <code>&quot;topic1, topic2, topic3&quot;</code> (when you only have topic names)</li>
+<li>Repeated <code>--missing-content</code> flags</li>
+</ul>
+<p><code>--silent</code> suppresses output and <code>&amp;</code> runs it in the background so feedback never blocks you.</p>
+<h4>See also</h4>
+<ul>
+<li><a href="https://github.com/firecrawl/cli/blob/da25d5cd06db21cb33b100661cea0d9b89d457a3/skills/firecrawl-scrape/SKILL.md">firecrawl-scrape</a> — scrape a specific URL</li>
+<li><a href="https://github.com/firecrawl/cli/blob/da25d5cd06db21cb33b100661cea0d9b89d457a3/skills/firecrawl-map/SKILL.md">firecrawl-map</a> — discover URLs within a site</li>
+<li><a href="https://github.com/firecrawl/cli/blob/da25d5cd06db21cb33b100661cea0d9b89d457a3/skills/firecrawl-crawl/SKILL.md">firecrawl-crawl</a> — bulk extract from a site</li>
+<li><a href="https://github.com/firecrawl/cli/blob/da25d5cd06db21cb33b100661cea0d9b89d457a3/skills/firecrawl-developer-index/SKILL.md">firecrawl-developer-index</a> — issues, merged PRs, READMEs, and docs</li>
+<li><a href="https://github.com/firecrawl/cli/blob/da25d5cd06db21cb33b100661cea0d9b89d457a3/skills/firecrawl-research-index/SKILL.md">firecrawl-research-index</a> — published papers, not <code>search --categories research</code></li>
+<li><a href="https://github.com/firecrawl/skills/tree/main/skills/build/firecrawl-build-search">firecrawl-build-search</a> — building search into an app instead of running it here</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

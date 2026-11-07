@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>srdf · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re setting up MoveIt for a robot that already has a valid URDF and need its .srdf: planning groups, end effectors, named states and collision rules. It does: lists the URDF&#039;s links and joints first and copies every name from that table, writes the XML by hand, and validates it against the URDF with cad srdf validate. You get: a validated .srdf beside its URDF under the same robot name, a CAD Viewer link, and a report of assumptions and skipped checks. Needs: a valid URDF to pair with, and text-to-cad&#039;s cad command, which it installs with a curl-to-shell script if missing. Not for: the robot&#039;s physical structure (the urdf skill) or simulator descriptions (sdf)." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=earthtojake%2Ftext-to-cad">earthtojake/text-to-cad</a> <span aria-hidden="true">/</span> <a href="/skillhub/bundle/earthtojake/text-to-cad/">text-to-cad</a></p>
+      <h1>srdf</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re setting up MoveIt for a robot that already has a valid URDF and need its .srdf: planning groups, end effectors, named states and collision rules</dd></div><div><dt>It does</dt><dd>lists the URDF&#39;s links and joints first and copies every name from that table, writes the XML by hand, and validates it against the URDF with cad srdf validate</dd></div><div><dt>You get</dt><dd>a validated .srdf beside its URDF under the same robot name, a CAD Viewer link, and a report of assumptions and skipped checks</dd></div><div><dt>Needs</dt><dd>a valid URDF to pair with, and text-to-cad&#39;s cad command, which it installs with a curl-to-shell script if missing</dd></div><div><dt>Not for</dt><dd>the robot&#39;s physical structure (the urdf skill) or simulator descriptions (sdf)</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 9 of 10 in the <a href="/skillhub/bundle/earthtojake/text-to-cad/">text-to-cad</a> bundle · Before it: <a href="/skillhub/skill/earthtojake/text-to-cad/skills/urdf/">urdf</a> · After it: <a href="/skillhub/skill/earthtojake/text-to-cad/skills/sdf/">sdf</a></p>
+    
+      <p class="note">If the cad command is missing it installs text-to-cad with a curl-to-shell script.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>SRDF is the file MoveIt reads on top of a URDF to know how to plan: which joints form an arm, where the tool is, named poses such as home, and which link pairs never need collision checks. The skill&#39;s premise is that the real failure is a plausible SRDF with the wrong group, tool link or collision list, not invalid XML, so nothing is typed from memory. The agent starts from a validated URDF, extracts its table of links and joints, and keeps a planning ledger as a comment in the file. Groups come from the URDF&#39;s topology, preferring chains for serial arms; end effectors are defined once group membership is known; group states use radians and metres within the URDF&#39;s limits; and disabled collisions need evidence such as adjacency or MoveIt Setup Assistant sampling. The .srdf sits in the URDF&#39;s folder under the same robot name, the only link between the two. cad srdf validate cross-checks every name, chain, state and collision pair against that URDF; the agent re-runs it after each fix, runs MoveIt smoke tests when available, and shows the robot in the CAD Viewer, though a visual review can&#39;t prove planning is correct.</p>
+      <p class="muted">Summarizes <a href="https://github.com/earthtojake/text-to-cad/tree/4099cac3ddc56a5e696138c53fd7bee685e8ad9d/skills/srdf">the skill at 4099cac</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/earthtojake/text-to-cad --skill srdf</code><button type="button" class="copy" data-copy="npx skills add https://github.com/earthtojake/text-to-cad --skill srdf">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/earthtojake/text-to-cad/srdf">skills.sh page</a> · <a href="https://github.com/earthtojake/text-to-cad/tree/HEAD/skills/srdf">Source on GitHub</a> · <a href="/skillhub/?repo=earthtojake%2Ftext-to-cad">All skills from earthtojake/text-to-cad</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>11,400 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>25,720 <span class="muted">earthtojake/text-to-cad</span></dd></div><div><dt>First seen</dt><dd>May 13, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">838</div>
+      <div class="stat-delta">+50% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 560; week to Sep 26: 496; week to Oct 3: 299; week to Oct 10: 317; week to Oct 17: 448; week to Oct 24: 576; week to Oct 31: 508; week to Nov 7: 838. Use the left and right arrow keys to read each week."
+        data-values="560,496,299,317,448,576,508,838" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,20.6 38.6,24.0 71.1,34.3 103.7,33.4 136.3,26.5 168.9,19.8 201.4,23.3 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>560</td></tr><tr><td>Sep 26</td><td>496</td></tr><tr><td>Oct 3</td><td>299</td></tr><tr><td>Oct 10</td><td>317</td></tr><tr><td>Oct 17</td><td>448</td></tr><tr><td>Oct 24</td><td>576</td></tr><tr><td>Oct 31</td><td>508</td></tr><tr><td>Nov 7</td><td>838</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:hardware" data-facet="category" title="Build physical things: CAD models, 3D printing, fabrication files, robots and embedded systems." href="/skillhub/?tag=category%3Ahardware">category:hardware</a></div>
+          <p class="tag-meaning">Build physical things: CAD models, 3D printing, fabrication files, robots and embedded systems.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="prototyping" data-facet="topic" href="/skillhub/?tag=prototyping">prototyping</a><a class="tag" data-tag="verification" data-facet="topic" href="/skillhub/?tag=verification">verification</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:text-to-cad" data-facet="stack" href="/skillhub/?tag=stack%3Atext-to-cad">stack:text-to-cad</a><a class="tag" data-tag="stack:moveit" data-facet="stack" href="/skillhub/?tag=stack%3Amoveit">stack:moveit</a><a class="tag" data-tag="stack:ros" data-facet="stack" href="/skillhub/?tag=stack%3Aros">stack:ros</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/earthtojake/text-to-cad/blob/4099cac3ddc56a5e696138c53fd7bee685e8ad9d/skills/srdf/SKILL.md">earthtojake/text-to-cad at 4099cac</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: srdf
+description: MoveIt2 SRDF authoring, validation, and planning-semantics workflow. Use when creating, editing, inspecting, or validating `.srdf` files, MoveIt planning groups, virtual joints, passive joints, end effectors, group states, disabled collisions, URDF-paired planning semantics, or SRDF handoff for live review. Covers MoveIt planning semantics, not the robot&#39;s structure (URDF) or simulator descriptions (SDF). Open and visually review existing SRDF files in CAD Viewer.
+license: MIT
+metadata:
+  repository: earthtojake/text-to-cad</code></pre></details>
+        <div class="markdown"><h3>SRDF</h3>
+<p>Use this skill for MoveIt semantic robot descriptions on top of an existing valid URDF. SRDF defines planning semantics; it does not define physical robot structure. The <code>.srdf</code> file is the source of truth: author and edit the XML directly.</p>
+<p>SRDF correctness is a <strong>planning semantics</strong> problem. The common failure is not invalid XML; it is a plausible SRDF that gives MoveIt the wrong planning group, wrong tool link, wrong default state, unsafe disabled-collision matrix, or wrong joint units. Because language models are weak at spatial and kinematic reasoning, derive planning groups, end effectors, group states, and disabled collisions from the URDF topology, MoveIt Setup Assistant output, sampled collision analysis, or explicit user data. Do not infer them from visual theme alone — and do not type any link or joint name from memory: extract the URDF's link/joint table first and copy names from it.</p>
+<h4>Setup</h4>
+<p>Run the <code>cad</code> command (<code>~/.local/bin/cad</code> where <code>~/.local/bin</code> is not on your PATH, or where a
+project's environment puts its own <code>cad</code> first; <code>cad.cmd</code> on Windows). If <code>cad</code> is not found and
+the CAD app was only just added, its server may still be starting: wait five seconds and run the
+command again, for up to a minute, before anything else. Otherwise install text-to-cad, outside a sandbox or with its permission:</p>
+<pre><code class="language-bash">curl -fsSL https://texttocad.dev/install.sh | sh
+</code></pre>
+<p>On Windows, in PowerShell: <code>irm https://www.texttocad.dev/install.ps1 | iex</code>. Any other failure
+says what to do, and <code>cad doctor</code> explains the installation.</p>
+<h4>Format boundary</h4>
+<ul>
+<li><strong>URDF</strong> owns physical robot structure: links, joints, geometry, inertials, limits, mimic joints, transmissions, and robot-state publishing.</li>
+<li><strong>SRDF</strong> owns MoveIt semantics: virtual joints, passive joints, planning groups, group states, end effectors, and disabled collision pairs.</li>
+<li><strong>SDF</strong> owns simulator/world semantics: physics, sensors, lights, plugins, worlds, and simulation-specific metadata.</li>
+</ul>
+<p>Do not place geometry, inertials, joint origins, link poses, mesh references, physical joint limits, transmissions, or <code>ros2_control</code> interfaces in SRDF.</p>
+<h4>Show the model</h4>
+<p>Show the user each model you create or change, and any model or file they ask to see.
+A file you export is a download: give its path, do not open it.
+Snapshots and validation don't replace this. Never screenshot the viewer to confirm your
+own work; review with <code>cad snapshot</code>.</p>
+<ul>
+<li>
+<p>If your tools include <code>cad_show</code> (your host may prefix it), call it with the model's id
+or the file's absolute path, and follow its description for when to call it again.
+The other tools depend on the host. A host that draws CAD cards or tabs (Claude
+Desktop, the Codex app) also has <code>cad_view</code>, which reads what the user selected, and
+<code>cad_screenshot</code>, which shows you what they see, both of a card or tab that is open, for
+when they ask about it. A text host (Claude Code in a terminal, <code>codex exec</code>) draws
+nothing: its <code>cad_show</code> opens the model's page in the user's browser and answers with
+the URL to give them, and it has no view to read. <code>cad_inspect</code>, <code>cad_snapshot</code> and
+<code>cad_export</code> are on every host. Call only the tools you have, and never say a card
+shows a model when your host drew none.</p>
+</li>
+<li>
+<p>Otherwise give the user the page's link once: a model's page is the <code>view:</code> line its
+run prints. For a file, run the CAD Viewer, from any folder:</p>
+<pre><code class="language-bash">cad viewer --json FILE [FILE ...]
+</code></pre>
+<p>The command ensures this installation's server, registers each file and prints
+its page, <code>/&lt;id&gt;</code>, then exits. Read each file's <code>url</code> from <code>documents</code> in its one
+JSON line (never guess the port); the URL carries its token query. A page follows
+every later run of its model and every rewrite of its file, so share it once.
+Return that link to the user. If it fails to launch, say so.</p>
+</li>
+</ul>
+<p>An <code>.srdf</code> you write is the robot's model, not an export: show it. Keep the SRDF
+beside its uniquely matching URDF (same robot name). Review
+planning groups, named states and joints; visual review does not prove planning
+correctness.</p>
+<h4>Required workflow</h4>
+<ol>
+<li><strong>Start from a valid URDF.</strong> Author or fix the URDF first and validate it (<code>cad urdf validate</code>). The SRDF pairs with that URDF by colocation and robot name, and every name in the SRDF must exist in it.</li>
+<li><strong>Extract the URDF table.</strong> Before writing any SRDF XML, list the URDF's robot name, links, joints (with type, parent, child, limits, mimic flags). Copy names from this table only; never type them from memory. See <code>references/srdf-workflow.md</code>.</li>
+<li><strong>Identify the planning task.</strong> Record whether the goal is arm IK, gripper control, mobile base planning, dual-arm planning, tool use, or local smoke testing.</li>
+<li><strong>Create or update the planning ledger.</strong> Use <code>references/planning-ledger.md</code> before writing XML; keep a compact copy as a comment block in the <code>.srdf</code>.</li>
+<li><strong>Pair with the URDF by colocation.</strong> Save the <code>.srdf</code> in the same folder as its <code>.urdf</code>, with the same <code>&lt;robot name&gt;</code> — that is the only linking mechanism. The validator and the viewer both resolve the pairing by scanning the folder for the URDF whose robot name matches; exactly one URDF per robot name per folder. No metadata element links the files. See <code>references/authoring-contract.md</code>.</li>
+<li><strong>Define virtual and passive joints deliberately.</strong> Use them when needed by the robot model.</li>
+<li><strong>Define planning groups from URDF topology.</strong> Prefer chain groups for serial manipulators when base/tip form a real parent-to-child path in the URDF tree (the validator verifies this). Use joint/link/subgroup definitions only when they are deliberate.</li>
+<li><strong>Define end effectors after group membership is known.</strong> Avoid overlap between an end-effector group and its parent group. Record the actual target/TCP link.</li>
+<li><strong>Define group states in URDF-native units.</strong> Revolute and continuous values are radians; prismatic values are meters. Do not store degrees in SRDF. Values must lie within URDF limits and must not set fixed or mimic joints.</li>
+<li><strong>Generate disabled collisions from evidence.</strong> Use adjacency derived from the URDF joint table, MoveIt Setup Assistant sampling, or explicit user-provided collision matrices. Do not invent broad disable lists. See <code>references/disabled-collisions.md</code>.</li>
+<li><strong>Validate every created or modified <code>.srdf</code></strong> with <code>cad srdf validate</code>; it cross-validates all names, chains, states, and pairs against the paired URDF. Fix findings and re-validate until clean.</li>
+<li><strong>Run MoveIt smoke tests when available.</strong> Use MoveIt Setup Assistant or a project MoveIt launch directly.</li>
+<li><strong>Report assumptions and skipped checks.</strong> Include incomplete validation, missing MoveIt environment, manually reasoned collision disables, and inferred target links.</li>
+</ol>
+<h4>Commands</h4>
+<p>Run <code>cad</code> as Setup defines it. <code>cad doctor</code> reports the installation in use and the server's release. Validation itself needs nothing beyond the Python standard library; a snapshot draws with the CAD kernel. Use <code>cad &lt;verb&gt; --help</code> for the complete current interface.</p>
+<p>The validator shape is:</p>
+<pre><code class="language-bash">cad srdf validate path/to/robot.srdf
+cad srdf validate path/to/robot.srdf --strict
+cad srdf validate path/to/robot.srdf --json
+</code></pre>
+<p>The validator parses the SRDF, resolves the paired URDF (the same-folder <code>.urdf</code> whose robot name matches; none, several, or an invalid one is an error), and cross-validates: group/joint/link/subgroup name existence, chain path resolvability, subgroup cycles, virtual/passive joints, end-effector topology, group-state membership/limits/completeness, disabled-collision pairs (including Adjacent-reason truthfulness), and misspelled elements. Each phase collects all its findings in one pass (severity, code, XML path), but a structural error stops the cross-file phase — re-run after every fix. One run validates ONE file: <code>--strict</code> treats warnings as failures and <code>--json</code> prints one line of <code>{&quot;ok&quot;, &quot;path&quot;, &quot;issues&quot;: [{&quot;severity&quot;, &quot;code&quot;, &quot;message&quot;, &quot;element&quot;, &quot;hint&quot;}], &quot;summary&quot;}</code>, where <code>element</code> is the XML path. It exits nonzero if the target fails. Relative targets resolve from the current working directory.</p>
+<h4>Hard rules</h4>
+<ul>
+<li>The SRDF lives in the same folder as its URDF and shares its <code>&lt;robot name&gt;</code>; that colocation-plus-name match is the only pairing mechanism, and exactly one URDF per robot name may exist in the folder.</li>
+<li>Every link, joint, group, and subgroup name must come from the URDF table or a group defined in the same file.</li>
+<li>Group states use URDF-native units: radians for revolute/continuous, meters for prismatic.</li>
+<li>Disabled collision pairs require truthful reasons and provenance.</li>
+<li>End-effector groups should not share links with their parent planning group.</li>
+<li>Visual rendering review is useful but cannot prove planning correctness.</li>
+</ul>
+<h4>Snapshot Tool</h4>
+<p><code>cad snapshot</code> draws the robot to a PNG still, as the CAD Viewer shows it,
+rendered by OCCT:</p>
+<pre><code class="language-bash">cad snapshot path/to/robot.srdf review.png
+cad snapshot path/to/robot.srdf review.png --pose arm/ready
+cad snapshot path/to/robot.srdf review.png --pose '{&quot;shoulder_pitch&quot;: 30}'
+</code></pre>
+<p>Hand it the <code>.srdf</code>: it draws the paired URDF's geometry, the same-folder <code>.urdf</code>
+whose <code>&lt;robot name&gt;</code> matches, exactly as <code>cad srdf validate</code> pairs them. No match,
+or more than one, is refused before anything renders, naming the robot name it
+looked for and the <code>.urdf</code> files it found.</p>
+<p>The robot opens where the CAD Viewer opens it: every joint at zero, then this
+SRDF's <code>home</code> group state if it declares one. <code>--pose</code> names a group state
+(<code>group/name</code>, or a name only one group has) or gives joint values over that
+opening pose, in degrees (metres for a prismatic joint), each naming a joint a
+person can drive, within its limits, or the request is refused before anything
+renders: a fixed joint or a <code>&lt;mimic&gt;</code> follower is refused by name (a follower
+follows its leader). Each link is placed by the viewer's own forward kinematics and
+drawn in one colour of the Parts palette. A visual is a <code>box</code>, <code>cylinder</code> or
+<code>sphere</code>, which the server meshes itself, or an STL, 3MF or GLB file beside the URDF
+or in its ROS package (<code>package://NAME/...</code>: the nearest folder above the URDF named
+NAME, or holding a <code>package.xml</code> that names it); a mesh in another format (<code>.dae</code>,
+<code>.obj</code>), a remote URI, a package no folder above the URDF is, or a missing file is
+refused by name, and a link mesh that cannot be loaded fails the
+snapshot rather than leaving the link out.</p>
+<p>A normal snapshot uses Solid mode and Light appearance. <code>--display</code> takes any of the
+viewer's display modes (<code>parts</code>, <code>xray</code>, <code>hidden-line</code>, <code>wireframe</code>, ...),
+<code>exploded=AMOUNT</code>, or the display object: <code>appearance</code> (<code>light</code> or <code>dark</code>),
+<code>camera</code> (projection and focal length) and <code>clip</code> (<code>{&quot;clip&quot;: {&quot;axis&quot;: &quot;x&quot;, &quot;at&quot;: 0.05}}</code>, <code>at</code> in metres, the file's own unit, as the viewer draws it). <code>--grid</code> draws
+the measuring grid, and <code>--camera</code>, <code>--size-profile</code>, <code>--width</code> and
+<code>--height</code> frame and size it. A Quick Edit packet from the viewer (inline JSON, saved
+to a temporary <code>.snapshot.json</code>, or its path) replays with
+<code>--annotation &lt;packet&gt; --camera authored</code>, its job's <code>jointValues</code> given as <code>--pose</code>.
+Inspect supplied annotations before editing. Without annotations, the captured
+view is optional context; render it when useful to the request.</p>
+<p>Link meshes are resolved relative to the description, so they must be present: an
+unhydrated Git LFS pointer is not a mesh and fails the snapshot. Run
+<code>git lfs checkout &lt;mesh dir&gt;</code> first.</p>
+<p>OUT is written exactly as given and must be a <code>.png</code>; check the exit status before
+reading it. Use <code>cad snapshot --help</code> for the complete current interface.</p>
+<h4>References</h4>
+<ul>
+<li>Authoring contract (structure, URDF pairing, golden skeleton): <code>references/authoring-contract.md</code></li>
+<li>SRDF workflow (URDF table extraction, edit loop): <code>references/srdf-workflow.md</code></li>
+<li>Planning ledger: <code>references/planning-ledger.md</code></li>
+<li>Validation and verification recipe: <code>references/validation.md</code></li>
+<li>End effectors: <code>references/end-effectors.md</code></li>
+<li>Disabled collisions: <code>references/disabled-collisions.md</code></li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

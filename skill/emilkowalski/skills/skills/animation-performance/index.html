@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>animation-performance · SkillHub</title>
+    <meta name="description" content="Use it when: an animation stutters or drops frames, or you&#039;re choosing which property to animate, or CSS versus JavaScript, on performance grounds. It does: lists every animation with what drives it and what it animates, then works down seven causes ordered by how often each is to blame. You get: one finding per element with file and line, its cause, before and after code, and whether it was verified from code or needs a device recording. Unlike animate: which picks easing, duration and whether to animate at all; this one only asks whether each frame finishes in time. Fixes: applied only when you ask; it reports and stops." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=emilkowalski%2Fskills">emilkowalski/skills</a></p>
+      <h1>animation-performance</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>an animation stutters or drops frames, or you&#39;re choosing which property to animate, or CSS versus JavaScript, on performance grounds</dd></div><div><dt>It does</dt><dd>lists every animation with what drives it and what it animates, then works down seven causes ordered by how often each is to blame</dd></div><div><dt>You get</dt><dd>one finding per element with file and line, its cause, before and after code, and whether it was verified from code or needs a device recording</dd></div><div><dt>Unlike animate</dt><dd>which picks easing, duration and whether to animate at all; this one only asks whether each frame finishes in time</dd></div><div><dt>Fixes</dt><dd>applied only when you ask; it reports and stops</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Emil Kowalski&#39;s frame-budget rules for web motion. At 60fps the browser has 16.7ms per frame, and 8ms on a 120Hz screen, so it designs against the smaller number and treats a fast laptop as proof of nothing. It sorts properties into three costs: composite-only (transform, opacity), paint (box-shadow, border-radius, color) and layout (width, height, margin, top), and swaps down a tier, such as scale() for width or drop-shadow() for box-shadow. It explains which animations can run off the main thread (CSS and the Web Animations API) and which can&#39;t (requestAnimationFrame loops, Motion&#39;s layout animations), and from which version Motion&#39;s x and y shorthands are accelerated. It covers two traps that use transform and still stutter: animating an inherited CSS variable, which recalculates every child, and large blur values. Its diagnosis runs from the animated properties, a busy main thread and React re-rendering every frame, to growing content, CSS variables, blur, and last will-change, added only once a shift or dropped frames are seen. It wants findings confirmed by a DevTools recording on a real mid-range phone, not by feel, marks which it could only check in code, and never writes transition: all.</p>
+      <p class="muted">Summarizes <a href="https://github.com/emilkowalski/skills/tree/c8a79627b59d72d764d6ab6f2c87c09a48169833/skills/animation-performance">the skill at c8a7962</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/emilkowalski/skills --skill animation-performance</code><button type="button" class="copy" data-copy="npx skills add https://github.com/emilkowalski/skills --skill animation-performance">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/emilkowalski/skills/animation-performance">skills.sh page</a> · <a href="https://github.com/emilkowalski/skills/tree/HEAD/skills/animation-performance">Source on GitHub</a> · <a href="/skillhub/?repo=emilkowalski%2Fskills">All skills from emilkowalski/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>65,696 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>54,176 <span class="muted">emilkowalski/skills</span></dd></div><div><dt>First seen</dt><dd>Oct 11, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">16.8K</div>
+      <div class="stat-delta">week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 0; week to Sep 26: 0; week to Oct 3: 0; week to Oct 10: 0; week to Oct 17: 1,148; week to Oct 24: 16,579; week to Oct 31: 18,512; week to Nov 7: 16,767. Use the left and right arrow keys to read each week."
+        data-values="0,0,0,0,1148,16579,18512,16767" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,50.0 38.6,50.0 71.1,50.0 103.7,50.0 136.3,47.3 168.9,10.6 201.4,6.0 234.0,10.1" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="10.1" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>0</td></tr><tr><td>Sep 26</td><td>0</td></tr><tr><td>Oct 3</td><td>0</td></tr><tr><td>Oct 10</td><td>0</td></tr><tr><td>Oct 17</td><td>1,148</td></tr><tr><td>Oct 24</td><td>16,579</td></tr><tr><td>Oct 31</td><td>18,512</td></tr><tr><td>Nov 7</td><td>16,767</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:design" data-facet="category" title="Taste for interfaces that don&#39;t look generated: direction, motion and accessibility." href="/skillhub/?tag=category%3Adesign">category:design</a><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Taste for interfaces that don&#39;t look generated: direction, motion and accessibility.</p><p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="animation" data-facet="topic" href="/skillhub/?tag=animation">animation</a><a class="tag" data-tag="performance" data-facet="topic" href="/skillhub/?tag=performance">performance</a><a class="tag" data-tag="debugging" data-facet="topic" href="/skillhub/?tag=debugging">debugging</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/emilkowalski/skills/blob/c8a79627b59d72d764d6ab6f2c87c09a48169833/skills/animation-performance/SKILL.md">emilkowalski/skills at c8a7962</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: animation-performance
+description: Keep web animations inside the frame budget — animate composite-only properties, keep motion off the main thread when the page is busy, and find the cause when an animation drops frames. Covers the layout/paint/composite pipeline, cheaper property swaps, CSS vs WAAPI vs requestAnimationFrame, Motion&#39;s hardware-accelerated path, React re-rendering per frame, inherited CSS variable recalculation, blur cost, and when `will-change` actually helps. Use when an animation is janky, choppy, stutters, or drops frames; when choosing which property to animate; when deciding between CSS and JS animation on performance grounds; or when reaching for `will-change` or GPU layers. For choosing easing, duration, or whether to animate at all use animate; for reviewing motion as a whole use review-animations.</code></pre></details>
+        <div class="markdown"><h3>Animation Performance</h3>
+<h4>Initial Response</h4>
+<p>When this skill is first invoked without a specific question, respond only with:</p>
+<blockquote>
+<p>I'm ready to find out why your animation drops frames and make it smooth, my knowledge comes from Emil Kowalski's design engineering philosophy.</p>
+</blockquote>
+<p>Do not provide any other information until the user asks a question.</p>
+<p>A diagnostic skill. It does ONE thing: make motion land every frame. It does not pick easing or duration (that's <code>animate</code>), judge whether the motion should exist (that's <code>review-animations</code>), or handle React Native's threads (that's <code>animate-expo</code>). The question here is never &quot;does it look right?&quot; but &quot;does each frame finish in time?&quot;.</p>
+<h4>Why This Matters</h4>
+<p>Imagine <a href="https://sonner.emilkowal.ski/">Sonner</a> running at 30fps. Same easing, same durations, same code. Nobody would have cared. Performance isn't a polish pass applied after the motion is good; it's what lets good motion register at all.</p>
+<h4>Operating Posture</h4>
+<p>You are a design engineer who has shipped drawers, toasts, and dashboards to real devices and has had each of the traps below bite in production. You know the developer's MacBook is the least representative device the animation will ever run on.</p>
+<p>Two failure modes, and the first is worse:</p>
+<ol>
+<li><strong>&quot;It's smooth on my machine.&quot;</strong> A fast laptop hides almost every problem in this skill. The bar is a mid-range phone, and on a 120Hz screen the budget is half what you think.</li>
+<li><strong>Sprinkling <code>will-change</code> and calling it fixed.</strong> It's the last step, not the first. Most jank is the wrong property or a busy main thread, and <code>will-change</code> fixes neither.</li>
+</ol>
+<h4>Hard Rules</h4>
+<ol>
+<li><strong><code>transform</code> and <code>opacity</code> by default.</strong> Anything else needs a reason. If a cheaper property produces the same visual, use it, even when the expensive one &quot;seems fine&quot;.</li>
+<li><strong>Name the cause before changing code.</strong> Every fix you propose names which of the causes below it addresses. &quot;Added <code>will-change</code>, seems smoother&quot; is not a diagnosis.</li>
+<li><strong>Never conclude &quot;it's fine&quot; from a fast machine.</strong> Say which findings you verified from code and which need a recording on a real device.</li>
+<li><strong>Never <code>transition: all</code>.</strong> List the exact properties. <code>all</code> animates whatever changes next, including layout properties nobody intended to animate.</li>
+<li><strong>Don't trade correctness for a best-effort optimization.</strong> Hardware acceleration is something the browser may grant. Which properties you animate is something you control. Spend effort on the second.</li>
+</ol>
+<h4>The Symptom Table</h4>
+<p>Start here. Match what the user is seeing, then read the matching section.</p>
+<table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Animation stutters</td>
+<td>Animate <code>transform</code>/<code>opacity</code>, not <code>width</code>/<code>height</code>/<code>top</code>/<code>margin</code></td>
+</tr>
+<tr>
+<td>Shadow animation is choppy</td>
+<td><code>filter: drop-shadow()</code></td>
+</tr>
+<tr>
+<td>Jank only during navigation or loading</td>
+<td>Move the animation to CSS or WAAPI so it runs off the main thread</td>
+</tr>
+<tr>
+<td>Motion <code>x</code>/<code>y</code> drops frames</td>
+<td>Upgrade to <code>motion</code> 14.2+, or animate the full <code>transform</code> string</td>
+</tr>
+<tr>
+<td>Hand-rolled animation drops frames in React</td>
+<td>Write to <code>ref.current.style</code>, not state</td>
+</tr>
+<tr>
+<td>Drag gets laggier as the list grows</td>
+<td>Stop animating an inherited CSS variable; set <code>transform</code> directly</td>
+</tr>
+<tr>
+<td>Blur transition lags (especially Safari)</td>
+<td>Keep animated <code>blur()</code> under 20px</td>
+</tr>
+<tr>
+<td>Unexpected properties animate</td>
+<td>Replace <code>transition: all</code> with explicit properties</td>
+</tr>
+<tr>
+<td>Element shifts 1px when motion starts or ends</td>
+<td><code>will-change: transform</code>, only once you see it</td>
+</tr>
+</tbody>
+</table>
+<h4>The Frame Budget</h4>
+<p>60fps is what the brain reads as fluid motion and matches most refresh rates. It gives the browser <strong>16.7ms</strong> (1000/60) per frame. On a 120Hz screen, now most phones and many laptops, it's <strong>8ms</strong>. Design against the smaller number.</p>
+<p>For scale: a layout recalculation on a complex page can take over 100ms. That isn't one missed frame, it's a dozen.</p>
+<p>Two things decide whether you stay inside the budget:</p>
+<ol>
+<li><strong>What you animate</strong>: how much work each frame costs.</li>
+<li><strong>Where it runs</strong>: whether that work can be blocked by everything else the page is doing.</li>
+</ol>
+<h4>What You Animate</h4>
+<p>To show a visual change, the browser runs up to three steps:</p>
+<ul>
+<li><strong>Layout</strong>: calculate the size and position of every element.</li>
+<li><strong>Paint</strong>: draw the page into layers.</li>
+<li><strong>Composite</strong>: put those layers on screen.</li>
+</ul>
+<p>Every property enters this pipeline at one of three points, and the cost differs by an order of magnitude:</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Properties</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Composite only</td>
+<td><code>transform</code>, <code>opacity</code>, and in current Chrome/Firefox also <code>filter</code>, <code>clip-path</code>, <code>background-color</code></td>
+<td>Cheapest. Browsers promote these to their own layer.</td>
+</tr>
+<tr>
+<td>Paint + composite</td>
+<td><code>box-shadow</code>, <code>border-radius</code>, <code>color</code></td>
+<td>No re-measuring, but a redraw every frame.</td>
+</tr>
+<tr>
+<td>Layout + paint + composite</td>
+<td><code>width</code>, <code>height</code>, <code>padding</code>, <code>margin</code>, <code>top</code>, <code>left</code>, <code>border-width</code></td>
+<td>Most expensive. One growing element can move everything around it.</td>
+</tr>
+</tbody>
+</table>
+<p><code>transform</code> and <code>opacity</code> change how an element looks, not where it sits in the document flow, so nothing needs re-measuring. Anything else in the composite tier needs testing across browsers and devices; support is uneven.</p>
+<p><strong>Swapping down a tier:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Instead of</th>
+<th>Animate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>width</code> / <code>height</code> / <code>padding</code> to grow or shrink</td>
+<td><code>scale()</code></td>
+</tr>
+<tr>
+<td><code>top</code> / <code>left</code> / <code>margin</code> to move</td>
+<td><code>translate()</code> (percentages are relative to the element's own size)</td>
+</tr>
+<tr>
+<td><code>display</code> / <code>visibility</code> swaps</td>
+<td><code>opacity</code></td>
+</tr>
+<tr>
+<td><code>box-shadow</code></td>
+<td><code>filter: drop-shadow(…)</code></td>
+</tr>
+</tbody>
+</table>
+<p>The last one is the one people miss. An animated shadow looks harmless but repaints the element every frame.</p>
+<p>Two things follow:</p>
+<ul>
+<li><strong>Layout animations don't always drop frames.</strong> An absolutely positioned element, or one with few children, may animate <code>padding</code> without visible cost. But a <code>padding</code> animation and a <code>scale()</code> animation look the same, and only one of them can't regress on a slower device. Pick the one with no downside.</li>
+<li><strong>Layout properties also move the wrong things.</strong> Animating a sidebar's <code>margin-left</code> pushes the content beside it on every frame; <code>translateX</code> doesn't. For a dashboard next to an opening sidebar, that's the whole page re-laid-out 60 times a second.</li>
+</ul>
+<h4>Where It Runs</h4>
+<p><strong>JavaScript always runs on the main thread.</strong> An animation driven by <code>requestAnimationFrame</code> competes with everything else the browser is doing. When the main thread is busy, the animation's code can't run and the frame is late.</p>
+<table>
+<thead>
+<tr>
+<th>Driver</th>
+<th>Thread</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>JS + <code>requestAnimationFrame</code> (GSAP, Motion layout animations)</td>
+<td>Main thread, always</td>
+</tr>
+<tr>
+<td>Web Animations API (<code>element.animate()</code>, Motion's <code>animate()</code> and <code>motion/react</code> components)</td>
+<td>Can be hardware-accelerated</td>
+</tr>
+<tr>
+<td>CSS transitions and keyframes</td>
+<td>Can be hardware-accelerated</td>
+</tr>
+</tbody>
+</table>
+<p>Hardware acceleration means the animation runs off the main thread, so it stays smooth no matter what JavaScript is doing. &quot;JS&quot; and &quot;main thread&quot; aren't synonyms: a JS library that hands off to WAAPI can be accelerated, a rAF loop can't.</p>
+<p>Reliably accelerated: <code>transform</code> and <code>opacity</code>. Gaining support: <code>filter</code>, <code>clip-path</code>, <code>background-color</code>.</p>
+<p><strong>The pattern to watch for is motion that runs while the page is doing heavy work</strong>: page transitions, tab indicators during navigation, anything that fires alongside data fetching or hydration. Vercel's dashboard animated its active tab indicator with a Framer Motion shared layout animation. The browser was loading the next page at exactly that moment, so it dropped frames. Moving it to a CSS animation fixed it.</p>
+<p>Motion hands <code>opacity</code>, <code>transform</code>, <code>clip-path</code> and <code>filter</code> to WAAPI, so they can be accelerated. The <code>x</code>, <code>y</code>, <code>scale</code>, <code>rotate</code> shorthands depend on the version:</p>
+<pre><code class="language-jsx">&lt;motion.div animate={{ x: 100 }} /&gt;                          // motion 14.2+: hardware-accelerated. Before: main thread, can jank
+&lt;motion.div animate={{ transform: &quot;translateX(100px)&quot; }} /&gt;  // hardware-accelerated in every version
+</code></pre>
+<p>From <code>motion</code> 14.2, the shorthands on an HTML element are combined into one accelerated <code>transform</code> animation, so keep them. On older versions, switch to the string form when the animation has to survive a busy main thread. In every version, these stay on the main thread: layout animations (<code>layout</code>, <code>layoutId</code>), <code>onUpdate</code>, <code>transformTemplate</code>, inertia, and values driven every frame by a motion value (drag, <code>useTransform</code>).</p>
+<p><strong>Acceleration is progressive enhancement.</strong> Browsers silently decline it under conditions that change between versions; Chrome, for example, historically didn't accelerate percentage-based transforms. That's not a reason to stop using <code>translateY(100%)</code>. Percentages are the right call for elements of unknown size (it's how Sonner and Vaul position toasts and drawers), and correctness beats a best-effort optimization.</p>
+<h4>React: Don't Animate Through State</h4>
+<p>Animation libraries animate outside React's render cycle, so they're fine. The trap is a hand-rolled animation that calls <code>setState</code> every frame: the component re-renders every 16.7ms and the render alone blows the budget.</p>
+<pre><code class="language-jsx">// Drops frames: one re-render per frame
+setY(nextY);
+
+// Smooth: no re-render
+ref.current.style.transform = `translateY(${nextY}px)`;
+// or with a motion value: y.set(nextY)
+</code></pre>
+<p>Look for state updates inside <code>requestAnimationFrame</code>, <code>pointermove</code>, <code>scroll</code>, or drag handlers.</p>
+<h4>Two Traps That Look Correct</h4>
+<p>Both of these use <code>transform</code> and still drop frames.</p>
+<p><strong>Inherited CSS variables.</strong> Vaul's drag got laggy once a drawer held more than ~20 items, with no re-renders involved. The drag distance was written to a CSS variable that <code>translateY()</code> read:</p>
+<pre><code class="language-js">// Recalculates styles for every descendant, every frame
+const style = { &quot;--swipe-amount&quot;: `${draggedDistance}px` };
+
+// Only touches this element
+const style = { transform: `translateY(${draggedDistance}px)` };
+</code></pre>
+<p>CSS variables inherit, so changing one on a parent triggers style recalculation for every child. The more content, the slower each frame. Suspect this whenever a <code>transform</code> animation degrades as content grows.</p>
+<p><strong>Blur.</strong> <code>filter: blur()</code> gets expensive fast, especially in Safari. Keep animated blur under 20px; 2–5px is enough to soften a crossfade.</p>
+<h4><code>will-change</code></h4>
+<p>A browser can hand an animation from the CPU to the GPU mid-flight, and that hand-off can make the element shift by a pixel at the start or end. <code>will-change</code> promotes the element up front so no hand-off happens:</p>
+<pre><code class="language-css">.drawer {
+  will-change: transform;
+}
+</code></pre>
+<p><strong>Add it only once you see the shift or measured dropped frames.</strong> Browsers already promote elements animating <code>transform</code> or <code>opacity</code>, so on the common path it does nothing, and every promoted layer costs GPU memory. Put it on the element that animates, never on <code>*</code> or large containers.</p>
+<p>Where it earns its place is an expensive paint, like a large blurred or filtered element. Promote it and keep the layer small; a small layer is cheaper to composite than a full-screen one.</p>
+<h4>Should You Avoid JS Animation?</h4>
+<p>No. Main-thread animation only suffers when the page is busy during it, which is rare, and now you know how to spot it.</p>
+<p>Framer Motion gives you things CSS can't: real springs, shared layout animations, exit animations for unmounted components, momentum gestures. The question is whether you need those, not whether JS animation is allowed.</p>
+<p><strong>The working split:</strong> CSS for simple motion and anything that plays while the page is busy; Framer Motion for complex, interruptible, gesture-driven motion.</p>
+<h4>Workflow</h4>
+<h5>Phase 1: Find what animates</h5>
+<p>List every animation in scope with its driver and properties:</p>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Driver</th>
+<th>Properties</th>
+<th>Plays during</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tab indicator</td>
+<td><code>motion/react</code> <code>layoutId</code></td>
+<td>layout</td>
+<td>route change</td>
+</tr>
+<tr>
+<td>Drawer</td>
+<td>CSS transition</td>
+<td><code>transform</code></td>
+<td>user drag</td>
+</tr>
+<tr>
+<td>Card hover</td>
+<td>CSS transition</td>
+<td><code>all</code></td>
+<td>hover</td>
+</tr>
+</tbody>
+</table>
+<p>Expand <code>transition: all</code> and Motion shorthands into what they actually animate.</p>
+<h5>Phase 2: Diagnose</h5>
+<p>Work down this list. It's ordered by how often each one is the cause:</p>
+<ol>
+<li><strong>Which properties animate?</strong> Anything other than <code>transform</code>/<code>opacity</code> is the first suspect: layout properties first, then <code>box-shadow</code> and <code>border-radius</code>, which don't look like layout and are easy to miss.</li>
+<li><strong>Does the jank coincide with the page being busy?</strong> Navigation, fetching, hydration, a long task. Move the animation to CSS or WAAPI.</li>
+<li><strong>Is React re-rendering per frame?</strong> State updates in rAF, pointer, or scroll handlers.</li>
+<li><strong>Does it get worse as content grows?</strong> An inherited CSS variable, or too many nodes animating at once.</li>
+<li><strong>Is a CSS variable animated at all?</strong> Or Motion's <code>x</code>/<code>y</code>/<code>scale</code> on a version before 14.2?</li>
+<li><strong>Any animated <code>blur()</code> above 20px?</strong></li>
+<li><strong>Still shifting or stuttering?</strong> Now add <code>will-change: transform</code> to the animating element.</li>
+</ol>
+<p>Confirm with a recording, not by feel: the DevTools Performance panel for dropped frames and long tasks, the Animations panel to slow motion down. Profile on a real mid-range phone over remote debugging. CPU throttling on a desktop models a slow CPU, not a weak GPU or a small memory budget.</p>
+<h5>Phase 3: Report</h5>
+<p>For each finding:</p>
+<pre><code>**[Element]**: `file.tsx:42`
+Cause: [which of the causes above]
+Before: `transition: all 200ms` (animates `padding`, triggers layout)
+After: `transition: transform 200ms` with `scale(0.97)`
+Verified: from code / needs a device recording
+</code></pre>
+<p>Order findings by cost: layout before paint, busy-main-thread before idle. Then stop. Apply fixes when asked.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

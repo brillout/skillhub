@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>external-diagram-mermaid-generate · SkillHub</title>
+    <meta name="description" content="Use it when: you need a diagram of a Salesforce system: an OAuth flow, an integration sequence, an object ERD, a role hierarchy or an Agentforce agent&#039;s topics and actions. You get: in its reply: a Mermaid code block to paste into GitHub or Confluence, an ASCII version when you want plain text, and notes on key relationships and assumptions. Templates: seven Salesforce OAuth grant flows, fourteen data-model ERDs such as Sales Cloud, Service Cloud and Field Service, plus landscape, API-callout, agent and role templates. Unlike: a general Mermaid skill, it names Salesforce objects by API name, knows its OAuth grant types and Agentforce&#039;s structure, and leaves other systems to other skills. Reads your org: optionally, for an ERD: each object&#039;s record count, sharing default and type, through a bundled script that needs the sf CLI signed in to the org. Preview: optionally saves the diagram to /tmp and starts a background Python server (macOS or Linux) that shows it in your browser, live-reloads and offers an SVG download." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=forcedotcom%2Fsf-skills">forcedotcom/sf-skills</a></p>
+      <h1>external-diagram-mermaid-generate</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you need a diagram of a Salesforce system: an OAuth flow, an integration sequence, an object ERD, a role hierarchy or an Agentforce agent&#39;s topics and actions</dd></div><div><dt>You get</dt><dd>in its reply: a Mermaid code block to paste into GitHub or Confluence, an ASCII version when you want plain text, and notes on key relationships and assumptions</dd></div><div><dt>Templates</dt><dd>seven Salesforce OAuth grant flows, fourteen data-model ERDs such as Sales Cloud, Service Cloud and Field Service, plus landscape, API-callout, agent and role templates</dd></div><div><dt>Unlike</dt><dd>a general Mermaid skill, it names Salesforce objects by API name, knows its OAuth grant types and Agentforce&#39;s structure, and leaves other systems to other skills</dd></div><div><dt>Reads your org</dt><dd>optionally, for an ERD: each object&#39;s record count, sharing default and type, through a bundled script that needs the sf CLI signed in to the org</dd></div><div><dt>Preview</dt><dd>optionally saves the diagram to /tmp and starts a background Python server (macOS or Linux) that shows it in your browser, live-reloads and offers an SVG download</dd></div></dl></section>
+      
+      <p class="note">Only for Salesforce systems: for anything else it tells the agent to use a general diagramming skill.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>It draws Salesforce architecture as text-based diagrams, in its reply, ready to live in docs, READMEs or issues. The agent asks for or infers the diagram type, the systems or objects involved, whether you want Mermaid, ASCII or both, and how styled it should be. It then picks a structure: sequence diagrams for time-ordered exchanges such as OAuth or API callouts, flowcharts for ERDs, system landscapes, role hierarchies and Agentforce agent-to-topic-to-action maps. Before an OAuth diagram it loads the template for that grant type, such as authorization code with PKCE, JWT bearer or device flow, and before an ERD the matching data-model template. Its rules keep diagrams readable: numbered steps where order matters, few fields per object unless you ask, color only when it helps, a color-blind-friendly palette, and splitting a crowded ERD into sub-diagrams by domain. For a real org&#39;s ERD it can use the repo&#39;s object and field skills, or its own script, which flags objects over 2 million records and shows sharing defaults. For OAuth, Agentforce and Flow details it defers to the repo&#39;s matching skills. Each answer ends with a short explanation of the main relationships, flow direction and assumptions.</p>
+      <p class="muted">Summarizes <a href="https://github.com/forcedotcom/sf-skills/tree/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate">the skill at 0c7cb93</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/forcedotcom/sf-skills --skill external-diagram-mermaid-generate</code><button type="button" class="copy" data-copy="npx skills add https://github.com/forcedotcom/sf-skills --skill external-diagram-mermaid-generate">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/forcedotcom/sf-skills/external-diagram-mermaid-generate">skills.sh page</a> · <a href="https://github.com/forcedotcom/sf-skills/tree/HEAD/skills/external-diagram-mermaid-generate">Source on GitHub</a> · <a href="/skillhub/?repo=forcedotcom%2Fsf-skills">All skills from forcedotcom/sf-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,600 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>1,151 <span class="muted">forcedotcom/sf-skills</span></dd></div><div><dt>First seen</dt><dd>Jun 26, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">47</div>
+      <div class="stat-delta">-25% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 63; week to Sep 26: 60; week to Oct 3: 56; week to Oct 10: 57; week to Oct 17: 76; week to Oct 24: 60; week to Oct 31: 64; week to Nov 7: 47. Use the left and right arrow keys to read each week."
+        data-values="63,60,56,57,76,60,64,47" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,13.5 38.6,15.3 71.1,17.6 103.7,17.0 136.3,6.0 168.9,15.3 201.4,12.9 234.0,22.8" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="22.8" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>63</td></tr><tr><td>Sep 26</td><td>60</td></tr><tr><td>Oct 3</td><td>56</td></tr><tr><td>Oct 10</td><td>57</td></tr><tr><td>Oct 17</td><td>76</td></tr><tr><td>Oct 24</td><td>60</td></tr><tr><td>Oct 31</td><td>64</td></tr><tr><td>Nov 7</td><td>47</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:science" data-facet="category" title="Research reproduction, financial data, charts and diagrams." href="/skillhub/?tag=category%3Ascience">category:science</a></div>
+          <p class="tag-meaning">Research reproduction, financial data, charts and diagrams.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="diagrams" data-facet="topic" href="/skillhub/?tag=diagrams">diagrams</a><a class="tag" data-tag="architecture" data-facet="topic" href="/skillhub/?tag=architecture">architecture</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:salesforce" data-facet="stack" href="/skillhub/?tag=stack%3Asalesforce">stack:salesforce</a><a class="tag" data-tag="stack:mermaid" data-facet="stack" href="/skillhub/?tag=stack%3Amermaid">stack:mermaid</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/SKILL.md">forcedotcom/sf-skills at 0c7cb93</a>. Checked daily, last changed Nov 7, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: external-diagram-mermaid-generate
+description: &#34;Salesforce architecture diagrams using Mermaid with ASCII fallback. Use this skill when generating text-based diagrams for Salesforce architecture, OAuth flows, ERDs, integration sequences, or Agentforce structure. TRIGGER when: user says \&#34;diagram\&#34;, \&#34;visualize\&#34;, \&#34;ERD\&#34;, or asks for sequence diagrams, flowcharts, class diagrams, or architecture visualizations in Mermaid. DO NOT TRIGGER when: user asks about non-Salesforce systems.&#34;
+metadata:
+  version: &#34;1.0&#34;
+  domains: [&#34;External&#34;]
+  relatedSkills:
+    - &#34;agentforce-generate&#34;
+    - &#34;automation-flow-generate&#34;
+    - &#34;integration-connectivity-connected-app-configure&#34;
+    - &#34;integration-connectivity-generate&#34;
+    - &#34;platform-apex-generate&#34;
+    - &#34;platform-custom-field-generate&#34;
+    - &#34;platform-custom-object-generate&#34;
+    - &#34;platform-data-manage&#34;
+    - &#34;platform-metadata-deploy&#34;
+  cliTools:
+    - tool: [&#34;curl&#34;]
+      semver: &#34;&#62;=7.0.0&#34;
+    - tool: [&#34;jq&#34;]
+      semver: &#34;&#62;=1.6.0&#34;
+    - tool: [&#34;python&#34;]
+      semver: &#34;&#62;=3.10.0&#34;
+    - tool: [&#34;python3&#34;]
+      semver: &#34;&#62;=3.10.0&#34;
+    - tool: [&#34;sf&#34;]
+      semver: &#34;&#62;=2.0.0&#34;</code></pre></details>
+        <div class="markdown"><h3>external-diagram-mermaid-generate: Salesforce Diagram Generation</h3>
+<p>Use this skill when the user needs <strong>text-based diagrams</strong>: Mermaid diagrams for architecture, OAuth, integration flows, ERDs, or Agentforce structure, plus ASCII fallback when plain-text compatibility matters.</p>
+<h4>Scope</h4>
+<h5>In Scope</h5>
+<p>Use <code>external-diagram-mermaid-generate</code> when the user wants:</p>
+<ul>
+<li>Mermaid output</li>
+<li>ASCII fallback diagrams</li>
+<li>architecture, sequence, flowchart, or ERD views in markdown-friendly form</li>
+<li>diagrams that can live directly in docs, READMEs, or issues</li>
+</ul>
+<h5>Out of Scope — Delegate elsewhere when the user wants:</h5>
+<ul>
+<li>non-Salesforce systems only → use a more general diagramming skill</li>
+<li>object discovery before an ERD → <a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/platform-custom-object-generate/SKILL.md">platform-custom-object-generate</a> or <a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/platform-custom-field-generate/SKILL.md">platform-custom-field-generate</a></li>
+</ul>
+<hr>
+<h4>Supported Diagram Families</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Preferred Mermaid form</th>
+<th>Typical use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OAuth / auth flows</td>
+<td><code>sequenceDiagram</code></td>
+<td>Authorization Code, JWT, PKCE, Device Flow</td>
+</tr>
+<tr>
+<td>ERD / data model</td>
+<td><code>flowchart LR</code></td>
+<td>object relationships and sharing context</td>
+</tr>
+<tr>
+<td>integration sequence</td>
+<td><code>sequenceDiagram</code></td>
+<td>request/response or event choreography</td>
+</tr>
+<tr>
+<td>system landscape</td>
+<td><code>flowchart</code></td>
+<td>high-level architecture</td>
+</tr>
+<tr>
+<td>role / access hierarchy</td>
+<td><code>flowchart</code></td>
+<td>users, profiles, permissions</td>
+</tr>
+<tr>
+<td>Agentforce behavior map</td>
+<td><code>flowchart</code></td>
+<td>agent → topic → action relationships</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4>Required Context to Gather First</h4>
+<p>Ask for or infer:</p>
+<ul>
+<li>diagram type</li>
+<li>scope and entities / systems involved</li>
+<li>output preference: Mermaid only, ASCII only, or both</li>
+<li>whether styling should be minimal, documentation-first, or presentation-friendly</li>
+<li>for ERDs: whether org metadata is available for grounding</li>
+</ul>
+<hr>
+<h4>Recommended Workflow</h4>
+<h5>1. Pick the right diagram structure</h5>
+<ul>
+<li>use <code>sequenceDiagram</code> for time-ordered interactions</li>
+<li>use <code>flowchart LR</code> for ERDs and capability maps</li>
+<li>keep a single primary story per diagram when possible</li>
+</ul>
+<h5>2. Gather data</h5>
+<p>For ERDs and grounded diagrams:</p>
+<ul>
+<li>use <a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/platform-custom-object-generate/SKILL.md">platform-custom-object-generate</a> or <a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/platform-custom-field-generate/SKILL.md">platform-custom-field-generate</a> when real schema discovery is needed</li>
+<li>optionally use the local metadata helper script for counts / relationship context when appropriate</li>
+</ul>
+<h5>3. Generate Mermaid first</h5>
+<p>Apply:</p>
+<ul>
+<li>accurate labels</li>
+<li>simple readable node text</li>
+<li>consistent relationship notation</li>
+<li>restrained styling that renders cleanly in markdown viewers</li>
+</ul>
+<h5>4. Add ASCII fallback when useful</h5>
+<p>Provide an ASCII version when the user wants terminal compatibility or plaintext documentation.</p>
+<h5>5. Explain the diagram briefly</h5>
+<p>Call out the key relationships, flow direction, and any assumptions.</p>
+<hr>
+<h4>High-Signal Rules</h4>
+<h5>For sequence diagrams</h5>
+<ul>
+<li>use <code>autonumber</code> when step order matters</li>
+<li>distinguish requests vs responses clearly</li>
+<li>use notes sparingly for protocol detail</li>
+</ul>
+<h5>For ERDs</h5>
+<ul>
+<li>prefer <code>flowchart LR</code></li>
+<li>keep object cards simple</li>
+<li>use clear relationship arrows</li>
+<li>avoid field overload unless the user explicitly asks for field-level detail</li>
+<li>color-code object types only when it improves readability</li>
+</ul>
+<h5>For ASCII output</h5>
+<ul>
+<li>keep width reasonable</li>
+<li>align arrows and boxes consistently</li>
+<li>optimize for readability over decoration</li>
+</ul>
+<hr>
+<h4>Output Format</h4>
+<pre><code class="language-markdown">## &lt;Diagram Title&gt;
+
+### Mermaid Diagram
+```mermaid
+&lt;diagram&gt;
+```
+
+### ASCII Fallback
+```text
+&lt;ascii&gt;
+```
+
+### Notes
+- &lt;key point&gt;
+- &lt;assumption or limitation&gt;
+</code></pre>
+<hr>
+<h4>Cross-Skill Integration</h4>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Delegate to</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>real object / field definitions</td>
+<td><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/platform-custom-object-generate/SKILL.md">platform-custom-object-generate</a> / <a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/platform-custom-field-generate/SKILL.md">platform-custom-field-generate</a></td>
+<td>grounded ERD generation</td>
+</tr>
+<tr>
+<td>connected-app auth setup context</td>
+<td><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/integration-connectivity-connected-app-configure/SKILL.md">integration-connectivity-connected-app-configure</a></td>
+<td>accurate OAuth flows</td>
+</tr>
+<tr>
+<td>Agentforce logic visualization</td>
+<td><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/agentforce-generate/SKILL.md">agentforce-generate</a></td>
+<td>source-of-truth behavior details</td>
+</tr>
+<tr>
+<td>Flow behavior diagrams</td>
+<td><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/automation-flow-generate/SKILL.md">automation-flow-generate</a></td>
+<td>actual Flow logic grounding</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4>Gotchas</h4>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mermaid renderer not available</td>
+<td>Provide ASCII fallback automatically; note that the Mermaid block still carries the diagram for copy-paste into a renderer</td>
+</tr>
+<tr>
+<td>ERD becomes unreadable with too many objects</td>
+<td>Split into sub-diagrams by domain (Sales, Service, etc.) and link them in prose</td>
+</tr>
+<tr>
+<td>Sequence diagram step order unclear</td>
+<td>Use <code>autonumber</code> directive to make step ordering explicit</td>
+</tr>
+<tr>
+<td>OAuth flow actors differ by grant type</td>
+<td>Read the relevant asset template first before generating to avoid actor mismatch</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4>Reference File Index</h4>
+<h5>Conventions &amp; rules — read before generating</h5>
+<ul>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/references/diagram-conventions.md">references/diagram-conventions.md</a> — consistency rules for all diagram types</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/references/mermaid-reference.md">references/mermaid-reference.md</a> — Mermaid syntax quick reference</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/references/usage-examples.md">references/usage-examples.md</a> — worked examples per diagram type</li>
+</ul>
+<h5>Styling</h5>
+<ul>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/references/mermaid-styling.md">references/mermaid-styling.md</a> — theming and annotation patterns</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/references/color-palette.md">references/color-palette.md</a> — color-blind-friendly palette with hex values</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/references/erd-conventions.md">references/erd-conventions.md</a> — ERD-specific layout and notation rules</li>
+</ul>
+<h5>Preview</h5>
+<ul>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/references/preview-guide.md">references/preview-guide.md</a> — how to render Mermaid locally</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/scripts/README.md">scripts/README.md</a> — setup and usage instructions for all scripts in this skill</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/scripts/mermaid_preview.py">scripts/mermaid_preview.py</a> — live-reload preview server; run to preview diagrams in browser</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/scripts/query-org-metadata.py">scripts/query-org-metadata.py</a> — queries org schema to ground ERD generation</li>
+</ul>
+<h5>OAuth flow templates — load the matching template when generating OAuth diagrams</h5>
+<ul>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/oauth/authorization-code.md">assets/oauth/authorization-code.md</a> — Authorization Code grant</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/oauth/authorization-code-pkce.md">assets/oauth/authorization-code-pkce.md</a> — PKCE variant for mobile/SPA</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/oauth/jwt-bearer.md">assets/oauth/jwt-bearer.md</a> — JWT Bearer server-to-server</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/oauth/client-credentials.md">assets/oauth/client-credentials.md</a> — Client Credentials service accounts</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/oauth/device-authorization.md">assets/oauth/device-authorization.md</a> — Device Flow for CLI/IoT</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/oauth/refresh-token.md">assets/oauth/refresh-token.md</a> — Refresh Token renewal flow</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/oauth/user-agent-social-sign-on.md">assets/oauth/user-agent-social-sign-on.md</a> — User-Agent / Social Sign-On</li>
+</ul>
+<h5>Data model ERD templates — load the matching template when generating ERDs</h5>
+<ul>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/datamodel/salesforce-erd.md">assets/datamodel/salesforce-erd.md</a> — core Salesforce objects</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/datamodel/sales-cloud-erd.md">assets/datamodel/sales-cloud-erd.md</a> — Sales Cloud objects</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/datamodel/service-cloud-erd.md">assets/datamodel/service-cloud-erd.md</a> — Service Cloud objects</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/datamodel/b2b-commerce-erd.md">assets/datamodel/b2b-commerce-erd.md</a> — B2B Commerce objects</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/datamodel/campaigns-erd.md">assets/datamodel/campaigns-erd.md</a> — Campaigns and campaign member model</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/datamodel/consent-erd.md">assets/datamodel/consent-erd.md</a> — Consent and privacy objects</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/datamodel/files-erd.md">assets/datamodel/files-erd.md</a> — Files and ContentDocument model</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/datamodel/forecasting-erd.md">assets/datamodel/forecasting-erd.md</a> — Forecasting objects</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/datamodel/fsl-erd.md">assets/datamodel/fsl-erd.md</a> — Field Service Lightning objects</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/datamodel/party-model-erd.md">assets/datamodel/party-model-erd.md</a> — Party model objects</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/datamodel/quote-order-erd.md">assets/datamodel/quote-order-erd.md</a> — Quote and Order objects</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/datamodel/revenue-cloud-erd.md">assets/datamodel/revenue-cloud-erd.md</a> — Revenue Cloud objects</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/datamodel/scheduler-erd.md">assets/datamodel/scheduler-erd.md</a> — Scheduler objects</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/datamodel/territory-management-erd.md">assets/datamodel/territory-management-erd.md</a> — Territory Management objects</li>
+</ul>
+<h5>Other diagram templates</h5>
+<ul>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/architecture/system-landscape.md">assets/architecture/system-landscape.md</a> — system landscape overview template</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/integration/api-sequence.md">assets/integration/api-sequence.md</a> — API callout sequence template</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/agentforce/agent-flow.md">assets/agentforce/agent-flow.md</a> — Agentforce agent → topic → action flow</li>
+<li><a href="https://github.com/forcedotcom/sf-skills/blob/0c7cb9304a071266264628a84bc498b23cde9c13/skills/external-diagram-mermaid-generate/assets/role-hierarchy/user-hierarchy.md">assets/role-hierarchy/user-hierarchy.md</a> — role and permission hierarchy template</li>
+</ul>
+<hr>
+<h4>Output Expectations</h4>
+<p>Deliverables produced by this skill for each request:</p>
+<ul>
+<li><strong>Mermaid code block</strong> — fenced <code>```mermaid</code> block ready to paste into GitHub, Confluence, or any Mermaid-capable renderer</li>
+<li><strong>ASCII fallback</strong> (when requested or when Mermaid renderer is unavailable) — text-only diagram using box/arrow characters</li>
+<li><strong>Brief explanation</strong> — 2-5 bullet points calling out key relationships, flow direction, and any assumptions or limitations in the diagram</li>
+<li>For ERDs: object cards with field labels and relationship type annotations</li>
+<li>For sequence diagrams: numbered steps (<code>autonumber</code>) with clear actor labels</li>
+</ul>
+<hr>
+<h4>Score Guide</h4>
+<table>
+<thead>
+<tr>
+<th>Score</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>72–80</td>
+<td>production-ready diagram</td>
+</tr>
+<tr>
+<td>60–71</td>
+<td>clear and useful with minor polish left</td>
+</tr>
+<tr>
+<td>48–59</td>
+<td>functional but could be clearer</td>
+</tr>
+<tr>
+<td>35–47</td>
+<td>needs structural improvement</td>
+</tr>
+<tr>
+<td>&lt; 35</td>
+<td>inaccurate or incomplete</td>
+</tr>
+</tbody>
+</table>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

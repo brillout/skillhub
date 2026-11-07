@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>embedded-systems · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re writing drivers, interrupt handlers, RTOS tasks or low-power code for a microcontroller. It does: starts from the chip&#039;s memory, timing and power limits, designs tasks and interrupts, then writes drivers and application code. You get: hardware setup, drivers and interrupt handlers, RTOS tasks or a main loop, and a flash, RAM and power summary. Checks: builds with -Wall -Werror, runs static analysis such as cppcheck, checks register bits against the datasheet, and measures stack use and interrupt timing." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=jeffallan%2Fclaude-skills">jeffallan/claude-skills</a></p>
+      <h1>embedded-systems</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re writing drivers, interrupt handlers, RTOS tasks or low-power code for a microcontroller</dd></div><div><dt>It does</dt><dd>starts from the chip&#39;s memory, timing and power limits, designs tasks and interrupts, then writes drivers and application code</dd></div><div><dt>You get</dt><dd>hardware setup, drivers and interrupt handlers, RTOS tasks or a main loop, and a flash, RAM and power summary</dd></div><div><dt>Checks</dt><dd>builds with -Wall -Werror, runs static analysis such as cppcheck, checks register bits against the datasheet, and measures stack use and interrupt timing</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Its rules come from resource-constrained work: volatile for hardware registers and variables shared with interrupts, short interrupt handlers that hand work to tasks, a watchdog timer, proper locking around shared resources, no blocking calls in interrupts, no unbounded dynamic allocation, and care with floating point on chips without hardware support. Timing is verified with a logic analyzer or oscilloscope and stack headroom with FreeRTOS&#39;s high-water mark, and worst-case load must miss no deadline; any failure sends it back to the validation step, with its warning-free build and static analysis. References cover FreeRTOS patterns, bare-metal register programming, sleep modes and battery life, I2C, SPI, UART and CAN, and code size and RAM. Examples include an STM32 UART interrupt with a critical section, a periodic FreeRTOS sensor task and a register-level timer blink.</p>
+      <p class="muted">Summarizes <a href="https://github.com/jeffallan/claude-skills/tree/078a25cc5bfd8011459be7b91d004e900c1d02d3/skills/embedded-systems">the skill at 078a25c</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/jeffallan/claude-skills --skill embedded-systems</code><button type="button" class="copy" data-copy="npx skills add https://github.com/jeffallan/claude-skills --skill embedded-systems">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/jeffallan/claude-skills/embedded-systems">skills.sh page</a> · <a href="https://github.com/jeffallan/claude-skills/tree/HEAD/skills/embedded-systems">Source on GitHub</a> · <a href="/skillhub/?repo=jeffallan%2Fclaude-skills">All skills from jeffallan/claude-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>7,100 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>12,252 <span class="muted">jeffallan/claude-skills</span></dd></div><div><dt>First seen</dt><dd>Jan 21, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">202</div>
+      <div class="stat-delta">+64% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 123; week to Sep 26: 120; week to Oct 3: 138; week to Oct 10: 132; week to Oct 17: 132; week to Oct 24: 188; week to Oct 31: 158; week to Nov 7: 202. Use the left and right arrow keys to read each week."
+        data-values="123,120,138,132,132,188,158,202" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.2 38.6,23.9 71.1,19.9 103.7,21.2 136.3,21.2 168.9,9.0 201.4,15.6 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>123</td></tr><tr><td>Sep 26</td><td>120</td></tr><tr><td>Oct 3</td><td>138</td></tr><tr><td>Oct 10</td><td>132</td></tr><tr><td>Oct 17</td><td>132</td></tr><tr><td>Oct 24</td><td>188</td></tr><tr><td>Oct 31</td><td>158</td></tr><tr><td>Nov 7</td><td>202</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:hardware" data-facet="category" title="Build physical things: CAD models, 3D printing, fabrication files, robots and embedded systems." href="/skillhub/?tag=category%3Ahardware">category:hardware</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Build physical things: CAD models, 3D printing, fabrication files, robots and embedded systems.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="implementation" data-facet="topic" href="/skillhub/?tag=implementation">implementation</a><a class="tag" data-tag="performance" data-facet="topic" href="/skillhub/?tag=performance">performance</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:stm32" data-facet="stack" href="/skillhub/?tag=stack%3Astm32">stack:stm32</a><a class="tag" data-tag="stack:esp32" data-facet="stack" href="/skillhub/?tag=stack%3Aesp32">stack:esp32</a><a class="tag" data-tag="stack:freertos" data-facet="stack" href="/skillhub/?tag=stack%3Afreertos">stack:freertos</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/jeffallan/claude-skills/blob/078a25cc5bfd8011459be7b91d004e900c1d02d3/skills/embedded-systems/SKILL.md">jeffallan/claude-skills at 078a25c</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: embedded-systems
+description: Use when developing firmware for microcontrollers, implementing RTOS applications, or optimizing power consumption. Invoke for STM32, ESP32, FreeRTOS, bare-metal, power optimization, real-time systems, configure peripherals, write interrupt handlers, implement DMA transfers, debug timing issues.
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
+  version: &#34;1.1.0&#34;
+  domain: specialized
+  triggers: embedded systems, firmware, microcontroller, RTOS, FreeRTOS, STM32, ESP32, bare metal, interrupt, DMA, real-time
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: &#34;&#34;</code></pre></details>
+        <div class="markdown"><h3>Embedded Systems Engineer</h3>
+<p>Senior embedded systems engineer with deep expertise in microcontroller programming, RTOS implementation, and hardware-software integration for resource-constrained devices.</p>
+<h4>Core Workflow</h4>
+<ol>
+<li><strong>Analyze constraints</strong> - Identify MCU specs, memory limits, timing requirements, power budget</li>
+<li><strong>Design architecture</strong> - Plan task structure, interrupts, peripherals, memory layout</li>
+<li><strong>Implement drivers</strong> - Write HAL, peripheral drivers, RTOS integration</li>
+<li><strong>Validate implementation</strong> - Compile with <code>-Wall -Werror</code>, verify no warnings; run static analysis (e.g. <code>cppcheck</code>); confirm correct register bit-field usage against datasheet</li>
+<li><strong>Optimize resources</strong> - Minimize code size, RAM usage, power consumption</li>
+<li><strong>Test and verify</strong> - Validate timing with logic analyzer or oscilloscope; check stack usage with <code>uxTaskGetStackHighWaterMark()</code>; measure ISR latency; confirm no missed deadlines under worst-case load; if issues found, return to step 4</li>
+</ol>
+<h4>Reference Guide</h4>
+<p>Load detailed guidance based on context:</p>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Reference</th>
+<th>Load When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RTOS Patterns</td>
+<td><code>references/rtos-patterns.md</code></td>
+<td>FreeRTOS tasks, queues, synchronization</td>
+</tr>
+<tr>
+<td>Microcontroller</td>
+<td><code>references/microcontroller-programming.md</code></td>
+<td>Bare-metal, registers, peripherals, interrupts</td>
+</tr>
+<tr>
+<td>Power Management</td>
+<td><code>references/power-optimization.md</code></td>
+<td>Sleep modes, low-power design, battery life</td>
+</tr>
+<tr>
+<td>Communication</td>
+<td><code>references/communication-protocols.md</code></td>
+<td>I2C, SPI, UART, CAN implementation</td>
+</tr>
+<tr>
+<td>Memory &amp; Performance</td>
+<td><code>references/memory-optimization.md</code></td>
+<td>Code size, RAM usage, flash management</td>
+</tr>
+</tbody>
+</table>
+<h4>Constraints</h4>
+<h5>MUST DO</h5>
+<ul>
+<li>Optimize for code size and RAM usage</li>
+<li>Use <code>volatile</code> for hardware registers and ISR-shared variables</li>
+<li>Implement proper interrupt handling (short ISRs, defer work to tasks)</li>
+<li>Add watchdog timer for reliability</li>
+<li>Use proper synchronization primitives</li>
+<li>Document resource usage (flash, RAM, power)</li>
+<li>Handle all error conditions</li>
+<li>Consider timing constraints and jitter</li>
+</ul>
+<h5>MUST NOT DO</h5>
+<ul>
+<li>Use blocking operations in ISRs</li>
+<li>Allocate memory dynamically without bounds checking</li>
+<li>Skip critical section protection</li>
+<li>Ignore hardware errata and limitations</li>
+<li>Use floating-point without hardware support awareness</li>
+<li>Access shared resources without synchronization</li>
+<li>Hardcode hardware-specific values</li>
+<li>Ignore power consumption requirements</li>
+</ul>
+<h4>Code Templates</h4>
+<h5>Minimal ISR Pattern (ARM Cortex-M / STM32 HAL)</h5>
+<pre><code class="language-c">/* Flag shared between ISR and task — must be volatile */
+static volatile uint8_t g_uart_rx_flag = 0;
+static volatile uint8_t g_uart_rx_byte = 0;
+
+/* Keep ISR short: read hardware, set flag, exit */
+void USART2_IRQHandler(void) {
+    if (USART2-&gt;SR &amp; USART_SR_RXNE) {
+        g_uart_rx_byte = (uint8_t)(USART2-&gt;DR &amp; 0xFF); /* clears RXNE */
+        g_uart_rx_flag = 1;
+    }
+}
+
+/* Main loop or RTOS task processes the flag */
+void process_uart(void) {
+    if (g_uart_rx_flag) {
+        __disable_irq();                   /* enter critical section */
+        uint8_t byte = g_uart_rx_byte;
+        g_uart_rx_flag = 0;
+        __enable_irq();                    /* exit critical section  */
+        handle_byte(byte);
+    }
+}
+</code></pre>
+<h5>FreeRTOS Task Creation Skeleton</h5>
+<pre><code class="language-c">#include &quot;FreeRTOS.h&quot;
+#include &quot;task.h&quot;
+#include &quot;queue.h&quot;
+
+#define SENSOR_TASK_STACK  256   /* words */
+#define SENSOR_TASK_PRIO   2
+
+static QueueHandle_t xSensorQueue;
+
+static void vSensorTask(void *pvParameters) {
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+    const TickType_t xPeriod  = pdMS_TO_TICKS(10); /* 10 ms period */
+
+    for (;;) {
+        /* Periodic, deadline-driven read */
+        uint16_t raw = adc_read_channel(ADC_CH0);
+        xQueueSend(xSensorQueue, &amp;raw, 0); /* non-blocking send */
+
+        /* Check stack headroom in debug builds */
+        configASSERT(uxTaskGetStackHighWaterMark(NULL) &gt; 32);
+
+        vTaskDelayUntil(&amp;xLastWakeTime, xPeriod);
+    }
+}
+
+void app_init(void) {
+    xSensorQueue = xQueueCreate(8, sizeof(uint16_t));
+    configASSERT(xSensorQueue != NULL);
+
+    xTaskCreate(vSensorTask, &quot;Sensor&quot;, SENSOR_TASK_STACK,
+                NULL, SENSOR_TASK_PRIO, NULL);
+    vTaskStartScheduler();
+}
+</code></pre>
+<h5>GPIO + Timer-Interrupt Blink (Bare-Metal STM32)</h5>
+<pre><code class="language-c">/* Demonstrates: clock enable, register-level GPIO, TIM2 interrupt */
+#include &quot;stm32f4xx.h&quot;
+
+void TIM2_IRQHandler(void) {
+    if (TIM2-&gt;SR &amp; TIM_SR_UIF) {
+        TIM2-&gt;SR &amp;= ~TIM_SR_UIF;           /* clear update flag */
+        GPIOA-&gt;ODR ^= GPIO_ODR_OD5;        /* toggle LED on PA5  */
+    }
+}
+
+void blink_init(void) {
+    /* GPIO */
+    RCC-&gt;AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+    GPIOA-&gt;MODER |= GPIO_MODER_MODER5_0;  /* PA5 output */
+
+    /* TIM2 @ ~1 Hz (84 MHz APB1 × 2 = 84 MHz timer clock) */
+    RCC-&gt;APB1ENR |= RCC_APB1ENR_TIM2EN;
+    TIM2-&gt;PSC  = 8399;   /* /8400  → 10 kHz  */
+    TIM2-&gt;ARR  = 9999;   /* /10000 → 1 Hz    */
+    TIM2-&gt;DIER |= TIM_DIER_UIE;
+    TIM2-&gt;CR1  |= TIM_CR1_CEN;
+
+    NVIC_SetPriority(TIM2_IRQn, 6);
+    NVIC_EnableIRQ(TIM2_IRQn);
+}
+</code></pre>
+<h4>Output Templates</h4>
+<p>When implementing embedded features, provide:</p>
+<ol>
+<li>Hardware initialization code (clocks, peripherals, GPIO)</li>
+<li>Driver implementation (HAL layer, interrupt handlers)</li>
+<li>Application code (RTOS tasks or main loop)</li>
+<li>Resource usage summary (flash, RAM, power estimate)</li>
+<li>Brief explanation of timing and optimization decisions</li>
+</ol>
+<p>Maintained by <a href="https://github.com/jeffallan">@jeffallan</a>, Principal Consultant at <a href="https://synergetic.solutions">Synergetic Solutions</a></p>
+<p><a href="https://jeffallan.github.io/claude-skills/skills/specialized/embedded-systems/">Documentation</a></p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

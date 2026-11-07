@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>code-review · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re reviewing a pull request or code change and want a short, general checklist. It does: checks for runtime errors, quadratic or N+1 performance problems, side effects, breaking API changes, security gaps, test coverage and fit with the architecture. You get: polite, actionable comments, phrased as questions when unsure, with approval once only minor issues remain. Flags for a senior: schema changes, API contract changes, new frameworks or libraries, performance-critical paths and security-sensitive code. Unlike find-bugs: Sentry&#039;s branch review with an 11-item security checklist and evidence for every finding, this is a lighter reviewer&#039;s guide." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=getsentry%2Fskills">getsentry/skills</a></p>
+      <h1>code-review</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re reviewing a pull request or code change and want a short, general checklist</dd></div><div><dt>It does</dt><dd>checks for runtime errors, quadratic or N+1 performance problems, side effects, breaking API changes, security gaps, test coverage and fit with the architecture</dd></div><div><dt>You get</dt><dd>polite, actionable comments, phrased as questions when unsure, with approval once only minor issues remain</dd></div><div><dt>Flags for a senior</dt><dd>schema changes, API contract changes, new frameworks or libraries, performance-critical paths and security-sensitive code</dd></div><div><dt>Unlike find-bugs</dt><dd>Sentry&#39;s branch review with an 11-item security checklist and evidence for every finding, this is a lighter reviewer&#39;s guide</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Sentry&#39;s code review guidelines, condensed for agents. They&#39;re written for Sentry projects, though nothing in them needs Sentry. The checklist covers problems to look for, from exceptions and out-of-bounds access to unbounded quadratic operations, N+1 queries, complex Django ORM queries, injection and exposed secrets; a design check of whether the change fits the architecture and current requirements; and test coverage at functional, integration and end-to-end level, without heavy branching in tests. The feedback rules say to be polite and specific, not to block a PR over style, and to remember the goal is reducing risk, not perfect code. Short examples show an N+1 query fixed with prefetch_related, a missing useEffect dependency, and SQL injection fixed with a parameterized query. It links to Sentry&#39;s published code review guide.</p>
+      <p class="muted">Summarizes <a href="https://github.com/getsentry/skills/tree/e94f22214528d69899d09c627b3315ddc3544816/skills/code-review">the skill at e94f222</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/getsentry/skills --skill code-review</code><button type="button" class="copy" data-copy="npx skills add https://github.com/getsentry/skills --skill code-review">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/getsentry/skills/code-review">skills.sh page</a> · <a href="https://github.com/getsentry/skills/tree/HEAD/skills/code-review">Source on GitHub</a> · <a href="/skillhub/?repo=getsentry%2Fskills">All skills from getsentry/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,700 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>1,129 <span class="muted">getsentry/skills</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">122</div>
+      <div class="stat-delta">+77% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 69; week to Sep 26: 63; week to Oct 3: 39; week to Oct 10: 368; week to Oct 17: 68; week to Oct 24: 146; week to Oct 31: 78; week to Nov 7: 122. Use the left and right arrow keys to read each week."
+        data-values="69,63,39,368,68,146,78,122" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,41.8 38.6,42.5 71.1,45.3 103.7,6.0 136.3,41.9 168.9,32.5 201.4,40.7 234.0,35.4" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="35.4" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>69</td></tr><tr><td>Sep 26</td><td>63</td></tr><tr><td>Oct 3</td><td>39</td></tr><tr><td>Oct 10</td><td>368</td></tr><tr><td>Oct 17</td><td>68</td></tr><tr><td>Oct 24</td><td>146</td></tr><tr><td>Oct 31</td><td>78</td></tr><tr><td>Nov 7</td><td>122</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/skillhub/?tag=type%3Aguidelines">type:guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="code-review" data-facet="topic" href="/skillhub/?tag=code-review">code-review</a><a class="tag" data-tag="code-quality" data-facet="topic" href="/skillhub/?tag=code-quality">code-quality</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/getsentry/skills/blob/e94f22214528d69899d09c627b3315ddc3544816/skills/code-review/SKILL.md">getsentry/skills at e94f222</a>. Checked daily, last changed Nov 7, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: code-review
+description: Perform code reviews following Sentry engineering practices. Use when reviewing pull requests, examining code changes, or providing feedback on code quality. Covers security, performance, testing, and design review.</code></pre></details>
+        <div class="markdown"><h3>Sentry Code Review</h3>
+<p>Follow these guidelines when reviewing code for Sentry projects.</p>
+<h4>Review Checklist</h4>
+<h5>Identifying Problems</h5>
+<p>Look for these issues in code changes:</p>
+<ul>
+<li><strong>Runtime errors</strong>: Potential exceptions, null pointer issues, out-of-bounds access</li>
+<li><strong>Performance</strong>: Unbounded O(n²) operations, N+1 queries, unnecessary allocations</li>
+<li><strong>Side effects</strong>: Unintended behavioral changes affecting other components</li>
+<li><strong>Backwards compatibility</strong>: Breaking API changes without migration path</li>
+<li><strong>ORM queries</strong>: Complex Django ORM with unexpected query performance</li>
+<li><strong>Security vulnerabilities</strong>: Injection, XSS, access control gaps, secrets exposure</li>
+</ul>
+<h5>Design Assessment</h5>
+<ul>
+<li>Do component interactions make logical sense?</li>
+<li>Does the change align with existing project architecture?</li>
+<li>Are there conflicts with current requirements or goals?</li>
+</ul>
+<h5>Test Coverage</h5>
+<p>Every PR should have appropriate test coverage:</p>
+<ul>
+<li>Functional tests for business logic</li>
+<li>Integration tests for component interactions</li>
+<li>End-to-end tests for critical user paths</li>
+</ul>
+<p>Verify tests cover actual requirements and edge cases. Avoid excessive branching or looping in test code.</p>
+<h5>Long-Term Impact</h5>
+<p>Flag for senior engineer review when changes involve:</p>
+<ul>
+<li>Database schema modifications</li>
+<li>API contract changes</li>
+<li>New framework or library adoption</li>
+<li>Performance-critical code paths</li>
+<li>Security-sensitive functionality</li>
+</ul>
+<h4>Feedback Guidelines</h4>
+<h5>Tone</h5>
+<ul>
+<li>Be polite and empathetic</li>
+<li>Provide actionable suggestions, not vague criticism</li>
+<li>Phrase as questions when uncertain: &quot;Have you considered...?&quot;</li>
+</ul>
+<h5>Approval</h5>
+<ul>
+<li>Approve when only minor issues remain</li>
+<li>Don't block PRs for stylistic preferences</li>
+<li>Remember: the goal is risk reduction, not perfect code</li>
+</ul>
+<h4>Common Patterns to Flag</h4>
+<h5>Python/Django</h5>
+<pre><code class="language-python"># Bad: N+1 query
+for user in users:
+    print(user.profile.name)  # Separate query per user
+
+# Good: Prefetch related
+users = User.objects.prefetch_related('profile')
+</code></pre>
+<h5>TypeScript/React</h5>
+<pre><code class="language-typescript">// Bad: Missing dependency in useEffect
+useEffect(() =&gt; {
+  fetchData(userId);
+}, []);  // userId not in deps
+
+// Good: Include all dependencies
+useEffect(() =&gt; {
+  fetchData(userId);
+}, [userId]);
+</code></pre>
+<h5>Security</h5>
+<pre><code class="language-python"># Bad: SQL injection risk
+cursor.execute(f&quot;SELECT * FROM users WHERE id = {user_id}&quot;)
+
+# Good: Parameterized query
+cursor.execute(&quot;SELECT * FROM users WHERE id = %s&quot;, [user_id])
+</code></pre>
+<h4>References</h4>
+<ul>
+<li><a href="https://develop.sentry.dev/engineering-practices/code-review/">Sentry Code Review Guidelines</a></li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

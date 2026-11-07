@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>coverage-analysis · SkillHub</title>
+    <meta name="description" content="Use it when: a fuzzer has plateaued, you&#039;ve changed a harness, or you want to know why some code is never reached. It does: builds a coverage-instrumented binary, replays the fuzzing corpus through it, and generates text or HTML reports with llvm-cov or gcovr. You get: a coverage report and what blocks the fuzzer, such as magic-value checks that need dictionary entries or seed inputs. Works with: libFuzzer, AFL++, cargo-fuzz and honggfuzz, for C, C++ and Rust. Needs: clang and LLVM&#039;s coverage tools, or GCC with gcovr; Rust needs nightly with llvm-tools." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=trailofbits%2Fskills">trailofbits/skills</a></p>
+      <h1>coverage-analysis</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>a fuzzer has plateaued, you&#39;ve changed a harness, or you want to know why some code is never reached</dd></div><div><dt>It does</dt><dd>builds a coverage-instrumented binary, replays the fuzzing corpus through it, and generates text or HTML reports with llvm-cov or gcovr</dd></div><div><dt>You get</dt><dd>a coverage report and what blocks the fuzzer, such as magic-value checks that need dictionary entries or seed inputs</dd></div><div><dt>Works with</dt><dd>libFuzzer, AFL++, cargo-fuzz and honggfuzz, for C, C++ and Rust</dd></div><div><dt>Needs</dt><dd>clang and LLVM&#39;s coverage tools, or GCC with gcovr; Rust needs nightly with llvm-tools</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>From Trail of Bits&#39; Testing Handbook skills. Coverage shows whether a harness reaches the code you care about and whether a change helped. Its key rule is to measure coverage from the corpus left after each campaign, not from the fuzzer&#39;s live statistics, so the numbers compare across fuzzers. For C and C++ it adds a small runtime that feeds every corpus file to the harness; when the corpus holds crashing inputs, a forking version keeps them from stopping the run. Reading the report, it looks for uncovered blocks, magic-value checks, unreachable code and changes from the baseline: rising coverage means keep fuzzing, falling means fix the harness, flat means add dictionary entries or seed inputs. It warns against comparing fuzzer-reported coverage, building with -O3, counting harness code, mixing LLVM and GCC instrumentation, and checking only once. It also covers incremental gcov runs, filtering large codebases by directory, comparing coverage between two campaigns, CMake targets and notes per fuzzer.</p>
+      <p class="muted">Summarizes <a href="https://github.com/trailofbits/skills/tree/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/testing-handbook-skills/skills/coverage-analysis">the skill at e4dd0bb</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/trailofbits/skills --skill coverage-analysis</code><button type="button" class="copy" data-copy="npx skills add https://github.com/trailofbits/skills --skill coverage-analysis">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/trailofbits/skills/coverage-analysis">skills.sh page</a> · <a href="https://github.com/trailofbits/skills/tree/HEAD/plugins/testing-handbook-skills/skills/coverage-analysis">Source on GitHub</a> · <a href="/skillhub/?repo=trailofbits%2Fskills">All skills from trailofbits/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,800 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>8,053 <span class="muted">trailofbits/skills</span></dd></div><div><dt>First seen</dt><dd>Jan 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">166</div>
+      <div class="stat-delta">+37% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 121; week to Sep 26: 114; week to Oct 3: 119; week to Oct 10: 99; week to Oct 17: 122; week to Oct 24: 135; week to Oct 31: 158; week to Nov 7: 166. Use the left and right arrow keys to read each week."
+        data-values="121,114,119,99,122,135,158,166" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,17.9 38.6,19.8 71.1,18.5 103.7,23.8 136.3,17.7 168.9,14.2 201.4,8.1 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>121</td></tr><tr><td>Sep 26</td><td>114</td></tr><tr><td>Oct 3</td><td>119</td></tr><tr><td>Oct 10</td><td>99</td></tr><tr><td>Oct 17</td><td>122</td></tr><tr><td>Oct 24</td><td>135</td></tr><tr><td>Oct 31</td><td>158</td></tr><tr><td>Nov 7</td><td>166</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/skillhub/?tag=category%3Asecurity">category:security</a><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="testing" data-facet="topic" href="/skillhub/?tag=testing">testing</a><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:c" data-facet="stack" href="/skillhub/?tag=stack%3Ac">stack:c</a><a class="tag" data-tag="stack:cpp" data-facet="stack" href="/skillhub/?tag=stack%3Acpp">stack:cpp</a><a class="tag" data-tag="stack:rust" data-facet="stack" href="/skillhub/?tag=stack%3Arust">stack:rust</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/testing-handbook-skills/skills/coverage-analysis/SKILL.md">trailofbits/skills at e4dd0bb</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: coverage-analysis
+type: technique
+description: &#34;Measures and interprets what a fuzzing campaign actually reaches, using llvm-cov, lcov, or a fuzzer&#39;s own coverage output. Covers baselining a new campaign, reading coverage reports, and turning uncovered regions into harness, seed, or dictionary work. Use when a fuzzer plateaus, when judging whether a harness is effective, after changing a harness, or when asking why some code is never reached.&#34;</code></pre></details>
+        <div class="markdown"><h3>Coverage Analysis</h3>
+<p>Coverage analysis is essential for understanding which parts of your code are exercised during fuzzing. It helps identify fuzzing blockers like magic value checks and tracks the effectiveness of harness improvements over time.</p>
+<h4>Overview</h4>
+<p>Code coverage during fuzzing serves two critical purposes:</p>
+<ol>
+<li><strong>Assessing harness effectiveness</strong>: Understand which parts of your application are actually executed by your fuzzing harnesses</li>
+<li><strong>Tracking fuzzing progress</strong>: Monitor how coverage changes when updating harnesses, fuzzers, or the system under test (SUT)</li>
+</ol>
+<p>Coverage is a proxy for fuzzer capability and performance. While coverage <a href="https://arxiv.org/abs/1808.09700">is not ideal for measuring fuzzer performance</a> in absolute terms, it reliably indicates whether your harness works effectively in a given setup.</p>
+<h5>Key Concepts</h5>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Coverage instrumentation</strong></td>
+<td>Compiler flags that track which code paths are executed</td>
+</tr>
+<tr>
+<td><strong>Corpus coverage</strong></td>
+<td>Coverage achieved by running all test cases in a fuzzing corpus</td>
+</tr>
+<tr>
+<td><strong>Magic value checks</strong></td>
+<td>Hard-to-discover conditional checks that block fuzzer progress</td>
+</tr>
+<tr>
+<td><strong>Coverage-guided fuzzing</strong></td>
+<td>Fuzzing strategy that prioritizes inputs that discover new code paths</td>
+</tr>
+<tr>
+<td><strong>Coverage report</strong></td>
+<td>Visual or textual representation of executed vs. unexecuted code</td>
+</tr>
+</tbody>
+</table>
+<h4>When to Apply</h4>
+<p><strong>Apply this technique when:</strong></p>
+<ul>
+<li>Starting a new fuzzing campaign to establish a baseline</li>
+<li>Fuzzer appears to plateau without finding new paths</li>
+<li>After harness modifications to verify improvements</li>
+<li>When migrating between different fuzzers</li>
+<li>Identifying areas requiring dictionary entries or seed inputs</li>
+<li>Debugging why certain code paths aren't reached</li>
+</ul>
+<p><strong>Skip this technique when:</strong></p>
+<ul>
+<li>Fuzzing campaign is actively finding crashes</li>
+<li>Coverage infrastructure isn't set up yet</li>
+<li>Working with extremely large codebases where full coverage reports are impractical</li>
+<li>Fuzzer's internal coverage metrics are sufficient for your needs</li>
+</ul>
+<h4>Quick Reference</h4>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Command/Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LLVM coverage instrumentation (C/C++)</td>
+<td><code>-fprofile-instr-generate -fcoverage-mapping</code></td>
+</tr>
+<tr>
+<td>GCC coverage instrumentation</td>
+<td><code>-ftest-coverage -fprofile-arcs</code></td>
+</tr>
+<tr>
+<td>cargo-fuzz coverage (Rust)</td>
+<td><code>cargo +nightly fuzz coverage &lt;target&gt;</code></td>
+</tr>
+<tr>
+<td>Generate LLVM profile data</td>
+<td><code>llvm-profdata merge -sparse file.profraw -o file.profdata</code></td>
+</tr>
+<tr>
+<td>LLVM coverage report</td>
+<td><code>llvm-cov report ./binary -instr-profile=file.profdata</code></td>
+</tr>
+<tr>
+<td>LLVM HTML report</td>
+<td><code>llvm-cov show ./binary -instr-profile=file.profdata -format=html -output-dir html/</code></td>
+</tr>
+<tr>
+<td>gcovr HTML report</td>
+<td><code>gcovr --html-details -o coverage.html</code></td>
+</tr>
+</tbody>
+</table>
+<h4>Ideal Coverage Workflow</h4>
+<p>The following workflow represents best practices for integrating coverage analysis into your fuzzing campaigns:</p>
+<pre><code>[Fuzzing Campaign]
+       |
+       v
+[Generate Corpus]
+       |
+       v
+[Coverage Analysis]
+       |
+       +---&gt; Coverage Increased? --&gt; Continue fuzzing with larger corpus
+       |
+       +---&gt; Coverage Decreased? --&gt; Fix harness or investigate SUT changes
+       |
+       +---&gt; Coverage Plateaued? --&gt; Add dictionary entries or seed inputs
+</code></pre>
+<p><strong>Key principle</strong>: Use the corpus generated <em>after</em> each fuzzing campaign to calculate coverage, rather than real-time fuzzer statistics. This approach provides reproducible, comparable measurements across different fuzzing tools.</p>
+<h4>Step-by-Step</h4>
+<h5>Step 1: Build with Coverage Instrumentation</h5>
+<p>Choose your instrumentation method based on toolchain:</p>
+<p><strong>LLVM/Clang (C/C++):</strong></p>
+<pre><code class="language-bash">clang++ -fprofile-instr-generate -fcoverage-mapping \
+  -O2 -DNO_MAIN \
+  main.cc harness.cc execute-rt.cc -o fuzz_exec
+</code></pre>
+<p><strong>GCC (C/C++):</strong></p>
+<pre><code class="language-bash">g++ -ftest-coverage -fprofile-arcs \
+  -O2 -DNO_MAIN \
+  main.cc harness.cc execute-rt.cc -o fuzz_exec_gcov
+</code></pre>
+<p><strong>Rust:</strong></p>
+<pre><code class="language-bash">rustup toolchain install nightly --component llvm-tools-preview
+cargo +nightly fuzz coverage fuzz_target_1
+</code></pre>
+<h5>Step 2: Create Execution Runtime (C/C++ only)</h5>
+<p>For C/C++ projects, create a runtime that executes your corpus:</p>
+<pre><code class="language-cpp">// execute-rt.cc
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;dirent.h&gt;
+#include &lt;stdint.h&gt;
+
+extern &quot;C&quot; int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size);
+
+void load_file_and_test(const char *filename) {
+    FILE *file = fopen(filename, &quot;rb&quot;);
+    if (file == NULL) {
+        printf(&quot;Failed to open file: %s\n&quot;, filename);
+        return;
+    }
+
+    fseek(file, 0, SEEK_END);
+    long filesize = ftell(file);
+    rewind(file);
+
+    uint8_t *buffer = (uint8_t*) malloc(filesize);
+    if (buffer == NULL) {
+        printf(&quot;Failed to allocate memory for file: %s\n&quot;, filename);
+        fclose(file);
+        return;
+    }
+
+    long read_size = (long) fread(buffer, 1, filesize, file);
+    if (read_size != filesize) {
+        printf(&quot;Failed to read file: %s\n&quot;, filename);
+        free(buffer);
+        fclose(file);
+        return;
+    }
+
+    LLVMFuzzerTestOneInput(buffer, filesize);
+
+    free(buffer);
+    fclose(file);
+}
+
+int main(int argc, char **argv) {
+    if (argc != 2) {
+        printf(&quot;Usage: %s &lt;directory&gt;\n&quot;, argv[0]);
+        return 1;
+    }
+
+    DIR *dir = opendir(argv[1]);
+    if (dir == NULL) {
+        printf(&quot;Failed to open directory: %s\n&quot;, argv[1]);
+        return 1;
+    }
+
+    struct dirent *entry;
+    while ((entry = readdir(dir)) != NULL) {
+        if (entry-&gt;d_type == DT_REG) {
+            char filepath[1024];
+            snprintf(filepath, sizeof(filepath), &quot;%s/%s&quot;, argv[1], entry-&gt;d_name);
+            load_file_and_test(filepath);
+        }
+    }
+
+    closedir(dir);
+    return 0;
+}
+</code></pre>
+<h5>Step 3: Execute on Corpus</h5>
+<p><strong>LLVM (C/C++):</strong></p>
+<pre><code class="language-bash">LLVM_PROFILE_FILE=fuzz.profraw ./fuzz_exec corpus/
+</code></pre>
+<p><strong>GCC (C/C++):</strong></p>
+<pre><code class="language-bash">./fuzz_exec_gcov corpus/
+</code></pre>
+<p><strong>Rust:</strong>
+Coverage data is automatically generated when running <code>cargo fuzz coverage</code>.</p>
+<h5>Step 4: Process Coverage Data</h5>
+<p><strong>LLVM:</strong></p>
+<pre><code class="language-bash"># Merge raw profile data
+llvm-profdata merge -sparse fuzz.profraw -o fuzz.profdata
+
+# Generate text report
+llvm-cov report ./fuzz_exec \
+  -instr-profile=fuzz.profdata \
+  -ignore-filename-regex='harness.cc|execute-rt.cc'
+
+# Generate HTML report
+llvm-cov show ./fuzz_exec \
+  -instr-profile=fuzz.profdata \
+  -ignore-filename-regex='harness.cc|execute-rt.cc' \
+  -format=html -output-dir fuzz_html/
+</code></pre>
+<p><strong>GCC with gcovr:</strong></p>
+<pre><code class="language-bash"># Install gcovr (uv manages the isolated environment)
+uv tool install gcovr
+export PATH=&quot;$HOME/.local/bin:$PATH&quot;   # uv's tool bin, if not already present
+
+# Generate report
+gcovr --gcov-executable &quot;llvm-cov gcov&quot; \
+  --exclude harness.cc --exclude execute-rt.cc \
+  --root . --html-details -o coverage.html
+</code></pre>
+<p><strong>Rust:</strong></p>
+<pre><code class="language-bash"># Install required tools
+cargo install cargo-binutils rustfilt
+
+# Create HTML generation script
+cat &lt;&lt;'EOF' &gt; ./generate_html
+#!/bin/sh
+if [ $# -lt 1 ]; then
+    echo &quot;Error: Name of fuzz target is required.&quot;
+    echo &quot;Usage: $0 fuzz_target [sources...]&quot;
+    exit 1
+fi
+FUZZ_TARGET=&quot;$1&quot;
+shift
+SRC_FILTER=&quot;$@&quot;
+TARGET=$(rustc -vV | sed -n 's|host: ||p')
+cargo +nightly cov -- show -Xdemangler=rustfilt \
+  &quot;target/$TARGET/coverage/$TARGET/release/$FUZZ_TARGET&quot; \
+  -instr-profile=&quot;fuzz/coverage/$FUZZ_TARGET/coverage.profdata&quot; \
+  -show-line-counts-or-regions -show-instantiations \
+  -format=html -o fuzz_html/ $SRC_FILTER
+EOF
+chmod +x ./generate_html
+
+# Generate HTML report
+./generate_html fuzz_target_1 src/lib.rs
+</code></pre>
+<h5>Step 5: Analyze Results</h5>
+<p>Review the coverage report to identify:</p>
+<ul>
+<li><strong>Uncovered code blocks</strong>: Areas that may need better seed inputs or dictionary entries</li>
+<li><strong>Magic value checks</strong>: Conditional statements with hardcoded values that block progress</li>
+<li><strong>Dead code</strong>: Functions that may not be reachable through your harness</li>
+<li><strong>Coverage changes</strong>: Compare against baseline to track improvements or regressions</li>
+</ul>
+<h4>Common Patterns</h4>
+<h5>Pattern: Identifying Magic Values</h5>
+<p><strong>Problem</strong>: Fuzzer cannot discover paths guarded by magic value checks.</p>
+<p><strong>Coverage reveals:</strong></p>
+<pre><code class="language-cpp">// Coverage shows this block is never executed
+if (buf == 0x7F454C46) {  // ELF magic number
+    // start parsing buf
+}
+</code></pre>
+<p><strong>Solution</strong>: Add magic values to dictionary file:</p>
+<pre><code># magic.dict
+&quot;\x7F\x45\x4C\x46&quot;
+</code></pre>
+<h5>Pattern: Handling Crashing Inputs</h5>
+<p><strong>Problem</strong>: Coverage generation fails when corpus contains crashing inputs.</p>
+<p><strong>Before:</strong></p>
+<pre><code class="language-bash">./fuzz_exec corpus/  # Crashes on bad input, no coverage generated
+</code></pre>
+<p><strong>After:</strong></p>
+<pre><code class="language-cpp">// Fork before executing to isolate crashes
+int main(int argc, char **argv) {
+    // ... directory opening code ...
+
+    while ((entry = readdir(dir)) != NULL) {
+        if (entry-&gt;d_type == DT_REG) {
+            pid_t pid = fork();
+            if (pid == 0) {
+                // Child process - crash won't affect parent
+                char filepath[1024];
+                snprintf(filepath, sizeof(filepath), &quot;%s/%s&quot;, argv[1], entry-&gt;d_name);
+                load_file_and_test(filepath);
+                exit(0);
+            } else {
+                // Parent waits for child
+                waitpid(pid, NULL, 0);
+            }
+        }
+    }
+}
+</code></pre>
+<h5>Pattern: CMake Integration</h5>
+<p><strong>Use Case</strong>: Adding coverage builds to CMake projects.</p>
+<pre><code class="language-cmake">project(FuzzingProject)
+cmake_minimum_required(VERSION 3.0)
+
+# Main binary
+add_executable(program main.cc)
+
+# Fuzzing binary
+add_executable(fuzz main.cc harness.cc)
+target_compile_definitions(fuzz PRIVATE NO_MAIN=1)
+target_compile_options(fuzz PRIVATE -g -O2 -fsanitize=fuzzer)
+target_link_libraries(fuzz -fsanitize=fuzzer)
+
+# Coverage execution binary
+add_executable(fuzz_exec main.cc harness.cc execute-rt.cc)
+target_compile_definitions(fuzz_exec PRIVATE NO_MAIN)
+target_compile_options(fuzz_exec PRIVATE -O2 -fprofile-instr-generate -fcoverage-mapping)
+target_link_libraries(fuzz_exec -fprofile-instr-generate)
+</code></pre>
+<p>Build:</p>
+<pre><code class="language-bash">cmake -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ .
+cmake --build . --target fuzz_exec
+</code></pre>
+<h4>Advanced Usage</h4>
+<h5>Tips and Tricks</h5>
+<table>
+<thead>
+<tr>
+<th>Tip</th>
+<th>Why It Helps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Use LLVM 18+ with <code>-show-directory-coverage</code></td>
+<td>Organizes large reports by directory structure instead of flat file list</td>
+</tr>
+<tr>
+<td>Export to lcov format for better HTML</td>
+<td><code>llvm-cov export -format=lcov</code> + <code>genhtml</code> provides cleaner per-file reports</td>
+</tr>
+<tr>
+<td>Compare coverage across campaigns</td>
+<td>Store <code>.profdata</code> files with timestamps to track progress over time</td>
+</tr>
+<tr>
+<td>Filter harness code from reports</td>
+<td>Use <code>-ignore-filename-regex</code> to focus on SUT coverage only</td>
+</tr>
+<tr>
+<td>Automate coverage in CI/CD</td>
+<td>Generate coverage reports automatically after scheduled fuzzing runs</td>
+</tr>
+<tr>
+<td>Use gcovr 5.1+ for Clang 14+</td>
+<td>Older gcovr versions have compatibility issues with recent LLVM</td>
+</tr>
+</tbody>
+</table>
+<h5>Incremental Coverage Updates</h5>
+<p>GCC's gcov instrumentation incrementally updates <code>.gcda</code> files across multiple runs. This is useful for tracking coverage as you add test cases:</p>
+<pre><code class="language-bash"># First run
+./fuzz_exec_gcov corpus_batch_1/
+gcovr --html coverage_v1.html
+
+# Second run (adds to existing coverage)
+./fuzz_exec_gcov corpus_batch_2/
+gcovr --html coverage_v2.html
+
+# Start fresh
+gcovr --delete  # Remove .gcda files
+./fuzz_exec_gcov corpus/
+</code></pre>
+<h5>Handling Large Codebases</h5>
+<p>For projects with hundreds of source files:</p>
+<ol>
+<li>
+<p><strong>Filter by prefix</strong>: Only generate reports for relevant directories</p>
+<pre><code class="language-bash">llvm-cov show ./fuzz_exec -instr-profile=fuzz.profdata /path/to/src/
+</code></pre>
+</li>
+<li>
+<p><strong>Use directory coverage</strong>: Group by directory to reduce clutter (LLVM 18+)</p>
+<pre><code class="language-bash">llvm-cov show -show-directory-coverage -format=html -output-dir html/
+</code></pre>
+</li>
+<li>
+<p><strong>Generate JSON for programmatic analysis</strong>:</p>
+<pre><code class="language-bash">llvm-cov export -format=lcov &gt; coverage.json
+</code></pre>
+</li>
+</ol>
+<h5>Differential Coverage</h5>
+<p>Compare coverage between two fuzzing campaigns:</p>
+<pre><code class="language-bash"># Campaign 1
+LLVM_PROFILE_FILE=campaign1.profraw ./fuzz_exec corpus1/
+llvm-profdata merge -sparse campaign1.profraw -o campaign1.profdata
+
+# Campaign 2
+LLVM_PROFILE_FILE=campaign2.profraw ./fuzz_exec corpus2/
+llvm-profdata merge -sparse campaign2.profraw -o campaign2.profdata
+
+# Compare
+llvm-cov show ./fuzz_exec \
+  -instr-profile=campaign2.profdata \
+  -instr-profile=campaign1.profdata \
+  -show-line-counts-or-regions
+</code></pre>
+<h4>Anti-Patterns</h4>
+<table>
+<thead>
+<tr>
+<th>Anti-Pattern</th>
+<th>Problem</th>
+<th>Correct Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Using fuzzer-reported coverage for comparisons</td>
+<td>Different fuzzers calculate coverage differently, making cross-tool comparison meaningless</td>
+<td>Use dedicated coverage tools (llvm-cov, gcovr) for reproducible measurements</td>
+</tr>
+<tr>
+<td>Generating coverage with optimizations</td>
+<td><code>-O3</code> optimizations can eliminate code, making coverage misleading</td>
+<td>Use <code>-O2</code> or <code>-O0</code> for coverage builds</td>
+</tr>
+<tr>
+<td>Not filtering harness code</td>
+<td>Harness coverage inflates numbers and obscures SUT coverage</td>
+<td>Use <code>-ignore-filename-regex</code> or <code>--exclude</code> to filter harness files</td>
+</tr>
+<tr>
+<td>Mixing LLVM and GCC instrumentation</td>
+<td>Incompatible formats cause parsing failures</td>
+<td>Stick to one toolchain for coverage builds</td>
+</tr>
+<tr>
+<td>Ignoring crashing inputs</td>
+<td>Crashes prevent coverage generation, hiding real coverage data</td>
+<td>Fix crashes first, or use process forking to isolate them</td>
+</tr>
+<tr>
+<td>Not tracking coverage over time</td>
+<td>One-time coverage checks miss regressions and improvements</td>
+<td>Store coverage data with timestamps and track trends</td>
+</tr>
+</tbody>
+</table>
+<h4>Tool-Specific Guidance</h4>
+<h5>libFuzzer</h5>
+<p>libFuzzer uses LLVM's SanitizerCoverage by default for guiding fuzzing, but you need separate instrumentation for generating reports.</p>
+<p><strong>Build for coverage:</strong></p>
+<pre><code class="language-bash">clang++ -fprofile-instr-generate -fcoverage-mapping \
+  -O2 -DNO_MAIN \
+  main.cc harness.cc execute-rt.cc -o fuzz_exec
+</code></pre>
+<p><strong>Execute corpus and generate report:</strong></p>
+<pre><code class="language-bash">LLVM_PROFILE_FILE=fuzz.profraw ./fuzz_exec corpus/
+llvm-profdata merge -sparse fuzz.profraw -o fuzz.profdata
+llvm-cov show ./fuzz_exec -instr-profile=fuzz.profdata -format=html -output-dir html/
+</code></pre>
+<p><strong>Integration tips:</strong></p>
+<ul>
+<li>Don't use <code>-fsanitize=fuzzer</code> for coverage builds (it conflicts with profile instrumentation)</li>
+<li>Reuse the same harness function (<code>LLVMFuzzerTestOneInput</code>) with a different main function</li>
+<li>Use the <code>-ignore-filename-regex</code> flag to exclude harness code from coverage reports</li>
+<li>Consider using llvm-cov's <code>-show-instantiation</code> flag for template-heavy C++ code</li>
+</ul>
+<h5>AFL++</h5>
+<p>AFL++ provides its own coverage feedback mechanism, but for detailed reports use standard LLVM/GCC tools.</p>
+<p><strong>Build for coverage with LLVM:</strong></p>
+<pre><code class="language-bash">clang++ -fprofile-instr-generate -fcoverage-mapping \
+  -O2 main.cc harness.cc execute-rt.cc -o fuzz_exec
+</code></pre>
+<p><strong>Build for coverage with GCC:</strong></p>
+<pre><code class="language-bash">AFL_USE_ASAN=0 afl-gcc -ftest-coverage -fprofile-arcs \
+  main.cc harness.cc execute-rt.cc -o fuzz_exec_gcov
+</code></pre>
+<p><strong>Execute and generate report:</strong></p>
+<pre><code class="language-bash"># LLVM approach
+LLVM_PROFILE_FILE=fuzz.profraw ./fuzz_exec afl_output/queue/
+llvm-profdata merge -sparse fuzz.profraw -o fuzz.profdata
+llvm-cov report ./fuzz_exec -instr-profile=fuzz.profdata
+
+# GCC approach
+./fuzz_exec_gcov afl_output/queue/
+gcovr --html-details -o coverage.html
+</code></pre>
+<p><strong>Integration tips:</strong></p>
+<ul>
+<li>Don't use AFL++'s instrumentation (<code>afl-clang-fast</code>) for coverage builds</li>
+<li>Use standard compilers with coverage flags instead</li>
+<li>AFL++'s <code>queue/</code> directory contains your corpus</li>
+<li>AFL++'s built-in coverage statistics are useful for real-time monitoring but not for detailed analysis</li>
+</ul>
+<h5>cargo-fuzz (Rust)</h5>
+<p>cargo-fuzz provides built-in coverage generation using LLVM tools.</p>
+<p><strong>Install prerequisites:</strong></p>
+<pre><code class="language-bash">rustup toolchain install nightly --component llvm-tools-preview
+cargo install cargo-binutils rustfilt
+</code></pre>
+<p><strong>Generate coverage data:</strong></p>
+<pre><code class="language-bash">cargo +nightly fuzz coverage fuzz_target_1
+</code></pre>
+<p><strong>Create HTML report script:</strong></p>
+<pre><code class="language-bash">cat &lt;&lt;'EOF' &gt; ./generate_html
+#!/bin/sh
+FUZZ_TARGET=&quot;$1&quot;
+shift
+SRC_FILTER=&quot;$@&quot;
+TARGET=$(rustc -vV | sed -n 's|host: ||p')
+cargo +nightly cov -- show -Xdemangler=rustfilt \
+  &quot;target/$TARGET/coverage/$TARGET/release/$FUZZ_TARGET&quot; \
+  -instr-profile=&quot;fuzz/coverage/$FUZZ_TARGET/coverage.profdata&quot; \
+  -show-line-counts-or-regions -show-instantiations \
+  -format=html -o fuzz_html/ $SRC_FILTER
+EOF
+chmod +x ./generate_html
+</code></pre>
+<p><strong>Generate report:</strong></p>
+<pre><code class="language-bash">./generate_html fuzz_target_1 src/lib.rs
+</code></pre>
+<p><strong>Integration tips:</strong></p>
+<ul>
+<li>Always use the nightly toolchain for coverage</li>
+<li>The <code>-Xdemangler=rustfilt</code> flag makes function names readable</li>
+<li>Filter by source files (e.g., <code>src/lib.rs</code>) to focus on crate code</li>
+<li>Use <code>-show-line-counts-or-regions</code> and <code>-show-instantiations</code> for better Rust-specific output</li>
+<li>Corpus is located in <code>fuzz/corpus/&lt;target&gt;/</code></li>
+</ul>
+<h5>honggfuzz</h5>
+<p>honggfuzz works with standard LLVM/GCC coverage instrumentation.</p>
+<p><strong>Build for coverage:</strong></p>
+<pre><code class="language-bash"># Use standard compiler, not honggfuzz compiler
+clang -fprofile-instr-generate -fcoverage-mapping \
+  -O2 harness.c execute-rt.c -o fuzz_exec
+</code></pre>
+<p><strong>Execute corpus:</strong></p>
+<pre><code class="language-bash">LLVM_PROFILE_FILE=fuzz.profraw ./fuzz_exec honggfuzz_workspace/
+</code></pre>
+<p><strong>Integration tips:</strong></p>
+<ul>
+<li>Don't use <code>hfuzz-clang</code> for coverage builds</li>
+<li>honggfuzz corpus is typically in a workspace directory</li>
+<li>Use the same LLVM workflow as libFuzzer</li>
+</ul>
+<h4>Troubleshooting</h4>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Cause</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error: no profile data available</code></td>
+<td>Profile wasn't generated or wrong path</td>
+<td>Verify <code>LLVM_PROFILE_FILE</code> was set and <code>.profraw</code> file exists</td>
+</tr>
+<tr>
+<td><code>Failed to load coverage</code></td>
+<td>Mismatch between binary and profile data</td>
+<td>Rebuild binary with same flags used during execution</td>
+</tr>
+<tr>
+<td>Coverage reports show 0%</td>
+<td>Wrong binary used for report generation</td>
+<td>Use the instrumented binary, not the fuzzing binary</td>
+</tr>
+<tr>
+<td><code>no_working_dir_found</code> error (gcovr)</td>
+<td><code>.gcda</code> files in unexpected location</td>
+<td>Add <code>--gcov-ignore-errors=no_working_dir_found</code> flag</td>
+</tr>
+<tr>
+<td>Crashes prevent coverage generation</td>
+<td>Corpus contains crashing inputs</td>
+<td>Filter crashes or use forking approach to isolate failures</td>
+</tr>
+<tr>
+<td>Coverage decreases after harness change</td>
+<td>Harness now skips certain code paths</td>
+<td>Review harness logic; may need to support more input formats</td>
+</tr>
+<tr>
+<td>HTML report is flat file list</td>
+<td>Using older LLVM version</td>
+<td>Upgrade to LLVM 18+ and use <code>-show-directory-coverage</code></td>
+</tr>
+<tr>
+<td><code>incompatible instrumentation</code></td>
+<td>Mixing LLVM and GCC coverage</td>
+<td>Rebuild everything with same toolchain</td>
+</tr>
+</tbody>
+</table>
+<h4>Related Skills</h4>
+<h5>Tools That Use This Technique</h5>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>How It Applies</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>libfuzzer</strong></td>
+<td>Uses SanitizerCoverage for feedback; coverage analysis evaluates harness effectiveness</td>
+</tr>
+<tr>
+<td><strong>aflpp</strong></td>
+<td>Uses edge coverage for feedback; detailed analysis requires separate instrumentation</td>
+</tr>
+<tr>
+<td><strong>cargo-fuzz</strong></td>
+<td>Built-in <code>cargo fuzz coverage</code> command for Rust projects</td>
+</tr>
+<tr>
+<td><strong>honggfuzz</strong></td>
+<td>Uses edge coverage; analyze with standard LLVM/GCC tools</td>
+</tr>
+</tbody>
+</table>
+<h5>Related Techniques</h5>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Relationship</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>fuzz-harness-writing</strong></td>
+<td>Coverage reveals which code paths harness reaches; guides harness improvements</td>
+</tr>
+<tr>
+<td><strong>fuzzing-dictionaries</strong></td>
+<td>Coverage identifies magic value checks that need dictionary entries</td>
+</tr>
+<tr>
+<td><strong>corpus-management</strong></td>
+<td>Coverage analysis helps curate corpora by identifying redundant test cases</td>
+</tr>
+<tr>
+<td><strong>sanitizers</strong></td>
+<td>Coverage helps verify sanitizer-instrumented code is actually executed</td>
+</tr>
+</tbody>
+</table>
+<h4>Resources</h4>
+<h5>Key External Resources</h5>
+<p><strong><a href="https://clang.llvm.org/docs/SourceBasedCodeCoverage.html">LLVM Source-Based Code Coverage</a></strong>
+Comprehensive guide to LLVM's profile instrumentation, including advanced features like branch coverage, region coverage, and integration with existing build systems. Covers compiler flags, runtime behavior, and profile data formats.</p>
+<p><strong><a href="https://llvm.org/docs/CommandGuide/llvm-cov.html">llvm-cov Command Guide</a></strong>
+Detailed CLI reference for llvm-cov commands including <code>show</code>, <code>report</code>, and <code>export</code>. Documents all filtering options, output formats, and integration with llvm-profdata.</p>
+<p><strong><a href="https://gcovr.com/">gcovr Documentation</a></strong>
+Complete guide to gcovr tool for generating coverage reports from gcov data. Covers HTML themes, filtering options, multi-directory projects, and CI/CD integration patterns.</p>
+<p><strong><a href="https://clang.llvm.org/docs/SanitizerCoverage.html">SanitizerCoverage Documentation</a></strong>
+Low-level documentation for LLVM's SanitizerCoverage instrumentation. Explains inline 8-bit counters, PC tables, and how fuzzers use coverage feedback for guidance.</p>
+<p><strong><a href="https://arxiv.org/abs/1808.09700">On the Evaluation of Fuzzer Performance</a></strong>
+Research paper examining limitations of coverage as a fuzzing performance metric. Argues for more nuanced evaluation methods beyond simple code coverage percentages.</p>
+<h5>Video Resources</h5>
+<p>Not applicable - coverage analysis is primarily a tooling and workflow topic best learned through documentation and hands-on practice.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

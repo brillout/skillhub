@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>homelab-network-readiness · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re about to split a flat home network into VLANs, point DHCP at Pi-hole or AdGuard Home, or add VPN access. It does: takes an inventory of your edge, gateway, switches, Wi-Fi, subnets, DNS and DHCP, and how you&#039;d recover, then looks for ways you could lock yourself out. You get: trust zones with default policies, a staged change sequence, the validation evidence to collect, and a review checklist. Won&#039;t: give firewall, VLAN, DHCP or VPN commands until your platform and a rollback path are confirmed. Unlike: homelab-vlan-segmentation, which gives UniFi, pfSense and MikroTik configuration; this one stays vendor-neutral." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <h1>homelab-network-readiness</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re about to split a flat home network into VLANs, point DHCP at Pi-hole or AdGuard Home, or add VPN access</dd></div><div><dt>It does</dt><dd>takes an inventory of your edge, gateway, switches, Wi-Fi, subnets, DNS and DHCP, and how you&#39;d recover, then looks for ways you could lock yourself out</dd></div><div><dt>You get</dt><dd>trust zones with default policies, a staged change sequence, the validation evidence to collect, and a review checklist</dd></div><div><dt>Won&#39;t</dt><dd>give firewall, VLAN, DHCP or VPN commands until your platform and a rollback path are confirmed</dd></div><div><dt>Unlike</dt><dd>homelab-vlan-segmentation, which gives UniFi, pfSense and MikroTik configuration; this one stays vendor-neutral</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A planning and review skill from ECC for home and small-lab networks, used before anything changes. Its first answer stays read-only: inventory, risks, a staged plan, validation and rollback. It asks about the internet edge, gateway, switch ports, SSIDs, subnets, who hands out DHCP leases and DNS, and how you&#39;ll reach your gear after the change. It proposes trust zones (trusted, servers, IoT, guest, management, VPN), each with a default policy, and first confirms your gateway, switch and access points can route between VLANs, tag ports and map SSIDs. A local DNS resolver comes in as a dependency with a reserved address and a fallback, tested on one client before every DHCP scope. For WireGuard-style access it decides what the VPN may reach before generating keys, and recommends port forwarding only once the endpoint is patched and keys can be revoked. The change sequence moves one test client, then one low-risk group, with default-deny rules between zones. It never exposes admin panels, DNS or SSH to the internet, and wants console access before touching management VLANs or trunks.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/homelab-network-readiness">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/affaan-m/ecc --skill homelab-network-readiness</code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill homelab-network-readiness">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/homelab-network-readiness">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/homelab-network-readiness">Source on GitHub</a> · <a href="/skillhub/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,300 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>298,660 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">476</div>
+      <div class="stat-delta">+66% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 287; week to Sep 26: 262; week to Oct 3: 160; week to Oct 10: 144; week to Oct 17: 235; week to Oct 24: 412; week to Oct 31: 415; week to Nov 7: 476. Use the left and right arrow keys to read each week."
+        data-values="287,262,160,144,235,412,415,476" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.5 38.6,25.8 71.1,35.2 103.7,36.7 136.3,28.3 168.9,11.9 201.4,11.6 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>287</td></tr><tr><td>Sep 26</td><td>262</td></tr><tr><td>Oct 3</td><td>160</td></tr><tr><td>Oct 10</td><td>144</td></tr><tr><td>Oct 17</td><td>235</td></tr><tr><td>Oct 24</td><td>412</td></tr><tr><td>Oct 31</td><td>415</td></tr><tr><td>Nov 7</td><td>476</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:networking" data-facet="category" title="Computer networks: home labs, VLANs, VPNs, DNS, routing and network diagnostics." href="/skillhub/?tag=category%3Anetworking">category:networking</a></div>
+          <p class="tag-meaning">Computer networks: home labs, VLANs, VPNs, DNS, routing and network diagnostics.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="infrastructure" data-facet="topic" href="/skillhub/?tag=infrastructure">infrastructure</a><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a><a class="tag" data-tag="planning" data-facet="topic" href="/skillhub/?tag=planning">planning</a><a class="tag" data-tag="personal" data-facet="topic" href="/skillhub/?tag=personal">personal</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:pi-hole" data-facet="stack" href="/skillhub/?tag=stack%3Api-hole">stack:pi-hole</a><a class="tag" data-tag="stack:wireguard" data-facet="stack" href="/skillhub/?tag=stack%3Awireguard">stack:wireguard</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/homelab-network-readiness/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: homelab-network-readiness
+description: Readiness checklist for homelab VLAN segmentation, local DNS filtering (Pi-hole, AdGuard Home), and WireGuard-style remote access. Use when planning or reviewing home network changes — splitting a flat network into trusted, IoT, guest, or management VLANs, moving DHCP to a local resolver, or adding VPN access — before changing router, firewall, DHCP, or VPN configuration.
+metadata:
+  origin: community</code></pre></details>
+        <div class="markdown"><h3>Homelab Network Readiness</h3>
+<p>Use this skill before changing a home or small-lab network that mixes VLANs,
+Pi-hole or another local DNS resolver, firewall rules, and remote VPN access.</p>
+<p>This is a planning and review skill. Do not turn it into copy-paste router,
+firewall, or VPN configuration unless the target platform, current topology,
+rollback path, console access, and maintenance window are all known.</p>
+<h4>When to Use</h4>
+<ul>
+<li>Preparing to split a flat network into trusted, IoT, guest, server, or
+management VLANs.</li>
+<li>Moving DHCP clients to Pi-hole, AdGuard Home, Unbound, or another local DNS
+resolver.</li>
+<li>Adding WireGuard, Tailscale, ZeroTier, OpenVPN, or router-native VPN access.</li>
+<li>Reviewing whether a homelab change can lock the operator out of the gateway,
+switch, access point, DNS server, or VPN server.</li>
+<li>Turning an informal home-network idea into a staged migration plan with
+validation evidence.</li>
+</ul>
+<h4>Safety Rules</h4>
+<ul>
+<li>Keep the first answer read-only: inventory, risks, staged plan, validation,
+and rollback.</li>
+<li>Do not expose gateway admin panels, DNS resolvers, SSH, NAS consoles, or VPN
+management UIs directly to the public internet.</li>
+<li>Do not provide firewall, NAT, VLAN, DHCP, or VPN commands without a confirmed
+platform and a rollback procedure.</li>
+<li>Require out-of-band or same-room console access before changing management
+VLANs, trunk ports, firewall default policies, or DHCP/DNS settings.</li>
+<li>Keep a working path back to the internet before pointing the whole network at
+a new DNS resolver or VPN route.</li>
+<li>Treat IoT, guest, camera, and lab-server networks as different trust zones
+until the operator explicitly chooses otherwise.</li>
+</ul>
+<h4>Required Inventory</h4>
+<p>Collect this before giving implementation steps:</p>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Questions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Internet edge</td>
+<td>What is the modem or ONT? Is the ISP router bridged or still routing?</td>
+</tr>
+<tr>
+<td>Gateway</td>
+<td>What routes, firewalls, handles DHCP, and terminates VPNs?</td>
+</tr>
+<tr>
+<td>Switching</td>
+<td>Which switch ports are uplinks, access ports, trunks, or unmanaged?</td>
+</tr>
+<tr>
+<td>Wi-Fi</td>
+<td>Which SSIDs map to which networks, and are APs wired or mesh?</td>
+</tr>
+<tr>
+<td>Addressing</td>
+<td>What subnets exist today, and which ranges conflict with VPN sites?</td>
+</tr>
+<tr>
+<td>DNS/DHCP</td>
+<td>Which service currently hands out leases and resolver addresses?</td>
+</tr>
+<tr>
+<td>Management</td>
+<td>How will the operator reach the gateway, switch, and AP after changes?</td>
+</tr>
+<tr>
+<td>Recovery</td>
+<td>What can be reverted locally if DNS, DHCP, VLANs, or VPN routes break?</td>
+</tr>
+</tbody>
+</table>
+<h4>VLAN And Trust-Zone Plan</h4>
+<p>Start with intent rather than vendor syntax.</p>
+<table>
+<thead>
+<tr>
+<th>Zone</th>
+<th>Typical contents</th>
+<th>Default policy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Trusted</td>
+<td>Laptops, phones, admin workstations</td>
+<td>Can reach shared services and management only when needed</td>
+</tr>
+<tr>
+<td>Servers</td>
+<td>NAS, Home Assistant, lab hosts, DNS resolver</td>
+<td>Accepts narrow inbound flows from trusted clients</td>
+</tr>
+<tr>
+<td>IoT</td>
+<td>TVs, smart plugs, cameras, speakers</td>
+<td>Internet access plus explicit exceptions only</td>
+</tr>
+<tr>
+<td>Guest</td>
+<td>Visitor devices</td>
+<td>Internet-only, no LAN reachability</td>
+</tr>
+<tr>
+<td>Management</td>
+<td>Gateway, switches, APs, controllers</td>
+<td>Reachable only from trusted admin devices</td>
+</tr>
+<tr>
+<td>VPN</td>
+<td>Remote clients</td>
+<td>Same or narrower access than trusted clients</td>
+</tr>
+</tbody>
+</table>
+<p>Before recommending VLAN IDs or subnets, confirm:</p>
+<ol>
+<li>The gateway supports inter-VLAN routing and firewall rules.</li>
+<li>The switch supports the required tagged and untagged port behavior.</li>
+<li>The APs can map SSIDs to VLANs.</li>
+<li>The operator knows which port they are connected through during the change.</li>
+<li>The management network remains reachable after trunk and SSID changes.</li>
+</ol>
+<h4>DNS Filtering Readiness</h4>
+<p>Pi-hole or another local resolver should be introduced as a dependency, not as a
+single point of failure.</p>
+<ol>
+<li>Give the resolver a reserved address before using it in DHCP options.</li>
+<li>Confirm it can resolve public DNS and local <code>home.arpa</code> names.</li>
+<li>Keep the gateway or a second resolver available as a temporary fallback.</li>
+<li>Test one client or one VLAN before changing every DHCP scope.</li>
+<li>Document which networks may bypass filtering and why.</li>
+<li>Check that blocking rules do not break captive portals, work VPNs, firmware
+updates, or medical/security devices.</li>
+</ol>
+<p>Useful validation evidence:</p>
+<pre><code class="language-text">Client gets expected DHCP lease
+Client receives expected DNS resolver
+Public DNS lookup succeeds
+Local home.arpa lookup succeeds
+Blocked test domain is blocked only where intended
+Gateway and DNS admin interfaces are not reachable from guest or IoT networks
+</code></pre>
+<h4>Remote Access Readiness</h4>
+<p>For WireGuard-style access, decide what the VPN is allowed to reach before
+generating keys or opening ports.</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Use when</th>
+<th>Risk notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Split tunnel to one subnet</td>
+<td>Remote admin for NAS or lab hosts</td>
+<td>Keep route list narrow</td>
+</tr>
+<tr>
+<td>Split tunnel to trusted services</td>
+<td>Access selected apps by IP or DNS</td>
+<td>Requires precise firewall rules</td>
+</tr>
+<tr>
+<td>Full tunnel</td>
+<td>Untrusted networks or travel</td>
+<td>More bandwidth and DNS responsibility</td>
+</tr>
+<tr>
+<td>Overlay VPN</td>
+<td>Simpler remote access with identity controls</td>
+<td>Still needs ACL review</td>
+</tr>
+</tbody>
+</table>
+<p>Do not recommend port forwarding until the operator confirms:</p>
+<ul>
+<li>The VPN endpoint is patched and actively maintained.</li>
+<li>The forwarded port goes only to the VPN service, not an admin UI.</li>
+<li>Dynamic DNS, public IP behavior, and ISP CGNAT status are understood.</li>
+<li>Peer keys can be revoked without rebuilding the whole network.</li>
+<li>Logs or connection status can verify who connected and when.</li>
+</ul>
+<h4>Change Sequence</h4>
+<p>Prefer small, reversible changes:</p>
+<ol>
+<li>Snapshot the current topology, IP plan, DHCP settings, DNS settings, and
+firewall rules.</li>
+<li>Reserve infrastructure addresses for gateway, DNS, controller, APs, NAS, and
+VPN endpoint.</li>
+<li>Create the new zone or VLAN without moving critical devices.</li>
+<li>Move one test client and validate DHCP, DNS, routing, internet, and block
+behavior.</li>
+<li>Add narrow firewall exceptions for required flows.</li>
+<li>Move one low-risk device group.</li>
+<li>Add VPN access with the narrowest route and firewall policy that satisfies
+the use case.</li>
+<li>Document final state, known exceptions, and rollback commands or UI steps.</li>
+</ol>
+<h4>Review Checklist</h4>
+<ul>
+<li>Each network has a reason to exist and a clear trust boundary.</li>
+<li>No management interface is reachable from guest, IoT, or the public internet.</li>
+<li>DNS failure does not take down the operator's ability to recover locally.</li>
+<li>DHCP scope changes were tested on one client before broad rollout.</li>
+<li>VPN clients receive only the routes and DNS settings they need.</li>
+<li>Firewall rules are default-deny between zones, with named exceptions.</li>
+<li>The operator can still reach gateway, switch, AP, DNS, and VPN admin surfaces.</li>
+<li>Rollback is documented in the same vocabulary as the chosen platform UI or
+CLI.</li>
+</ul>
+<h4>Anti-Patterns</h4>
+<ul>
+<li>Segmenting networks before knowing which switch ports and SSIDs carry which
+VLANs.</li>
+<li>Moving the admin workstation off the only reachable management network.</li>
+<li>Pointing all DHCP scopes at a Pi-hole before testing fallback DNS.</li>
+<li>Publishing NAS, DNS, router, or hypervisor management directly to the
+internet.</li>
+<li>Treating VPN access as equivalent to full trusted-LAN access.</li>
+<li>Adding allow-all firewall rules temporarily and forgetting to remove them.</li>
+<li>Copying commands from another vendor or firmware version without checking the
+exact platform syntax.</li>
+</ul>
+<h4>See Also</h4>
+<ul>
+<li>Skill: <code>homelab-network-setup</code></li>
+<li>Skill: <code>network-config-validation</code></li>
+<li>Skill: <code>network-interface-health</code></li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

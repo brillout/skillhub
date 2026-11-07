@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>diagnose-ci-failures · SkillHub</title>
+    <meta name="description" content="Use it when: a pull request&#039;s CI is red and you want to know why before anyone touches the code. It does: finds the branch&#039;s PR with gh, sorts its checks into passed, failed and running, pulls the failed logs and groups the errors. You get: a plan: the failing checks, the errors and where they are, the fix for each group, and the commands to verify it. Needs: the GitHub CLI, gh, and a create_plan tool for the plan document. Tuned for: Rust projects: its error groups and check names assume cargo fmt, Clippy, WASM builds and macOS, Linux and Windows test runs." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=warpdotdev%2Fcommon-skills">warpdotdev/common-skills</a></p>
+      <h1>diagnose-ci-failures</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>a pull request&#39;s CI is red and you want to know why before anyone touches the code</dd></div><div><dt>It does</dt><dd>finds the branch&#39;s PR with gh, sorts its checks into passed, failed and running, pulls the failed logs and groups the errors</dd></div><div><dt>You get</dt><dd>a plan: the failing checks, the errors and where they are, the fix for each group, and the commands to verify it</dd></div><div><dt>Needs</dt><dd>the GitHub CLI, gh, and a create_plan tool for the plan document</dd></div><div><dt>Tuned for</dt><dd>Rust projects: its error groups and check names assume cargo fmt, Clippy, WASM builds and macOS, Linux and Windows test runs</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A fixed sequence for red CI. The agent finds the PR for the current branch with gh, offering to open one with create-pr if there&#39;s none, and reads the status of every check. If some are still running, it reports what has passed and failed so far and suggests waiting. For each failed check it pulls the failed logs and extracts error messages with their files and lines, lint names, failing tests and stack traces, then groups them: formatting, linting, compilation, tests, and platform-specific failures such as WASM or one operating system. The plan, made with a create_plan tool, states the problem, what failed where, the fix for each group and the commands to verify it, and points to the fix-errors skill for how to fix each kind of error. It never edits code itself. It sets GH_PAGER=cat on every gh call, and treats tests that fail locally but passed in CI as likely flaky or specific to the environment.</p>
+      <p class="muted">Summarizes <a href="https://github.com/warpdotdev/common-skills/tree/8792394ff1b655e0af451b8fabb68ef0cfcbd208/.agents/skills/diagnose-ci-failures">the skill at 8792394</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/warpdotdev/common-skills --skill diagnose-ci-failures</code><button type="button" class="copy" data-copy="npx skills add https://github.com/warpdotdev/common-skills --skill diagnose-ci-failures">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/warpdotdev/common-skills/diagnose-ci-failures">skills.sh page</a> · <a href="https://github.com/warpdotdev/common-skills/tree/HEAD/.agents/skills/diagnose-ci-failures">Source on GitHub</a> · <a href="/skillhub/?repo=warpdotdev%2Fcommon-skills">All skills from warpdotdev/common-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>28,600 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>658 <span class="muted">warpdotdev/common-skills</span></dd></div><div><dt>First seen</dt><dd>May 9, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">108</div>
+      <div class="stat-delta">-87% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 841; week to Sep 26: 641; week to Oct 3: 578; week to Oct 10: 925; week to Oct 17: 489; week to Oct 24: 362; week to Oct 31: 355; week to Nov 7: 108. Use the left and right arrow keys to read each week."
+        data-values="841,641,578,925,489,362,355,108" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,10.0 38.6,19.5 71.1,22.5 103.7,6.0 136.3,26.7 168.9,32.8 201.4,33.1 234.0,44.9" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="44.9" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>841</td></tr><tr><td>Sep 26</td><td>641</td></tr><tr><td>Oct 3</td><td>578</td></tr><tr><td>Oct 10</td><td>925</td></tr><tr><td>Oct 17</td><td>489</td></tr><tr><td>Oct 24</td><td>362</td></tr><tr><td>Oct 31</td><td>355</td></tr><tr><td>Nov 7</td><td>108</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="ci" data-facet="topic" href="/skillhub/?tag=ci">ci</a><a class="tag" data-tag="debugging" data-facet="topic" href="/skillhub/?tag=debugging">debugging</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:github" data-facet="stack" href="/skillhub/?tag=stack%3Agithub">stack:github</a><a class="tag" data-tag="stack:rust" data-facet="stack" href="/skillhub/?tag=stack%3Arust">stack:rust</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">No copy of its SKILL.md yet.</p>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

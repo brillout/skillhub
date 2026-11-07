@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>audit-context-building · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re starting an audit, threat model or architecture review on code you don&#039;t know yet. It does: dispatches a workflow that analyzes each function in its own subagent and returns compact records, keeping the long analysis out of your context. You get: audit-context/DOSSIER.md plus one file per function under audit-context/functions/. Doesn&#039;t: name vulnerabilities, suggest fixes, write proofs of concept or rate severity; that&#039;s the bug-hunting phase that follows." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=trailofbits%2Fskills">trailofbits/skills</a></p>
+      <h1>audit-context-building</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re starting an audit, threat model or architecture review on code you don&#39;t know yet</dd></div><div><dt>It does</dt><dd>dispatches a workflow that analyzes each function in its own subagent and returns compact records, keeping the long analysis out of your context</dd></div><div><dt>You get</dt><dd>audit-context/DOSSIER.md plus one file per function under audit-context/functions/</dd></div><div><dt>Doesn&#39;t</dt><dd>name vulnerabilities, suggest fixes, write proofs of concept or rate severity; that&#39;s the bug-hunting phase that follows</dd></div></dl></section>
+      
+      <p class="note">Runs through its Claude Code plugin&#39;s /audit-context-building:audit-context command and function-analyzer agent, so install the plugin from the trailofbits/skills marketplace, not the skill alone.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Trail of Bits&#39; first pass on an audit: build understanding, not verdicts. For a codebase it runs the plugin&#39;s audit-context command; for a single function, its function-analyzer agent. Each record lists what must always be true, with the line that shows it, what the function takes on faith and what establishes it, what it needs from each function it calls, and what is still unclear. The dossier adds rules that span several functions, who can reach what, and where complexity clusters. Its core rule is to follow the calls: read each called function and every path through it, cite a line for every claim, and write &#34;nothing found&#34; when nothing makes an assumption true. Those unenforced assumptions and the open questions are what it hands the bug-hunting phase. Where two records disagree, both are quoted rather than reconciled. The same format covers smart contracts, C and C++, decompiled firmware and web services.</p>
+      <p class="muted">Summarizes <a href="https://github.com/trailofbits/skills/tree/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/audit-context-building/skills/audit-context-building">the skill at e4dd0bb</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/trailofbits/skills --skill audit-context-building</code><button type="button" class="copy" data-copy="npx skills add https://github.com/trailofbits/skills --skill audit-context-building">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/trailofbits/skills/audit-context-building">skills.sh page</a> · <a href="https://github.com/trailofbits/skills/tree/HEAD/plugins/audit-context-building/skills/audit-context-building">Source on GitHub</a> · <a href="/skillhub/?repo=trailofbits%2Fskills">All skills from trailofbits/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>7,300 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>8,053 <span class="muted">trailofbits/skills</span></dd></div><div><dt>First seen</dt><dd>Jan 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">282</div>
+      <div class="stat-delta">+77% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 159; week to Sep 26: 165; week to Oct 3: 156; week to Oct 10: 137; week to Oct 17: 195; week to Oct 24: 231; week to Oct 31: 262; week to Nov 7: 282. Use the left and right arrow keys to read each week."
+        data-values="159,165,156,137,195,231,262,282" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,25.2 38.6,24.3 71.1,25.7 103.7,28.6 136.3,19.6 168.9,14.0 201.4,9.1 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>159</td></tr><tr><td>Sep 26</td><td>165</td></tr><tr><td>Oct 3</td><td>156</td></tr><tr><td>Oct 10</td><td>137</td></tr><tr><td>Oct 17</td><td>195</td></tr><tr><td>Oct 24</td><td>231</td></tr><tr><td>Oct 31</td><td>262</td></tr><tr><td>Nov 7</td><td>282</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/skillhub/?tag=category%3Asecurity">category:security</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:claude-code" data-facet="needs" title="Uses Claude Code features such as hooks or background agents." href="/skillhub/?tag=needs%3Aclaude-code">needs:claude-code</a><a class="tag" data-tag="needs:subagents" data-facet="needs" title="Relies on the agent being able to spawn subagents." href="/skillhub/?tag=needs%3Asubagents">needs:subagents</a></div>
+          <p class="tag-meaning">Uses Claude Code features such as hooks or background agents.</p><p class="tag-meaning">Relies on the agent being able to spawn subagents.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a><a class="tag" data-tag="architecture" data-facet="topic" href="/skillhub/?tag=architecture">architecture</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/audit-context-building/skills/audit-context-building/SKILL.md">trailofbits/skills at e4dd0bb</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: audit-context-building
+description: Understand a codebase before looking for bugs in it - what each function assumes, what it guarantees, and what it depends on elsewhere. Use when starting an audit, threat model, or architecture review on unfamiliar code, and before any vulnerability-hunting pass.
+allowed-tools: Workflow Task Read Grep Glob</code></pre></details>
+        <div class="markdown"><h3>Audit Context Building</h3>
+<p>Build understanding, not verdicts. This runs before anyone hunts for bugs, and feeds that work.</p>
+<h4>When to Use</h4>
+<p>At the start of an audit, a threat model, or an architecture review, when the code is unfamiliar. Also when
+an earlier pass produced findings nobody could judge, because no one had mapped out how the system fits
+together.</p>
+<h4>When NOT to Use</h4>
+<p>Do not name vulnerabilities, suggest fixes, write proofs-of-concept, or rate severity. Those belong to the
+hunting phase, which runs next and with the whole picture in hand. When the code counts on something and
+nothing checks it, record that plainly and move on — whether it matters is decided later.</p>
+<p>Not worth the tokens on code you already understand.</p>
+<h4>Do not analyze in this context</h4>
+<p>The analysis is long, and this context needs to survive to use it. Dispatch it:</p>
+<ul>
+<li><strong>A codebase, or more than one function</strong> — run <code>/audit-context-building:audit-context &lt;path&gt;</code>. It orients,
+analyzes each function in its own subagent, and writes <code>audit-context/DOSSIER.md</code> plus one file per
+function under <code>audit-context/functions/</code>. Only compact records return here.</li>
+<li><strong>A single function</strong> — dispatch the <code>audit-context-building:function-analyzer</code> agent at it. It writes its
+prose to disk and returns a record.</li>
+</ul>
+<p>Then work from what comes back: the index, the unenforced assumptions, the open questions. Read a function's
+file when you need its detail.</p>
+<p>The workflow is what enforces this, not this text: a subagent bound to a return schema cannot return prose.
+Treat this section as routing, and route.</p>
+<h4>What comes back, and how to read it</h4>
+<p>Each record lists what must always be true (with the line that shows it), what the function takes on faith
+(with whatever establishes it), which functions it calls and what it needs from each, and anything still
+unclear. The dossier adds the rules that span several functions, who can reach what, and where the
+complicated parts cluster.</p>
+<p>Two things matter more than the rest:</p>
+<ul>
+<li><strong>Assumptions marked <code>nothing found</code>.</strong> The code counts on something being true and nothing anywhere makes
+it true. This is the most useful thing to hand the hunting phase.</li>
+<li><strong>The open questions.</strong> An honest list of what is still unclear beats a confident answer that turns out to
+be wrong. Carry them forward instead of closing them out.</li>
+</ul>
+<p>Where two records disagree, both are quoted rather than quietly reconciled. That is a fact about the code,
+not a flaw in the analysis.</p>
+<h4>The format</h4>
+<p><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/audit-context-building/skills/audit-context-building/resources/ANALYSIS_FORMAT.md">ANALYSIS_FORMAT.md</a> defines it, and
+<a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/audit-context-building/skills/audit-context-building/resources/FUNCTION_MICRO_ANALYSIS_EXAMPLE.md">FUNCTION_MICRO_ANALYSIS_EXAMPLE.md</a> works through examples in
+C and Solidity. Read them when extending this plugin or deciding whether a record can be trusted.</p>
+<p>The format is the same whatever the target. What changes is what fills each slot, and what counts as a call
+you cannot see inside. <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/audit-context-building/skills/audit-context-building/resources/DOMAIN_NOTES.md">DOMAIN_NOTES.md</a> maps that across smart contracts, C and
+C++, decompiled firmware, and web services — read it when the target is not plain source code.</p>
+<p><strong>The rule that matters most: follow the calls.</strong> Whether a function is correct usually depends on something
+another function does, and you cannot see that from the caller alone. A limit looks enforced because the
+value came back from a function whose name suggests it was checked. So read the function being called, follow
+every path through it rather than only the one that succeeds, and say what makes each assumption true. When
+nothing does, use those words: <code>nothing found</code>. Every claim cites a line, or becomes an open question.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

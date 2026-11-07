@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>semgrep · SkillHub</title>
+    <meta name="description" content="Use it when: you want a first-pass static security scan of a codebase, before or alongside code review. It does: detects languages, checks for Semgrep Pro, proposes rulesets and a mode, waits for your explicit yes, then runs them through its bundled script. You get: per-scan output and one merged results.sarif in an output folder, plus a report that lists any ruleset that failed or was skipped. Modes: &quot;run all&quot; reports everything; &quot;important only&quot; keeps security findings of medium-to-high confidence and impact. Needs: the Semgrep CLI, jq and uv; Semgrep Pro is optional and adds cross-file taint tracking." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=trailofbits%2Fskills">trailofbits/skills</a></p>
+      <h1>semgrep</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want a first-pass static security scan of a codebase, before or alongside code review</dd></div><div><dt>It does</dt><dd>detects languages, checks for Semgrep Pro, proposes rulesets and a mode, waits for your explicit yes, then runs them through its bundled script</dd></div><div><dt>You get</dt><dd>per-scan output and one merged results.sarif in an output folder, plus a report that lists any ruleset that failed or was skipped</dd></div><div><dt>Modes</dt><dd>&#34;run all&#34; reports everything; &#34;important only&#34; keeps security findings of medium-to-high confidence and impact</dd></div><div><dt>Needs</dt><dd>the Semgrep CLI, jq and uv; Semgrep Pro is optional and adds cross-file taint tracking</dd></div></dl></section>
+      
+      <p class="note">Needs the Semgrep CLI and uv; Semgrep Pro, if you have it, adds cross-file taint analysis. Results go to ./static_analysis_semgrep_N unless you name a folder.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Trail of Bits&#39; Semgrep skill, from its static-analysis plugin. It always adds third-party rulesets from Trail of Bits, 0xdea and Decurity when the language matches, because they catch bugs the official registry misses. Every command runs with --metrics=off so the scan sends no telemetry, and its run-scans.sh script, not the agent, writes the semgrep commands, runs them in parallel batches and records what ran, failed or was skipped in scans.json. The approval step is a hard gate: asking for a scan isn&#39;t approval, and the agent may not add rulesets you didn&#39;t approve. With Semgrep Pro it tracks taint across files; without it, analysis stays within single files. Cloned rule repos are deleted at the end. The plugin also ships a /static-analysis:semgrep-scan command that runs the same scan without stopping for approval, and for writing your own rules it points to the semgrep-rule-creator skill.</p>
+      <p class="muted">Summarizes <a href="https://github.com/trailofbits/skills/tree/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/semgrep">the skill at e4dd0bb</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/trailofbits/skills --skill semgrep</code><button type="button" class="copy" data-copy="npx skills add https://github.com/trailofbits/skills --skill semgrep">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/trailofbits/skills/semgrep">skills.sh page</a> · <a href="https://github.com/trailofbits/skills/tree/HEAD/plugins/static-analysis/skills/semgrep">Source on GitHub</a> · <a href="/skillhub/?repo=trailofbits%2Fskills">All skills from trailofbits/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>10,100 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>8,053 <span class="muted">trailofbits/skills</span></dd></div><div><dt>First seen</dt><dd>Jan 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">363</div>
+      <div class="stat-delta">+83% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 198; week to Sep 26: 200; week to Oct 3: 216; week to Oct 10: 228; week to Oct 17: 248; week to Oct 24: 279; week to Oct 31: 329; week to Nov 7: 363. Use the left and right arrow keys to read each week."
+        data-values="198,200,216,228,248,279,329,363" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,26.0 38.6,25.8 71.1,23.8 103.7,22.4 136.3,19.9 168.9,16.2 201.4,10.1 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>198</td></tr><tr><td>Sep 26</td><td>200</td></tr><tr><td>Oct 3</td><td>216</td></tr><tr><td>Oct 10</td><td>228</td></tr><tr><td>Oct 17</td><td>248</td></tr><tr><td>Oct 24</td><td>279</td></tr><tr><td>Oct 31</td><td>329</td></tr><tr><td>Nov 7</td><td>363</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/skillhub/?tag=category%3Asecurity">category:security</a><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/skillhub/?tag=type%3Atool">type:tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a><a class="tag" data-tag="code-review" data-facet="topic" href="/skillhub/?tag=code-review">code-review</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:semgrep" data-facet="stack" href="/skillhub/?tag=stack%3Asemgrep">stack:semgrep</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/semgrep/SKILL.md">trailofbits/skills at e4dd0bb</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: semgrep
+description: &#62;-
+  Runs a Semgrep security scan over a codebase: detects languages, selects
+  rulesets, presents the plan for explicit approval, then runs every approved
+  ruleset through scripts/run-scans.sh, which batches the semgrep processes and
+  writes scans.json, and merges the output to SARIF. Supports two scan modes,
+  &#34;run all&#34; for full ruleset coverage and &#34;important only&#34; for security
+  findings at medium-to-high confidence and impact. Uses Semgrep Pro for
+  cross-file taint analysis when it is available. Use when asked to scan code
+  for vulnerabilities, run a security audit with Semgrep, find bugs, or perform
+  static analysis. For the same scan without the approval gate, use the
+  /static-analysis:semgrep-scan workflow.
+allowed-tools: Bash Read Glob AskUserQuestion TaskCreate TaskList TaskUpdate</code></pre></details>
+        <div class="markdown"><h3>Semgrep Security Scan</h3>
+<p>Run a Semgrep scan with automatic language detection, parallel execution, and merged SARIF output.</p>
+<h4>Essential Principles</h4>
+<ol>
+<li><strong>Always use <code>--metrics=off</code></strong> — Semgrep sends telemetry by default; <code>--config auto</code> also phones home. Every <code>semgrep</code> command must include <code>--metrics=off</code> to prevent data leakage during security audits.</li>
+<li><strong>User must approve the scan plan (Step 3 is a hard gate)</strong> — The original &quot;scan this codebase&quot; request is NOT approval. Present exact rulesets, target, engine, and mode; wait for explicit &quot;yes&quot;/&quot;proceed&quot; before spawning scanners.</li>
+<li><strong>Third-party rulesets are required, not optional</strong> — Trail of Bits, 0xdea, and Decurity rules catch vulnerabilities absent from the official registry. Include them whenever the detected language matches.</li>
+<li><strong><code>scripts/run-scans.sh</code> generates the commands; do not write them yourself</strong> — it builds every <code>semgrep</code> line from the approved list. That is what makes <code>--metrics=off</code>, the <code>--include</code> scoping rule, and the parallel dispatch properties of the code rather than instructions. Give it the approved rulesets and let it run.</li>
+<li><strong>Always check for Semgrep Pro before scanning</strong> — Pro enables cross-file taint tracking and catches ~250% more true positives. Skipping the check means silently missing critical inter-file vulnerabilities.</li>
+<li><strong>Report what did not run</strong> — <code>scans.json</code> carries <code>failed</code> and <code>skipped</code> alongside <code>scans</code>. A ruleset whose repo would not clone, or whose scan exited non-zero, must appear in the report. A partial scan presented as a complete one is worse than no scan.</li>
+</ol>
+<h4>When to Use</h4>
+<ul>
+<li>Security audit of a codebase</li>
+<li>Finding vulnerabilities before code review</li>
+<li>Scanning for known bug patterns</li>
+<li>First-pass static analysis</li>
+</ul>
+<h4>When NOT to Use</h4>
+<ul>
+<li>Binary analysis → Use binary analysis tools</li>
+<li>Already have Semgrep CI configured → Use existing pipeline</li>
+<li>Need cross-file analysis but no Pro license → Consider CodeQL as alternative</li>
+<li>Creating custom Semgrep rules → Use <code>semgrep-rule-creator</code> skill</li>
+<li>Porting existing rules to other languages → Use <code>semgrep-rule-variant-creator</code> skill</li>
+</ul>
+<h4>Output Directory</h4>
+<p>All scan results, SARIF files, and temporary data are stored in a single output directory.</p>
+<ul>
+<li><strong>If the user specifies an output directory</strong> in their prompt, use it as <code>OUTPUT_DIR</code>.</li>
+<li><strong>If not specified</strong>, default to <code>./static_analysis_semgrep_1</code>. If that already exists, increment to <code>_2</code>, <code>_3</code>, etc.</li>
+</ul>
+<p>In both cases, <strong>always create the directory</strong> with <code>mkdir -p</code> before writing any files.</p>
+<pre><code class="language-bash"># Resolve output directory
+if [ -n &quot;$USER_SPECIFIED_DIR&quot; ]; then
+  OUTPUT_DIR=&quot;$USER_SPECIFIED_DIR&quot;
+else
+  BASE=&quot;static_analysis_semgrep&quot;
+  N=1
+  while [ -e &quot;${BASE}_${N}&quot; ]; do
+    N=$((N + 1))
+  done
+  OUTPUT_DIR=&quot;${BASE}_${N}&quot;
+fi
+mkdir -p &quot;$OUTPUT_DIR/raw&quot; &quot;$OUTPUT_DIR/results&quot;
+</code></pre>
+<p>The output directory is resolved <strong>once</strong> at the start of Step 1 and used throughout all subsequent steps.</p>
+<pre><code>$OUTPUT_DIR/
+├── rulesets.json                # The approved plan (Step 3), read by run-scans.sh (Step 4)
+├── scans.json                   # What ran, failed, skipped, and covered nothing (Step 4)
+├── raw/                         # Per-scan raw output (unfiltered)
+│   ├── python-python.json        # &lt;language&gt;-&lt;ruleset&gt; for language-scoped rules
+│   ├── python-python.sarif
+│   ├── python-django.json
+│   ├── python-django.sarif
+│   ├── all-security-audit.json   # all-&lt;ruleset&gt; for cross-language rules, run once
+│   ├── all-security-audit.sarif
+│   └── ...
+└── results/                     # Final merged output
+    └── results.sarif
+</code></pre>
+<h4>Prerequisites</h4>
+<p><strong>Required:</strong> Semgrep CLI (<code>semgrep --version</code>). If not installed, see <a href="https://semgrep.dev/docs/getting-started/">Semgrep installation docs</a>.</p>
+<p><strong>Optional:</strong> Semgrep Pro — enables cross-file taint tracking, inter-procedural analysis, and additional languages (Apex, C#, Elixir). Check with:</p>
+<pre><code class="language-bash"># --metrics=off because Principle 1 has no exceptions, and this is the first semgrep command
+# of a run. stderr is kept because &quot;OSS only&quot; has several causes (logged out, no subscription,
+# registry blocked) and the run downgrades silently for all of them.
+if PRO_ERR=$(semgrep --pro --validate --metrics=off --config p/default 2&gt;&amp;1); then
+  echo &quot;Pro available&quot;
+else
+  echo &quot;OSS only&quot;
+  echo &quot;  reason: $(printf '%s' &quot;$PRO_ERR&quot; | tail -n 3)&quot;
+fi
+</code></pre>
+<p><strong>Limitations:</strong> OSS mode cannot track data flow across files. Pro mode uses <code>-j 1</code> for cross-file analysis (slower per ruleset, but parallel rulesets compensate).</p>
+<h4>Scan Modes</h4>
+<p>Select mode in Step 2. Mode affects both the scan flags and post-processing.</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Coverage</th>
+<th>Findings Reported</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Run all</strong></td>
+<td>All rulesets, all severity levels</td>
+<td>Everything</td>
+</tr>
+<tr>
+<td><strong>Important only</strong></td>
+<td>All rulesets, pre- and post-filtered</td>
+<td>Security vulns only, medium-high confidence/impact</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Important only</strong> applies two filter layers:</p>
+<ol>
+<li><strong>Pre-filter</strong>: <code>--severity WARNING --severity ERROR</code> (CLI flag)</li>
+<li><strong>Post-filter</strong>: JSON metadata — keeps only <code>category=security</code>, <code>confidence∈{MEDIUM,HIGH}</code>, <code>impact∈{MEDIUM,HIGH}</code></li>
+</ol>
+<p>See <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/semgrep/references/scan-modes.md">scan-modes.md</a> for metadata criteria and jq filter commands.</p>
+<h4>Orchestration Architecture</h4>
+<pre><code>┌──────────────────────────────────────────────────────────────────┐
+│ MAIN SESSION (this skill)                                        │
+│ Step 1: Detect languages + check Pro availability                │
+│ Step 2: Select scan mode + rulesets (ref: rulesets.md)           │
+│ Step 3: Present plan + rulesets, get approval [⛔ HARD GATE]     │
+│ Step 4: Run scripts/run-scans.sh with the approved rulesets      │
+│ Step 5: Post-filter, merge, report, delete repos/                │
+└──────────────────────────────────────────────────────────────────┘
+         │ Step 4: Bash
+         ▼
+┌──────────────────────────────────────────────────────────────────┐
+│ scripts/run-scans.sh                                             │
+│   clone       each third-party repo once, into repos/            │
+│   generate    one semgrep command per ruleset                    │
+│                ├── python     p/python, p/django   --include=*.py│
+│                ├── javascript p/javascript         --include=*.js│
+│                ├── docker     p/dockerfile                       │
+│                └── cross-language  p/security-audit, p/secrets,  │
+│                                    the cloned repos  (no filter) │
+│   run         in batches of --jobs, exit code read per process   │
+│   write       scans.json — scans, failed, skipped                │
+└──────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p>The approval gate stays in the session; the script is execution only and asks nothing. The
+approved list reaches it as a JSON file, so the scan cannot reach a ruleset the user declined.</p>
+<p>Cross-language rulesets go in one shared unit rather than being repeated per language.
+<code>p/security-audit</code>, <code>p/secrets</code>, and the third-party repos scan the whole target unscoped,
+so running them once per language ran the identical command N times and left the SARIF
+merge to dedup the copies.</p>
+<h4>Running it as a Workflow</h4>
+<p>This plugin ships <code>/static-analysis:semgrep-scan</code>, which runs the whole scan end to end:
+detect languages and Pro, select rulesets from <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/semgrep/references/rulesets.md">rulesets.md</a>, run
+<code>scripts/run-scans.sh</code>, merge and report. Pass it a JSON object, not prose:</p>
+<pre><code>/static-analysis:semgrep-scan {&quot;target&quot;: &quot;/abs/path&quot;, &quot;mode&quot;: &quot;run-all&quot;}
+</code></pre>
+<p><strong>It does not stop for ruleset approval.</strong> Invoking it with a target is the opt-in, the same
+way <code>/variant-analysis:variants</code> works. That is safe to do because the scan is read-only over
+the target — no <code>--autofix</code>, every write inside the output directory — so the approval gate
+below is a scope confirmation rather than a safety one. What ran is recorded in
+<code>rulesets.json</code> and <code>scans.json</code> either way.</p>
+<p>Use the workflow when you want the scan run; work the five steps below when the ruleset
+selection itself matters and you want to see and edit the list first.</p>
+<h4>Workflow</h4>
+<p><strong>Follow the detailed workflow in <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/semgrep/workflows/scan-workflow.md">scan-workflow.md</a>.</strong> Summary:</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Action</th>
+<th>Gate</th>
+<th>Key Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Resolve output dir, detect languages + Pro availability</td>
+<td>—</td>
+<td>Use Glob, not Bash</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Select scan mode + rulesets</td>
+<td>—</td>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/semgrep/references/rulesets.md">rulesets.md</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Present plan, get explicit approval</td>
+<td>⛔ HARD</td>
+<td>AskUserQuestion</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Run the scans</td>
+<td>—</td>
+<td><code>scripts/run-scans.sh</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Post-filter, merge, report, clean up</td>
+<td>—</td>
+<td>Merge script (below)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Task enforcement:</strong> On invocation, create 5 tasks with blockedBy dependencies (each step blocks the previous). Step 3 is a HARD GATE — mark complete ONLY after user explicitly approves.</p>
+<p><strong>Merge command (Step 5):</strong></p>
+<pre><code class="language-bash"># run-all
+uv run --no-project {baseDir}/scripts/merge_sarif.py &quot;$OUTPUT_DIR/raw&quot; &quot;$OUTPUT_DIR/results/results.sarif&quot; \
+  --scans &quot;$OUTPUT_DIR/scans.json&quot;
+
+# important-only, once the JSON post-filter has run over every file in raw/
+uv run --no-project {baseDir}/scripts/merge_sarif.py &quot;$OUTPUT_DIR/raw&quot; &quot;$OUTPUT_DIR/results/results.sarif&quot; \
+  --important --scans &quot;$OUTPUT_DIR/scans.json&quot;
+</code></pre>
+<p><code>--scans</code> drops the output of scans listed under <code>.failed</code>. A scan that died part-way may still
+have written a <code>.sarif</code>, and under <code>--important</code> that file has no post-filter beside it, which is
+an error rather than an empty filter. Without the flag one dead scan denies every healthy scan a
+merged result. The excluded files are named on stdout, so they can go in the report.</p>
+<p>The post-filter reads metadata SARIF does not carry, so it cannot be re-run against the merged
+file; <code>--important</code> instead keeps the findings the JSON filter kept, matched on
+<code>(rule, file, line)</code>. Without it <code>results.sarif</code> is unfiltered while the JSON side is not.</p>
+<h4>Workflow and agents</h4>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scripts/run-scans.sh</code></td>
+<td>Builds every scan command from the approved rulesets, runs them in batches, and writes <code>scans.json</code></td>
+</tr>
+</tbody>
+</table>
+<p>Step 4 is a Bash call. No subagent runs any part of the scan: exit codes and finding counts are
+read from the processes and the JSON they wrote.</p>
+<h4>Rationalizations to Reject</h4>
+<table>
+<thead>
+<tr>
+<th>Shortcut</th>
+<th>Why It's Wrong</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;User asked for scan, that's approval&quot;</td>
+<td>Original request ≠ plan approval. Present plan, use AskUserQuestion, await explicit &quot;yes&quot;</td>
+</tr>
+<tr>
+<td>&quot;Step 3 task is blocking, just mark complete&quot;</td>
+<td>Lying about task status defeats enforcement. Only mark complete after real approval</td>
+</tr>
+<tr>
+<td>&quot;I already know what they want&quot;</td>
+<td>Assumptions cause scanning wrong directories/rulesets. Present plan for verification</td>
+</tr>
+<tr>
+<td>&quot;Just use default rulesets&quot;</td>
+<td>User must see and approve exact rulesets before scan</td>
+</tr>
+<tr>
+<td>&quot;Add extra rulesets without asking&quot;</td>
+<td>Modifying approved list without consent breaks trust</td>
+</tr>
+<tr>
+<td>&quot;Third-party rulesets are optional&quot;</td>
+<td>Trail of Bits, 0xdea, Decurity catch vulnerabilities not in official registry — REQUIRED</td>
+</tr>
+<tr>
+<td>&quot;Use --config auto&quot;</td>
+<td>Sends metrics; less control over rulesets</td>
+</tr>
+<tr>
+<td>&quot;I'll just run the semgrep commands myself&quot;</td>
+<td><code>run-scans.sh</code> is what enforces <code>--metrics=off</code>, the <code>--include</code> rule and the output-directory <code>--exclude</code>. Hand-written commands drop them silently</td>
+</tr>
+<tr>
+<td>&quot;The script failed, I'll run semgrep directly to get something&quot;</td>
+<td>A non-zero exit means no scan succeeded. Report that and stop; a hand-run subset reads as a full scan</td>
+</tr>
+<tr>
+<td>&quot;Some scans failed, the run still finished&quot;</td>
+<td><code>failed</code> and <code>skipped</code> are part of <code>scans.json</code>. Report them or the user reads a partial scan as a clean one</td>
+</tr>
+<tr>
+<td>&quot;Pro is too slow, skip --pro&quot;</td>
+<td>Cross-file analysis catches 250% more true positives; worth the time</td>
+</tr>
+<tr>
+<td>&quot;Semgrep handles GitHub URLs natively&quot;</td>
+<td>URL handling fails on repos with non-standard YAML; always clone first</td>
+</tr>
+<tr>
+<td>&quot;Cleanup is optional&quot;</td>
+<td>Cloned repos pollute the user's workspace and accumulate across runs</td>
+</tr>
+<tr>
+<td>&quot;Use <code>.</code> or relative path as target&quot;</td>
+<td>Subagents need absolute paths to avoid ambiguity</td>
+</tr>
+<tr>
+<td>&quot;Let the user pick an output dir later&quot;</td>
+<td>Output directory must be resolved at Step 1, before any files are created</td>
+</tr>
+</tbody>
+</table>
+<h4>Reference Index</h4>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/semgrep/references/rulesets.md">rulesets.md</a></td>
+<td>Complete ruleset catalog and selection algorithm</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/semgrep/references/scan-modes.md">scan-modes.md</a></td>
+<td>Pre/post-filter criteria and jq commands</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Workflow</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/semgrep/workflows/scan-workflow.md">scan-workflow.md</a></td>
+<td>Complete 5-step scan execution process</td>
+</tr>
+<tr>
+<td><code>scripts/run-scans.sh</code></td>
+<td>The scan runner Step 4 calls</td>
+</tr>
+</tbody>
+</table>
+<h4>Success Criteria</h4>
+<ul>
+<li>[ ] Output directory resolved (user-specified or auto-incremented default)</li>
+<li>[ ] All generated files stored inside <code>$OUTPUT_DIR</code></li>
+<li>[ ] Languages detected with file counts; Pro status checked</li>
+<li>[ ] Scan mode selected by user (run all / important only)</li>
+<li>[ ] Rulesets include third-party rules for all detected languages</li>
+<li>[ ] User explicitly approved the scan plan (Step 3 gate passed)</li>
+<li>[ ] <code>run-scans.sh</code> exited 0 and wrote <code>$OUTPUT_DIR/scans.json</code></li>
+<li>[ ] <code>failed</code> and <code>skipped</code> from <code>scans.json</code> are empty, or listed in the report</li>
+<li>[ ] Scans marked <code>partial</code> in <code>scans.json</code> are none, or listed in the report — they ran with some of their rules failing to compile</li>
+<li>[ ] Every <code>semgrep</code> command used <code>--metrics=off</code></li>
+<li>[ ] Approved plan written to <code>$OUTPUT_DIR/rulesets.json</code> at the Step 3 gate, and passed to
+the scanner unchanged</li>
+<li>[ ] <code>coveredNothing</code> from <code>scans.json</code> is empty, or listed in the report</li>
+<li>[ ] <code>oversized</code> from <code>scans.json</code> is empty, or listed in the report — those files exceed
+<code>--max-target-bytes</code> and no ruleset opened them</li>
+<li>[ ] Raw per-scan outputs stored in <code>$OUTPUT_DIR/raw/</code></li>
+<li>[ ] <code>results.sarif</code> exists in <code>$OUTPUT_DIR/results/</code> and is valid JSON</li>
+<li>[ ] Important-only mode: post-filter applied before merge, merge run with <code>--important</code>, unfiltered results preserved in <code>raw/</code></li>
+<li>[ ] Results summary reported with severity and category breakdown</li>
+<li>[ ] Cloned repos (if any) cleaned up from <code>$OUTPUT_DIR/repos/</code></li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

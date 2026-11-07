@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ai-regression-testing · SkillHub</title>
+    <meta name="description" content="Use it when: an AI agent both wrote and reviewed a change, or a bug it fixed keeps coming back. It does: runs the test suite and build before any AI review, then writes a regression test for each bug fixed, named after the bug. You get: fast API tests that run in your app&#039;s sandbox mode with no database, and a bug-check command file for Claude Code. Watches for: sandbox and production paths returning different fields, columns missing from a SELECT, stale state after errors, and optimistic updates without rollback. Examples in: TypeScript with Vitest and the Next.js App Router, plus Supabase queries." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <h1>ai-regression-testing</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>an AI agent both wrote and reviewed a change, or a bug it fixed keeps coming back</dd></div><div><dt>It does</dt><dd>runs the test suite and build before any AI review, then writes a regression test for each bug fixed, named after the bug</dd></div><div><dt>You get</dt><dd>fast API tests that run in your app&#39;s sandbox mode with no database, and a bug-check command file for Claude Code</dd></div><div><dt>Watches for</dt><dd>sandbox and production paths returning different fields, columns missing from a SELECT, stale state after errors, and optimistic updates without rollback</dd></div><div><dt>Examples in</dt><dd>TypeScript with Vitest and the Next.js App Router, plus Supabase queries</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>When the same model writes a fix and reviews it, it carries the same blind spot into both steps; the skill&#39;s example is a missing field that slipped past AI review fix after fix until a test caught it on its first run. So it puts mechanical checks first. A bug-check command runs npm run test and npm run build, reports any failure as the top bug, and only then has the agent review with known AI blind spots in mind: sandbox and production consistency, response shapes, SELECT completeness, error rollback and race conditions. Each fix then gets a regression test. Tests force the project&#39;s sandbox or mock mode so API routes run without a database, using a request helper for Next.js routes and a list of fields every response must contain. Its strategy is to test where bugs were found rather than chase coverage: write the test right after finding a bug, assert the response shape rather than the implementation, and keep the whole suite under a second.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/ai-regression-testing">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/affaan-m/ecc --skill ai-regression-testing</code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill ai-regression-testing">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/ai-regression-testing">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/ai-regression-testing">Source on GitHub</a> · <a href="/skillhub/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,500 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>298,660 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">487</div>
+      <div class="stat-delta">+60% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 305; week to Sep 26: 273; week to Oct 3: 173; week to Oct 10: 153; week to Oct 17: 244; week to Oct 24: 426; week to Oct 31: 411; week to Nov 7: 487. Use the left and right arrow keys to read each week."
+        data-values="305,273,173,153,244,426,411,487" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,22.4 38.6,25.3 71.1,34.4 103.7,36.2 136.3,28.0 168.9,11.5 201.4,12.9 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>305</td></tr><tr><td>Sep 26</td><td>273</td></tr><tr><td>Oct 3</td><td>173</td></tr><tr><td>Oct 10</td><td>153</td></tr><tr><td>Oct 17</td><td>244</td></tr><tr><td>Oct 24</td><td>426</td></tr><tr><td>Oct 31</td><td>411</td></tr><tr><td>Nov 7</td><td>487</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="testing" data-facet="topic" href="/skillhub/?tag=testing">testing</a><a class="tag" data-tag="code-review" data-facet="topic" href="/skillhub/?tag=code-review">code-review</a><a class="tag" data-tag="agent-workflows" data-facet="topic" href="/skillhub/?tag=agent-workflows">agent-workflows</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:vitest" data-facet="stack" href="/skillhub/?tag=stack%3Avitest">stack:vitest</a><a class="tag" data-tag="stack:nextjs" data-facet="stack" href="/skillhub/?tag=stack%3Anextjs">stack:nextjs</a><a class="tag" data-tag="stack:typescript" data-facet="stack" href="/skillhub/?tag=stack%3Atypescript">stack:typescript</a><a class="tag" data-tag="stack:supabase" data-facet="stack" href="/skillhub/?tag=stack%3Asupabase">stack:supabase</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/ai-regression-testing/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: ai-regression-testing
+description: Regression testing strategies for AI-assisted development. Sandbox-mode API testing without database dependencies, automated bug-check workflows, and patterns to catch AI blind spots where the same model writes and reviews code. Use when adding regression coverage to AI-assisted code, or when the same model both wrote and reviewed a change.
+metadata:
+  origin: ECC</code></pre></details>
+        <div class="markdown"><h3>AI Regression Testing</h3>
+<p>Testing patterns specifically designed for AI-assisted development, where the same model writes code and reviews it — creating systematic blind spots that only automated tests can catch.</p>
+<h4>When to Activate</h4>
+<ul>
+<li>AI agent (Claude Code, Cursor, Codex) has modified API routes or backend logic</li>
+<li>A bug was found and fixed — need to prevent re-introduction</li>
+<li>Project has a sandbox/mock mode that can be leveraged for DB-free testing</li>
+<li>Running <code>/bug-check</code> or similar review commands after code changes</li>
+<li>Multiple code paths exist (sandbox vs production, feature flags, etc.)</li>
+</ul>
+<h4>The Core Problem</h4>
+<p>When an AI writes code and then reviews its own work, it carries the same assumptions into both steps. This creates a predictable failure pattern:</p>
+<pre><code>AI writes fix → AI reviews fix → AI says &quot;looks correct&quot; → Bug still exists
+</code></pre>
+<p><strong>Real-world example</strong> (observed in production):</p>
+<pre><code>Fix 1: Added notification_settings to API response
+  → Forgot to add it to the SELECT query
+  → AI reviewed and missed it (same blind spot)
+
+Fix 2: Added it to SELECT query
+  → TypeScript build error (column not in generated types)
+  → AI reviewed Fix 1 but didn't catch the SELECT issue
+
+Fix 3: Changed to SELECT *
+  → Fixed production path, forgot sandbox path
+  → AI reviewed and missed it AGAIN (4th occurrence)
+
+Fix 4: Test caught it instantly on first run PASS:
+</code></pre>
+<p>The pattern: <strong>sandbox/production path inconsistency</strong> is the #1 AI-introduced regression.</p>
+<h4>Sandbox-Mode API Testing</h4>
+<p>Most projects with AI-friendly architecture have a sandbox/mock mode. This is the key to fast, DB-free API testing.</p>
+<h5>Setup (Vitest + Next.js App Router)</h5>
+<pre><code class="language-typescript">// vitest.config.ts
+import { defineConfig } from &quot;vitest/config&quot;;
+import path from &quot;path&quot;;
+
+export default defineConfig({
+  test: {
+    environment: &quot;node&quot;,
+    globals: true,
+    include: [&quot;__tests__/**/*.test.ts&quot;],
+    setupFiles: [&quot;__tests__/setup.ts&quot;],
+  },
+  resolve: {
+    alias: {
+      &quot;@&quot;: path.resolve(__dirname, &quot;.&quot;),
+    },
+  },
+});
+</code></pre>
+<pre><code class="language-typescript">// __tests__/setup.ts
+// Force sandbox mode — no database needed
+process.env.SANDBOX_MODE = &quot;true&quot;;
+process.env.NEXT_PUBLIC_SUPABASE_URL = &quot;&quot;;
+process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = &quot;&quot;;
+</code></pre>
+<h5>Test Helper for Next.js API Routes</h5>
+<pre><code class="language-typescript">// __tests__/helpers.ts
+import { NextRequest } from &quot;next/server&quot;;
+
+export function createTestRequest(
+  url: string,
+  options?: {
+    method?: string;
+    body?: Record&lt;string, unknown&gt;;
+    headers?: Record&lt;string, string&gt;;
+    sandboxUserId?: string;
+  },
+): NextRequest {
+  const { method = &quot;GET&quot;, body, headers = {}, sandboxUserId } = options || {};
+  const fullUrl = url.startsWith(&quot;http&quot;) ? url : `http://localhost:3000${url}`;
+  const reqHeaders: Record&lt;string, string&gt; = { ...headers };
+
+  if (sandboxUserId) {
+    reqHeaders[&quot;x-sandbox-user-id&quot;] = sandboxUserId;
+  }
+
+  const init: { method: string; headers: Record&lt;string, string&gt;; body?: string } = {
+    method,
+    headers: reqHeaders,
+  };
+
+  if (body) {
+    init.body = JSON.stringify(body);
+    reqHeaders[&quot;content-type&quot;] = &quot;application/json&quot;;
+  }
+
+  return new NextRequest(fullUrl, init);
+}
+
+export async function parseResponse(response: Response) {
+  const json = await response.json();
+  return { status: response.status, json };
+}
+</code></pre>
+<h5>Writing Regression Tests</h5>
+<p>The key principle: <strong>write tests for bugs that were found, not for code that works</strong>.</p>
+<pre><code class="language-typescript">// __tests__/api/user/profile.test.ts
+import { describe, it, expect } from &quot;vitest&quot;;
+import { createTestRequest, parseResponse } from &quot;../../helpers&quot;;
+import { GET, PATCH } from &quot;@/app/api/user/profile/route&quot;;
+
+// Define the contract — what fields MUST be in the response
+const REQUIRED_FIELDS = [
+  &quot;id&quot;,
+  &quot;email&quot;,
+  &quot;full_name&quot;,
+  &quot;phone&quot;,
+  &quot;role&quot;,
+  &quot;created_at&quot;,
+  &quot;avatar_url&quot;,
+  &quot;notification_settings&quot;,  // ← Added after bug found it missing
+];
+
+describe(&quot;GET /api/user/profile&quot;, () =&gt; {
+  it(&quot;returns all required fields&quot;, async () =&gt; {
+    const req = createTestRequest(&quot;/api/user/profile&quot;);
+    const res = await GET(req);
+    const { status, json } = await parseResponse(res);
+
+    expect(status).toBe(200);
+    for (const field of REQUIRED_FIELDS) {
+      expect(json.data).toHaveProperty(field);
+    }
+  });
+
+  // Regression test — this exact bug was introduced by AI 4 times
+  it(&quot;notification_settings is not undefined (BUG-R1 regression)&quot;, async () =&gt; {
+    const req = createTestRequest(&quot;/api/user/profile&quot;);
+    const res = await GET(req);
+    const { json } = await parseResponse(res);
+
+    expect(&quot;notification_settings&quot; in json.data).toBe(true);
+    const ns = json.data.notification_settings;
+    expect(ns === null || typeof ns === &quot;object&quot;).toBe(true);
+  });
+});
+</code></pre>
+<h5>Testing Sandbox/Production Parity</h5>
+<p>The most common AI regression: fixing production path but forgetting sandbox path (or vice versa).</p>
+<pre><code class="language-typescript">// Test that sandbox responses match the expected contract
+describe(&quot;GET /api/user/messages (conversation list)&quot;, () =&gt; {
+  it(&quot;includes partner_name in sandbox mode&quot;, async () =&gt; {
+    const req = createTestRequest(&quot;/api/user/messages&quot;, {
+      sandboxUserId: &quot;user-001&quot;,
+    });
+    const res = await GET(req);
+    const { json } = await parseResponse(res);
+
+    // This caught a bug where partner_name was added
+    // to production path but not sandbox path
+    if (json.data.length &gt; 0) {
+      for (const conv of json.data) {
+        expect(&quot;partner_name&quot; in conv).toBe(true);
+      }
+    }
+  });
+});
+</code></pre>
+<h4>Integrating Tests into Bug-Check Workflow</h4>
+<h5>Custom Command Definition</h5>
+<pre><code class="language-markdown">&lt;!-- .claude/commands/bug-check.md --&gt;
+# Bug Check
+
+## Step 1: Automated Tests (mandatory, cannot skip)
+
+Run these commands FIRST before any code review:
+
+    npm run test       # Vitest test suite
+    npm run build      # TypeScript type check + build
+
+- If tests fail → report as highest priority bug
+- If build fails → report type errors as highest priority
+- Only proceed to Step 2 if both pass
+
+## Step 2: Code Review (AI review)
+
+1. Sandbox / production path consistency
+2. API response shape matches frontend expectations
+3. SELECT clause completeness
+4. Error handling with rollback
+5. Optimistic update race conditions
+
+## Step 3: For each bug fixed, propose a regression test
+</code></pre>
+<h5>The Workflow</h5>
+<pre><code>User: &quot;バグチェックして&quot; (or &quot;/bug-check&quot;)
+  │
+  ├─ Step 1: npm run test
+  │   ├─ FAIL → Bug found mechanically (no AI judgment needed)
+  │   └─ PASS → Continue
+  │
+  ├─ Step 2: npm run build
+  │   ├─ FAIL → Type error found mechanically
+  │   └─ PASS → Continue
+  │
+  ├─ Step 3: AI code review (with known blind spots in mind)
+  │   └─ Findings reported
+  │
+  └─ Step 4: For each fix, write a regression test
+      └─ Next bug-check catches if fix breaks
+</code></pre>
+<h4>Common AI Regression Patterns</h4>
+<h5>Pattern 1: Sandbox/Production Path Mismatch</h5>
+<p><strong>Frequency</strong>: Most common (observed in 3 out of 4 regressions)</p>
+<pre><code class="language-typescript">// FAIL: AI adds field to production path only
+if (isSandboxMode()) {
+  return { data: { id, email, name } };  // Missing new field
+}
+// Production path
+return { data: { id, email, name, notification_settings } };
+
+// PASS: Both paths must return the same shape
+if (isSandboxMode()) {
+  return { data: { id, email, name, notification_settings: null } };
+}
+return { data: { id, email, name, notification_settings } };
+</code></pre>
+<p><strong>Test to catch it</strong>:</p>
+<pre><code class="language-typescript">it(&quot;sandbox and production return same fields&quot;, async () =&gt; {
+  // In test env, sandbox mode is forced ON
+  const res = await GET(createTestRequest(&quot;/api/user/profile&quot;));
+  const { json } = await parseResponse(res);
+
+  for (const field of REQUIRED_FIELDS) {
+    expect(json.data).toHaveProperty(field);
+  }
+});
+</code></pre>
+<h5>Pattern 2: SELECT Clause Omission</h5>
+<p><strong>Frequency</strong>: Common with Supabase/Prisma when adding new columns</p>
+<pre><code class="language-typescript">// FAIL: New column added to response but not to SELECT
+const { data } = await supabase
+  .from(&quot;users&quot;)
+  .select(&quot;id, email, name&quot;)  // notification_settings not here
+  .single();
+
+return { data: { ...data, notification_settings: data.notification_settings } };
+// → notification_settings is always undefined
+
+// PASS: Use SELECT * or explicitly include new columns
+const { data } = await supabase
+  .from(&quot;users&quot;)
+  .select(&quot;*&quot;)
+  .single();
+</code></pre>
+<h5>Pattern 3: Error State Leakage</h5>
+<p><strong>Frequency</strong>: Moderate — when adding error handling to existing components</p>
+<pre><code class="language-typescript">// FAIL: Error state set but old data not cleared
+catch (err) {
+  setError(&quot;Failed to load&quot;);
+  // reservations still shows data from previous tab!
+}
+
+// PASS: Clear related state on error
+catch (err) {
+  setReservations([]);  // Clear stale data
+  setError(&quot;Failed to load&quot;);
+}
+</code></pre>
+<h5>Pattern 4: Optimistic Update Without Proper Rollback</h5>
+<pre><code class="language-typescript">// FAIL: No rollback on failure
+const handleRemove = async (id: string) =&gt; {
+  setItems(prev =&gt; prev.filter(i =&gt; i.id !== id));
+  await fetch(`/api/items/${id}`, { method: &quot;DELETE&quot; });
+  // If API fails, item is gone from UI but still in DB
+};
+
+// PASS: Capture previous state and rollback on failure
+const handleRemove = async (id: string) =&gt; {
+  const prevItems = [...items];
+  setItems(prev =&gt; prev.filter(i =&gt; i.id !== id));
+  try {
+    const res = await fetch(`/api/items/${id}`, { method: &quot;DELETE&quot; });
+    if (!res.ok) throw new Error(&quot;API error&quot;);
+  } catch {
+    setItems(prevItems);  // Rollback
+    alert(&quot;削除に失敗しました&quot;);
+  }
+};
+</code></pre>
+<h4>Strategy: Test Where Bugs Were Found</h4>
+<p>Don't aim for 100% coverage. Instead:</p>
+<pre><code>Bug found in /api/user/profile     → Write test for profile API
+Bug found in /api/user/messages    → Write test for messages API
+Bug found in /api/user/favorites   → Write test for favorites API
+No bug in /api/user/notifications  → Don't write test (yet)
+</code></pre>
+<p><strong>Why this works with AI development:</strong></p>
+<ol>
+<li>AI tends to make the <strong>same category of mistake</strong> repeatedly</li>
+<li>Bugs cluster in complex areas (auth, multi-path logic, state management)</li>
+<li>Once tested, that exact regression <strong>cannot happen again</strong></li>
+<li>Test count grows organically with bug fixes — no wasted effort</li>
+</ol>
+<h4>Quick Reference</h4>
+<table>
+<thead>
+<tr>
+<th>AI Regression Pattern</th>
+<th>Test Strategy</th>
+<th>Priority</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sandbox/production mismatch</td>
+<td>Assert same response shape in sandbox mode</td>
+<td>High</td>
+</tr>
+<tr>
+<td>SELECT clause omission</td>
+<td>Assert all required fields in response</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Error state leakage</td>
+<td>Assert state cleanup on error</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Missing rollback</td>
+<td>Assert state restored on API failure</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Type cast masking null</td>
+<td>Assert field is not undefined</td>
+<td>Medium</td>
+</tr>
+</tbody>
+</table>
+<h4>DO / DON'T</h4>
+<p><strong>DO:</strong></p>
+<ul>
+<li>Write tests immediately after finding a bug (before fixing it if possible)</li>
+<li>Test the API response shape, not the implementation</li>
+<li>Run tests as the first step of every bug-check</li>
+<li>Keep tests fast (&lt; 1 second total with sandbox mode)</li>
+<li>Name tests after the bug they prevent (e.g., &quot;BUG-R1 regression&quot;)</li>
+</ul>
+<p><strong>DON'T:</strong></p>
+<ul>
+<li>Write tests for code that has never had a bug</li>
+<li>Trust AI self-review as a substitute for automated tests</li>
+<li>Skip sandbox path testing because &quot;it's just mock data&quot;</li>
+<li>Write integration tests when unit tests suffice</li>
+<li>Aim for coverage percentage — aim for regression prevention</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

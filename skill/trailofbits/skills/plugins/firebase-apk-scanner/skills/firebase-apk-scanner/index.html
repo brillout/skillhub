@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>firebase-apk-scanner · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re assessing an Android app you&#039;re authorized to test and want to know whether its Firebase backend is left open. It does: runs a bundled scanner that decompiles the APK with apktool, pulls out its Firebase config, then probes auth, databases, Storage, Cloud Functions and Remote Config. You get: scan_report.json and scan_report.txt, presented as a summary, the extracted config, vulnerabilities by severity and specific fixes. Runs: only when you call it, on an APK file or a folder of them. Limits: probes Cloud Functions only in us-central1, and tests auth, functions and Remote Config only for the first project and API key found." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=trailofbits%2Fskills">trailofbits/skills</a></p>
+      <h1>firebase-apk-scanner</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re assessing an Android app you&#39;re authorized to test and want to know whether its Firebase backend is left open</dd></div><div><dt>It does</dt><dd>runs a bundled scanner that decompiles the APK with apktool, pulls out its Firebase config, then probes auth, databases, Storage, Cloud Functions and Remote Config</dd></div><div><dt>You get</dt><dd>scan_report.json and scan_report.txt, presented as a summary, the extracted config, vulnerabilities by severity and specific fixes</dd></div><div><dt>Runs</dt><dd>only when you call it, on an APK file or a folder of them</dd></div><div><dt>Limits</dt><dd>probes Cloud Functions only in us-central1, and tests auth, functions and Remote Config only for the first project and API key found</dd></div></dl></section>
+      
+      <p class="note">Scan only apps you own or are authorized to test: its bundled scanner probes the app&#39;s live Firebase backend, including write attempts on databases and storage, and removes the test entries it creates. Needs apktool.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>From Trail of Bits. The scanner pulls the Firebase config from google-services.json, XML resources, assets, smali code and DEX strings, then checks for open sign-up, anonymous auth and email enumeration, unauthenticated reads and writes on the Realtime Database, document access and collection listing on Firestore, bucket listing and write access on Storage, unauthenticated Cloud Functions, and exposed Remote Config. It writes test entries to the live backend and removes them afterwards. Unauthenticated database reads or writes, storage writes and open sign-up on a private app rate critical; anonymous auth, bucket listing and collection listing high; email enumeration, reachable functions and exposed Remote Config medium. APKs that failed to decompile or had no Firebase config are reported separately instead of counted as clean, since an app may not use Firebase or may hide its config beyond what the scanner extracts. If the scanner writes no report, the agent falls back to manual tests from a reference file. It rejects excuses such as &#34;the API key is public anyway&#34;, since a public key doesn&#39;t justify open rules, and &#34;it&#39;s an internal app&#34;, since APKs can be extracted from any device.</p>
+      <p class="muted">Summarizes <a href="https://github.com/trailofbits/skills/tree/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/firebase-apk-scanner/skills/firebase-apk-scanner">the skill at e4dd0bb</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/trailofbits/skills --skill firebase-apk-scanner</code><button type="button" class="copy" data-copy="npx skills add https://github.com/trailofbits/skills --skill firebase-apk-scanner">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/trailofbits/skills/firebase-apk-scanner">skills.sh page</a> · <a href="https://github.com/trailofbits/skills/tree/HEAD/plugins/firebase-apk-scanner/skills/firebase-apk-scanner">Source on GitHub</a> · <a href="/skillhub/?repo=trailofbits%2Fskills">All skills from trailofbits/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,800 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>8,053 <span class="muted">trailofbits/skills</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">185</div>
+      <div class="stat-delta">+64% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 113; week to Sep 26: 113; week to Oct 3: 110; week to Oct 10: 98; week to Oct 17: 126; week to Oct 24: 145; week to Oct 31: 168; week to Nov 7: 185. Use the left and right arrow keys to read each week."
+        data-values="113,113,110,98,126,145,168,185" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.1 38.6,23.1 71.1,23.8 103.7,26.7 136.3,20.0 168.9,15.5 201.4,10.0 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>113</td></tr><tr><td>Sep 26</td><td>113</td></tr><tr><td>Oct 3</td><td>110</td></tr><tr><td>Oct 10</td><td>98</td></tr><tr><td>Oct 17</td><td>126</td></tr><tr><td>Oct 24</td><td>145</td></tr><tr><td>Oct 31</td><td>168</td></tr><tr><td>Nov 7</td><td>185</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/skillhub/?tag=category%3Asecurity">category:security</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/skillhub/?tag=type%3Atool">type:tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:remote" data-facet="effect" title="Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service." href="/skillhub/?tag=effect%3Aremote">effect:remote</a></div>
+          <p class="tag-meaning">Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a><a class="tag" data-tag="mobile" data-facet="topic" href="/skillhub/?tag=mobile">mobile</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:firebase" data-facet="stack" href="/skillhub/?tag=stack%3Afirebase">stack:firebase</a><a class="tag" data-tag="stack:android" data-facet="stack" href="/skillhub/?tag=stack%3Aandroid">stack:android</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/firebase-apk-scanner/skills/firebase-apk-scanner/SKILL.md">trailofbits/skills at e4dd0bb</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: firebase-apk-scanner
+description: Scans Android APKs for Firebase security misconfigurations including open databases, storage buckets, authentication issues, and exposed cloud functions. Use when analyzing APK files for Firebase vulnerabilities, performing mobile app security audits, or testing Firebase endpoint security. For authorized security research only.
+argument-hint: [apk-file-or-directory]
+allowed-tools: Bash({baseDir}/scanner.sh:*) Bash(apktool:*) Bash(curl:*) Read Grep Glob
+disable-model-invocation: true</code></pre></details>
+        <div class="markdown"><h3>Firebase APK Security Scanner</h3>
+<p>You are a Firebase security analyst. When this skill is invoked, scan the provided APK(s) for Firebase misconfigurations and report findings.</p>
+<h4>When to Use</h4>
+<ul>
+<li>Auditing Android applications for Firebase security misconfigurations</li>
+<li>Testing Firebase endpoints extracted from APKs (Realtime Database, Firestore, Storage)</li>
+<li>Checking authentication security (open signup, anonymous auth, email enumeration)</li>
+<li>Enumerating Cloud Functions and testing for unauthenticated access</li>
+<li>Mobile app security assessments involving Firebase backends</li>
+<li>Authorized penetration testing of Firebase-backed applications</li>
+</ul>
+<h4>When NOT to Use</h4>
+<ul>
+<li>Scanning apps you do not have explicit authorization to test</li>
+<li>Testing production Firebase projects without written permission</li>
+<li>When you only need to extract Firebase config without testing (use manual grep/strings instead)</li>
+<li>For non-Android targets (iOS, web apps) - this skill is APK-specific</li>
+<li>When the target app does not use Firebase</li>
+</ul>
+<h4>Rationalizations to Reject</h4>
+<p>When auditing, reject these common rationalizations that lead to missed or downplayed findings:</p>
+<ul>
+<li><strong>&quot;The database is read-only so it's fine&quot;</strong> - Data exposure is still a critical finding; PII, API keys, and business data may be leaked</li>
+<li><strong>&quot;It's just anonymous auth, not real accounts&quot;</strong> - Anonymous tokens bypass <code>auth != null</code> rules and can access &quot;authenticated-only&quot; resources</li>
+<li><strong>&quot;The API key is public anyway&quot;</strong> - A public API key does not justify open database rules or disabled auth restrictions</li>
+<li><strong>&quot;There's no sensitive data in there&quot;</strong> - You cannot know what data will be stored in the future; insecure rules are vulnerabilities regardless of current content</li>
+<li><strong>&quot;It's an internal app&quot;</strong> - APKs can be extracted from any device; &quot;internal&quot; apps are not protected from reverse engineering</li>
+<li><strong>&quot;We'll fix it before launch&quot;</strong> - Document the finding; pre-launch vulnerabilities frequently ship to production</li>
+</ul>
+<h4>Reference Documentation</h4>
+<p>For detailed vulnerability patterns and exploitation techniques, consult:</p>
+<ul>
+<li><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/firebase-apk-scanner/skills/firebase-apk-scanner/references/vulnerabilities.md">Vulnerability Patterns Reference</a></li>
+<li><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/firebase-apk-scanner/skills/firebase-apk-scanner/references/manual-fallback.md">Manual Testing</a> (only when the scanner wrote no report)</li>
+</ul>
+<h4>How to Use This Skill</h4>
+<p>The user will provide an APK file or directory: <code>$ARGUMENTS</code></p>
+<h4>Workflow</h4>
+<h5>Step 1: Validate Input</h5>
+<p>First, verify the target exists:</p>
+<pre><code class="language-bash">ls -la &quot;$ARGUMENTS&quot;
+</code></pre>
+<p>If <code>$ARGUMENTS</code> is empty, ask the user to provide an APK path.</p>
+<h5>Step 2: Run the Scanner</h5>
+<p>Execute the bundled scanner script on the target:</p>
+<pre><code class="language-bash">{baseDir}/scanner.sh &quot;$ARGUMENTS&quot;
+</code></pre>
+<p>The scanner will:</p>
+<ol>
+<li>Decompile the APK using apktool</li>
+<li>Extract Firebase configuration from all sources (google-services.json, XML resources, assets, smali code, DEX strings)</li>
+<li>Test authentication endpoints (open signup, anonymous auth, email enumeration)</li>
+<li>Test Realtime Database (unauthenticated read/write, auth bypass)</li>
+<li>Test Firestore (document access, collection enumeration)</li>
+<li>Test Storage buckets (listing, write access)</li>
+<li>Test Cloud Functions (enumeration, unauthenticated access)</li>
+<li>Test Remote Config exposure</li>
+<li>Generate reports in text and JSON format</li>
+</ol>
+<h5>Step 3: Present Results</h5>
+<p>After the scanner completes, read <code>scan_report.json</code> (and <code>scan_report.txt</code> for
+the narrative) in the exact directory it printed as <code>Results saved to:</code>. Do not
+use a <code>firebase_scan_*</code> glob: it also matches every earlier scan in the current
+directory.</p>
+<p>The scanner exits nonzero after writing its report when no APK could be tested
+(every APK failed to decompile or had no Firebase config). If a report was
+written, present it even on a nonzero exit; use the manual testing in
+<a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/firebase-apk-scanner/skills/firebase-apk-scanner/references/manual-fallback.md">references/manual-fallback.md</a> only when no report exists.</p>
+<p>State what the scanner did not cover: it probes Cloud Functions only in
+<code>us-central1</code>, and tests auth, Cloud Functions and Remote Config only for the
+first project ID and API key it extracted.</p>
+<p>Present findings in this format:</p>
+<hr>
+<h4>Scan Summary</h4>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>APKs Scanned</td>
+<td>X</td>
+</tr>
+<tr>
+<td>Vulnerable</td>
+<td>X</td>
+</tr>
+<tr>
+<td>Failed to scan</td>
+<td>X</td>
+</tr>
+<tr>
+<td>No Firebase config</td>
+<td>X</td>
+</tr>
+<tr>
+<td>Total Issues</td>
+<td>X</td>
+</tr>
+</tbody>
+</table>
+<p>Take these from <code>failed_apks</code> and <code>untested_apks</code> in <code>scan_report.json</code>. Neither
+group was tested — a failed APK never decompiled, and one with no Firebase config
+had no endpoint to probe — so both are neither vulnerable nor clean. Report them
+explicitly instead of letting them disappear into a &quot;0 vulnerable&quot; line, and say
+what a <code>NO_CONFIG</code> result means: the app may not use Firebase at all, or its
+config may be obfuscated or packed beyond what the scanner extracts.</p>
+<h4>Extracted Configuration</h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Project ID</td>
+<td><code>extracted_value</code></td>
+</tr>
+<tr>
+<td>Database URL</td>
+<td><code>extracted_value</code></td>
+</tr>
+<tr>
+<td>Storage Bucket</td>
+<td><code>extracted_value</code></td>
+</tr>
+<tr>
+<td>API Key</td>
+<td><code>extracted_value</code></td>
+</tr>
+<tr>
+<td>Auth Domain</td>
+<td><code>extracted_value</code></td>
+</tr>
+</tbody>
+</table>
+<h4>Vulnerabilities Found</h4>
+<table>
+<thead>
+<tr>
+<th>Severity</th>
+<th>Issue</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CRITICAL</td>
+<td>Description</td>
+<td>Brief evidence</td>
+</tr>
+<tr>
+<td>HIGH</td>
+<td>Description</td>
+<td>Brief evidence</td>
+</tr>
+</tbody>
+</table>
+<h4>Remediation</h4>
+<p>Provide specific fixes for each vulnerability found. Reference the <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/firebase-apk-scanner/skills/firebase-apk-scanner/references/vulnerabilities.md">Vulnerability Patterns</a> for secure code examples.</p>
+<hr>
+<h4>Manual Testing (If Scanner Fails)</h4>
+<p>Only when the scanner wrote no report: follow
+<a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/firebase-apk-scanner/skills/firebase-apk-scanner/references/manual-fallback.md">references/manual-fallback.md</a>.</p>
+<h4>Severity Classification</h4>
+<ul>
+<li><strong>CRITICAL</strong>: Unauthenticated database read/write, storage write, open signup on private apps</li>
+<li><strong>HIGH</strong>: Anonymous auth enabled, storage bucket listing, collection enumeration</li>
+<li><strong>MEDIUM</strong>: Email enumeration, accessible cloud functions, remote config exposure</li>
+<li><strong>LOW</strong>: Information disclosure without sensitive data</li>
+</ul>
+<h4>Important Guidelines</h4>
+<ol>
+<li><strong>Authorization required</strong> - Only scan APKs you have permission to test</li>
+<li><strong>Clean up test data</strong> - The scanner automatically removes test entries it creates</li>
+<li><strong>Save tokens</strong> - If anonymous auth succeeds, use the token for authenticated bypass testing</li>
+<li><strong>Test all regions</strong> - Cloud Functions may be deployed to us-central1, europe-west1, asia-east1, etc.</li>
+<li><strong>Multiple instances</strong> - Some apps use multiple Firebase projects; test all discovered configurations</li>
+</ol>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

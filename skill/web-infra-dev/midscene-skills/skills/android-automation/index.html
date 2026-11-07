@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>android-device-automation · SkillHub</title>
+    <meta name="description" content="Use it when: you want the agent to operate or test an app on an Android phone or emulator, without its code or accessibility labels. It does: runs one Midscene command at a time: connect, launch an app, act on a plain-language goal, take a screenshot, assert what the screen shows. You get: a summary of what it did and found, screenshots, and an HTML report with a replay video of each step. Works with: any app on screen, whatever it&#039;s built with, because a vision model reads screenshots instead of the view hierarchy. Needs: adb, Node.js and an API key for a vision model that can locate elements on a screenshot, such as Gemini, Qwen or Doubao." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=web-infra-dev%2Fmidscene-skills">web-infra-dev/midscene-skills</a></p>
+      <h1>android-device-automation</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want the agent to operate or test an app on an Android phone or emulator, without its code or accessibility labels</dd></div><div><dt>It does</dt><dd>runs one Midscene command at a time: connect, launch an app, act on a plain-language goal, take a screenshot, assert what the screen shows</dd></div><div><dt>You get</dt><dd>a summary of what it did and found, screenshots, and an HTML report with a replay video of each step</dd></div><div><dt>Works with</dt><dd>any app on screen, whatever it&#39;s built with, because a vision model reads screenshots instead of the view hierarchy</dd></div><div><dt>Needs</dt><dd>adb, Node.js and an API key for a vision model that can locate elements on a screenshot, such as Gemini, Qwen or Doubao</dd></div></dl></section>
+      
+      <p class="note">Needs adb, Node.js and an API key for a vision model you configure, such as Gemini, Qwen or Doubao, which reads the device&#39;s screenshots.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Midscene&#39;s skill for Android. The agent plans and Midscene&#39;s CLI, run through npx, does the work: `act` takes a whole goal in plain words, such as opening Settings and reporting the Wi-Fi network, and handles the taps, long presses, typing, swipes, pinches and Back or Home presses itself. `assert` checks the current screen against a sentence, optionally against reference images, and can fail with your own message for CI logs; for a toast or animation that vanishes, a recorder captures frames in its own terminal while the action runs, and `assert` checks the recording. `tap --locate` finds an element from a reference image, `runadbshell` passes raw adb shell commands, and `--deep-locate` or `--deep-think` trade speed for precision. Commands run one at a time, in the foreground, about a minute each, and the agent reads every screenshot before the next step. It recommends launching the app with adb first, batching related actions into one `act` and adding `--use-scrcpy` when screenshots are slow. At the end it must report the results, data found and file paths; the HTML report converts to Markdown or JSON for another tool. A troubleshooting table covers unauthorized or offline devices and API key errors.</p>
+      <p class="muted">Summarizes <a href="https://github.com/web-infra-dev/midscene-skills/tree/e6836973627a20edc34b844a2e20d4180602ae5d/skills/android-automation">the skill at e683697</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/web-infra-dev/midscene-skills --skill android-device-automation</code><button type="button" class="copy" data-copy="npx skills add https://github.com/web-infra-dev/midscene-skills --skill android-device-automation">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/web-infra-dev/midscene-skills/android-device-automation">skills.sh page</a> · <a href="https://github.com/web-infra-dev/midscene-skills/tree/HEAD/skills/android-automation">Source on GitHub</a> · <a href="/skillhub/?repo=web-infra-dev%2Fmidscene-skills">All skills from web-infra-dev/midscene-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,500 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>319 <span class="muted">web-infra-dev/midscene-skills</span></dd></div><div><dt>First seen</dt><dd>Mar 6, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">41</div>
+      <div class="stat-delta">-69% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 134; week to Sep 26: 66; week to Oct 3: 44; week to Oct 10: 54; week to Oct 17: 51; week to Oct 24: 64; week to Oct 31: 47; week to Nov 7: 41. Use the left and right arrow keys to read each week."
+        data-values="134,66,44,54,51,64,47,41" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,28.3 71.1,35.6 103.7,32.3 136.3,33.3 168.9,29.0 201.4,34.6 234.0,36.5" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="36.5" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>134</td></tr><tr><td>Sep 26</td><td>66</td></tr><tr><td>Oct 3</td><td>44</td></tr><tr><td>Oct 10</td><td>54</td></tr><tr><td>Oct 17</td><td>51</td></tr><tr><td>Oct 24</td><td>64</td></tr><tr><td>Oct 31</td><td>47</td></tr><tr><td>Nov 7</td><td>41</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:computer-use" data-facet="category" title="Drive desktop apps, phones and simulators: tap, type, read the screen and test native apps." href="/skillhub/?tag=category%3Acomputer-use">category:computer-use</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Drive desktop apps, phones and simulators: tap, type, read the screen and test native apps.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/skillhub/?tag=type%3Atool">type:tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/skillhub/?tag=needs%3Aaccount">needs:account</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="mobile" data-facet="topic" href="/skillhub/?tag=mobile">mobile</a><a class="tag" data-tag="testing" data-facet="topic" href="/skillhub/?tag=testing">testing</a><a class="tag" data-tag="computer-use" data-facet="topic" href="/skillhub/?tag=computer-use">computer-use</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:midscene" data-facet="stack" href="/skillhub/?tag=stack%3Amidscene">stack:midscene</a><a class="tag" data-tag="stack:android" data-facet="stack" href="/skillhub/?tag=stack%3Aandroid">stack:android</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/web-infra-dev/midscene-skills/blob/e6836973627a20edc34b844a2e20d4180602ae5d/skills/android-automation/SKILL.md">web-infra-dev/midscene-skills at e683697</a>. Checked daily, last changed Nov 7, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: android-device-automation
+description: &#62;
+  Vision-driven Android device automation using Midscene.
+  Operates entirely from screenshots — no DOM or accessibility labels required. Can interact with all visible elements on screen regardless of technology stack.
+  Control Android devices with natural language commands via ADB.
+  Perform taps, swipes, text input, app launches, screenshots, and more.
+  
+  Trigger keywords: android, phone, mobile app, tap, swipe, install app, open app on phone, android device, mobile automation, adb, launch app, mobile screen,
+  test android app, verify mobile app, QA on phone, check the app on android, test on device,
+  see if the app works on phone, end-to-end test on android, visual verification on mobile
+
+  Powered by Midscene.js (https://midscenejs.com)
+allowed-tools:
+  - Bash</code></pre></details>
+        <div class="markdown"><h3>Android Device Automation</h3>
+<blockquote>
+<p><strong>CRITICAL RULES — VIOLATIONS WILL BREAK THE WORKFLOW:</strong></p>
+<ol>
+<li><strong>Never run midscene commands in the background.</strong> Each command must run synchronously so you can read its output (especially screenshots) before deciding the next action. Background execution breaks the screenshot-analyze-act loop.</li>
+<li><strong>Run only one midscene command at a time.</strong> Wait for the previous command to finish, read the screenshot, then decide the next action. Never chain multiple commands together.</li>
+<li><strong>Allow enough time for each command to complete.</strong> Midscene commands involve AI inference and screen interaction, which can take longer than typical shell commands. A typical command needs about 1 minute; complex <code>act</code> commands may need even longer.</li>
+<li><strong>Always report task results before finishing.</strong> After completing the automation task, you MUST proactively summarize the results to the user — including key data found, actions completed, screenshots taken, and any relevant findings. Never silently end after the last automation step; the user expects a complete response in a single interaction.</li>
+</ol>
+</blockquote>
+<p>Automate Android devices using <code>npx -y @midscene/android@1</code>. Each CLI command maps directly to an MCP tool — you (the AI agent) act as the brain, deciding which actions to take based on screenshots.</p>
+<h4>What <code>act</code> Can Do</h4>
+<p>Inside a single <code>act</code> call on Android, Midscene can tap, double-tap, long-press, type, clear text, scroll or swipe in any direction, pull to refresh, drag items, zoom with two fingers, press keys, and use system navigation such as Back, Home, or recent apps while working from the current visible screen.</p>
+<h4>Prerequisites</h4>
+<p>Midscene requires models with strong visual grounding capabilities. The following environment variables must be configured — either as system environment variables or in a <code>.env</code> file in the current working directory (Midscene loads <code>.env</code> automatically):</p>
+<pre><code class="language-bash">MIDSCENE_MODEL_API_KEY=&quot;your-api-key&quot;
+MIDSCENE_MODEL_NAME=&quot;model-name&quot;
+MIDSCENE_MODEL_BASE_URL=&quot;https://...&quot;
+MIDSCENE_MODEL_FAMILY=&quot;family-identifier&quot;
+</code></pre>
+<p>Example: Gemini (Gemini-3-Flash)</p>
+<pre><code class="language-bash">MIDSCENE_MODEL_API_KEY=&quot;your-google-api-key&quot;
+MIDSCENE_MODEL_NAME=&quot;gemini-3-flash&quot;
+MIDSCENE_MODEL_BASE_URL=&quot;https://generativelanguage.googleapis.com/v1beta/openai/&quot;
+MIDSCENE_MODEL_FAMILY=&quot;gemini&quot;
+</code></pre>
+<p>Example: Qwen 3.5</p>
+<pre><code class="language-bash">MIDSCENE_MODEL_API_KEY=&quot;your-aliyun-api-key&quot;
+MIDSCENE_MODEL_NAME=&quot;qwen3.5-plus&quot;
+MIDSCENE_MODEL_BASE_URL=&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot;
+MIDSCENE_MODEL_FAMILY=&quot;qwen3.5&quot;
+MIDSCENE_MODEL_REASONING_ENABLED=&quot;false&quot;
+# If using OpenRouter, set:
+# MIDSCENE_MODEL_API_KEY=&quot;your-openrouter-api-key&quot;
+# MIDSCENE_MODEL_NAME=&quot;qwen/qwen3.5-plus&quot;
+# MIDSCENE_MODEL_BASE_URL=&quot;https://openrouter.ai/api/v1&quot;
+</code></pre>
+<p>Example: Doubao Seed 2.0 Lite</p>
+<pre><code class="language-bash">MIDSCENE_MODEL_API_KEY=&quot;your-doubao-api-key&quot;
+MIDSCENE_MODEL_NAME=&quot;doubao-seed-2-0-lite&quot;
+MIDSCENE_MODEL_BASE_URL=&quot;https://ark.cn-beijing.volces.com/api/v3&quot;
+MIDSCENE_MODEL_FAMILY=&quot;doubao-seed&quot;
+</code></pre>
+<p>Commonly used models: Doubao Seed 2.0 Lite, Qwen 3.5, Zhipu GLM-4.6V, Gemini-3-Pro, Gemini-3-Flash.</p>
+<p>If the model is not configured, ask the user to set it up. See <a href="https://midscenejs.com/model-common-config">Model Configuration</a> for supported providers.</p>
+<h4>Commands</h4>
+<h5>Common Android CLI Flags</h5>
+<p>Use these flags on commands that create or use the Android agent, such as <code>connect</code>, <code>take_screenshot</code>, <code>act</code>, <code>assert</code>, and <code>tap</code>:</p>
+<ul>
+<li><code>--device-id &lt;id&gt;</code>: Target a specific Android device from <code>adb devices</code>.</li>
+<li><code>--use-scrcpy</code>: Enable scrcpy accelerated screenshots. Use this when normal screenshot capture is slow or unstable. Because CLI invocations are stateless, pass this flag on each Android Midscene command where you want scrcpy-based screenshots.</li>
+</ul>
+<h5>Connect to Device</h5>
+<pre><code class="language-bash">npx -y @midscene/android@1 connect
+npx -y @midscene/android@1 connect --device-id emulator-5554
+npx -y @midscene/android@1 connect --device-id emulator-5554 --use-scrcpy
+</code></pre>
+<h5>Launch an App or URL</h5>
+<p>Use the dedicated launch step when you want a deterministic starting point before the rest of the task:</p>
+<pre><code class="language-bash">npx -y @midscene/android@1 launch --uri https://www.ebay.com
+npx -y @midscene/android@1 launch --uri com.android.settings
+npx -y @midscene/android@1 launch --uri com.android.settings/.Settings
+</code></pre>
+<h5>Run a Raw Android Shell Command</h5>
+<p>Use this when the task needs lower-level device control that is not best expressed as a visible UI interaction:</p>
+<pre><code class="language-bash">npx -y @midscene/android@1 runadbshell --command &quot;dumpsys battery&quot;
+</code></pre>
+<p>This is forwarded to <code>adb shell</code> on the connected device. In practice, the underlying command is <code>adb -s &lt;deviceId&gt; shell dumpsys battery</code> and some environments may also include the default ADB server port, such as <code>adb -P 5037 -s &lt;deviceId&gt; shell dumpsys battery</code>.</p>
+<h5>Take Screenshot</h5>
+<pre><code class="language-bash">npx -y @midscene/android@1 take_screenshot
+npx -y @midscene/android@1 take_screenshot --device-id emulator-5554 --use-scrcpy
+</code></pre>
+<p>After taking a screenshot, read the saved image file to understand the current screen state before deciding the next action.</p>
+<h5>Perform Action</h5>
+<p>Use <code>act</code> to interact with the device and get the result. It autonomously handles all UI interactions internally — tapping, typing, scrolling, swiping, waiting, and navigating — so you should give it complex, high-level tasks as a whole rather than breaking them into small steps. Describe <strong>what you want to do and the desired effect</strong> in natural language:</p>
+<pre><code class="language-bash"># specific instructions
+npx -y @midscene/android@1 act --prompt &quot;type hello world in the search field and press Enter&quot;
+npx -y @midscene/android@1 act --prompt &quot;long press the message bubble and tap Delete in the popup menu&quot;
+npx -y @midscene/android@1 act --device-id emulator-5554 --use-scrcpy --prompt &quot;type hello world in the search field and press Enter&quot;
+
+# or target-driven instructions
+npx -y @midscene/android@1 act --prompt &quot;open Settings and navigate to Wi-Fi settings, tell me the connected network name&quot;
+</code></pre>
+<h5>Assert Current Screen State</h5>
+<p>Use <code>assert</code> to verify that the current screen satisfies a natural language condition. It does not perform UI actions; it checks the visible screen state and passes only when the assertion is true. Use this for validation, QA checks, and final state verification after <code>act</code>.</p>
+<pre><code class="language-bash">npx -y @midscene/android@1 assert --prompt &quot;there is a login button visible&quot;
+npx -y @midscene/android@1 assert --prompt &quot;the settings screen shows Wi-Fi and Bluetooth options&quot;
+npx -y @midscene/android@1 assert --device-id emulator-5554 --prompt &quot;the app shows a successful login message&quot;
+npx -y @midscene/android@1 assert --device-id emulator-5554 --use-scrcpy --prompt &quot;the app shows a successful login message&quot;
+</code></pre>
+<p>By default a failed assertion throws an AI-generated reason. Pass <code>--message</code> to throw a custom error message instead, which is useful for surfacing the intended outcome in QA and CI logs.</p>
+<pre><code class="language-bash">npx -y @midscene/android@1 assert \
+  --prompt &quot;the order confirmation screen is visible&quot; \
+  --message &quot;the order should be confirmed after tapping Pay&quot;
+</code></pre>
+<p>When the assertion needs to compare against a reference image (icon, logo, screenshot), pass <code>--image</code> for the URL/path and <code>--image-name</code> for its display name. Each <code>--image</code> may be an http(s) link, a <code>data:</code> URI, or a local file path. Repeat both flags in matching order when you need to attach more than one image. Add <code>--convertHttpImage2Base64 true</code> when the model cannot reach the URL directly. Requires <code>@midscene/android@1.9.0+</code>.</p>
+<pre><code class="language-bash">npx -y @midscene/android@1 assert \
+  --prompt &quot;the visible app icon matches the supplied reference image&quot; \
+  --image &quot;https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png&quot; \
+  --image-name &quot;icon&quot; \
+  --convertHttpImage2Base64 true
+
+# or with a local file
+npx -y @midscene/android@1 assert \
+  --prompt &quot;the header on screen matches the local screenshot&quot; \
+  --image &quot;./fixtures/header.png&quot; \
+  --image-name &quot;header&quot;
+
+# multiple reference images — pair --image and --image-name by order
+npx -y @midscene/android@1 assert \
+  --prompt &quot;the screen shows both the app icon and the header&quot; \
+  --image &quot;./fixtures/icon.png&quot;   --image-name &quot;icon&quot; \
+  --image &quot;./fixtures/header.png&quot; --image-name &quot;header&quot;
+</code></pre>
+<h5>Record and Assert Transient UI</h5>
+<p>Use a recording when the state to verify may disappear before a current-screen assertion runs, such as a toast, loading banner, animation, or transition:</p>
+<pre><code class="language-bash"># Terminal 1: keep this foreground command running
+npx -y @midscene/android@1 record start \
+  --device-id emulator-5554 --use-scrcpy \
+  --output ./submission-observation.json
+
+# Terminal 2, while Terminal 1 records
+npx -y @midscene/android@1 act --device-id emulator-5554 \
+  --prompt &quot;tap the Submit button&quot;
+
+# Send Ctrl+C to Terminal 1 and wait for the saved-path message, then assert
+npx -y @midscene/android@1 assert --device-id emulator-5554 \
+  --record ./submission-observation.json \
+  --prompt &quot;a success toast appeared during submission&quot;
+</code></pre>
+<p>Pass target flags, capture flags, and <code>--output</code> to <code>record start</code>, then wait for <code>Recording. Press Ctrl+C to stop and save.</code> Keep the recorder as a foreground process in its dedicated terminal; never add shell <code>&amp;</code>. Perform the interaction manually or from a second terminal, send Ctrl+C to the recorder, and wait until it prints the saved path before asserting. <code>--use-scrcpy</code> provides the faster continuous frame source; without it, recording falls back to periodic screenshots. Optional capture flags are <code>--interval-ms</code>, <code>--max-frames</code>, and <code>--watchdog-ms</code>; <code>--max-frames</code> caps sampled frames, and the manifest may contain one additional final representative frame. The default watchdog finalizes and saves the recording after five minutes, while <code>--watchdog-ms 0</code> disables that safety limit. The output is a JSON manifest plus an adjacent <code>&lt;name&gt;.frames</code> image directory, not an encoded video or archive. The manifest contains relative JPEG/PNG paths and no base64 image bodies. Keep or move the JSON file and image directory together, and pass the JSON path to <code>assert --record</code>. Use ordinary <code>assert</code> without <code>--record</code> when only the current screen matters.</p>
+<h5>Use a Reference Image for Precise Targeting</h5>
+<p>When the user provides a screenshot, icon, logo, or reference image and wants an exact visual match, prefer <code>tap --locate</code> instead of a generic <code>act --prompt</code>. Pass <code>--locate</code> as JSON. The <code>prompt</code> describes the target, <code>images</code> supplies named reference images, and <code>convertHttpImage2Base64: true</code> is useful when the image URL may not be directly accessible to the model.</p>
+<pre><code class="language-bash">npx -y @midscene/android@1 tap --locate '{
+  &quot;prompt&quot;: &quot;tap the area contains the image&quot;,
+  &quot;images&quot;: [
+    {
+      &quot;name&quot;: &quot;target image&quot;,
+      &quot;url&quot;: &quot;https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png&quot;
+    }
+  ],
+  &quot;convertHttpImage2Base64&quot;: true
+}'
+</code></pre>
+<p>The same <code>locate</code> JSON shape also works for other commands that accept a <code>locate</code> parameter.</p>
+<h5>Disconnect</h5>
+<pre><code class="language-bash">npx -y @midscene/android@1 disconnect
+</code></pre>
+<h5>Consume Report Files</h5>
+<p>The generated HTML report is recommended for human reading first. It includes step-by-step execution details and replay videos for each operation, which makes it much easier to understand what happened and troubleshoot problems.</p>
+<p>If another skill or tool needs to consume the report, first convert it with <code>report-tool</code> from the same platform CLI package. Prefer Markdown for LLM-based workflows. Use JSON when the report needs to be processed programmatically.</p>
+<pre><code class="language-bash">npx -y @midscene/android@1 report-tool --action to-markdown --htmlPath ./midscene_run/report/.../index.html --outputDir ./output-markdown
+npx -y @midscene/android@1 report-tool --action split --htmlPath ./midscene_run/report/.../index.html --outputDir ./output-data
+</code></pre>
+<h4>Workflow Pattern</h4>
+<p>Since CLI commands are stateless between invocations, follow this pattern:</p>
+<ol>
+<li><strong>Connect</strong> to establish a session</li>
+<li><strong>Launch the target app and take screenshot</strong> to see the current state, make sure the app is launched and visible on the screen.</li>
+<li><strong>Execute action</strong> using <code>act</code> to perform the desired action or target-driven instructions. Use <code>assert</code> for the resulting screen state, or keep <code>record start --output ...</code> running in a dedicated terminal during transient-state workflows, stop it with Ctrl+C, and then use <code>assert --record</code>.</li>
+<li><strong>Disconnect</strong> when done</li>
+<li><strong>Report results</strong> — summarize what was accomplished, present key findings and data extracted during the task, and list any generated files (screenshots, logs, etc.) with their paths</li>
+</ol>
+<h4>Best Practices</h4>
+<ol>
+<li><strong>Bring the target app to the foreground before using this skill</strong>: For best efficiency, launch the app using ADB (e.g., <code>adb shell am start -n &lt;package/activity&gt;</code>) <strong>before</strong> invoking any midscene commands. Then take a screenshot to confirm the app is actually in the foreground. Only after visual confirmation should you proceed with UI automation using this skill. ADB commands are significantly faster than using midscene to navigate to and open apps.</li>
+<li><strong>Be specific about UI elements</strong>: Instead of vague descriptions, provide clear, specific details. Say <code>&quot;the Wi-Fi toggle switch on the right side&quot;</code> instead of <code>&quot;the toggle&quot;</code>.</li>
+<li><strong>Describe locations when possible</strong>: Help target elements by describing their position (e.g., <code>&quot;the search icon at the top right&quot;</code>, <code>&quot;the third item in the list&quot;</code>).</li>
+<li><strong>Never run in background</strong>: Every midscene command must run synchronously — background execution breaks the screenshot-analyze-act loop.</li>
+<li><strong>Batch related operations into a single <code>act</code> command</strong>: When performing consecutive operations within the same app, combine them into one <code>act</code> prompt instead of splitting them into separate commands. For example, &quot;open Settings, tap Wi-Fi, and toggle it on&quot; should be a single <code>act</code> call, not three. This reduces round-trips, avoids unnecessary screenshot-analyze cycles, and is significantly faster.</li>
+<li><strong>Use scrcpy when screenshot capture needs acceleration</strong>: Add <code>--use-scrcpy</code> to each relevant command when normal Android screenshots are slow, flaky, or blocked by the environment.</li>
+<li><strong>Choose the right verification window</strong>: Use <code>assert --prompt &quot;...&quot;</code> for the current screen. For a toast, banner, animation, or transition, run <code>record start --output ...</code> in a dedicated terminal, perform the interaction, stop recording with Ctrl+C, wait for the saved-path message, then pass the artifact to <code>assert --record</code>.</li>
+<li><strong>Always report results after completion</strong>: After finishing the automation task, you MUST proactively present the results to the user without waiting for them to ask. This includes: (1) the answer to the user's original question or the outcome of the requested task, (2) key data extracted or observed during execution, (3) screenshots and other generated files with their paths, (4) a brief summary of steps taken. Do NOT silently finish after the last automation command — the user expects complete results in a single interaction.</li>
+<li><strong>Prefer <code>tap --locate</code> when a reference image is provided</strong>: If the user shares a screenshot, icon, or logo and wants that exact visual target, use <code>tap --locate</code> with a multimodal <code>locate</code> JSON object such as <code>{ &quot;prompt&quot;: &quot;...&quot;, &quot;images&quot;: [...] }</code> instead of relying only on <code>act --prompt</code>.</li>
+</ol>
+<p><strong>Example — Popup menu interaction:</strong></p>
+<pre><code class="language-bash">npx -y @midscene/android@1 act --prompt &quot;long press the message bubble and tap Delete in the popup menu&quot;
+npx -y @midscene/android@1 take_screenshot
+</code></pre>
+<p><strong>Example — Form interaction:</strong></p>
+<pre><code class="language-bash">npx -y @midscene/android@1 act --prompt &quot;fill in the username field with 'testuser' and the password field with 'pass123', then tap the Login button&quot;
+npx -y @midscene/android@1 take_screenshot
+</code></pre>
+<h4>Improve Precision (Deep Locate / Deep Think)</h4>
+<p>Two optional global flags help when Midscene struggles with a task. Put them anywhere in the command (before or after the sub-command); once set, the relevant operations use them by default, so you don't pass a per-call parameter.</p>
+<ul>
+<li><code>--deep-locate</code> — spends an extra round of visual reasoning to pinpoint the target element. Use it when an action interacts with the wrong spot (location drift / offset). It applies to every operation that locates an element, including <code>tap --locate</code> and the locating that happens inside <code>act</code>.</li>
+<li><code>--deep-think</code> — plans <code>act</code> with deeper reasoning (richer context and sub-goal decomposition). Use it for complex, multi-step <code>act</code> instructions; it only affects planning.</li>
+</ul>
+<p>Both trade a little speed for better results, and you can combine them.</p>
+<pre><code class="language-bash"># more accurate element location (helps act's internal locating too)
+npx -y @midscene/android@1 act --deep-locate --prompt &quot;tap the small overflow (⋮) icon in the top-right corner&quot;
+
+# deeper planning for a complex, multi-step act
+npx -y @midscene/android@1 act --deep-think --prompt &quot;open Settings, go to Wi-Fi, and connect to the network named Office&quot;
+
+# combine both
+npx -y @midscene/android@1 act --deep-locate --deep-think --prompt &quot;fill in the signup form and tap Submit&quot;
+</code></pre>
+<h4>Troubleshooting</h4>
+<table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ADB not found</strong></td>
+<td>Install Android SDK Platform Tools: <code>brew install android-platform-tools</code> (macOS) or download from <a href="https://developer.android.com/tools/releases/platform-tools">developer.android.com</a>.</td>
+</tr>
+<tr>
+<td><strong>Device not listed</strong></td>
+<td>Check USB connection, ensure USB debugging is enabled in Developer Options, and run <code>adb devices</code>.</td>
+</tr>
+<tr>
+<td><strong>Device shows &quot;unauthorized&quot;</strong></td>
+<td>Unlock the device and accept the USB debugging authorization prompt. Then run <code>adb devices</code> again.</td>
+</tr>
+<tr>
+<td><strong>Device shows &quot;offline&quot;</strong></td>
+<td>Disconnect and reconnect the USB cable. Run <code>adb kill-server &amp;&amp; adb start-server</code>.</td>
+</tr>
+<tr>
+<td><strong>Command timeout</strong></td>
+<td>The device screen may be off or locked. Wake the device with <code>adb shell input keyevent KEYCODE_WAKEUP</code> and unlock it.</td>
+</tr>
+<tr>
+<td><strong>API key error</strong></td>
+<td>Check <code>.env</code> file contains <code>MIDSCENE_MODEL_API_KEY=&lt;your-key&gt;</code>. See <a href="https://midscenejs.com/zh/model-common-config.html">Model Configuration</a>.</td>
+</tr>
+<tr>
+<td><strong><code>@midscene/*</code> dependency version is outdated</strong></td>
+<td>Check local versions with <code>npm ls @midscene/android @midscene/core @midscene/shared</code> (or <code>pnpm why @midscene/android</code>). Compare with latest versions using <code>npm view @midscene/android version</code>, <code>npm view @midscene/core version</code>, and <code>npm view @midscene/shared version</code>. Upgrade as needed (<code>npm i @midscene/android@latest @midscene/core@latest @midscene/shared@latest</code>).</td>
+</tr>
+<tr>
+<td><strong>Wrong device targeted</strong></td>
+<td>If multiple devices are connected, use the <code>--device-id &lt;id&gt;</code> flag.</td>
+</tr>
+<tr>
+<td><strong>Screenshots are slow or flaky</strong></td>
+<td>Add <code>--use-scrcpy</code> to the Android Midscene command to enable scrcpy accelerated screenshots.</td>
+</tr>
+</tbody>
+</table>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

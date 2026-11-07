@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dialogue-systems · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re adding NPC conversations, choice menus or story flags that change later dialogue. It does: chooses between Ink, Yarn Spinner and a custom runner, defines what a node can yield, keeps variables apart from flow, uses line IDs for translation and walks every branch. You get: a dialogue graph as data and a runner that hands lines and choices to your UI, or the same scene in Ink or Yarn script. Ink and Yarn: Ink is prose-first and suits writer-heavy branching stories; Yarn Spinner is node-based, with explicit commands for engine hooks. Leaves to others: text boxes and choice buttons, to engine UI skills, and saving story variables, to save-systems." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=gamedev-skills%2Fawesome-gamedev-agent-skills">gamedev-skills/awesome-gamedev-agent-skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/bundle/gamedev-skills/awesome-gamedev-agent-skills/">Gamedev Agent Skills</a></p>
+      <h1>dialogue-systems</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re adding NPC conversations, choice menus or story flags that change later dialogue</dd></div><div><dt>It does</dt><dd>chooses between Ink, Yarn Spinner and a custom runner, defines what a node can yield, keeps variables apart from flow, uses line IDs for translation and walks every branch</dd></div><div><dt>You get</dt><dd>a dialogue graph as data and a runner that hands lines and choices to your UI, or the same scene in Ink or Yarn script</dd></div><div><dt>Ink and Yarn</dt><dd>Ink is prose-first and suits writer-heavy branching stories; Yarn Spinner is node-based, with explicit commands for engine hooks</dd></div><div><dt>Leaves to others</dt><dd>text boxes and choice buttons, to engine UI skills, and saving story variables, to save-systems</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 6 of 27 in the <a href="/skillhub/bundle/gamedev-skills/awesome-gamedev-agent-skills/">Gamedev Agent Skills</a> bundle · Before it: <a href="/skillhub/skill/gamedev-skills/awesome-gamedev-agent-skills/skills/disciplines/procedural-gen/">procedural-gen</a> · After it: <a href="/skillhub/skill/gamedev-skills/awesome-gamedev-agent-skills/skills/disciplines/save-systems/">save-systems</a></p>
+    
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A discipline skill from a game-development collection that models conversations as a graph: nodes hold lines, choices branch, conditions gate options and variables remember what the player did. The first decision is build or buy, and for a custom runner it says to build a graph, not a language: a JSON graph whose lines are string-table IDs, with conditions and variable writes on choices, and a GDScript runner that shows lines, offers only the choices whose condition passes, and waits for the player. The same guard-bribe scene is shown in Ink (once-only and sticky choices, diverts, global variables) and in Yarn Spinner 3 (options, declare and set, jumps), noting that an undeclared Yarn variable compiles with only a warning, which hides typos. Writes go on the transition, so revisiting a node doesn&#39;t charge the player twice. It checks that every branch reaches an end or a valid jump. Pitfalls include hardcoded display strings that make translation a rewrite, inventing a scripting language for a simple tree, and dead-end nodes that stall silently.</p>
+      <p class="muted">Summarizes <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/tree/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/dialogue-systems">the skill at 19d93f9</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/gamedev-skills/awesome-gamedev-agent-skills --skill dialogue-systems</code><button type="button" class="copy" data-copy="npx skills add https://github.com/gamedev-skills/awesome-gamedev-agent-skills --skill dialogue-systems">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/gamedev-skills/awesome-gamedev-agent-skills/dialogue-systems">skills.sh page</a> · <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/tree/HEAD/skills/disciplines/dialogue-systems">Source on GitHub</a> · <a href="/skillhub/?repo=gamedev-skills%2Fawesome-gamedev-agent-skills">All skills from gamedev-skills/awesome-gamedev-agent-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>9,700 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>7,309 <span class="muted">gamedev-skills/awesome-gamedev-agent-skills</span></dd></div><div><dt>First seen</dt><dd>Jun 27, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">1.9K</div>
+      <div class="stat-delta">+424% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 364; week to Sep 26: 348; week to Oct 3: 418; week to Oct 10: 417; week to Oct 17: 510; week to Oct 24: 691; week to Oct 31: 1,539; week to Nov 7: 1,906. Use the left and right arrow keys to read each week."
+        data-values="364,348,418,417,510,691,1539,1906" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,41.6 38.6,42.0 71.1,40.4 103.7,40.4 136.3,38.2 168.9,34.0 201.4,14.5 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>364</td></tr><tr><td>Sep 26</td><td>348</td></tr><tr><td>Oct 3</td><td>418</td></tr><tr><td>Oct 10</td><td>417</td></tr><tr><td>Oct 17</td><td>510</td></tr><tr><td>Oct 24</td><td>691</td></tr><tr><td>Oct 31</td><td>1,539</td></tr><tr><td>Nov 7</td><td>1,906</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:games" data-facet="category" title="Make games: design, genres, game feel and game-jam workflows, whatever the engine." href="/skillhub/?tag=category%3Agames">category:games</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Make games: design, genres, game feel and game-jam workflows, whatever the engine.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="architecture" data-facet="topic" href="/skillhub/?tag=architecture">architecture</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:ink" data-facet="stack" href="/skillhub/?tag=stack%3Aink">stack:ink</a><a class="tag" data-tag="stack:yarn-spinner" data-facet="stack" href="/skillhub/?tag=stack%3Ayarn-spinner">stack:yarn-spinner</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/dialogue-systems/SKILL.md">gamedev-skills/awesome-gamedev-agent-skills at 19d93f9</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: dialogue-systems
+description: &#62;
+  Build branching dialogue and narrative — a node/choice graph with conditions,
+  variables, and localization hooks — and choose between authoring tools Ink and
+  Yarn Spinner or a custom data-driven runner. Engine-neutral. Use when the user
+  mentions dialogue system, branching dialogue, conversation tree, choices,
+  Ink (.ink), Yarn Spinner (.yarn), or NPC dialogue.</code></pre></details>
+        <div class="markdown"><h3>Dialogue systems</h3>
+<p>Model conversations as a <strong>graph</strong>: nodes hold lines, choices branch the flow,
+conditions gate options, and variables remember what the player did. The first
+real decision is <em>build vs. buy</em> — adopt a proven authoring tool (<strong>Ink</strong> or
+<strong>Yarn Spinner</strong>) or write a small data-driven runner. This skill owns both Ink
+and Yarn; the <code>visual-novel</code> and <code>rpg</code> genres consume it.</p>
+<h4>When to use</h4>
+<ul>
+<li>Use to design branching conversations, choice menus, or narrative state
+(flags, relationship values) that affect later dialogue.</li>
+<li>Use to decide between Ink, Yarn Spinner, and a custom JSON/resource format.</li>
+<li>Use to wire a dialogue script into your game loop (advance line, present
+choices, run commands, resolve variables).</li>
+</ul>
+<p><strong>When <em>not</em> to use:</strong> for engine UI (text boxes, portraits, choice buttons), use
+<code>godot-ui-control</code> or the engine's UI skill. For persisting narrative variables
+across sessions, use <code>save-systems</code>. For data-as-resources in Godot/Unity, see
+<code>godot-resources</code> / <code>unity-scriptableobjects</code>.</p>
+<h4>Core workflow</h4>
+<ol>
+<li><strong>Choose the authoring approach.</strong>
+<ul>
+<li><strong>Ink</strong> — prose-first, writer-friendly, weave/gather flow; great for
+dialogue-heavy or CYOA narrative. Integrate via ink runtime / inkle plugins.</li>
+<li><strong>Yarn Spinner</strong> — node-based, explicit <code>&lt;&lt;commands&gt;&gt;</code>, strong for
+game-driven dialogue with lots of engine hooks.</li>
+<li><strong>Custom runner</strong> — a JSON/resource graph + a small interpreter when you need
+full control or minimal dependencies. Don't build a <em>language</em>; build a graph.</li>
+</ul>
+</li>
+<li><strong>Define the node contract.</strong> A node yields one of: a line (speaker + text),
+a set of choices, a command/side-effect, or an end/jump. The runner advances
+through nodes and hands lines/choices to the UI.</li>
+<li><strong>Separate variables from flow.</strong> Keep a variable store (booleans, numbers,
+strings) the dialogue reads/writes; gate choices with conditions over it.</li>
+<li><strong>Localize from the start.</strong> Author with <strong>line IDs</strong>, not raw strings, so the
+displayed text comes from a string table keyed by locale.</li>
+<li><strong>Drive it from the game loop.</strong> The runner is a state machine: <code>current</code> node
+→ emit content → wait for input (continue or choice) → advance.</li>
+<li><strong>Verify by walking branches.</strong> Exercise each choice path; confirm conditions,
+variable writes, and that every branch reaches an end or a valid jump.</li>
+</ol>
+<h4>Patterns</h4>
+<h5>1. Engine-neutral dialogue graph (data, not code)</h5>
+<pre><code class="language-json">{
+  &quot;start&quot;: &quot;guard_intro&quot;,
+  &quot;nodes&quot;: {
+    &quot;guard_intro&quot;: {
+      &quot;speaker&quot;: &quot;Guard&quot;, &quot;line&quot;: &quot;DLG_GUARD_001&quot;,
+      &quot;choices&quot;: [
+        { &quot;text&quot;: &quot;DLG_OPT_BRIBE&quot;, &quot;to&quot;: &quot;bribe&quot;, &quot;if&quot;: &quot;gold &gt;= 50&quot;,
+          &quot;set&quot;: { &quot;gold&quot;: &quot;gold - 50&quot; } },
+        { &quot;text&quot;: &quot;DLG_OPT_LEAVE&quot;, &quot;to&quot;: &quot;end&quot; }
+      ]
+    },
+    &quot;bribe&quot;: {
+      &quot;speaker&quot;: &quot;Guard&quot;, &quot;line&quot;: &quot;DLG_GUARD_BRIBED&quot;,
+      &quot;set&quot;: { &quot;gate_open&quot;: true },
+      &quot;next&quot;: &quot;end&quot;
+    },
+    &quot;end&quot;: { &quot;end&quot;: true }
+  }
+}
+</code></pre>
+<p><code>line</code>/<code>text</code> are <strong>string-table IDs</strong> (localization), not literal text. <code>if</code>
+gates a choice; <code>set</code> mutates the variable store. The gold cost sits on the
+<em>choice</em>, so it is paid once per pick even if the <code>bribe</code> node is revisited; the
+idempotent <code>gate_open</code> write can live on the node. A string <code>set</code> value is an
+expression, so a literal string needs inner quotes: <code>&quot;mood&quot;: &quot;'angry'&quot;</code>. The full
+interpreter that walks this graph is in <code>references/runner.md</code>.</p>
+<h5>2. Runner step (a state machine over the graph)</h5>
+<pre><code class="language-gdscript"># Godot 4.7. The runner holds the current node and a variable store. Every line
+# waits for the player: the UI calls choose() or the continue callback.
+func goto(id: String) -&gt; void:
+    current = graph.nodes[id]
+    apply_set(current.get(&quot;set&quot;, {}))
+    if current.get(&quot;end&quot;, false):
+        ui.close()
+        return
+    if current.has(&quot;line&quot;):
+        ui.show_line(current.get(&quot;speaker&quot;, &quot;&quot;), localize(current.line))
+    if current.has(&quot;choices&quot;):
+        var shown = current.choices.filter(func(c): return eval_cond(c.get(&quot;if&quot;, &quot;&quot;)))
+        ui.show_choices(shown)            # only choices whose condition passes
+    elif current.has(&quot;next&quot;):
+        var next_id: String = current.next
+        ui.show_continue(func(): goto(next_id))   # advance when the player continues
+
+func choose(choice: Dictionary) -&gt; void:   # called when the player picks a choice
+    apply_set(choice.get(&quot;set&quot;, {}))       # write on the transition (revisit-safe)
+    goto(choice.to)
+</code></pre>
+<h5>3. Ink — branching with knots, choices, and variables (inkle)</h5>
+<pre><code class="language-ink">// Ink: '*' = once-only choice, '+' = sticky. [bracketed] text shows only in the
+// choice, not the printed result. '-&gt;' diverts; '-&gt; END' stops the flow.
+VAR gold = 60
+-&gt; guard_intro                    // the story starts at the top: divert into a knot
+
+=== guard_intro ===
+The guard blocks the gate.
+* {gold &gt;= 50} [Offer 50 gold]   &quot;Here, take it.&quot;
+    ~ gold = gold - 50
+    The guard pockets it and steps aside. -&gt; END
+* [Leave]   You turn back. -&gt; END
+</code></pre>
+<p>Ink tracks how often each knot was seen, so <code>{visited_knot}</code> is a built-in
+condition. Variables are global (<code>VAR</code>) or temporary (<code>~ temp</code>).</p>
+<h5>4. Yarn Spinner — nodes, options, and commands (Yarn Spinner 3.x)</h5>
+<pre><code class="language-yarn">title: GuardIntro
+---
+&lt;&lt;declare $gold = 60&gt;&gt;
+&lt;&lt;declare $gate_open = false&gt;&gt;
+Guard: You can't pass.
+-&gt; Offer 50 gold &lt;&lt;if $gold &gt;= 50&gt;&gt;
+    &lt;&lt;set $gold = $gold - 50&gt;&gt;
+    Guard: ...fine. Go on through.
+    &lt;&lt;set $gate_open to true&gt;&gt;
+-&gt; Leave
+    Guard: Good choice.
+===
+</code></pre>
+<p>Yarn lines may start with <code>Speaker:</code>; options use <code>-&gt;</code>; <code>&lt;&lt;set&gt;&gt;</code>/<code>&lt;&lt;declare&gt;&gt;</code>
+manage <code>$variables</code>; <code>&lt;&lt;if&gt;&gt;</code> gates an option; <code>&lt;&lt;jump NodeName&gt;&gt;</code> moves between
+nodes. Interpolate values in text with <code>{$gold}</code>. Declare every variable before first
+use: an undeclared one still compiles (Yarn infers its type and a zero/false/empty
+start value) with only a warning, which hides typos. These constructs are unchanged from
+Yarn Spinner 2.x.</p>
+<h4>Pitfalls</h4>
+<ul>
+<li><strong>Hardcoding display strings</strong> instead of line IDs makes localization a
+rewrite. Author against a string table from day one.</li>
+<li><strong>Inventing a scripting language</strong> for a simple branching tree. If you only
+need lines + choices + flags, a JSON/resource graph plus a 50-line runner beats
+a parser you must maintain. Use Ink/Yarn when writers need real flow control.</li>
+<li><strong>Variables coupled to the UI</strong>: store narrative state separately so the same
+dialogue works in cutscenes, menus, and tests. Persist it via <code>save-systems</code>.</li>
+<li><strong>Unreachable or dead-end nodes</strong>: a node with no <code>next</code>, choices, or end
+silently stalls. Validate that every node terminates or branches.</li>
+<li><strong>Mutating state in a line node the player can revisit</strong> double-applies (<code>gold</code>
+drained twice). Apply <code>set</code> on the transition, or guard with a seen-flag.</li>
+<li><strong>Mixing Ink's <code>*</code> (once-only) and <code>+</code> (sticky)</strong> by accident: looped menus
+need sticky <code>+</code> choices or the options vanish after one use.</li>
+</ul>
+<h4>References</h4>
+<ul>
+<li><code>references/ink-and-yarn.md</code> — side-by-side syntax cheat sheet (choices,
+diverts/jumps, variables, conditions, includes) and integration notes.</li>
+<li><code>references/runner.md</code> — a complete custom dialogue runner: graph schema,
+condition/expression evaluation, variable store, and localization lookup.</li>
+</ul>
+<h4>Related skills</h4>
+<ul>
+<li><code>save-systems</code> — persist narrative variables and seen-flags.</li>
+<li><code>godot-resources</code>, <code>unity-scriptableobjects</code> — store dialogue as engine data.</li>
+<li><code>godot-ui-control</code> — render text boxes, portraits, and choice buttons.</li>
+<li><code>visual-novel</code>, <code>rpg</code> — genres that compose this skill.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

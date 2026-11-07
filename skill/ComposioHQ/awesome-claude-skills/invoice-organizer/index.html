@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>invoice-organizer · SkillHub</title>
+    <meta name="description" content="Use it when: tax season or an expense report meets a folder of invoice.pdf, IMG_2847.jpg and the like. It does: reads each PDF or image for vendor, date, invoice number, amount and item, then renames it &quot;YYYY-MM-DD Vendor - Invoice - Item&quot;. You get: copies sorted by vendor, category, date or tax category, an invoice-summary.csv, and a list of files to check by hand. Asks: how to organize them, and shows the plan before touching files; it copies by default and moves only if you prefer." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=ComposioHQ%2Fawesome-claude-skills">ComposioHQ/awesome-claude-skills</a></p>
+      <h1>invoice-organizer</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>tax season or an expense report meets a folder of invoice.pdf, IMG_2847.jpg and the like</dd></div><div><dt>It does</dt><dd>reads each PDF or image for vendor, date, invoice number, amount and item, then renames it &#34;YYYY-MM-DD Vendor - Invoice - Item&#34;</dd></div><div><dt>You get</dt><dd>copies sorted by vendor, category, date or tax category, an invoice-summary.csv, and a list of files to check by hand</dd></div><div><dt>Asks</dt><dd>how to organize them, and shows the plan before touching files; it copies by default and moves only if you prefer</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Run it in a folder of invoices. The agent finds the PDFs and images, reports how many there are and of what types, then reads each one for the vendor, invoice number, date, amount, description and payment method, falling back to the filename or file dates and flagging what it can&#39;t read. It asks how you want them filed: by vendor, by expense category, by date, by tax category such as deductible or personal, or your own structure, with Year/Category/Vendor as its default. Each file gets a name like &#34;2024-03-15 Adobe - Invoice - Creative Cloud.pdf&#34;. It shows the proposed folder tree and sample renames and waits for your yes before creating folders and copying files, or moving them if you&#39;d rather. It finishes with a CSV of every invoice&#39;s date, vendor, number, description, amount, category and path, ready for accounting software or an accountant, and a summary of totals, vendors and files needing review. It also covers duplicates, compared by file hash, invoices split across files and missing details.</p>
+      <p class="muted">Summarizes <a href="https://github.com/ComposioHQ/awesome-claude-skills/tree/be2a406907dbc61b73e6827ded415c96139d13a2/invoice-organizer">the skill at be2a406</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/ComposioHQ/awesome-claude-skills --skill invoice-organizer</code><button type="button" class="copy" data-copy="npx skills add https://github.com/ComposioHQ/awesome-claude-skills --skill invoice-organizer">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/composiohq/awesome-claude-skills/invoice-organizer">skills.sh page</a> · <a href="https://github.com/ComposioHQ/awesome-claude-skills/tree/HEAD/invoice-organizer">Source on GitHub</a> · <a href="/skillhub/?repo=ComposioHQ%2Fawesome-claude-skills">All skills from ComposioHQ/awesome-claude-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,300 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>78,958 <span class="muted">ComposioHQ/awesome-claude-skills</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">110</div>
+      <div class="stat-delta">+31% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 84; week to Sep 26: 100; week to Oct 3: 94; week to Oct 10: 153; week to Oct 17: 121; week to Oct 24: 116; week to Oct 31: 118; week to Nov 7: 110. Use the left and right arrow keys to read each week."
+        data-values="84,100,94,153,121,116,118,110" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,25.8 38.6,21.2 71.1,23.0 103.7,6.0 136.3,15.2 168.9,16.6 201.4,16.1 234.0,18.4" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="18.4" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>84</td></tr><tr><td>Sep 26</td><td>100</td></tr><tr><td>Oct 3</td><td>94</td></tr><tr><td>Oct 10</td><td>153</td></tr><tr><td>Oct 17</td><td>121</td></tr><tr><td>Oct 24</td><td>116</td></tr><tr><td>Oct 31</td><td>118</td></tr><tr><td>Nov 7</td><td>110</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:personal" data-facet="category" title="Learning and everyday help outside work." href="/skillhub/?tag=category%3Apersonal">category:personal</a><a class="tag" data-tag="category:documents" data-facet="category" title="Office files, notes and suites like Lark and Google Workspace." href="/skillhub/?tag=category%3Adocuments">category:documents</a></div>
+          <p class="tag-meaning">Learning and everyday help outside work.</p><p class="tag-meaning">Office files, notes and suites like Lark and Google Workspace.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="finance" data-facet="topic" href="/skillhub/?tag=finance">finance</a><a class="tag" data-tag="documents" data-facet="topic" href="/skillhub/?tag=documents">documents</a><a class="tag" data-tag="pdf" data-facet="topic" href="/skillhub/?tag=pdf">pdf</a><a class="tag" data-tag="spreadsheets" data-facet="topic" href="/skillhub/?tag=spreadsheets">spreadsheets</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/ComposioHQ/awesome-claude-skills/blob/be2a406907dbc61b73e6827ded415c96139d13a2/invoice-organizer/SKILL.md">ComposioHQ/awesome-claude-skills at be2a406</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: invoice-organizer
+description: Automatically organizes invoices and receipts for tax preparation by reading messy files, extracting key information, renaming them consistently, and sorting them into logical folders. Turns hours of manual bookkeeping into minutes of automated organization.</code></pre></details>
+        <div class="markdown"><h3>Invoice Organizer</h3>
+<p>This skill transforms chaotic folders of invoices, receipts, and financial documents into a clean, tax-ready filing system without manual effort.</p>
+<h4>When to Use This Skill</h4>
+<ul>
+<li>Preparing for tax season and need organized records</li>
+<li>Managing business expenses across multiple vendors</li>
+<li>Organizing receipts from a messy folder or email downloads</li>
+<li>Setting up automated invoice filing for ongoing bookkeeping</li>
+<li>Archiving financial records by year or category</li>
+<li>Reconciling expenses for reimbursement</li>
+<li>Preparing documentation for accountants</li>
+</ul>
+<h4>What This Skill Does</h4>
+<ol>
+<li>
+<p><strong>Reads Invoice Content</strong>: Extracts information from PDFs, images, and documents:</p>
+<ul>
+<li>Vendor/company name</li>
+<li>Invoice number</li>
+<li>Date</li>
+<li>Amount</li>
+<li>Product or service description</li>
+<li>Payment method</li>
+</ul>
+</li>
+<li>
+<p><strong>Renames Files Consistently</strong>: Creates standardized filenames:</p>
+<ul>
+<li>Format: <code>YYYY-MM-DD Vendor - Invoice - ProductOrService.pdf</code></li>
+<li>Examples: <code>2024-03-15 Adobe - Invoice - Creative Cloud.pdf</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Organizes by Category</strong>: Sorts into logical folders:</p>
+<ul>
+<li>By vendor</li>
+<li>By expense category (software, office, travel, etc.)</li>
+<li>By time period (year, quarter, month)</li>
+<li>By tax category (deductible, personal, etc.)</li>
+</ul>
+</li>
+<li>
+<p><strong>Handles Multiple Formats</strong>: Works with:</p>
+<ul>
+<li>PDF invoices</li>
+<li>Scanned receipts (JPG, PNG)</li>
+<li>Email attachments</li>
+<li>Screenshots</li>
+<li>Bank statements</li>
+</ul>
+</li>
+<li>
+<p><strong>Maintains Originals</strong>: Preserves original files while organizing copies</p>
+</li>
+</ol>
+<h4>How to Use</h4>
+<h5>Basic Usage</h5>
+<p>Navigate to your messy invoice folder:</p>
+<pre><code>cd ~/Desktop/receipts-to-sort
+</code></pre>
+<p>Then ask Claude Code:</p>
+<pre><code>Organize these invoices for taxes
+</code></pre>
+<p>Or more specifically:</p>
+<pre><code>Read all invoices in this folder, rename them to 
+&quot;YYYY-MM-DD Vendor - Invoice - Product.pdf&quot; format, 
+and organize them by vendor
+</code></pre>
+<h5>Advanced Organization</h5>
+<pre><code>Organize these invoices:
+1. Extract date, vendor, and description from each file
+2. Rename to standard format
+3. Sort into folders by expense category (Software, Office, Travel, etc.)
+4. Create a CSV spreadsheet with all invoice details for my accountant
+</code></pre>
+<h4>Instructions</h4>
+<p>When a user requests invoice organization:</p>
+<ol>
+<li>
+<p><strong>Scan the Folder</strong></p>
+<p>Identify all invoice files:</p>
+<pre><code class="language-bash"># Find all invoice-related files
+find . -type f \( -name &quot;*.pdf&quot; -o -name &quot;*.jpg&quot; -o -name &quot;*.png&quot; \) -print
+</code></pre>
+<p>Report findings:</p>
+<ul>
+<li>Total number of files</li>
+<li>File types</li>
+<li>Date range (if discernible from names)</li>
+<li>Current organization (or lack thereof)</li>
+</ul>
+</li>
+<li>
+<p><strong>Extract Information from Each File</strong></p>
+<p>For each invoice, extract:</p>
+<p><strong>From PDF invoices</strong>:</p>
+<ul>
+<li>Use text extraction to read invoice content</li>
+<li>Look for common patterns:
+<ul>
+<li>&quot;Invoice Date:&quot;, &quot;Date:&quot;, &quot;Issued:&quot;</li>
+<li>&quot;Invoice #:&quot;, &quot;Invoice Number:&quot;</li>
+<li>Company name (usually at top)</li>
+<li>&quot;Amount Due:&quot;, &quot;Total:&quot;, &quot;Amount:&quot;</li>
+<li>&quot;Description:&quot;, &quot;Service:&quot;, &quot;Product:&quot;</li>
+</ul>
+</li>
+</ul>
+<p><strong>From image receipts</strong>:</p>
+<ul>
+<li>Read visible text from images</li>
+<li>Identify vendor name (often at top)</li>
+<li>Look for date (common formats)</li>
+<li>Find total amount</li>
+</ul>
+<p><strong>Fallback for unclear files</strong>:</p>
+<ul>
+<li>Use filename clues</li>
+<li>Check file creation/modification date</li>
+<li>Flag for manual review if critical info missing</li>
+</ul>
+</li>
+<li>
+<p><strong>Determine Organization Strategy</strong></p>
+<p>Ask user preference if not specified:</p>
+<pre><code class="language-markdown">I found [X] invoices from [date range].
+
+How would you like them organized?
+
+1. **By Vendor** (Adobe/, Amazon/, Stripe/, etc.)
+2. **By Category** (Software/, Office Supplies/, Travel/, etc.)
+3. **By Date** (2024/Q1/, 2024/Q2/, etc.)
+4. **By Tax Category** (Deductible/, Personal/, etc.)
+5. **Custom** (describe your structure)
+
+Or I can use a default structure: Year/Category/Vendor
+</code></pre>
+</li>
+<li>
+<p><strong>Create Standardized Filename</strong></p>
+<p>For each invoice, create a filename following this pattern:</p>
+<pre><code>YYYY-MM-DD Vendor - Invoice - Description.ext
+</code></pre>
+<p>Examples:</p>
+<ul>
+<li><code>2024-03-15 Adobe - Invoice - Creative Cloud.pdf</code></li>
+<li><code>2024-01-10 Amazon - Receipt - Office Supplies.pdf</code></li>
+<li><code>2023-12-01 Stripe - Invoice - Monthly Payment Processing.pdf</code></li>
+</ul>
+<p><strong>Filename Best Practices</strong>:</p>
+<ul>
+<li>Remove special characters except hyphens</li>
+<li>Capitalize vendor names properly</li>
+<li>Keep descriptions concise but meaningful</li>
+<li>Use consistent date format (YYYY-MM-DD) for sorting</li>
+<li>Preserve original file extension</li>
+</ul>
+</li>
+<li>
+<p><strong>Execute Organization</strong></p>
+<p>Before moving files, show the plan:</p>
+<pre><code class="language-markdown"># Organization Plan
+
+## Proposed Structure
+</code></pre>
+<p>Invoices/
+├── 2023/
+│   ├── Software/
+│   │   ├── Adobe/
+│   │   └── Microsoft/
+│   ├── Services/
+│   └── Office/
+└── 2024/
+├── Software/
+├── Services/
+└── Office/</p>
+<pre><code>
+## Sample Changes
+
+Before: `invoice_adobe_march.pdf`
+After: `2024-03-15 Adobe - Invoice - Creative Cloud.pdf`
+Location: `Invoices/2024/Software/Adobe/`
+
+Before: `IMG_2847.jpg`
+After: `2024-02-10 Staples - Receipt - Office Supplies.jpg`
+Location: `Invoices/2024/Office/Staples/`
+
+Process [X] files? (yes/no)
+</code></pre>
+<p>After approval:</p>
+<pre><code class="language-bash"># Create folder structure
+mkdir -p &quot;Invoices/2024/Software/Adobe&quot;
+
+# Copy (don't move) to preserve originals
+cp &quot;original.pdf&quot; &quot;Invoices/2024/Software/Adobe/2024-03-15 Adobe - Invoice - Creative Cloud.pdf&quot;
+
+# Or move if user prefers
+mv &quot;original.pdf&quot; &quot;new/path/standardized-name.pdf&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Generate Summary Report</strong></p>
+<p>Create a CSV file with all invoice details:</p>
+<pre><code class="language-csv">Date,Vendor,Invoice Number,Description,Amount,Category,File Path
+2024-03-15,Adobe,INV-12345,Creative Cloud,52.99,Software,Invoices/2024/Software/Adobe/2024-03-15 Adobe - Invoice - Creative Cloud.pdf
+2024-03-10,Amazon,123-4567890-1234567,Office Supplies,127.45,Office,Invoices/2024/Office/Amazon/2024-03-10 Amazon - Receipt - Office Supplies.pdf
+...
+</code></pre>
+<p>This CSV is useful for:</p>
+<ul>
+<li>Importing into accounting software</li>
+<li>Sharing with accountants</li>
+<li>Expense tracking and reporting</li>
+<li>Tax preparation</li>
+</ul>
+</li>
+<li>
+<p><strong>Provide Completion Summary</strong></p>
+<pre><code class="language-markdown"># Organization Complete! 📊
+
+## Summary
+- **Processed**: [X] invoices
+- **Date range**: [earliest] to [latest]
+- **Total amount**: $[sum] (if amounts extracted)
+- **Vendors**: [Y] unique vendors
+
+## New Structure
+</code></pre>
+<p>Invoices/
+├── 2024/ (45 files)
+│   ├── Software/ (23 files)
+│   ├── Services/ (12 files)
+│   └── Office/ (10 files)
+└── 2023/ (12 files)</p>
+<pre><code>
+## Files Created
+- `/Invoices/` - Organized invoices
+- `/Invoices/invoice-summary.csv` - Spreadsheet for accounting
+- `/Invoices/originals/` - Original files (if copied)
+
+## Files Needing Review
+[List any files where information couldn't be extracted completely]
+
+## Next Steps
+1. Review the `invoice-summary.csv` file
+2. Check files in &quot;Needs Review&quot; folder
+3. Import CSV into your accounting software
+4. Set up auto-organization for future invoices
+
+Ready for tax season! 🎉
+</code></pre>
+</li>
+</ol>
+<h4>Examples</h4>
+<h5>Example 1: Tax Preparation (From Martin Merschroth)</h5>
+<p><strong>User</strong>: &quot;I have a messy folder of invoices for taxes. Sort them and rename properly.&quot;</p>
+<p><strong>Process</strong>:</p>
+<ol>
+<li>Scans folder: finds 147 PDFs and images</li>
+<li>Reads each invoice to extract:
+<ul>
+<li>Date</li>
+<li>Vendor name</li>
+<li>Invoice number</li>
+<li>Product/service description</li>
+</ul>
+</li>
+<li>Renames all files: <code>YYYY-MM-DD Vendor - Invoice - Product.pdf</code></li>
+<li>Organizes into: <code>2024/Software/</code>, <code>2024/Travel/</code>, etc.</li>
+<li>Creates <code>invoice-summary.csv</code> for accountant</li>
+<li>Result: Tax-ready organized invoices in minutes</li>
+</ol>
+<h5>Example 2: Monthly Expense Reconciliation</h5>
+<p><strong>User</strong>: &quot;Organize my business receipts from last month by category.&quot;</p>
+<p><strong>Output</strong>:</p>
+<pre><code class="language-markdown"># March 2024 Receipts Organized
+
+## By Category
+- Software &amp; Tools: $847.32 (12 invoices)
+- Office Supplies: $234.18 (8 receipts)
+- Travel &amp; Meals: $1,456.90 (15 receipts)
+- Professional Services: $2,500.00 (3 invoices)
+
+Total: $5,038.40
+
+All receipts renamed and filed in:
+`Business-Receipts/2024/03-March/[Category]/`
+
+CSV export: `march-2024-expenses.csv`
+</code></pre>
+<h5>Example 3: Multi-Year Archive</h5>
+<p><strong>User</strong>: &quot;I have 3 years of random invoices. Organize them by year, then by vendor.&quot;</p>
+<p><strong>Output</strong>: Creates structure:</p>
+<pre><code>Invoices/
+├── 2022/
+│   ├── Adobe/
+│   ├── Amazon/
+│   └── ...
+├── 2023/
+│   ├── Adobe/
+│   ├── Amazon/
+│   └── ...
+└── 2024/
+    ├── Adobe/
+    ├── Amazon/
+    └── ...
+</code></pre>
+<p>Each file properly renamed with date and description.</p>
+<h5>Example 4: Email Downloads Cleanup</h5>
+<p><strong>User</strong>: &quot;I download invoices from Gmail. They're all named 'invoice.pdf', 'invoice(1).pdf', etc. Fix this mess.&quot;</p>
+<p><strong>Output</strong>:</p>
+<pre><code class="language-markdown">Found 89 files all named &quot;invoice*.pdf&quot;
+
+Reading each file to extract real information...
+
+Renamed examples:
+- invoice.pdf → 2024-03-15 Shopify - Invoice - Monthly Subscription.pdf
+- invoice(1).pdf → 2024-03-14 Google - Invoice - Workspace.pdf
+- invoice(2).pdf → 2024-03-10 Netlify - Invoice - Pro Plan.pdf
+
+All files renamed and organized by vendor.
+</code></pre>
+<h4>Common Organization Patterns</h4>
+<h5>By Vendor (Simple)</h5>
+<pre><code>Invoices/
+├── Adobe/
+├── Amazon/
+├── Google/
+└── Microsoft/
+</code></pre>
+<h5>By Year and Category (Tax-Friendly)</h5>
+<pre><code>Invoices/
+├── 2023/
+│   ├── Software/
+│   ├── Hardware/
+│   ├── Services/
+│   └── Travel/
+└── 2024/
+    └── ...
+</code></pre>
+<h5>By Quarter (Detailed Tracking)</h5>
+<pre><code>Invoices/
+├── 2024/
+│   ├── Q1/
+│   │   ├── Software/
+│   │   ├── Office/
+│   │   └── Travel/
+│   └── Q2/
+│       └── ...
+</code></pre>
+<h5>By Tax Category (Accountant-Ready)</h5>
+<pre><code>Invoices/
+├── Deductible/
+│   ├── Software/
+│   ├── Office/
+│   └── Professional-Services/
+├── Partially-Deductible/
+│   └── Meals-Travel/
+└── Personal/
+</code></pre>
+<h4>Automation Setup</h4>
+<p>For ongoing organization:</p>
+<pre><code>Create a script that watches my ~/Downloads/invoices folder 
+and auto-organizes any new invoice files using our standard 
+naming and folder structure.
+</code></pre>
+<p>This creates a persistent solution that organizes invoices as they arrive.</p>
+<h4>Pro Tips</h4>
+<ol>
+<li><strong>Scan emails to PDF</strong>: Use Preview or similar to save email invoices as PDFs first</li>
+<li><strong>Consistent downloads</strong>: Save all invoices to one folder for batch processing</li>
+<li><strong>Monthly routine</strong>: Organize invoices monthly, not annually</li>
+<li><strong>Backup originals</strong>: Keep original files before reorganizing</li>
+<li><strong>Include amounts in CSV</strong>: Useful for budget tracking</li>
+<li><strong>Tag by deductibility</strong>: Note which expenses are tax-deductible</li>
+<li><strong>Keep receipts 7 years</strong>: Standard audit period</li>
+</ol>
+<h4>Handling Special Cases</h4>
+<h5>Missing Information</h5>
+<p>If date/vendor can't be extracted:</p>
+<ul>
+<li>Flag file for manual review</li>
+<li>Use file modification date as fallback</li>
+<li>Create &quot;Needs-Review/&quot; folder</li>
+</ul>
+<h5>Duplicate Invoices</h5>
+<p>If same invoice appears multiple times:</p>
+<ul>
+<li>Compare file hashes</li>
+<li>Keep highest quality version</li>
+<li>Note duplicates in summary</li>
+</ul>
+<h5>Multi-Page Invoices</h5>
+<p>For invoices split across files:</p>
+<ul>
+<li>Merge PDFs if needed</li>
+<li>Use consistent naming for parts</li>
+<li>Note in CSV if invoice is split</li>
+</ul>
+<h5>Non-Standard Formats</h5>
+<p>For unusual receipt formats:</p>
+<ul>
+<li>Extract what's possible</li>
+<li>Standardize what you can</li>
+<li>Flag for review if critical info missing</li>
+</ul>
+<h4>Related Use Cases</h4>
+<ul>
+<li>Creating expense reports for reimbursement</li>
+<li>Organizing bank statements</li>
+<li>Managing vendor contracts</li>
+<li>Archiving old financial records</li>
+<li>Preparing for audits</li>
+<li>Tracking subscription costs over time</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

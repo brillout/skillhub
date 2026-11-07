@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>eval-harness · SkillHub</title>
+    <meta name="description" content="Use it when: you want pass/fail criteria for an agent task before it starts, or proof that a prompt, agent or model change didn&#039;t break what worked. It does: has the agent write capability and regression evals first, implement, run them with code, rule, model or human graders, then report. You get: eval definitions and run history under .claude/evals/, and a report of pass@1 and pass@3 results with a status such as READY FOR REVIEW. Explains: pass@k means at least one success in k tries; pass^k means all k tries succeed, the bar for critical paths." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <h1>eval-harness</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want pass/fail criteria for an agent task before it starts, or proof that a prompt, agent or model change didn&#39;t break what worked</dd></div><div><dt>It does</dt><dd>has the agent write capability and regression evals first, implement, run them with code, rule, model or human graders, then report</dd></div><div><dt>You get</dt><dd>eval definitions and run history under .claude/evals/, and a report of pass@1 and pass@3 results with a status such as READY FOR REVIEW</dd></div><div><dt>Explains</dt><dd>pass@k means at least one success in k tries; pass^k means all k tries succeed, the bar for critical paths</dd></div></dl></section>
+      
+      <p class="note">Its /eval slash commands are a retired, opt-in shim in the ECC repo, and its scripts/eval-harness.js utilities ship with the full ECC repo, not this skill.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Eval-driven development treats evals as the unit tests of AI-assisted work. Before coding, the agent writes capability evals, things it should now be able to do, each with success criteria, and regression evals, existing behavior that must keep passing against a baseline commit. Then it implements, runs the evals and writes a report. Graders come in four kinds: code checks such as grep, the test suite or a build; rule checks of regex or schema constraints; a model grader that scores a change from 1 to 5 against set questions; and a flag for human review with a risk level, which it requires for security. Suggested thresholds are a pass@3 of at least 90% for capability evals and a pass^3 of 100% for release-critical regressions. Definitions, run history and baselines live under .claude/evals/, with release snapshots in docs/releases/. It warns against overfitting prompts to eval examples, testing only happy paths, ignoring cost and latency, and flaky graders in release gates. A section on ECC&#39;s local utilities describes hash-linked run records, replay and receipts, with running candidates disabled until an isolation backend exists.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/eval-harness">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/affaan-m/ecc --skill eval-harness</code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill eval-harness">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/eval-harness">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/eval-harness">Source on GitHub</a> · <a href="/skillhub/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,600 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>298,660 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">491</div>
+      <div class="stat-delta">+62% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 304; week to Sep 26: 273; week to Oct 3: 172; week to Oct 10: 162; week to Oct 17: 257; week to Oct 24: 447; week to Oct 31: 425; week to Nov 7: 491. Use the left and right arrow keys to read each week."
+        data-values="304,273,172,162,257,447,425,491" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,22.8 38.6,25.5 71.1,34.6 103.7,35.5 136.3,27.0 168.9,9.9 201.4,11.9 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>304</td></tr><tr><td>Sep 26</td><td>273</td></tr><tr><td>Oct 3</td><td>172</td></tr><tr><td>Oct 10</td><td>162</td></tr><tr><td>Oct 17</td><td>257</td></tr><tr><td>Oct 24</td><td>447</td></tr><tr><td>Oct 31</td><td>425</td></tr><tr><td>Nov 7</td><td>491</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/skillhub/?tag=category%3Aagents">category:agents</a><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="verification" data-facet="topic" href="/skillhub/?tag=verification">verification</a><a class="tag" data-tag="testing" data-facet="topic" href="/skillhub/?tag=testing">testing</a><a class="tag" data-tag="agent-workflows" data-facet="topic" href="/skillhub/?tag=agent-workflows">agent-workflows</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:claude" data-facet="stack" href="/skillhub/?tag=stack%3Aclaude">stack:claude</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/eval-harness/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: eval-harness
+description: Eval-driven development (EDD) framework for AI coding sessions — define capability and regression evals before coding, grade with code-based, model-based, rule, or human graders, and track pass@k and pass^k reliability. Use when defining pass/fail criteria for agent tasks, measuring agent reliability, building regression suites for prompt or agent changes, or benchmarking across model versions.
+metadata:
+  origin: ECC
+tools: Read, Write, Edit, Bash, Grep, Glob</code></pre></details>
+        <div class="markdown"><h3>Eval Harness Skill</h3>
+<p>A formal evaluation framework for Claude Code sessions, implementing eval-driven development (EDD) principles.</p>
+<h4>When to Activate</h4>
+<ul>
+<li>Setting up eval-driven development (EDD) for AI-assisted workflows</li>
+<li>Defining pass/fail criteria for Claude Code task completion</li>
+<li>Measuring agent reliability with pass@k metrics</li>
+<li>Creating regression test suites for prompt or agent changes</li>
+<li>Benchmarking agent performance across model versions</li>
+</ul>
+<h4>Philosophy</h4>
+<p>Eval-Driven Development treats evals as the &quot;unit tests of AI development&quot;:</p>
+<ul>
+<li>Define expected behavior BEFORE implementation</li>
+<li>Run evals continuously during development</li>
+<li>Track regressions with each change</li>
+<li>Use pass@k metrics for reliability measurement</li>
+</ul>
+<h4>Eval Types</h4>
+<h5>Capability Evals</h5>
+<p>Test if Claude can do something it couldn't before:</p>
+<pre><code class="language-markdown">[CAPABILITY EVAL: feature-name]
+Task: Description of what Claude should accomplish
+Success Criteria:
+  - [ ] Criterion 1
+  - [ ] Criterion 2
+  - [ ] Criterion 3
+Expected Output: Description of expected result
+</code></pre>
+<h5>Regression Evals</h5>
+<p>Ensure changes don't break existing functionality:</p>
+<pre><code class="language-markdown">[REGRESSION EVAL: feature-name]
+Baseline: SHA or checkpoint name
+Tests:
+  - existing-test-1: PASS/FAIL
+  - existing-test-2: PASS/FAIL
+  - existing-test-3: PASS/FAIL
+Result: X/Y passed (previously Y/Y)
+</code></pre>
+<h4>Grader Types</h4>
+<h5>1. Code-Based Grader</h5>
+<p>Deterministic checks using code:</p>
+<pre><code class="language-bash"># Check if file contains expected pattern
+grep -q &quot;export function handleAuth&quot; src/auth.ts &amp;&amp; echo &quot;PASS&quot; || echo &quot;FAIL&quot;
+
+# Check if tests pass
+npm test -- --testPathPattern=&quot;auth&quot; &amp;&amp; echo &quot;PASS&quot; || echo &quot;FAIL&quot;
+
+# Check if build succeeds
+npm run build &amp;&amp; echo &quot;PASS&quot; || echo &quot;FAIL&quot;
+</code></pre>
+<h5>2. Model-Based Grader</h5>
+<p>Use Claude to evaluate open-ended outputs:</p>
+<pre><code class="language-markdown">[MODEL GRADER PROMPT]
+Evaluate the following code change:
+1. Does it solve the stated problem?
+2. Is it well-structured?
+3. Are edge cases handled?
+4. Is error handling appropriate?
+
+Score: 1-5 (1=poor, 5=excellent)
+Reasoning: [explanation]
+</code></pre>
+<h5>3. Human Grader</h5>
+<p>Flag for manual review:</p>
+<pre><code class="language-markdown">[HUMAN REVIEW REQUIRED]
+Change: Description of what changed
+Reason: Why human review is needed
+Risk Level: LOW/MEDIUM/HIGH
+</code></pre>
+<h4>Metrics</h4>
+<h5>pass@k</h5>
+<p>&quot;At least one success in k attempts&quot;</p>
+<ul>
+<li>pass@1: First attempt success rate</li>
+<li>pass@3: Success within 3 attempts</li>
+<li>Typical target: pass@3 &gt; 90%</li>
+</ul>
+<h5>pass^k</h5>
+<p>&quot;All k trials succeed&quot;</p>
+<ul>
+<li>Higher bar for reliability</li>
+<li>pass^3: 3 consecutive successes</li>
+<li>Use for critical paths</li>
+</ul>
+<h4>Eval Workflow</h4>
+<h5>1. Define (Before Coding)</h5>
+<pre><code class="language-markdown">## EVAL DEFINITION: feature-xyz
+
+### Capability Evals
+1. Can create new user account
+2. Can validate email format
+3. Can hash password securely
+
+### Regression Evals
+1. Existing login still works
+2. Session management unchanged
+3. Logout flow intact
+
+### Success Metrics
+- pass@3 &gt; 90% for capability evals
+- pass^3 = 100% for regression evals
+</code></pre>
+<h5>2. Implement</h5>
+<p>Write code to pass the defined evals.</p>
+<h5>3. Evaluate</h5>
+<pre><code class="language-bash"># Run capability evals
+[Run each capability eval, record PASS/FAIL]
+
+# Run regression evals
+npm test -- --testPathPattern=&quot;existing&quot;
+
+# Generate report
+</code></pre>
+<h5>4. Report</h5>
+<pre><code class="language-markdown">EVAL REPORT: feature-xyz
+========================
+
+Capability Evals:
+  create-user:     PASS (pass@1)
+  validate-email:  PASS (pass@2)
+  hash-password:   PASS (pass@1)
+  Overall:         3/3 passed
+
+Regression Evals:
+  login-flow:      PASS
+  session-mgmt:    PASS
+  logout-flow:     PASS
+  Overall:         3/3 passed
+
+Metrics:
+  pass@1: 67% (2/3)
+  pass@3: 100% (3/3)
+
+Status: READY FOR REVIEW
+</code></pre>
+<h4>Integration Patterns</h4>
+<h5>Pre-Implementation</h5>
+<pre><code>/eval define feature-name
+</code></pre>
+<p>Creates eval definition file at <code>.claude/evals/feature-name.md</code></p>
+<h5>During Implementation</h5>
+<pre><code>/eval check feature-name
+</code></pre>
+<p>Runs current evals and reports status</p>
+<h5>Post-Implementation</h5>
+<pre><code>/eval report feature-name
+</code></pre>
+<p>Generates full eval report</p>
+<h4>Eval Storage</h4>
+<p>Store evals in project:</p>
+<pre><code>.claude/
+  evals/
+    feature-xyz.md      # Eval definition
+    feature-xyz.log     # Eval run history
+    baseline.json       # Regression baselines
+</code></pre>
+<h4>Best Practices</h4>
+<ol>
+<li><strong>Define evals BEFORE coding</strong> - Forces clear thinking about success criteria</li>
+<li><strong>Run evals frequently</strong> - Catch regressions early</li>
+<li><strong>Track pass@k over time</strong> - Monitor reliability trends</li>
+<li><strong>Use code graders when possible</strong> - Deterministic &gt; probabilistic</li>
+<li><strong>Human review for security</strong> - Never fully automate security checks</li>
+<li><strong>Keep evals fast</strong> - Slow evals don't get run</li>
+<li><strong>Version evals with code</strong> - Evals are first-class artifacts</li>
+</ol>
+<h4>Example: Adding Authentication</h4>
+<pre><code class="language-markdown">## EVAL: add-authentication
+
+### Phase 1: Define (10 min)
+Capability Evals:
+- [ ] User can register with email/password
+- [ ] User can login with valid credentials
+- [ ] Invalid credentials rejected with proper error
+- [ ] Sessions persist across page reloads
+- [ ] Logout clears session
+
+Regression Evals:
+- [ ] Public routes still accessible
+- [ ] API responses unchanged
+- [ ] Database schema compatible
+
+### Phase 2: Implement (varies)
+[Write code]
+
+### Phase 3: Evaluate
+Run: /eval check add-authentication
+
+### Phase 4: Report
+EVAL REPORT: add-authentication
+==============================
+Capability: 5/5 passed (pass@3: 100%)
+Regression: 3/3 passed (pass^3: 100%)
+Status: SHIP IT
+</code></pre>
+<h4>Local Framework Utilities</h4>
+<p>The mechanical utilities ship in <code>scripts/lib/eval-harness/</code>:</p>
+<pre><code class="language-sh">node scripts/eval-harness.js example
+</code></pre>
+<ul>
+<li>Capsule: hash-linked journal with five lineages and local integrity checks.</li>
+<li>Inspection: source digests, validated variant paths, and syntactic warnings.</li>
+<li>Replay: declared tools and content-addressed fixtures. Missing fixtures fail
+closed; SE3 and above are refused in replay. Record mode invokes the registered
+implementation, so only register trusted functions.</li>
+<li>Receipt: offline verification of capsule and artifact bytes, with named checks.</li>
+<li>Retrospective preparation: <code>node scripts/eval-harness.js capsule group &lt;dir&gt; [&lt;dir&gt; ...]</code>
+groups 1 to 100 explicitly selected, verified local capsule snapshots from one
+task family by declared harness version. Repeated snapshots count once;
+conflicting identities or invalid capsules reject the whole report. This is
+read-only record counting, with no new rollouts, scores or promotion. Use small,
+quiescent capsules. Payloads, directory arguments and raw run/capsule IDs are
+omitted, but task-family/version labels are verbatim and digest references are
+linkable; review them before sharing. Operational validation remains pending.</li>
+</ul>
+<p>Candidate execution is disabled on every OS because no verified OS containment
+backend is implemented. <code>gate run</code>, <code>runGate</code>, <code>runVariant</code>, direct child launch,
+and the retired effect preload refuse with <code>gate.isolation_required</code>. No trust
+flag or caller-supplied executor can bypass the refusal. The example records
+that refusal and inspects source without executing or scoring it.</p>
+<p>Do not present static warnings, a capsule receipt, or successful utility tests
+as candidate containment or promotion evidence. A future gate requires an
+independently reviewed OS boundary, protected checker and audit channels, and
+fatal baseline rejection. See <code>docs/architecture/eval-harness-frameworks.md</code>.</p>
+<h4>Product Evals (v1.8)</h4>
+<p>Use product evals when behavior quality cannot be captured by unit tests alone.</p>
+<h5>Grader Types</h5>
+<ol>
+<li>Code grader (deterministic assertions)</li>
+<li>Rule grader (regex/schema constraints)</li>
+<li>Model grader (LLM-as-judge rubric)</li>
+<li>Human grader (manual adjudication for ambiguous outputs)</li>
+</ol>
+<h5>pass@k Guidance</h5>
+<ul>
+<li><code>pass@1</code>: direct reliability</li>
+<li><code>pass@3</code>: practical reliability under controlled retries</li>
+<li><code>pass^3</code>: stability test (all 3 runs must pass)</li>
+</ul>
+<p>Recommended thresholds:</p>
+<ul>
+<li>Capability evals: pass@3 &gt;= 0.90</li>
+<li>Regression evals: pass^3 = 1.00 for release-critical paths</li>
+</ul>
+<h5>Eval Anti-Patterns</h5>
+<ul>
+<li>Overfitting prompts to known eval examples</li>
+<li>Measuring only happy-path outputs</li>
+<li>Ignoring cost and latency drift while chasing pass rates</li>
+<li>Allowing flaky graders in release gates</li>
+</ul>
+<h5>Minimal Eval Artifact Layout</h5>
+<ul>
+<li><code>.claude/evals/&lt;feature&gt;.md</code> definition</li>
+<li><code>.claude/evals/&lt;feature&gt;.log</code> run history</li>
+<li><code>docs/releases/&lt;version&gt;/eval-summary.md</code> release snapshot</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

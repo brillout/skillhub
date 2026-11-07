@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ai-agent-builder · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re planning a chatbot or agent, such as a support, research or scheduling assistant, and want its design on paper first. It does: picks an agent type from reactive to multi-agent, defines its tools with parameters and the API each calls, and chooses memory, context limits and a reasoning pattern. You get: a design write-up: capabilities, each tool&#039;s inputs and outputs, a sample conversation showing the agent&#039;s thoughts and actions, and an n8n outline. Memory options: keep the last messages, summarize older ones, store them in a vector database, or track named entities, within a token budget. Templates: a customer support agent with escalation triggers and a research agent that cites its sources. Doesn&#039;t: build or run the agent: designs come as YAML outlines and pseudo-code, with n8n&#039;s LangChain agent node as the implementation example." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=claude-office-skills%2Fskills">claude-office-skills/skills</a></p>
+      <h1>ai-agent-builder</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re planning a chatbot or agent, such as a support, research or scheduling assistant, and want its design on paper first</dd></div><div><dt>It does</dt><dd>picks an agent type from reactive to multi-agent, defines its tools with parameters and the API each calls, and chooses memory, context limits and a reasoning pattern</dd></div><div><dt>You get</dt><dd>a design write-up: capabilities, each tool&#39;s inputs and outputs, a sample conversation showing the agent&#39;s thoughts and actions, and an n8n outline</dd></div><div><dt>Memory options</dt><dd>keep the last messages, summarize older ones, store them in a vector database, or track named entities, within a token budget</dd></div><div><dt>Templates</dt><dd>a customer support agent with escalation triggers and a research agent that cites its sources</dd></div><div><dt>Doesn&#39;t</dt><dd>build or run the agent: designs come as YAML outlines and pseudo-code, with n8n&#39;s LangChain agent node as the implementation example</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>From Claude Office Skills, based, it says, on n8n&#39;s AI workflow templates. You describe the agent you want and the agent drafts its design. It sorts agents into five types by complexity: reactive, conversational, tool-using, reasoning and multi-agent. Tools are grouped into data retrieval, actions, computation and generation, each defined with a name, description, parameters and the API it calls. Memory can be a buffer of recent messages, a rolling summary, a vector store or an entity tracker, and the context window is managed by a sliding window, relevance ranking or tiers, within a sample 8,000-token budget split across system prompt, tools, memory, query and response. Reasoning follows ReAct (thought, action, observation) or a plan, execute and synthesize loop. Platform outlines cover a Slack bot that reads thread history, a Telegram bot that handles voice, images and documents, and a streaming web chat with sessions in Redis.</p>
+      <p class="muted">Summarizes <a href="https://github.com/claude-office-skills/skills/tree/9c4c7d5cd2813a8936bf2c9fdb174ea883b85a11/ai-agent-builder">the skill at 9c4c7d5</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/claude-office-skills/skills --skill ai-agent-builder</code><button type="button" class="copy" data-copy="npx skills add https://github.com/claude-office-skills/skills --skill ai-agent-builder">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/claude-office-skills/skills/ai-agent-builder">skills.sh page</a> · <a href="https://github.com/claude-office-skills/skills/tree/HEAD/ai-agent-builder">Source on GitHub</a> · <a href="/skillhub/?repo=claude-office-skills%2Fskills">All skills from claude-office-skills/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,000 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>567 <span class="muted">claude-office-skills/skills</span></dd></div><div><dt>First seen</dt><dd>Mar 5, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">65</div>
+      <div class="stat-delta">+35% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 48; week to Sep 26: 77; week to Oct 3: 55; week to Oct 10: 60; week to Oct 17: 103; week to Oct 24: 227; week to Oct 31: 178; week to Nov 7: 65. Use the left and right arrow keys to read each week."
+        data-values="48,77,55,60,103,227,178,65" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,40.7 38.6,35.1 71.1,39.3 103.7,38.4 136.3,30.0 168.9,6.0 201.4,15.5 234.0,37.4" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="37.4" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>48</td></tr><tr><td>Sep 26</td><td>77</td></tr><tr><td>Oct 3</td><td>55</td></tr><tr><td>Oct 10</td><td>60</td></tr><tr><td>Oct 17</td><td>103</td></tr><tr><td>Oct 24</td><td>227</td></tr><tr><td>Oct 31</td><td>178</td></tr><tr><td>Nov 7</td><td>65</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/skillhub/?tag=category%3Aagents">category:agents</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/skillhub/?tag=type%3Aguidelines">type:guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="agent-development" data-facet="topic" href="/skillhub/?tag=agent-development">agent-development</a><a class="tag" data-tag="memory" data-facet="topic" href="/skillhub/?tag=memory">memory</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:n8n" data-facet="stack" href="/skillhub/?tag=stack%3An8n">stack:n8n</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/claude-office-skills/skills/blob/9c4c7d5cd2813a8936bf2c9fdb174ea883b85a11/ai-agent-builder/SKILL.md">claude-office-skills/skills at 9c4c7d5</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: ai-agent-builder
+description: &#34;Build AI agents with tools, memory, and multi-step reasoning - ChatGPT, Claude, Gemini integration patterns&#34;
+version: &#34;1.0.0&#34;
+author: claude-office-skills
+license: MIT
+
+category: ai
+tags:
+  - ai-agent
+  - chatgpt
+  - openai
+  - langchain
+  - automation
+department: Engineering
+
+models:
+  recommended:
+    - claude-opus-4
+    - claude-sonnet-4
+
+capabilities:
+  - agent_design
+  - tool_integration
+  - memory_management
+  - multi_step_reasoning
+  - conversation_flow
+
+languages:
+  - en
+  - zh
+
+related_skills:
+  - deep-research
+  - n8n-workflow
+  - slack-workflows</code></pre></details>
+        <div class="markdown"><h3>AI Agent Builder</h3>
+<p>Design and build AI agents with tools, memory, and multi-step reasoning capabilities. Covers ChatGPT, Claude, Gemini integration patterns based on n8n's 5,000+ AI workflow templates.</p>
+<h4>Overview</h4>
+<p>This skill covers:</p>
+<ul>
+<li>AI agent architecture design</li>
+<li>Tool/function calling patterns</li>
+<li>Memory and context management</li>
+<li>Multi-step reasoning workflows</li>
+<li>Platform integrations (Slack, Telegram, Web)</li>
+</ul>
+<hr>
+<h4>AI Agent Architecture</h4>
+<h5>Core Components</h5>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                      AI AGENT ARCHITECTURE                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐       │
+│  │   Input     │────▶│   Agent     │────▶│   Output    │       │
+│  │  (Query)    │     │   (LLM)     │     │  (Response) │       │
+│  └─────────────┘     └──────┬──────┘     └─────────────┘       │
+│                             │                                   │
+│         ┌───────────────────┼───────────────────┐              │
+│         │                   │                   │              │
+│         ▼                   ▼                   ▼              │
+│  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐       │
+│  │   Tools     │     │   Memory    │     │  Knowledge  │       │
+│  │ (Functions) │     │  (Context)  │     │   (RAG)     │       │
+│  └─────────────┘     └─────────────┘     └─────────────┘       │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<h5>Agent Types</h5>
+<pre><code class="language-yaml">agent_types:
+  reactive_agent:
+    description: &quot;Single-turn response, no memory&quot;
+    use_case: simple_qa, classification
+    complexity: low
+    
+  conversational_agent:
+    description: &quot;Multi-turn with conversation memory&quot;
+    use_case: chatbots, support
+    complexity: medium
+    
+  tool_using_agent:
+    description: &quot;Can call external tools/APIs&quot;
+    use_case: data_lookup, actions
+    complexity: medium
+    
+  reasoning_agent:
+    description: &quot;Multi-step planning and execution&quot;
+    use_case: complex_tasks, research
+    complexity: high
+    
+  multi_agent:
+    description: &quot;Multiple specialized agents collaborating&quot;
+    use_case: complex_workflows
+    complexity: very_high
+</code></pre>
+<hr>
+<h4>Tool Calling Pattern</h4>
+<h5>Tool Definition</h5>
+<pre><code class="language-yaml">tool_definition:
+  name: &quot;get_weather&quot;
+  description: &quot;Get current weather for a location&quot;
+  parameters:
+    type: object
+    properties:
+      location:
+        type: string
+        description: &quot;City name or coordinates&quot;
+      units:
+        type: string
+        enum: [&quot;celsius&quot;, &quot;fahrenheit&quot;]
+        default: &quot;celsius&quot;
+    required: [&quot;location&quot;]
+    
+  implementation:
+    type: api_call
+    endpoint: &quot;https://api.weather.com/v1/current&quot;
+    method: GET
+    params:
+      q: &quot;{location}&quot;
+      units: &quot;{units}&quot;
+</code></pre>
+<h5>Common Tool Categories</h5>
+<pre><code class="language-yaml">tool_categories:
+  data_retrieval:
+    - web_search: search the internet
+    - database_query: query SQL/NoSQL
+    - api_lookup: call external APIs
+    - file_read: read documents
+    
+  actions:
+    - send_email: send emails
+    - create_calendar: schedule events
+    - update_crm: modify CRM records
+    - post_slack: send Slack messages
+    
+  computation:
+    - calculator: math operations
+    - code_interpreter: run Python
+    - data_analysis: analyze datasets
+    
+  generation:
+    - image_generation: create images
+    - document_creation: generate docs
+    - chart_creation: create visualizations
+</code></pre>
+<h5>n8n Tool Integration</h5>
+<pre><code class="language-yaml">n8n_agent_workflow:
+  nodes:
+    - trigger:
+        type: webhook
+        path: &quot;/ai-agent&quot;
+        
+    - ai_agent:
+        type: &quot;@n8n/n8n-nodes-langchain.agent&quot;
+        model: openai_gpt4
+        system_prompt: |
+          You are a helpful assistant that can:
+          1. Search the web for information
+          2. Query our customer database
+          3. Send emails on behalf of the user
+          
+        tools:
+          - web_search
+          - database_query
+          - send_email
+          
+    - respond:
+        type: respond_to_webhook
+        data: &quot;{{ $json.output }}&quot;
+</code></pre>
+<hr>
+<h4>Memory Patterns</h4>
+<h5>Memory Types</h5>
+<pre><code class="language-yaml">memory_types:
+  buffer_memory:
+    description: &quot;Store last N messages&quot;
+    implementation: |
+      messages = []
+      def add_message(role, content):
+          messages.append({&quot;role&quot;: role, &quot;content&quot;: content})
+          if len(messages) &gt; MAX_MESSAGES:
+              messages.pop(0)
+    use_case: simple_chatbots
+    
+  summary_memory:
+    description: &quot;Summarize conversation periodically&quot;
+    implementation: |
+      When messages &gt; threshold:
+          summary = llm.summarize(messages[:-5])
+          messages = [summary_message] + messages[-5:]
+    use_case: long_conversations
+    
+  vector_memory:
+    description: &quot;Store in vector DB for semantic retrieval&quot;
+    implementation: |
+      # Store
+      embedding = embed(message)
+      vector_db.insert(embedding, message)
+      
+      # Retrieve
+      relevant = vector_db.search(query_embedding, k=5)
+    use_case: knowledge_retrieval
+    
+  entity_memory:
+    description: &quot;Track entities mentioned in conversation&quot;
+    implementation: |
+      entities = {}
+      def update_entities(message):
+          extracted = llm.extract_entities(message)
+          entities.update(extracted)
+    use_case: personalized_assistants
+</code></pre>
+<h5>Context Window Management</h5>
+<pre><code class="language-yaml">context_management:
+  strategies:
+    sliding_window:
+      keep: last_n_messages
+      n: 10
+      
+    relevance_based:
+      method: embed_and_rank
+      keep: top_k_relevant
+      k: 5
+      
+    hierarchical:
+      levels:
+        - immediate: last_3_messages
+        - recent: summary_of_last_10
+        - long_term: key_facts_from_all
+        
+  token_budget:
+    total: 8000
+    system_prompt: 1000
+    tools: 1000
+    memory: 4000
+    current_query: 1000
+    response: 1000
+</code></pre>
+<hr>
+<h4>Multi-Step Reasoning</h4>
+<h5>ReAct Pattern</h5>
+<pre><code>Thought: I need to find information about X
+Action: web_search(&quot;X&quot;)
+Observation: [search results]
+Thought: Based on the results, I should also check Y
+Action: database_query(&quot;SELECT * FROM Y&quot;)
+Observation: [database results]
+Thought: Now I have enough information to answer
+Action: respond(&quot;Final answer based on X and Y&quot;)
+</code></pre>
+<h5>Planning Agent</h5>
+<pre><code class="language-yaml">planning_workflow:
+  step_1_plan:
+    prompt: |
+      Task: {user_request}
+      
+      Create a step-by-step plan to complete this task.
+      Each step should be specific and actionable.
+      
+    output: numbered_steps
+    
+  step_2_execute:
+    for_each: step
+    actions:
+      - execute_step
+      - validate_result
+      - adjust_if_needed
+      
+  step_3_synthesize:
+    prompt: |
+      Steps completed: {executed_steps}
+      Results: {results}
+      
+      Synthesize a final response for the user.
+</code></pre>
+<hr>
+<h4>Platform Integrations</h4>
+<h5>Slack Bot Agent</h5>
+<pre><code class="language-yaml">slack_agent:
+  trigger: slack_message
+  
+  workflow:
+    1. receive_message:
+        extract: [user, channel, text, thread_ts]
+        
+    2. get_context:
+        if: thread_ts
+        action: fetch_thread_history
+        
+    3. process_with_agent:
+        model: gpt-4
+        system: &quot;You are a helpful Slack assistant&quot;
+        tools: [web_search, jira_lookup, calendar_check]
+        
+    4. respond:
+        action: post_to_slack
+        channel: &quot;{channel}&quot;
+        thread_ts: &quot;{thread_ts}&quot;
+        text: &quot;{agent_response}&quot;
+</code></pre>
+<h5>Telegram Bot Agent</h5>
+<pre><code class="language-yaml">telegram_agent:
+  trigger: telegram_message
+  
+  handlers:
+    text_message:
+      - extract_text
+      - process_with_ai
+      - send_response
+      
+    voice_message:
+      - transcribe_with_whisper
+      - process_with_ai
+      - send_text_or_voice_response
+      
+    image:
+      - analyze_with_vision
+      - process_with_ai
+      - send_response
+      
+    document:
+      - extract_content
+      - process_with_ai
+      - send_response
+</code></pre>
+<h5>Web Chat Interface</h5>
+<pre><code class="language-yaml">web_chat_agent:
+  frontend:
+    type: react_component
+    features:
+      - message_input
+      - message_history
+      - typing_indicator
+      - file_upload
+      
+  backend:
+    endpoint: &quot;/api/chat&quot;
+    method: POST
+    streaming: true
+    
+  session_management:
+    method: jwt_token
+    storage: redis
+    ttl: 24_hours
+</code></pre>
+<hr>
+<h4>Agent Templates</h4>
+<h5>Customer Support Agent</h5>
+<pre><code class="language-yaml">support_agent:
+  name: &quot;Customer Support AI&quot;
+  model: gpt-4
+  
+  system_prompt: |
+    You are a customer support agent for {company}.
+    
+    Guidelines:
+    - Be helpful, professional, and empathetic
+    - Use the knowledge base to answer questions
+    - Escalate to human if you cannot help
+    - Never make up information
+    
+    Available actions:
+    - Search knowledge base
+    - Look up customer account
+    - Create support ticket
+    - Escalate to human agent
+    
+  tools:
+    - knowledge_search:
+        description: &quot;Search help articles&quot;
+    - customer_lookup:
+        description: &quot;Get customer account info&quot;
+    - create_ticket:
+        description: &quot;Create support ticket&quot;
+    - escalate:
+        description: &quot;Transfer to human agent&quot;
+        
+  escalation_triggers:
+    - sentiment: very_negative
+    - keywords: [&quot;speak to human&quot;, &quot;manager&quot;, &quot;complaint&quot;]
+    - failed_resolution: after_3_attempts
+</code></pre>
+<h5>Research Agent</h5>
+<pre><code class="language-yaml">research_agent:
+  name: &quot;Research Assistant&quot;
+  model: claude-opus
+  
+  system_prompt: |
+    You are a research assistant that helps users find 
+    and synthesize information on any topic.
+    
+    Process:
+    1. Understand the research question
+    2. Plan search strategy
+    3. Execute searches across multiple sources
+    4. Synthesize findings
+    5. Present with citations
+    
+  tools:
+    - web_search
+    - academic_search
+    - news_search
+    - wikipedia_lookup
+    
+  output_format:
+    - executive_summary
+    - key_findings
+    - detailed_analysis
+    - sources_cited
+</code></pre>
+<hr>
+<h4>Output Example</h4>
+<p><strong>Request</strong>: &quot;Design an AI agent for appointment scheduling&quot;</p>
+<p><strong>Output</strong>:</p>
+<pre><code class="language-markdown"># Appointment Scheduling Agent Design
+
+## Architecture
+
+```yaml
+agent:
+  name: &quot;Scheduling Assistant&quot;
+  model: gpt-4
+  
+  capabilities:
+    - Check calendar availability
+    - Book appointments
+    - Send confirmations
+    - Handle rescheduling
+    - Answer FAQs
+</code></pre>
+<h4>Tools Required</h4>
+<ol>
+<li>
+<p><strong>calendar_check</strong></p>
+<ul>
+<li>Input: date_range, duration</li>
+<li>Output: available_slots[]</li>
+</ul>
+</li>
+<li>
+<p><strong>book_appointment</strong></p>
+<ul>
+<li>Input: datetime, customer_info, service_type</li>
+<li>Output: confirmation_id</li>
+</ul>
+</li>
+<li>
+<p><strong>send_notification</strong></p>
+<ul>
+<li>Input: type, recipient, details</li>
+<li>Output: success/failure</li>
+</ul>
+</li>
+<li>
+<p><strong>customer_lookup</strong></p>
+<ul>
+<li>Input: email or phone</li>
+<li>Output: customer_record</li>
+</ul>
+</li>
+</ol>
+<h4>Conversation Flow</h4>
+<pre><code>User: &quot;I'd like to book an appointment&quot;
+Agent: [Thought: Need to know service type and preferred time]
+Agent: &quot;I'd be happy to help! What service are you looking for, 
+        and do you have a preferred date/time?&quot;
+
+User: &quot;Haircut, next Tuesday afternoon&quot;
+Agent: [Action: calendar_check(date=&quot;next Tuesday&quot;, time=&quot;afternoon&quot;)]
+Agent: &quot;I have availability at 2pm, 3pm, and 4:30pm next Tuesday. 
+        Which works best for you?&quot;
+
+User: &quot;3pm please&quot;
+Agent: [Action: book_appointment(datetime=&quot;Tuesday 3pm&quot;, service=&quot;haircut&quot;)]
+Agent: [Action: send_notification(type=&quot;confirmation&quot;, ...)]
+Agent: &quot;You're all set for a haircut at 3pm next Tuesday. 
+        I've sent a confirmation to your email. See you then!&quot;
+</code></pre>
+<h4>n8n Implementation</h4>
+<pre><code class="language-yaml">workflow:
+  - webhook_trigger: /schedule-chat
+  - ai_agent:
+      tools: [calendar, booking, notification]
+  - respond_to_user
+</code></pre>
+<pre><code>
+---
+
+*AI Agent Builder Skill - Part of Claude Office Skills*
+</code></pre>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

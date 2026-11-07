@@ -1,0 +1,757 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>agent-email-inbox · SkillHub</title>
+    <meta name="description" content="Use it when: an AI agent or app should receive email and act on it, such as a support handler or an email-to-task pipeline. It does: asks for an address to send tests to and a security level, then sets up the domain, a Resend inbox and a webhook endpoint, and replies inside the thread. You get: webhook code for Next.js or Express that verifies Resend&#039;s signature, rejects unknown senders and passes the rest to your agent. Security levels: five, from a strict sender allowlist, the recommended one, to a human approving untrusted actions. Needs: a Resend account with a full-access API key, ideally a new account just for the agent. Fallback: with no custom domain, or no inbox left on your plan, it receives on a resend.app address, with no threads." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=resend%2Fresend-skills">resend/resend-skills</a></p>
+      <h1>agent-email-inbox</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>an AI agent or app should receive email and act on it, such as a support handler or an email-to-task pipeline</dd></div><div><dt>It does</dt><dd>asks for an address to send tests to and a security level, then sets up the domain, a Resend inbox and a webhook endpoint, and replies inside the thread</dd></div><div><dt>You get</dt><dd>webhook code for Next.js or Express that verifies Resend&#39;s signature, rejects unknown senders and passes the rest to your agent</dd></div><div><dt>Security levels</dt><dd>five, from a strict sender allowlist, the recommended one, to a human approving untrusted actions</dd></div><div><dt>Needs</dt><dd>a Resend account with a full-access API key, ideally a new account just for the agent</dd></div><div><dt>Fallback</dt><dd>with no custom domain, or no inbox left on your plan, it receives on a resend.app address, with no threads</dd></div></dl></section>
+      
+      <p class="note">Needs a Resend account with a full-access API key, and a custom domain for the inbox itself.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Resend&#39;s skill for giving an agent its own email address. Its premise: email is untrusted input, so an agent that acts on it can be steered by anyone who writes to it. The agent asks for your email address to send tests to, and whether to use a new Resend account, which it prefers, since the full-access key it needs reaches every project. Then it asks which of five security levels you want: an allowlist of senders, an allowlist of domains, content filtering, sandboxed processing with restricted agent capabilities, or human approval for untrusted actions. You verify a domain on Resend, preferably a subdomain, receiving mail through an MX record or by forwarding. The agent creates the inbox and a POST webhook that checks Resend&#39;s signature on the raw body, then fetches the email, since the webhook carries no body. It registers the webhook through the API, reaches localhost through Tailscale Funnel or ngrok, and replies inside the thread. Its common mistakes include comparing the whole From header instead of the address, trusting Reply-To, returning an error for rejected mail so Resend retries, and using a sending-only API key. It also says never to paste the key in chat.</p>
+      <p class="muted">Summarizes <a href="https://github.com/resend/resend-skills/tree/389de56a2e48903c4b8ac7b8f2b8ee1f2c1bb9df/skills/agent-email-inbox">the skill at 389de56</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/resend/resend-skills --skill agent-email-inbox</code><button type="button" class="copy" data-copy="npx skills add https://github.com/resend/resend-skills --skill agent-email-inbox">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/resend/resend-skills/agent-email-inbox">skills.sh page</a> · <a href="https://github.com/resend/resend-skills/tree/HEAD/skills/agent-email-inbox">Source on GitHub</a> · <a href="/skillhub/?repo=resend%2Fresend-skills">All skills from resend/resend-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>13,900 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>211 <span class="muted">resend/resend-skills</span></dd></div><div><dt>First seen</dt><dd>Mar 15, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">426</div>
+      <div class="stat-delta">-21% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 540; week to Sep 26: 550; week to Oct 3: 548; week to Oct 10: 613; week to Oct 17: 709; week to Oct 24: 638; week to Oct 31: 589; week to Nov 7: 426. Use the left and right arrow keys to read each week."
+        data-values="540,550,548,613,709,638,589,426" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,16.5 38.6,15.9 71.1,16.0 103.7,12.0 136.3,6.0 168.9,10.4 201.4,13.4 234.0,23.6" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="23.6" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>540</td></tr><tr><td>Sep 26</td><td>550</td></tr><tr><td>Oct 3</td><td>548</td></tr><tr><td>Oct 10</td><td>613</td></tr><tr><td>Oct 17</td><td>709</td></tr><tr><td>Oct 24</td><td>638</td></tr><tr><td>Oct 31</td><td>589</td></tr><tr><td>Nov 7</td><td>426</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/skillhub/?tag=category%3Aagents">category:agents</a><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/skillhub/?tag=category%3Asecurity">category:security</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:remote" data-facet="effect" title="Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service." href="/skillhub/?tag=effect%3Aremote">effect:remote</a></div>
+          <p class="tag-meaning">Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/skillhub/?tag=needs%3Aaccount">needs:account</a></div>
+          <p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="email" data-facet="topic" href="/skillhub/?tag=email">email</a><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a><a class="tag" data-tag="guardrails" data-facet="topic" href="/skillhub/?tag=guardrails">guardrails</a><a class="tag" data-tag="agent-development" data-facet="topic" href="/skillhub/?tag=agent-development">agent-development</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:resend" data-facet="stack" href="/skillhub/?tag=stack%3Aresend">stack:resend</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/resend/resend-skills/blob/389de56a2e48903c4b8ac7b8f2b8ee1f2c1bb9df/skills/agent-email-inbox/SKILL.md">resend/resend-skills at 389de56</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: agent-email-inbox
+description: Use when building any system where email content triggers actions — AI agent inboxes, automated support handlers, email-to-task pipelines, or any workflow processing untrusted inbound email. Always use this skill when the user wants to receive emails and act on them programmatically, even if they don&#39;t mention &#34;agent&#34; — the skill contains critical security patterns (sender allowlists, content filtering, sandboxed processing) that prevent untrusted email from controlling your system.
+license: MIT
+metadata:
+    author: resend
+    version: &#34;4.1.0&#34;
+    homepage: https://resend.com/agent-skills
+    source: https://github.com/resend/resend-skills
+    openclaw:
+        primaryEnv: RESEND_API_KEY
+        requires:
+            env:
+                - RESEND_API_KEY
+        envVars:
+            - name: RESEND_API_KEY
+              required: true
+              description: Resend API key for sending and receiving emails
+            - name: RESEND_WEBHOOK_SECRET
+              required: false
+              description: Webhook signing secret for verifying inbound email event payloads
+            - name: SECURITY_LEVEL
+              required: false
+              description: Security level for inbound email processing (strict, moderate, permissive)
+            - name: ALLOWED_SENDERS
+              required: false
+              description: Comma-separated list of allowed sender email addresses
+            - name: ALLOWED_DOMAINS
+              required: false
+              description: Comma-separated list of allowed sender domains
+            - name: OWNER_EMAIL
+              required: false
+              description: Owner email address for forwarding or notifications
+        links:
+            repository: https://github.com/resend/resend-skills
+            documentation: https://resend.com/docs/agent-email-inbox-skill
+inputs:
+    - name: RESEND_API_KEY
+      description: Resend API key for sending and receiving emails. Get yours at https://resend.com/api-keys
+      required: true
+    - name: RESEND_WEBHOOK_SECRET
+      description: Webhook signing secret for verifying inbound email event payloads. Returned as `signing_secret` in the response when you create a webhook via the API.
+      required: false
+references:
+    - security-levels.md
+    - webhook-setup.md
+    - advanced-patterns.md</code></pre></details>
+        <div class="markdown"><h3>AI Agent Email Inbox</h3>
+<h4>Overview</h4>
+<p>This skill covers setting up a secure email inbox that allows your application or AI agent to receive and respond to emails, with content safety measures in place.</p>
+<p><strong>Core principle:</strong> An AI agent's inbox receives untrusted input. Security configuration is important to handle this safely.</p>
+<p>The skill builds the agent on a Resend <strong>Inbox</strong>. An inbox groups email into threads, and your agent replies inside the thread with one call. Resend sets the recipients and the threading headers. If the user has no custom domain, or their plan has no inbox available, use <a href="#receiving-without-an-inbox">Receiving without an inbox</a> instead. The security levels are the same for both.</p>
+<h5>Why Webhook-Based Receiving?</h5>
+<p>Resend uses webhooks for inbound email, meaning your agent is notified <strong>instantly</strong> when an email arrives. This is valuable for agents because:</p>
+<ul>
+<li><strong>Real-time responsiveness</strong> — React to emails within seconds, not minutes</li>
+<li><strong>No polling overhead</strong> — No cron jobs checking &quot;any new mail?&quot; repeatedly</li>
+<li><strong>Event-driven architecture</strong> — Your agent only wakes up when there's actually something to process</li>
+<li><strong>Lower API costs</strong> — No wasted calls checking empty inboxes</li>
+</ul>
+<h4>Architecture</h4>
+<pre><code>Sender → Email → Resend Inbox → inbox.email.received webhook → Your Server → AI Agent
+                                                                     ↓
+                                                           Security Validation
+                                                                     ↓
+                                                Process or Reject → Reply in the thread
+</code></pre>
+<h4>SDK Version Requirements</h4>
+<p>The inbox flow needs the Node.js SDK <code>resend</code> &gt;= 6.34.1, which has <code>resend.inboxes.*</code> and the <code>inbox.*</code> webhook event types. Always install the latest SDK version. If the project already has a Resend SDK installed, check the version and upgrade if needed.</p>
+<p>The Python SDK <code>resend</code> &gt;= 2.50.0 also has the inbox methods. For the other languages, call the <a href="https://resend.com/docs/api-reference/inboxes/create-inbox">Inboxes API</a> over HTTP until their SDK has inbox methods, or use <a href="#receiving-without-an-inbox">Receiving without an inbox</a>.</p>
+<p>The table below lists the minimums for the Receiving flow: webhook verification (<code>webhooks.verify()</code>) and email receiving (<code>emails.receiving.get()</code>). The <code>resend</code> skill lists higher minimums because it also covers newer features such as domain claims (<code>domains.claims.*</code>). If both skills are loaded, use the higher version.</p>
+<table>
+<thead>
+<tr>
+<th>Language</th>
+<th>Package</th>
+<th>Min Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Node.js</td>
+<td><code>resend</code></td>
+<td>&gt;= 6.9.2</td>
+</tr>
+<tr>
+<td>Python</td>
+<td><code>resend</code></td>
+<td>&gt;= 2.21.0</td>
+</tr>
+<tr>
+<td>Go</td>
+<td><code>resend-go/v4</code></td>
+<td>&gt;= 4.0.0</td>
+</tr>
+<tr>
+<td>Ruby</td>
+<td><code>resend</code></td>
+<td>&gt;= 1.0.0</td>
+</tr>
+<tr>
+<td>PHP</td>
+<td><code>resend/resend-php</code></td>
+<td>&gt;= 1.1.0</td>
+</tr>
+<tr>
+<td>Rust</td>
+<td><code>resend-rs</code></td>
+<td>&gt;= 0.20.0</td>
+</tr>
+<tr>
+<td>Java</td>
+<td><code>resend-java</code></td>
+<td>&gt;= 4.11.0</td>
+</tr>
+<tr>
+<td>.NET</td>
+<td><code>Resend</code></td>
+<td>&gt;= 0.2.1</td>
+</tr>
+</tbody>
+</table>
+<p>Install the <code>resend</code> npm package: <code>npm install resend</code> (or the equivalent for your language). For full sending docs, install the <code>resend</code> skill.</p>
+<h4>Quick Start</h4>
+<ol>
+<li><strong>Ask the user for their email address.</strong> You need a real email address to send test emails to. Ask the user and wait for their response before proceeding.</li>
+<li><strong>Choose your security level.</strong> Decide how to validate incoming emails <em>before</em> any are processed</li>
+<li><strong>Set up the domain.</strong> Verify the user's custom domain for sending, and for receiving unless the inbox uses forwarding (see Domain Setup section)</li>
+<li><strong>Create the inbox.</strong> Create the agent's address with <code>resend.inboxes.create()</code> (see Create the Inbox section)</li>
+<li><strong>Create webhook endpoint.</strong> Handle <code>inbox.email.received</code> events with security built in from the start. <strong>The webhook endpoint MUST be a POST route.</strong></li>
+<li><strong>Set up tunneling (local dev).</strong> Use Tailscale Funnel (recommended) or ngrok. See <a href="https://github.com/resend/resend-skills/blob/389de56a2e48903c4b8ac7b8f2b8ee1f2c1bb9df/skills/agent-email-inbox/references/webhook-setup.md">references/webhook-setup.md</a></li>
+<li><strong>Create webhook via API.</strong> Use the Resend Webhook API to register your endpoint programmatically. See <a href="https://github.com/resend/resend-skills/blob/389de56a2e48903c4b8ac7b8f2b8ee1f2c1bb9df/skills/agent-email-inbox/references/webhook-setup.md">references/webhook-setup.md</a></li>
+<li><strong>Connect to agent.</strong> Pass validated emails to your AI agent, and reply in the thread</li>
+</ol>
+<h4>Before You Start: Account &amp; API Key Setup</h4>
+<h5>First Question: New or Existing Resend Account?</h5>
+<p>Ask your human:</p>
+<ul>
+<li><strong>New account just for the agent?</strong> → Simpler setup, full account access is fine</li>
+<li><strong>Existing account with other projects?</strong> → The agent needs a full access key, which reaches every project. Prefer a new account for the agent (see API Key Permissions)</li>
+</ul>
+<h5>Creating API Keys Securely</h5>
+<blockquote>
+<p>Don't paste API keys in chat! They'll be in conversation history forever.</p>
+</blockquote>
+<p><strong>Safer options:</strong></p>
+<ol>
+<li><strong>Environment file method:</strong> Human creates <code>.env</code> file directly: <code>echo &quot;RESEND_API_KEY=re_xxx&quot; &gt;&gt; .env</code></li>
+<li><strong>Password manager / secrets manager:</strong> Human stores key in 1Password, Vault, etc.</li>
+<li><strong>If key must be shared in chat:</strong> Human should rotate the key immediately after setup</li>
+</ol>
+<h5>API Key Permissions</h5>
+<p>The agent's server needs a <strong>full access</strong> API key. A &quot;Sending access&quot; key can only reply, forward, create drafts and send drafts. Reading inbox emails or registering webhooks with it returns 401 <code>restricted_api_key</code>. A sending access key limited to one domain returns 403 on an inbox of another domain.</p>
+<p>If your human has an existing Resend account with other projects, keep the risk contained:</p>
+<ol>
+<li><strong>Use a dedicated account for the agent</strong> when possible, so a leaked key cannot reach other projects</li>
+<li><strong>Keep the key on the server only.</strong> Never pass it to the AI model or put it in a prompt</li>
+<li><strong>Rotate the key</strong> if it was ever pasted in chat or committed</li>
+</ol>
+<h4>Domain Setup</h4>
+<p>An inbox address lives on a custom domain the user has added to Resend. The domain must be verified for sending (DKIM and SPF). To receive email on it, either enable receiving on the domain, or create the inbox with <code>forwarding: true</code>.</p>
+<p><strong>Use a subdomain</strong> (e.g., <code>agent.example.com</code>) to avoid disrupting existing email services.</p>
+<h5>Option 1: Receiving on the Domain (Recommended)</h5>
+<p>The user must enable receiving in the Resend dashboard: Domains page → toggle on &quot;Enable Receiving&quot;.</p>
+<p>Then add an MX record:</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Type</strong></td>
+<td>MX</td>
+</tr>
+<tr>
+<td><strong>Host</strong></td>
+<td>Your domain or subdomain (e.g., <code>agent.example.com</code>)</td>
+</tr>
+<tr>
+<td><strong>Value</strong></td>
+<td>Provided in Resend dashboard</td>
+</tr>
+<tr>
+<td><strong>Priority</strong></td>
+<td>10 (must be lowest number to take precedence)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Tip:</strong> Verify DNS propagation at <a href="https://dns.email">dns.email</a>.</p>
+<blockquote>
+<p>DNS Propagation: MX record changes can take up to 48 hours to propagate globally, though often complete within a few hours.</p>
+</blockquote>
+<h5>Option 2: Forwarding</h5>
+<p>Create the inbox with <code>forwarding: true</code> when the address already receives mail elsewhere (for example, Google Workspace) and the user cannot change its MX record. Resend gives the inbox a receiving address. The user sets up forwarding from their mailbox to it. Read the address from <code>receiving_address</code> with <code>resend.inboxes.get()</code>.</p>
+<h4>Create the Inbox</h4>
+<p>Create one inbox for the agent's address:</p>
+<pre><code class="language-typescript">import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+const { data, error } = await resend.inboxes.create({
+  emailAddress: 'agent@agent.example.com',
+  name: 'AI Agent',
+  fromName: 'Acme Agent',
+});
+
+if (error) throw new Error(`Failed to create inbox: ${error.message}`);
+console.log('Inbox created:', data.id);
+</code></pre>
+<p><code>fromName</code> is the name recipients see on the agent's replies. The part before the <code>@</code> can contain only letters, numbers, <code>.</code>, <code>_</code>, <code>%</code> and <code>-</code>, so <code>agent+test@</code> returns a 422. A 403 error means the plan has no inbox left; ask the user to upgrade or use <a href="#receiving-without-an-inbox">Receiving without an inbox</a>.</p>
+<h4>Security Levels</h4>
+<p><strong>Choose your security level before setting up the webhook endpoint.</strong> An AI agent that processes emails without security is dangerous — anyone can email instructions that your agent will execute. The webhook code you write next should include your chosen security level from the start.</p>
+<p>Ask the user what level of security they want, and ensure that they understand what each level means.</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Name</th>
+<th>When to Use</th>
+<th>Trade-off</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1</strong></td>
+<td>Strict Allowlist</td>
+<td>Most use cases — known, fixed set of senders</td>
+<td>Maximum security, limited functionality</td>
+</tr>
+<tr>
+<td><strong>2</strong></td>
+<td>Domain Allowlist</td>
+<td>Organization-wide access from trusted domains</td>
+<td>More flexible, anyone at domain can interact</td>
+</tr>
+<tr>
+<td><strong>3</strong></td>
+<td>Content Filtering</td>
+<td>Accept from anyone, filter unsafe patterns</td>
+<td>Can receive from anyone, pattern matching not foolproof</td>
+</tr>
+<tr>
+<td><strong>4</strong></td>
+<td>Sandboxed Processing</td>
+<td>Process all emails with restricted agent capabilities</td>
+<td>Maximum flexibility, complex to implement</td>
+</tr>
+<tr>
+<td><strong>5</strong></td>
+<td>Human-in-the-Loop</td>
+<td>Require human approval for untrusted actions</td>
+<td>Maximum security, adds latency</td>
+</tr>
+</tbody>
+</table>
+<p>For detailed implementation code for each level, see <a href="https://github.com/resend/resend-skills/blob/389de56a2e48903c4b8ac7b8f2b8ee1f2c1bb9df/skills/agent-email-inbox/references/security-levels.md">references/security-levels.md</a>.</p>
+<h5>Level 1: Strict Allowlist (Recommended)</h5>
+<p>Only process emails from explicitly approved addresses. Reject everything else.</p>
+<pre><code class="language-typescript">import type { GetInboxThreadEmailResponseSuccess as InboxEmail } from 'resend';
+
+const ALLOWED_SENDERS = [
+  'you@youremail.com',
+  'notifications@github.com',
+];
+
+// `from` is either `address` or `Name &lt;address&gt;`. Compare the address only:
+// a substring check would accept a display name such as &quot;you@youremail.com&quot;.
+function senderAddress(from: string): string {
+  const match = from.match(/&lt;([^&lt;&gt;]+)&gt;\s*$/);
+  return (match ? match[1] : from).trim().toLowerCase();
+}
+
+function isAllowedSender(from: string): boolean {
+  const sender = senderAddress(from);
+  return ALLOWED_SENDERS.some(allowed =&gt; sender === allowed.toLowerCase());
+}
+
+// Identifies the email, so the agent can reply in its thread
+type ThreadRef = { inboxId: string; threadId: string; emailId: string };
+
+async function processEmailForAgent(email: InboxEmail, thread: ThreadRef) {
+  if (!isAllowedSender(email.from)) {
+    console.log(`Rejected email from unauthorized sender: ${senderAddress(email.from)}`);
+    await notifyOwnerOfRejectedEmail(email);
+    return;
+  }
+
+  await agent.processEmail({
+    from: email.from,
+    subject: email.subject,
+    body: email.text || email.html,
+    thread,
+  });
+}
+</code></pre>
+<p><code>InboxEmail</code> is the email returned by <code>resend.inboxes.threads.emails.get()</code>. The webhook payload carries the same fields without <code>html</code> and <code>text</code>. <code>agent</code> and <code>notifyOwnerOfRejectedEmail</code> stand for your own code.</p>
+<h5>Security Best Practices</h5>
+<h6>Always Do</h6>
+<table>
+<thead>
+<tr>
+<th>Practice</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Verify webhook signatures</td>
+<td>Prevents spoofed webhook events</td>
+</tr>
+<tr>
+<td>Log all rejected emails</td>
+<td>Audit trail for security review</td>
+</tr>
+<tr>
+<td>Use allowlists where possible</td>
+<td>Explicit trust is safer than filtering</td>
+</tr>
+<tr>
+<td>Rate limit email processing</td>
+<td>Prevents excessive processing load</td>
+</tr>
+<tr>
+<td>Separate trusted/untrusted handling</td>
+<td>Different risk levels need different treatment</td>
+</tr>
+</tbody>
+</table>
+<h6>Never Do</h6>
+<table>
+<thead>
+<tr>
+<th>Anti-Pattern</th>
+<th>Risk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Process emails without validation</td>
+<td>Anyone can control your agent</td>
+</tr>
+<tr>
+<td>Trust email headers for authentication</td>
+<td>Headers are trivially spoofed</td>
+</tr>
+<tr>
+<td>Execute code from email content</td>
+<td>Untrusted input should never run as code</td>
+</tr>
+<tr>
+<td>Store email content in prompts verbatim</td>
+<td>Untrusted input mixed into prompts can alter agent behavior</td>
+</tr>
+<tr>
+<td>Give untrusted emails full agent access</td>
+<td>Scope capabilities to the minimum needed</td>
+</tr>
+</tbody>
+</table>
+<h4>Webhook Endpoint</h4>
+<p>After choosing your security level and setting up your domain, create a webhook endpoint. <strong>The webhook endpoint MUST be a POST route.</strong> Resend sends all webhook events as POST requests.</p>
+<blockquote>
+<p><strong>Critical: Use raw body for verification.</strong> Webhook signature verification requires the raw request body.</p>
+<ul>
+<li><strong>Next.js App Router:</strong> Use <code>req.text()</code> (not <code>req.json()</code>)</li>
+<li><strong>Express:</strong> Use <code>express.raw({ type: 'application/json' })</code> on the webhook route</li>
+</ul>
+</blockquote>
+<h5>Next.js App Router</h5>
+<pre><code class="language-typescript">// app/webhook/route.ts
+import { Resend } from 'resend';
+import { NextRequest, NextResponse } from 'next/server';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+export async function POST(req: NextRequest) {
+  const payload = await req.text();
+
+  let event;
+  try {
+    event = resend.webhooks.verify({
+      payload,
+      headers: {
+        id: req.headers.get('svix-id') ?? '',
+        timestamp: req.headers.get('svix-timestamp') ?? '',
+        signature: req.headers.get('svix-signature') ?? '',
+      },
+      webhookSecret: process.env.RESEND_WEBHOOK_SECRET!,
+    });
+  } catch {
+    return new NextResponse('Invalid signature', { status: 400 });
+  }
+
+  if (event.type === 'inbox.email.received') {
+    const { inbox_id, thread_id, email_id } = event.data;
+
+    // The webhook payload has no body. Fetch the email to read it.
+    const { data: email, error } = await resend.inboxes.threads.emails.get({
+      inboxId: inbox_id,
+      threadId: thread_id,
+      emailId: email_id,
+    });
+
+    if (error) {
+      // A non-2xx response makes Resend retry the webhook later
+      return new NextResponse('Error', { status: 500 });
+    }
+
+    // Apply the security level chosen above
+    await processEmailForAgent(email, {
+      inboxId: inbox_id,
+      threadId: thread_id,
+      emailId: email_id,
+    });
+  }
+
+  return new NextResponse('OK', { status: 200 });
+}
+</code></pre>
+<h5>Express</h5>
+<pre><code class="language-javascript">import express from 'express';
+import { Resend } from 'resend';
+
+const app = express();
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+const ALLOWED_SENDERS = (process.env.ALLOWED_SENDERS || '')
+  .split(',')
+  .map((sender) =&gt; sender.trim().toLowerCase())
+  .filter(Boolean);
+
+const senderAddress = (from) =&gt; {
+  const match = from.match(/&lt;([^&lt;&gt;]+)&gt;\s*$/);
+  return (match ? match[1] : from).trim().toLowerCase();
+};
+
+const isAllowedSender = (from) =&gt; ALLOWED_SENDERS.includes(senderAddress(from));
+
+app.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) =&gt; {
+  let event;
+  try {
+    event = resend.webhooks.verify({
+      payload: req.body.toString(),
+      headers: {
+        id: req.headers['svix-id'],
+        timestamp: req.headers['svix-timestamp'],
+        signature: req.headers['svix-signature'],
+      },
+      webhookSecret: process.env.RESEND_WEBHOOK_SECRET,
+    });
+  } catch {
+    res.status(400).send('Invalid signature');
+    return;
+  }
+
+  if (event.type === 'inbox.email.received') {
+    const { inbox_id, thread_id, email_id, email } = event.data;
+
+    // The payload already has the sender, so reject before fetching the body
+    if (!email || !isAllowedSender(email.from)) {
+      console.log(`Rejected email from unauthorized sender: ${email ? senderAddress(email.from) : 'unknown'}`);
+      res.status(200).send('OK'); // Return 200 even for rejected emails
+      return;
+    }
+
+    const { data: fullEmail, error } = await resend.inboxes.threads.emails.get({
+      inboxId: inbox_id,
+      threadId: thread_id,
+      emailId: email_id,
+    });
+
+    if (error) {
+      res.status(500).send('Error'); // Resend retries the webhook later
+      return;
+    }
+
+    await processEmailForAgent(fullEmail, { inboxId: inbox_id, threadId: thread_id, emailId: email_id });
+  }
+
+  res.status(200).send('OK');
+});
+
+app.get('/', (req, res) =&gt; res.send('Agent Email Inbox - Ready'));
+app.listen(3000, () =&gt; console.log('Webhook server running on :3000'));
+</code></pre>
+<p>Resend signs inbox webhooks with the same <code>svix-*</code> headers as every other webhook. <code>inbox.email.received</code> fires for email the inbox receives. The agent's own replies fire <code>inbox.email.sent</code> instead, so subscribe to <code>inbox.email.received</code> only.</p>
+<p>For webhook registration via API, tunneling setup, svix fallback, and retry behavior, see <a href="https://github.com/resend/resend-skills/blob/389de56a2e48903c4b8ac7b8f2b8ee1f2c1bb9df/skills/agent-email-inbox/references/webhook-setup.md">references/webhook-setup.md</a>.</p>
+<h4>Replying from Your Agent</h4>
+<p>Reply inside the thread. Resend addresses the reply and sets the <code>In-Reply-To</code> and <code>References</code> headers, so the sender's mail client shows it in the same conversation:</p>
+<pre><code class="language-typescript">import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+async function replyInThread(
+  thread: { inboxId: string; threadId: string; emailId: string },
+  body: string,
+) {
+  const { data, error } = await resend.inboxes.threads.emails.reply({
+    inboxId: thread.inboxId,
+    threadId: thread.threadId,
+    emailId: thread.emailId,
+    text: body,
+  });
+
+  if (error) throw new Error(`Failed to reply: ${error.message}`);
+  return data.id;
+}
+</code></pre>
+<p>The reply goes to the email's <code>Reply-To</code> addresses, or to its sender when it has none. <strong>A sender on your allowlist can set <code>Reply-To</code> to any address</strong>, so check <code>email.reply_to</code> against the allowlist too before the agent replies with anything sensitive. Leave <code>replyAll</code> off unless the agent should copy every recipient of the original email.</p>
+<p>To start a new conversation, send from the inbox address with <code>resend.emails.send()</code>. For full sending docs, install the <code>resend</code> skill.</p>
+<h4>Receiving without an Inbox</h4>
+<p>Use Resend Receiving directly when the user has no custom domain, or their plan has no inbox available. The security levels above apply unchanged. What differs:</p>
+<ul>
+<li><strong>Address:</strong> use the auto-generated <code>&lt;anything&gt;@&lt;your-id&gt;.resend.app</code> address (Dashboard → Emails → Receiving → &quot;Receiving address&quot;), or a custom domain with receiving enabled. No inbox is created.</li>
+<li><strong>Webhook event:</strong> subscribe to <code>email.received</code> instead of <code>inbox.email.received</code>. The payload has <code>email_id</code>, <code>from</code>, <code>to</code> and <code>subject</code>, but no body.</li>
+<li><strong>Reading the email:</strong> fetch it with <code>resend.emails.receiving.get(emailId)</code>.</li>
+<li><strong>Replying:</strong> send with <code>resend.emails.send()</code> and set the <code>In-Reply-To</code> header yourself. There are no threads.</li>
+</ul>
+<pre><code class="language-typescript">if (event.type === 'email.received') {
+  if (!isAllowedSender(event.data.from)) {
+    return new NextResponse('OK', { status: 200 });
+  }
+
+  const { data: email, error } = await resend.emails.receiving.get(event.data.email_id);
+  if (error) {
+    return new NextResponse('Error', { status: 500 });
+  }
+
+  await agent.processEmail({ from: email.from, subject: email.subject, body: email.text || email.html });
+}
+</code></pre>
+<p>The webhook verification is the same as in the inbox examples.</p>
+<h4>Environment Variables</h4>
+<pre><code class="language-bash"># Required
+RESEND_API_KEY=re_xxxxxxxxx
+RESEND_WEBHOOK_SECRET=whsec_xxxxxxxxx
+
+# Security Configuration
+SECURITY_LEVEL=strict                    # strict | domain | filtered | sandboxed
+ALLOWED_SENDERS=you@email.com,trusted@example.com
+ALLOWED_DOMAINS=example.com
+OWNER_EMAIL=you@email.com               # For security notifications
+</code></pre>
+<h4>Common Mistakes</h4>
+<table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No sender verification</td>
+<td>Always validate who sent the email before processing</td>
+</tr>
+<tr>
+<td>Trusting email headers</td>
+<td>Use webhook verification, not email headers for auth</td>
+</tr>
+<tr>
+<td>Same treatment for all emails</td>
+<td>Differentiate trusted vs untrusted senders</td>
+</tr>
+<tr>
+<td>Verbose error messages</td>
+<td>Keep error responses generic to avoid leaking internal logic</td>
+</tr>
+<tr>
+<td>No rate limiting</td>
+<td>Implement per-sender rate limits. See <a href="https://github.com/resend/resend-skills/blob/389de56a2e48903c4b8ac7b8f2b8ee1f2c1bb9df/skills/agent-email-inbox/references/advanced-patterns.md">references/advanced-patterns.md</a></td>
+</tr>
+<tr>
+<td>Processing HTML directly</td>
+<td>Strip HTML or use text-only to reduce complexity and risk</td>
+</tr>
+<tr>
+<td>No logging of rejections</td>
+<td>Log all security events for audit</td>
+</tr>
+<tr>
+<td>Using ephemeral tunnel URLs</td>
+<td>Use persistent URLs (Tailscale Funnel, paid ngrok) or deploy to production</td>
+</tr>
+<tr>
+<td>Using <code>express.json()</code> on webhook route</td>
+<td>Use <code>express.raw({ type: 'application/json' })</code> — JSON parsing breaks signature verification</td>
+</tr>
+<tr>
+<td>Returning non-200 for rejected emails</td>
+<td>Always return 200 to acknowledge receipt — otherwise Resend retries</td>
+</tr>
+<tr>
+<td>Old Resend SDK version</td>
+<td><code>resend.inboxes.*</code> needs <code>resend</code> &gt;= 6.34.1. <code>emails.receiving.get()</code> and <code>webhooks.verify()</code> also need recent versions. See SDK Version Requirements</td>
+</tr>
+<tr>
+<td>Comparing <code>from</code> as a whole string</td>
+<td><code>from</code> can be <code>Name &lt;address&gt;</code>. Extract the address before you compare it with the allowlist</td>
+</tr>
+<tr>
+<td>Replying to <code>Reply-To</code> without checking it</td>
+<td>A trusted sender can point <code>Reply-To</code> anywhere. Check it against the allowlist before a sensitive reply</td>
+</tr>
+<tr>
+<td>Using a &quot;Sending access&quot; API key</td>
+<td>It can only reply, forward, create drafts and send drafts. Inbox reads and webhook setup need a full access key</td>
+</tr>
+<tr>
+<td>Passing <code>secret</code> or <code>svix-*</code> keys to <code>webhooks.verify()</code></td>
+<td>Pass <code>webhookSecret</code>, and <code>headers</code> as <code>{ id, timestamp, signature }</code></td>
+</tr>
+</tbody>
+</table>
+<h4>Testing</h4>
+<p>Use Resend's test addresses for development:</p>
+<ul>
+<li><code>delivered@resend.dev</code> — Simulates successful delivery</li>
+<li><code>bounced@resend.dev</code> — Simulates hard bounce</li>
+</ul>
+<p>For security testing, send test emails from non-allowlisted addresses to verify rejection works correctly.</p>
+<p><strong>Quick verification checklist:</strong></p>
+<ol>
+<li>Server is running: <code>curl http://localhost:3000</code> should return a response</li>
+<li>Tunnel is working: <code>curl https://&lt;your-tunnel-url&gt;</code> should return the same response</li>
+<li>Webhook is active: Check status in Resend dashboard → Webhooks</li>
+<li>Send a test email from an allowlisted address and check server logs</li>
+</ol>
+<h4>Related Skills</h4>
+<ul>
+<li>For full sending, receiving and inbox docs, install the <code>resend</code> skill</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

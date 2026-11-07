@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>parallel-debugging · SkillHub</title>
+    <meta name="description" content="Use it when: a bug has several plausible causes, first attempts failed, or it spans several modules and you want to avoid fixing the first theory that fits. It does: draws hypotheses from six failure types, has investigators gather evidence for each, then sorts them into confirmed, plausible, falsified or inconclusive. You get: a root cause backed by file:line evidence and a confidence level, a compound cause, or new hypotheses when none holds up. Terms: Analysis of Competing Hypotheses (ACH) tests several explanations side by side instead of chasing one." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=wshobson%2Fagents">wshobson/agents</a></p>
+      <h1>parallel-debugging</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>a bug has several plausible causes, first attempts failed, or it spans several modules and you want to avoid fixing the first theory that fits</dd></div><div><dt>It does</dt><dd>draws hypotheses from six failure types, has investigators gather evidence for each, then sorts them into confirmed, plausible, falsified or inconclusive</dd></div><div><dt>You get</dt><dd>a root cause backed by file:line evidence and a confidence level, a compound cause, or new hypotheses when none holds up</dd></div><div><dt>Terms</dt><dd>Analysis of Competing Hypotheses (ACH) tests several explanations side by side instead of chasing one</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A method for running several lines of investigation at once, written for a team of agents, though it names no particular tool. Hypotheses come from six failure categories: logic errors, data issues, state problems such as races and stale caches, integration failures, resource exhaustion and environment differences. Evidence is graded as direct (the code at a line), correlational (errors rose after a commit), testimonial (&#34;works on my machine&#34;) or absence (no null check on the path), and is always cited with file:line. Confidence is high above 80%, with several direct pieces and nothing contradicting, medium from 50% and low below. Once every investigator reports, each hypothesis is labelled confirmed, plausible, falsified or inconclusive, and confirmed ones are ranked by confidence, amount of evidence, strength of the causal chain and lack of contradiction. One clear winner is the root cause, a tie may be a compound issue, and no winner means new hypotheses from what was learned. Before the bug counts as fixed, the fix must address the root cause, break nothing new, pass the original reproduction, cover related edge cases and come with tests.</p>
+      <p class="muted">Summarizes <a href="https://github.com/wshobson/agents/tree/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/agent-teams/skills/parallel-debugging">the skill at 4bde316</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/wshobson/agents --skill parallel-debugging</code><button type="button" class="copy" data-copy="npx skills add https://github.com/wshobson/agents --skill parallel-debugging">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/wshobson/agents/parallel-debugging">skills.sh page</a> · <a href="https://github.com/wshobson/agents/tree/HEAD/plugins/agent-teams/skills/parallel-debugging">Source on GitHub</a> · <a href="/skillhub/?repo=wshobson%2Fagents">All skills from wshobson/agents</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>10,300 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>42,267 <span class="muted">wshobson/agents</span></dd></div><div><dt>First seen</dt><dd>Feb 5, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">171</div>
+      <div class="stat-delta">-2% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 174; week to Sep 26: 189; week to Oct 3: 221; week to Oct 10: 268; week to Oct 17: 216; week to Oct 24: 187; week to Oct 31: 185; week to Nov 7: 171. Use the left and right arrow keys to read each week."
+        data-values="174,189,221,268,216,187,185,171" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,21.4 38.6,19.0 71.1,13.7 103.7,6.0 136.3,14.5 168.9,19.3 201.4,19.6 234.0,21.9" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="21.9" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>174</td></tr><tr><td>Sep 26</td><td>189</td></tr><tr><td>Oct 3</td><td>221</td></tr><tr><td>Oct 10</td><td>268</td></tr><tr><td>Oct 17</td><td>216</td></tr><tr><td>Oct 24</td><td>187</td></tr><tr><td>Oct 31</td><td>185</td></tr><tr><td>Nov 7</td><td>171</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/skillhub/?tag=category%3Aagents">category:agents</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:subagents" data-facet="needs" title="Relies on the agent being able to spawn subagents." href="/skillhub/?tag=needs%3Asubagents">needs:subagents</a></div>
+          <p class="tag-meaning">Relies on the agent being able to spawn subagents.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="debugging" data-facet="topic" href="/skillhub/?tag=debugging">debugging</a><a class="tag" data-tag="multi-agent" data-facet="topic" href="/skillhub/?tag=multi-agent">multi-agent</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/wshobson/agents/blob/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/agent-teams/skills/parallel-debugging/SKILL.md">wshobson/agents at 4bde316</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: parallel-debugging
+description: Debug complex issues using competing hypotheses with parallel investigation, evidence collection, and root cause arbitration. Use this skill when debugging bugs with multiple potential causes, performing root cause analysis, or organizing parallel investigation workflows.
+version: 1.0.2</code></pre></details>
+        <div class="markdown"><h3>Parallel Debugging</h3>
+<p>Framework for debugging complex issues using the Analysis of Competing Hypotheses (ACH) methodology with parallel agent investigation.</p>
+<h4>When to Use This Skill</h4>
+<ul>
+<li>Bug has multiple plausible root causes</li>
+<li>Initial debugging attempts haven't identified the issue</li>
+<li>Issue spans multiple modules or components</li>
+<li>Need systematic root cause analysis with evidence</li>
+<li>Want to avoid confirmation bias in debugging</li>
+</ul>
+<h4>Hypothesis Generation Framework</h4>
+<p>Generate hypotheses across 6 failure mode categories:</p>
+<h5>1. Logic Error</h5>
+<ul>
+<li>Incorrect conditional logic (wrong operator, missing case)</li>
+<li>Off-by-one errors in loops or array access</li>
+<li>Missing edge case handling</li>
+<li>Incorrect algorithm implementation</li>
+</ul>
+<h5>2. Data Issue</h5>
+<ul>
+<li>Invalid or unexpected input data</li>
+<li>Type mismatch or coercion error</li>
+<li>Null/undefined/None where value expected</li>
+<li>Encoding or serialization problem</li>
+<li>Data truncation or overflow</li>
+</ul>
+<h5>3. State Problem</h5>
+<ul>
+<li>Race condition between concurrent operations</li>
+<li>Stale cache returning outdated data</li>
+<li>Incorrect initialization or default values</li>
+<li>Unintended mutation of shared state</li>
+<li>State machine transition error</li>
+</ul>
+<h5>4. Integration Failure</h5>
+<ul>
+<li>API contract violation (request/response mismatch)</li>
+<li>Version incompatibility between components</li>
+<li>Configuration mismatch between environments</li>
+<li>Missing or incorrect environment variables</li>
+<li>Network timeout or connection failure</li>
+</ul>
+<h5>5. Resource Issue</h5>
+<ul>
+<li>Memory leak causing gradual degradation</li>
+<li>Connection pool exhaustion</li>
+<li>File descriptor or handle leak</li>
+<li>Disk space or quota exceeded</li>
+<li>CPU saturation from inefficient processing</li>
+</ul>
+<h5>6. Environment</h5>
+<ul>
+<li>Missing runtime dependency</li>
+<li>Wrong library or framework version</li>
+<li>Platform-specific behavior difference</li>
+<li>Permission or access control issue</li>
+<li>Timezone or locale-related behavior</li>
+</ul>
+<h4>Evidence Collection Standards</h4>
+<h5>What Constitutes Evidence</h5>
+<table>
+<thead>
+<tr>
+<th>Evidence Type</th>
+<th>Strength</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Direct</strong></td>
+<td>Strong</td>
+<td>Code at <code>file.ts:42</code> shows <code>if (x &gt; 0)</code> should be <code>if (x &gt;= 0)</code></td>
+</tr>
+<tr>
+<td><strong>Correlational</strong></td>
+<td>Medium</td>
+<td>Error rate increased after commit <code>abc123</code></td>
+</tr>
+<tr>
+<td><strong>Testimonial</strong></td>
+<td>Weak</td>
+<td>&quot;It works on my machine&quot;</td>
+</tr>
+<tr>
+<td><strong>Absence</strong></td>
+<td>Variable</td>
+<td>No null check found in the code path</td>
+</tr>
+</tbody>
+</table>
+<h5>Citation Format</h5>
+<p>Always cite evidence with file:line references:</p>
+<pre><code>**Evidence**: The validation function at `src/validators/user.ts:87`
+does not check for empty strings, only null/undefined. This allows
+empty email addresses to pass validation.
+</code></pre>
+<h5>Confidence Levels</h5>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Criteria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>High (&gt;80%)</strong></td>
+<td>Multiple direct evidence pieces, clear causal chain, no contradicting evidence</td>
+</tr>
+<tr>
+<td><strong>Medium (50-80%)</strong></td>
+<td>Some direct evidence, plausible causal chain, minor ambiguities</td>
+</tr>
+<tr>
+<td><strong>Low (&lt;50%)</strong></td>
+<td>Mostly correlational evidence, incomplete causal chain, some contradicting evidence</td>
+</tr>
+</tbody>
+</table>
+<h4>Result Arbitration Protocol</h4>
+<p>After all investigators report:</p>
+<h5>Step 1: Categorize Results</h5>
+<ul>
+<li><strong>Confirmed</strong>: High confidence, strong evidence, clear causal chain</li>
+<li><strong>Plausible</strong>: Medium confidence, some evidence, reasonable causal chain</li>
+<li><strong>Falsified</strong>: Evidence contradicts the hypothesis</li>
+<li><strong>Inconclusive</strong>: Insufficient evidence to confirm or falsify</li>
+</ul>
+<h5>Step 2: Compare Confirmed Hypotheses</h5>
+<p>If multiple hypotheses are confirmed, rank by:</p>
+<ol>
+<li>Confidence level</li>
+<li>Number of supporting evidence pieces</li>
+<li>Strength of causal chain</li>
+<li>Absence of contradicting evidence</li>
+</ol>
+<h5>Step 3: Determine Root Cause</h5>
+<ul>
+<li>If one hypothesis clearly dominates: declare as root cause</li>
+<li>If multiple hypotheses are equally likely: may be compound issue (multiple contributing causes)</li>
+<li>If no hypotheses confirmed: generate new hypotheses based on evidence gathered</li>
+</ul>
+<h5>Step 4: Validate Fix</h5>
+<p>Before declaring the bug fixed:</p>
+<ul>
+<li>[ ] Fix addresses the identified root cause</li>
+<li>[ ] Fix doesn't introduce new issues</li>
+<li>[ ] Original reproduction case no longer fails</li>
+<li>[ ] Related edge cases are covered</li>
+<li>[ ] Relevant tests are added or updated</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

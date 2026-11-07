@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>devcontainer-setup · SkillHub</title>
+    <meta name="description" content="Use it when: you want Claude Code to work in an isolated container instead of directly on your machine. It does: reads the project name and languages from package.json, pyproject.toml, Cargo.toml or go.mod, then fills its templates with matching extensions, settings and setup commands. You get: a Dockerfile, devcontainer.json, post_install.py, .zshrc and an install.sh that adds a devc command, all in .devcontainer/. Inside: Claude Code without permission prompts, Python 3.13 via uv, Node 22, ripgrep, fd, fzf, tmux, ast-grep, bubblewrap, and iptables for network rules. Starts with: VS Code&#039;s Reopen in Container, or devcontainer up from the command line." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=trailofbits%2Fskills">trailofbits/skills</a></p>
+      <h1>devcontainer-setup</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want Claude Code to work in an isolated container instead of directly on your machine</dd></div><div><dt>It does</dt><dd>reads the project name and languages from package.json, pyproject.toml, Cargo.toml or go.mod, then fills its templates with matching extensions, settings and setup commands</dd></div><div><dt>You get</dt><dd>a Dockerfile, devcontainer.json, post_install.py, .zshrc and an install.sh that adds a devc command, all in .devcontainer/</dd></div><div><dt>Inside</dt><dd>Claude Code without permission prompts, Python 3.13 via uv, Node 22, ripgrep, fd, fzf, tmux, ast-grep, bubblewrap, and iptables for network rules</dd></div><div><dt>Starts with</dt><dd>VS Code&#39;s Reopen in Container, or devcontainer up from the command line</dd></div></dl></section>
+      
+      <p class="note">The container runs Claude Code in bypassPermissions mode, forwards your CLAUDE_CODE_OAUTH_TOKEN or ANTHROPIC_API_KEY, and adds the anthropics/skills, trailofbits/skills and trailofbits/skills-curated marketplaces.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>From Trail of Bits. The project name comes from the first of package.json, pyproject.toml, Cargo.toml or go.mod that has one, falling back to the directory name, and its slug names persistent volumes that keep shell history, Claude&#39;s config and GitHub CLI auth across rebuilds. Python projects get the Python, Pylance and Ruff extensions and uv sync; Node projects get ESLint and Prettier and an install command matched to the lockfile; Rust and Go add their devcontainer features. Several languages are merged into one configuration. Inside the container, .devcontainer/ and your ~/.gitconfig are mounted read-only, the NET_ADMIN capability lets you restrict outbound traffic with iptables, npm install scripts are off and packages must be a day old before npm installs them. Claude Code is set to bypassPermissions, so it acts without asking inside the container, and your CLAUDE_CODE_OAUTH_TOKEN or ANTHROPIC_API_KEY is forwarded in from your machine. Its image also adds the anthropics/skills, trailofbits/skills and trailofbits/skills-curated plugin marketplaces. It is for development environments, not production containers, and not for changing a devcontainer you already have.</p>
+      <p class="muted">Summarizes <a href="https://github.com/trailofbits/skills/tree/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/devcontainer-setup/skills/devcontainer-setup">the skill at e4dd0bb</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/trailofbits/skills --skill devcontainer-setup</code><button type="button" class="copy" data-copy="npx skills add https://github.com/trailofbits/skills --skill devcontainer-setup">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/trailofbits/skills/devcontainer-setup">skills.sh page</a> · <a href="https://github.com/trailofbits/skills/tree/HEAD/plugins/devcontainer-setup/skills/devcontainer-setup">Source on GitHub</a> · <a href="/skillhub/?repo=trailofbits%2Fskills">All skills from trailofbits/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,500 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>8,053 <span class="muted">trailofbits/skills</span></dd></div><div><dt>First seen</dt><dd>Feb 10, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">170</div>
+      <div class="stat-delta">+50% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 113; week to Sep 26: 109; week to Oct 3: 113; week to Oct 10: 112; week to Oct 17: 141; week to Oct 24: 130; week to Oct 31: 154; week to Nov 7: 170. Use the left and right arrow keys to read each week."
+        data-values="113,109,113,112,141,130,154,170" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,20.8 38.6,21.8 71.1,20.8 103.7,21.0 136.3,13.5 168.9,16.4 201.4,10.1 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>113</td></tr><tr><td>Sep 26</td><td>109</td></tr><tr><td>Oct 3</td><td>113</td></tr><tr><td>Oct 10</td><td>112</td></tr><tr><td>Oct 17</td><td>141</td></tr><tr><td>Oct 24</td><td>130</td></tr><tr><td>Oct 31</td><td>154</td></tr><tr><td>Nov 7</td><td>170</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/skillhub/?tag=category%3Asecurity">category:security</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:setup" data-facet="type" title="One-time configuration or scaffolding of a project, account or tool." href="/skillhub/?tag=type%3Asetup">type:setup</a></div>
+          <p class="tag-meaning">One-time configuration or scaffolding of a project, account or tool.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="infrastructure" data-facet="topic" href="/skillhub/?tag=infrastructure">infrastructure</a><a class="tag" data-tag="guardrails" data-facet="topic" href="/skillhub/?tag=guardrails">guardrails</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:docker" data-facet="stack" href="/skillhub/?tag=stack%3Adocker">stack:docker</a><a class="tag" data-tag="stack:claude" data-facet="stack" href="/skillhub/?tag=stack%3Aclaude">stack:claude</a><a class="tag" data-tag="stack:vscode" data-facet="stack" href="/skillhub/?tag=stack%3Avscode">stack:vscode</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/devcontainer-setup/skills/devcontainer-setup/SKILL.md">trailofbits/skills at e4dd0bb</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: devcontainer-setup
+description: Creates devcontainers with Claude Code, language-specific tooling (Python/Node/Rust/Go), and persistent volumes. Use when adding devcontainer support to a project, setting up isolated development environments, or configuring sandboxed Claude Code workspaces.</code></pre></details>
+        <div class="markdown"><h3>Devcontainer Setup Skill</h3>
+<p>Creates a pre-configured devcontainer with Claude Code and language-specific tooling.</p>
+<h4>When to Use</h4>
+<ul>
+<li>User asks to &quot;set up a devcontainer&quot; or &quot;add devcontainer support&quot;</li>
+<li>User wants a sandboxed Claude Code development environment</li>
+<li>User needs isolated development environments with persistent configuration</li>
+</ul>
+<h4>When NOT to Use</h4>
+<ul>
+<li>User already has a devcontainer configuration and just needs modifications</li>
+<li>User is asking about general Docker or container questions</li>
+<li>User wants to deploy production containers (this is for development only)</li>
+</ul>
+<h4>Workflow</h4>
+<pre><code class="language-mermaid">flowchart TB
+    start([User requests devcontainer])
+    recon[1. Project Reconnaissance]
+    detect[2. Detect Languages]
+    generate[3. Generate Configuration]
+    write[4. Write files to .devcontainer/]
+    done([Done])
+
+    start --&gt; recon
+    recon --&gt; detect
+    detect --&gt; generate
+    generate --&gt; write
+    write --&gt; done
+</code></pre>
+<h4>Phase 1: Project Reconnaissance</h4>
+<h5>Infer Project Name</h5>
+<p>Check in order (use first match):</p>
+<ol>
+<li><code>package.json</code> → <code>name</code> field</li>
+<li><code>pyproject.toml</code> → <code>project.name</code></li>
+<li><code>Cargo.toml</code> → <code>package.name</code></li>
+<li><code>go.mod</code> → module path (last segment after <code>/</code>)</li>
+<li>Directory name as fallback</li>
+</ol>
+<p>Convert to slug: lowercase, replace spaces/underscores with hyphens.</p>
+<h5>Detect Language Stack</h5>
+<table>
+<thead>
+<tr>
+<th>Language</th>
+<th>Detection Files</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td><code>pyproject.toml</code>, <code>*.py</code></td>
+</tr>
+<tr>
+<td>Node/TypeScript</td>
+<td><code>package.json</code>, <code>tsconfig.json</code></td>
+</tr>
+<tr>
+<td>Rust</td>
+<td><code>Cargo.toml</code></td>
+</tr>
+<tr>
+<td>Go</td>
+<td><code>go.mod</code>, <code>go.sum</code></td>
+</tr>
+</tbody>
+</table>
+<h5>Multi-Language Projects</h5>
+<p>If multiple languages are detected, configure all of them in the following priority order:</p>
+<ol>
+<li><strong>Python</strong> - Primary language, uses Dockerfile for uv + Python installation</li>
+<li><strong>Node/TypeScript</strong> - Uses devcontainer feature</li>
+<li><strong>Rust</strong> - Uses devcontainer feature</li>
+<li><strong>Go</strong> - Uses devcontainer feature</li>
+</ol>
+<p>For multi-language <code>postCreateCommand</code>, chain all setup commands:</p>
+<pre><code>uv run /opt/post_install.py &amp;&amp; uv sync &amp;&amp; npm ci
+</code></pre>
+<p>Extensions and settings from all detected languages should be merged into the configuration.</p>
+<h4>Phase 2: Generate Configuration</h4>
+<p>Start with base templates from <code>resources/</code> directory. Substitute:</p>
+<ul>
+<li><code>{{PROJECT_NAME}}</code> → Human-readable name (e.g., &quot;My Project&quot;)</li>
+<li><code>{{PROJECT_SLUG}}</code> → Slug for volumes (e.g., &quot;my-project&quot;)</li>
+</ul>
+<p>Then apply language-specific modifications below.</p>
+<h4>Base Template Features</h4>
+<p>The base template includes:</p>
+<ul>
+<li><strong>Claude Code</strong> with marketplace plugins (anthropics/skills, trailofbits/skills, trailofbits/skills-curated)</li>
+<li><strong>Sandboxing</strong> via bubblewrap and socat</li>
+<li><strong>Python 3.13</strong> via uv (fast binary download)</li>
+<li><strong>Node 22</strong> via fnm (Fast Node Manager)</li>
+<li><strong>ast-grep</strong> for AST-based code search</li>
+<li><strong>Network isolation tools</strong> (iptables, ipset) with NET_ADMIN capability</li>
+<li><strong>Security mounts</strong>: <code>.devcontainer/</code> mounted read-only to prevent container escape</li>
+<li><strong>Token forwarding</strong>: <code>CLAUDE_CODE_OAUTH_TOKEN</code> and <code>ANTHROPIC_API_KEY</code> via <code>remoteEnv</code></li>
+<li><strong>Modern CLI tools</strong>: ripgrep, fd, fzf, tmux, git-delta</li>
+</ul>
+<hr>
+<h4>Language-Specific Sections</h4>
+<h5>Python Projects</h5>
+<p><strong>Detection:</strong> <code>pyproject.toml</code>, <code>requirements.txt</code>, <code>setup.py</code>, or <code>*.py</code> files</p>
+<p><strong>Dockerfile additions:</strong></p>
+<p>The base Dockerfile already includes Python 3.13 via uv. If a different version is required (detected from <code>pyproject.toml</code>), modify the Python installation:</p>
+<pre><code class="language-dockerfile"># Install Python via uv (fast binary download, not source compilation)
+RUN uv python install &lt;version&gt; --default
+</code></pre>
+<p><strong>devcontainer.json extensions:</strong></p>
+<p>Add to <code>customizations.vscode.extensions</code>:</p>
+<pre><code class="language-json">&quot;ms-python.python&quot;,
+&quot;ms-python.vscode-pylance&quot;,
+&quot;charliermarsh.ruff&quot;
+</code></pre>
+<p>Add to <code>customizations.vscode.settings</code>:</p>
+<pre><code class="language-json">&quot;python.defaultInterpreterPath&quot;: &quot;.venv/bin/python&quot;,
+&quot;[python]&quot;: {
+  &quot;editor.defaultFormatter&quot;: &quot;charliermarsh.ruff&quot;,
+  &quot;editor.codeActionsOnSave&quot;: {
+    &quot;source.organizeImports&quot;: &quot;explicit&quot;
+  }
+}
+</code></pre>
+<p><strong>postCreateCommand:</strong>
+If <code>pyproject.toml</code> exists, chain commands:</p>
+<pre><code>rm -rf .venv &amp;&amp; uv sync &amp;&amp; uv run /opt/post_install.py
+</code></pre>
+<hr>
+<h5>Node/TypeScript Projects</h5>
+<p><strong>Detection:</strong> <code>package.json</code> or <code>tsconfig.json</code></p>
+<p><strong>No Dockerfile additions needed:</strong> The base template includes Node 22 via fnm (Fast Node Manager).</p>
+<p><strong>devcontainer.json extensions:</strong></p>
+<p>Add to <code>customizations.vscode.extensions</code>:</p>
+<pre><code class="language-json">&quot;dbaeumer.vscode-eslint&quot;,
+&quot;esbenp.prettier-vscode&quot;
+</code></pre>
+<p>Add to <code>customizations.vscode.settings</code>:</p>
+<pre><code class="language-json">&quot;editor.defaultFormatter&quot;: &quot;esbenp.prettier-vscode&quot;,
+&quot;editor.codeActionsOnSave&quot;: {
+  &quot;source.fixAll.eslint&quot;: &quot;explicit&quot;
+}
+</code></pre>
+<p><strong>postCreateCommand:</strong>
+Detect package manager from lockfile and chain with base command:</p>
+<ul>
+<li><code>pnpm-lock.yaml</code> → <code>uv run /opt/post_install.py &amp;&amp; pnpm install --frozen-lockfile</code></li>
+<li><code>yarn.lock</code> → <code>uv run /opt/post_install.py &amp;&amp; yarn install --frozen-lockfile</code></li>
+<li><code>package-lock.json</code> → <code>uv run /opt/post_install.py &amp;&amp; npm ci</code></li>
+<li>No lockfile → <code>uv run /opt/post_install.py &amp;&amp; npm install</code></li>
+</ul>
+<hr>
+<h5>Rust Projects</h5>
+<p><strong>Detection:</strong> <code>Cargo.toml</code></p>
+<p><strong>Features to add:</strong></p>
+<pre><code class="language-json">&quot;ghcr.io/devcontainers/features/rust:1&quot;: {}
+</code></pre>
+<p><strong>devcontainer.json extensions:</strong></p>
+<p>Add to <code>customizations.vscode.extensions</code>:</p>
+<pre><code class="language-json">&quot;rust-lang.rust-analyzer&quot;,
+&quot;tamasfe.even-better-toml&quot;
+</code></pre>
+<p>Add to <code>customizations.vscode.settings</code>:</p>
+<pre><code class="language-json">&quot;[rust]&quot;: {
+  &quot;editor.defaultFormatter&quot;: &quot;rust-lang.rust-analyzer&quot;
+}
+</code></pre>
+<p><strong>postCreateCommand:</strong>
+If <code>Cargo.lock</code> exists, use locked builds:</p>
+<pre><code>uv run /opt/post_install.py &amp;&amp; cargo build --locked
+</code></pre>
+<p>If no lockfile, use standard build:</p>
+<pre><code>uv run /opt/post_install.py &amp;&amp; cargo build
+</code></pre>
+<hr>
+<h5>Go Projects</h5>
+<p><strong>Detection:</strong> <code>go.mod</code></p>
+<p><strong>Features to add:</strong></p>
+<pre><code class="language-json">&quot;ghcr.io/devcontainers/features/go:1&quot;: {
+  &quot;version&quot;: &quot;latest&quot;
+}
+</code></pre>
+<p><strong>devcontainer.json extensions:</strong></p>
+<p>Add to <code>customizations.vscode.extensions</code>:</p>
+<pre><code class="language-json">&quot;golang.go&quot;
+</code></pre>
+<p>Add to <code>customizations.vscode.settings</code>:</p>
+<pre><code class="language-json">&quot;[go]&quot;: {
+  &quot;editor.defaultFormatter&quot;: &quot;golang.go&quot;
+},
+&quot;go.useLanguageServer&quot;: true
+</code></pre>
+<p><strong>postCreateCommand:</strong></p>
+<pre><code>uv run /opt/post_install.py &amp;&amp; go mod download
+</code></pre>
+<hr>
+<h4>Reference Material</h4>
+<p>For additional guidance, see:</p>
+<ul>
+<li><code>references/dockerfile-best-practices.md</code> - Layer optimization, multi-stage builds, architecture support</li>
+<li><code>references/features-vs-dockerfile.md</code> - When to use devcontainer features vs custom Dockerfile</li>
+</ul>
+<hr>
+<h4>Adding Persistent Volumes</h4>
+<p>Pattern for new mounts in <code>devcontainer.json</code>:</p>
+<pre><code class="language-json">&quot;mounts&quot;: [
+  &quot;source={{PROJECT_SLUG}}-&lt;purpose&gt;-${devcontainerId},target=&lt;container-path&gt;,type=volume&quot;
+]
+</code></pre>
+<p>Common additions:</p>
+<ul>
+<li><code>source={{PROJECT_SLUG}}-cargo-${devcontainerId},target=/home/vscode/.cargo,type=volume</code> (Rust)</li>
+<li><code>source={{PROJECT_SLUG}}-go-${devcontainerId},target=/home/vscode/go,type=volume</code> (Go)</li>
+</ul>
+<hr>
+<h4>Output Files</h4>
+<p>Generate these files in the project's <code>.devcontainer/</code> directory:</p>
+<ol>
+<li><code>Dockerfile</code> - Container build instructions</li>
+<li><code>devcontainer.json</code> - VS Code/devcontainer configuration</li>
+<li><code>post_install.py</code> - Post-creation setup script</li>
+<li><code>.zshrc</code> - Shell configuration</li>
+<li><code>install.sh</code> - CLI helper for managing the devcontainer (<code>devc</code> command)</li>
+</ol>
+<hr>
+<h4>Validation Checklist</h4>
+<p>Before presenting files to the user, verify:</p>
+<ol>
+<li>All <code>{{PROJECT_NAME}}</code> placeholders are replaced with the human-readable name</li>
+<li>All <code>{{PROJECT_SLUG}}</code> placeholders are replaced with the slugified name</li>
+<li>JSON syntax is valid in <code>devcontainer.json</code> (no trailing commas, proper nesting)</li>
+<li>Language-specific extensions are added for all detected languages</li>
+<li><code>postCreateCommand</code> includes all required setup commands (chained with <code>&amp;&amp;</code>)</li>
+</ol>
+<hr>
+<h4>User Instructions</h4>
+<p>After generating, inform the user:</p>
+<ol>
+<li>How to start: &quot;Open in VS Code and select 'Reopen in Container'&quot;</li>
+<li>Alternative: <code>devcontainer up --workspace-folder .</code></li>
+<li>CLI helper: Run <code>.devcontainer/install.sh self-install</code> to add the <code>devc</code> command to PATH</li>
+</ol>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>evm-token-decimals · SkillHub</title>
+    <meta name="description" content="Use it when: you read ERC-20 balances or price tokens across EVM chains, or a balance or USD value is off by orders of magnitude. It does: has the agent query decimals() on-chain, cache it per chain and token address, and normalize amounts with exact math. You get: code in Python with web3.py, TypeScript with ethers and Solidity, plus a cast command to check a token&#039;s decimals. Why: the same stablecoin can use different decimals on different chains, and the bug throws no error." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <h1>evm-token-decimals</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you read ERC-20 balances or price tokens across EVM chains, or a balance or USD value is off by orders of magnitude</dd></div><div><dt>It does</dt><dd>has the agent query decimals() on-chain, cache it per chain and token address, and normalize amounts with exact math</dd></div><div><dt>You get</dt><dd>code in Python with web3.py, TypeScript with ethers and Solidity, plus a cast command to check a token&#39;s decimals</dd></div><div><dt>Why</dt><dd>the same stablecoin can use different decimals on different chains, and the bug throws no error</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A short rule set from ECC for a bug that fails silently: assuming a token&#39;s decimals. A symbol with 6 decimals on one chain can have a different count elsewhere, so it never hardcodes them. The agent queries decimals() at runtime, caches the result by chain ID and token address rather than by symbol, and does value math with Decimal, BigInt or another exact type instead of floats. For old or non-standard tokens whose decimals() call reverts, it falls back to 18 and logs a visible warning. In Solidity it normalizes amounts to 18 decimals (a WAD) before comparing or pricing. Examples cover a web3.py balance read and a cached decimals lookup, ethers&#39; formatUnits in TypeScript and a Foundry cast call for a quick on-chain check. It also says to query decimals again after bridging or a wrapper change.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/evm-token-decimals">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/affaan-m/ecc --skill evm-token-decimals</code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill evm-token-decimals">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/evm-token-decimals">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/evm-token-decimals">Source on GitHub</a> · <a href="/skillhub/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,200 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>298,660 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">465</div>
+      <div class="stat-delta">+64% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 283; week to Sep 26: 253; week to Oct 3: 159; week to Oct 10: 136; week to Oct 17: 229; week to Oct 24: 405; week to Oct 31: 397; week to Nov 7: 465. Use the left and right arrow keys to read each week."
+        data-values="283,253,159,136,229,405,397,465" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.2 38.6,26.1 71.1,35.0 103.7,37.1 136.3,28.3 168.9,11.7 201.4,12.4 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>283</td></tr><tr><td>Sep 26</td><td>253</td></tr><tr><td>Oct 3</td><td>159</td></tr><tr><td>Oct 10</td><td>136</td></tr><tr><td>Oct 17</td><td>229</td></tr><tr><td>Oct 24</td><td>405</td></tr><tr><td>Oct 31</td><td>397</td></tr><tr><td>Nov 7</td><td>465</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/skillhub/?tag=type%3Aguidelines">type:guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="web3" data-facet="topic" href="/skillhub/?tag=web3">web3</a><a class="tag" data-tag="finance" data-facet="topic" href="/skillhub/?tag=finance">finance</a><a class="tag" data-tag="debugging" data-facet="topic" href="/skillhub/?tag=debugging">debugging</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:solidity" data-facet="stack" href="/skillhub/?tag=stack%3Asolidity">stack:solidity</a><a class="tag" data-tag="stack:python" data-facet="stack" href="/skillhub/?tag=stack%3Apython">stack:python</a><a class="tag" data-tag="stack:typescript" data-facet="stack" href="/skillhub/?tag=stack%3Atypescript">stack:typescript</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/evm-token-decimals/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: evm-token-decimals
+description: Prevent silent decimal mismatch bugs across EVM chains. Covers runtime decimal lookup, chain-aware caching, bridged-token precision drift, and safe normalization for bots, dashboards, and DeFi tools. Use when handling token amounts across EVM chains, or when a balance, price, or transfer amount is off by orders of magnitude.
+metadata:
+  version: &#34;1.0.0&#34;
+  origin: ECC direct-port adaptation</code></pre></details>
+        <div class="markdown"><h3>EVM Token Decimals</h3>
+<p>Silent decimal mismatches are one of the easiest ways to ship balances or USD values that are off by orders of magnitude without throwing an error.</p>
+<h4>When to Use</h4>
+<ul>
+<li>Reading ERC-20 balances in Python, TypeScript, or Solidity</li>
+<li>Calculating fiat values from on-chain balances</li>
+<li>Comparing token amounts across multiple EVM chains</li>
+<li>Handling bridged assets</li>
+<li>Building portfolio trackers, bots, or aggregators</li>
+</ul>
+<h4>How It Works</h4>
+<p>Never assume stablecoins use the same decimals everywhere. Query <code>decimals()</code> at runtime, cache by <code>(chain_id, token_address)</code>, and use decimal-safe math for value calculations.</p>
+<h4>Examples</h4>
+<h5>Query decimals at runtime</h5>
+<pre><code class="language-python">from decimal import Decimal
+from web3 import Web3
+
+ERC20_ABI = [
+    {&quot;name&quot;: &quot;decimals&quot;, &quot;type&quot;: &quot;function&quot;, &quot;inputs&quot;: [],
+     &quot;outputs&quot;: [{&quot;type&quot;: &quot;uint8&quot;}], &quot;stateMutability&quot;: &quot;view&quot;},
+    {&quot;name&quot;: &quot;balanceOf&quot;, &quot;type&quot;: &quot;function&quot;,
+     &quot;inputs&quot;: [{&quot;name&quot;: &quot;account&quot;, &quot;type&quot;: &quot;address&quot;}],
+     &quot;outputs&quot;: [{&quot;type&quot;: &quot;uint256&quot;}], &quot;stateMutability&quot;: &quot;view&quot;},
+]
+
+def get_token_balance(w3: Web3, token_address: str, wallet: str) -&gt; Decimal:
+    contract = w3.eth.contract(
+        address=Web3.to_checksum_address(token_address),
+        abi=ERC20_ABI,
+    )
+    decimals = contract.functions.decimals().call()
+    raw = contract.functions.balanceOf(Web3.to_checksum_address(wallet)).call()
+    return Decimal(raw) / Decimal(10 ** decimals)
+</code></pre>
+<p>Do not hardcode <code>1_000_000</code> because a symbol usually has 6 decimals somewhere else.</p>
+<h5>Cache by chain and token</h5>
+<pre><code class="language-python">from functools import lru_cache
+
+@lru_cache(maxsize=512)
+def get_decimals(chain_id: int, token_address: str) -&gt; int:
+    w3 = get_web3_for_chain(chain_id)
+    contract = w3.eth.contract(
+        address=Web3.to_checksum_address(token_address),
+        abi=ERC20_ABI,
+    )
+    return contract.functions.decimals().call()
+</code></pre>
+<h5>Handle odd tokens defensively</h5>
+<pre><code class="language-python">try:
+    decimals = contract.functions.decimals().call()
+except Exception:
+    logging.warning(
+        &quot;decimals() reverted on %s (chain %s), defaulting to 18&quot;,
+        token_address,
+        chain_id,
+    )
+    decimals = 18
+</code></pre>
+<p>Log the fallback and keep it visible. Old or non-standard tokens still exist.</p>
+<h5>Normalize to 18-decimal WAD in Solidity</h5>
+<pre><code class="language-solidity">interface IERC20Metadata {
+    function decimals() external view returns (uint8);
+}
+
+function normalizeToWad(address token, uint256 amount) internal view returns (uint256) {
+    uint8 d = IERC20Metadata(token).decimals();
+    if (d == 18) return amount;
+    if (d &lt; 18) return amount * 10 ** (18 - d);
+    return amount / 10 ** (d - 18);
+}
+</code></pre>
+<h5>TypeScript with ethers</h5>
+<pre><code class="language-typescript">import { Contract, formatUnits } from 'ethers';
+
+const ERC20_ABI = [
+  'function decimals() view returns (uint8)',
+  'function balanceOf(address) view returns (uint256)',
+];
+
+async function getBalance(provider: any, tokenAddress: string, wallet: string): Promise&lt;string&gt; {
+  const token = new Contract(tokenAddress, ERC20_ABI, provider);
+  const [decimals, raw] = await Promise.all([
+    token.decimals(),
+    token.balanceOf(wallet),
+  ]);
+  return formatUnits(raw, decimals);
+}
+</code></pre>
+<h5>Quick on-chain check</h5>
+<pre><code class="language-bash">cast call &lt;token_address&gt; &quot;decimals()(uint8)&quot; --rpc-url &lt;rpc&gt;
+</code></pre>
+<h4>Rules</h4>
+<ul>
+<li>Always query <code>decimals()</code> at runtime</li>
+<li>Cache by chain plus token address, not symbol</li>
+<li>Use <code>Decimal</code>, <code>BigInt</code>, or equivalent exact math, not float</li>
+<li>Re-query decimals after bridging or wrapper changes</li>
+<li>Normalize internal accounting consistently before comparison or pricing</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>breakdown-feature-implementation · SkillHub</title>
+    <meta name="description" content="Use it when: a feature&#039;s PRD is written and you want the technical design worked out before anyone codes. It does: sets out the goal and requirements, a layered system diagram, database schema with indexes, API endpoints with TypeScript types, a component tree and state flow. You get: implementation-plan.md in /docs/ways-of-work/plan/{epic-name}/{feature-name}/, with no code beyond pseudocode. Assumes: a monorepo of apps, services and packages, with tRPC, Stack Auth, shadcn/ui, Zustand or React Query, and Docker. Unlike: create-implementation-plan, from the same repo, which writes atomic task tables for an agent to execute; this designs the architecture, data model, API and UI." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=github%2Fawesome-copilot">github/awesome-copilot</a> <span aria-hidden="true">/</span> <a href="/skillhub/bundle/github/awesome-copilot@breakdown/">Epic breakdown workflow</a></p>
+      <h1>breakdown-feature-implementation</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>a feature&#39;s PRD is written and you want the technical design worked out before anyone codes</dd></div><div><dt>It does</dt><dd>sets out the goal and requirements, a layered system diagram, database schema with indexes, API endpoints with TypeScript types, a component tree and state flow</dd></div><div><dt>You get</dt><dd>implementation-plan.md in /docs/ways-of-work/plan/{epic-name}/{feature-name}/, with no code beyond pseudocode</dd></div><div><dt>Assumes</dt><dd>a monorepo of apps, services and packages, with tRPC, Stack Auth, shadcn/ui, Zustand or React Query, and Docker</dd></div><div><dt>Unlike</dt><dd>create-implementation-plan, from the same repo, which writes atomic task tables for an agent to execute; this designs the architecture, data model, API and UI</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 4 of 6 in the <a href="/skillhub/bundle/github/awesome-copilot@breakdown/">Epic breakdown workflow</a> bundle · Before it: <a href="/skillhub/skill/github/awesome-copilot/skills/breakdown-feature-prd/">breakdown-feature-prd</a> · After it: <a href="/skillhub/skill/github/awesome-copilot/skills/breakdown-plan/">breakdown-plan</a></p>
+    
+      <p class="note">Plans for a set stack: tRPC, Stack Auth, shadcn/ui, Zustand or React Query and Docker, in a monorepo of apps, services and packages.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>You give it the content of a feature PRD, and it writes the plan engineers build from, acting as a veteran engineer at a large SaaS company. The plan states the feature&#39;s goal in three to five sentences and its detailed requirements, then the technical considerations. A Mermaid system diagram shows the frontend, API, business logic, data and infrastructure layers as subgraphs with labelled data flows, followed by the technology choice for each layer, integration points, Docker deployment and scaling. The database section has a Mermaid entity-relationship diagram with field types and constraints, indexes, foreign keys and a migration strategy. The API section specifies endpoints, request and response formats as TypeScript types, authentication with Stack Auth, error handling, rate limiting and caching. The frontend section lays out a component hierarchy built on shadcn/ui, with a recipe library page as its example, plus a state flow diagram and Zustand or React Query for state, and a last section covers security and performance. The folder layout follows what it calls Epoch&#39;s monorepo structure, so expect to swap parts of the stack for yours.</p>
+      <p class="muted">Summarizes <a href="https://github.com/github/awesome-copilot/tree/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/breakdown-feature-implementation">the skill at 797337f</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/github/awesome-copilot --skill breakdown-feature-implementation</code><button type="button" class="copy" data-copy="npx skills add https://github.com/github/awesome-copilot --skill breakdown-feature-implementation">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/github/awesome-copilot/breakdown-feature-implementation">skills.sh page</a> · <a href="https://github.com/github/awesome-copilot/tree/HEAD/skills/breakdown-feature-implementation">Source on GitHub</a> · <a href="/skillhub/?repo=github%2Fawesome-copilot">All skills from github/awesome-copilot</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>9,200 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>40,883 <span class="muted">github/awesome-copilot</span></dd></div><div><dt>First seen</dt><dd>Feb 25, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">5</div>
+      <div class="stat-delta">-64% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 14; week to Sep 26: 17; week to Oct 3: 19; week to Oct 10: 20; week to Oct 17: 10; week to Oct 24: 2; week to Oct 31: 5; week to Nov 7: 5. Use the left and right arrow keys to read each week."
+        data-values="14,17,19,20,10,2,5,5" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,19.2 38.6,12.6 71.1,8.2 103.7,6.0 136.3,28.0 168.9,45.6 201.4,39.0 234.0,39.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="39.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>14</td></tr><tr><td>Sep 26</td><td>17</td></tr><tr><td>Oct 3</td><td>19</td></tr><tr><td>Oct 10</td><td>20</td></tr><tr><td>Oct 17</td><td>10</td></tr><tr><td>Oct 24</td><td>2</td></tr><tr><td>Oct 31</td><td>5</td></tr><tr><td>Nov 7</td><td>5</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:planning" data-facet="category" title="Make the agent question you and write the plan down before it writes code." href="/skillhub/?tag=category%3Aplanning">category:planning</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Make the agent question you and write the plan down before it writes code.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:command" data-facet="type" title="A one-shot action you invoke by name, such as turning the conversation into a PRD." href="/skillhub/?tag=type%3Acommand">type:command</a></div>
+          <p class="tag-meaning">A one-shot action you invoke by name, such as turning the conversation into a PRD.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="planning" data-facet="topic" href="/skillhub/?tag=planning">planning</a><a class="tag" data-tag="architecture" data-facet="topic" href="/skillhub/?tag=architecture">architecture</a><a class="tag" data-tag="diagrams" data-facet="topic" href="/skillhub/?tag=diagrams">diagrams</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:trpc" data-facet="stack" href="/skillhub/?tag=stack%3Atrpc">stack:trpc</a><a class="tag" data-tag="stack:shadcn" data-facet="stack" href="/skillhub/?tag=stack%3Ashadcn">stack:shadcn</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/github/awesome-copilot/blob/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/breakdown-feature-implementation/SKILL.md">github/awesome-copilot at 797337f</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: breakdown-feature-implementation
+description: &#39;Prompt for creating detailed feature implementation plans, following Epoch monorepo structure.&#39;</code></pre></details>
+        <div class="markdown"><h3>Feature Implementation Plan Prompt</h3>
+<h4>Goal</h4>
+<p>Act as an industry-veteran software engineer responsible for crafting high-touch features for large-scale SaaS companies. Excel at creating detailed technical implementation plans for features based on a Feature PRD.
+Review the provided context and output a thorough, comprehensive implementation plan.
+<strong>Note:</strong> Do NOT write code in output unless it's pseudocode for technical situations.</p>
+<h4>Output Format</h4>
+<p>The output should be a complete implementation plan in Markdown format, saved to <code>/docs/ways-of-work/plan/{epic-name}/{feature-name}/implementation-plan.md</code>.</p>
+<h5>File System</h5>
+<p>Folder and file structure for both front-end and back-end repositories following Epoch's monorepo structure:</p>
+<pre><code>apps/
+  [app-name]/
+services/
+  [service-name]/
+packages/
+  [package-name]/
+</code></pre>
+<h5>Implementation Plan</h5>
+<p>For each feature:</p>
+<h6>Goal</h6>
+<p>Feature goal described (3-5 sentences)</p>
+<h6>Requirements</h6>
+<ul>
+<li>Detailed feature requirements (bulleted list)</li>
+<li>Implementation plan specifics</li>
+</ul>
+<h6>Technical Considerations</h6>
+<h6>System Architecture Overview</h6>
+<p>Create a comprehensive system architecture diagram using Mermaid that shows how this feature integrates into the overall system. The diagram should include:</p>
+<ul>
+<li><strong>Frontend Layer</strong>: User interface components, state management, and client-side logic</li>
+<li><strong>API Layer</strong>: tRPC endpoints, authentication middleware, input validation, and request routing</li>
+<li><strong>Business Logic Layer</strong>: Service classes, business rules, workflow orchestration, and event handling</li>
+<li><strong>Data Layer</strong>: Database interactions, caching mechanisms, and external API integrations</li>
+<li><strong>Infrastructure Layer</strong>: Docker containers, background services, and deployment components</li>
+</ul>
+<p>Use subgraphs to organize these layers clearly. Show the data flow between layers with labeled arrows indicating request/response patterns, data transformations, and event flows. Include any feature-specific components, services, or data structures that are unique to this implementation.</p>
+<ul>
+<li><strong>Technology Stack Selection</strong>: Document choice rationale for each layer</li>
+<li><strong>Integration Points</strong>: Define clear boundaries and communication protocols</li>
+<li><strong>Deployment Architecture</strong>: Docker containerization strategy</li>
+<li><strong>Scalability Considerations</strong>: Horizontal and vertical scaling approaches</li>
+</ul>
+<h6>Database Schema Design</h6>
+<p>Create an entity-relationship diagram using Mermaid showing the feature's data model:</p>
+<ul>
+<li><strong>Table Specifications</strong>: Detailed field definitions with types and constraints</li>
+<li><strong>Indexing Strategy</strong>: Performance-critical indexes and their rationale</li>
+<li><strong>Foreign Key Relationships</strong>: Data integrity and referential constraints</li>
+<li><strong>Database Migration Strategy</strong>: Version control and deployment approach</li>
+</ul>
+<h6>API Design</h6>
+<ul>
+<li>Endpoints with full specifications</li>
+<li>Request/response formats with TypeScript types</li>
+<li>Authentication and authorization with Stack Auth</li>
+<li>Error handling strategies and status codes</li>
+<li>Rate limiting and caching strategies</li>
+</ul>
+<h6>Frontend Architecture</h6>
+<h6>Component Hierarchy Documentation</h6>
+<p>The component structure will leverage the <code>shadcn/ui</code> library for a consistent and accessible foundation.</p>
+<p><strong>Layout Structure:</strong></p>
+<pre><code>Recipe Library Page
+├── Header Section (shadcn: Card)
+│   ├── Title (shadcn: Typography `h1`)
+│   ├── Add Recipe Button (shadcn: Button with DropdownMenu)
+│   │   ├── Manual Entry (DropdownMenuItem)
+│   │   ├── Import from URL (DropdownMenuItem)
+│   │   └── Import from PDF (DropdownMenuItem)
+│   └── Search Input (shadcn: Input with icon)
+├── Main Content Area (flex container)
+│   ├── Filter Sidebar (aside)
+│   │   ├── Filter Title (shadcn: Typography `h4`)
+│   │   ├── Category Filters (shadcn: Checkbox group)
+│   │   ├── Cuisine Filters (shadcn: Checkbox group)
+│   │   └── Difficulty Filters (shadcn: RadioGroup)
+│   └── Recipe Grid (main)
+│       └── Recipe Card (shadcn: Card)
+│           ├── Recipe Image (img)
+│           ├── Recipe Title (shadcn: Typography `h3`)
+│           ├── Recipe Tags (shadcn: Badge)
+│           └── Quick Actions (shadcn: Button - View, Edit)
+</code></pre>
+<ul>
+<li><strong>State Flow Diagram</strong>: Component state management using Mermaid</li>
+<li>Reusable component library specifications</li>
+<li>State management patterns with Zustand/React Query</li>
+<li>TypeScript interfaces and types</li>
+</ul>
+<h6>Security Performance</h6>
+<ul>
+<li>Authentication/authorization requirements</li>
+<li>Data validation and sanitization</li>
+<li>Performance optimization strategies</li>
+<li>Caching mechanisms</li>
+</ul>
+<h4>Context Template</h4>
+<ul>
+<li><strong>Feature PRD:</strong> [The content of the Feature PRD markdown file]</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

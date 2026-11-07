@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>baoyu-image-gen · SkillHub</title>
+    <meta name="description" content="Use it when: you want images made from a prompt, prompt files or reference images, one or many. It does: calls an image API, such as OpenAI, Google, Azure, OpenRouter, Replicate, DashScope, MiniMax or Seedream, through its bundled script. You get: image files at the paths you name, in the aspect ratio you ask for, at 2K quality by default. Batches: runs a JSON file of prompts in parallel, up to 10 at once by default, giving each image up to 3 attempts. Needs: Bun or npx, plus an API key for one provider or a logged-in codex CLI. Works with: the repo&#039;s cover, illustration, infographic, card, slide and comic skills, which can use it to generate their images." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=jimliu%2Fbaoyu-skills">jimliu/baoyu-skills</a></p>
+      <h1>baoyu-image-gen</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want images made from a prompt, prompt files or reference images, one or many</dd></div><div><dt>It does</dt><dd>calls an image API, such as OpenAI, Google, Azure, OpenRouter, Replicate, DashScope, MiniMax or Seedream, through its bundled script</dd></div><div><dt>You get</dt><dd>image files at the paths you name, in the aspect ratio you ask for, at 2K quality by default</dd></div><div><dt>Batches</dt><dd>runs a JSON file of prompts in parallel, up to 10 at once by default, giving each image up to 3 attempts</dd></div><div><dt>Needs</dt><dd>Bun or npx, plus an API key for one provider or a logged-in codex CLI</dd></div><div><dt>Works with</dt><dd>the repo&#39;s cover, illustration, infographic, card, slide and comic skills, which can use it to generate their images</dd></div></dl></section>
+      
+      <p class="note">Needs an API key for at least one image provider, or the codex CLI logged in to a Codex subscription.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>The image backend of Baoyu&#39;s skills, also usable on its own. On first use it won&#39;t generate anything until you&#39;ve picked a provider, model, quality and save location, which it saves as preferences. When you don&#39;t name a provider, it uses the one whose API key it finds, preferring Google, then OpenAI, when there are several; with reference images it only picks providers that accept them. Before each image it says which provider and model it&#39;s using and how to switch. To keep a real person or object recognizable across images, it uses short instructions to keep the same identity and two to four reference images, since long descriptions make models invent a lookalike. A Codex or ChatGPT login isn&#39;t an OpenAI API key: the codex-cli provider uses that subscription through the codex command instead, and is never picked automatically. When prompts are already saved as files, a batch file runs them with shared throttling and retries, and can be built from what baoyu-article-illustrator writes.</p>
+      <p class="muted">Summarizes <a href="https://github.com/jimliu/baoyu-skills/tree/ca703c2d7c2c4399a1dc0cf82224f8551e05a96d/skills/baoyu-image-gen">the skill at ca703c2</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/jimliu/baoyu-skills --skill baoyu-image-gen</code><button type="button" class="copy" data-copy="npx skills add https://github.com/jimliu/baoyu-skills --skill baoyu-image-gen">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/jimliu/baoyu-skills/baoyu-image-gen">skills.sh page</a> · <a href="https://github.com/jimliu/baoyu-skills/tree/HEAD/skills/baoyu-image-gen">Source on GitHub</a> · <a href="/skillhub/?repo=jimliu%2Fbaoyu-skills">All skills from jimliu/baoyu-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>34,100 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>27,363 <span class="muted">jimliu/baoyu-skills</span></dd></div><div><dt>First seen</dt><dd>Jan 21, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">263</div>
+      <div class="stat-delta">-28% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 367; week to Sep 26: 350; week to Oct 3: 175; week to Oct 10: 179; week to Oct 17: 234; week to Oct 24: 236; week to Oct 31: 237; week to Nov 7: 263. Use the left and right arrow keys to read each week."
+        data-values="367,350,175,179,234,236,237,263" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,8.0 71.1,29.0 103.7,28.5 136.3,21.9 168.9,21.7 201.4,21.6 234.0,18.5" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="18.5" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>367</td></tr><tr><td>Sep 26</td><td>350</td></tr><tr><td>Oct 3</td><td>175</td></tr><tr><td>Oct 10</td><td>179</td></tr><tr><td>Oct 17</td><td>234</td></tr><tr><td>Oct 24</td><td>236</td></tr><tr><td>Oct 31</td><td>237</td></tr><tr><td>Nov 7</td><td>263</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:media" data-facet="category" title="Generate and edit video, images and audio." href="/skillhub/?tag=category%3Amedia">category:media</a></div>
+          <p class="tag-meaning">Generate and edit video, images and audio.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/skillhub/?tag=type%3Atool">type:tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/skillhub/?tag=needs%3Aaccount">needs:account</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="image" data-facet="topic" href="/skillhub/?tag=image">image</a><a class="tag" data-tag="ai-generation" data-facet="topic" href="/skillhub/?tag=ai-generation">ai-generation</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/jimliu/baoyu-skills/blob/ca703c2d7c2c4399a1dc0cf82224f8551e05a96d/skills/baoyu-image-gen/SKILL.md">jimliu/baoyu-skills at ca703c2</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: baoyu-image-gen
+description: AI image generation with OpenAI GPT Image 2.5, Azure OpenAI, Google, OpenRouter, DashScope, Z.AI GLM-Image, MiniMax, Jimeng, Seedream, Replicate and Agnes APIs. Supports text-to-image, reference images, aspect ratios, and batch generation from saved prompt files. Sequential by default; use batch parallel generation when the user already has multiple prompts or wants stable multi-image throughput. Use when user asks to generate, create, or draw images.
+version: 2.2.0
+metadata:
+  openclaw:
+    homepage: https://github.com/JimLiu/baoyu-skills#baoyu-image-gen
+    requires:
+      anyBins:
+        - bun
+        - npx</code></pre></details>
+        <div class="markdown"><h3>Image Generation (AI SDK)</h3>
+<h4>User Input Tools</h4>
+<p>When this skill prompts the user, follow this tool-selection rule (priority order):</p>
+<ol>
+<li><strong>Prefer built-in user-input tools</strong> exposed by the current agent runtime — e.g., <code>AskUserQuestion</code>, <code>request_user_input</code>, <code>clarify</code>, <code>ask_user</code>, or any equivalent.</li>
+<li><strong>Fallback</strong>: if no such tool exists, emit a numbered plain-text message and ask the user to reply with the chosen number/answer for each question.</li>
+<li><strong>Batching</strong>: if the tool supports multiple questions per call, combine all applicable questions into a single call; if only single-question, ask them one at a time in priority order.</li>
+</ol>
+<p>Concrete <code>AskUserQuestion</code> references below are examples — substitute the local equivalent in other runtimes.</p>
+<h4>Script Directory</h4>
+<p><code>{baseDir}</code> = this SKILL.md's directory; <code>scripts/...</code> paths are relative to it. Main script: <code>{baseDir}/scripts/main.ts</code>. Batch payload helper: <code>{baseDir}/scripts/build-batch.ts</code>. Resolve <code>${BUN_X}</code>: prefer <code>bun</code>; else <code>npx -y bun</code>; else suggest <code>brew install oven-sh/bun/bun</code>.</p>
+<h4>Step 0: Load Preferences (blocking)</h4>
+<p>No image generation until EXTEND.md exists. Check in order; first hit wins:</p>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.baoyu-skills/baoyu-image-gen/EXTEND.md</code></td>
+<td>Project</td>
+</tr>
+<tr>
+<td><code>${XDG_CONFIG_HOME:-$HOME/.config}/baoyu-skills/baoyu-image-gen/EXTEND.md</code></td>
+<td>XDG</td>
+</tr>
+<tr>
+<td><code>$HOME/.baoyu-skills/baoyu-image-gen/EXTEND.md</code></td>
+<td>User home</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Found</strong> → load and apply. If <code>default_model.[provider]</code> is null → ask model only.</li>
+<li><strong>Not found</strong> → run first-time setup (<code>references/config/first-time-setup.md</code>) via AskUserQuestion to collect provider + model + quality + save location. Save EXTEND.md, then continue.</li>
+</ul>
+<p>Legacy: if <code>.baoyu-skills/baoyu-imagine/EXTEND.md</code> exists and the new path doesn't, the runtime renames it to <code>baoyu-image-gen</code>. If both exist, the runtime leaves them alone and uses the new path.</p>
+<p><strong>EXTEND.md keys</strong>: default provider, quality, aspect ratio, image size, OpenAI image API dialect, default models, batch worker cap, provider-specific batch limits. Schema: <code>references/config/preferences-schema.md</code>.</p>
+<h4>Usage</h4>
+<p>More examples (per provider, batch file format): <code>references/usage-examples.md</code>.</p>
+<pre><code class="language-bash">${BUN_X} {baseDir}/scripts/main.ts --prompt &quot;A cat&quot; --image cat.png
+${BUN_X} {baseDir}/scripts/main.ts --prompt &quot;A landscape&quot; --image out.png --ar 16:9 --quality 2k
+${BUN_X} {baseDir}/scripts/main.ts --promptfiles system.md content.md --image out.png
+${BUN_X} {baseDir}/scripts/main.ts --prompt &quot;Make blue&quot; --image out.png --ref source.png
+${BUN_X} {baseDir}/scripts/main.ts --prompt &quot;A cat&quot; --image out.png --provider dashscope --model qwen-image-2.0-pro
+${BUN_X} {baseDir}/scripts/main.ts --prompt &quot;A cat&quot; --image out.png --provider codex-cli --ar 16:9   # Codex login, no OPENAI_API_KEY; needs `codex` on PATH
+
+# Batch; build the payload from outline.md + prompts/ (e.g. baoyu-article-illustrator output)
+${BUN_X} {baseDir}/scripts/build-batch.ts --outline outline.md --prompts prompts --output batch.json --images-dir attachments
+${BUN_X} {baseDir}/scripts/main.ts --batchfile batch.json --jobs 4
+</code></pre>
+<h4>Reference-Image Identity Preservation</h4>
+<p>When a real person/character/object must be preserved from reference images:</p>
+<ul>
+<li>Use short, hard identity language instead of a long generic description: &quot;Use the person/object in the reference image(s) as the same identity. Do not redesign it or create a similar-looking new subject. Only change scene, clothing, pose, lighting, rendering style, and composition. Keep the face/proportions/hair/key accessories/overall identity from the references.&quot; With multiple refs, say they are the same subject and jointly define identity.</li>
+<li>Long feature descriptions (&quot;young East Asian woman, oval face, clear eyes...&quot;) make the model synthesize a new matching person instead.</li>
+<li>Prefer 2–4 curated existing source refs; many or multi-megabyte refs can destabilize streaming providers.</li>
+<li>Don't use newly generated outputs as refs unless the user asks (drift compounds).</li>
+<li>Too polished/influencer-like → reduce stylized refs, add anti-beautification constraints (no face slimming, eye enlargement, heavy makeup, commercial travel shoot, over-smoothing).</li>
+<li>Younger/older look → keep the face; express age via clothing, posture, scene, styling. Never ask to change facial identity.</li>
+</ul>
+<h4>Options</h4>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--prompt &lt;text&gt;</code>, <code>-p</code></td>
+<td>Prompt text</td>
+</tr>
+<tr>
+<td><code>--promptfiles &lt;files...&gt;</code></td>
+<td>Read prompt from files (concatenated)</td>
+</tr>
+<tr>
+<td><code>--image &lt;path&gt;</code></td>
+<td>Output image path (required in single-image mode)</td>
+</tr>
+<tr>
+<td><code>--batchfile &lt;path&gt;</code></td>
+<td>JSON batch file for multi-image generation</td>
+</tr>
+<tr>
+<td><code>--jobs &lt;count&gt;</code></td>
+<td>Worker count for batch mode (default: auto, max from config, built-in default 10)</td>
+</tr>
+<tr>
+<td><code>--provider google|openai|azure|openrouter|dashscope|zai|minimax|jimeng|seedream|replicate|codex-cli|agnes</code></td>
+<td>Force provider (default: auto-detect; <code>codex-cli</code> is never auto-selected — must be pinned via CLI or EXTEND.md)</td>
+</tr>
+<tr>
+<td><code>--model &lt;id&gt;</code>, <code>-m</code></td>
+<td>Model ID — see provider references for defaults and allowed values</td>
+</tr>
+<tr>
+<td><code>--ar &lt;ratio&gt;</code></td>
+<td>Aspect ratio (<code>16:9</code>, <code>1:1</code>, <code>4:3</code>, …)</td>
+</tr>
+<tr>
+<td><code>--size &lt;WxH&gt;</code></td>
+<td>Explicit size (e.g., <code>1024x1024</code>; for <code>gpt-image-2.5-*</code> and <code>gpt-image-2</code>, width/height must be multiples of 16, max edge 3840px, ratio no wider than 3:1)</td>
+</tr>
+<tr>
+<td><code>--quality normal|2k</code></td>
+<td>Quality preset (default: <code>2k</code>)</td>
+</tr>
+<tr>
+<td><code>--imageSize 1K|2K|4K</code></td>
+<td>Image size for Google/OpenRouter (default: from quality)</td>
+</tr>
+<tr>
+<td><code>--imageApiDialect openai-native|ratio-metadata</code></td>
+<td>OpenAI-compatible endpoint dialect — use <code>ratio-metadata</code> for gateways that expect aspect-ratio <code>size</code> plus <code>metadata.resolution</code></td>
+</tr>
+<tr>
+<td><code>--ref &lt;files...&gt;</code></td>
+<td>Reference images. Supported by Google multimodal, OpenAI GPT Image edits, Azure OpenAI edits (PNG/JPG only), OpenRouter multimodal models, Replicate supported families, MiniMax subject-reference, Seedream 5.0/4.5/4.0, DashScope <code>wan2.7-image-pro</code>/<code>wan2.7-image</code>. Not supported by Jimeng, Seedream 3.0, SeedEdit 3.0, or any DashScope model outside the <code>wan2.7-image*</code> family</td>
+</tr>
+<tr>
+<td><code>--n &lt;count&gt;</code></td>
+<td>Number of images. Replicate requires <code>--n 1</code> (single-output save semantics)</td>
+</tr>
+<tr>
+<td><code>--json</code></td>
+<td>JSON output</td>
+</tr>
+</tbody>
+</table>
+<h4>Environment Variables</h4>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OPENAI_API_KEY</code></td>
+<td>OpenAI API key</td>
+</tr>
+<tr>
+<td><code>AZURE_OPENAI_API_KEY</code></td>
+<td>Azure OpenAI API key</td>
+</tr>
+<tr>
+<td><code>OPENROUTER_API_KEY</code></td>
+<td>OpenRouter API key</td>
+</tr>
+<tr>
+<td><code>GOOGLE_API_KEY</code></td>
+<td>Google API key</td>
+</tr>
+<tr>
+<td><code>DASHSCOPE_API_KEY</code></td>
+<td>DashScope API key</td>
+</tr>
+<tr>
+<td><code>ZAI_API_KEY</code> (alias <code>BIGMODEL_API_KEY</code>)</td>
+<td>Z.AI API key</td>
+</tr>
+<tr>
+<td><code>MINIMAX_API_KEY</code></td>
+<td>MiniMax API key</td>
+</tr>
+<tr>
+<td><code>REPLICATE_API_TOKEN</code></td>
+<td>Replicate API token</td>
+</tr>
+<tr>
+<td><code>JIMENG_ACCESS_KEY_ID</code>, <code>JIMENG_SECRET_ACCESS_KEY</code></td>
+<td>Jimeng (即梦) Volcengine credentials</td>
+</tr>
+<tr>
+<td><code>ARK_API_KEY</code></td>
+<td>Seedream (豆包) Volcengine ARK API key</td>
+</tr>
+<tr>
+<td><code>&lt;PROVIDER&gt;_IMAGE_MODEL</code></td>
+<td>Per-provider model override (<code>OPENAI_IMAGE_MODEL</code>, <code>GOOGLE_IMAGE_MODEL</code>, <code>DASHSCOPE_IMAGE_MODEL</code>, <code>ZAI_IMAGE_MODEL</code>/<code>BIGMODEL_IMAGE_MODEL</code>, <code>MINIMAX_IMAGE_MODEL</code>, <code>OPENROUTER_IMAGE_MODEL</code>, <code>REPLICATE_IMAGE_MODEL</code>, <code>JIMENG_IMAGE_MODEL</code>, <code>SEEDREAM_IMAGE_MODEL</code>, <code>AGNES_IMAGE_MODEL</code>)</td>
+</tr>
+<tr>
+<td><code>AZURE_OPENAI_DEPLOYMENT</code> (alias <code>AZURE_OPENAI_IMAGE_MODEL</code>)</td>
+<td>Azure default deployment</td>
+</tr>
+<tr>
+<td><code>&lt;PROVIDER&gt;_BASE_URL</code></td>
+<td>Per-provider endpoint override</td>
+</tr>
+<tr>
+<td><code>AZURE_API_VERSION</code></td>
+<td>Azure image API version (default <code>2025-04-01-preview</code>)</td>
+</tr>
+<tr>
+<td><code>JIMENG_REGION</code></td>
+<td>Jimeng region (default <code>cn-north-1</code>)</td>
+</tr>
+<tr>
+<td><code>OPENAI_IMAGE_API_DIALECT</code></td>
+<td><code>openai-native</code> | <code>ratio-metadata</code></td>
+</tr>
+<tr>
+<td><code>OPENROUTER_HTTP_REFERER</code>, <code>OPENROUTER_TITLE</code></td>
+<td>Optional OpenRouter attribution</td>
+</tr>
+<tr>
+<td><code>BAOYU_IMAGE_GEN_MAX_WORKERS</code></td>
+<td>Override batch worker cap</td>
+</tr>
+<tr>
+<td><code>BAOYU_IMAGE_GEN_&lt;PROVIDER&gt;_CONCURRENCY</code></td>
+<td>Per-provider concurrency (e.g., <code>BAOYU_IMAGE_GEN_REPLICATE_CONCURRENCY</code>; for codex-cli use <code>BAOYU_IMAGE_GEN_CODEX_CLI_CONCURRENCY</code>)</td>
+</tr>
+<tr>
+<td><code>BAOYU_IMAGE_GEN_&lt;PROVIDER&gt;_START_INTERVAL_MS</code></td>
+<td>Per-provider start-gap</td>
+</tr>
+<tr>
+<td><code>BAOYU_CODEX_IMAGEGEN_BIN</code></td>
+<td>Override the codex-imagegen wrapper path for the <code>codex-cli</code> provider (default: bundled <code>scripts/codex-imagegen/main.ts</code>; accepts <code>.ts</code> or legacy <code>.sh</code>/binary)</td>
+</tr>
+<tr>
+<td><code>BAOYU_CODEX_IMAGEGEN_CACHE_DIR</code></td>
+<td>Enable idempotency cache for the <code>codex-cli</code> provider (off by default)</td>
+</tr>
+<tr>
+<td><code>BAOYU_CODEX_IMAGEGEN_TIMEOUT_MS</code></td>
+<td>Per-attempt <code>codex exec</code> timeout for the <code>codex-cli</code> provider (default: 300000 ms)</td>
+</tr>
+<tr>
+<td><code>BAOYU_CODEX_IMAGEGEN_RETRIES</code></td>
+<td>Wrapper-side retry attempts on retryable errors for the <code>codex-cli</code> provider (default: 2)</td>
+</tr>
+<tr>
+<td><code>BAOYU_CODEX_IMAGEGEN_LOG_FILE</code></td>
+<td>Append JSONL diagnostic log for the <code>codex-cli</code> provider</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Load priority</strong>: CLI args &gt; EXTEND.md &gt; env vars &gt; <code>&lt;cwd&gt;/.baoyu-skills/.env</code> &gt; <code>~/.baoyu-skills/.env</code></p>
+<h4>Codex/ChatGPT OAuth Is Not an OpenAI API Key</h4>
+<p><code>--provider openai</code> calls the standard OpenAI Images API (<code>/v1/images/generations</code>, <code>/v1/images/edits</code>) and requires <code>OPENAI_API_KEY</code>. A Codex/ChatGPT login is a different entitlement: never paste a Codex OAuth token into <code>OPENAI_API_KEY</code> or just point <code>OPENAI_BASE_URL</code> at a Codex backend. Do not modify the <code>openai</code> provider to silently consume Codex OAuth.</p>
+<p>To use a Codex subscription without an API key:</p>
+<ul>
+<li>Codex runtime: native <code>imagegen</code> skill/tool.</li>
+<li>Non-Codex runtime with <code>codex</code> CLI installed and logged in: <code>--provider codex-cli</code> (preferred; same retry/cache/batch flow). It spawns the bundled <code>scripts/codex-imagegen/main.ts</code> (upstream: <code>packages/baoyu-codex-imagegen/src/main.ts</code>).</li>
+<li>Hermes runtime with native <code>image_generate</code>: use as fallback; state whether refs were passed directly or reconstructed from extracted traits.</li>
+</ul>
+<p><strong>Fallback</strong>: if <code>--provider openai</code> fails only because <code>OPENAI_API_KEY</code> is missing and one of the backends above is available, use it rather than leaving the user waiting, and say whether it was true reference-image generation or a text reconstruction from visual traits. Details: <code>references/codex-oauth-vs-openai-api-key.md</code>, <code>references/codex-image2-fallback.md</code>.</p>
+<h4>Model Resolution</h4>
+<p>Priority for every provider: CLI <code>--model &lt;id&gt;</code> &gt; EXTEND.md <code>default_model.[provider]</code> &gt; env <code>&lt;PROVIDER&gt;_IMAGE_MODEL</code> &gt; built-in default.</p>
+<ul>
+<li><strong>OpenAI</strong>: default <code>gpt-image-2.5-flare</code> (fastest). <code>gpt-image-2.5-sunburst</code> is most capable for complex scenes and precise edits; <code>gpt-image-2</code>, <code>gpt-image-1.5</code>, <code>gpt-image-1</code> and dated snapshots (e.g. <code>gpt-image-2.5-flare-2026-09-08</code>, <code>gpt-image-2-2026-04-21</code>) stay selectable.</li>
+<li><strong>Google</strong>: default <code>gemini-3-pro-image</code>. <code>gemini-3.1-flash-image</code> is faster/cheaper; <code>gemini-3.1-flash-lite-image</code> is cheapest and 1K-only (<code>--quality 2k</code> / <code>--imageSize 2K|4K</code> clamp to 1K with a warning).</li>
+<li><strong>DashScope</strong>: default <code>qwen-image-2.0-pro</code>; <code>qwen-image-3.0-pro</code> is the newest flagship with the same sizing rules.</li>
+<li><strong>Azure</strong>: <code>--model</code> / <code>default_model.azure</code> is the deployment name (<code>AZURE_OPENAI_DEPLOYMENT</code>, alias <code>AZURE_OPENAI_IMAGE_MODEL</code>). Use <code>gpt-image-2.5-flare</code> if the deployment is named after the model, else the exact custom name.</li>
+</ul>
+<p>Before each generation, display:</p>
+<ul>
+<li><code>Using [provider] / [model]</code></li>
+<li><code>Switch model: --model &lt;id&gt; | EXTEND.md default_model.[provider] | env &lt;PROVIDER&gt;_IMAGE_MODEL</code></li>
+</ul>
+<h4>OpenAI-Compatible Gateway Dialects</h4>
+<p><code>provider=openai</code> only means OpenAI-compatible auth/routing, not native image semantics. Set <code>default_image_api_dialect</code> (EXTEND.md), <code>OPENAI_IMAGE_API_DIALECT</code>, or <code>--imageApiDialect</code>:</p>
+<ul>
+<li><code>openai-native</code>: pixel <code>size</code> (<code>1536x1024</code>) and native quality fields — OpenAI and strict clones</li>
+<li><code>ratio-metadata</code>: aspect-ratio <code>size</code> (<code>16:9</code>) + <code>metadata.resolution</code> (<code>1K|2K|4K</code>) + <code>metadata.orientation</code> — gateways fronting Gemini or similar. Text-to-image only; reference edits need <code>openai-native</code> or a provider with first-class edit support.</li>
+</ul>
+<h4>Provider-Specific Guides</h4>
+<p>Read when the user picks that provider or asks for non-default behavior:</p>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DashScope (Qwen-Image families, custom sizes)</td>
+<td><code>references/providers/dashscope.md</code></td>
+</tr>
+<tr>
+<td>Z.AI (GLM-Image, cogview-4)</td>
+<td><code>references/providers/zai.md</code></td>
+</tr>
+<tr>
+<td>MiniMax (image-01, subject-reference)</td>
+<td><code>references/providers/minimax.md</code></td>
+</tr>
+<tr>
+<td>OpenRouter (multimodal models, <code>/chat/completions</code> flow)</td>
+<td><code>references/providers/openrouter.md</code></td>
+</tr>
+<tr>
+<td>Replicate (nano-banana, Seedream, Wan)</td>
+<td><code>references/providers/replicate.md</code></td>
+</tr>
+<tr>
+<td>Codex CLI (wraps bundled <code>scripts/codex-imagegen/</code>; Codex login, no <code>OPENAI_API_KEY</code>)</td>
+<td><code>references/providers/codex-cli.md</code></td>
+</tr>
+<tr>
+<td>Agnes (agnes-image-2.5-flash, reference-image support)</td>
+<td><code>references/providers/agnes.md</code></td>
+</tr>
+</tbody>
+</table>
+<h4>Provider Selection</h4>
+<ol>
+<li><code>--ref</code> provided + no <code>--provider</code> → auto-select Google → OpenAI → Azure → OpenRouter → Replicate → Seedream → MiniMax → Agnes (MiniMax subject reference is specialized for character/portrait consistency)</li>
+<li><code>--provider</code> specified → use it (with <code>--ref</code>, must be google/openai/azure/openrouter/replicate/seedream/minimax/codex-cli/agnes)</li>
+<li>Only one API key present → that provider</li>
+<li>Multiple keys → Google → OpenAI → Azure → OpenRouter → DashScope → Z.AI → MiniMax → Replicate → Jimeng → Seedream → Agnes</li>
+<li><code>codex-cli</code> is <strong>never auto-selected</strong> — pin via <code>default_provider: codex-cli</code> or <code>--provider codex-cli</code>. Runs <code>codex exec</code> through the bundled <code>scripts/codex-imagegen/main.ts</code> (with <code>bun</code>) on the user's Codex subscription; requires <code>codex</code> on <code>PATH</code> with an active <code>codex login</code>.</li>
+</ol>
+<h4>Quality Presets</h4>
+<table>
+<thead>
+<tr>
+<th>Preset</th>
+<th>Google imageSize</th>
+<th>OpenAI size</th>
+<th>OpenRouter size</th>
+<th>Replicate resolution</th>
+<th>Use case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>normal</code></td>
+<td>1K</td>
+<td>1024px target</td>
+<td>1K</td>
+<td>1K</td>
+<td>Quick previews</td>
+</tr>
+<tr>
+<td><code>2k</code> (default)</td>
+<td>2K</td>
+<td>2048px target</td>
+<td>2K</td>
+<td>2K</td>
+<td>Covers, illustrations, infographics</td>
+</tr>
+</tbody>
+</table>
+<p>Google/OpenRouter <code>imageSize</code> can be overridden with <code>--imageSize 1K|2K|4K</code>.</p>
+<p>OpenAI native <code>gpt-image-2.5-*</code> / <code>gpt-image-2</code>: <code>normal</code> → <code>quality=medium</code> + low-latency valid size near the ratio; <code>2k</code> → <code>quality=high</code> + 2048px-class sizes (<code>2048x2048</code>, <code>2048x1152</code>, <code>1152x2048</code>). Use explicit <code>--size</code> for custom or 4K (e.g. <code>3840x2160</code>).</p>
+<h4>Aspect Ratios</h4>
+<p>Supported: <code>1:1</code>, <code>16:9</code>, <code>9:16</code>, <code>4:3</code>, <code>3:4</code>, <code>2.35:1</code>.</p>
+<ul>
+<li>Google multimodal: <code>imageConfig.aspectRatio</code></li>
+<li>OpenAI: <code>gpt-image-2.5-*</code> / <code>gpt-image-2</code> use the closest valid custom size; older GPT Image and DALL·E use the closest fixed size</li>
+<li>OpenRouter: <code>imageGenerationOptions.aspect_ratio</code>; with only <code>--size &lt;WxH&gt;</code>, the ratio is inferred</li>
+<li>Replicate: model-specific — <code>google/nano-banana*</code> uses <code>aspect_ratio</code>, <code>bytedance/seedream-*</code> uses documented Replicate ratios, Wan 2.7 maps <code>--ar</code> to a concrete <code>size</code></li>
+<li>MiniMax: official <code>aspect_ratio</code> values; <code>--size &lt;WxH&gt;</code> without <code>--ar</code> sends <code>width</code>/<code>height</code> for <code>image-01</code></li>
+</ul>
+<h4>Generation Mode</h4>
+<p><strong>Default</strong>: sequential. <strong>Batch parallel</strong>: automatic when <code>--batchfile</code> has 2+ pending tasks.</p>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Prefer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>One image, or 1-2 simple images</td>
+<td>Sequential</td>
+</tr>
+<tr>
+<td>Multiple images with saved prompt files</td>
+<td>Batch (<code>--batchfile</code>) — shared throttling/retries</td>
+</tr>
+<tr>
+<td>Each image still needs its own reasoning / prompt writing / style exploration</td>
+<td>Subagents</td>
+</tr>
+<tr>
+<td>Input is <code>outline.md</code> + <code>prompts/</code> (e.g. from <code>baoyu-article-illustrator</code>)</td>
+<td>Batch, payload built with <code>{baseDir}/scripts/build-batch.ts</code></td>
+</tr>
+</tbody>
+</table>
+<p>Once prompt files are saved and the task is &quot;generate all of these&quot;, prefer batch over subagents.</p>
+<p><strong>Parallel behavior</strong>: worker count auto, capped by config (built-in default 10), override with <code>--jobs &lt;count&gt;</code>; provider-specific throttling applies only in batch mode; each image retries up to 3 attempts; final output reports success count, failure count, and per-image failure reasons.</p>
+<h4>Error Handling</h4>
+<ul>
+<li>Missing API key → error with setup instructions (for OpenAI see the Codex fallback above)</li>
+<li>Generation failure → auto-retry up to 3 attempts per image</li>
+<li>Invalid aspect ratio → warning, proceed with default</li>
+<li>Reference images with unsupported provider/model → error with fix hint</li>
+</ul>
+<h4>Extension Support</h4>
+<p>Custom configurations via EXTEND.md. See Step 0 for paths and schema.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

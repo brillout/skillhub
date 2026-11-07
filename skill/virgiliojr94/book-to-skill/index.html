@@ -1,0 +1,961 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>book-to-skill · SkillHub</title>
+    <meta name="description" content="Use it when: you want an agent to apply a book&#039;s frameworks while you work, or to study and look up its chapters later. It does: extracts the text with a bundled Python script, estimates the token cost, then writes chapter summaries, a glossary, patterns and a decision cheatsheet. You get: a new skill folder, by default in ~/.agents/skills with a Claude Code symlink, holding SKILL.md, chapters/, glossary.md, patterns.md and cheatsheet.md. Modes: full conversion, analyze only, generate from an earlier analysis, or fold new sources into an existing book skill. Asks: whether the content is technical or prose, what the skill should help you do, its name, and to confirm the cost estimate. Publishes: only if you agree, to a private GitHub repo unless you reply with the bare word &quot;public&quot; and may redistribute the content." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=virgiliojr94%2Fbook-to-skill">virgiliojr94/book-to-skill</a></p>
+      <h1>book-to-skill</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want an agent to apply a book&#39;s frameworks while you work, or to study and look up its chapters later</dd></div><div><dt>It does</dt><dd>extracts the text with a bundled Python script, estimates the token cost, then writes chapter summaries, a glossary, patterns and a decision cheatsheet</dd></div><div><dt>You get</dt><dd>a new skill folder, by default in ~/.agents/skills with a Claude Code symlink, holding SKILL.md, chapters/, glossary.md, patterns.md and cheatsheet.md</dd></div><div><dt>Modes</dt><dd>full conversion, analyze only, generate from an earlier analysis, or fold new sources into an existing book skill</dd></div><div><dt>Asks</dt><dd>whether the content is technical or prose, what the skill should help you do, its name, and to confirm the cost estimate</dd></div><div><dt>Publishes</dt><dd>only if you agree, to a private GitHub repo unless you reply with the bare word &#34;public&#34; and may redistribute the content</dd></div></dl></section>
+      
+      <p class="note">Needs Python 3 for its bundled extractor; better PDF or MOBI extraction uses optional tools such as Docling or Calibre, which it asks before installing.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>It extracts structure rather than summaries: named frameworks in the author&#39;s exact wording, actionable principles, step-by-step techniques, anti-patterns and the author&#39;s voice. Inputs can be one or many files, folders or globs in PDF, EPUB, DOCX, HTML, Markdown, plain text, RTF, or MOBI and AZW through Calibre. Technical mode tries Docling for layout-aware PDF extraction; text mode uses the fastest extractor. For books over about 50,000 tokens it pulls chapters with grep and sed instead of reading the whole text. Chapter files hold a core idea, frameworks, mental models and takeaways, plus code and tables for technical books, with depth set by whether you want study or reference. The cheatsheet holds decision rules, trade-offs and thresholds rather than definitions, and the master SKILL.md stays under 4,000 tokens with chapter and topic indexes. Before reporting success it runs a bundled security scan of the generated skill and stops for a human if it flags anything. It picks the right skill folder for GitHub Copilot CLI, Amp, Claude Code, Codex, Hermes Agent, OpenCode or OpenClaw.</p>
+      <p class="muted">Summarizes <a href="https://github.com/virgiliojr94/book-to-skill/tree/e7bb659d3261491c8b28793dcb9102fa64a46c22">the skill at e7bb659</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/virgiliojr94/book-to-skill --skill book-to-skill</code><button type="button" class="copy" data-copy="npx skills add https://github.com/virgiliojr94/book-to-skill --skill book-to-skill">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/virgiliojr94/book-to-skill/book-to-skill">skills.sh page</a> · <a href="https://github.com/virgiliojr94/book-to-skill">Source on GitHub</a> · <a href="/skillhub/?repo=virgiliojr94%2Fbook-to-skill">All skills from virgiliojr94/book-to-skill</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>9,200 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>37,165 <span class="muted">virgiliojr94/book-to-skill</span></dd></div><div><dt>First seen</dt><dd>May 4, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">500</div>
+      <div class="stat-delta">-34% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 756; week to Sep 26: 743; week to Oct 3: 664; week to Oct 10: 601; week to Oct 17: 613; week to Oct 24: 564; week to Oct 31: 498; week to Nov 7: 500. Use the left and right arrow keys to read each week."
+        data-values="756,743,664,601,613,564,498,500" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,6.8 71.1,11.4 103.7,15.0 136.3,14.3 168.9,17.2 201.4,21.0 234.0,20.9" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="20.9" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>756</td></tr><tr><td>Sep 26</td><td>743</td></tr><tr><td>Oct 3</td><td>664</td></tr><tr><td>Oct 10</td><td>601</td></tr><tr><td>Oct 17</td><td>613</td></tr><tr><td>Oct 24</td><td>564</td></tr><tr><td>Oct 31</td><td>498</td></tr><tr><td>Nov 7</td><td>500</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:skill-tools" data-facet="category" title="Find, write, vet and route to other skills." href="/skillhub/?tag=category%3Askill-tools">category:skill-tools</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Find, write, vet and route to other skills.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:remote" data-facet="effect" title="Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service." href="/skillhub/?tag=effect%3Aremote">effect:remote</a></div>
+          <p class="tag-meaning">Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="skill-authoring" data-facet="topic" href="/skillhub/?tag=skill-authoring">skill-authoring</a><a class="tag" data-tag="learning" data-facet="topic" href="/skillhub/?tag=learning">learning</a><a class="tag" data-tag="documents" data-facet="topic" href="/skillhub/?tag=documents">documents</a><a class="tag" data-tag="pdf" data-facet="topic" href="/skillhub/?tag=pdf">pdf</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/virgiliojr94/book-to-skill/blob/e7bb659d3261491c8b28793dcb9102fa64a46c22/SKILL.md">virgiliojr94/book-to-skill at e7bb659</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: book-to-skill
+description: &#34;Converts books and documents (PDF, EPUB, DOCX, HTML, Markdown, plain text, RTF, MOBI/AZW with Calibre) into structured agent skills, extracting frameworks, mental models, principles, techniques, and anti-patterns. Use when the user wants to study a document through GitHub Copilot CLI, Amp, Claude Code, Hermes Agent, OpenCode, or OpenClaw, apply an author&#39;s frameworks while working, or build a reusable knowledge base from a file.&#34;</code></pre></details>
+        <div class="markdown"><p>&lt;!--
+Cross-agent notes (informational; ignored by host agents):</p>
+<ul>
+<li>Compatible skill roots: GitHub Copilot CLI (~/.copilot/skills, ~/.agents/skills,
+.github/skills, .claude/skills, .agents/skills), Amp (.agents/skills,
+~/.config/agents/skills, ~/.config/amp/skills), Claude Code (~/.claude/skills),
+Hermes Agent ($HERMES_HOME/skills, .hermes/skills, .agents/skills),
+OpenClaw (${OPENCLAW_STATE_DIR:-~/.openclaw}/skills, .agents/skills, skills/;
+~/.agents/skills only with the default state).
+OpenCode (~/.config/opencode/skills, ~/.claude/skills, .opencode/skills,
+~/.agents/skills, .agents/skills).</li>
+<li><code>allowed-tools</code> is intentionally omitted to stay agent-neutral: Copilot CLI uses
+<code>shell</code>/MCP-server names, Claude uses <code>Bash</code>/<code>Read</code>/<code>Write</code>/<code>Glob</code>/<code>Grep</code>, Amp
+adds <code>shell_command</code>. The skill needs shell (to run extract.py) and file
+read/write — each host will prompt for those on first use.</li>
+<li>Argument hint: &lt;path-to-document-folder-or-glob&gt;... [skill-name-slug]
+--&gt;</li>
+</ul>
+<h3>Book-to-Skill Converter</h3>
+<p>Transform written knowledge into actionable agent skills by extracting structure — not producing summaries.</p>
+<h4>Philosophy</h4>
+<p>Books contain crystallized expertise: frameworks, principles, and techniques that took years to develop. This skill extracts that knowledge into a format GitHub Copilot CLI, Amp, Claude Code, Hermes Agent, OpenCode, OpenClaw, or another compatible agent can leverage repeatedly.
+<strong>Extract structure, not summaries.</strong> A skill isn't a book report. It's a toolkit of:</p>
+<ul>
+<li>Named frameworks (mental models with clear application)</li>
+<li>Actionable principles (rules that guide decisions)</li>
+<li>Techniques (step-by-step methods)</li>
+<li>Anti-patterns (what to avoid and why)</li>
+<li>Voice calibration (how the author thinks and communicates)</li>
+</ul>
+<p><strong>Preserve the author's precision.</strong> Frameworks often have specific names for reasons. &quot;The 5 Whys&quot; isn't interchangeable with &quot;ask why multiple times.&quot; Capture the exact formulation.</p>
+<p><strong>Layer depth appropriately.</strong> Simple books → simple skills. Complex books with 10+ frameworks → skills with reference files and on-demand chapters.</p>
+<hr>
+<h4>Modes of Operation</h4>
+<p>Four paths available. Route based on what the user asks:</p>
+<h5>1. Full Conversion (Default)</h5>
+<p><strong>Trigger:</strong> User provides one or more document/directory/glob paths without special instructions
+<strong>Action:</strong> Run all steps below (Steps 0–9)
+<strong>Output:</strong> Complete skill with SKILL.md, chapters/, glossary, patterns, cheatsheet</p>
+<h5>2. Analyze Only</h5>
+<p><strong>Trigger:</strong> User says &quot;analyze&quot;, &quot;just extract&quot;, or &quot;I want to review before generating&quot;
+<strong>Action:</strong> Run Steps 0–3, then produce a structured extraction report (frameworks, principles, techniques found). Stop — do NOT generate skill files.
+<strong>Output:</strong> Analysis report for user review</p>
+<h5>3. Generate from Prior Analysis</h5>
+<p><strong>Trigger:</strong> User has existing analysis notes or previously ran analyze-only
+<strong>Action:</strong> Skip Steps 0–3, use the provided analysis as input, run Steps 4–9
+<strong>Output:</strong> Skill files from the provided analysis</p>
+<h5>4. Update / Fold-in (Existing Skill)</h5>
+<p><strong>Trigger:</strong> User provides one or more new source paths and indicates they want to update an existing skill (either by pointing to the existing skill folder, providing a skill slug that already exists in <code>SKILLS_HOME</code>, or explicitly requesting an update).
+<strong>Action:</strong> Run Step 0 (out-of-scope check), Step 1 (validate inputs), Step 1.5 (identify book type), and Step 2 (extract new files). Then skip to Step 5 (identify/detect existing skill path) and run the <strong>Update / Fold-in Workflow</strong> to merge the new content into the existing skill files.
+<strong>Output:</strong> Updated existing skill with new/revised chapter summaries and merged indexes/glossaries.</p>
+<hr>
+<h4>Skill Locations</h4>
+<p>This converter can run from multiple skill systems. When looking for this converter's helper script or writing the generated book skill, prefer these locations in order:</p>
+<ol>
+<li>GitHub Copilot CLI personal skills: <code>~/.copilot/skills/</code></li>
+<li>Cross-agent personal skills (Copilot, Amp, Codex; OpenClaw with its default state): <code>~/.agents/skills/</code></li>
+<li>Claude Code personal skills: <code>~/.claude/skills/</code></li>
+<li>Project-local Copilot skills: <code>.github/skills/</code></li>
+<li>Project-local Claude skills: <code>.claude/skills/</code></li>
+<li>Project-local Amp / Copilot / OpenClaw skills: <code>.agents/skills/</code></li>
+<li>Amp global skills: <code>~/.config/agents/skills/</code></li>
+<li>Amp legacy global skills: <code>~/.config/amp/skills/</code></li>
+<li>Hermes Agent personal skills: <code>$HERMES_HOME/skills/</code> (defaults to <code>~/.hermes/skills/</code>)</li>
+<li>Hermes Agent project skills: <code>.hermes/skills/</code> or <code>.agents/skills/</code></li>
+<li>OpenClaw personal skills: <code>${OPENCLAW_STATE_DIR:-~/.openclaw}/skills/</code> (active state; <code>~/.agents/skills/</code> is shared only with the default state)</li>
+<li>OpenClaw project skills: <code>.agents/skills/</code> or <code>skills/</code></li>
+<li>OpenCode personal skills: <code>~/.config/opencode/skills/</code> or <code>~/.agents/skills/</code></li>
+<li>OpenCode project skills: <code>.opencode/skills/</code> or <code>.agents/skills/</code></li>
+</ol>
+<p>For <strong>generated</strong> book skills, prefer the user-level cross-agent root <code>~/.agents/skills/</code> — one physical copy serves the cross-agent hosts and OpenClaw when it uses its default state. Copilot CLI and Amp discover it natively; Claude Code needs a symlink from <code>~/.claude/skills/&lt;skill_name&gt;</code> (created in Step 10, see Step 5 for the rules). Pick a host-private or project-local root only when the user explicitly asks for one. <code>BOOK_TO_SKILL_SCOPE=project</code> or <code>personal</code> can make that choice explicit for automation; do not ask a mandatory scope question merely because both scopes are available.</p>
+<hr>
+<h4>Step 0 — Out-of-scope check</h4>
+<p>If no arguments are provided, stop and respond:</p>
+<blockquote>
+<p>&quot;book-to-skill requires a supported document path, folder, or glob pattern. Usage: <code>book-to-skill &lt;path-to-document-folder-or-glob&gt;... [skill-name-slug]</code>&quot;</p>
+</blockquote>
+<p>Throughout the workflow:</p>
+<ul>
+<li><strong>Resolve the destination root first.</strong> Before any existing-skill lookup, determine where this run would write: the personal or project-local root for the user's host, per the Step 5 table and selection rules — a project-local request uses its project-local root, never the personal root. Below, &quot;the resolved root&quot; means that destination.</li>
+<li>Identify the input paths and the optional skill slug.</li>
+<li>If the last argument is not a file, folder, or glob that exists or matches any files, and it looks like a skill slug (e.g. lowercase hyphens, alphanumeric), treat it as <code>SKILL_NAME</code>.</li>
+<li>Treat all other arguments as the list of <code>INPUT_PATHS</code>.</li>
+<li>If any input path is an existing skill directory (contains <code>SKILL.md</code> and a <code>chapters/</code> sub-folder), or if <code>SKILL_NAME</code> matches an existing skill slug in the resolved root, flag this run as an <strong>Update/Fold-in</strong> operation (Mode 4).</li>
+<li><strong>Re-run guard.</strong> Before starting extraction for a Full Conversion, derive the prospective skill slug under Step 5's naming options — the author-concept form, the by-title form, and any <code>SKILL_NAME</code> given — and check the resolved root for an existing match. On a match, STOP and ask the user: &quot;<code>&lt;skill-name&gt;</code> already exists. Choose: (1) Update/Fold-in (Mode 4), (2) verify the existing skill is complete and stop, or (3) force full regeneration.&quot; Do not re-extract until the user chooses. On context recovery after an interrupted run (network cut-off, replayed or continued conversation), reuse the extraction work directory that run reported (<code>Workdir -&gt;</code> in its output, or the path you set in <code>BOOK_SKILL_WORKDIR</code>) <strong>only if it is still intact and still matches the current inputs and options</strong> — the directory exists, its <code>metadata.json</code> is readable, the <code>sources</code> it lists match the files being converted now one-to-one on filename <strong>and content fingerprint</strong> (the extractor records a per-source <code>sha256</code> in <code>metadata.json</code>; recompute the fingerprint from each file as it exists now and require an exact match — <code>reuse_is_safe()</code> in <code>book_to_skill/utils.py</code> is the executable form of this check), and its recorded <code>extraction_mode</code> is the mode this run is using (Step 2's &quot;confirm the extraction is the document you asked for&quot; rule). If it is missing (temp cleanup), its <code>metadata.json</code> is gone, the sources no longer match (a different filename, or a changed content fingerprint), the recorded metadata has no <code>sha256</code> for a source (recorded before fingerprints existed, so freshness cannot be established), or the mode differs, say so and start a fresh extraction instead of resuming. When in doubt, ask the user before discarding or resuming.</li>
+</ul>
+<hr>
+<h4>Step 1 — Validate input</h4>
+<p>Verify that there is at least one supported file, directory, or glob pattern among the <code>INPUT_PATHS</code>.
+For directories and globs, expand them to find matching supported files (<code>.pdf</code>, <code>.epub</code>, <code>.docx</code>, <code>.txt</code>, <code>.md</code>, <code>.markdown</code>, <code>.rst</code>, <code>.adoc</code>, <code>.html</code>, <code>.htm</code>, <code>.rtf</code>, <code>.mobi</code>, <code>.azw</code>, <code>.azw3</code>).</p>
+<p>If no supported files are found, stop with a clear error message.</p>
+<hr>
+<h4>Step 1.5 — Identify content type</h4>
+<p>Before extracting, ask the user:</p>
+<blockquote>
+<p>&quot;What kind of content do these sources have? This helps me choose the best extraction method.</p>
+<ol>
+<li><strong>Technical</strong> — has code blocks, tables, formulas, diagrams (e.g. programming books, academic papers, architecture guides)</li>
+<li><strong>Text-heavy</strong> — mostly prose, few or no tables/code (e.g. management, productivity, narrative non-fiction)</li>
+<li><strong>Not sure</strong> — I'll use the fast method and warn you if quality seems limited&quot;</li>
+</ol>
+</blockquote>
+<p>Store the answer as <code>BOOK_TYPE</code>:</p>
+<ul>
+<li>Option 1 → <code>BOOK_TYPE=technical</code></li>
+<li>Option 2 → <code>BOOK_TYPE=text</code></li>
+<li>Option 3 → <code>BOOK_TYPE=text</code></li>
+</ul>
+<p><strong>If <code>BOOK_TYPE=technical</code></strong>, inform the user before proceeding:</p>
+<blockquote>
+<p>&quot;📐 Technical mode selected — PDFs attempt Docling for layout-aware extraction. EPUBs and other formats use their existing text extractors; code, tables, and formulas may lose structure. Check each source's <code>extraction_method</code> and <code>fallback_reason</code> in metadata.json for the actual extraction path.&quot;</p>
+</blockquote>
+<p><strong>If <code>BOOK_TYPE=text</code></strong>, inform:</p>
+<blockquote>
+<p>&quot;📄 Text mode selected — using the fastest suitable extractor for each file type. Plain text/Markdown/HTML are usually ready in seconds; PDFs use pdftotext when available.&quot;</p>
+</blockquote>
+<hr>
+<h4>Step 2 — Extract text from the source documents</h4>
+<p>Run the extraction script, passing the input paths:</p>
+<pre><code class="language-bash">SCRIPT_PATH=&quot;&quot;
+HERMES_HOME_RESOLVED=&quot;${HERMES_HOME:-$HOME/.hermes}&quot;
+OPENCLAW_STATE_DIR_RESOLVED=&quot;${OPENCLAW_STATE_DIR:-$HOME/.openclaw}&quot;
+PROJECT_ROOT=&quot;$(git rev-parse --show-toplevel 2&gt;/dev/null || true)&quot;
+HERMES_PROJECT_TRUSTED=false
+if [ -n &quot;$PROJECT_ROOT&quot; ] &amp;&amp; [ &quot;${HERMES_AGENT:-}&quot; = true ] &amp;&amp; \
+  command -v hermes &gt;/dev/null 2&gt;&amp;1 &amp;&amp; \
+  command -v python3 &gt;/dev/null 2&gt;&amp;1 &amp;&amp; \
+  hermes config get skills.trusted_project_dirs --json 2&gt;/dev/null | PROJECT_ROOT=&quot;$PROJECT_ROOT&quot; python3 -c 'import json, os, pathlib, sys; root=pathlib.Path(os.environ[&quot;PROJECT_ROOT&quot;]).resolve(); sys.exit(not any(pathlib.Path(p).expanduser().resolve() == root for p in json.load(sys.stdin)))' 2&gt;/dev/null
+then
+  HERMES_PROJECT_TRUSTED=true
+fi
+
+CANDIDATES=(
+  &quot;$HOME/.copilot/skills/book-to-skill/scripts/extract.py&quot;
+  &quot;$HOME/.agents/skills/book-to-skill/scripts/extract.py&quot;
+  &quot;$HOME/.claude/skills/book-to-skill/scripts/extract.py&quot;
+  &quot;${OPENCLAW_STATE_DIR_RESOLVED}/skills/book-to-skill/scripts/extract.py&quot;
+  &quot;${OPENCLAW_STATE_DIR_RESOLVED}/skills&quot;/*/book-to-skill/scripts/extract.py
+  &quot;${OPENCLAW_STATE_DIR_RESOLVED}/skills&quot;/*/*/book-to-skill/scripts/extract.py
+  &quot;${OPENCLAW_STATE_DIR_RESOLVED}/skills&quot;/*/*/*/book-to-skill/scripts/extract.py
+  &quot;${OPENCLAW_STATE_DIR_RESOLVED}/skills&quot;/*/*/*/*/book-to-skill/scripts/extract.py
+  &quot;${OPENCLAW_STATE_DIR_RESOLVED}/skills&quot;/*/*/*/*/*/book-to-skill/scripts/extract.py
+  &quot;${OPENCLAW_STATE_DIR_RESOLVED}/skills&quot;/*/*/*/*/*/*/book-to-skill/scripts/extract.py
+  &quot;$HOME/.config/opencode/skills/book-to-skill/scripts/extract.py&quot;
+  &quot;$HERMES_HOME_RESOLVED/skills/book-to-skill/scripts/extract.py&quot;
+  &quot;$HERMES_HOME_RESOLVED&quot;/skills/*/book-to-skill/scripts/extract.py
+)
+if [ &quot;${HERMES_AGENT:-}&quot; != true ]; then
+  # Project-local roots are resolved against the git worktree, not the current
+  # directory: an agent can be invoked from anywhere inside the project (e.g.
+  # `src/nested`) and these roots still have to be found — that is how OpenCode
+  # and the other hosts discover project skills. The CWD-relative forms are kept
+  # so the probe also works outside a git repository.
+  if [ -n &quot;$PROJECT_ROOT&quot; ]; then
+    CANDIDATES+=(
+      &quot;$PROJECT_ROOT/.github/skills/book-to-skill/scripts/extract.py&quot;
+      &quot;$PROJECT_ROOT/.claude/skills/book-to-skill/scripts/extract.py&quot;
+      &quot;$PROJECT_ROOT/.agents/skills/book-to-skill/scripts/extract.py&quot;
+      &quot;$PROJECT_ROOT/.opencode/skills/book-to-skill/scripts/extract.py&quot;
+    )
+  fi
+  CANDIDATES+=(
+    &quot;.github/skills/book-to-skill/scripts/extract.py&quot;
+    &quot;.claude/skills/book-to-skill/scripts/extract.py&quot;
+    &quot;.agents/skills/book-to-skill/scripts/extract.py&quot;
+    &quot;skills/book-to-skill/scripts/extract.py&quot;
+    &quot;skills&quot;/*/book-to-skill/scripts/extract.py
+    &quot;skills&quot;/*/*/book-to-skill/scripts/extract.py
+    &quot;skills&quot;/*/*/*/book-to-skill/scripts/extract.py
+    &quot;skills&quot;/*/*/*/*/book-to-skill/scripts/extract.py
+    &quot;skills&quot;/*/*/*/*/*/book-to-skill/scripts/extract.py
+    &quot;skills&quot;/*/*/*/*/*/*/book-to-skill/scripts/extract.py
+    &quot;.opencode/skills/book-to-skill/scripts/extract.py&quot;
+  )
+  if [ -n &quot;$PROJECT_ROOT&quot; ]; then
+    CANDIDATES+=(
+      &quot;$PROJECT_ROOT/skills/book-to-skill/scripts/extract.py&quot;
+      &quot;$PROJECT_ROOT/skills&quot;/*/book-to-skill/scripts/extract.py
+      &quot;$PROJECT_ROOT/skills&quot;/*/*/book-to-skill/scripts/extract.py
+      &quot;$PROJECT_ROOT/skills&quot;/*/*/*/book-to-skill/scripts/extract.py
+      &quot;$PROJECT_ROOT/skills&quot;/*/*/*/*/book-to-skill/scripts/extract.py
+      &quot;$PROJECT_ROOT/skills&quot;/*/*/*/*/*/book-to-skill/scripts/extract.py
+      &quot;$PROJECT_ROOT/skills&quot;/*/*/*/*/*/*/book-to-skill/scripts/extract.py
+    )
+  fi
+fi
+CANDIDATES+=(
+  &quot;$HOME/.config/agents/skills/book-to-skill/scripts/extract.py&quot;
+  &quot;$HOME/.config/amp/skills/book-to-skill/scripts/extract.py&quot;
+)
+if [ &quot;$HERMES_PROJECT_TRUSTED&quot; = true ]; then
+  CANDIDATES=(
+    &quot;$PROJECT_ROOT/.hermes/skills/book-to-skill/scripts/extract.py&quot;
+    &quot;$PROJECT_ROOT/.hermes/skills&quot;/*/book-to-skill/scripts/extract.py
+    &quot;$PROJECT_ROOT/.agents/skills/book-to-skill/scripts/extract.py&quot;
+    &quot;$PROJECT_ROOT/.agents/skills&quot;/*/book-to-skill/scripts/extract.py
+    &quot;${CANDIDATES[@]}&quot;
+  )
+fi
+for candidate in &quot;${CANDIDATES[@]}&quot;
+do
+  if [ -f &quot;$candidate&quot; ]; then
+    SCRIPT_PATH=&quot;$candidate&quot;
+    break
+  fi
+done
+
+if [ -z &quot;$SCRIPT_PATH&quot; ]; then
+  echo &quot;Could not find scripts/extract.py for book-to-skill&quot; &gt;&amp;2
+  exit 1
+fi
+
+PYTHON_BIN=&quot;${PYTHON_BIN:-python3}&quot;
+if ! command -v &quot;$PYTHON_BIN&quot; &gt;/dev/null 2&gt;&amp;1; then
+  PYTHON_BIN=&quot;python&quot;
+fi
+
+&quot;$PYTHON_BIN&quot; &quot;$SCRIPT_PATH&quot; $INPUT_PATHS --mode &lt;BOOK_TYPE&gt; --install-missing ask
+</code></pre>
+<p>Before extraction, the script checks optional Python packages needed for the detected format. If a better extractor is missing, it prompts the user with the available fallback. Non-interactive sessions default to fallback unless install mode is explicitly <code>yes</code>.</p>
+<p><strong>Tip — preflight the environment:</strong> run <code>&quot;$PYTHON_BIN&quot; &quot;$SCRIPT_PATH&quot; --check</code> to print a per-format report of which extractors are installed and the exact command to install whatever is missing, without processing any file. Useful when a user reports a setup or quality problem.</p>
+<p>This creates a <strong>per-run</strong> work directory — <code>&lt;tempdir&gt;/book_skill_work-&lt;pid&gt;/</code> by default, or exactly the path you set in <code>BOOK_SKILL_WORKDIR</code> — containing:</p>
+<ul>
+<li><code>full_text.txt</code> — combined extracted text of all sources with clear visually demarcated boundaries.</li>
+<li><code>metadata.json</code> — overall combined size, words, pages, token counts, dropped EPUB image counts, the resolved <code>workdir</code>, and a detailed list of individual processed <code>sources</code>.</li>
+</ul>
+<p>The run prints all three paths on completion (<code>Workdir -&gt;</code>, <code>Text -&gt;</code>, <code>Meta -&gt;</code>). <strong>Take the paths from that output (or from <code>metadata.json</code>'s own <code>workdir</code> field) rather than assuming a fixed location</strong> — the directory name differs per run so that concurrent extractions on one machine cannot overwrite each other's results.</p>
+<p>Read that run's <code>metadata.json</code> to inspect the results.</p>
+<p><strong>Always confirm the extraction is the document you asked for</strong> before generating anything: check <code>filename</code> / <code>source_file</code> in <code>metadata.json</code>, or the <code>SOURCE:</code> header on the first line of <code>full_text.txt</code>. If you are waiting on a background run, wait on <em>its</em> specific workdir — polling a shared path can surface a different run's output.</p>
+<hr>
+<h4>Step 2.5 — Pre-flight cost estimate</h4>
+<p>Read this run's <code>metadata.json</code> (the <code>Meta -&gt;</code> path from the extraction output) and present the user with an estimate <strong>before doing any generation</strong>:</p>
+<pre><code>📖 Sources detected: &lt;total_sources&gt; source(s)
+&lt;list each source filename and format from the sources metadata list&gt;
+&lt;if images_dropped &gt; 5: warn that N source images were not read&gt;
+📄 Combined Pages/Sections: ~&lt;N&gt; | Words: ~&lt;N&gt; | Total tokens: ~&lt;N&gt;K
+
+💰 Estimated token cost (Full Conversion / Update):
+   Input  (reading + prompts): ~&lt;N&gt;K tokens
+   Output (skill files generated/updated):  ~&lt;N&gt;K tokens
+   Total:                           ~&lt;N&gt;K tokens
+
+   Cost: multiply the token counts above by your model's current
+   input/output per-1M-token rates (prices and model names change often —
+   do not hardcode them; quote today's rate and label it as an estimate).
+
+   ⏱  Estimated time: ~&lt;N&gt; minutes
+
+📁 Files to be generated/updated:
+   SKILL.md + chapter files + glossary + patterns + cheatsheet
+
+➡  Proceed with Full Conversion / Update? (or type &quot;analyze only&quot; to preview first)
+</code></pre>
+<p><strong>How to estimate:</strong></p>
+<ul>
+<li>Input tokens ≈ <code>estimated_tokens</code> from metadata × 1.3 (prompts overhead per chapter pass)</li>
+<li>Output tokens ≈ chapters × per-chapter budget + 4,000 (SKILL.md) + 4,500 (glossary + patterns + cheatsheet)
+<ul>
+<li>Per-chapter budget midpoint by <code>BOOK_TYPE</code> (DEPTH is decided later in Step 4 and can raise it): <code>text</code> ≈ 1,000, <code>technical</code> ≈ 1,800. If the user has already indicated reference-only vs deep study, use the matching row of the Step 7 matrix.</li>
+</ul>
+</li>
+<li>Cost: report the token counts and multiply by the user's current per-1M-token input/output rates. Do NOT hardcode dollar figures — model names and prices change; if you show one, label it an estimate and date it.</li>
+</ul>
+<p>Wait for the user to confirm before proceeding. If they say &quot;analyze only&quot;, switch to Mode 2.</p>
+<hr>
+<h4>Step 2.6 — REPL-style access for large books (&gt; 50k tokens)</h4>
+<p>Inspired by the Recursive Language Model (RLM) paradigm: treat <code>full_text.txt</code> as a queryable corpus, not a single read. Loading the whole file into context burns budget you will need later for generation.</p>
+<p>For books over ~50k tokens, prefer programmatic probes over <code>Read(full_text.txt)</code> without bounds:</p>
+<pre><code class="language-bash"># Size check before any Read
+wc -w &quot;$FULL_TEXT_PATH&quot;
+
+# Find chapter offsets without loading the whole file
+grep -n -E &quot;^\s*(Chapter|CHAPTER)\s+[0-9]+&quot; &quot;$FULL_TEXT_PATH&quot; | head -40
+
+# Pull only the chapter you need (lines start..end inclusive)
+sed -n '&lt;start&gt;,&lt;end&gt;p' &quot;$FULL_TEXT_PATH&quot;
+
+# Verify a framework is actually mentioned before claiming it in SKILL.md
+grep -c -i &quot;westrum\|dora&quot; &quot;$FULL_TEXT_PATH&quot;
+
+# Targeted Read with offset/limit avoids dumping the full file
+# Read(file_path=full_text.txt, offset=&lt;line&gt;, limit=&lt;lines&gt;)
+</code></pre>
+<p>Use this approach for Step 3 (structure analysis), Step 7 (per-chapter summaries), and Step 8 (glossary / patterns extraction). On books under 50k tokens, a single <code>Read</code> is fine.</p>
+<p>Why this matters: a 200-page book is ~75k tokens. Re-reading it once per chapter (28 passes) costs ~2M input tokens; using grep + sed to pull only relevant slices keeps generation cost proportional to the output, not the source.</p>
+<hr>
+<h4>Step 3 — Analyze book structure</h4>
+<p>Read the first 8,000 characters of the extracted <code>full_text.txt</code> to identify:</p>
+<ul>
+<li>Book <strong>title</strong> and <strong>author(s)</strong></li>
+<li><strong>Chapter structure</strong> (look for &quot;Chapter N&quot;, &quot;PART I&quot;, numbered headings, table of contents)</li>
+<li><strong>Core themes</strong> and subject domain</li>
+<li>Approximate number of chapters</li>
+</ul>
+<p>Then read the Table of Contents section if present to map all chapters.</p>
+<p><strong>If mode is &quot;Analyze Only&quot;:</strong> produce the extraction report now and stop. Structure:</p>
+<pre><code>## Extraction Report — &lt;Title&gt;
+
+### Author's Core Frameworks
+- **&lt;Framework Name&gt;**: &lt;what it is and when to apply&gt;
+
+### Key Principles
+- &lt;Principle&gt;: &lt;actionable rule&gt;
+
+### Techniques &amp; Methods
+- &lt;Technique&gt;: &lt;step-by-step or how-to&gt;
+
+### Anti-patterns
+- &lt;What to avoid&gt;: &lt;why&gt;
+
+### Suggested Skill Name
+`{author-lastname}-{core-concept}` — e.g. `cialdini-influence`
+
+### Chapters Detected
+| # | Title | Main Frameworks |
+</code></pre>
+<hr>
+<h4>Step 4 — Ask purpose (Full Conversion only)</h4>
+<p>Before generating, ask the user:</p>
+<blockquote>
+<p>&quot;What should this skill help you do? (Pick one or more)</p>
+<ol>
+<li>Apply the author's frameworks while working</li>
+<li>Think with the author's mental models</li>
+<li>Reference specific chapters and concepts</li>
+<li>All of the above&quot;</li>
+</ol>
+</blockquote>
+<p>Use the answer to weight what gets highlighted in the SKILL.md Core section.</p>
+<p><strong>Derive <code>DEPTH</code> from the answer (no extra prompt):</strong></p>
+<ul>
+<li>Answer is <strong>only</strong> option 3 (reference) → <code>DEPTH=reference</code> — lean, fast-lookup chapters.</li>
+<li>Answer includes option 1, 2, or 4 → <code>DEPTH=study</code> — deeper chapters with more worked detail, examples, and reasoning.</li>
+</ul>
+<p><code>DEPTH</code> and <code>BOOK_TYPE</code> together set the per-chapter token budget in Step 7. Do <strong>not</strong> ask a separate &quot;study vs reference&quot; question — it is inferred here. (In Modes 2/3, where Step 4 is skipped, default <code>DEPTH=study</code>.)</p>
+<hr>
+<h4>Step 5 — Determine skill name</h4>
+<p>If <code>SKILL_NAME</code> was provided, use it as the skill slug.
+Otherwise, propose two options and let the user choose:</p>
+<ul>
+<li><strong>By author-concept</strong>: <code>{author-lastname}-{core-concept}</code> (e.g. <code>cialdini-influence</code>, <code>meadows-systems</code>)</li>
+<li><strong>By title</strong>: lowercase hyphens from book title (e.g. <code>designing-data-intensive-apps</code>)</li>
+</ul>
+<p>Default to author-concept format if the book has a strong methodological identity.</p>
+<p>Choose the destination skill root (<code>SKILLS_HOME</code>). First resolve <strong>scope</strong> from an explicit user request or <code>BOOK_TO_SKILL_SCOPE</code>, then probe <strong>host</strong>. A request for project-local/project output selects the project-local row; a request for personal/global output selects the personal row. If neither scope is requested, preserve the established personal default (<code>~/.agents/skills</code> for non-Hermes hosts). Do not ask a mandatory scope question solely because project-local roots exist. The selected root may still require host approval before writing.</p>
+<table>
+<thead>
+<tr>
+<th>Host agent</th>
+<th>Personal skill root</th>
+<th>Project-local root</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GitHub Copilot CLI</strong></td>
+<td><code>~/.agents/skills</code> (discovered natively)</td>
+<td><code>.github/skills</code> → <code>.claude/skills</code> → <code>.agents/skills</code></td>
+</tr>
+<tr>
+<td><strong>Amp</strong></td>
+<td><code>~/.agents/skills</code> (discovered natively)</td>
+<td><code>.agents/skills</code></td>
+</tr>
+<tr>
+<td><strong>OpenAI Codex</strong></td>
+<td><code>~/.agents/skills</code> (discovered natively; follows symlinks)</td>
+<td><code>.agents/skills</code></td>
+</tr>
+<tr>
+<td><strong>Hermes Agent</strong></td>
+<td><code>$HERMES_HOME/skills/&lt;category&gt;</code> (defaults to <code>~/.hermes/skills/&lt;category&gt;</code>)</td>
+<td><code>.hermes/skills/&lt;category&gt;</code> → <code>.agents/skills</code></td>
+</tr>
+<tr>
+<td><strong>Claude Code</strong></td>
+<td><code>~/.agents/skills</code> + symlink from <code>~/.claude/skills/&lt;skill_name&gt;</code></td>
+<td><code>.claude/skills</code></td>
+</tr>
+<tr>
+<td><strong>OpenClaw</strong></td>
+<td><code>${OPENCLAW_STATE_DIR:-~/.openclaw}/skills</code> (active state; <code>~/.agents/skills</code> only with default state)</td>
+<td><code>.agents/skills</code> → <code>skills/</code></td>
+</tr>
+</tbody>
+</table>
+<p>Hermes Agent is the one host that keeps its own personal root: it partitions personal skills by category and does not scan the cross-agent root. Use the active profile's <code>HERMES_HOME</code> and choose a category that matches the generated skill's subject. Do not construct profile paths manually. If the user selects a project-local Hermes root, run <code>hermes skills trust &lt;project-root&gt;</code> after generation and verify discovery with <code>hermes skills list</code>; project skills remain unavailable until the project is trusted.</p>
+<p>For OpenClaw, use the active state directory's <code>skills/</code> root: <code>${OPENCLAW_STATE_DIR:-~/.openclaw}/skills/</code>. The shared <code>~/.agents/skills</code> compatibility root is discoverable only when <code>OPENCLAW_STATE_DIR</code> is unset or the default <code>~/.openclaw</code>; with a non-default state, do not claim that OpenClaw will see a shared-root install. Verify discovery with <code>openclaw skills list</code> after generation.
+| <strong>OpenCode</strong> | <code>~/.agents/skills</code> (discovered natively; <code>~/.config/opencode/skills</code> and <code>~/.claude/skills</code> are read too) | <code>.opencode/skills</code> → <code>.agents/skills</code> → <code>.claude/skills</code> |</p>
+<p>Hermes Agent is the one host that keeps its own personal root: it partitions personal skills by category and does not scan the cross-agent root. Use the active profile's <code>HERMES_HOME</code> and choose a category that matches the generated skill's subject. Do not construct profile paths manually. If the user selects a project-local Hermes root, run <code>hermes skills trust &lt;project-root&gt;</code> after generation and verify discovery with <code>hermes skills list</code>; project skills remain unavailable until the project is trusted.</p>
+<p>OpenCode scans the cross-agent <code>~/.agents/skills</code> root natively, so the generated-skill default above already serves it — no symlink and no trust step. It also reads its own managed <code>~/.config/opencode/skills</code> root and the Claude compatibility root <code>~/.claude/skills</code>; use the OpenCode-managed root only when the user asks for it. Project skills are discovered by walking up from the working directory to the git worktree, so start a new session after generation if the skill does not appear. (<code>~/.cache/opencode/skills</code> is the remote-skill download cache from <code>skills.urls</code>, not an authoring root — never write a generated skill there.)</p>
+<p>Selection rules:</p>
+<ol>
+<li>Personal install: set <code>SKILLS_HOME</code> to <code>~/.agents/skills</code> (create the directory if missing). One exception, so the default does not invent a convention in someone else's house: if <code>~/.agents/skills</code> does not exist <strong>and</strong> the host's private root already contains skills, use the private root instead and say why in the report.</li>
+<li><strong>Claude Code does not scan <code>~/.agents/skills</code></strong> — after generation completes, Step 10 links the skill in with <code>ln -sfn &quot;$HOME/.agents/skills/&lt;skill_name&gt;&quot; &quot;$HOME/.claude/skills/&lt;skill_name&gt;&quot;</code>.</li>
+<li><strong>Hermes Agent personal installs use the Hermes row above</strong>, not the cross-agent root, and take no symlink.</li>
+<li>If the user explicitly asks for a host-private root (<code>~/.copilot/skills</code>, <code>~/.claude/skills</code>, <code>~/.config/agents/skills</code>, <code>~/.config/amp/skills</code>), honor it and skip the symlink.</li>
+<li>If the user explicitly asked for project-local output, use the project-local row for their host.</li>
+<li>If the choice requires knowing the host (project-local output, the Hermes personal root, the OpenClaw state root, or the Claude Code symlink) and you cannot identify it, ask: &quot;Which agent are you running in — OpenCode, OpenClaw, Hermes Agent, GitHub Copilot CLI, Amp, Codex, or Claude Code?&quot;</li>
+<li>For OpenClaw personal output, use <code>${OPENCLAW_STATE_DIR:-$HOME/.openclaw}/skills</code>. The shared <code>~/.agents/skills</code> root is a valid OpenClaw destination only when <code>OPENCLAW_STATE_DIR</code> is unset or equals the default <code>$HOME/.openclaw</code>; otherwise use the active state root or a project/extra directory.</li>
+<li>If the user explicitly asks for an OpenClaw-managed personal root, use the active state root and verify discovery with <code>openclaw skills list</code>.</li>
+</ol>
+<p>Set <code>SKILLS_HOME</code> to the selected root and check if <code>$SKILLS_HOME/&lt;skill_name&gt;/</code> already exists. On Claude Code, also check whether <code>~/.claude/skills/&lt;skill_name&gt;</code> exists as a <strong>real directory</strong> (not a symlink) — a previous install may live there; if so, offer to migrate it (move the directory into <code>~/.agents/skills/</code> and replace the original path with the symlink) before continuing.
+If the skill already exists, prompt the user to choose:</p>
+<ol>
+<li><strong>Update / Fold-in</strong> (Mode 4) — integrate new files/content into the existing skill components.</li>
+<li><strong>Overwrite</strong> — delete and regenerate the skill from scratch.</li>
+<li><strong>Rename</strong> — append <code>-2</code> or use a different custom slug.</li>
+</ol>
+<p>If the user selects <strong>Update / Fold-in</strong>, proceed immediately to the <strong>Update / Fold-in Workflow</strong> section after Step 2.5 (skipping Steps 3, 4, 6, 7, 8, 9).</p>
+<hr>
+<h4>Step 6 — Create skill directory structure</h4>
+<pre><code class="language-bash">mkdir -p &quot;$SKILLS_HOME/&lt;skill_name&gt;/chapters&quot;
+</code></pre>
+<hr>
+<h4>Step 7 — Generate chapter summaries</h4>
+<p><strong>TOKEN BUDGET RULE — CRITICAL (adaptive):</strong></p>
+<p>The per-chapter budget scales with <code>BOOK_TYPE</code> and <code>DEPTH</code>. Technical chapters need room for code and tables; study depth needs room for worked reasoning. Pick the budget from this matrix:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>DEPTH=reference</code></th>
+<th><code>DEPTH=study</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BOOK_TYPE=text</code></td>
+<td>800–1,200 tokens</td>
+<td>1,000–1,800 tokens</td>
+</tr>
+<tr>
+<td><code>BOOK_TYPE=technical</code></td>
+<td>1,200–1,800 tokens</td>
+<td>2,000–3,000 tokens</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>These are per-file targets, not hard caps — a dense chapter may run over, a thin one under. Density still beats length (Quality Rule #3): never pad to hit a number.</li>
+<li>Files are loaded on-demand, so a larger chapter only costs tokens when that chapter is actually read.</li>
+<li>When in doubt between two cells (e.g. mixed-content book), use the lower budget and let depth come from precision, not volume.</li>
+</ul>
+<p><strong><code>DEPTH=study</code> is earned with content, not a bigger number.</strong> The standard section template (Core Idea → Connects To) naturally lands a dense prose chapter around 700–900 tokens. To reach the study budget <em>honestly</em> — not by padding — a study-depth chapter must add concrete material:</p>
+<ul>
+<li><strong>Reproduce one worked example or artifact</strong> from the chapter (e.g. the example press release, a sample dialogue, a filled-in template, a decision the author walks through) under a <code>## Worked Example</code> section. This is the single biggest lever and the main thing a learner returns for.</li>
+<li><strong>Expand the &quot;How&quot; of each framework</strong> into explicit steps or criteria, not a one-liner.</li>
+<li><strong>Add a short &quot;Why it works / failure mode&quot; note</strong> to the top 1–2 frameworks.</li>
+</ul>
+<p>If a chapter genuinely has no worked example and resists expansion, let it land below the study floor rather than padding — and note that the chapter is thin in its Core Idea. A <code>reference</code>-depth chapter, by contrast, deliberately omits worked examples and keeps only the decision-ready essentials.</p>
+<p>For EACH chapter/major section identified in Step 3:</p>
+<p>Read the corresponding section of the extracted <code>full_text.txt</code> using top-level <code>chapter_ranges</code> from <code>metadata.json</code> when present (<code>start_line</code>/<code>end_line</code> are 1-based inclusive, for <code>sed</code>/<code>Read</code>); otherwise grep for chapter headings. (<code>sources[].chapter_ranges</code> use the same fields but line numbers in that source's text only, not the consolidated <code>full_text.txt</code>.)</p>
+<p>Create <code>$SKILLS_HOME/&lt;skill_name&gt;/chapters/ch&lt;NN&gt;-&lt;slug&gt;.md</code> using the structure below.</p>
+<p><strong>Adapt emphasis based on <code>BOOK_TYPE</code>:</strong></p>
+<ul>
+<li><code>technical</code> → prioritize &quot;Code Examples&quot;, &quot;Reference Tables&quot;, and &quot;Commands &amp; APIs&quot; sections; preserve exact syntax</li>
+<li><code>text</code> → prioritize &quot;Frameworks Introduced&quot;, &quot;Mental Models&quot;, and &quot;Key Takeaways&quot;; skip empty technical sections</li>
+</ul>
+<pre><code class="language-markdown"># Chapter N: &lt;Full Title&gt;
+
+## Core Idea
+&lt;1–2 sentences: the single most important thing this chapter teaches&gt;
+
+## Frameworks Introduced
+- **&lt;Framework Name&gt;**: &lt;exact formulation — preserve the author's naming&gt;
+  - When to use: &lt;specific situation&gt;
+  - How: &lt;steps or criteria&gt;
+
+## Key Concepts
+- **&lt;Term&gt;**: &lt;precise definition in 1 sentence&gt;
+(5–10 most important terms from this chapter)
+
+## Mental Models
+&lt;2–4 frameworks or thinking tools. Write as &quot;Use X when Y&quot; or &quot;Think of X as Y&quot;&gt;
+
+## Anti-patterns
+- **&lt;What to avoid&gt;**: &lt;why it fails&gt;
+
+## Code Examples *(technical books only — omit if BOOK_TYPE=text)*
+&lt;!-- Copy the most instructive snippet from the chapter. Preserve indentation exactly. --&gt;
+```&lt;language&gt;
+&lt;key code example from this chapter&gt;
+</code></pre>
+<ul>
+<li><strong>What it demonstrates</strong>: &lt;one line&gt;</li>
+</ul>
+<h4>Reference Tables <em>(technical books only — omit if BOOK_TYPE=text)</em></h4>
+<p>&lt;!-- Reproduce any comparison matrix, parameter table, or decision table from the chapter in markdown. --&gt;</p>
+<h4>Worked Example <em>(DEPTH=study only — omit for DEPTH=reference)</em></h4>
+<p>&lt;!-- Reproduce or reconstruct one concrete example the author works through: a
+sample document, a dialogue, a filled-in template, a before/after, or a
+decision walked end-to-end. This is what makes a study chapter worth its
+budget. Keep it faithful to the source; never copy long raw passages —
+reconstruct the example compactly. --&gt;</p>
+<h4>Key Takeaways</h4>
+<ol>
+<li>&lt;Actionable insight&gt;</li>
+<li>&lt;Actionable insight&gt;</li>
+<li>&lt;Actionable insight&gt;
+(3–7 takeaways a practitioner must remember)</li>
+</ol>
+<h4>Connects To</h4>
+<ul>
+<li><strong>Ch N</strong>: &lt;why this chapter relates&gt;</li>
+<li><strong>&lt;Concept&gt;</strong>: &lt;external concept or standard it connects with&gt;</li>
+</ul>
+<pre><code>
+---
+
+## Step 8 — Generate supporting files
+
+### glossary.md
+Create `$SKILLS_HOME/&lt;skill_name&gt;/glossary.md`:
+- Every significant term from the book, alphabetically sorted
+- Format: `**Term** — definition (Ch N)`
+- Max 1,500 tokens
+
+### patterns.md
+Create `$SKILLS_HOME/&lt;skill_name&gt;/patterns.md`:
+- All concrete techniques, design patterns, algorithms from the book
+- Format: `## Pattern Name\n**When to use**: ...\n**How**: ...\n**Trade-offs**: ...`
+- Max 2,000 tokens
+
+### cheatsheet.md
+Create `$SKILLS_HOME/&lt;skill_name&gt;/cheatsheet.md`:
+
+**This is the most differentiated layer of the skill — treat it as a reasoning aid, not a keyword list.** Anyone can grep the glossary for a term. The cheatsheet captures the author's *judgment*: the decisions they'd make and why. It's the file that turns &quot;I know the words&quot; into &quot;I'd act the way the author would&quot;.
+
+Prioritize, in order:
+1. **Decision rules** — &quot;When X, do Y, because Z.&quot; The if/then logic the author applies, stated so the reader can apply it without re-reading the book.
+2. **Decision trees / flowcharts** (as nested bullets or a small table) — for choices with more than two branches.
+3. **Trade-off matrices** — competing options scored on the dimensions the author cares about, so the reader can pick under their own constraints.
+4. **Thresholds &amp; defaults** — the specific numbers, ratios, or rules of thumb the author commits to (e.g. &quot;keep functions under ~20 lines&quot;, &quot;alert when error budget &lt; 10%&quot;).
+5. **Tells &amp; smells** — fast heuristics for recognizing a situation (&quot;if you see X, you're probably in trouble Y&quot;).
+
+Avoid: bare term→definition rows (that's the glossary), and prose paragraphs (that's the chapters). Every line should help the reader *decide* something.
+
+- Format mostly as compact tables and decision rules; the content you'd want on a single printed page kept beside you while working.
+- Max 1,200 tokens.
+
+---
+
+## Step 9 — Generate the master SKILL.md
+
+**CRITICAL TOKEN BUDGET: Keep SKILL.md body under 4,000 tokens.**
+Compaction truncates from the END — put the most important content FIRST.
+
+Create `$SKILLS_HOME/&lt;skill_name&gt;/SKILL.md`:
+
+```markdown
+---
+name: &lt;skill_name&gt;
+description: &quot;Knowledge base from \&quot;&lt;Full Title&gt;\&quot; by &lt;Author(s)&gt;. Use when applying &lt;author&gt;'s frameworks for &lt;key topics, 3–6 terms&gt;, studying the book, or referencing its concepts.&quot;
+---
+
+&lt;!-- argument-hint: [topic, framework name, or chapter number] --&gt;
+
+# &lt;Full Title&gt;
+**Author**: &lt;Author(s)&gt; | **Pages**: ~&lt;N&gt; | **Chapters**: &lt;N&gt; | **Generated**: &lt;YYYY-MM-DD&gt;
+
+## How to Use This Skill
+
+- **Without arguments** — load core frameworks for reference
+- **With a topic** — ask about `replication`, `pricing`, or another indexed topic; I find and read the relevant chapter
+- **With chapter** — ask for `ch05`; I load that specific chapter
+- **Browse** — ask &quot;what chapters do you have?&quot; to see the full index
+
+When you ask about a topic not covered in Core Frameworks below, I will read
+the relevant chapter file before answering.
+
+---
+
+## Core Frameworks &amp; Mental Models
+&lt;!-- ~2,000 tokens: the author's most important named frameworks and principles.
+     Preserve exact names. Write as &quot;Use X when Y&quot;, &quot;Prefer X over Y because Z&quot;.
+     This is a toolkit, not a summary. --&gt;
+
+&lt;generate 2,000 tokens of the most critical frameworks and insights here&gt;
+
+---
+
+## Chapter Index
+
+| # | Title | Key Frameworks |
+|---|-------|----------------|
+| [ch01](chapters/ch01-&lt;slug&gt;.md) | &lt;Title&gt; | &lt;framework1&gt;, &lt;framework2&gt; |
+| [ch02](chapters/ch02-&lt;slug&gt;.md) | &lt;Title&gt; | &lt;framework1&gt;, &lt;framework2&gt; |
+...
+
+## Topic Index
+
+&lt;!-- Alphabetical. Major terms/frameworks → chapter(s) that cover them. --&gt;
+- **&lt;Term&gt;** → ch&lt;N&gt;[, ch&lt;N&gt;]
+- **&lt;Term&gt;** → ch&lt;N&gt;
+
+## Supporting Files
+
+- [glossary.md](glossary.md) — all key terms with definitions
+- [patterns.md](patterns.md) — all techniques and design patterns
+- [cheatsheet.md](cheatsheet.md) — quick reference tables and decision guides
+- Full text: `&lt;output_text from metadata.json&gt;` — grep it for depth the chapter files omit (local extraction, not shipped)
+
+---
+
+## Scope &amp; Limits
+
+This skill covers the book content only. For hands-on implementation in your codebase,
+combine with project-specific tools. For topics beyond this book, check related skills
+or ask the agent directly.
+&lt;if images_dropped &gt; 5: state that N source images were not read&gt;
+</code></pre>
+<hr>
+<h4>Step 9.5 — Scan the generated skill</h4>
+<p>Before reporting success, loading the skill in another session, or publishing it, run the advisory security scan:</p>
+<pre><code class="language-bash">SKILL_CONVERTER_ROOT=&quot;$(cd &quot;$(dirname &quot;$SCRIPT_PATH&quot;)/..&quot; &amp;&amp; pwd)&quot;
+&quot;$PYTHON_BIN&quot; &quot;$SKILL_CONVERTER_ROOT/tools/scan_generated_skill.py&quot; &quot;$SKILLS_HOME/&lt;skill_name&gt;&quot;
+</code></pre>
+<p>If the scanner exits non-zero, stop and ask a human to review its file/line findings. Do not silently rewrite the generated files, and do not load or publish the skill until the findings are resolved or explicitly accepted.</p>
+<hr>
+<h4>Step 10 — Cleanup and report</h4>
+<p>If the host is Claude Code and <code>SKILLS_HOME</code> is <code>~/.agents/skills</code> (the default personal install), expose the skill to Claude Code with a symlink — Claude Code only scans <code>~/.claude/skills</code>:</p>
+<pre><code class="language-bash">mkdir -p &quot;$HOME/.claude/skills&quot;
+LINK=&quot;$HOME/.claude/skills/&lt;skill_name&gt;&quot;
+TARGET=&quot;$HOME/.agents/skills/&lt;skill_name&gt;&quot;
+if [ -d &quot;$LINK&quot; ] &amp;&amp; [ ! -L &quot;$LINK&quot; ]; then
+  CLAUDE_STATUS=&quot;skipped-realdir&quot;                 # Step 5 migration declined; leave the old dir
+else
+  ln -sfn &quot;$TARGET&quot; &quot;$LINK&quot; 2&gt;/dev/null || true
+  # Read the link back — do NOT trust that `ln` did what was asked. On Windows/MSYS
+  # `ln -s` may COPY instead of link (or need Developer Mode / an elevated shell), and
+  # PowerShell/cmd have no `ln` at all. The report must reflect what is on disk, not the
+  # fact that the command ran.
+  if [ -L &quot;$LINK&quot; ] &amp;&amp; [ &quot;$(readlink &quot;$LINK&quot;)&quot; = &quot;$TARGET&quot; ]; then
+    CLAUDE_STATUS=&quot;linked&quot;
+  elif [ -e &quot;$LINK&quot; ]; then
+    CLAUDE_STATUS=&quot;copy&quot;                           # a real file/dir landed instead of a link
+  else
+    CLAUDE_STATUS=&quot;absent&quot;                         # ln unavailable or refused
+  fi
+fi
+</code></pre>
+<p>The real-directory guard is required: <code>ln -sfn</code> into an existing real directory would nest the link <em>inside</em> it (<code>~/.claude/skills/&lt;skill_name&gt;/&lt;skill_name&gt;</code>), leaving Claude Code loading the stale copy. If the user declined the Step 5 migration, skip the symlink and say so in the report — Claude Code keeps using the old directory until it is migrated.</p>
+<p><strong>Read the link back before you report anything about it.</strong> The symlink is a claim, not a fact: fill the &quot;Discoverable by&quot; line from <code>CLAUDE_STATUS</code> (what is actually on disk), never from &quot;the command was issued&quot;. <strong>Do not hard-fail when the link is missing or is a copy</strong> — the skill exists at the hub and every other host still finds it; the honest report is &quot;written to <code>~/.agents/skills/&lt;skill_name&gt;</code>; Claude Code will not see it until the link is created&quot;, not an abort. (Windows lead, unverified: a directory junction — <code>mklink /J</code> in an elevated <code>cmd</code>, or <code>New-Item -ItemType Junction</code> in PowerShell — needs neither Developer Mode nor a symlink privilege; if you attempt it, it does not change the read-back-then-report rule.)</p>
+<p>Skip this when the user chose a host-private or project-local root (Step 5, rules 3-4).</p>
+<p>Then clean up the extraction workdir:</p>
+<pre><code class="language-bash">PYTHON_BIN=&quot;${PYTHON_BIN:-python3}&quot;
+if ! command -v &quot;$PYTHON_BIN&quot; &gt;/dev/null 2&gt;&amp;1; then
+  PYTHON_BIN=&quot;python&quot;
+fi
+
+Remove **the work directory this run actually used** — the `Workdir -&gt;` path from the
+extraction output, which is also stored as `workdir` in `metadata.json`. Never delete a
+directory you did not create: another extraction may be running beside yours.
+
+```bash
+# WORKDIR is the path this run reported; quote it in case of spaces.
+rm -rf &quot;$WORKDIR&quot;
+</code></pre>
+<p>Equivalently, if you still have the metadata file:</p>
+<pre><code class="language-bash">&quot;$PYTHON_BIN&quot; - &quot;$WORKDIR_METADATA_JSON&quot; &lt;&lt;'PY'
+import json
+import shutil
+import sys
+from pathlib import Path
+
+meta_path = Path(sys.argv[1])
+workdir = json.loads(meta_path.read_text(encoding=&quot;utf-8&quot;)).get(&quot;workdir&quot;)
+if workdir:
+    shutil.rmtree(workdir, ignore_errors=True)
+PY
+</code></pre>
+<p>Older copies of this file removed a single fixed <code>book_skill_work</code> directory. That path is
+no longer used, so such a cleanup is now a harmless no-op rather than something that could
+delete a concurrent run's output.</p>
+<p>Then report to the user:</p>
+<pre><code>✅ Skill created: $SKILLS_HOME/&lt;skill_name&gt;/
+
+📚 Book: &lt;Full Title&gt; — &lt;Author&gt;
+📄 Pages: ~&lt;N&gt; | Chapters: &lt;N&gt;
+
+Files generated:
+  SKILL.md         — core frameworks + index   (~X tokens)
+  chapters/        — &lt;N&gt; chapter summaries     (~X tokens each, ~X total)
+  glossary.md      — key terms                 (~X tokens)
+  patterns.md      — techniques &amp; patterns     (~X tokens)
+  cheatsheet.md    — quick reference           (~X tokens)
+  ─────────────────────────────────────────────────────
+  Total skill size: ~X tokens (loaded on-demand, not all at once)
+
+💡 Tip: check your agent's session cost/usage command to see actual token usage.
+
+Usage:
+  Ask for &lt;skill_name&gt;                  → load core frameworks
+  Ask &lt;skill_name&gt; about &lt;topic&gt;        → find and explain a topic
+  Ask &lt;skill_name&gt; for ch&lt;N&gt;            → dive into a specific chapter
+
+Discoverable by: &lt;only what is true for the chosen destination — see below&gt;
+
+Somewhere else?  mv ~/.agents/skills/&lt;skill_name&gt; &lt;dest_root&gt;/&lt;skill_name&gt; \
+                   &amp;&amp; ln -sfn &lt;dest_root&gt;/&lt;skill_name&gt; ~/.claude/skills/&lt;skill_name&gt;
+
+Prompted for permission on every file? That is your host gating writes outside the
+working directory. Say &quot;save it in this project&quot; and re-run to write inside it.
+
+Reload (if your agent doesn't auto-detect new skills):
+  GitHub Copilot CLI:  /skills reload
+  Claude Code:         restart the session
+  Amp:                 restart the session
+  Hermes Agent:         start a new session
+  OpenClaw:             openclaw skills list (new session if watcher disabled)
+  OpenCode:             start a new session
+
+Share this skill (optional):
+  GitHub repo, installable on any host (Step 11):  say &quot;publish&quot;
+  Copilot ecosystem:  gh skill publish $SKILLS_HOME/&lt;skill_name&gt;
+</code></pre>
+<p>Fill the &quot;Discoverable by&quot; line from <code>CLAUDE_STATUS</code> (the read-back result), never from the fact that <code>ln</code> ran — for <code>~/.agents/skills</code> installs:</p>
+<ul>
+<li><code>linked</code> → &quot;Copilot CLI, Amp, Codex (natively); Claude Code via symlink ~/.claude/skills/&lt;skill_name&gt;&quot;</li>
+<li><code>skipped-realdir</code> → &quot;Copilot CLI, Amp, Codex (natively); <strong>NOT</strong> Claude Code — migrate the real directory at ~/.claude/skills/&lt;skill_name&gt; first&quot;</li>
+<li><code>copy</code> or <code>absent</code> → &quot;Copilot CLI, Amp, Codex (natively); <strong>NOT</strong> Claude Code — the host could not create the symlink (a plain copy drifts on the next Update/Fold-in). Enable Developer Mode / create the link manually, or run the skill from ~/.agents/skills&quot;</li>
+<li>Hermes Agent personal root → &quot;Hermes Agent (from <code>$HERMES_HOME/skills/&lt;category&gt;</code>)&quot;; no symlink claim, and no cross-agent claim, because the other hosts do not scan the Hermes root</li>
+<li>other host-private or project-local root → name only the host(s) that scan that root; no symlink claim</li>
+</ul>
+<p>The &quot;Somewhere else?&quot; relocation line must be correct for the path actually taken, so it never breaks the symlink the run just created. <strong><code>mv</code> always targets the final skill directory, <code>&lt;dest_root&gt;/&lt;skill_name&gt;</code>, never <code>&lt;dest_root&gt;</code> itself.</strong> <code>mv ~/.agents/skills/mybook ~/.copilot/skills &amp;&amp; ln -sfn ~/.copilot/skills ~/.claude/skills/mybook</code> reads as valid and is not: the skill lands at <code>~/.copilot/skills/mybook</code> while the link points one level up at the root, so Claude Code resolves to a directory with no <code>SKILL.md</code>, which is the exact breakage this line exists to avoid. Substitute the destination the user actually named, so the printed command carries real paths and there is nothing left to interpret:</p>
+<ul>
+<li><code>~/.agents/skills</code> + symlink → <code>mv ~/.agents/skills/&lt;skill_name&gt; &lt;dest_root&gt;/&lt;skill_name&gt; &amp;&amp; ln -sfn &lt;dest_root&gt;/&lt;skill_name&gt; ~/.claude/skills/&lt;skill_name&gt;</code></li>
+<li>host-private root, Hermes Agent included → <code>mv &lt;src_root&gt;/&lt;skill_name&gt; &lt;dest_root&gt;/&lt;skill_name&gt;</code></li>
+<li>project-local root → <code>mv &lt;project_root&gt;/&lt;skill_name&gt; &lt;dest_root&gt;/&lt;skill_name&gt;</code></li>
+</ul>
+<p>The &quot;Prompted for permission on every file?&quot; line is the answer to a host that gates writes outside the working directory (any personal-scope root is out-of-cwd): the destination was announced above, and the one-line fix — re-run asking for the project-local root — sits next to it. Keep it only for personal-scope installs; drop it when the user already chose project-local.</p>
+<hr>
+<h4>Step 11 — Publish the generated skill to GitHub (optional)</h4>
+<p>After the Step 10 report, offer once — and only if the Step 9.5 scan passed:</p>
+<blockquote>
+<p>&quot;Want me to publish this skill to GitHub so any Agent Skills host can install it with <code>npx skills add</code>? (yes / skip)&quot;</p>
+</blockquote>
+<p>If the user declines, stop here. Requirements: the <code>gh</code> CLI, authenticated (check <code>gh auth status</code>). If <code>gh</code> is missing or unauthenticated, offer to set it up (<code>brew install gh</code> or <a href="https://cli.github.com">https://cli.github.com</a>, then <code>gh auth login</code>) — or use the no-<code>gh</code> path: the user creates an empty repo of the chosen visibility in the GitHub web UI, then you run the <code>git init</code>/<code>add</code>/<code>commit</code> commands below followed by <code>git remote add origin &lt;repo-url&gt; &amp;&amp; git push -u origin main</code>. The visibility rule below applies to the web-created repo exactly the same.</p>
+<p><strong>Visibility is a separate closed question — never inferred, never read out of an earlier answer.</strong> Once the user accepts, ask it on its own and require a one-word reply:</p>
+<blockquote>
+<p>&quot;Private or public repository? Reply with one word: <code>private</code> or <code>public</code>.&quot;</p>
+</blockquote>
+<p><strong>The reply must <em>be</em> <code>public</code>, not merely contain it — a hard rule, not a suggestion.</strong> Run <code>gh repo create</code> with <code>--private</code> in every case except one: the answer to the visibility question is the bare word <code>public</code>. Substring matching is forbidden, because a sentence about <strong>the source's licence is not a visibility answer</strong> — &quot;it's public domain&quot;, &quot;the book is public domain&quot;, &quot;it's publicly available&quot; all describe the material, not the repository, and all resolve to <code>--private</code>. A paraphrase, a sentence, an ambiguous answer, silence, or your own inference is NOT consent: re-ask once, and if the reply is still not the bare word, use <code>--private</code> and say so in the report. A private repo can be flipped public later; a public push of book-derived content cannot be un-published.</p>
+<p><strong>Copyright gate — always apply before creating the repo:</strong> chapter files are synthesized summaries, not raw text, but they still derive from the source material. Per the README's Copyright &amp; fair use policy, skills generated from <strong>third-party copyrighted books must stay private</strong>; offer public only when the source is the user's own writing, openly licensed content, or material the user explicitly confirms they are authorized to redistribute publicly — and state which case applies. Having access to internal company material is not permission to disclose it: skills from internal docs stay <strong>private</strong> unless the user states they hold publication rights.</p>
+<p>If accepted:</p>
+<ol>
+<li>Add a repo <code>README.md</code> inside <code>$SKILLS_HOME/&lt;skill_name&gt;/</code> (never overwrite an existing file) — the skill title, a one-paragraph description (&quot;Agent skill generated from <em>&lt;Title&gt;</em> by &lt;Author&gt; with <a href="https://github.com/virgiliojr94/book-to-skill">book-to-skill</a>&quot;), the install command from step 3 below, the file inventory, and a note that the content is synthesized summaries, not the book text.</li>
+<li>Initialize the skill folder as a git repository and create the remote (default repo name <code>&lt;skill_name&gt;</code>; let the user override — some prefer a <code>&lt;skill_name&gt;-skill</code> suffix). <strong>Nested-repo guard:</strong> first check whether the skill folder already sits inside a git repository (<code>git -C &quot;$SKILLS_HOME/&lt;skill_name&gt;&quot; rev-parse --show-toplevel</code> — always the case for project-local roots like <code>.claude/skills/</code>). If it does, do NOT <code>git init</code> in place: the outer repository would record the folder as an embedded repo (gitlink, mode 160000) without <code>.gitmodules</code>, and fresh clones of the outer project would silently omit the skill. Instead, copy the skill folder to a scratch directory, run the commands below from the copy, and tell the user the published repo — not the project-local folder — is the remote's working copy.</li>
+</ol>
+<pre><code class="language-bash">cd &quot;$SKILLS_HOME/&lt;skill_name&gt;&quot;
+git init -b main
+git add -A
+git commit -m &quot;Add &lt;skill_name&gt; skill&quot;
+gh repo create &lt;repo_name&gt; --private --source . --push
+# --private is the default; substitute --public ONLY under the visibility rule above
+# (the visibility answer WAS the bare word &quot;public&quot; AND the copyright gate allows it)
+</code></pre>
+<ol start="3">
+<li>Report the repo URL and the cross-host install command:</li>
+</ol>
+<pre><code>✅ Published: https://github.com/&lt;owner&gt;/&lt;repo_name&gt; (&lt;private|public&gt;)
+
+Install on any Agent Skills host:
+  npx skills add https://github.com/&lt;owner&gt;/&lt;repo_name&gt; --skill &lt;skill_name&gt;
+</code></pre>
+<p>When the nested-repo guard fired and the repo was published from a scratch copy, add one line — that local folder never gains a remote, so the Update/Fold-in push offer will never appear for it:</p>
+<pre><code>⚠️  Published from a copy: &lt;skill folder&gt; sits inside another git repository, so it has
+    no remote of its own. To publish a later update, re-run Step 11, or clone
+    https://github.com/&lt;owner&gt;/&lt;repo_name&gt; and fold new material into the clone.
+</code></pre>
+<p>The root-level <code>SKILL.md</code> layout is exactly what the <code>skills</code> CLI detects, so the repo is installable as-is — no restructuring needed. Outside the nested-repo case the local folder stays the live install for this machine and is the remote's working copy, so later Update/Fold-in runs can commit and push their changes to the same remote.</p>
+<hr>
+<h4>Update / Fold-in Workflow</h4>
+<p>When performing an Update/Fold-in operation on an existing skill at <code>$SKILLS_HOME/&lt;skill_name&gt;/</code>:</p>
+<h5>1. Read Existing Skill Structure</h5>
+<p>Read and parse the existing skill's files:</p>
+<ul>
+<li>Read <code>$SKILLS_HOME/&lt;skill_name&gt;/SKILL.md</code> to parse the existing <strong>Chapter Index</strong>, <strong>Topic Index</strong>, metadata (author, total chapters), and <strong>Core Frameworks</strong>.</li>
+<li>List all files in <code>$SKILLS_HOME/&lt;skill_name&gt;/chapters/</code> to find the highest chapter number (e.g. <code>ch12</code>).</li>
+<li>Read <code>$SKILLS_HOME/&lt;skill_name&gt;/glossary.md</code>, <code>$SKILLS_HOME/&lt;skill_name&gt;/patterns.md</code>, and <code>$SKILLS_HOME/&lt;skill_name&gt;/cheatsheet.md</code> to see what terms and frameworks are already indexed.</li>
+</ul>
+<h5>2. Match Content &amp; Identify Revisions vs. Additions</h5>
+<p>Analyze the new extracted text in this run's <code>full_text.txt</code> (the <code>Text -&gt;</code> path from the extraction output) to identify if the new content represents:</p>
+<ul>
+<li><strong>Updates/Revisions to existing chapters</strong>: If a section of the new content directly updates or expands an existing chapter's topic, read the existing chapter file, merge the new details into it, and rewrite the file.</li>
+<li><strong>New additions</strong>: If the content introduces new chapters, papers, or separate sections, create <strong>new chapter summary files</strong> under <code>chapters/</code>. Start numbering these files after the highest existing chapter number (e.g. if the existing chapters stop at <code>ch12</code>, create <code>ch13-*.md</code>, <code>ch14-*.md</code>, etc.).</li>
+</ul>
+<h5>3. Generate or Update Chapter Summary Files</h5>
+<p>For each new or revised chapter:</p>
+<ul>
+<li>Read the corresponding section of the extracted new text.</li>
+<li>Follow the formatting guidelines in <strong>Step 7</strong> to build the summary.</li>
+<li>Write/update the file in <code>$SKILLS_HOME/&lt;skill_name&gt;/chapters/</code>.</li>
+</ul>
+<h5>4. Merge Supporting Files</h5>
+<ul>
+<li><strong>Merge glossary.md</strong>:
+<ul>
+<li>Read the existing <code>$SKILLS_HOME/&lt;skill_name&gt;/glossary.md</code>.</li>
+<li>Extract all new terms and definitions from the new content (Step 8 glossary guidelines).</li>
+<li>Combine and alphabetize the list of existing and new terms.</li>
+<li>If a term already exists, append the new chapter/source references to it (e.g. <code>**Term** — definition (Ch 4, Ch 13)</code>).</li>
+<li>Rewrite <code>$SKILLS_HOME/&lt;skill_name&gt;/glossary.md</code> with the fully merged, alphabetized list.</li>
+</ul>
+</li>
+<li><strong>Merge patterns.md</strong>:
+<ul>
+<li>Read existing <code>$SKILLS_HOME/&lt;skill_name&gt;/patterns.md</code>.</li>
+<li>Extract any new techniques, algorithms, or patterns from the new content.</li>
+<li>Append the new patterns, ensuring consistent formatting, and keeping the total length concise (under 2,500 tokens).</li>
+</ul>
+</li>
+<li><strong>Merge cheatsheet.md</strong>:
+<ul>
+<li>Read existing <code>$SKILLS_HOME/&lt;skill_name&gt;/cheatsheet.md</code>.</li>
+<li>Extract new comparison rules, decision tables, or parameter guides.</li>
+<li>Integrate them cleanly into the cheatsheet structure.</li>
+</ul>
+</li>
+</ul>
+<h5>5. Re-generate the Master SKILL.md</h5>
+<p>Update the master skill file <code>$SKILLS_HOME/&lt;skill_name&gt;/SKILL.md</code>:</p>
+<ul>
+<li><strong>Metadata</strong>: Increment the chapter count, update the estimated page count, and add the new source names if appropriate. Update the <code>Generated</code> date to the current date.</li>
+<li><strong>Core Frameworks</strong>: Fold in the most high-impact mental models or principles from the new content (ensuring the overall file remains under 4,000 tokens).</li>
+<li><strong>Chapter Index</strong>: Append the new chapters to the index table, linking to the newly created files.</li>
+<li><strong>Topic Index</strong>: Merge the new topics alphabetically. If an existing topic is also covered in the new chapters, append the new chapter links to its line (e.g. <code>- **Topic** → ch05, ch13</code>).</li>
+</ul>
+<h5>6. Scan, Cleanup, and Report</h5>
+<p>Once the files are successfully written and merged, run <strong>Step 9.5</strong>, then proceed to <strong>Step 10</strong> to perform cleanup and print a custom update report summarizing the newly added chapters, merged glossary terms, and updated indices. If the skill folder is a git repository with a remote (published via <strong>Step 11</strong>), offer to commit the update and push it.</p>
+<hr>
+<h4>Quality Rules</h4>
+<ol>
+<li><strong>Extract structure, not summaries</strong> — capture named frameworks, exact formulations, anti-patterns; not chapter recaps</li>
+<li><strong>Preserve the author's precision</strong> — &quot;The 5 Whys&quot; ≠ &quot;ask why multiple times&quot;; keep exact naming</li>
+<li><strong>Density over completeness</strong> — a 1,000-token summary beats a 10,000-token excerpt</li>
+<li><strong>Practitioner voice</strong> — write &quot;Use X when Y&quot;, not &quot;The book explains X&quot;</li>
+<li><strong>Front-load SKILL.md</strong> — compaction keeps the first 5,000 tokens; most important content comes first</li>
+<li><strong>Chapter files are on-demand</strong> — they don't count against skill budget until loaded</li>
+<li><strong>Never copy raw book text</strong> — always synthesize, summarize, extract signal</li>
+<li><strong>Topic index is critical</strong> — it's how the agent navigates to the right chapter file</li>
+</ol>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>printing-press-output-review · SkillHub</title>
+    <meta name="description" content="It does: samples the printed CLI&#039;s commands through the scorecard&#039;s live check, then has a subagent judge the passing outputs as a person would. Catches: results that match the query only as a substring, implausible top rankings, silently dropped sources, mojibake, and links to index pages instead of permalinks. You get: a PASS, WARN or SKIP block for the calling skill; findings are only warnings and never block shipping. Runs: only when printing-press or printing-press-polish calls it, in a forked context; it isn&#039;t offered as a slash command. Misses: wrong numbers such as prices or ratings, stale data, matters of taste and commands that weren&#039;t sampled." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=mvanhorn%2Fcli-printing-press">mvanhorn/cli-printing-press</a> <span aria-hidden="true">/</span> <a href="/skillhub/bundle/mvanhorn/cli-printing-press/">CLI Printing Press</a></p>
+      <h1>printing-press-output-review</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>It does</dt><dd>samples the printed CLI&#39;s commands through the scorecard&#39;s live check, then has a subagent judge the passing outputs as a person would</dd></div><div><dt>Catches</dt><dd>results that match the query only as a substring, implausible top rankings, silently dropped sources, mojibake, and links to index pages instead of permalinks</dd></div><div><dt>You get</dt><dd>a PASS, WARN or SKIP block for the calling skill; findings are only warnings and never block shipping</dd></div><div><dt>Runs</dt><dd>only when printing-press or printing-press-polish calls it, in a forked context; it isn&#39;t offered as a slash command</dd></div><div><dt>Misses</dt><dd>wrong numbers such as prices or ratings, stale data, matters of taste and commands that weren&#39;t sampled</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 2 of 9 in the <a href="/skillhub/bundle/mvanhorn/cli-printing-press/">CLI Printing Press</a> bundle · Before it: <a href="/skillhub/skill/mvanhorn/cli-printing-press/skills/printing-press/">printing-press</a> · After it: <a href="/skillhub/skill/mvanhorn/cli-printing-press/skills/printing-press-polish/">printing-press-polish</a></p>
+    <p class="note">Only works inside its bundle: Runs only when printing-press or printing-press-polish calls it on a CLI they&#39;re checking; it can&#39;t be invoked directly. Install <a href="/skillhub/bundle/mvanhorn/cli-printing-press/">CLI Printing Press</a> instead.</p>
+      <p class="note">Not run directly: printing-press calls it during shipcheck and printing-press-polish during its checks. Needs the cli-printing-press binary.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A plausibility check inside CLI Printing Press, for bugs a person would spot in five minutes with a printed CLI but that dogfood, verify and the scorecard&#39;s rules miss. It runs the scorecard&#39;s live check, which samples commands and records their redacted output, and returns SKIP without reviewing when that fails or no sample passed, since a skipped review is not a pass. A general-purpose subagent then reads the passing samples and the CLI&#39;s planned and built novel features from research.json, and may run more commands to confirm a finding. It checks four things: results match what the query meant, the output has no format bugs, commands that fan out to several sources show all of them or explain the missing ones, and rankings put a plausible best result first. Empty learning stores on a fresh print aren&#39;t flagged. Each finding comes back as a warning with a one-line description and a one-sentence fix; the calling skill logs them and you decide whether to fix before shipping. The forked context keeps the review&#39;s chatter out of the caller&#39;s conversation.</p>
+      <p class="muted">Summarizes <a href="https://github.com/mvanhorn/cli-printing-press/tree/94ce80e35cbc516cbab1b80f54d96ca419958ca0/skills/printing-press-output-review">the skill at 94ce80e</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/mvanhorn/cli-printing-press --skill printing-press-output-review</code><button type="button" class="copy" data-copy="npx skills add https://github.com/mvanhorn/cli-printing-press --skill printing-press-output-review">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/mvanhorn/cli-printing-press/printing-press-output-review">skills.sh page</a> · <a href="https://github.com/mvanhorn/cli-printing-press/tree/HEAD/skills/printing-press-output-review">Source on GitHub</a> · <a href="/skillhub/?repo=mvanhorn%2Fcli-printing-press">All skills from mvanhorn/cli-printing-press</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>6,600 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>4,926 <span class="muted">mvanhorn/cli-printing-press</span></dd></div><div><dt>First seen</dt><dd>May 7, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">107</div>
+      <div class="stat-delta">-30% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 152; week to Sep 26: 112; week to Oct 3: 87; week to Oct 10: 108; week to Oct 17: 97; week to Oct 24: 112; week to Oct 31: 121; week to Nov 7: 107. Use the left and right arrow keys to read each week."
+        data-values="152,112,87,108,97,112,121,107" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,17.6 71.1,24.8 103.7,18.7 136.3,21.9 168.9,17.6 201.4,15.0 234.0,19.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="19.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>152</td></tr><tr><td>Sep 26</td><td>112</td></tr><tr><td>Oct 3</td><td>87</td></tr><tr><td>Oct 10</td><td>108</td></tr><tr><td>Oct 17</td><td>97</td></tr><tr><td>Oct 24</td><td>112</td></tr><tr><td>Oct 31</td><td>121</td></tr><tr><td>Nov 7</td><td>107</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a><a class="tag" data-tag="needs:subagents" data-facet="needs" title="Relies on the agent being able to spawn subagents." href="/skillhub/?tag=needs%3Asubagents">needs:subagents</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">Relies on the agent being able to spawn subagents.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="testing" data-facet="topic" href="/skillhub/?tag=testing">testing</a><a class="tag" data-tag="verification" data-facet="topic" href="/skillhub/?tag=verification">verification</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/mvanhorn/cli-printing-press/blob/94ce80e35cbc516cbab1b80f54d96ca419958ca0/skills/printing-press-output-review/SKILL.md">mvanhorn/cli-printing-press at 94ce80e</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: printing-press-output-review
+description: &#62;
+  Internal sub-skill: agentic review of a printed CLI&#39;s sampled command output for
+  plausibility issues that rule-based checks can&#39;t encode (substring-match
+  relevance, format bugs, silent source drops, ranking failures). Invoked via the
+  Skill tool by the main printing-press skill at Phase 4.85 and printing-press-polish
+  SKILL.md during the diagnostic loop. Not for direct user invocation — its
+  actionable wrappers are /printing-press and /printing-press-polish.
+context: fork
+user-invocable: false
+allowed-tools:
+  - Bash
+  - Agent
+created_by: user</code></pre></details>
+        <div class="markdown"><h3>printing-press-output-review (internal)</h3>
+<p>Review the sampled outputs from a printed CLI for plausibility bugs that dogfood, verify, and the rule-based <code>scorecard --live-check</code> rules can't catch. Wave B policy: all findings surface as warnings, never errors.</p>
+<p>This skill is <strong>internal-only</strong> (<code>user-invocable: false</code>). It's invoked by parents — the main printing-press skill at its shipcheck Phase 4.85, and the printing-press-polish skill during its diagnostic loop. Running it standalone would produce floating findings text with no ship verdict, no fixes applied, no publish offer; the actionable wrappers are <code>/printing-press</code> and <code>/printing-press-polish</code>. The skill carries <code>context: fork</code> so the reviewer agent's diagnostic chatter stays isolated from the calling skill's context.</p>
+<h4>Input</h4>
+<p>The caller passes <code>$CLI_DIR</code> as the argument: an absolute path to the printed CLI's working directory.</p>
+<h4>What this catches</h4>
+<p>Bugs that rule-based checks miss, typically surfaced by 5 minutes of hands-on testing but slipping past dogfood, verify, and <code>scorecard --live-check</code> rules:</p>
+<ul>
+<li>Substring-match results that coincidentally contain the query but don't match semantically (e.g., a query matches a substring of a larger unrelated term)</li>
+<li>Aggregation commands silently dropping sources when only some of the requested N come back</li>
+<li>Ranking or sort commands returning top-N results that aren't plausibly the best for the query (broken weights, extractor fallbacks)</li>
+<li>URLs in output pointing at category index pages, feed endpoints, or random-selector routes rather than canonical content permalinks</li>
+<li>Format bugs the rule-based layer doesn't catch (mojibake, inconsistent pluralization, truncated/wrapped cell content)</li>
+</ul>
+<h4>Procedure</h4>
+<h5>Step 1: Gather sample data</h5>
+<pre><code class="language-bash"># Locate research.json. Adjacent to the binary covers the post-promote
+# layout (standalone polish, shipcheck against the library copy). The
+# grandparent fallback covers mid-pipeline invocations where $CLI_DIR is
+# $PRESS_RUNSTATE/runs/&lt;id&gt;/working/&lt;cli&gt; and research.json lives at
+# $PRESS_RUNSTATE/runs/&lt;id&gt;/research.json. Without the fallback, scorecard
+# reports `unable: true` mid-pipeline and we SKIP the most informative review.
+# Use a bash array so the flag survives paths with spaces.
+RESEARCH_ARGS=()
+if [ ! -f &quot;$CLI_DIR/research.json&quot; ]; then
+  _grandparent=&quot;$(dirname &quot;$(dirname &quot;$CLI_DIR&quot;)&quot;)&quot;
+  if [ -f &quot;$_grandparent/research.json&quot; ]; then
+    RESEARCH_ARGS=(--research-dir &quot;$_grandparent&quot;)
+  fi
+fi
+
+cli-printing-press scorecard --dir &quot;$CLI_DIR&quot; &quot;${RESEARCH_ARGS[@]}&quot; --live-check --json &gt; /tmp/output-review-livecheck.json 2&gt;&amp;1 || true
+</code></pre>
+<p>If the scorecard call fails or <code>/tmp/output-review-livecheck.json</code> is empty, return the SKIP result (Step 3) without dispatching the reviewer.</p>
+<p>Before dispatch, read <code>live_check.review_status</code> when that field is present.
+If it is <code>skipped</code>, or <code>live_check.features[]</code> has zero entries whose <code>status</code>
+is <code>pass</code>, return <code>SKIP</code> with the reason <code>no eligible passing samples; plausibility not assessed</code>. Do not dispatch the reviewer. A skipped review is
+not a pass: never emit <code>status: PASS</code>, and never describe the outcome as a
+clean review, merely because every sampled command failed or was excluded.</p>
+<h5>Step 2: Dispatch the reviewer agent</h5>
+<p>Use the Agent tool (general-purpose) with this prompt contract:</p>
+<blockquote>
+<p>Review the sampled outputs from the shipped CLI at <code>$CLI_DIR</code>. You have these ground-truth sources:</p>
+<ul>
+<li>Sampled command output: read <code>/tmp/output-review-livecheck.json</code> and inspect the <code>live_check.features[]</code> array. Each entry has the command, example invocation, redacted stdout evidence (in <code>output_sample</code>, bounded to ~4 KiB), the redacted pass/fail reason, and a <code>warnings</code> array (populated by rule-based checks like the raw-HTML-entity detector). Treat <code>&lt;redacted&gt;</code> markers as privacy scrubbed values, not format bugs.</li>
+<li><strong>Review only <code>status: pass</code> entries.</strong> Entries with <code>status: fail</code> either crashed, timed out, or had placeholder args (<code>&lt;id&gt;</code>, <code>&lt;url&gt;</code>) that never produced real output — their sample is empty and there's nothing for you to judge.</li>
+<li><code>$CLI_DIR/research.json</code> <code>novel_features</code> (planned behavior per feature) and <code>novel_features_built</code> (verified built commands).</li>
+<li>The CLI binary at <code>$CLI_DIR/&lt;cli-name&gt;-pp-cli</code> — you may invoke additional commands to gather more output when a finding needs verification.</li>
+</ul>
+<p>For each of these checks, report findings under 50 words each. Only report issues a human user would notice in 5 minutes of hands-on testing — not every edge case a thorough QA pass might find:</p>
+<ol>
+<li><strong>Output <em>semantically</em> matches query intent.</strong> For sampled novel features with a query argument, judge relevance beyond what the mechanical query-token check in live-check already enforced. A feature that passed live-check's <code>outputMentionsQuery</code> test still contains <em>some</em> query token somewhere — but &quot;buttermilk&quot; appearing as a substring of &quot;butter&quot; results, or &quot;brownies&quot; returning a chili recipe because the extractor fell back to adjacent content, both slip past the mechanical check. Only flag when a human user would look at the top results and say &quot;this isn't what I asked for.&quot; Skip this check when the example has no query argument.</li>
+<li><strong>No obvious format bugs.</strong> Does the output contain raw HTML entities, mojibake (question marks or replacement chars in titles), or malformed URLs (pointing at category index pages, feed endpoints, or random-selector routes rather than canonical content permalinks)? Rule-based live-check catches numeric entities; this layer catches the broader class.</li>
+<li><strong>Aggregation commands show all requested sources.</strong> For commands with a <code>--source</code>/<code>--site</code>/<code>--region</code> CSV flag: if the user requested N sources, does output show N, or does stderr explain the missing ones? Silent drops of failed sources are a top failure mode for fan-out commands.</li>
+<li><strong>Result ordering/ranking makes sense.</strong> For commands that claim to rank or sort, does the top result look plausibly best given the query? Watch for broken score weights, off-by-one sort bugs, and silent fallback to recency when relevance computation fails.</li>
+</ol>
+<p>Calibration for learn-loop command samples (<code>recall</code>, <code>learnings</code>, <code>playbook</code>): on a fresh print the local learning store starts empty, so empty candidate lists, zero-count <code>learnings stats</code>, and &quot;no learnings recorded&quot; outputs are plausible-correct. Do not flag them as silent failures or missing data.</p>
+<p>Return a list of findings. For each: check name, severity (<code>warning</code> in Wave B; <code>error</code> reserved for Wave C), one-line description, one-sentence fix suggestion. If the CLI passes all four checks, return &quot;PASS — no findings.&quot;</p>
+</blockquote>
+<h5>Step 3: Emit the structured result block</h5>
+<p>End the skill response with a <code>---OUTPUT-REVIEW-RESULT---</code> block the parent parses:</p>
+<p><strong>On clean pass:</strong></p>
+<p>Use this result only when the reviewer assessed at least one eligible
+<code>status: pass</code> sample.</p>
+<pre><code>---OUTPUT-REVIEW-RESULT---
+status: PASS
+findings: []
+---END-OUTPUT-REVIEW-RESULT---
+</code></pre>
+<p><strong>On warnings:</strong></p>
+<pre><code>---OUTPUT-REVIEW-RESULT---
+status: WARN
+findings:
+- check: &lt;check-name&gt;
+  severity: warning
+  description: &lt;one-line&gt;
+  suggestion: &lt;one-sentence&gt;
+- ...
+---END-OUTPUT-REVIEW-RESULT---
+</code></pre>
+<p><strong>On reviewer failure or absence of assessable output (timeout, agent-budget exhaustion, missing live-check data, <code>review_status: skipped</code>, or zero eligible <code>status: pass</code> samples):</strong></p>
+<pre><code>---OUTPUT-REVIEW-RESULT---
+status: SKIP
+reason: &lt;one-line description&gt;
+findings: []
+---END-OUTPUT-REVIEW-RESULT---
+</code></pre>
+<p><code>status: SKIP</code> is not a pass. Callers must report it as skipped and must not count it as a passing review.</p>
+<h4>Wave B policy (current)</h4>
+<ul>
+<li>All findings surface as <code>warning</code> — never <code>error</code>. Shipcheck proceeds regardless.</li>
+<li>The caller logs findings to the run's artifact directory (e.g., <code>manuscripts/&lt;api&gt;/&lt;run&gt;/proofs/phase-4.85-findings.md</code>) and surfaces them to the user. Findings are not persisted to <code>scorecard.json</code> — that path is reserved for Wave C.</li>
+<li>The user decides case by case whether to fix before shipping.</li>
+</ul>
+<p><strong>Non-interactive contract (CI, cron, batch regeneration):</strong></p>
+<ul>
+<li>If stdout is not a TTY, callers follow fail-open-with-log: findings recorded, shipcheck proceeds without prompting.</li>
+<li><code>status: SKIP</code> (reviewer crash, timeout, missing data) is informational — shipcheck does not block on it.</li>
+<li>No <code>--auto-approve-warnings</code> flag yet. The policy is already &quot;warnings don't block&quot; in Wave B, so the flag has no effect to gate.</li>
+</ul>
+<p>Wave C (separate future PR) will flip <code>error</code>-severity findings to blocking after calibration data across the library shows false-positive rate below 10%.</p>
+<h4>Why agentic vs template-only</h4>
+<p>Output-plausibility questions are not pattern-matchable against source. Rule-based live-check rules cover what regexes can (numeric HTML entities, query-token absence). Everything else — &quot;are these substitution results plausibly correct for the query?&quot;, &quot;does the top search result look related?&quot; — is an LLM-shaped question. The token cost is bounded (once per run, not per command) and the catch rate against the bug classes that motivated this phase justifies the dispatch.</p>
+<h4>Known blind spots</h4>
+<ul>
+<li>Can't verify numeric accuracy (prices, ratings, rankings vs ground-truth). If the CLI says a recipe has 4.8 stars and it actually has 4.2, this skill won't catch it.</li>
+<li>Can't detect data-freshness issues (recipe published 2019 vs 2024). These need live comparison against authoritative sources.</li>
+<li>Can't judge subjective preferences (&quot;is this the <em>best</em> recipe for chocolate chip cookies?&quot;).</li>
+<li>Sampled outputs only — covers the commands in <code>live_check.features[]</code>. Full command-tree coverage belongs to the main printing-press skill's Phase 5 dogfood, not this review.</li>
+<li>Non-English output: the reviewer's query-intent check assumes English-language query/output. For non-English CLIs, calibrate the prompt separately.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

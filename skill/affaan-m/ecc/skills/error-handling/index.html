@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>error-handling · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re designing error types, adding retries, wiring API error responses or writing the messages users see when something fails. It does: gives typed error classes and a Result type in TypeScript, an exception hierarchy with FastAPI handlers in Python, and wrapped sentinel errors in Go. You get: code where every catch handles, rethrows or logs, API errors share one code-and-message envelope, and users never see stack traces. Also covers: a Next.js API error handler, a React error boundary, exponential backoff with jitter that skips client errors, and a pre-merge checklist." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <h1>error-handling</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re designing error types, adding retries, wiring API error responses or writing the messages users see when something fails</dd></div><div><dt>It does</dt><dd>gives typed error classes and a Result type in TypeScript, an exception hierarchy with FastAPI handlers in Python, and wrapped sentinel errors in Go</dd></div><div><dt>You get</dt><dd>code where every catch handles, rethrows or logs, API errors share one code-and-message envelope, and users never see stack traces</dd></div><div><dt>Also covers</dt><dd>a Next.js API error handler, a React error boundary, exponential backoff with jitter that skips client errors, and a pre-merge checklist</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>ECC&#39;s error-handling reference starts from five rules: fail fast and loudly, make errors typed values rather than strings, keep user messages apart from developer details, never swallow an error, and treat error codes as part of the API contract. In TypeScript it builds an AppError hierarchy carrying codes and HTTP statuses, for not found, validation, unauthorized and rate limited; a Result type for failures that are expected; a Next.js API handler that maps app errors and Zod validation errors to one response envelope; and a React error boundary. Python gets a matching exception hierarchy and FastAPI exception handlers that log the full error and return a generic message. Go wraps sentinel errors with context and unwraps them at the handler to pick the HTTP status. A shared retry helper uses exponential backoff with jitter and retries only what a predicate allows, not 4xx errors. A table maps error codes to plain user messages. The checklist to clear before merging covers silent catches, the envelope, server-side logging, async errors, retries and error boundaries.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/error-handling">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/affaan-m/ecc --skill error-handling</code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill error-handling">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/error-handling">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/error-handling">Source on GitHub</a> · <a href="/skillhub/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,600 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>298,660 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">505</div>
+      <div class="stat-delta">+64% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 308; week to Sep 26: 274; week to Oct 3: 172; week to Oct 10: 174; week to Oct 17: 255; week to Oct 24: 437; week to Oct 31: 431; week to Nov 7: 505. Use the left and right arrow keys to read each week."
+        data-values="308,274,172,174,255,437,431,505" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.2 38.6,26.1 71.1,35.0 103.7,34.8 136.3,27.8 168.9,11.9 201.4,12.4 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>308</td></tr><tr><td>Sep 26</td><td>274</td></tr><tr><td>Oct 3</td><td>172</td></tr><tr><td>Oct 10</td><td>174</td></tr><tr><td>Oct 17</td><td>255</td></tr><tr><td>Oct 24</td><td>437</td></tr><tr><td>Oct 31</td><td>431</td></tr><tr><td>Nov 7</td><td>505</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/skillhub/?tag=type%3Aguidelines">type:guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="code-quality" data-facet="topic" href="/skillhub/?tag=code-quality">code-quality</a><a class="tag" data-tag="backend" data-facet="topic" href="/skillhub/?tag=backend">backend</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:typescript" data-facet="stack" href="/skillhub/?tag=stack%3Atypescript">stack:typescript</a><a class="tag" data-tag="stack:python" data-facet="stack" href="/skillhub/?tag=stack%3Apython">stack:python</a><a class="tag" data-tag="stack:go" data-facet="stack" href="/skillhub/?tag=stack%3Ago">stack:go</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/error-handling/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: error-handling
+description: Patterns for robust error handling across TypeScript, Python, and Go. Covers typed errors, error boundaries, retries, circuit breakers, and user-facing error messages. Use when designing error types, retries, circuit breakers, or user-facing failure messages in TypeScript, Python, or Go.
+metadata:
+  origin: ECC</code></pre></details>
+        <div class="markdown"><h3>Error Handling Patterns</h3>
+<p>Consistent, robust error handling patterns for production applications.</p>
+<h4>When to Activate</h4>
+<ul>
+<li>Designing error types or exception hierarchies for a new module or service</li>
+<li>Adding retry logic or circuit breakers for unreliable external dependencies</li>
+<li>Reviewing API endpoints for missing error handling</li>
+<li>Implementing user-facing error messages and feedback</li>
+<li>Debugging cascading failures or silent error swallowing</li>
+</ul>
+<h4>Core Principles</h4>
+<ol>
+<li><strong>Fail fast and loudly</strong> — surface errors at the boundary where they occur; don't bury them</li>
+<li><strong>Typed errors over string messages</strong> — errors are first-class values with structure</li>
+<li><strong>User messages ≠ developer messages</strong> — show friendly text to users, log full context server-side</li>
+<li><strong>Never swallow errors silently</strong> — every <code>catch</code> block must either handle, re-throw, or log</li>
+<li><strong>Errors are part of your API contract</strong> — document every error code a client may receive</li>
+</ol>
+<h4>TypeScript / JavaScript</h4>
+<h5>Typed Error Classes</h5>
+<pre><code class="language-typescript">// Define an error hierarchy for your domain
+export class AppError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly statusCode: number = 500,
+    public readonly details?: unknown,
+  ) {
+    super(message)
+    this.name = this.constructor.name
+    // Maintain correct prototype chain in transpiled ES5 JavaScript.
+    // Required for `instanceof` checks (e.g., `error instanceof NotFoundError`)
+    // to work correctly when extending the built-in Error class.
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
+
+export class NotFoundError extends AppError {
+  constructor(resource: string, id: string) {
+    super(`${resource} not found: ${id}`, 'NOT_FOUND', 404)
+  }
+}
+
+export class ValidationError extends AppError {
+  constructor(message: string, details: { field: string; message: string }[]) {
+    super(message, 'VALIDATION_ERROR', 422, details)
+  }
+}
+
+export class UnauthorizedError extends AppError {
+  constructor(reason = 'Authentication required') {
+    super(reason, 'UNAUTHORIZED', 401)
+  }
+}
+
+export class RateLimitError extends AppError {
+  constructor(public readonly retryAfterMs: number) {
+    super('Rate limit exceeded', 'RATE_LIMITED', 429)
+  }
+}
+</code></pre>
+<h5>Result Pattern (no-throw style)</h5>
+<p>For operations where failure is expected and common (parsing, external calls):</p>
+<pre><code class="language-typescript">type Result&lt;T, E = AppError&gt; =
+  | { ok: true; value: T }
+  | { ok: false; error: E }
+
+function ok&lt;T&gt;(value: T): Result&lt;T&gt; {
+  return { ok: true, value }
+}
+
+function err&lt;E&gt;(error: E): Result&lt;never, E&gt; {
+  return { ok: false, error }
+}
+
+// Usage
+async function fetchUser(id: string): Promise&lt;Result&lt;User&gt;&gt; {
+  try {
+    const user = await db.users.findUnique({ where: { id } })
+    if (!user) return err(new NotFoundError('User', id))
+    return ok(user)
+  } catch (e) {
+    return err(new AppError('Database error', 'DB_ERROR'))
+  }
+}
+
+const result = await fetchUser('abc-123')
+if (!result.ok) {
+  // TypeScript knows result.error here
+  logger.error('Failed to fetch user', { error: result.error })
+  return
+}
+// TypeScript knows result.value here
+console.log(result.value.email)
+</code></pre>
+<h5>API Error Handler (Next.js / Express)</h5>
+<pre><code class="language-typescript">import { NextRequest, NextResponse } from 'next/server'
+
+function handleApiError(error: unknown): NextResponse {
+  // Known application error
+  if (error instanceof AppError) {
+    return NextResponse.json(
+      {
+        error: {
+          code: error.code,
+          message: error.message,
+          ...(error.details ? { details: error.details } : {}),
+        },
+      },
+      { status: error.statusCode },
+    )
+  }
+
+  // Zod validation error
+  if (error instanceof z.ZodError) {
+    return NextResponse.json(
+      {
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'Request validation failed',
+          details: error.issues.map(i =&gt; ({
+            field: i.path.join('.'),
+            message: i.message,
+          })),
+        },
+      },
+      { status: 422 },
+    )
+  }
+
+  // Unexpected error — log details, return generic message
+  console.error('Unexpected error:', error)
+  return NextResponse.json(
+    { error: { code: 'INTERNAL_ERROR', message: 'An unexpected error occurred' } },
+    { status: 500 },
+  )
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    // ... handler logic
+  } catch (error) {
+    return handleApiError(error)
+  }
+}
+</code></pre>
+<h5>React Error Boundary</h5>
+<pre><code class="language-typescript">import { Component, ErrorInfo, ReactNode } from 'react'
+
+interface Props {
+  fallback: ReactNode
+  onError?: (error: Error, info: ErrorInfo) =&gt; void
+  children: ReactNode
+}
+
+interface State {
+  hasError: boolean
+  error: Error | null
+}
+
+export class ErrorBoundary extends Component&lt;Props, State&gt; {
+  state: State = { hasError: false, error: null }
+
+  static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error }
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    this.props.onError?.(error, info)
+    console.error('Unhandled React error:', error, info)
+  }
+
+  render() {
+    if (this.state.hasError) return this.props.fallback
+    return this.props.children
+  }
+}
+
+// Usage
+&lt;ErrorBoundary fallback={&lt;p&gt;Something went wrong. Please refresh.&lt;/p&gt;}&gt;
+  &lt;MyComponent /&gt;
+&lt;/ErrorBoundary&gt;
+</code></pre>
+<h4>Python</h4>
+<h5>Custom Exception Hierarchy</h5>
+<pre><code class="language-python">class AppError(Exception):
+    &quot;&quot;&quot;Base application error.&quot;&quot;&quot;
+    def __init__(self, message: str, code: str, status_code: int = 500):
+        super().__init__(message)
+        self.code = code
+        self.status_code = status_code
+
+class NotFoundError(AppError):
+    def __init__(self, resource: str, id: str):
+        super().__init__(f&quot;{resource} not found: {id}&quot;, &quot;NOT_FOUND&quot;, 404)
+
+class ValidationError(AppError):
+    def __init__(self, message: str, details: list[dict] | None = None):
+        super().__init__(message, &quot;VALIDATION_ERROR&quot;, 422)
+        self.details = details or []
+</code></pre>
+<h5>FastAPI Global Exception Handler</h5>
+<pre><code class="language-python">from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+
+app = FastAPI()
+
+@app.exception_handler(AppError)
+async def app_error_handler(request: Request, exc: AppError) -&gt; JSONResponse:
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={&quot;error&quot;: {&quot;code&quot;: exc.code, &quot;message&quot;: str(exc)}},
+    )
+
+@app.exception_handler(Exception)
+async def generic_error_handler(request: Request, exc: Exception) -&gt; JSONResponse:
+    # Log full details, return generic message
+    logger.exception(&quot;Unexpected error&quot;, exc_info=exc)
+    return JSONResponse(
+        status_code=500,
+        content={&quot;error&quot;: {&quot;code&quot;: &quot;INTERNAL_ERROR&quot;, &quot;message&quot;: &quot;An unexpected error occurred&quot;}},
+    )
+</code></pre>
+<h4>Go</h4>
+<h5>Sentinel Errors and Error Wrapping</h5>
+<pre><code class="language-go">package domain
+
+import &quot;errors&quot;
+
+// Sentinel errors for type-checking
+var (
+    ErrNotFound    = errors.New(&quot;not found&quot;)
+    ErrUnauthorized = errors.New(&quot;unauthorized&quot;)
+    ErrConflict     = errors.New(&quot;conflict&quot;)
+)
+
+// Wrap errors with context — never lose the original
+func (r *UserRepository) FindByID(ctx context.Context, id string) (*User, error) {
+    user, err := r.db.QueryRow(ctx, &quot;SELECT * FROM users WHERE id = $1&quot;, id)
+    if errors.Is(err, sql.ErrNoRows) {
+        return nil, fmt.Errorf(&quot;user %s: %w&quot;, id, ErrNotFound)
+    }
+    if err != nil {
+        return nil, fmt.Errorf(&quot;querying user %s: %w&quot;, id, err)
+    }
+    return user, nil
+}
+
+// At the handler level, unwrap to determine response
+func (h *Handler) GetUser(w http.ResponseWriter, r *http.Request) {
+    user, err := h.service.GetUser(r.Context(), chi.URLParam(r, &quot;id&quot;))
+    if err != nil {
+        switch {
+        case errors.Is(err, domain.ErrNotFound):
+            writeError(w, http.StatusNotFound, &quot;not_found&quot;, err.Error())
+        case errors.Is(err, domain.ErrUnauthorized):
+            writeError(w, http.StatusForbidden, &quot;forbidden&quot;, &quot;Access denied&quot;)
+        default:
+            slog.Error(&quot;unexpected error&quot;, &quot;err&quot;, err)
+            writeError(w, http.StatusInternalServerError, &quot;internal_error&quot;, &quot;An unexpected error occurred&quot;)
+        }
+        return
+    }
+    writeJSON(w, http.StatusOK, user)
+}
+</code></pre>
+<h4>Retry with Exponential Backoff</h4>
+<pre><code class="language-typescript">interface RetryOptions {
+  maxAttempts?: number
+  baseDelayMs?: number
+  maxDelayMs?: number
+  retryIf?: (error: unknown) =&gt; boolean
+}
+
+async function withRetry&lt;T&gt;(
+  fn: () =&gt; Promise&lt;T&gt;,
+  options: RetryOptions = {},
+): Promise&lt;T&gt; {
+  const {
+    maxAttempts = 3,
+    baseDelayMs = 500,
+    maxDelayMs = 10_000,
+    retryIf = () =&gt; true,
+  } = options
+
+  let lastError: unknown
+
+  for (let attempt = 1; attempt &lt;= maxAttempts; attempt++) {
+    try {
+      return await fn()
+    } catch (error) {
+      lastError = error
+      if (attempt === maxAttempts || !retryIf(error)) throw error
+
+      const jitter = Math.random() * baseDelayMs
+      const delay = Math.min(baseDelayMs * 2 ** (attempt - 1) + jitter, maxDelayMs)
+      await new Promise(resolve =&gt; setTimeout(resolve, delay))
+    }
+  }
+
+  throw lastError
+}
+
+// Usage: retry transient network errors, not 4xx
+const data = await withRetry(() =&gt; fetch('/api/data').then(r =&gt; r.json()), {
+  maxAttempts: 3,
+  retryIf: (error) =&gt; !(error instanceof AppError &amp;&amp; error.statusCode &lt; 500),
+})
+</code></pre>
+<h4>User-Facing Error Messages</h4>
+<p>Map error codes to human-readable messages. Keep technical details out of user-visible text.</p>
+<pre><code class="language-typescript">const USER_ERROR_MESSAGES: Record&lt;string, string&gt; = {
+  NOT_FOUND: 'The requested item could not be found.',
+  UNAUTHORIZED: 'Please sign in to continue.',
+  FORBIDDEN: &quot;You don't have permission to do that.&quot;,
+  VALIDATION_ERROR: 'Please check your input and try again.',
+  RATE_LIMITED: 'Too many requests. Please wait a moment and try again.',
+  INTERNAL_ERROR: 'Something went wrong on our end. Please try again later.',
+}
+
+export function getUserMessage(code: string): string {
+  return USER_ERROR_MESSAGES[code] ?? USER_ERROR_MESSAGES.INTERNAL_ERROR
+}
+</code></pre>
+<h4>Error Handling Checklist</h4>
+<p>Before merging any code that touches error handling:</p>
+<ul>
+<li>[ ] Every <code>catch</code> block handles, re-throws, or logs — no silent swallowing</li>
+<li>[ ] API errors follow the standard envelope <code>{ error: { code, message } }</code></li>
+<li>[ ] User-facing messages contain no stack traces or internal details</li>
+<li>[ ] Full error context is logged server-side</li>
+<li>[ ] Custom error classes extend a base <code>AppError</code> with a <code>code</code> field</li>
+<li>[ ] Async functions surface errors to callers — no fire-and-forget without fallback</li>
+<li>[ ] Retry logic only retries retriable errors (not 4xx client errors)</li>
+<li>[ ] React components are wrapped in <code>ErrorBoundary</code> for rendering errors</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

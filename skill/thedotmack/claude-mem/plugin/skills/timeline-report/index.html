@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>timeline-report · SkillHub</title>
+    <meta name="description" content="Use it when: you want the story of a project&#039;s development, as recorded by claude-mem across its sessions. It does: fetches the project&#039;s full timeline from claude-mem&#039;s local worker and gives it to a subagent that also queries claude-mem&#039;s SQLite database. You get: a Markdown report of 3,000 to 6,000 words, saved as journey-into-&lt;project&gt;.md. Covers: origins, architecture changes, breakthroughs, debugging sagas, technical debt, work patterns, statistics and lessons. Cost: it estimates the timeline&#039;s tokens first and asks before going on above 100K. Needs: claude-mem with its worker running, sqlite3, and an agent that can start subagents." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=thedotmack%2Fclaude-mem">thedotmack/claude-mem</a></p>
+      <h1>timeline-report</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want the story of a project&#39;s development, as recorded by claude-mem across its sessions</dd></div><div><dt>It does</dt><dd>fetches the project&#39;s full timeline from claude-mem&#39;s local worker and gives it to a subagent that also queries claude-mem&#39;s SQLite database</dd></div><div><dt>You get</dt><dd>a Markdown report of 3,000 to 6,000 words, saved as journey-into-&#60;project&#62;.md</dd></div><div><dt>Covers</dt><dd>origins, architecture changes, breakthroughs, debugging sagas, technical debt, work patterns, statistics and lessons</dd></div><div><dt>Cost</dt><dd>it estimates the timeline&#39;s tokens first and asks before going on above 100K</dd></div><div><dt>Needs</dt><dd>claude-mem with its worker running, sqlite3, and an agent that can start subagents</dd></div></dl></section>
+      
+      <p class="note">Needs claude-mem installed, with its local worker running and observations recorded for the project. A long history can cost hundreds of thousands of tokens; above 100K it asks first.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>claude-mem records observations, short notes about what happened in each agent session, and this skill turns a project&#39;s whole record into a history. The agent works out the project name, using the parent repository when you&#39;re in a git worktree, and fetches every observation, session boundary and summary from the worker&#39;s local API. It estimates the size at about one token per four characters, reports it and waits for your go-ahead on large timelines. A subagent then writes &#34;Journey Into&#34; the project as a narrative, not bullet lists, citing observation IDs and dates. One section estimates how many tokens memory saved, from SQL queries plus fixed assumptions, such as 30% of injected context preventing rework, with a monthly table. The report is saved in the current folder unless you name another path, and the agent tells you where it is, the token cost, the date range and how many observations it covered.</p>
+      <p class="muted">Summarizes <a href="https://github.com/thedotmack/claude-mem/tree/24802b13ef5e9bf61a84e650af446c4ff69ab399/plugin/skills/timeline-report">the skill at 24802b1</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/thedotmack/claude-mem --skill timeline-report</code><button type="button" class="copy" data-copy="npx skills add https://github.com/thedotmack/claude-mem --skill timeline-report">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/thedotmack/claude-mem/timeline-report">skills.sh page</a> · <a href="https://github.com/thedotmack/claude-mem/tree/HEAD/plugin/skills/timeline-report">Source on GitHub</a> · <a href="/skillhub/?repo=thedotmack%2Fclaude-mem">All skills from thedotmack/claude-mem</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>7,000 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>114,080 <span class="muted">thedotmack/claude-mem</span></dd></div><div><dt>First seen</dt><dd>Mar 18, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">136</div>
+      <div class="stat-delta">+8% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 126; week to Sep 26: 104; week to Oct 3: 97; week to Oct 10: 93; week to Oct 17: 92; week to Oct 24: 129; week to Oct 31: 119; week to Nov 7: 136. Use the left and right arrow keys to read each week."
+        data-values="126,104,97,93,92,129,119,136" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,9.2 38.6,16.4 71.1,18.6 103.7,19.9 136.3,20.2 168.9,8.3 201.4,11.5 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>126</td></tr><tr><td>Sep 26</td><td>104</td></tr><tr><td>Oct 3</td><td>97</td></tr><tr><td>Oct 10</td><td>93</td></tr><tr><td>Oct 17</td><td>92</td></tr><tr><td>Oct 24</td><td>129</td></tr><tr><td>Oct 31</td><td>119</td></tr><tr><td>Nov 7</td><td>136</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/skillhub/?tag=category%3Aagents">category:agents</a><a class="tag" data-tag="category:writing" data-facet="category" title="Articles, docs, internal comms, research write-ups and prose that doesn&#39;t read as generated." href="/skillhub/?tag=category%3Awriting">category:writing</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Articles, docs, internal comms, research write-ups and prose that doesn&#39;t read as generated.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a><a class="tag" data-tag="needs:subagents" data-facet="needs" title="Relies on the agent being able to spawn subagents." href="/skillhub/?tag=needs%3Asubagents">needs:subagents</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">Relies on the agent being able to spawn subagents.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="memory" data-facet="topic" href="/skillhub/?tag=memory">memory</a><a class="tag" data-tag="writing" data-facet="topic" href="/skillhub/?tag=writing">writing</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:claude-mem" data-facet="stack" href="/skillhub/?tag=stack%3Aclaude-mem">stack:claude-mem</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/thedotmack/claude-mem/blob/24802b13ef5e9bf61a84e650af446c4ff69ab399/plugin/skills/timeline-report/SKILL.md">thedotmack/claude-mem at 24802b1</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: timeline-report
+description: Generate a &#34;Journey Into [Project]&#34; narrative report analyzing a project&#39;s entire development history from claude-mem&#39;s timeline. Use when asked for a timeline report, project history analysis, development journey, or full project report.</code></pre></details>
+        <div class="markdown"><h3>Timeline Report</h3>
+<p>Generate a comprehensive narrative analysis of a project's entire development history using claude-mem's persistent memory timeline.</p>
+<h4>When to Use</h4>
+<p>Use when users ask for:</p>
+<ul>
+<li>&quot;Write a timeline report&quot;</li>
+<li>&quot;Journey into [project]&quot;</li>
+<li>&quot;Analyze my project history&quot;</li>
+<li>&quot;Full project report&quot;</li>
+<li>&quot;Summarize the entire development history&quot;</li>
+<li>&quot;What's the story of this project?&quot;</li>
+</ul>
+<h4>Prerequisites</h4>
+<p>The claude-mem worker must be running. The project must have claude-mem observations recorded.</p>
+<p><strong>Resolve the worker port</strong> (do this once at the start and reuse <code>$WORKER_PORT</code> in every curl call below):</p>
+<pre><code class="language-bash">WORKER_PORT=&quot;${CLAUDE_MEM_WORKER_PORT:-$(node -e &quot;const fs=require('fs'),p=require('path'),os=require('os');const uid=(typeof process.getuid==='function'?process.getuid():77);const fallback=String(37700+(uid%100));try{const s=JSON.parse(fs.readFileSync(p.join(os.homedir(),'.claude-mem','settings.json'),'utf-8'));process.stdout.write(String(s.CLAUDE_MEM_WORKER_PORT||fallback));}catch{process.stdout.write(fallback);}&quot; 2&gt;/dev/null)}&quot;
+</code></pre>
+<p>This honors <code>CLAUDE_MEM_WORKER_PORT</code> env, then <code>~/.claude-mem/settings.json</code>, then falls back to the per-UID default <code>37700 + (uid % 100)</code> — matching how the worker itself picks its port. Required for multi-account setups (#2101) and any user who has overridden the default port (#2103).</p>
+<h4>Workflow</h4>
+<h5>Step 1: Determine the Project Name</h5>
+<p>Ask the user which project to analyze if not obvious from context. The project name is typically the directory name of the project (e.g., &quot;tokyo&quot;, &quot;my-app&quot;). If the user says &quot;this project&quot;, use the current working directory's basename.</p>
+<p><strong>Worktree Detection:</strong> Before using the directory basename, check if the current directory is a git worktree. In a worktree, the data source is the <strong>parent project</strong>, not the worktree directory itself. Run:</p>
+<pre><code class="language-bash">git_dir=$(git rev-parse --git-dir 2&gt;/dev/null)
+git_common_dir=$(git rev-parse --git-common-dir 2&gt;/dev/null)
+if [ &quot;$git_dir&quot; != &quot;$git_common_dir&quot; ]; then
+  # We're in a worktree — resolve the parent project name
+  parent_project=$(basename &quot;$(dirname &quot;$git_common_dir&quot;)&quot;)
+  echo &quot;Worktree detected. Parent project: $parent_project&quot;
+else
+  parent_project=$(basename &quot;$PWD&quot;)
+fi
+echo &quot;$parent_project&quot;
+</code></pre>
+<p>If a worktree is detected, use <code>$parent_project</code> (the basename of the parent repo) as the project name for all API calls. Inform the user: &quot;Detected git worktree. Using parent project '[name]' as the data source.&quot;</p>
+<h5>Step 2: Fetch the Full Timeline</h5>
+<p>Use Bash to fetch the complete timeline from the claude-mem worker API:</p>
+<pre><code class="language-bash">curl -s &quot;http://localhost:${WORKER_PORT}/api/context/inject?project=PROJECT_NAME&amp;full=true&quot;
+</code></pre>
+<p>This returns the entire compressed timeline -- every observation, session boundary, and summary across the project's full history. The response is pre-formatted markdown optimized for LLM consumption.</p>
+<p><strong>Token estimates:</strong> The full timeline size depends on the project's history:</p>
+<ul>
+<li>Small project (&lt; 1,000 observations): ~20-50K tokens</li>
+<li>Medium project (1,000-10,000 observations): ~50-300K tokens</li>
+<li>Large project (10,000-35,000 observations): ~300-750K tokens</li>
+</ul>
+<p>If the response is empty or returns an error, the worker may not be running or the project name may be wrong. Try <code>curl -s &quot;http://localhost:${WORKER_PORT}/api/search?query=*&amp;limit=1&quot;</code> to verify the worker is healthy.</p>
+<h5>Step 3: Estimate Token Count</h5>
+<p>Before proceeding, estimate the token count of the fetched timeline (roughly 1 token per 4 characters). Report this to the user:</p>
+<pre><code>Timeline fetched: ~X observations, estimated ~Yk tokens.
+This analysis will consume approximately Yk input tokens + ~5-10k output tokens.
+Proceed? (y/n)
+</code></pre>
+<p>Wait for user confirmation before continuing if the timeline exceeds 100K tokens.</p>
+<h5>Step 4: Analyze with a Subagent</h5>
+<p>Deploy an Agent (using the Task tool) with the full timeline and the following analysis prompt. Pass the ENTIRE timeline as context to the agent. The agent should also be instructed to query the SQLite database at <code>~/.claude-mem/claude-mem.db</code> for the Token Economics section.</p>
+<p><strong>Agent prompt:</strong></p>
+<pre><code>You are a technical historian analyzing a software project's complete development timeline from claude-mem's persistent memory system. The timeline below contains every observation, session boundary, and summary recorded across the project's entire history.
+
+You also have access to the claude-mem SQLite database at ~/.claude-mem/claude-mem.db. Use it to run queries for the Token Economics &amp; Memory ROI section. The database has an &quot;observations&quot; table with columns: id, memory_session_id, project, text, type, title, subtitle, facts, narrative, concepts, files_read, files_modified, prompt_number, discovery_tokens, created_at, created_at_epoch, content_hash, generated_by_model, relevance_count, merged_into_project, agent_type, agent_id, metadata.
+
+Write a comprehensive narrative report titled &quot;Journey Into [PROJECT_NAME]&quot; that covers:
+
+## Required Sections
+
+1. **Project Genesis** -- When and how the project started. What were the first commits, the initial vision, the founding technical decisions? What problem was being solved?
+
+2. **Architectural Evolution** -- How did the architecture change over time? What were the major pivots? Why did they happen? Trace the evolution from initial design through each significant restructuring.
+
+3. **Key Breakthroughs** -- Identify the &quot;aha&quot; moments: when a difficult problem was finally solved, when a new approach unlocked progress, when a prototype first worked. These are the observations where the tone shifts from investigation to resolution.
+
+4. **Work Patterns** -- Analyze the rhythm of development. Identify debugging cycles (clusters of bug fixes), feature sprints (rapid observation sequences), refactoring phases (architectural changes without new features), and exploration phases (many discoveries without changes).
+
+5. **Technical Debt** -- Track where shortcuts were taken and when they were paid back. Identify patterns of accumulation (rapid feature work) and resolution (dedicated refactoring sessions).
+
+6. **Challenges and Debugging Sagas** -- The hardest problems encountered. Multi-session debugging efforts, architectural dead-ends that required backtracking, platform-specific issues that took days to resolve.
+
+7. **Memory and Continuity** -- How did persistent memory (claude-mem itself, if applicable) affect the development process? Were there moments where recalled context from prior sessions saved significant time or prevented repeated mistakes?
+
+8. **Token Economics &amp; Memory ROI** -- Quantitative analysis of how memory recall saved work:
+   - Query the database directly for these metrics using `sqlite3 ~/.claude-mem/claude-mem.db`
+   - Count total discovery_tokens across all observations (the original cost of all work)
+   - Count sessions that had context injection available (sessions after the first)
+   - Calculate the compression ratio: average discovery_tokens vs average read_tokens per observation
+   - Identify the highest-value observations (highest discovery_tokens -- these are the most expensive decisions, bugs, and discoveries that memory prevents re-doing)
+   - Identify explicit recall events (observations where narrative mentions &quot;recalled&quot;, &quot;from memory&quot;, &quot;previous session&quot;)
+   - Estimate passive recall savings: each session with context injection receives ~50 observations. Use a 30% relevance factor (conservative estimate that 30% of injected context prevents re-work). Savings = sessions_with_context × avg_discovery_value_of_50_obs_window × 0.30
+   - Estimate explicit recall savings: ~10K tokens per explicit recall query
+   - Calculate net ROI: total_savings / total_read_tokens_invested
+   - Present as a table with monthly breakdown
+   - Highlight the top 5 most expensive observations by discovery_tokens -- these represent the highest-value memories in the system (architecture decisions, hard bugs, implementation plans that cost 100K+ tokens to produce originally)
+
+   Use these SQL queries as a starting point:
+   ```sql
+   -- Total discovery tokens
+   SELECT SUM(discovery_tokens) FROM observations WHERE project = 'PROJECT_NAME';
+
+   -- Sessions with context available (not the first session)
+   SELECT COUNT(DISTINCT memory_session_id) FROM observations WHERE project = 'PROJECT_NAME';
+
+   -- Average tokens per observation
+   SELECT AVG(discovery_tokens) as avg_discovery, AVG(LENGTH(title || COALESCE(subtitle,'') || COALESCE(narrative,'') || COALESCE(facts,'')) / 4) as avg_read FROM observations WHERE project = 'PROJECT_NAME' AND discovery_tokens &gt; 0;
+
+   -- Top 5 most expensive observations (highest-value memories)
+   SELECT id, title, discovery_tokens FROM observations WHERE project = 'PROJECT_NAME' ORDER BY discovery_tokens DESC LIMIT 5;
+
+   -- Monthly breakdown
+   SELECT strftime('%Y-%m', created_at) as month, COUNT(*) as obs, SUM(discovery_tokens) as total_discovery, COUNT(DISTINCT memory_session_id) as sessions FROM observations WHERE project = 'PROJECT_NAME' GROUP BY month ORDER BY month;
+
+   -- Explicit recall events
+   SELECT COUNT(*) FROM observations WHERE project = 'PROJECT_NAME' AND (narrative LIKE '%recalled%' OR narrative LIKE '%from memory%' OR narrative LIKE '%previous session%');
+</code></pre>
+<ol start="9">
+<li>
+<p><strong>Timeline Statistics</strong> -- Quantitative summary:</p>
+<ul>
+<li>Date range (first observation to last)</li>
+<li>Total observations and sessions</li>
+<li>Breakdown by observation type (features, bug fixes, discoveries, decisions, changes)</li>
+<li>Most active days/weeks</li>
+<li>Longest debugging sessions</li>
+</ul>
+</li>
+<li>
+<p><strong>Lessons and Meta-Observations</strong> -- What patterns emerge from the full history? What would a new developer learn about this codebase from reading the timeline? What recurring themes or principles guided development?</p>
+</li>
+</ol>
+<h4>Writing Style</h4>
+<ul>
+<li>Write as a technical narrative, not a list of bullet points</li>
+<li>Use specific observation IDs and timestamps when referencing events (e.g., &quot;On Dec 14 (#26766), the root cause was finally identified...&quot;)</li>
+<li>Connect events across time -- show how early decisions created later consequences</li>
+<li>Be honest about struggles and dead ends, not just successes</li>
+<li>Target 3,000-6,000 words depending on project size</li>
+<li>Use markdown formatting with headers, emphasis, and code references where appropriate</li>
+</ul>
+<h4>Important</h4>
+<ul>
+<li>Analyze the ENTIRE timeline chronologically -- do not skip early history</li>
+<li>Look for narrative arcs: problem -&gt; investigation -&gt; solution</li>
+<li>Identify turning points where the project's direction fundamentally changed</li>
+<li>Note any observations about the development process itself (tooling, workflow, collaboration patterns)</li>
+</ul>
+<p>Here is the complete project timeline:</p>
+<p>[TIMELINE CONTENT GOES HERE]</p>
+<pre><code>
+### Step 5: Save the Report
+
+Save the agent's output as a markdown file. Default location:
+
+</code></pre>
+<p>./journey-into-PROJECT_NAME.md</p>
+<pre><code>
+Or if the user specified a different output path, use that instead.
+
+### Step 6: Report Completion
+
+Tell the user:
+- Where the report was saved
+- The approximate token cost (input timeline + output report)
+- The date range covered
+- Number of observations analyzed
+
+## Error Handling
+
+- **Empty timeline:** &quot;No observations found for project 'X'. Check the project name with: `curl -s \&quot;http://localhost:${WORKER_PORT}/api/search?query=*&amp;limit=1\&quot;`&quot;
+- **Worker not running:** &quot;The claude-mem worker is not responding on port ${WORKER_PORT}. Start it with your usual method or check `ps aux | grep worker-service`.&quot;
+- **Timeline too large:** For projects with 50,000+ observations, the timeline may exceed context limits. Suggest using date range filtering: `curl -s &quot;http://localhost:${WORKER_PORT}/api/context/inject?project=X&amp;full=true&quot;` -- the current endpoint returns all observations; for extremely large projects, the user may want to analyze in time-windowed segments.
+
+## Example
+
+User: &quot;Write a journey report for the tokyo project&quot;
+
+1. Fetch: `curl -s &quot;http://localhost:${WORKER_PORT}/api/context/inject?project=tokyo&amp;full=true&quot;`
+2. Estimate: &quot;Timeline fetched: ~34,722 observations, estimated ~718K tokens. Proceed?&quot;
+3. User confirms
+4. Deploy analysis agent with full timeline
+5. Save to `./journey-into-tokyo.md`
+6. Report: &quot;Report saved. Analyzed 34,722 observations spanning Oct 2025 - Mar 2026 (~718K input tokens, ~8K output tokens).&quot;
+</code></pre>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

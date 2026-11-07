@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>deployment-pipeline-design · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re designing CI/CD for a new service, adding gates between environments, moving to canary or blue-green releases, or debugging a stuck deployment gate. It does: works from your app, deployment target, environments, rollout and gate needs and monitoring stack to lay out stages, gates, rollout strategy, health checks and rollback. You get: a pipeline configuration, a chosen rollout strategy with annotated settings, health checks and smoke tests, gate definitions and a rollback plan. Troubleshoots: health checks that pass while production is broken, canaries that never promote, production jobs that never start, slow Docker builds and rollbacks that clash with migrations. Works with: GitHub Actions, GitLab CI, Azure Pipelines, Kubernetes and Argo Rollouts, in examples across two reference files." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=wshobson%2Fagents">wshobson/agents</a></p>
+      <h1>deployment-pipeline-design</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re designing CI/CD for a new service, adding gates between environments, moving to canary or blue-green releases, or debugging a stuck deployment gate</dd></div><div><dt>It does</dt><dd>works from your app, deployment target, environments, rollout and gate needs and monitoring stack to lay out stages, gates, rollout strategy, health checks and rollback</dd></div><div><dt>You get</dt><dd>a pipeline configuration, a chosen rollout strategy with annotated settings, health checks and smoke tests, gate definitions and a rollback plan</dd></div><div><dt>Troubleshoots</dt><dd>health checks that pass while production is broken, canaries that never promote, production jobs that never start, slow Docker builds and rollbacks that clash with migrations</dd></div><div><dt>Works with</dt><dd>GitHub Actions, GitLab CI, Azure Pipelines, Kubernetes and Argo Rollouts, in examples across two reference files</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A reference for pipeline architecture rather than one CI product. The SKILL.md says what to give it and what it produces, then troubleshoots five failures: a shallow /ping health check that hides an unreachable database, an Argo Rollouts canary stuck because its Prometheus query returns no data, a production approval gate with no reviewer assigned, a Dockerfile that copies the source before installing dependencies, and a rollback that leaves new migrations under old code (keep migrations additive, with undo scripts). Its first reference file covers the stages from build to rollback; manual, delayed, multi-approver and metric-based gates; a decision table for rolling, blue-green, canary, recreate and feature-flag releases; shallow and deep health endpoints; a post-deploy check script; automated and manual rollback with kubectl; and DORA metrics. A second file holds full pipelines for GitHub Actions, GitLab CI and Azure Pipelines, multi-region canaries, advanced Argo Rollouts, expand/contract migrations, deployment freeze windows and Slack notifications. It points to github-actions-templates, gitlab-ci-patterns and secrets-management for one platform&#39;s details or for secrets.</p>
+      <p class="muted">Summarizes <a href="https://github.com/wshobson/agents/tree/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/cicd-automation/skills/deployment-pipeline-design">the skill at 4bde316</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/wshobson/agents --skill deployment-pipeline-design</code><button type="button" class="copy" data-copy="npx skills add https://github.com/wshobson/agents --skill deployment-pipeline-design">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/wshobson/agents/deployment-pipeline-design">skills.sh page</a> · <a href="https://github.com/wshobson/agents/tree/HEAD/plugins/cicd-automation/skills/deployment-pipeline-design">Source on GitHub</a> · <a href="/skillhub/?repo=wshobson%2Fagents">All skills from wshobson/agents</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>14,200 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>42,267 <span class="muted">wshobson/agents</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">221</div>
+      <div class="stat-delta">+7% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 206; week to Sep 26: 234; week to Oct 3: 242; week to Oct 10: 299; week to Oct 17: 243; week to Oct 24: 223; week to Oct 31: 209; week to Nov 7: 221. Use the left and right arrow keys to read each week."
+        data-values="206,234,242,299,243,223,209,221" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,19.7 38.6,15.6 71.1,14.4 103.7,6.0 136.3,14.2 168.9,17.2 201.4,19.2 234.0,17.5" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="17.5" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>206</td></tr><tr><td>Sep 26</td><td>234</td></tr><tr><td>Oct 3</td><td>242</td></tr><tr><td>Oct 10</td><td>299</td></tr><tr><td>Oct 17</td><td>243</td></tr><tr><td>Oct 24</td><td>223</td></tr><tr><td>Oct 31</td><td>209</td></tr><tr><td>Nov 7</td><td>221</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:cloud" data-facet="category" title="Deploy, provision, observe and debug cloud apps." href="/skillhub/?tag=category%3Acloud">category:cloud</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Deploy, provision, observe and debug cloud apps.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/skillhub/?tag=type%3Aguidelines">type:guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="ci" data-facet="topic" href="/skillhub/?tag=ci">ci</a><a class="tag" data-tag="deployment" data-facet="topic" href="/skillhub/?tag=deployment">deployment</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/wshobson/agents/blob/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/cicd-automation/skills/deployment-pipeline-design/SKILL.md">wshobson/agents at 4bde316</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: deployment-pipeline-design
+description: Design multi-stage CI/CD pipelines with approval gates, security checks, and deployment orchestration. Use this skill when designing zero-downtime deployment pipelines, implementing canary rollout strategies, setting up multi-environment promotion workflows, or debugging failed deployment gates in CI/CD.</code></pre></details>
+        <div class="markdown"><h3>Deployment Pipeline Design</h3>
+<p>Architecture patterns for multi-stage CI/CD pipelines with approval gates, deployment strategies, and environment promotion workflows.</p>
+<h4>Purpose</h4>
+<p>Design robust, secure deployment pipelines that balance speed with safety through proper stage organization, automated quality gates, and progressive delivery strategies. This skill covers both the structural design of pipeline architecture and the operational patterns for reliable production deployments.</p>
+<h4>Input / Output</h4>
+<h5>What You Provide</h5>
+<ul>
+<li><strong>Application type</strong>: Language/runtime, containerized or bare-metal, monolith or microservices</li>
+<li><strong>Deployment target</strong>: Kubernetes, ECS, VMs, serverless, or platform-as-a-service</li>
+<li><strong>Environment topology</strong>: Number of environments (dev/staging/prod), region layout, air-gap requirements</li>
+<li><strong>Rollout requirements</strong>: Acceptable downtime, rollback SLA, traffic splitting needs, canary vs blue-green preference</li>
+<li><strong>Gate constraints</strong>: Approval teams, required test coverage thresholds, compliance scans (SAST, DAST, SCA)</li>
+<li><strong>Monitoring stack</strong>: Prometheus, Datadog, CloudWatch, or other metrics sources used for automated promotion decisions</li>
+</ul>
+<h5>What This Skill Produces</h5>
+<ul>
+<li><strong>Pipeline configuration</strong>: Stage definitions, job dependencies, parallelism, and caching strategy</li>
+<li><strong>Deployment strategy</strong>: Chosen rollout pattern with annotated configuration (canary weights, blue-green switchover, rolling parameters)</li>
+<li><strong>Health check setup</strong>: Shallow vs deep readiness probes, post-deployment smoke test scripts</li>
+<li><strong>Gate definitions</strong>: Automated metric thresholds and manual approval workflows</li>
+<li><strong>Rollback plan</strong>: Automated rollback triggers and manual runbook steps</li>
+</ul>
+<h4>When to Use</h4>
+<ul>
+<li>Design CI/CD architecture for a new service or platform migration</li>
+<li>Implement deployment gates between environments</li>
+<li>Configure multi-environment pipelines with mandatory security scanning</li>
+<li>Establish progressive delivery with canary or blue-green strategies</li>
+<li>Debug pipelines where stages succeed but production behavior is wrong</li>
+<li>Reduce mean time to recovery by automating rollback on metric degradation</li>
+</ul>
+<h4>Detailed patterns and worked examples</h4>
+<p>Detailed pattern documentation lives in <code>references/details.md</code>. Read that file when the navigation tier above is insufficient.</p>
+<h4>Troubleshooting</h4>
+<h5>Health check passes in pipeline but service is unhealthy in production</h5>
+<p>The pipeline health check is hitting a shallow <code>/ping</code> endpoint that returns 200 even when the database is unreachable. Use a deep readiness check that verifies actual dependencies (see Health Checks section above).</p>
+<h5>Canary deployment never promotes to 100%</h5>
+<p>Argo Rollouts requires a valid <code>AnalysisTemplate</code> to auto-promote. If the Prometheus query returns no data (e.g., metric name changed), the analysis stays inconclusive and promotion stalls. Add <code>inconclusiveLimit</code> so the rollout fails fast rather than hanging:</p>
+<pre><code class="language-yaml">spec:
+  metrics:
+  - name: error-rate
+    failureCondition: &quot;result[0] &gt; 0.05&quot;
+    inconclusiveLimit: 2   # fail after 2 inconclusive results, not hang indefinitely
+    provider:
+      prometheus:
+        query: |
+          sum(rate(http_requests_total{status=~&quot;5..&quot;}[2m]))
+          / sum(rate(http_requests_total[2m]))
+</code></pre>
+<h5>Staging deploy succeeds but production job never starts</h5>
+<p>Check that production environment protection rules are configured — a missing reviewer assignment means the approval gate waits indefinitely with no notification. In GitHub Actions, ensure <code>Required reviewers</code> is set to an existing user or team in <strong>Settings → Environments → production</strong>.</p>
+<h5>Docker layer cache busted on every run causing slow builds</h5>
+<p>If <code>COPY . .</code> appears before dependency installation, any source file change invalidates the dependency layer. Reorder to copy dependency manifests first:</p>
+<pre><code class="language-dockerfile"># Good: dependencies cached separately from source code
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+</code></pre>
+<h5>Rollback leaves database migrations applied to old code</h5>
+<p>A service rollback without a migration rollback causes schema/code mismatch errors. Always make migrations backward-compatible (additive only) for at least one release cycle, and keep undo scripts versioned alongside the migration:</p>
+<pre><code class="language-bash"># migrations/V20240315__add_nullable_column.sql       (forward)
+# migrations/V20240315__add_nullable_column.undo.sql  (backward)
+</code></pre>
+<p>Never run destructive migrations (DROP COLUMN, ALTER NOT NULL) until the old code version is fully retired from all environments.</p>
+<h4>Advanced Topics</h4>
+<p>For platform-specific pipeline configurations, multi-region promotion workflows, and advanced Argo Rollouts patterns, see:</p>
+<ul>
+<li><a href="https://github.com/wshobson/agents/blob/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/cicd-automation/skills/deployment-pipeline-design/references/advanced-strategies.md"><code>references/advanced-strategies.md</code></a> — Extended YAML examples, platform-specific configs (GitHub Actions, GitLab CI, Azure Pipelines), multi-region canary patterns, and database migration rollback strategies</li>
+</ul>
+<h4>Related Skills</h4>
+<ul>
+<li><code>github-actions-templates</code> - For GitHub Actions implementation patterns and reusable workflows</li>
+<li><code>gitlab-ci-patterns</code> - For GitLab CI/CD pipeline implementation</li>
+<li><code>secrets-management</code> - For secrets handling in CI/CD pipelines</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

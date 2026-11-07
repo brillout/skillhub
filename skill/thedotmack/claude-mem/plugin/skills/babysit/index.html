@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>babysit · SkillHub</title>
+    <meta name="description" content="Use it when: you want the agent to stay on a pull request until it&#039;s ready to merge. It does: watches pending checks, reads new comments and unresolved review threads, fixes real issues, pushes, then checks again. You get: a PR with passing checks and no open threads, plus a report: commit SHA, check results, open threads, tests run and uncommitted local files left alone. Won&#039;t: resolve a review thread until it has verified the code addresses it, or stop while actionable comments remain. Needs: the GitHub CLI (gh) signed in, and jq." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=thedotmack%2Fclaude-mem">thedotmack/claude-mem</a></p>
+      <h1>babysit</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want the agent to stay on a pull request until it&#39;s ready to merge</dd></div><div><dt>It does</dt><dd>watches pending checks, reads new comments and unresolved review threads, fixes real issues, pushes, then checks again</dd></div><div><dt>You get</dt><dd>a PR with passing checks and no open threads, plus a report: commit SHA, check results, open threads, tests run and uncommitted local files left alone</dd></div><div><dt>Won&#39;t</dt><dd>resolve a review thread until it has verified the code addresses it, or stop while actionable comments remain</dd></div><div><dt>Needs</dt><dd>the GitHub CLI (gh) signed in, and jq</dd></div></dl></section>
+      
+      <p class="note">Commits and pushes fixes to the PR&#39;s branch and resolves review threads on GitHub without stopping to ask, and keeps polling until the PR is clean. Needs gh signed in, and jq.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>The agent finds the PR, its branch and base, checks it isn&#39;t a draft, and reads its status with gh pr view: mergeability, checks, review decision and comments. It lists unresolved review threads through GitHub&#39;s GraphQL API, paging through all of them, and polls pending checks, usually every 30 to 60 seconds. Bot comments are leads, not facts: it checks each finding against the code, and whether a thread refers to stale code. Real issues get focused commits, the relevant tests or builds, and a push, then the loop starts again. When a generated file ships with the code, it makes sure the source and the generated file agree before resolving the comment. It stops only when checks pass or are intentionally skipped, the review decision is acceptable and no actionable comments or unresolved threads remain, and does one last sweep, including local git status, before reporting. claude-mem&#39;s build skill runs it last, after make-plan and do.</p>
+      <p class="muted">Summarizes <a href="https://github.com/thedotmack/claude-mem/tree/31ebffbb112260183c91bbf901a4da22e241018f/plugin/skills/babysit">the skill at 31ebffb</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/thedotmack/claude-mem --skill babysit</code><button type="button" class="copy" data-copy="npx skills add https://github.com/thedotmack/claude-mem --skill babysit">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/thedotmack/claude-mem/babysit">skills.sh page</a> · <a href="https://github.com/thedotmack/claude-mem/tree/HEAD/plugin/skills/babysit">Source on GitHub</a> · <a href="/skillhub/?repo=thedotmack%2Fclaude-mem">All skills from thedotmack/claude-mem</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,200 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>114,080 <span class="muted">thedotmack/claude-mem</span></dd></div><div><dt>First seen</dt><dd>May 6, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">150</div>
+      <div class="stat-delta">-9% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 164; week to Sep 26: 109; week to Oct 3: 100; week to Oct 10: 98; week to Oct 17: 109; week to Oct 24: 127; week to Oct 31: 121; week to Nov 7: 150. Use the left and right arrow keys to read each week."
+        data-values="164,109,100,98,109,127,121,150" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,20.8 71.1,23.2 103.7,23.7 136.3,20.8 168.9,15.9 201.4,17.5 234.0,9.8" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="9.8" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>164</td></tr><tr><td>Sep 26</td><td>109</td></tr><tr><td>Oct 3</td><td>100</td></tr><tr><td>Oct 10</td><td>98</td></tr><tr><td>Oct 17</td><td>109</td></tr><tr><td>Oct 24</td><td>127</td></tr><tr><td>Oct 31</td><td>121</td></tr><tr><td>Nov 7</td><td>150</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:remote" data-facet="effect" title="Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service." href="/skillhub/?tag=effect%3Aremote">effect:remote</a></div>
+          <p class="tag-meaning">Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="code-review" data-facet="topic" href="/skillhub/?tag=code-review">code-review</a><a class="tag" data-tag="ci" data-facet="topic" href="/skillhub/?tag=ci">ci</a><a class="tag" data-tag="git" data-facet="topic" href="/skillhub/?tag=git">git</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:github" data-facet="stack" href="/skillhub/?tag=stack%3Agithub">stack:github</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/thedotmack/claude-mem/blob/31ebffbb112260183c91bbf901a4da22e241018f/plugin/skills/babysit/SKILL.md">thedotmack/claude-mem at 31ebffb</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: babysit
+description: Watch a pull request or review cycle until it is ready to merge. Use when asked to babysit, monitor, or keep checking PR comments, reviews, and CI until all actionable issues are resolved.</code></pre></details>
+        <div class="markdown"><h3>Babysit PR</h3>
+<p>Stay with the PR until it is actually clean. Do not stop after one check pass if comments or review threads are still unresolved.</p>
+<h4>Workflow</h4>
+<ol>
+<li>Identify the PR number, branch, and base branch.</li>
+<li>Confirm the PR is not draft and inspect mergeability, checks, review decision, comments, and review threads.</li>
+<li>Watch pending checks until they finish. Poll at a practical interval, usually 30-60 seconds unless the user asks for a different cadence.</li>
+<li>Read new comments and unresolved review threads. Treat bot summaries as useful, but verify actionable findings against the code.</li>
+<li>Fix real issues in focused commits, run relevant tests/builds, push, and return to step 2.</li>
+<li>Resolve stale review threads only after verifying the code or generated artifact now addresses the comment.</li>
+<li>Stop only when checks are passing or intentionally skipped, review decision is acceptable, no actionable comments remain, and no unresolved review threads remain.</li>
+</ol>
+<h4>GitHub CLI Checks</h4>
+<p>Use <code>gh pr view</code> for the coarse status:</p>
+<pre><code class="language-bash">gh pr view &lt;number&gt; --json \
+  number,state,isDraft,mergeable,mergeStateStatus,reviewDecision,headRefOid,statusCheckRollup,url
+</code></pre>
+<p>Resolve the repository owner/name before using GraphQL:</p>
+<pre><code class="language-bash">repo_json=$(gh repo view --json owner,name)
+owner=$(jq -r '.owner.login // .owner.name' &lt;&lt;&lt;&quot;$repo_json&quot;)
+repo=$(jq -r '.name' &lt;&lt;&lt;&quot;$repo_json&quot;)
+</code></pre>
+<p>Use GraphQL for unresolved review threads. Include <code>pageInfo</code>; omit <code>cursor</code> on the first page, then pass the previous <code>endCursor</code> with <code>-f cursor=&quot;$cursor&quot;</code> while <code>hasNextPage</code> is <code>true</code>.</p>
+<pre><code class="language-bash">gh api graphql \
+  -f query='query($owner:String!,$repo:String!,$number:Int!,$cursor:String){repository(owner:$owner,name:$repo){pullRequest(number:$number){reviewThreads(first:100,after:$cursor){pageInfo{hasNextPage endCursor}nodes{id,isResolved,isOutdated,path,line,comments(last:1){nodes{author{login},body,createdAt,url}}}}}}}' \
+  -f owner=&quot;$owner&quot; -f repo=&quot;$repo&quot; -F number=&lt;number&gt;
+</code></pre>
+<p>Use this loop when a PR may have many review threads:</p>
+<pre><code class="language-bash">thread_query='query($owner:String!,$repo:String!,$number:Int!,$cursor:String){repository(owner:$owner,name:$repo){pullRequest(number:$number){reviewThreads(first:100,after:$cursor){pageInfo{hasNextPage endCursor}nodes{id,isResolved,isOutdated,path,line,comments(last:1){nodes{author{login},body,createdAt,url}}}}}}}'
+cursor_args=()
+
+while :; do
+  page=$(gh api graphql -f query=&quot;$thread_query&quot; -f owner=&quot;$owner&quot; -f repo=&quot;$repo&quot; -F number=&lt;number&gt; &quot;${cursor_args[@]}&quot;)
+  printf '%s\n' &quot;$page&quot; | jq -r '.data.repository.pullRequest.reviewThreads.nodes[]
+    | select(.isResolved==false)
+    | [.id,.path,(.line//&quot;&quot;),(.isOutdated|tostring),(.comments.nodes[-1].author.login//&quot;&quot;),(.comments.nodes[-1].body|gsub(&quot;\n&quot;;&quot; &quot;)|.[0:240])]
+    | @tsv'
+
+  jq -e '.data.repository.pullRequest.reviewThreads.pageInfo.hasNextPage' &gt;/dev/null &lt;&lt;&lt;&quot;$page&quot; || break
+  cursor=$(jq -r '.data.repository.pullRequest.reviewThreads.pageInfo.endCursor' &lt;&lt;&lt;&quot;$page&quot;)
+  cursor_args=(-f cursor=&quot;$cursor&quot;)
+done
+</code></pre>
+<p>Filter unresolved threads with <code>jq</code>:</p>
+<pre><code class="language-bash">jq -r '.data.repository.pullRequest.reviewThreads.nodes[]
+  | select(.isResolved==false)
+  | [.id,.path,(.line//&quot;&quot;),(.isOutdated|tostring),(.comments.nodes[-1].author.login//&quot;&quot;),(.comments.nodes[-1].body|gsub(&quot;\n&quot;;&quot; &quot;)|.[0:240])]
+  | @tsv'
+</code></pre>
+<p>Resolve a stale thread only when the fix is verified:</p>
+<pre><code class="language-bash">gh api graphql \
+  -f query='mutation($threadId:ID!){resolveReviewThread(input:{threadId:$threadId}){thread{id,isResolved}}}' \
+  -f threadId=&lt;thread-id&gt;
+</code></pre>
+<h4>Operating Rules</h4>
+<ul>
+<li>Keep the watcher running while long checks are pending.</li>
+<li>If a generated file is part of the distribution, verify the source and generated artifact agree before resolving comments.</li>
+<li>If a bot reports an issue against stale code, confirm whether the thread is outdated or addressed in the latest head.</li>
+<li>Before final reporting, do one fresh sweep of PR status, unresolved threads, recent comments, and local <code>git status</code>.</li>
+<li>Report concrete evidence: latest commit SHA, check names and results, unresolved thread count, tests run, and any dirty local files left untouched.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

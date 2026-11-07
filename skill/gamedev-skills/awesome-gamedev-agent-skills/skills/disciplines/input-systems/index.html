@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>input-systems · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re setting up controls, adding gamepad or touch support or a rebinding menu, or making jumps feel forgiving. It does: maps keys and buttons to named actions, binds each per device, filters sticks with a radial deadzone, buffers early presses and builds a rebinding screen that catches conflicts. You get: input code that gameplay reads by action name, with saved rebinds, a reset to defaults and prompts that switch with the device. Coyote time means: a short window after walking off a ledge in which a jump still works; buffering keeps an early jump press alive until landing. Code examples: Godot 4.7&#039;s InputMap, with the matching Unity Input System and Unreal Enhanced Input calls." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=gamedev-skills%2Fawesome-gamedev-agent-skills">gamedev-skills/awesome-gamedev-agent-skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/bundle/gamedev-skills/awesome-gamedev-agent-skills/">Gamedev Agent Skills</a></p>
+      <h1>input-systems</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re setting up controls, adding gamepad or touch support or a rebinding menu, or making jumps feel forgiving</dd></div><div><dt>It does</dt><dd>maps keys and buttons to named actions, binds each per device, filters sticks with a radial deadzone, buffers early presses and builds a rebinding screen that catches conflicts</dd></div><div><dt>You get</dt><dd>input code that gameplay reads by action name, with saved rebinds, a reset to defaults and prompts that switch with the device</dd></div><div><dt>Coyote time means</dt><dd>a short window after walking off a ledge in which a jump still works; buffering keeps an early jump press alive until landing</dd></div><div><dt>Code examples</dt><dd>Godot 4.7&#39;s InputMap, with the matching Unity Input System and Unreal Enhanced Input calls</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 12 of 27 in the <a href="/skillhub/bundle/gamedev-skills/awesome-gamedev-agent-skills/">Gamedev Agent Skills</a> bundle · Before it: <a href="/skillhub/skill/gamedev-skills/awesome-gamedev-agent-skills/skills/disciplines/level-design/">level-design</a> · After it: <a href="/skillhub/skill/gamedev-skills/awesome-gamedev-agent-skills/skills/disciplines/game-feel/">game-feel</a></p>
+    
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A discipline skill from a game-development collection. Its rule is never to wire gameplay to raw keys: gameplay asks whether jump is pressed, and bindings are data, which gives rebinding, multiple devices and accessibility almost for free. It separates pressed-this-frame checks for discrete actions from held checks for movement, applies a radial deadzone that rescales past its edge so diagonals aren&#39;t clipped, and keeps the response curve apart from sensitivity. Buffering and coyote windows last about a tenth of a second. Rebinding captures the next input, rejects a binding another action already uses, binds keyboard keys by physical position so WASD stays put on AZERTY or Dvorak, binds pads for every device rather than pad 0, and persists through the repo&#39;s save-systems skill. It checks every device, and a rebind mid-game. Pitfalls include accessibility gaps: required simultaneous presses, no remapping, hold-only actions and fixed sensitivity.</p>
+      <p class="muted">Summarizes <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/tree/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/input-systems">the skill at 19d93f9</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/gamedev-skills/awesome-gamedev-agent-skills --skill input-systems</code><button type="button" class="copy" data-copy="npx skills add https://github.com/gamedev-skills/awesome-gamedev-agent-skills --skill input-systems">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/gamedev-skills/awesome-gamedev-agent-skills/input-systems">skills.sh page</a> · <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/tree/HEAD/skills/disciplines/input-systems">Source on GitHub</a> · <a href="/skillhub/?repo=gamedev-skills%2Fawesome-gamedev-agent-skills">All skills from gamedev-skills/awesome-gamedev-agent-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>10,100 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>7,309 <span class="muted">gamedev-skills/awesome-gamedev-agent-skills</span></dd></div><div><dt>First seen</dt><dd>Jun 27, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">2K</div>
+      <div class="stat-delta">+410% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 387; week to Sep 26: 371; week to Oct 3: 423; week to Oct 10: 444; week to Oct 17: 530; week to Oct 24: 735; week to Oct 31: 1,636; week to Nov 7: 1,975. Use the left and right arrow keys to read each week."
+        data-values="387,371,423,444,530,735,1636,1975" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,41.4 38.6,41.7 71.1,40.6 103.7,40.1 136.3,38.2 168.9,33.6 201.4,13.6 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>387</td></tr><tr><td>Sep 26</td><td>371</td></tr><tr><td>Oct 3</td><td>423</td></tr><tr><td>Oct 10</td><td>444</td></tr><tr><td>Oct 17</td><td>530</td></tr><tr><td>Oct 24</td><td>735</td></tr><tr><td>Oct 31</td><td>1,636</td></tr><tr><td>Nov 7</td><td>1,975</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:design" data-facet="category" title="Taste for interfaces that don&#39;t look generated: direction, motion and accessibility." href="/skillhub/?tag=category%3Adesign">category:design</a><a class="tag" data-tag="category:games" data-facet="category" title="Make games: design, genres, game feel and game-jam workflows, whatever the engine." href="/skillhub/?tag=category%3Agames">category:games</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Taste for interfaces that don&#39;t look generated: direction, motion and accessibility.</p><p class="tag-meaning">Make games: design, genres, game feel and game-jam workflows, whatever the engine.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="architecture" data-facet="topic" href="/skillhub/?tag=architecture">architecture</a><a class="tag" data-tag="accessibility" data-facet="topic" href="/skillhub/?tag=accessibility">accessibility</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/input-systems/SKILL.md">gamedev-skills/awesome-gamedev-agent-skills at 19d93f9</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: input-systems
+description: &#62;
+  Architect game input — action mapping (abstracting keys into named actions),
+  rebinding with conflict detection and persistence, multi-device support
+  (keyboard, gamepad, touch), analog deadzones, and feel features like input
+  buffering and coyote time, plus accessibility. Engine-neutral. Use when the
+  user mentions input mapping, rebind controls, gamepad support, deadzone, input
+  buffering, coyote time, or accessible controls.</code></pre></details>
+        <div class="markdown"><h3>Input systems</h3>
+<p>Never wire gameplay to raw keys. Map physical inputs (a key, a button, a touch)
+to named <strong>actions</strong> (<code>jump</code>, <code>interact</code>, <code>move</code>), and let gameplay read actions.
+That one indirection gives you rebinding, multi-device support, and accessibility
+almost for free. This skill is the engine-neutral architecture; bind it to
+<code>unity-input-system</code>, <code>unreal-enhanced-input</code>, or Godot's <code>InputMap</code>.</p>
+<h4>When to use</h4>
+<ul>
+<li>Use to design an input layer: actions, bindings, multiple devices, and a
+rebinding UI with conflict detection and saved bindings.</li>
+<li>Use to add analog handling (deadzones, sensitivity) and game-feel features
+(input buffering, coyote time).</li>
+<li>Use to make controls accessible (full remapping, hold-vs-toggle, sensitivity,
+no required simultaneous presses).</li>
+</ul>
+<p><strong>When <em>not</em> to use:</strong> for an engine's concrete input package/API, use
+<code>unity-input-system</code>, <code>unreal-enhanced-input</code>, or Godot's InputMap. For the
+movement/jump <em>physics</em> the buffer feeds, see <code>physics-tuning</code> and the engine
+movement skill. Persisting bindings to disk is <code>save-systems</code>.</p>
+<h4>Core workflow</h4>
+<ol>
+<li><strong>Define actions, not keys.</strong> Gameplay asks &quot;is <code>jump</code> pressed?&quot;, never &quot;is
+Space pressed?&quot;. Actions are the stable contract; bindings are data.</li>
+<li><strong>Bind per device.</strong> Each action holds bindings for keyboard, gamepad, and
+touch. The active device is whichever last sent input; swap UI prompts to match.</li>
+<li><strong>Read the right edge.</strong> Use <em>pressed-this-frame</em> (edge) for discrete actions
+(jump, interact) and <em>held</em> (level) for continuous ones (move, aim). Confusing
+the two causes double-fires or missed presses.</li>
+<li><strong>Filter analog input.</strong> Apply a deadzone to sticks/triggers so resting drift
+reads as zero, and scale sensitivity/curve to taste.</li>
+<li><strong>Buffer for feel.</strong> Remember a pressed action for a short window so a slightly
+early press still fires (input buffering); allow a jump shortly after leaving a
+ledge (coyote time).</li>
+<li><strong>Make rebinding first-class.</strong> A UI that captures the next input, detects
+conflicts, and persists bindings — and a reset-to-default. Save via
+<code>save-systems</code>.</li>
+<li><strong>Verify on every device</strong> and with rebinds: keyboard, gamepad, touch; rebind
+an action mid-game and confirm gameplay and prompts follow.</li>
+</ol>
+<h4>Patterns</h4>
+<h5>1. Actions over raw keys; edge vs held</h5>
+<pre><code class="language-gdscript"># Gameplay reads ACTIONS. The mapping from key/button to action lives in data.
+# Discrete (edge): fire once on the press frame.
+if Input.is_action_just_pressed(&quot;jump&quot;):
+    try_jump()
+# Continuous (held): read every frame as an axis.
+var move := Input.get_axis(&quot;move_left&quot;, &quot;move_right&quot;)   # -1..1, one axis
+player.velocity.x = move * RUN_SPEED
+# Two axes (stick or WASD): get_vector applies a circular deadzone, rescales
+# past it and caps the length at 1, so diagonals are not faster.
+var dir := Input.get_vector(&quot;move_left&quot;, &quot;move_right&quot;, &quot;move_up&quot;, &quot;move_down&quot;)
+# RIGHT: name actions (&quot;jump&quot;); rebinding/devices just change the binding data.
+# WRONG: `if Input.is_key_pressed(KEY_SPACE)` — unrebindable, keyboard-only,
+# and `is_key_pressed` is a held check that would re-fire jump every frame.
+</code></pre>
+<p>Engine equivalents (Godot 4.7, Unity 6.3 LTS, Unreal 5.8): Godot <code>InputMap</code> +
+<code>Input.is_action_just_pressed</code> (valid in <code>_process</code> and <code>_physics_process</code>);
+Unity Input System <code>InputAction</code> / action maps; Unreal Enhanced Input <code>Input Actions</code> + <code>Input Mapping Contexts</code>.</p>
+<h5>2. Analog deadzone and sensitivity</h5>
+<pre><code class="language-gdscript"># Raw sticks never rest at exactly zero. Apply a RADIAL deadzone (on the vector
+# length), not per-axis, so diagonals aren't clipped into the axes.
+func apply_deadzone(stick: Vector2, dead := 0.2, curve := 1.0) -&gt; Vector2:
+    var mag := stick.length()
+    if mag &lt; dead:
+        return Vector2.ZERO                      # inside deadzone -&gt; no movement
+    # Rescale so motion ramps from 0 at the edge of the deadzone, not from `dead`.
+    var scaled := minf((mag - dead) / (1.0 - dead), 1.0)  # some pads report &gt; 1 on diagonals
+    return stick / mag * pow(scaled, curve)      # curve &gt; 1 = finer aim near center
+# WRONG: clamping each axis separately — it carves a square hole and snaps to axes.
+</code></pre>
+<p>Keep the response curve (exponent) separate from sensitivity (a plain gain on
+the result, usually a camera turn rate) and expose both. Godot's <code>get_vector</code>
+already does the deadzone and rescale above, using the average of the four
+actions' deadzones (0.2 by default per action) unless you pass one.</p>
+<h5>3. Input buffering + coyote time (forgiving, responsive feel)</h5>
+<pre><code class="language-gdscript"># Buffer: a jump pressed slightly BEFORE landing still triggers on touchdown.
+# Coyote: a jump pressed slightly AFTER walking off a ledge still works.
+const BUFFER := 0.12   # seconds an early press stays &quot;remembered&quot;
+const COYOTE := 0.10   # seconds after leaving ground you can still jump
+var _buffer_timer := 0.0
+var _coyote_timer := 0.0
+
+func _physics_process(dt):
+    _buffer_timer -= dt
+    _coyote_timer = COYOTE if is_on_floor() else _coyote_timer - dt
+    if Input.is_action_just_pressed(&quot;jump&quot;):
+        _buffer_timer = BUFFER                  # remember the press
+    if _buffer_timer &gt; 0.0 and _coyote_timer &gt; 0.0:
+        velocity.y = JUMP_VELOCITY
+        _buffer_timer = 0.0; _coyote_timer = 0.0  # consume both so it fires once
+</code></pre>
+<h5>4. Rebinding with conflict detection</h5>
+<pre><code class="language-gdscript"># Godot 4.7. Capture the next physical input, reject conflicts, then persist.
+var _waiting_for: StringName = &amp;&quot;&quot;               # set by the &quot;press a key for Jump&quot; button
+
+func _unhandled_input(event: InputEvent) -&gt; void:
+    if _waiting_for != &amp;&quot;&quot; and _is_bindable(event):
+        get_viewport().set_input_as_handled()
+        if not rebind(_waiting_for, event):
+            show_conflict_warning(event)         # offer swap or cancel
+        _waiting_for = &amp;&quot;&quot;
+
+func _is_bindable(e: InputEvent) -&gt; bool:
+    if e is InputEventKey or e is InputEventJoypadButton or e is InputEventMouseButton:
+        return e.pressed and not e.is_echo()     # ignore releases and key repeat
+    return e is InputEventJoypadMotion and absf(e.axis_value) &gt; 0.5  # ignore stick noise
+
+func rebind(action: StringName, captured: InputEvent) -&gt; bool:
+    var event := _to_binding(captured)
+    for other in InputMap.get_actions():
+        if other != action and not String(other).begins_with(&quot;ui_&quot;) \
+                and InputMap.action_has_event(other, event):
+            return false                         # already used -&gt; let UI warn/swap
+    for old in InputMap.action_get_events(action):
+        if old.get_class() == event.get_class():  # replace only this device kind's binding
+            InputMap.action_erase_event(action, old)
+    InputMap.action_add_event(action, event)
+    save_bindings()                              # persist (see save-systems)
+    return true
+
+func _to_binding(e: InputEvent) -&gt; InputEvent:
+    if e is InputEventKey:                       # bind the physical key, not the layout's letter
+        var k := InputEventKey.new()
+        k.physical_keycode = e.physical_keycode
+        return k
+    var b := e.duplicate() as InputEvent
+    b.device = -1                                # all devices: a pad binding must not stick to pad 0
+    if b is InputEventJoypadMotion:
+        b.axis_value = signf(b.axis_value)       # keep the direction only
+    return b
+# Compare bindings with action_has_event() / InputEvent.is_match(), never `==`:
+# two InputEvents with the same key are different objects, so `==` is false.
+# Always provide &quot;reset to defaults&quot; (InputMap.load_from_project_settings()), and
+# never let the player unbind a key they need to reach the menu without an alternative.
+</code></pre>
+<p>Keyboard bindings use the <strong>physical</strong> key (<code>physical_keycode</code>, with <code>keycode</code>
+left at 0, which is what makes Godot match by position), so WASD stays in the
+same place on AZERTY or Dvorak; show the label for the player's layout with
+<code>DisplayServer.keyboard_get_label_from_physical</code>. Unity Input System <code>action.PerformInteractiveRebinding()</code> and
+<code>SaveBindingOverridesAsJson()</code> / <code>LoadBindingOverridesFromJson()</code>; Unreal
+Enhanced Input <strong>User Settings</strong> (enable under Project Settings ▸ Enhanced Input)
+with player-mappable keys on the mapping context.</p>
+<h4>Pitfalls</h4>
+<ul>
+<li><strong>Hardcoding keys</strong> in gameplay blocks rebinding, locks out gamepad/touch, and
+scatters input logic. Read named actions only.</li>
+<li><strong>Edge vs held confusion</strong>: using a held check for jump re-fires every frame;
+using an edge check for movement drops held input. Match the check to the action.</li>
+<li><strong>Per-axis deadzones</strong> clip diagonal stick input and snap movement to the axes.
+Use a radial deadzone on the vector magnitude.</li>
+<li><strong>No buffering/coyote time</strong> makes tight platformers feel unfair even when the
+physics are correct — players &quot;clearly pressed jump&quot;. Add small windows.</li>
+<li><strong>Rebinding without conflict handling</strong> lets two actions share a key, or strands
+the player by unbinding menu access. Detect conflicts; guarantee a way back.</li>
+<li><strong>WASD lands in the wrong place on AZERTY/QWERTZ</strong>: bindings stored by key
+<em>letter</em> follow the layout. Store physical key positions and display the
+layout's label.</li>
+<li><strong>A rebound gamepad button works only for player 1</strong>: the captured event
+carried pad 0's device ID. Store bindings for all devices (Godot <code>device = -1</code>)
+unless the game assigns pads to players on purpose.</li>
+<li><strong>Not swapping prompts on device change</strong> shows &quot;Press Space&quot; to a gamepad
+player. Track the last-used device and switch glyphs.</li>
+<li><strong>Ignoring accessibility</strong>: required simultaneous presses, no remap, fixed
+sensitivity, hold-only actions. Offer remap, toggle-vs-hold, and sensitivity.</li>
+<li><strong>Reading input in the wrong loop</strong>: poll held state in the physics step for
+consistent movement; capture discrete presses so none are missed between frames.</li>
+</ul>
+<h4>References</h4>
+<ul>
+<li><code>references/buffering-and-accessibility.md</code> — buffering/coyote tuning, jump feel
+(variable height, apex), device detection and prompt swapping, touch controls,
+and an accessibility checklist (remap, toggle/hold, sensitivity, latency).</li>
+</ul>
+<h4>Related skills</h4>
+<ul>
+<li><code>unity-input-system</code>, <code>unreal-enhanced-input</code> — concrete engine input APIs
+(Godot uses <code>InputMap</code> + the <code>Input</code> singleton).</li>
+<li><code>save-systems</code> — persist custom key bindings and input settings.</li>
+<li><code>physics-tuning</code> — the movement the buffer/coyote windows feed into.</li>
+<li><code>platformer</code>, <code>fps-shooter</code> — genres whose feel depends on input handling.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

@@ -1,0 +1,983 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>site-launch-checklist · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re about to put a site or web app live, or migrate one, and want a full checklist run against it. It does: asks six setup questions, runs a launch-readiness gate, then walks each phase, running a check per item and asking whether to fix failures now or later. You get: a pass/fail report by phase, then lists of blockers, recommended fixes and optional improvements. Opinionated for: Cloudflare DNS, Vercel hosting, PostHog analytics, Google Workspace mail and French CNIL rules. Pulls in: a subset of six outside skill packs, such as claude-seo and web-quality-skills, installed only after you confirm. Needs: dig, curl, jq and npx; for browser checks, the Claude Chrome extension or Playwright, or you skip them." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=samber%2Fcc-skills">samber/cc-skills</a></p>
+      <h1>site-launch-checklist</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re about to put a site or web app live, or migrate one, and want a full checklist run against it</dd></div><div><dt>It does</dt><dd>asks six setup questions, runs a launch-readiness gate, then walks each phase, running a check per item and asking whether to fix failures now or later</dd></div><div><dt>You get</dt><dd>a pass/fail report by phase, then lists of blockers, recommended fixes and optional improvements</dd></div><div><dt>Opinionated for</dt><dd>Cloudflare DNS, Vercel hosting, PostHog analytics, Google Workspace mail and French CNIL rules</dd></div><div><dt>Pulls in</dt><dd>a subset of six outside skill packs, such as claude-seo and web-quality-skills, installed only after you confirm</dd></div><div><dt>Needs</dt><dd>dig, curl, jq and npx; for browser checks, the Claude Chrome extension or Playwright, or you skip them</dd></div></dl></section>
+      
+      <p class="note">Opinionated for Cloudflare, Vercel, PostHog and French law. One PostHog option is the author&#39;s own proxy, hogpost.samber.dev, and a few steps assume the author&#39;s own spreadsheets and sites. It asks before installing any of the skill packs it suggests.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>It first asks whether the product is simple, lovable and complete, and whether it&#39;s ready for directories: public, priced, with legal pages, assets and comparison pages. The phases then cover domain and hosting (proxy, TLS, SPF, DKIM and DMARC, CAA, DNSSEC, redirects, error pages) and backups with a restore drill; analytics, from GA4 behind consent to Search Console, Bing, Ahrefs, Google Alerts and F5bot, plus competitor analysis; French legal pages and a cookie banner that really blocks trackers; security headers at a CSP strictness you choose; SEO and GEO (getting cited in AI answers), with robots.txt and an AI-crawler policy, sitemaps, llms.txt, schema, hreflang, keyword research and alternative pages; Open Graph, favicons and the manifest; Lighthouse at 90 or more on mobile, Core Web Vitals and WCAG 2.2 AA; links from your other sites; an optional weekly SEO agent; directory submissions across 13 tiers; Product Hunt; G2 and Capterra reviews; and post-launch announcements. Marketing copy gets a TONE.md and a humanizer pass in the site&#39;s language. It asks at every decision point.</p>
+      <p class="muted">Summarizes <a href="https://github.com/samber/cc-skills/tree/50a33836b20f690c668af557bd9ef9d07a8c7ef2/skills/site-launch-checklist">the skill at 50a3383</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/samber/cc-skills --skill site-launch-checklist</code><button type="button" class="copy" data-copy="npx skills add https://github.com/samber/cc-skills --skill site-launch-checklist">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/samber/cc-skills/site-launch-checklist">skills.sh page</a> · <a href="https://github.com/samber/cc-skills/tree/HEAD/skills/site-launch-checklist">Source on GitHub</a> · <a href="/skillhub/?repo=samber%2Fcc-skills">All skills from samber/cc-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,400 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>242 <span class="muted">samber/cc-skills</span></dd></div><div><dt>First seen</dt><dd>May 15, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">654</div>
+      <div class="stat-delta">+4260% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 15; week to Sep 26: 45; week to Oct 3: 188; week to Oct 10: 389; week to Oct 17: 574; week to Oct 24: 763; week to Oct 31: 808; week to Nov 7: 654. Use the left and right arrow keys to read each week."
+        data-values="15,45,188,389,574,763,808,654" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,49.2 38.6,47.5 71.1,39.8 103.7,28.8 136.3,18.7 168.9,8.5 201.4,6.0 234.0,14.4" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="14.4" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>15</td></tr><tr><td>Sep 26</td><td>45</td></tr><tr><td>Oct 3</td><td>188</td></tr><tr><td>Oct 10</td><td>389</td></tr><tr><td>Oct 17</td><td>574</td></tr><tr><td>Oct 24</td><td>763</td></tr><tr><td>Oct 31</td><td>808</td></tr><tr><td>Nov 7</td><td>654</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:cloud" data-facet="category" title="Deploy, provision, observe and debug cloud apps." href="/skillhub/?tag=category%3Acloud">category:cloud</a><a class="tag" data-tag="category:marketing" data-facet="category" title="SEO, copy, conversion, social media and e-commerce." href="/skillhub/?tag=category%3Amarketing">category:marketing</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Deploy, provision, observe and debug cloud apps.</p><p class="tag-meaning">SEO, copy, conversion, social media and e-commerce.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:remote" data-facet="effect" title="Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service." href="/skillhub/?tag=effect%3Aremote">effect:remote</a></div>
+          <p class="tag-meaning">Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a><a class="tag" data-tag="needs:browser" data-facet="needs" title="Drives a real Chromium or Chrome browser." href="/skillhub/?tag=needs%3Abrowser">needs:browser</a><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/skillhub/?tag=needs%3Aaccount">needs:account</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">Drives a real Chromium or Chrome browser.</p><p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="deployment" data-facet="topic" href="/skillhub/?tag=deployment">deployment</a><a class="tag" data-tag="seo" data-facet="topic" href="/skillhub/?tag=seo">seo</a><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a><a class="tag" data-tag="performance" data-facet="topic" href="/skillhub/?tag=performance">performance</a><a class="tag" data-tag="accessibility" data-facet="topic" href="/skillhub/?tag=accessibility">accessibility</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:cloudflare" data-facet="stack" href="/skillhub/?tag=stack%3Acloudflare">stack:cloudflare</a><a class="tag" data-tag="stack:vercel" data-facet="stack" href="/skillhub/?tag=stack%3Avercel">stack:vercel</a><a class="tag" data-tag="stack:posthog" data-facet="stack" href="/skillhub/?tag=stack%3Aposthog">stack:posthog</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/samber/cc-skills/blob/50a33836b20f690c668af557bd9ef9d07a8c7ef2/skills/site-launch-checklist/SKILL.md">samber/cc-skills at 50a3383</a>. Checked daily, last changed Nov 7, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: site-launch-checklist
+description: &#34;Pre-launch checklist for shipping a new website or web app. Scope: analytics (GA4, PostHog, Google Search Console, Ahrefs), DNS, TLS and backups, legal and CNIL/GDPR compliance, security headers, SEO and GEO (robots.txt, sitemaps, llms.txt, hreflang, schema markup, keyword research), copywriting voice via TONE.md and a humanizer pass, OpenGraph and social previews, favicons and web manifest, Lighthouse, Core Web Vitals and WCAG quality gates, directory submissions, Product Hunt, G2/Capterra reviews, post-launch monitoring. Use when the user says &#39;checklist for the site&#39;, &#39;ready to ship&#39;, &#39;before I go live&#39;, &#39;ready for prod&#39;, &#39;audit before launch&#39;, or asks for a site review, pre-launch audit, or help launching a site or app, deploying a domain to production, or shipping a marketing, docs, SaaS, or lead-magnet site.&#34;
+license: MIT
+compatibility: Designed for Claude Code, Codex or similar harness. Requires internet access for directory submissions, G2/Capterra reviews, and AI citation checks.
+user-invocable: true
+metadata:
+  author: samber
+  version: &#34;2.0.1&#34;
+  openclaw:
+    emoji: &#34;📊&#34;
+    homepage: https://github.com/samber/cc-skills
+    install:
+      - kind: npm
+        package: skills
+        bins: [skills]
+      - kind: brew
+        formula: jq
+        bins: [jq]
+    requires:
+      bins:
+        - curl
+        - npm
+        - npx
+        - jq
+allowed-tools: Read Edit Write Glob Grep Agent AskUserQuestion</code></pre></details>
+        <div class="markdown"><p><strong>Questions:</strong> Ask the user through the environment's question tool — never as plain-text prose. One question at a time, 2–4 tappable options, wait for the answer. If the environment has no question tool, ask in prose with the same options, one at a time.</p>
+<h3>Site Launch Checklist</h3>
+<p>Pre-launch audit and setup workflow for shipping a new website. Opinionated for Cloudflare DNS + Vercel hosting + PostHog + Legal context.</p>
+<h4>Interaction style (READ FIRST)</h4>
+<p>This skill is intentionally interactive. Ask aggressively instead of assuming. The user will tap, not type.</p>
+<p><strong>Always ask these questions at the start of a run</strong> (one at a time, in this order):</p>
+<ol>
+<li>Site type: <code>doc-site</code> | <code>marketing/lead-gen</code> | <code>SaaS-app</code> | <code>training/paid-course</code> | <code>personal-portfolio</code></li>
+<li>Migration: <code>greenfield-new-domain</code> | <code>migration-need-301-redirects</code> | <code>replacing-existing-on-same-domain</code></li>
+<li>Multilingual: <code>single-locale</code> | <code>en</code> | <code>fr+en</code> | <code>other-multi</code></li>
+<li>PostHog setup: <code>hogpost.samber.dev</code> | <code>set-up-new-proxy</code> | <code>skip-PostHog</code></li>
+<li>AI scraper policy: <code>use-default-for-site-type</code> | <code>customize-per-bot</code> | <code>block-all</code></li>
+<li>Browser tool available: <code>claude-chrome-extension</code> | <code>playwright</code> | <code>neither-skip-browser-checks</code></li>
+</ol>
+<p><strong>Ask again at every decision point throughout the phases</strong>, including:</p>
+<ul>
+<li>Whether to install Sentry / BetterStack / Crisp (depends on site type, ask explicitly)</li>
+<li>www vs apex canonical preference (most sites: apex; ask anyway)</li>
+<li>Which AI bots to allow if user chose <code>customize-per-bot</code></li>
+<li>CSP tightness level: <code>strict-default-src-none</code> | <code>balanced-allow-self</code> | <code>permissive-for-marketing</code></li>
+<li>Whether to skip a phase entirely (e.g., skip Phase 3 if non-FR site)</li>
+</ul>
+<p>Never proceed past a decision point without explicit user input. Verbose checklists without checkpoints are not the goal.</p>
+<p><strong>Never install any MCP server or skill without explicit user confirmation.</strong> Always ask via the question tool before running <code>npx skills add</code>, <code>claude mcp add</code>, or any equivalent install command — even when the skill selection workflow proposes a curated subset.</p>
+<h4>How to use this skill</h4>
+<ol>
+<li>Run the start-of-session questions above.</li>
+<li>Walk the user through phases 1-10 in order. For each phase: a. List items, ask if any should be skipped. b. For each remaining item, run the verification command (see &quot;Verification tools&quot; below). c. Report pass/fail. On fail, ask the user if they want to fix now or queue for later.</li>
+<li>End with a status report grouped by phase, with blockers, recommended fixes, and optional improvements clearly separated.</li>
+</ol>
+<h4>Companion skills</h4>
+<p>Six skill packs are useful for site launches. <strong>Never install full multi-skill packs</strong>. The actual subset to install is decided at invocation time based on the site type the user confirms.</p>
+<h5>Pack inventory</h5>
+<table>
+<thead>
+<tr>
+<th>Pack</th>
+<th>What it covers</th>
+<th>Typically useful for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AgriciDaniel/claude-seo</code></td>
+<td>SEO + GEO + schema + hreflang + sitemaps audits, parallel sub-agents</td>
+<td>All site types</td>
+</tr>
+<tr>
+<td><code>addyosmani/web-quality-skills</code></td>
+<td>Lighthouse, Core Web Vitals, accessibility, performance, best practices</td>
+<td>All site types</td>
+</tr>
+<tr>
+<td><code>trailofbits/skills</code></td>
+<td>Security audit (OWASP, headers, dependencies)</td>
+<td>All site types</td>
+</tr>
+<tr>
+<td><code>aaron-he-zhu/seo-geo-claude-skills</code></td>
+<td>20 SEO+GEO skills, CORE-EEAT + CITE frameworks, <code>/seo:</code> slash commands</td>
+<td>Content-heavy sites, competitive niches</td>
+</tr>
+<tr>
+<td><code>coreyhaines31/marketingskills</code></td>
+<td>~30 marketing skills (CRO, copywriting, ads, popups, email, paywalls, etc.)</td>
+<td><code>marketing/lead-gen</code>, <code>SaaS-app</code>, <code>training/paid-course</code></td>
+</tr>
+<tr>
+<td><code>jonathimer/devmarketing-skills</code></td>
+<td>33 developer-marketing skills (persona, docs-as-marketing, technical tutorials, etc.)</td>
+<td><code>doc-site</code>, <code>SaaS-app</code> for developers</td>
+</tr>
+</tbody>
+</table>
+<h5>Skill selection workflow (run at session start)</h5>
+<p>After the user confirms site type, for <strong>each pack relevant to that site type</strong>:</p>
+<ol>
+<li><strong>List available sub-skills</strong>: <code>npx skills add owner/repo --list</code></li>
+<li><strong>Propose a curated subset</strong> based on site type and the phases this skill will execute. Match each phase's needs to specific sub-skills the listing returns.</li>
+<li><strong>Confirm with the user.</strong> Use multi-select when the proposed list has more than 3 items, single-select (<code>install-as-proposed</code> | <code>let-me-modify</code> | <code>skip-this-pack</code>) otherwise.</li>
+<li><strong>Bulk install the agreed subset</strong>: <code>npx skills add owner/repo --skill A B C</code></li>
+</ol>
+<p>Rules:</p>
+<ul>
+<li>Sub-skill names live in the pack, not in this SKILL.md. Always query <code>--list</code> for the current state. Pack contents change.</li>
+<li>Never run <code>npx skills add owner/repo</code> without <code>--skill</code> (that installs everything).</li>
+<li>Site type → packs mapping (which packs to enumerate, sub-skills still selected per workflow):
+<ul>
+<li><code>doc-site</code>: claude-seo, web-quality-skills, trailofbits, seo-geo-claude-skills, devmarketing-skills</li>
+<li><code>marketing/lead-gen</code>: claude-seo, web-quality-skills, trailofbits, seo-geo-claude-skills, marketingskills</li>
+<li><code>SaaS-app</code>: all six</li>
+<li><code>training/paid-course</code>: claude-seo, web-quality-skills, trailofbits, marketingskills</li>
+<li><code>personal-portfolio</code>: claude-seo, web-quality-skills, trailofbits, seo-geo-claude-skills (lightweight subset)</li>
+</ul>
+</li>
+<li>If the user later requests a phase that needs a sub-skill not yet installed, run the workflow again for that single sub-skill rather than re-installing the whole subset.</li>
+</ul>
+<p>This avoids importing 80+ skills the user does not need, avoids going stale on sub-skill names, and avoids overfitting to a single pack version.</p>
+<p>When delegating during a phase, do not duplicate work this skill orchestrates. Call the specialist with a narrow scope (e.g., &quot;run only the security headers sub-audit on URL X&quot;).</p>
+<h4>Phase 0: Launch Readiness Gate</h4>
+<p><strong>Run this BEFORE any other phase.</strong> Products don't market themselves—but a product that isn't ready won't market either. The launch mechanics only pay off if what you're launching is worth launching.</p>
+<p>Two failure modes kill launches from opposite ends:</p>
+<ul>
+<li><strong>Stealth Mode</strong> — launching too late. &quot;Procrastination in a fancy suit.&quot; You keep polishing in private, waiting for the product to be perfect. It never ships, and nobody learns you exist.</li>
+<li><strong>&quot;Just One More Feature&quot;</strong> — never launching. Every proposed launch date gets pushed for one more thing. The scope creeps forever; the launch never comes.</li>
+</ul>
+<p>The middle path is <strong>SLC — Simple, Lovable, Complete</strong> (Jason Cohen), the antidote to shipping a bare MVP that's minimal but unlovable. Don't launch a stub nobody wants; don't wait for a bloated everything-app. A launchable v1 is:</p>
+<ul>
+<li><strong>Simple</strong> — it does <em>one</em> thing. Not many things poorly. One clear job, done well.</li>
+<li><strong>Lovable</strong> — people <em>want</em> to use it, not just tolerate it. An MVP asks users to suffer through a stripped-down experience &quot;to give feedback.&quot; SLC gives them something they'd choose. If nobody would be sad to lose it, it isn't lovable yet.</li>
+<li><strong>Complete</strong> — it's a <em>whole</em> experience for that one thing, not a stub with obvious holes. Complete at its chosen scope, not a teaser of a bigger promise.</li>
+</ul>
+<p><strong>The gate:</strong> If it's not yet Simple, Lovable, and Complete, you're in &quot;Just One More Feature&quot; territory only when adding scope is what's missing—otherwise you're in Stealth Mode and should ship. Cut scope until one thing is lovable and complete, then launch that. SLC gives you a real launch now instead of a perfect launch never.</p>
+<p><strong>Quick check before running the phases:</strong></p>
+<ul>
+<li>[ ] Does it do one clearly-defined thing? (Simple)</li>
+<li>[ ] Would a target user <em>choose</em> to use it, not just endure it? (Lovable)</li>
+<li>[ ] Is that one thing a whole experience, with no glaring stubs? (Complete)</li>
+<li>[ ] Are you polishing past this bar? → Stop. You're in Stealth Mode. Ship.</li>
+<li>[ ] Are you still adding new things to the scope? → Stop. You're in &quot;Just One More Feature.&quot; Cut back to SLC.</li>
+</ul>
+<p><strong>Directory submission readiness (from directory-submissions skill):</strong> Ask these 9 questions. If any are &quot;no&quot;, they're not ready — help them build the missing piece first.</p>
+<ol>
+<li>Is the product publicly accessible (no password wall)?</li>
+<li>Is there a pricing page (even &quot;free while in beta&quot;)?</li>
+<li>Are privacy policy + terms live?</li>
+<li>Logo assets in PNG + SVG + square + favicon?</li>
+<li>5–8 real screenshots + 60–90s demo video?</li>
+<li>Landing pages GEO-ready (single H1, sequential hierarchy, FAQ schema, structured data)?</li>
+<li>At least 3 alternative pages and 3 use-case pages live and indexed?</li>
+<li>Template gallery or lead magnet asset (if applicable to category)?</li>
+<li>At least 20 beta/early users who could leave a review on G2?</li>
+</ol>
+<p>A &quot;no&quot; on any of 1–7 is a hard block. A &quot;no&quot; on 8–9 is a soft block: you can launch but will lose Tier 2 review value and Typeform-style compounding.</p>
+<p><strong>ORB Channel Strategy (from launch skill):</strong> Structure your launch marketing across three channel types. Everything should ultimately lead back to owned channels.</p>
+<h5>Owned Channels</h5>
+<p>You own the channel (though not the audience). Direct access without algorithms or platform rules.</p>
+<ul>
+<li>Email list, Blog, Podcast, Branded community (Slack, Discord), Website/product</li>
+<li><strong>Start with 1-2 based on audience:</strong> Industry lacks quality content → Blog; People want direct updates → Email; Engagement matters → Community</li>
+</ul>
+<h5>Rented Channels</h5>
+<p>Platforms that provide visibility but you don't control. Algorithms shift, rules change, pay-to-play increases.</p>
+<ul>
+<li>Social media (Twitter/X, LinkedIn, Instagram), App stores, YouTube, Reddit</li>
+<li><strong>How to use correctly:</strong> Pick 1-2 platforms where your audience is active; Use them to drive traffic to owned channels; Don't rely on them as your only strategy</li>
+</ul>
+<h5>Borrowed Channels</h5>
+<p>Tap into someone else's audience to shortcut the hardest part—getting noticed.</p>
+<ul>
+<li>Guest content (blog posts, podcast interviews, newsletter features)</li>
+<li>Collaborations (webinars, co-marketing, social takeovers)</li>
+<li>Speaking engagements (conferences, panels, virtual summits)</li>
+<li>Influencer partnerships</li>
+<li><strong>Be proactive:</strong> List industry leaders your audience follows → Pitch win-win collaborations → Use tools like SparkToro or Listen Notes to find audience overlap</li>
+</ul>
+<p>Pass the gate, then run the phases below.</p>
+<h4>Copywriting voice and humanizer pass</h4>
+<p>Every site has visible marketing copy (hero, features, CTAs, meta descriptions, OG descriptions, blog posts, 404 page text). Two layers of polish are mandatory before launch:</p>
+<h5>1. Define <code>TONE.md</code> once per site</h5>
+<p>Ask the user: &quot;Does this site already have a <code>TONE.md</code>?&quot; (<code>yes-already-exists</code> | <code>no-create-from-template</code> | <code>skip-use-default</code>).</p>
+<p>If creating: write it to <code>.agents/TONE.md</code> or repo root <code>TONE.md</code>. See <code>references/templates.md</code> (section &quot;TONE.md template&quot;) for the structure.</p>
+<p>TONE.md specifies: voice (terse, contrarian, etc.), forbidden patterns (e.g., &quot;delve&quot;, &quot;crucial&quot;, em dashes, AI-sounding openers), sentence length preference, audience reading level, examples of good and bad sentences from the user's own writing.</p>
+<h5>2. Run a humanizer pass in the matching language</h5>
+<p>After every drafting step (whether by a copywriting skill, by hand, or by Claude directly), run a humanizer to strip AI patterns.</p>
+<p>Ask the user for the site's primary audience language at the start of the session if not already known:</p>
+<ul>
+<li><code>english-global</code> → <code>npx skills add https://github.com/blader/humanizer --skill humanizer</code></li>
+<li><code>french</code> → use <code>samber/cc-skills@humaniseur-fr</code> (custom French humanizer) or equivalent French-tuned skill</li>
+<li><code>other</code> → install matching humanizer if available; otherwise the skill writes a short language-specific anti-pattern checklist inline</li>
+</ul>
+<p>Apply the humanizer to: hero copy, feature descriptions, CTA buttons, meta descriptions, OG/Twitter card descriptions, blog posts, email signup confirmations, 404 page text. Skip for legal pages (mentions légales, CGV) since they have rigid wording requirements.</p>
+<h5>3. Always reference TONE.md when invoking copywriting skills</h5>
+<p>When delegating to any copywriting or content-writing sub-skill (selected at invocation per the skill selection workflow), include <code>TONE.md</code> in the prompt context. Pass voice constraints explicitly: &quot;Follow <code>.agents/TONE.md</code>. Avoid the listed patterns. Apply the humanizer after drafting.&quot;</p>
+<h4>Browser interaction preference</h4>
+<p>Many checks require a real browser (Lighthouse runs, securityheaders.com scan, opengraph.xyz validation, Twitter card validator, mobile viewport, screen reader smoke, Network tab inspection).</p>
+<p><strong>Always prefer the Claude Chrome extension.</strong> Fall back to Playwright only if the Chrome extension is unavailable. If neither is available, ask the user whether to skip browser checks entirely or wait until they enable one.</p>
+<h4>Verification tools</h4>
+<p>Most checks are doable from the command line without third-party services. Use these tools inline at every phase. Don't trust panels in Cloudflare/Vercel/Google dashboards alone, verify with curl.</p>
+<p><strong>DNS (Phase 1):</strong></p>
+<pre><code class="language-bash">dig +short A example.com                          # A record
+dig +short AAAA example.com                       # AAAA (IPv6)
+dig +short MX example.com                         # MX (mail)
+dig +short TXT example.com                        # SPF + verification TXT
+dig +short TXT _dmarc.example.com                 # DMARC
+dig +short TXT default._domainkey.example.com     # DKIM (selector varies)
+dig +short CAA example.com                        # CAA
+dig +dnssec example.com | grep RRSIG              # DNSSEC active
+</code></pre>
+<p><strong>TLS / HTTPS (Phase 1):</strong></p>
+<pre><code class="language-bash">curl -sIL https://example.com | head             # follow redirects
+curl -sI https://www.example.com                 # check www handling
+openssl s_client -showcerts -connect example.com:443 &lt; /dev/null 2&gt;/dev/null | openssl x509 -noout -dates
+</code></pre>
+<p><strong>Headers (Phase 4):</strong></p>
+<pre><code class="language-bash">curl -sI https://example.com | grep -iE 'content-security-policy|strict-transport-security|x-frame-options|x-content-type-options|referrer-policy|permissions-policy'
+# Full header dump:
+curl -sI https://example.com
+# External graders:
+curl -s &quot;https://api.securityheaders.com/?q=https://example.com&amp;followRedirects=on&amp;hide=on&quot; -I | grep -i 'x-grade'
+</code></pre>
+<p><strong>SEO files (Phase 5):</strong></p>
+<pre><code class="language-bash">curl -s https://example.com/robots.txt
+curl -sI https://example.com/sitemap.xml
+curl -s https://example.com/sitemap.xml | head -40
+curl -s https://example.com/llms.txt
+# Schema (JSON-LD):
+curl -s https://example.com/ | grep -A 50 'application/ld+json'
+# hreflang:
+curl -s https://example.com/ | grep -i hreflang
+</code></pre>
+<p><strong>Open Graph &amp; social (Phase 6):</strong></p>
+<pre><code class="language-bash">curl -s https://example.com/page | grep -iE 'og:|twitter:|&lt;title|name=&quot;description&quot;'
+</code></pre>
+<p><strong>Favicons &amp; manifest (Phase 7):</strong></p>
+<pre><code class="language-bash">curl -sI https://example.com/favicon.ico
+curl -sI https://example.com/favicon.svg
+curl -sI https://example.com/apple-touch-icon.png
+curl -s https://example.com/manifest.json | jq .
+</code></pre>
+<p><strong>404 / 500 / redirects:</strong></p>
+<pre><code class="language-bash">curl -sI https://example.com/this-does-not-exist
+curl -sIL https://example.com/old-url     # verify 301 chain
+</code></pre>
+<p>Always run the relevant command, paste the output to the user when reporting, then ask whether to fix immediately or queue.</p>
+<hr>
+<h4>Phase 1: Domain &amp; Infrastructure</h4>
+<p>Most of this is one-click via Cloudflare's dashboard if the domain is on Cloudflare.</p>
+<p>Ask first: &quot;Is the domain already on Cloudflare with the standard config from previous launches?&quot; (<code>yes-standard</code> | <code>yes-needs-review</code> | <code>no-fresh-setup</code>)</p>
+<p>Checklist:</p>
+<ul>
+<li>[ ] Cloudflare: proxy ON for apex + www, TLS 1.3 minimum, &quot;Always Use HTTPS&quot; enabled, HSTS preload enabled in Cloudflare SSL/TLS settings</li>
+<li>[ ] DNS A/AAAA or CNAME pointing to Vercel (verify with <code>dig +short A example.com</code>)</li>
+<li>[ ] MX records for Google Workspace (verify with <code>dig +short MX example.com</code>)</li>
+<li>[ ] SPF, DKIM, DMARC records (verify all 3 with the dig commands above)</li>
+<li>[ ] CAA records restricting cert issuance (verify with <code>dig +short CAA example.com</code>)</li>
+<li>[ ] DNSSEC enabled at registrar level (verify with <code>dig +dnssec</code>)</li>
+<li>[ ] Vercel: project linked to repo, prod + preview env vars set, custom domain attached, prod and preview aliases correct</li>
+<li>[ ] Decide www vs apex canonical, configure 308 redirect for the non-canonical (verify with <code>curl -sIL https://www.example.com</code>)</li>
+<li>[ ] Custom 404 page renders (verify with <code>curl -sI https://example.com/does-not-exist</code>)</li>
+<li>[ ] Custom 500 page exists (cannot easily verify without forcing an error, ask user)</li>
+<li>[ ] If migration: 301 redirect map for every old URL (loop verification with <code>curl -sIL</code> per URL)</li>
+</ul>
+<h5>Backups</h5>
+<p>If you don't configure backups at launch, you never will. Do it now.</p>
+<p>Ask the user: &quot;Which data stores does this app write to?&quot; (<code>database-only</code> | <code>database-plus-file-storage</code> | <code>file-storage-only</code> | <code>stateless-no-persistent-data</code>). If <code>stateless-no-persistent-data</code>, skip this section.</p>
+<p><strong>Database:</strong></p>
+<ul>
+<li>[ ] Automated daily backups enabled at the provider level (Neon, Supabase, PlanetScale, Railway, RDS — each has a one-click toggle). Verify by opening the backup panel and confirming the last backup timestamp is recent.</li>
+<li>[ ] Retention policy set to ≥30 days</li>
+<li>[ ] Point-in-time recovery (PITR) enabled if available (Neon, Supabase, RDS all support it)</li>
+<li>[ ] Off-site copy: if the provider stores backups in the same region as the primary, configure cross-region replication or a nightly export to a separate storage account (S3, R2, GCS)</li>
+<li>[ ] <strong>Restore drill performed before launch</strong>: pick a recent backup, restore to a staging database, verify row counts and a sample query. A backup you haven't tested is not a backup.</li>
+</ul>
+<p><strong>File storage (if applicable — S3, R2, GCS, Cloudflare Images):</strong></p>
+<ul>
+<li>[ ] Versioning enabled on the primary bucket</li>
+<li>[ ] Cross-region replication or a scheduled sync to a secondary bucket. Backblaze B2 is a cheap, reliable option for off-site copies (significantly cheaper than S3/GCS egress). Use <code>rclone</code> to sync from S3/R2/GCS → B2 on a daily cron.</li>
+<li>[ ] Lifecycle rule: transition old versions to cheaper storage after 30 days, delete after 90 days (adjust to cost tolerance)</li>
+</ul>
+<p><strong>Secrets / environment variables:</strong></p>
+<ul>
+<li>[ ] All env vars documented and stored in a secrets manager (1Password, Doppler, Vault, or equivalent). Not in a <code>.env</code> file on someone's laptop.</li>
+<li>[ ] Verify: if every engineer's machine burned tonight, could a new team member restore prod from scratch using only the secrets manager + git?</li>
+</ul>
+<p><strong>Monitoring:</strong></p>
+<ul>
+<li>[ ] Set up an alert (email or Slack) if the daily backup job fails. Most providers support this natively; configure it before closing the backup panel.</li>
+</ul>
+<hr>
+<h4>Phase 2: Analytics &amp; Observability</h4>
+<p>Most third-party integrations are one-click via Cloudflare or Vercel.</p>
+<p><strong>For the conditional tools (Crisp, Sentry, BetterStack), ask the user</strong> to confirm per site type. See <code>references/decisions.md</code> for the observability tier matrix.</p>
+<p><strong>Always-on:</strong></p>
+<ul>
+<li>[ ] Google Analytics 4: property created, measurement ID embedded, gated behind CNIL consent</li>
+<li>[ ] PostHog: based on user's earlier answer:
+<ul>
+<li>If <code>hogpost.samber.dev</code>: configure client with <code>api_host: &quot;https://hogpost.samber.dev&quot;</code> and verify CORS allows the new domain (test with browser console or <code>curl -H &quot;Origin: https://newsite.com&quot; -I https://hogpost.samber.dev/decide</code>)</li>
+<li>If <code>set-up-new-proxy</code>: add path rewrite in <code>next.config.js</code> to <code>us.i.posthog.com</code> and <code>us-assets.i.posthog.com</code>, init client with <code>api_host: &quot;/ingest&quot;</code></li>
+<li>If <code>skip-PostHog</code>: skip</li>
+</ul>
+</li>
+<li>[ ] Google Search Console: site verified (DNS TXT or HTML file), sitemap submitted</li>
+<li>[ ] Bing Webmaster Tools: site verified, sitemap submitted, IndexNow key file at <code>/{key}.txt</code> on root (verify with <code>curl -sI https://example.com/{key}.txt</code>)</li>
+<li>[ ] Ahrefs: site added to dashboard for tracking</li>
+<li>[ ] Add the site to the internal stats spreadsheet (PostHog properties registry + GitHub Sponsors tracking sheet if applicable)</li>
+</ul>
+<p><strong>Brand monitoring (Google Alerts):</strong></p>
+<p>For each alert, use these settings: <strong>Frequency</strong>: once a day | <strong>Sources</strong>: Automatic | <strong>How many</strong>: All results | <strong>Region</strong>: Any region</p>
+<p>Set up one alert per keyword via alerts.google.com:</p>
+<ul>
+<li>[ ] Domain name (e.g., <code>example.com</code>)</li>
+<li>[ ] Brand or product name (quoted if multi-word, e.g., <code>&quot;My Brand&quot;</code>)</li>
+<li>[ ] Key feature or library names if the site documents a project</li>
+<li>[ ] Competitor brand names (optional — ask user: <code>yes-monitor-competitors</code> | <code>skip</code>)</li>
+</ul>
+<p>Ask the user: &quot;Which additional keywords to monitor?&quot; (<code>product-name-only</code> | <code>domain-plus-brand</code> | <code>full-set-with-competitors</code> | <code>custom-list</code>)</p>
+<p><strong>Developer community monitoring (F5bot) — for <code>doc-site</code> and <code>SaaS-app</code> targeting developers:</strong></p>
+<p>F5bot (f5bot.com) monitors Reddit, Hacker News, and Lobste.rs for keyword mentions and sends email alerts. Free, no API required.</p>
+<p>Set up one keyword per line at f5bot.com/add:</p>
+<ul>
+<li>[ ] Brand or product name</li>
+<li>[ ] Domain name (catches link shares)</li>
+<li>[ ] Key feature or library names</li>
+<li>[ ] Common misspellings if applicable</li>
+</ul>
+<p><strong>Competitor analysis (<code>marketing/lead-gen</code>, <code>SaaS-app</code>, <code>training/paid-course</code> only):</strong></p>
+<p>Before writing copy, setting up ads, or planning content, run a competitor analysis to understand what is already working in the market — positioning, messaging angles, CTA patterns, pricing presentation, and content strategy.</p>
+<p>Use a deep research tool or a competitor analysis skill if one is available in the toolchain. Ask:</p>
+<ul>
+<li>&quot;Do you already have competitor names/URLs to analyze?&quot; (<code>yes-provide-list</code> | <code>no-discover-for-me</code> | <code>skip</code>)</li>
+<li>If <code>yes-provide-list</code>: ask the user to paste 2-5 names or URLs (free text)</li>
+<li>&quot;What are we looking to extract?&quot; (<code>positioning-and-messaging</code> | <code>pricing-strategy</code> | <code>content-and-seo</code> | <code>full-spectrum</code>)</li>
+</ul>
+<p>Feed the output into:</p>
+<ul>
+<li>Phase 5 keyword strategy (target queries they rank for but you can outrank or flank)</li>
+<li><code>TONE.md</code> voice calibration (deliberately differentiate from the dominant tone in the category)</li>
+<li>Phase 6 OG copy and CTA language (borrow proven frames, don't clone verbatim)</li>
+<li>Copywriting sub-skills invoked later (pass the competitor snapshot as context)</li>
+</ul>
+<p><strong>Conditional (ask user, default per site type from <code>references/decisions.md</code>):</strong></p>
+<ul>
+<li>[ ] Crisp</li>
+<li>[ ] Sentry</li>
+<li>[ ] BetterStack</li>
+</ul>
+<hr>
+<h4>Phase 3: Legal &amp; Compliance (FR)</h4>
+<p>Ask first: &quot;Is this site subject to French law?&quot; (<code>yes-FR-operator-or-audience</code> | <code>no-EU-only</code> | <code>no-non-EU</code>). If no, ask whether GDPR or equivalent applies and adjust.</p>
+<p>For FR sites:</p>
+<ul>
+<li>[ ] Mentions légales page (mandatory, fines up to 75k€ per omission)</li>
+<li>[ ] CGV (Conditions Générales de Vente) if commercial activity</li>
+<li>[ ] Privacy policy</li>
+<li>[ ] Terms of service</li>
+<li>[ ] CNIL-compliant cookie consent that <strong>gates</strong> GA4, PostHog, Crisp, Sentry script loading (not just a banner that always loads trackers). Use a CMP (Axeptio, Tarteaucitron, or custom). Verify with browser Network tab: no tracker fires before explicit consent.</li>
+</ul>
+<hr>
+<h4>Phase 4: Security</h4>
+<p>Delegate the deep audit to <code>trailofbits/skills</code>. The items below are the must-pass checklist.</p>
+<p>Ask first: CSP tightness level (<code>strict-default-src-none</code> | <code>balanced-allow-self</code> | <code>permissive-for-marketing</code>). See <code>references/templates.md</code> for the CSP template per level.</p>
+<ul>
+<li>[ ] CSP: target chosen tightness level. No <code>'unsafe-inline'</code> for scripts (use nonces). Verify with <code>curl -sI ... | grep -i content-security-policy</code>.</li>
+<li>[ ] HSTS: <code>max-age=31536000; includeSubDomains; preload</code>. Submit to hstspreload.org. Verify with <code>curl -sI ... | grep -i strict-transport</code>.</li>
+<li>[ ] X-Frame-Options: <code>DENY</code></li>
+<li>[ ] X-Content-Type-Options: <code>nosniff</code></li>
+<li>[ ] Referrer-Policy: <code>strict-origin-when-cross-origin</code></li>
+<li>[ ] Permissions-Policy: deny camera, microphone, geolocation, payment unless used</li>
+<li>[ ] Run all headers in one go: <code>curl -sI https://example.com | grep -iE 'content-security|strict-transport|x-frame|x-content-type|referrer-policy|permissions-policy'</code></li>
+<li>[ ] securityheaders.com: target A+ (verify via Claude Chrome extension or <code>curl https://securityheaders.com/?q=URL</code> and parse)</li>
+<li>[ ] observatory.mozilla.org: target 90+ (via Chrome extension)</li>
+<li>[ ] Run <code>trailofbits/skills</code> security audit on the codebase</li>
+<li>[ ] Verify no leaked secrets in client bundle: open Chrome DevTools Network tab via Claude Chrome extension, grep response bodies for <code>sk_</code>, <code>pk_</code>, <code>AKIA</code>, <code>ghp_</code>, <code>Bearer</code></li>
+</ul>
+<hr>
+<h4>Phase 5: SEO &amp; GEO</h4>
+<p>Delegate the full audit to <code>AgriciDaniel/claude-seo</code>. The items below are the orchestration list.</p>
+<p>See <code>references/templates.md</code> for <code>robots.txt</code>, <code>llms.txt</code>, and <code>manifest.json</code> templates. See <code>references/decisions.md</code> for the AI scraper policy matrix by site type.</p>
+<ul>
+<li>[ ] <code>/robots.txt</code> present, references sitemap (verify with <code>curl -s https://example.com/robots.txt</code>)</li>
+<li>[ ] <code>/sitemap.xml</code> present, valid (verify with <code>curl -s https://example.com/sitemap.xml | head -40</code>). Sitemap-index with per-language sitemaps if multilingual.</li>
+<li>[ ] <code>/llms.txt</code> present (per llmstxt.org spec, verify with <code>curl -s https://example.com/llms.txt</code>)</li>
+<li>[ ] AI scraper policy encoded in <code>robots.txt</code>. Apply the matrix from <code>references/decisions.md</code> based on site type, then <strong>ask via the question tool to confirm each non-default decision</strong> — this ships in a public file, get it right before it's crawled.</li>
+<li>[ ] Schema markup (JSON-LD): <code>Organization</code> + <code>WebSite</code> + <code>BreadcrumbList</code> site-wide; per-page types where applicable (<code>SoftwareApplication</code> for lib homepages, <code>Article</code> for blog posts, <code>FAQPage</code> for FAQs, <code>Person</code> for author bio). Verify with <code>curl -s URL | grep -A 50 'application/ld+json'</code>. Validate structured data via <strong>Google Rich Results Test</strong> (<a href="https://search.google.com/test/rich-results">https://search.google.com/test/rich-results</a>) and <strong>Schema.org Validator</strong> (<a href="https://validator.schema.org">https://validator.schema.org</a>) — Rich Results Test checks eligibility for rich snippets; Schema.org Validator catches spec violations that Google may silently ignore.</li>
+<li>[ ] Meta tags per page: unique <code>&lt;title&gt;</code> (50-60 chars), unique <code>&lt;meta description&gt;</code> (150-160 chars), <code>&lt;link rel=&quot;canonical&quot;&gt;</code>, <code>&lt;meta name=&quot;robots&quot;&gt;</code> if needed</li>
+<li>[ ] <code>hreflang</code> tags on every page if multilingual (every language version declares all alternates including self). Verify with <code>curl -s URL | grep -i hreflang</code>.</li>
+<li>[ ] <strong>Keyword analysis using both Google Trends and Ahrefs</strong> (they answer different questions, not interchangeable):
+<ul>
+<li><strong>Google Trends</strong> (trends.google.com): trajectory (rising vs declining), geographic distribution (especially FR vs international split), seasonal patterns, related queries breakout, head-to-head comparison of 2-5 candidate keywords. Use Trends to <strong>validate direction and timing</strong> of the SEO bet.</li>
+<li><strong>Exploding Topics</strong> (explodingtopics.com): surfaces emerging trends weeks or months before they peak in Google Trends. Use to identify rising queries before competition solidifies and to validate that target keywords aren't already on the decline.</li>
+<li><strong>Answer The Public</strong> (answerthepublic.com/en): maps search questions, comparisons, and related queries around a seed keyword. Use to uncover long-tail intent clusters, populate FAQ schema, and identify content gaps.</li>
+<li><strong>Ahrefs Keywords Explorer</strong>: monthly volume, keyword difficulty, SERP analysis, CPC, parent topic, traffic potential. Use Ahrefs to <strong>size the opportunity</strong> in absolute terms.</li>
+<li>Combined output: a ranked shortlist of 3-5 target queries per page, with rationale (volume × difficulty × trajectory × intent match).</li>
+<li>Delegate to whichever keyword-research sub-skill was installed at session start (selected from the installed packs via the skill selection workflow; typical sources are the SEO+GEO and marketing packs).</li>
+</ul>
+</li>
+<li>[ ] <strong>AI visibility audit via productrank.ai</strong>: open productrank.ai in a browser, submit multiple category or product searches, run the full AI SEO report. It audits how the site appears in AI-generated answers (ChatGPT, Perplexity, Gemini, Claude). Flag any zero-visibility categories and surface content gaps the AI graders identify.</li>
+<li>[ ] Typo and grammar pass on all visible text content</li>
+<li>[ ] Backlink profile audit: run <strong>Ahrefs Backlink Checker</strong> and <strong>Moz Link Explorer</strong> to assess domain authority and surface toxic or broken inbound links before launch — especially critical on migrations to ensure old-domain equity transfers correctly</li>
+<li>[ ] Internal linking audit: every important page reachable in ≤3 clicks from the homepage</li>
+</ul>
+<p><strong>Destination Pages Strategy (from directory-submissions skill):</strong> Directories are useless if the backlinks land on a generic homepage. Build these destination pages <em>before</em> submitting to directories:</p>
+<h5>1. Alternative pages (highest ROI)</h5>
+<p>Competitor alternative pages convert at <strong>5–15%</strong>, often hitting 15–30% for bottom-of-funnel queries. One page per top competitor:</p>
+<ul>
+<li><code>/alternatives/[competitor-1]</code></li>
+<li><code>/alternatives/[competitor-2]</code></li>
+<li><code>/alternatives/[competitor-3]</code></li>
+<li><code>/alternatives/[competitor-4]</code></li>
+</ul>
+<p>Each page needs: honest feature comparison table, &quot;when to choose X over us,&quot; &quot;when to choose us over X,&quot; pricing comparison, 3–5 use-case examples, strong FAQ with schema. <strong>Critical:</strong> Be honest. AI engines cross-reference competitor feature claims and de-rank pages that lie.</p>
+<h5>2. Use-case / ICP pages</h5>
+<p>Every ICP gets a dedicated landing page:</p>
+<ul>
+<li><code>/for/[audience]</code> — coaches, agencies, ecommerce, SaaS, consultants, etc.</li>
+<li><code>/use-cases/[use-case]</code> — lead qualification, onboarding, product recommendations, etc.</li>
+</ul>
+<h5>3. Template / asset gallery (if applicable)</h5>
+<p>Typeform's template library generated <strong>30,000 non-branded organic signups and $3M/year LTV</strong>. The pattern:</p>
+<ul>
+<li>One indexable page per template at <code>/templates/[slug]</code>.</li>
+<li>H1 with the keyword, 150+ word description, screenshot, &quot;when to use this,&quot; &quot;use this template&quot; CTA.</li>
+<li>Related templates at the bottom of each page (internal linking = SEO compounding).</li>
+<li>100 templates by day 30, 300 by day 90 is the realistic target.</li>
+</ul>
+<h5>4. &quot;Best of&quot; listicles you wrote yourself</h5>
+<p>Write honest roundups of your own category: <code>/blog/best-[category]-tools-2026</code>. Include yourself + 10 competitors with real reviews. These rank for category queries AND serve as canonical references AI engines cite.</p>
+<h5>5. Integration pages (when integrations ship)</h5>
+<p>Every integration = one landing page at <code>/integrations/[partner]</code>. Follows the Zapier playbook: Zapier gets <strong>~2.6M monthly organic visits</strong> from programmatic integration pages (~15% of their total organic traffic).</p>
+<p><strong>GEO (Generative Engine Optimization):</strong> In 2026, 30–50% of &quot;research a tool&quot; queries happen inside ChatGPT, Claude, Perplexity, or Google AI Overviews without ever touching a traditional search page.</p>
+<h5>Tactics that get pages cited</h5>
+<ol>
+<li><strong>One H1 per page, sequential heading hierarchy.</strong> 2.8× higher citation rate. 87% of cited pages use a single H1.</li>
+<li><strong>Dense, factual content with citable stats.</strong> AI engines prefer specific numbers (&quot;3× faster than X&quot;) over vague claims.</li>
+<li><strong>FAQ schema on every landing page.</strong> AI engines heavily weight <code>FAQPage</code> JSON-LD for answer extraction.</li>
+<li><strong>Comparison tables.</strong> Extractable, structured — exactly what an AI answer needs.</li>
+<li><strong>Explicit &quot;what it is&quot; paragraph in the first 100 words.</strong></li>
+<li><strong>Get cited on Reddit and Hacker News.</strong> Claude and Perplexity index these heavily. Genuine mentions on r/SaaS and HN count as training fuel.</li>
+<li><strong>Publish original research.</strong> &quot;We analyzed 10,000 [things] and found X&quot; becomes the primary citation for anyone writing about that topic.</li>
+<li><strong>Claim Crunchbase, LinkedIn company page, and Wikidata entries.</strong> All three feed AI training corpora.</li>
+<li><strong>If applicable, list on MCP registries with A/B grades</strong> (Glama in particular). LLMs pull from these when answering MCP questions.</li>
+</ol>
+<h5>Measurement</h5>
+<p>Manually check monthly: ask ChatGPT, Claude, and Perplexity &quot;what are the best [category] tools?&quot; and log where the product appears. Free GEO tracking tools (GeoTracker, llmrefs) automate this.</p>
+<hr>
+<h4>Phase 6: Open Graph &amp; Social Preview</h4>
+<p>Verify all OG and Twitter tags with: <code>curl -s URL | grep -iE 'og:|twitter:'</code></p>
+<ul>
+<li>[ ] <code>og:title</code>, <code>og:description</code>, <code>og:url</code>, <code>og:type</code>, <code>og:site_name</code></li>
+<li>[ ] <code>og:image</code> 1200×630px, absolute URL, <code>og:image:width</code> and <code>og:image:height</code> declared, <code>og:image:alt</code> set</li>
+<li>[ ] <strong>Per-page <code>og:image</code></strong>, not one global. For doc sites: generate dynamically from page title. For blog posts: per-article custom image.</li>
+<li>[ ] <code>og:locale</code> + <code>og:locale:alternate</code> for each language if multilingual</li>
+<li>[ ] Twitter Cards: <code>twitter:card=summary_large_image</code>, <code>twitter:title</code>, <code>twitter:description</code>, <code>twitter:image</code>, <code>twitter:site</code> (handle)</li>
+<li>[ ] Validate with opengraph.xyz (covers FB, LinkedIn, Slack, Discord, WhatsApp previews) via Claude Chrome extension</li>
+<li>[ ] Validate with Twitter's card validator</li>
+<li>[ ] Manual check: paste URL in a LinkedIn DM, a Slack channel, a Discord, an iMessage. Preview must render correctly in all.</li>
+</ul>
+<hr>
+<h4>Phase 7: Favicons &amp; Web Manifest</h4>
+<p>See <code>references/templates.md</code> for the <code>manifest.json</code> template.</p>
+<p>Generate from a single 1024×1024 source PNG using realfavicongenerator.net or favicon.io.</p>
+<p><strong>Minimum modern set:</strong></p>
+<ul>
+<li>[ ] <code>/favicon.ico</code> (multi-res 16/32/48). Verify with <code>curl -sI https://example.com/favicon.ico</code>.</li>
+<li>[ ] <code>/favicon.svg</code> with embedded <code>&lt;style&gt;@media (prefers-color-scheme: dark) { ... }&lt;/style&gt;</code> for dark mode. Verify with <code>curl -sI https://example.com/favicon.svg</code>.</li>
+<li>[ ] <code>/favicon-96x96.png</code> (PNG fallback)</li>
+<li>[ ] <code>/apple-touch-icon.png</code> 180×180px, no transparency, opaque background. Verify with <code>curl -sI</code>.</li>
+<li>[ ] <code>/web-app-manifest-192x192.png</code> (Android PWA icon)</li>
+<li>[ ] <code>/web-app-manifest-512x512.png</code> (Android splash)</li>
+<li>[ ] <code>/manifest.json</code> referencing both PNGs, with <code>theme_color</code>, <code>background_color</code>, <code>name</code>, <code>short_name</code>, <code>display</code>. Verify with <code>curl -s https://example.com/manifest.json | jq .</code>.</li>
+</ul>
+<p><strong>Skip (deprecated):</strong></p>
+<ul>
+<li><code>mstile-*.png</code> (Windows tiles)</li>
+<li><code>safari-pinned-tab.svg</code> (deprecated since macOS Big Sur)</li>
+<li><code>favicon-16x16.png</code> / <code>favicon-32x32.png</code> (covered by <code>.ico</code> and <code>.svg</code>)</li>
+</ul>
+<p><strong>HTML head verification:</strong></p>
+<pre><code class="language-bash">curl -s https://example.com/ | grep -iE 'rel=&quot;icon&quot;|rel=&quot;apple-touch-icon&quot;|rel=&quot;manifest&quot;'
+</code></pre>
+<hr>
+<h4>Phase 8: Quality Gates</h4>
+<p>Delegate to <code>addyosmani/web-quality-skills</code>. The skill covers 150+ Lighthouse audits across performance, accessibility, SEO, and best practices.</p>
+<ul>
+<li>[ ] <strong>Unlighthouse site-wide crawl</strong>: <code>npx unlighthouse --site {site}</code> — crawls all pages and runs Lighthouse on each. Surface pages below 90 on any axis before the per-URL checks.</li>
+<li>[ ] Lighthouse all 4 axes, mobile mode: target ≥90 on each (perf, a11y, best practices, SEO)</li>
+<li>[ ] Lighthouse all 4 axes, desktop mode: target ≥95 on each</li>
+<li>[ ] Core Web Vitals field data (CrUX via PageSpeed Insights): LCP &lt; 2.5s, INP &lt; 200ms, CLS &lt; 0.1, on both mobile and desktop</li>
+<li>[ ] Accessibility (WCAG 2.2 AA via <code>web-quality-skills</code>): keyboard nav works for every interactive element, focus rings visible, color contrast ≥4.5:1 for text, all images have <code>alt</code>, heading hierarchy is monotonic (H1 → H2 → H3), ARIA labels on icon-only buttons</li>
+<li>[ ] Real mobile device test (not just devtools emulator). Use Claude Chrome extension on mobile viewport on a real device or BrowserStack.</li>
+<li>[ ] Cross-browser smoke test: Chrome, Safari, Firefox latest stable</li>
+<li>[ ] Print stylesheet sanity (Cmd+P should not break layout)</li>
+</ul>
+<hr>
+<h4>Phase 9: Ecosystem Cross-linking</h4>
+<p>Internal cross-linking between owned properties. High-leverage SEO action for any multi-domain owner.</p>
+<p>Ask the user: &quot;List the other domains in your ecosystem that are topically relevant to this new site.&quot; Then for each one:</p>
+<ul>
+<li>[ ] Add a link from the existing site (footer / nav / &quot;other projects&quot; section) to the new site, where topically relevant</li>
+<li>[ ] Add a link to the new site in the README of the matching GitHub repo, if it documents a library</li>
+<li>[ ] Verify reciprocal links: every link added points back where appropriate</li>
+<li>[ ] If the new site documents a Go lib, link from related lib docs</li>
+</ul>
+<p>Do not over-link. Only cross-link where topically relevant. A doc site for a logging lib should not link to a personal blog about cycling.</p>
+<hr>
+<h4>Phase 10: Set up weekly SEO maintenance sub-agent</h4>
+<p>After launch, set up a scheduled background agent, such as Hermes or Claude Cowork Routine, that runs weekly to monitor SEO health and surface action items.</p>
+<p>See <code>references/weekly-seo-agent.md</code> for the full agent definition, with a concrete equivalent for each harness — copy the block matching your environment into the location it specifies, in the site's repo (or a dedicated ops repo). The agent uses these MCP connectors (or their equivalent API calls):</p>
+<ul>
+<li>Ahrefs MCP (backlinks, rankings, keywords)</li>
+<li>PostHog MCP (analytics correlation, AI bot traffic)</li>
+<li>Web search (SERP monitoring, competitor checks)</li>
+<li>Google Search Console (via community MCP or <code>curl</code> with service account credentials)</li>
+</ul>
+<p><strong>Ask via the question tool</strong> before creating the file: &quot;Set up the weekly SEO agent now?&quot; (<code>yes-create-agent-file</code> | <code>yes-but-defer</code> | <code>skip-for-now</code>).</p>
+<p>When MCP are not available, use Claude for Chrome extension.</p>
+<hr>
+<h4>Phase 11: Directory Submission Execution</h4>
+<p>Execute the directory submission workflow from the <code>directory-submissions</code> skill. This is the foundation layer of distribution — never the whole strategy.</p>
+<h5>Step 1: Choose the tiers (from references/directory-list.md)</h5>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>When</th>
+<th>Examples</th>
+<th>Typical count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tier 1 — Flagship launch</strong></td>
+<td>Launch week only</td>
+<td>Product Hunt (anchor), BetaList, HN Show HN, Fazier, DevHunt</td>
+<td>~15</td>
+</tr>
+<tr>
+<td><strong>Tier 2 — Startup/SaaS</strong></td>
+<td>Week 1 + rolling</td>
+<td>AlternativeTo, SaaSHub, G2, Capterra, F6S, SourceForge, Slashdot</td>
+<td>~50</td>
+</tr>
+<tr>
+<td><strong>Tier 3 — AI directories</strong></td>
+<td>Week 1–3</td>
+<td>TAAFT, Futurepedia, Toolify, Future Tools, aitools.inc, AIStage</td>
+<td>~40</td>
+</tr>
+<tr>
+<td><strong>Tier 4 — Agent/MCP registries</strong></td>
+<td>Week 1–3 (if MCP)</td>
+<td>Glama, APITracker, LF MCP Registry, AI Agents List</td>
+<td>~10</td>
+</tr>
+<tr>
+<td><strong>Tier 5 — No-code directories</strong></td>
+<td>Week 1–3 (if no-code)</td>
+<td>NoCodeFinder, No Code MBA, We Are No Code, MakerPad</td>
+<td>~8</td>
+</tr>
+<tr>
+<td><strong>Tier 6 — &quot;Best of&quot; listicles</strong></td>
+<td>Rolling outreach</td>
+<td>Cold outreach to DR 40+ blog posts</td>
+<td>~10 inclusions</td>
+</tr>
+<tr>
+<td><strong>Tier 7 — Integration marketplaces</strong></td>
+<td>When integrations ship</td>
+<td>Zapier, HubSpot, Slack, Airtable, Notion</td>
+<td>~5</td>
+</tr>
+<tr>
+<td><strong>Tier 8 — Profile &amp; content platforms</strong></td>
+<td>Rolling</td>
+<td>GitHub, WordPress.com, Substack, Dev.to, SlideShare, Behance</td>
+<td>~50</td>
+</tr>
+<tr>
+<td><strong>Tier 9 — Local business directories</strong></td>
+<td>Rolling (if applicable)</td>
+<td>Manta, Hotfrog, Locanto, MerchantCircle</td>
+<td>~20</td>
+</tr>
+<tr>
+<td><strong>Tier 10 — Forums &amp; communities</strong></td>
+<td>Rolling (participate first)</td>
+<td>SitePoint, GrowthHackers, Warrior Forum, Designer News</td>
+<td>~13</td>
+</tr>
+<tr>
+<td><strong>Tier 11 — Press release &amp; article sites</strong></td>
+<td>Launch + milestones</td>
+<td>PRLog, PR.com, EzineArticles, Feedspot</td>
+<td>~25</td>
+</tr>
+<tr>
+<td><strong>Tier 12 — Social bookmarking</strong></td>
+<td>Rolling</td>
+<td>Scoop.it, Diigo, Pearltrees</td>
+<td>~5</td>
+</tr>
+<tr>
+<td><strong>Tier 13 — Niche vertical directories</strong></td>
+<td>When vertical fits</td>
+<td>Justia (legal), Porch (home), LandBook (design), etc.</td>
+<td>~20</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Triage rule:</strong> Only submit where the product is a genuine fit. Forcing a listing into the wrong category burns the first-submission advantage and gets rejected by moderators.</p>
+<h5>Step 2: Prepare asset variations per tier</h5>
+<p>For each tier, prep a distinct description variant (from <code>references/positioning-variations.md</code>):</p>
+<ul>
+<li><strong>Tagline</strong> under 10 words</li>
+<li><strong>Short description</strong> at 60 chars</li>
+<li><strong>Long description</strong> at 150 words</li>
+<li><strong>5–8 category tags</strong></li>
+<li><strong>Logo</strong> assets</li>
+<li><strong>Screenshots</strong> + demo video URL</li>
+<li><strong>Founder story</strong> (2–3 sentences)</li>
+</ul>
+<p><strong>Critical:</strong> Don't copy-paste the same long description into every directory. Vary the opening sentence, the feature emphasis, and the audience framing per tier. AI engines cross-reference and down-weight duplicate content.</p>
+<h5>Step 3: Batch submit with tracker</h5>
+<p>Set up the tracker spreadsheet (<code>references/submission-tracker-template.csv</code>). Work left-to-right through it. 2–3 hours per batch is realistic.</p>
+<p>Per submission:</p>
+<ol>
+<li>Copy the tier-appropriate positioning variant.</li>
+<li>Fill in the form.</li>
+<li>Upload assets.</li>
+<li>Submit.</li>
+<li>Log: date, URL, status, moderator notes.</li>
+<li>Once live, verify the backlink exists and is dofollow: <code>curl -sIL https://directory.com/your-listing | grep -i rel=</code>. If absent, the link is dofollow.</li>
+</ol>
+<hr>
+<h4>Phase 12: Product Hunt Deep Dive (The Anchor Event)</h4>
+<p>Product Hunt is the single highest-leverage submission but also the most easily wasted. The 2026 PH algorithm weights <strong>comment quality</strong> more than upvote count — a post with 50 upvotes + 30 genuine comments ranks above one with 200 upvotes + 5 comments. <strong>80% of failed launches</strong> fail because they launched without a warm audience OR asked for upvotes instead of feedback.</p>
+<h5>3-week prep timeline</h5>
+<ul>
+<li><strong>Day -21 to -14:</strong> Warm up hunter account. Upvote + thoughtfully comment on 3 launches/day. Follow 100+ active makers. Build history so your account looks real to the algorithm.</li>
+<li><strong>Day -14:</strong> Create &quot;Upcoming&quot; page on PH. Drive traffic to it to collect &quot;notify on launch&quot; subscribers.</li>
+<li><strong>Day -10:</strong> (Optional) book a hunter. Don't pay cash — trade a feature, shoutout, or intro. A known hunter adds ~15% to day-one momentum but isn't required.</li>
+<li><strong>Day -7:</strong> Draft launch-day assets: gallery images (1270×760), tagline, 260-char description, first comment from you, first comment from a customer.</li>
+<li><strong>Day -3:</strong> Email list warm-up. &quot;We're launching Tuesday. Here's what to expect. Reply if you want a heads up.&quot;</li>
+<li><strong>Day -1:</strong> Final check — product works in incognito, video autoplays, CTA goes to signup, PH listing preview looks right.</li>
+</ul>
+<h5>Launch day execution</h5>
+<ul>
+<li><strong>Launch at 12:01 AM Pacific Time.</strong> Tuesday, Wednesday, or Thursday only — weekend launches get 60–70% less traffic. The 12:01 AM PT start maximizes your 24-hour window.</li>
+<li><strong>First 2 hours are everything.</strong> Need 50+ supporters in the first 2 hours to trigger algorithmic distribution.</li>
+<li><strong>Post the first comment yourself</strong> with the story: why you built it, what's different, what to try first.</li>
+<li><strong>Reply to every comment</strong> in under 30 minutes. PH measures maker responsiveness.</li>
+<li><strong>Share the link to:</strong> Twitter/X thread, LinkedIn long-form post, personal Slack/Discord communities, your email list, Indie Hackers, every power user via DM.</li>
+<li><strong>Never ask for upvotes.</strong> Ask for <strong>feedback</strong>. &quot;Would love your honest take on the positioning&quot; converts 3× better than &quot;support us!&quot; and doesn't trigger the algorithm's anti-manipulation filters.</li>
+<li><strong>Don't message strangers.</strong> The community flags this and moderators will hide your post.</li>
+</ul>
+<h5>Post-launch</h5>
+<ul>
+<li>Write a launch recap blog post with numbers + lessons. Honest, not bragging. Publish on day 2.</li>
+<li>Cross-post the recap to Indie Hackers and r/SaaS (where promotion is allowed).</li>
+<li>Only submit to Show HN if you have a <em>technical</em> angle to share (architecture, DSL, novel approach). A generic &quot;we launched a SaaS&quot; post will get flagged to death.</li>
+</ul>
+<hr>
+<h4>Phase 13: Reviews Playbook (G2 / Capterra / TrustRadius)</h4>
+<p>G2 and Capterra (now owned by G2 as of Feb 2026) listings are <strong>worthless without reviews</strong>. 10 reviews is the magic threshold for Grid appearance. Run the 10-in-30 protocol during launch month.</p>
+<h5>The 10-in-30 protocol</h5>
+<ol>
+<li><strong>Day 1 post-launch:</strong> Identify 20 users who have completed a meaningful action with the product.</li>
+<li><strong>Send each a personal email</strong> with a direct review URL (reduces friction by ~70%). No forms, no landing pages — direct link.</li>
+<li><strong>Offer a modest thank-you.</strong> G2 and TrustRadius explicitly allow small incentives like a $25 Amazon gift card.</li>
+<li><strong>Follow up once</strong> after 5 days. Don't follow up twice — it becomes annoying and damages the relationship.</li>
+<li><strong>Target:</strong> 50% conversion → 10 reviews from 20 asks.</li>
+</ol>
+<h5>Critical deadlines</h5>
+<ul>
+<li><strong>G2 Summer reports:</strong> cut off ~April 28. Plan review drives to land before this.</li>
+<li><strong>G2 Fall reports:</strong> cut off ~July 28.</li>
+<li>Missing a cutoff means waiting 3 months for the next grid update.</li>
+</ul>
+<h5>Badges and paid plans</h5>
+<ul>
+<li><strong>&quot;Users Love Us&quot; badge</strong> is still free: requires 20 reviews at 4.0+ average.</li>
+<li><strong>Grid, Momentum, Index, and Award badges</strong> require a paid G2 plan ($2,999+/year starting Summer 2025).</li>
+<li><strong>Do not spend on paid G2 in year one.</strong> The free listing + Users Love Us badge is sufficient.</li>
+</ul>
+<h5>Cross-platform</h5>
+<ul>
+<li>TrustRadius follows similar mechanics but smaller volume.</li>
+<li>Capterra auto-syncs from Gartner Digital Markets in some categories — may populate without direct action.</li>
+</ul>
+<hr>
+<h4>Phase 14: Post-Launch Momentum</h4>
+<p>Your launch isn't over when the announcement goes live. Now comes adoption and retention work. Don't rely on a single launch event. Regular updates and feature rollouts sustain engagement.</p>
+<h5>Immediate Post-Launch Actions</h5>
+<ul>
+<li><strong>Educate new users:</strong> Set up automated onboarding email sequence introducing key features and use cases.</li>
+<li><strong>Reinforce the launch:</strong> Include announcement in your weekly/biweekly/monthly roundup email to catch people who missed it.</li>
+<li><strong>Differentiate against competitors:</strong> Publish comparison pages highlighting why you're the obvious choice.</li>
+<li><strong>Update web pages:</strong> Add dedicated sections about the new feature/product across your site.</li>
+<li><strong>Offer hands-on preview:</strong> Create no-code interactive demo (using tools like Navattic) so visitors can explore before signing up.</li>
+</ul>
+<h5>How to Prioritize What to Announce</h5>
+<p>Use this matrix to decide how much marketing each update deserves:</p>
+<p><strong>Major updates</strong> (new features, product overhauls):</p>
+<ul>
+<li>Full campaign across multiple channels</li>
+<li>Blog post, email campaign, in-app messages, social media</li>
+<li>Maximize exposure</li>
+</ul>
+<p><strong>Medium updates</strong> (new integrations, UI enhancements):</p>
+<ul>
+<li>Targeted announcement</li>
+<li>Email to relevant segments, in-app banner</li>
+<li>Don't need full fanfare</li>
+</ul>
+<p><strong>Minor updates</strong> (bug fixes, small tweaks):</p>
+<ul>
+<li>Changelog and release notes</li>
+<li>Signal that product is improving</li>
+<li>Don't dominate marketing</li>
+</ul>
+<h5>Announcement Tactics</h5>
+<ul>
+<li><strong>Space out releases:</strong> Instead of shipping everything at once, stagger announcements to maintain momentum.</li>
+<li><strong>Reuse high-performing tactics:</strong> If a previous announcement resonated, apply those insights to future updates.</li>
+<li><strong>Keep engaging:</strong> Continue using email, social, and in-app messaging to highlight improvements.</li>
+<li><strong>Signal active development:</strong> Even small changelog updates remind customers your product is evolving. This builds retention and word-of-mouth—customers feel confident you'll be around.</li>
+</ul>
+<hr>
+<h4>KPIs &amp; Tracking Dashboard</h4>
+<p>Track weekly. If a number isn't moving, investigate — don't just submit more directories.</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Day 0</th>
+<th>Day 30 target</th>
+<th>Day 90 target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Domain Rating (DR)</td>
+<td>0</td>
+<td>20</td>
+<td>30+</td>
+</tr>
+<tr>
+<td>Referring domains</td>
+<td>0</td>
+<td>30</td>
+<td>80+</td>
+</tr>
+<tr>
+<td>Indexed pages</td>
+<td>—</td>
+<td>50</td>
+<td>200+</td>
+</tr>
+<tr>
+<td>Organic clicks/day</td>
+<td>0</td>
+<td>30</td>
+<td>200+</td>
+</tr>
+<tr>
+<td>Directory listings live</td>
+<td>0</td>
+<td>50</td>
+<td>70+</td>
+</tr>
+<tr>
+<td>G2 reviews</td>
+<td>0</td>
+<td>10</td>
+<td>25</td>
+</tr>
+<tr>
+<td>Capterra reviews</td>
+<td>0</td>
+<td>5</td>
+<td>15</td>
+</tr>
+<tr>
+<td>AI citations (manual check)</td>
+<td>0</td>
+<td>3</td>
+<td>15+</td>
+</tr>
+<tr>
+<td>Signups from directory referrals</td>
+<td>0</td>
+<td>50</td>
+<td>300</td>
+</tr>
+<tr>
+<td>Signups from alt/use-case pages</td>
+<td>0</td>
+<td>20</td>
+<td>300</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4>What NOT to Do</h4>
+<ol>
+<li><strong>Don't pay for directory submission services</strong> ($60–$200 packages). The whole point is these are free. It's an afternoon of copy-paste.</li>
+<li><strong>Don't submit to spam directories</strong> (DR under 10, no traffic, no editorial quality). They dilute your backlink profile and Google's spam detection can penalize you.</li>
+<li><strong>Don't submit with the wrong positioning.</strong> Re-read the positioning table per tier. Generic descriptions waste the listing.</li>
+<li><strong>Don't treat directories as your entire GTM.</strong> They're the foundation. Content + community + reviews are what actually convert.</li>
+<li><strong>Don't skip reviews on G2/Capterra.</strong> Zero-review listings are dead. Run the 10-in-30 protocol or don't submit.</li>
+<li><strong>Don't ask for upvotes on Product Hunt.</strong> The 2026 algorithm penalizes it. Ask for <strong>feedback</strong>.</li>
+<li><strong>Don't amend old directory listings every week.</strong> Submit once, check quarterly.</li>
+<li><strong>Don't submit before the destination page exists.</strong> Link equity needs a destination.</li>
+<li><strong>Don't duplicate descriptions across directories.</strong> AI engines penalize duplicate content.</li>
+<li><strong>Don't lie on comparison pages.</strong> AI engines cross-reference and de-rank lies.</li>
+<li><strong>Don't over-index on launch-day spike.</strong> The flywheel is templates + alternatives + reviews + ongoing content — not one day of PH.</li>
+<li><strong>Don't forget Crunchbase, LinkedIn company page, and Wikidata.</strong> These feed AI training corpora and matter for GEO.</li>
+<li><strong>Don't launch before SLC gate passes.</strong> Stealth Mode and &quot;Just One More Feature&quot; both kill launches.</li>
+<li><strong>Don't skip the humanizer pass on marketing copy.</strong> AI patterns in hero, CTAs, meta descriptions, OG descriptions tank credibility.</li>
+<li><strong>Don't assume analytics &quot;just work.&quot;</strong> Verify every integration with curl before launch — GA4, PostHog, GSC, Bing, Ahrefs.</li>
+<li><strong>Don't ignore backup drills.</strong> A backup you haven't tested is not a backup. Restore to staging before launch.</li>
+</ol>
+<hr>
+<h4>Output format</h4>
+<p>At the end of a full run, output a status report grouped by phase:</p>
+<pre><code>Phase 1: Domain &amp; Infrastructure  [9/10 pass]
+  ✓ Cloudflare proxy on
+  ✓ DNS records configured
+  ...
+  ✗ DMARC missing. Fix: add TXT record at _dmarc.example.com with policy v=DMARC1; p=quarantine;...
+
+Phase 2: Analytics &amp; Observability  [6/7 pass]
+  ...
+</code></pre>
+<p>Followed by three lists, in order:</p>
+<ol>
+<li><strong>Blockers</strong> (must fix before launch)</li>
+<li><strong>Recommended fixes</strong> (should fix before announcing)</li>
+<li><strong>Optional improvements</strong> (post-launch)</li>
+</ol>
+<p>End by asking: &quot;Which list do you want to tackle next?&quot; (<code>blockers</code> | <code>recommended</code> | <code>optional</code> | <code>done-for-now</code>).</p>
+<hr>
+<h4>References</h4>
+<ul>
+<li><code>references/decisions.md</code>: AI scraper policy matrix by site type, observability tier matrix</li>
+<li><code>references/templates.md</code>: robots.txt, llms.txt, manifest.json, CSP templates per tightness level, security headers reference</li>
+<li><code>references/weekly-seo-agent.md</code>: Full definition of the weekly SEO maintenance sub-agent (MCPs, tasks, output format)</li>
+<li><code>assets/weekly-seo-*.md</code>, <code>assets/weekly-seo-vibe.toml</code>: per-harness agent-definition files linked from <code>references/weekly-seo-agent.md</code> — copy the one matching your harness</li>
+<li><code>references/directory-list.md</code>: 13-tier directory catalog with submission timing, examples, and counts</li>
+<li><code>references/positioning-variations.md</code>: Positioning variant library per directory tier (tagline, short/long descriptions, category tags)</li>
+<li><code>references/submission-tracker-template.csv</code>: Submission tracker spreadsheet template for logging directory submissions</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

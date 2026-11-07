@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pptx-generator · SkillHub</title>
+    <meta name="description" content="Use it when: you need a new PowerPoint deck built from a topic, or want to edit or read an existing .pptx. It does: picks a palette, fonts and one of four styles, classifies every slide as one of five page types, writes one JavaScript file per slide, then compiles them. You get: slides/output/presentation.pptx, with one JavaScript file per slide and the images they use in slides/. Checks: extracts the deck&#039;s text with markitdown to find missing content and leftover placeholders, then fixes and re-checks until a pass finds nothing new. Needs: Node with pptxgenjs and Python with markitdown; react-icons and sharp are optional, for icons. Unlike: Anthropic&#039;s pptx skill, which uses the same two libraries, it splits a deck into slide modules with a fixed theme contract and can hand slides to subagents." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=minimax-ai%2Fskills">minimax-ai/skills</a></p>
+      <h1>pptx-generator</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you need a new PowerPoint deck built from a topic, or want to edit or read an existing .pptx</dd></div><div><dt>It does</dt><dd>picks a palette, fonts and one of four styles, classifies every slide as one of five page types, writes one JavaScript file per slide, then compiles them</dd></div><div><dt>You get</dt><dd>slides/output/presentation.pptx, with one JavaScript file per slide and the images they use in slides/</dd></div><div><dt>Checks</dt><dd>extracts the deck&#39;s text with markitdown to find missing content and leftover placeholders, then fixes and re-checks until a pass finds nothing new</dd></div><div><dt>Needs</dt><dd>Node with pptxgenjs and Python with markitdown; react-icons and sharp are optional, for icons</dd></div><div><dt>Unlike</dt><dd>Anthropic&#39;s pptx skill, which uses the same two libraries, it splits a deck into slide modules with a fixed theme contract and can hand slides to subagents</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>MiniMax&#39;s PowerPoint skill covers three jobs. Reading runs markitdown on a deck. Editing, or building from a template, follows an XML workflow in its references. Creating from scratch has seven steps: research the topic, audience and tone; pick a color palette and font pairing from its design system and a style, Sharp, Soft, Rounded or Pill; plan an outline where every slide is a cover, table of contents, section divider, content or summary page, with layouts varied across slides; write each slide as its own runnable JavaScript file exporting createSlide, which can also render a preview, up to five at a time with subagents when available; compile them into a 16:9 deck; and run QA. Every slide reads the same five theme colors by fixed key names, and every slide but the cover carries a small page-number badge in the bottom-right corner. Fonts default to Arial for English and Microsoft YaHei for Chinese. QA is required: assume there are problems, extract the text, search it for placeholder text, and complete at least one fix-and-verify cycle. Its pitfalls list bans accent lines under titles, # in hex colors and async slide functions.</p>
+      <p class="muted">Summarizes <a href="https://github.com/minimax-ai/skills/tree/60aaae52bb2af8162732751a4332f62a5fef518b/skills/pptx-generator">the skill at 60aaae5</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/minimax-ai/skills --skill pptx-generator</code><button type="button" class="copy" data-copy="npx skills add https://github.com/minimax-ai/skills --skill pptx-generator">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/minimax-ai/skills/pptx-generator">skills.sh page</a> · <a href="https://github.com/minimax-ai/skills/tree/HEAD/skills/pptx-generator">Source on GitHub</a> · <a href="/skillhub/?repo=minimax-ai%2Fskills">All skills from minimax-ai/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>6,200 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>13,794 <span class="muted">minimax-ai/skills</span></dd></div><div><dt>First seen</dt><dd>Mar 22, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">75</div>
+      <div class="stat-delta">+42% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 53; week to Sep 26: 62; week to Oct 3: 61; week to Oct 10: 39; week to Oct 17: 56; week to Oct 24: 84; week to Oct 31: 103; week to Nov 7: 75. Use the left and right arrow keys to read each week."
+        data-values="53,62,61,39,56,84,103,75" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,27.4 38.6,23.5 71.1,23.9 103.7,33.3 136.3,26.1 168.9,14.1 201.4,6.0 234.0,18.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="18.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>53</td></tr><tr><td>Sep 26</td><td>62</td></tr><tr><td>Oct 3</td><td>61</td></tr><tr><td>Oct 10</td><td>39</td></tr><tr><td>Oct 17</td><td>56</td></tr><tr><td>Oct 24</td><td>84</td></tr><tr><td>Oct 31</td><td>103</td></tr><tr><td>Nov 7</td><td>75</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:documents" data-facet="category" title="Office files, notes and suites like Lark and Google Workspace." href="/skillhub/?tag=category%3Adocuments">category:documents</a></div>
+          <p class="tag-meaning">Office files, notes and suites like Lark and Google Workspace.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="slides" data-facet="topic" href="/skillhub/?tag=slides">slides</a><a class="tag" data-tag="design" data-facet="topic" href="/skillhub/?tag=design">design</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:microsoft-office" data-facet="stack" href="/skillhub/?tag=stack%3Amicrosoft-office">stack:microsoft-office</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/minimax-ai/skills/blob/60aaae52bb2af8162732751a4332f62a5fef518b/skills/pptx-generator/SKILL.md">minimax-ai/skills at 60aaae5</a>. Checked daily, last changed Nov 7, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: pptx-generator
+description: &#34;Generate, edit, and read PowerPoint presentations. Create from scratch with PptxGenJS (cover, TOC, content, section divider, summary slides), edit existing PPTX via XML workflows, or extract text with markitdown. Triggers: PPT, PPTX, PowerPoint, presentation, slide, deck, slides.&#34;
+license: MIT
+metadata:
+  version: &#34;1.0&#34;
+  category: productivity
+  sources:
+    - https://gitbrent.github.io/PptxGenJS/
+    - https://github.com/microsoft/markitdown</code></pre></details>
+        <div class="markdown"><h3>PPTX Generator &amp; Editor</h3>
+<h4>Overview</h4>
+<p>This skill handles all PowerPoint tasks: reading/analyzing existing presentations, editing template-based decks via XML manipulation, and creating presentations from scratch using PptxGenJS. It includes a complete design system (color palettes, fonts, style recipes) and detailed guidance for every slide type.</p>
+<h4>Quick Reference</h4>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Read/analyze content</td>
+<td><code>python -m markitdown presentation.pptx</code></td>
+</tr>
+<tr>
+<td>Edit or create from template</td>
+<td>See <a href="https://github.com/minimax-ai/skills/blob/60aaae52bb2af8162732751a4332f62a5fef518b/skills/pptx-generator/references/editing.md">Editing Presentations</a></td>
+</tr>
+<tr>
+<td>Create from scratch</td>
+<td>See <a href="#creating-from-scratch-workflow">Creating from Scratch</a> below</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Dimensions</strong></td>
+<td>10&quot; x 5.625&quot; (LAYOUT_16x9)</td>
+</tr>
+<tr>
+<td><strong>Colors</strong></td>
+<td>6-char hex without # (e.g., <code>&quot;FF0000&quot;</code>)</td>
+</tr>
+<tr>
+<td><strong>English font</strong></td>
+<td>Arial (default), or approved alternatives</td>
+</tr>
+<tr>
+<td><strong>Chinese font</strong></td>
+<td>Microsoft YaHei</td>
+</tr>
+<tr>
+<td><strong>Page badge position</strong></td>
+<td>x: 9.3&quot;, y: 5.1&quot;</td>
+</tr>
+<tr>
+<td><strong>Theme keys</strong></td>
+<td><code>primary</code>, <code>secondary</code>, <code>accent</code>, <code>light</code>, <code>bg</code></td>
+</tr>
+<tr>
+<td><strong>Shapes</strong></td>
+<td>RECTANGLE, OVAL, LINE, ROUNDED_RECTANGLE</td>
+</tr>
+<tr>
+<td><strong>Charts</strong></td>
+<td>BAR, LINE, PIE, DOUGHNUT, SCATTER, BUBBLE, RADAR</td>
+</tr>
+</tbody>
+</table>
+<h4>Reference Files</h4>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/minimax-ai/skills/blob/60aaae52bb2af8162732751a4332f62a5fef518b/skills/pptx-generator/references/slide-types.md">slide-types.md</a></td>
+<td>5 slide page types (Cover, TOC, Section Divider, Content, Summary) + additional layout patterns</td>
+</tr>
+<tr>
+<td><a href="https://github.com/minimax-ai/skills/blob/60aaae52bb2af8162732751a4332f62a5fef518b/skills/pptx-generator/references/design-system.md">design-system.md</a></td>
+<td>Color palettes, font reference, style recipes (Sharp/Soft/Rounded/Pill), typography &amp; spacing</td>
+</tr>
+<tr>
+<td><a href="https://github.com/minimax-ai/skills/blob/60aaae52bb2af8162732751a4332f62a5fef518b/skills/pptx-generator/references/editing.md">editing.md</a></td>
+<td>Template-based editing workflow, XML manipulation, formatting rules, common pitfalls</td>
+</tr>
+<tr>
+<td><a href="https://github.com/minimax-ai/skills/blob/60aaae52bb2af8162732751a4332f62a5fef518b/skills/pptx-generator/references/pitfalls.md">pitfalls.md</a></td>
+<td>QA process, common mistakes, critical PptxGenJS pitfalls</td>
+</tr>
+<tr>
+<td><a href="https://github.com/minimax-ai/skills/blob/60aaae52bb2af8162732751a4332f62a5fef518b/skills/pptx-generator/references/pptxgenjs.md">pptxgenjs.md</a></td>
+<td>Complete PptxGenJS API reference</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4>Reading Content</h4>
+<pre><code class="language-bash"># Text extraction
+python -m markitdown presentation.pptx
+</code></pre>
+<hr>
+<h4>Creating from Scratch — Workflow</h4>
+<p><strong>Use when no template or reference presentation is available.</strong></p>
+<h5>Step 1: Research &amp; Requirements</h5>
+<p>Search to understand user requirements — topic, audience, purpose, tone, content depth.</p>
+<h5>Step 2: Select Color Palette &amp; Fonts</h5>
+<p>Use the <a href="https://github.com/minimax-ai/skills/blob/60aaae52bb2af8162732751a4332f62a5fef518b/skills/pptx-generator/references/design-system.md#color-palette-reference">Color Palette Reference</a> to select a palette matching the topic and audience. Use the <a href="https://github.com/minimax-ai/skills/blob/60aaae52bb2af8162732751a4332f62a5fef518b/skills/pptx-generator/references/design-system.md#font-reference">Font Reference</a> to choose a font pairing.</p>
+<h5>Step 3: Select Design Style</h5>
+<p>Use the <a href="https://github.com/minimax-ai/skills/blob/60aaae52bb2af8162732751a4332f62a5fef518b/skills/pptx-generator/references/design-system.md#style-recipes">Style Recipes</a> to choose a visual style (Sharp, Soft, Rounded, or Pill) matching the presentation tone.</p>
+<h5>Step 4: Plan Slide Outline</h5>
+<p>Classify <strong>every slide</strong> as exactly one of the <a href="https://github.com/minimax-ai/skills/blob/60aaae52bb2af8162732751a4332f62a5fef518b/skills/pptx-generator/references/slide-types.md">5 page types</a>. Plan the content and layout for each slide. Ensure visual variety — do NOT repeat the same layout across slides.</p>
+<h5>Step 5: Generate Slide JS Files</h5>
+<p>Create one JS file per slide in <code>slides/</code> directory. Each file must export a synchronous <code>createSlide(pres, theme)</code> function. Follow the <a href="#slide-output-format">Slide Output Format</a> and the type-specific guidance in <a href="https://github.com/minimax-ai/skills/blob/60aaae52bb2af8162732751a4332f62a5fef518b/skills/pptx-generator/references/slide-types.md">slide-types.md</a>. Generate up to 5 slides concurrently using subagents if available.</p>
+<p><strong>Tell each subagent:</strong></p>
+<ol>
+<li>File naming: <code>slides/slide-01.js</code>, <code>slides/slide-02.js</code>, etc.</li>
+<li>Images go in: <code>slides/imgs/</code></li>
+<li>Final PPTX goes in: <code>slides/output/</code></li>
+<li>Dimensions: 10&quot; x 5.625&quot; (LAYOUT_16x9)</li>
+<li>Fonts: Chinese = Microsoft YaHei, English = Arial (or approved alternative)</li>
+<li>Colors: 6-char hex without # (e.g. <code>&quot;FF0000&quot;</code>)</li>
+<li>Must use the theme object contract (see <a href="#theme-object-contract">Theme Object Contract</a>)</li>
+<li>Must follow the <a href="https://github.com/minimax-ai/skills/blob/60aaae52bb2af8162732751a4332f62a5fef518b/skills/pptx-generator/references/pptxgenjs.md">PptxGenJS API reference</a></li>
+</ol>
+<h5>Step 6: Compile into Final PPTX</h5>
+<p>Create <code>slides/compile.js</code> to combine all slide modules:</p>
+<pre><code class="language-javascript">// slides/compile.js
+const pptxgen = require('pptxgenjs');
+const pres = new pptxgen();
+pres.layout = 'LAYOUT_16x9';
+
+const theme = {
+  primary: &quot;22223b&quot;,    // dark color for backgrounds/text
+  secondary: &quot;4a4e69&quot;,  // secondary accent
+  accent: &quot;9a8c98&quot;,     // highlight color
+  light: &quot;c9ada7&quot;,      // light accent
+  bg: &quot;f2e9e4&quot;          // background color
+};
+
+for (let i = 1; i &lt;= 12; i++) {  // adjust count as needed
+  const num = String(i).padStart(2, '0');
+  const slideModule = require(`./slide-${num}.js`);
+  slideModule.createSlide(pres, theme);
+}
+
+pres.writeFile({ fileName: './output/presentation.pptx' });
+</code></pre>
+<p>Run with: <code>cd slides &amp;&amp; node compile.js</code></p>
+<h5>Step 7: QA (Required)</h5>
+<p>See <a href="https://github.com/minimax-ai/skills/blob/60aaae52bb2af8162732751a4332f62a5fef518b/skills/pptx-generator/references/pitfalls.md#qa-process">QA Process</a>.</p>
+<h5>Output Structure</h5>
+<pre><code>slides/
+├── slide-01.js          # Slide modules
+├── slide-02.js
+├── ...
+├── imgs/                # Images used in slides
+└── output/              # Final artifacts
+    └── presentation.pptx
+</code></pre>
+<hr>
+<h4>Slide Output Format</h4>
+<p>Each slide is a <strong>complete, runnable JS file</strong>:</p>
+<pre><code class="language-javascript">// slide-01.js
+const pptxgen = require(&quot;pptxgenjs&quot;);
+
+const slideConfig = {
+  type: 'cover',
+  index: 1,
+  title: 'Presentation Title'
+};
+
+// MUST be synchronous (not async)
+function createSlide(pres, theme) {
+  const slide = pres.addSlide();
+  slide.background = { color: theme.bg };
+
+  slide.addText(slideConfig.title, {
+    x: 0.5, y: 2, w: 9, h: 1.2,
+    fontSize: 48, fontFace: &quot;Arial&quot;,
+    color: theme.primary, bold: true, align: &quot;center&quot;
+  });
+
+  return slide;
+}
+
+// Standalone preview - use slide-specific filename
+if (require.main === module) {
+  const pres = new pptxgen();
+  pres.layout = 'LAYOUT_16x9';
+  const theme = {
+    primary: &quot;22223b&quot;,
+    secondary: &quot;4a4e69&quot;,
+    accent: &quot;9a8c98&quot;,
+    light: &quot;c9ada7&quot;,
+    bg: &quot;f2e9e4&quot;
+  };
+  createSlide(pres, theme);
+  pres.writeFile({ fileName: &quot;slide-01-preview.pptx&quot; });
+}
+
+module.exports = { createSlide, slideConfig };
+</code></pre>
+<hr>
+<h4>Theme Object Contract (MANDATORY)</h4>
+<p>The compile script passes a theme object with these <strong>exact keys</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Purpose</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>theme.primary</code></td>
+<td>Darkest color, titles</td>
+<td><code>&quot;22223b&quot;</code></td>
+</tr>
+<tr>
+<td><code>theme.secondary</code></td>
+<td>Dark accent, body text</td>
+<td><code>&quot;4a4e69&quot;</code></td>
+</tr>
+<tr>
+<td><code>theme.accent</code></td>
+<td>Mid-tone accent</td>
+<td><code>&quot;9a8c98&quot;</code></td>
+</tr>
+<tr>
+<td><code>theme.light</code></td>
+<td>Light accent</td>
+<td><code>&quot;c9ada7&quot;</code></td>
+</tr>
+<tr>
+<td><code>theme.bg</code></td>
+<td>Background color</td>
+<td><code>&quot;f2e9e4&quot;</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>NEVER use other key names</strong> like <code>background</code>, <code>text</code>, <code>muted</code>, <code>darkest</code>, <code>lightest</code>.</p>
+<hr>
+<h4>Page Number Badge (REQUIRED)</h4>
+<p>All slides <strong>except Cover Page</strong> MUST include a page number badge in the bottom-right corner.</p>
+<ul>
+<li><strong>Position</strong>: x: 9.3&quot;, y: 5.1&quot;</li>
+<li>Show current number only (e.g. <code>3</code> or <code>03</code>), NOT &quot;3/12&quot;</li>
+<li>Use palette colors, keep subtle</li>
+</ul>
+<h5>Circle Badge (Default)</h5>
+<pre><code class="language-javascript">slide.addShape(pres.shapes.OVAL, {
+  x: 9.3, y: 5.1, w: 0.4, h: 0.4,
+  fill: { color: theme.accent }
+});
+slide.addText(&quot;3&quot;, {
+  x: 9.3, y: 5.1, w: 0.4, h: 0.4,
+  fontSize: 12, fontFace: &quot;Arial&quot;,
+  color: &quot;FFFFFF&quot;, bold: true,
+  align: &quot;center&quot;, valign: &quot;middle&quot;
+});
+</code></pre>
+<h5>Pill Badge</h5>
+<pre><code class="language-javascript">slide.addShape(pres.shapes.ROUNDED_RECTANGLE, {
+  x: 9.1, y: 5.15, w: 0.6, h: 0.35,
+  fill: { color: theme.accent },
+  rectRadius: 0.15
+});
+slide.addText(&quot;03&quot;, {
+  x: 9.1, y: 5.15, w: 0.6, h: 0.35,
+  fontSize: 11, fontFace: &quot;Arial&quot;,
+  color: &quot;FFFFFF&quot;, bold: true,
+  align: &quot;center&quot;, valign: &quot;middle&quot;
+});
+</code></pre>
+<hr>
+<h4>Dependencies</h4>
+<ul>
+<li><code>pip install &quot;markitdown[pptx]&quot;</code> — text extraction</li>
+<li><code>npm install -g pptxgenjs</code> — creating from scratch</li>
+<li><code>npm install -g react-icons react react-dom sharp</code> — icons (optional)</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>debugging-wizard · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re chasing an error, a crash, a stack trace or unexpected behaviour and want its root cause rather than a guess. It does: reproduces the bug, narrows it to the smallest failing case, tests one hypothesis at a time, fixes it and adds a regression test. You get: the root cause, the evidence that proves it (a stack trace, logs or a test), the fix, and a safeguard against it coming back. Works with: any language; it shows pdb for Python, node --inspect-brk for Node.js, delve for Go, and git bisect to find the commit that broke something." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=jeffallan%2Fclaude-skills">jeffallan/claude-skills</a></p>
+      <h1>debugging-wizard</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re chasing an error, a crash, a stack trace or unexpected behaviour and want its root cause rather than a guess</dd></div><div><dt>It does</dt><dd>reproduces the bug, narrows it to the smallest failing case, tests one hypothesis at a time, fixes it and adds a regression test</dd></div><div><dt>You get</dt><dd>the root cause, the evidence that proves it (a stack trace, logs or a test), the fix, and a safeguard against it coming back</dd></div><div><dt>Works with</dt><dd>any language; it shows pdb for Python, node --inspect-brk for Node.js, delve for Go, and git bisect to find the commit that broke something</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>It applies one method to any codebase. Its rules: reproduce the issue first, gather the full error messages and stack traces, change one thing at a time, never assume the cause, document findings, add a regression test after the fix, and remove console.log and debugger statements before committing. It won&#39;t debug in production without safeguards. Five reference files load as needed: debugger setup by language, common bug patterns, strategies such as binary search, git bisect and time-travel debugging, quick fixes for common errors, and a systematic-debugging guide, adapted from obra/superpowers, for complex bugs or after several failed fixes.</p>
+      <p class="muted">Summarizes <a href="https://github.com/jeffallan/claude-skills/tree/078a25cc5bfd8011459be7b91d004e900c1d02d3/skills/debugging-wizard">the skill at 078a25c</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/jeffallan/claude-skills --skill debugging-wizard</code><button type="button" class="copy" data-copy="npx skills add https://github.com/jeffallan/claude-skills --skill debugging-wizard">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/jeffallan/claude-skills/debugging-wizard">skills.sh page</a> · <a href="https://github.com/jeffallan/claude-skills/tree/HEAD/skills/debugging-wizard">Source on GitHub</a> · <a href="/skillhub/?repo=jeffallan%2Fclaude-skills">All skills from jeffallan/claude-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,300 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>12,252 <span class="muted">jeffallan/claude-skills</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">150</div>
+      <div class="stat-delta">+49% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 101; week to Sep 26: 96; week to Oct 3: 107; week to Oct 10: 108; week to Oct 17: 119; week to Oct 24: 165; week to Oct 31: 141; week to Nov 7: 150. Use the left and right arrow keys to read each week."
+        data-values="101,96,107,108,119,165,141,150" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.1 38.6,24.4 71.1,21.5 103.7,21.2 136.3,18.3 168.9,6.0 201.4,12.4 234.0,10.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="10.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>101</td></tr><tr><td>Sep 26</td><td>96</td></tr><tr><td>Oct 3</td><td>107</td></tr><tr><td>Oct 10</td><td>108</td></tr><tr><td>Oct 17</td><td>119</td></tr><tr><td>Oct 24</td><td>165</td></tr><tr><td>Oct 31</td><td>141</td></tr><tr><td>Nov 7</td><td>150</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="debugging" data-facet="topic" href="/skillhub/?tag=debugging">debugging</a><a class="tag" data-tag="testing" data-facet="topic" href="/skillhub/?tag=testing">testing</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/jeffallan/claude-skills/blob/078a25cc5bfd8011459be7b91d004e900c1d02d3/skills/debugging-wizard/SKILL.md">jeffallan/claude-skills at 078a25c</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: debugging-wizard
+description: Parses error messages, traces execution flow through stack traces, correlates log entries to identify failure points, and applies systematic hypothesis-driven methodology to isolate and resolve bugs. Use when investigating errors, analyzing stack traces, finding root causes of unexpected behavior, troubleshooting crashes, or performing log analysis, error investigation, or root cause analysis.
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
+  version: &#34;1.1.0&#34;
+  domain: quality
+  triggers: debug, error, bug, exception, traceback, stack trace, troubleshoot, not working, crash, fix issue
+  role: specialist
+  scope: analysis
+  output-format: analysis
+  related-skills: test-master, fullstack-guardian, monitoring-expert</code></pre></details>
+        <div class="markdown"><h3>Debugging Wizard</h3>
+<p>Expert debugger applying systematic methodology to isolate and resolve issues in any codebase.</p>
+<h4>Core Workflow</h4>
+<ol>
+<li><strong>Reproduce</strong> - Establish consistent reproduction steps</li>
+<li><strong>Isolate</strong> - Narrow down to smallest failing case</li>
+<li><strong>Hypothesize and test</strong> - Form testable theories, verify/disprove each one</li>
+<li><strong>Fix</strong> - Implement and verify solution</li>
+<li><strong>Prevent</strong> - Add tests/safeguards against regression</li>
+</ol>
+<h4>Reference Guide</h4>
+<p>Load detailed guidance based on context:</p>
+<p>&lt;!-- Systematic Debugging row adapted from obra/superpowers by Jesse Vincent (@obra), MIT License --&gt;</p>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Reference</th>
+<th>Load When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Debugging Tools</td>
+<td><code>references/debugging-tools.md</code></td>
+<td>Setting up debuggers by language</td>
+</tr>
+<tr>
+<td>Common Patterns</td>
+<td><code>references/common-patterns.md</code></td>
+<td>Recognizing bug patterns</td>
+</tr>
+<tr>
+<td>Strategies</td>
+<td><code>references/strategies.md</code></td>
+<td>Binary search, git bisect, time travel</td>
+</tr>
+<tr>
+<td>Quick Fixes</td>
+<td><code>references/quick-fixes.md</code></td>
+<td>Common error solutions</td>
+</tr>
+<tr>
+<td>Systematic Debugging</td>
+<td><code>references/systematic-debugging.md</code></td>
+<td>Complex bugs, multiple failed fixes, root cause analysis</td>
+</tr>
+</tbody>
+</table>
+<h4>Constraints</h4>
+<h5>MUST DO</h5>
+<ul>
+<li>Reproduce the issue first</li>
+<li>Gather complete error messages and stack traces</li>
+<li>Test one hypothesis at a time</li>
+<li>Document findings for future reference</li>
+<li>Add regression tests after fixing</li>
+<li>Remove all debug code before committing</li>
+</ul>
+<h5>MUST NOT DO</h5>
+<ul>
+<li>Guess without testing</li>
+<li>Make multiple changes at once</li>
+<li>Skip reproduction steps</li>
+<li>Assume you know the cause</li>
+<li>Debug in production without safeguards</li>
+<li>Leave console.log/debugger statements in code</li>
+</ul>
+<h4>Common Debugging Commands</h4>
+<p><strong>Python (pdb)</strong></p>
+<pre><code class="language-bash">python -m pdb script.py          # launch debugger
+# inside pdb:
+# b 42          — set breakpoint at line 42
+# n             — step over
+# s             — step into
+# p some_var    — print variable
+# bt            — print full traceback
+</code></pre>
+<p><strong>JavaScript (Node.js)</strong></p>
+<pre><code class="language-bash">node --inspect-brk script.js     # pause at first line, attach Chrome DevTools
+# In Chrome: open chrome://inspect → click &quot;inspect&quot;
+# Sources panel: add breakpoints, watch expressions, step through
+</code></pre>
+<p><strong>Git bisect (regression hunting)</strong></p>
+<pre><code class="language-bash">git bisect start
+git bisect bad                   # current commit is broken
+git bisect good v1.2.0           # last known good tag/commit
+# Git checks out midpoint — test, then:
+git bisect good   # or: git bisect bad
+# Repeat until git identifies the first bad commit
+git bisect reset
+</code></pre>
+<p><strong>Go (delve)</strong></p>
+<pre><code class="language-bash">dlv debug ./cmd/server           # build &amp; attach
+# (dlv) break main.go:55
+# (dlv) continue
+# (dlv) print myVar
+</code></pre>
+<h4>Output Templates</h4>
+<p>When debugging, provide:</p>
+<ol>
+<li><strong>Root Cause</strong>: What specifically caused the issue</li>
+<li><strong>Evidence</strong>: Stack trace, logs, or test that proves it</li>
+<li><strong>Fix</strong>: Code change that resolves it</li>
+<li><strong>Prevention</strong>: Test or safeguard to prevent recurrence</li>
+</ol>
+<p>Maintained by <a href="https://github.com/jeffallan">@jeffallan</a>, Principal Consultant at <a href="https://synergetic.solutions">Synergetic Solutions</a></p>
+<p><a href="https://jeffallan.github.io/claude-skills/skills/quality/debugging-wizard/">Documentation</a></p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

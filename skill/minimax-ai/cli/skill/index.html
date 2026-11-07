@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mmx-cli · SkillHub</title>
+    <meta name="description" content="Use it when: you want the agent to make images, video or speech with MiniMax models, transcribe audio, describe an image or search the web. It does: runs MiniMax&#039;s mmx CLI with agent flags: no prompts, clean JSON on stdout, and async video jobs it can check on. You get: generated files or their URLs, transcripts or subtitle files, and replies from MiniMax&#039;s chat models. Needs: the mmx-cli npm package and a MiniMax API key or login. Defaults: MiniMax-M3.1-Flash for text, which needs a MiniMax plan; image-01 for images, Hailuo 2.3 for video, speech-2.8-hd for speech." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=minimax-ai%2Fcli">minimax-ai/cli</a></p>
+      <h1>mmx-cli</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want the agent to make images, video or speech with MiniMax models, transcribe audio, describe an image or search the web</dd></div><div><dt>It does</dt><dd>runs MiniMax&#39;s mmx CLI with agent flags: no prompts, clean JSON on stdout, and async video jobs it can check on</dd></div><div><dt>You get</dt><dd>generated files or their URLs, transcripts or subtitle files, and replies from MiniMax&#39;s chat models</dd></div><div><dt>Needs</dt><dd>the mmx-cli npm package and a MiniMax API key or login</dd></div><div><dt>Defaults</dt><dd>MiniMax-M3.1-Flash for text, which needs a MiniMax plan; image-01 for images, Hailuo 2.3 for video, speech-2.8-hd for speech</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>MiniMax&#39;s own guide to its command line. It lists each command with its flags: text chat with system prompts, tool definitions and multi-turn messages; image generation with aspect ratio, count, seed and a subject reference; video from a prompt or from first and last frames, which either waits for the file or returns a task ID; speech synthesis with voice, speed, pitch and optional .srt subtitles; transcription of audio up to 50 MB and 500 seconds into text, JSON with word timestamps, SRT or VTT; image description; web search; and a quota check. In agent contexts it uses flags such as --non-interactive, --quiet and --output json, so stdout is clean data to pipe, and exit codes tell auth, quota, timeout and content-filter failures apart. It can export every command as a JSON tool schema for agent frameworks and set a default model per modality. For MiniMax&#39;s H3 video model it points to a separate skill.</p>
+      <p class="muted">Summarizes <a href="https://github.com/minimax-ai/cli/tree/38aba5f26173dd1065b115b221d79c9ddd87c6bb/skill">the skill at 38aba5f</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/minimax-ai/cli --skill mmx-cli</code><button type="button" class="copy" data-copy="npx skills add https://github.com/minimax-ai/cli --skill mmx-cli">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/minimax-ai/cli/mmx-cli">skills.sh page</a> · <a href="https://github.com/minimax-ai/cli/tree/HEAD/skill">Source on GitHub</a> · <a href="/skillhub/?repo=minimax-ai%2Fcli">All skills from minimax-ai/cli</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>32,400 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>2,211 <span class="muted">minimax-ai/cli</span></dd></div><div><dt>First seen</dt><dd>Apr 8, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">273</div>
+      <div class="stat-delta">-33% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 408; week to Sep 26: 431; week to Oct 3: 350; week to Oct 10: 353; week to Oct 17: 351; week to Oct 24: 344; week to Oct 31: 463; week to Nov 7: 273. Use the left and right arrow keys to read each week."
+        data-values="408,431,350,353,351,344,463,273" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,11.2 38.6,9.0 71.1,16.7 103.7,16.5 136.3,16.6 168.9,17.3 201.4,6.0 234.0,24.1" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="24.1" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>408</td></tr><tr><td>Sep 26</td><td>431</td></tr><tr><td>Oct 3</td><td>350</td></tr><tr><td>Oct 10</td><td>353</td></tr><tr><td>Oct 17</td><td>351</td></tr><tr><td>Oct 24</td><td>344</td></tr><tr><td>Oct 31</td><td>463</td></tr><tr><td>Nov 7</td><td>273</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:media" data-facet="category" title="Generate and edit video, images and audio." href="/skillhub/?tag=category%3Amedia">category:media</a></div>
+          <p class="tag-meaning">Generate and edit video, images and audio.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/skillhub/?tag=type%3Atool">type:tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/skillhub/?tag=needs%3Aaccount">needs:account</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="image" data-facet="topic" href="/skillhub/?tag=image">image</a><a class="tag" data-tag="video" data-facet="topic" href="/skillhub/?tag=video">video</a><a class="tag" data-tag="audio" data-facet="topic" href="/skillhub/?tag=audio">audio</a><a class="tag" data-tag="ai-generation" data-facet="topic" href="/skillhub/?tag=ai-generation">ai-generation</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:minimax" data-facet="stack" href="/skillhub/?tag=stack%3Aminimax">stack:minimax</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/minimax-ai/cli/blob/38aba5f26173dd1065b115b221d79c9ddd87c6bb/skill/SKILL.md">minimax-ai/cli at 38aba5f</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: mmx-cli
+description: Use mmx to generate text, images, video, and speech, and to transcribe audio, via the MiniMax AI platform. Use when the user wants to create media content, chat with MiniMax models, transcribe audio to text, perform web search, or manage MiniMax API resources from the terminal.</code></pre></details>
+        <div class="markdown"><h3>MiniMax CLI — Agent Skill Guide</h3>
+<p>Use <code>mmx</code> to generate text, images, video, speech, transcribe audio, and perform web search via the MiniMax AI platform.</p>
+<h4>Prerequisites</h4>
+<pre><code class="language-bash"># Install
+npm install -g mmx-cli
+
+# Auth (OAuth persists to ~/.mmx/credentials.json, API key persists to ~/.mmx/config.json)
+mmx auth login --api-key sk-xxxxx
+
+# Verify active auth source
+mmx auth status
+
+# Or pass per-call
+mmx text chat --api-key sk-xxxxx --message &quot;Hello&quot;
+</code></pre>
+<p>Region is auto-detected. Override with <code>--region global</code> or <code>--region cn</code>.</p>
+<hr>
+<h4>Agent Flags</h4>
+<p>Always use these flags in non-interactive (agent/CI) contexts:</p>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--non-interactive</code></td>
+<td>Fail fast on missing args instead of prompting</td>
+</tr>
+<tr>
+<td><code>--quiet</code></td>
+<td>Suppress spinners/progress; stdout is pure data</td>
+</tr>
+<tr>
+<td><code>--output json</code></td>
+<td>Machine-readable JSON output</td>
+</tr>
+<tr>
+<td><code>--async</code></td>
+<td>Return task ID immediately (video generation)</td>
+</tr>
+<tr>
+<td><code>--dry-run</code></td>
+<td>Preview the API request without executing</td>
+</tr>
+<tr>
+<td><code>--yes</code></td>
+<td>Skip confirmation prompts</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4>Commands</h4>
+<h5>text chat</h5>
+<p>Chat completion. Default model: <code>MiniMax-M3.1-Flash</code>. An explicit <code>--model</code> or saved <code>default-text-model</code> takes precedence. This model currently requires M Plan or MiniMax Code; with a pay-as-you-go key, use <code>--model MiniMax-M3</code>. Thinking is enabled by default with <code>max</code> effort. See the <a href="https://platform.minimax.io/docs/guides/text-generation#agent">model guide</a>.</p>
+<pre><code class="language-bash">mmx text chat --message &lt;text&gt; [flags]
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--message &lt;text&gt;</code></td>
+<td>string, <strong>required</strong>, repeatable</td>
+<td>Message text. Prefix with <code>role:</code> to set role (e.g. <code>&quot;system:You are helpful&quot;</code>, <code>&quot;user:Hello&quot;</code>)</td>
+</tr>
+<tr>
+<td><code>--messages-file &lt;path&gt;</code></td>
+<td>string</td>
+<td>JSON file with messages array. Use <code>-</code> for stdin</td>
+</tr>
+<tr>
+<td><code>--system &lt;text&gt;</code></td>
+<td>string</td>
+<td>System prompt</td>
+</tr>
+<tr>
+<td><code>--model &lt;model&gt;</code></td>
+<td>string</td>
+<td>Model ID (default: <code>MiniMax-M3.1-Flash</code>)</td>
+</tr>
+<tr>
+<td><code>--max-tokens &lt;n&gt;</code></td>
+<td>number</td>
+<td>Max tokens (default: 4096)</td>
+</tr>
+<tr>
+<td><code>--temperature &lt;n&gt;</code></td>
+<td>number</td>
+<td>Sampling temperature (0.0, 1.0]</td>
+</tr>
+<tr>
+<td><code>--top-p &lt;n&gt;</code></td>
+<td>number</td>
+<td>Nucleus sampling threshold</td>
+</tr>
+<tr>
+<td><code>--stream</code></td>
+<td>boolean</td>
+<td>Stream tokens (default: on in TTY)</td>
+</tr>
+<tr>
+<td><code>--tool &lt;json-or-path&gt;</code></td>
+<td>string, repeatable</td>
+<td>Tool definition JSON or file path</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-bash"># Single message
+mmx text chat --message &quot;user:What is MiniMax?&quot; --output json --quiet
+
+# Multi-turn
+mmx text chat \
+  --system &quot;You are a coding assistant.&quot; \
+  --message &quot;user:Write fizzbuzz in Python&quot; \
+  --output json
+
+# From file
+cat conversation.json | mmx text chat --messages-file - --output json
+</code></pre>
+<p><strong>stdout</strong>: response text (text mode) or full response object (json mode).</p>
+<hr>
+<h5>image generate</h5>
+<p>Generate images. Model: <code>image-01</code>.</p>
+<pre><code class="language-bash">mmx image generate --prompt &lt;text&gt; [flags]
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--prompt &lt;text&gt;</code></td>
+<td>string, <strong>required</strong></td>
+<td>Image description</td>
+</tr>
+<tr>
+<td><code>--aspect-ratio &lt;ratio&gt;</code></td>
+<td>string</td>
+<td>e.g. <code>16:9</code>, <code>1:1</code>. Ignored if <code>--width</code> and <code>--height</code> are both set</td>
+</tr>
+<tr>
+<td><code>--n &lt;count&gt;</code></td>
+<td>number</td>
+<td>Number of images (default: 1)</td>
+</tr>
+<tr>
+<td><code>--seed &lt;n&gt;</code></td>
+<td>number</td>
+<td>Random seed for reproducible generation</td>
+</tr>
+<tr>
+<td><code>--width &lt;px&gt;</code></td>
+<td>number</td>
+<td>Width in pixels (512–2048, multiple of 8). Requires <code>--height</code></td>
+</tr>
+<tr>
+<td><code>--height &lt;px&gt;</code></td>
+<td>number</td>
+<td>Height in pixels (512–2048, multiple of 8). Requires <code>--width</code></td>
+</tr>
+<tr>
+<td><code>--prompt-optimizer</code></td>
+<td>boolean</td>
+<td>Optimize prompt before generation</td>
+</tr>
+<tr>
+<td><code>--aigc-watermark</code></td>
+<td>boolean</td>
+<td>Embed AI-generated content watermark</td>
+</tr>
+<tr>
+<td><code>--subject-ref &lt;params&gt;</code></td>
+<td>string</td>
+<td>Subject reference: <code>type=character,image=path-or-url</code></td>
+</tr>
+<tr>
+<td><code>--response-format &lt;format&gt;</code></td>
+<td>string</td>
+<td><code>url</code> (default) or <code>base64</code>. Base64 bypasses CDN download</td>
+</tr>
+<tr>
+<td><code>--out-dir &lt;dir&gt;</code></td>
+<td>string</td>
+<td>Download images to directory</td>
+</tr>
+<tr>
+<td><code>--out-prefix &lt;prefix&gt;</code></td>
+<td>string</td>
+<td>Filename prefix (default: <code>image</code>)</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-bash">mmx image generate --prompt &quot;A cat in a spacesuit&quot; --output json --quiet
+# stdout: image URLs (one per line in quiet mode)
+
+mmx image generate --prompt &quot;Logo&quot; --n 3 --out-dir ./gen/ --quiet
+# stdout: saved file paths (one per line)
+</code></pre>
+<hr>
+<h5>video generate</h5>
+<p>Generate video. Default model: <code>MiniMax-Hailuo-2.3</code> (or <code>MiniMax-Hailuo-2.3-Fast</code> for fast mode with <code>--image</code>). This is an async task — by default it polls until completion.</p>
+<p>For <code>MiniMax-H3</code> — text-to-video, first/last-frame, multimodal reference image/video/audio generation, prompt construction, and failure handling — use the dedicated <a href="https://github.com/minimax-ai/cli/blob/38aba5f26173dd1065b115b221d79c9ddd87c6bb/skill/h3-video/SKILL.md">mmx-h3-video skill</a> instead.</p>
+<pre><code class="language-bash">mmx video generate --prompt &lt;text&gt; [flags]
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--prompt &lt;text&gt;</code></td>
+<td>string, <strong>required</strong></td>
+<td>Video description</td>
+</tr>
+<tr>
+<td><code>--model &lt;model&gt;</code></td>
+<td>string</td>
+<td><code>MiniMax-Hailuo-2.3</code> (default) or <code>MiniMax-Hailuo-2.3-Fast</code></td>
+</tr>
+<tr>
+<td><code>--image &lt;path-or-url&gt;</code></td>
+<td>string</td>
+<td>Input image for image-to-video</td>
+</tr>
+<tr>
+<td><code>--last-frame &lt;path-or-url&gt;</code></td>
+<td>string</td>
+<td>Optional ending image for frame interpolation (used with <code>--image</code>)</td>
+</tr>
+<tr>
+<td><code>--callback-url &lt;url&gt;</code></td>
+<td>string</td>
+<td>Webhook URL for completion</td>
+</tr>
+<tr>
+<td><code>--download &lt;path&gt;</code></td>
+<td>string</td>
+<td>Save video to specific file</td>
+</tr>
+<tr>
+<td><code>--async</code></td>
+<td>boolean</td>
+<td>Return task ID immediately</td>
+</tr>
+<tr>
+<td><code>--no-wait</code></td>
+<td>boolean</td>
+<td>Same as <code>--async</code></td>
+</tr>
+<tr>
+<td><code>--poll-interval &lt;seconds&gt;</code></td>
+<td>number</td>
+<td>Polling interval (default: 5)</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-bash"># Non-blocking: get task ID
+mmx video generate --prompt &quot;A robot.&quot; --async --quiet
+# stdout: {&quot;taskId&quot;:&quot;...&quot;}
+
+# Blocking: wait and get file path
+mmx video generate --prompt &quot;Ocean waves.&quot; --download ocean.mp4 --quiet
+# stdout: ocean.mp4
+</code></pre>
+<h5>video task get</h5>
+<p>Query status of a video generation task.</p>
+<pre><code class="language-bash">mmx video task get --task-id &lt;id&gt; [--output json]
+</code></pre>
+<h5>video download</h5>
+<p>Download a completed video by task ID.</p>
+<pre><code class="language-bash">mmx video download --file-id &lt;id&gt; [--out &lt;path&gt;]
+</code></pre>
+<hr>
+<h5>speech synthesize</h5>
+<p>Text-to-speech. Default model: <code>speech-2.8-hd</code>. Max 10k chars.</p>
+<pre><code class="language-bash">mmx speech synthesize --text &lt;text&gt; [flags]
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--text &lt;text&gt;</code></td>
+<td>string</td>
+<td>Text to synthesize</td>
+</tr>
+<tr>
+<td><code>--text-file &lt;path&gt;</code></td>
+<td>string</td>
+<td>Read text from file. Use <code>-</code> for stdin</td>
+</tr>
+<tr>
+<td><code>--model &lt;model&gt;</code></td>
+<td>string</td>
+<td><code>speech-2.8-hd</code> (default), <code>speech-2.6</code>, <code>speech-02</code></td>
+</tr>
+<tr>
+<td><code>--voice &lt;id&gt;</code></td>
+<td>string</td>
+<td>Voice ID (default: <code>English_expressive_narrator</code>)</td>
+</tr>
+<tr>
+<td><code>--speed &lt;n&gt;</code></td>
+<td>number</td>
+<td>Speed multiplier</td>
+</tr>
+<tr>
+<td><code>--volume &lt;n&gt;</code></td>
+<td>number</td>
+<td>Volume level</td>
+</tr>
+<tr>
+<td><code>--pitch &lt;n&gt;</code></td>
+<td>number</td>
+<td>Pitch adjustment</td>
+</tr>
+<tr>
+<td><code>--format &lt;fmt&gt;</code></td>
+<td>string</td>
+<td>Audio format (default: <code>mp3</code>)</td>
+</tr>
+<tr>
+<td><code>--sample-rate &lt;hz&gt;</code></td>
+<td>number</td>
+<td>Sample rate (default: 32000)</td>
+</tr>
+<tr>
+<td><code>--bitrate &lt;bps&gt;</code></td>
+<td>number</td>
+<td>Bitrate (default: 128000)</td>
+</tr>
+<tr>
+<td><code>--channels &lt;n&gt;</code></td>
+<td>number</td>
+<td>Audio channels (default: 1)</td>
+</tr>
+<tr>
+<td><code>--language &lt;code&gt;</code></td>
+<td>string</td>
+<td>Language boost</td>
+</tr>
+<tr>
+<td><code>--subtitles</code></td>
+<td>boolean</td>
+<td>Download and save subtitles as <code>.srt</code> file (alongside <code>--out</code> audio file). API must support subtitles for the selected model.</td>
+</tr>
+<tr>
+<td><code>--pronunciation &lt;from/to&gt;</code></td>
+<td>string, repeatable</td>
+<td>Custom pronunciation</td>
+</tr>
+<tr>
+<td><code>--sound-effect &lt;effect&gt;</code></td>
+<td>string</td>
+<td>Add sound effect</td>
+</tr>
+<tr>
+<td><code>--out &lt;path&gt;</code></td>
+<td>string</td>
+<td>Save audio to file</td>
+</tr>
+<tr>
+<td><code>--stream</code></td>
+<td>boolean</td>
+<td>Stream raw audio to stdout</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-bash">mmx speech synthesize --text &quot;Hello world&quot; --out hello.mp3 --quiet
+# stdout: hello.mp3
+
+mmx speech synthesize --text &quot;Hello&quot; --subtitles --out hello.mp3
+# saves hello.mp3 + hello.srt (SRT subtitle file)
+
+echo &quot;Breaking news.&quot; | mmx speech synthesize --text-file - --out news.mp3
+</code></pre>
+<hr>
+<h5>speech transcribe</h5>
+<p>Speech-to-text. Default model: <code>asr-1.0</code>. Accepts wav, aiff, flac, m4a, mp3, aac, opus, and
+ogg files up to 50 MB and 500 seconds.</p>
+<pre><code class="language-bash">mmx speech transcribe --file &lt;path&gt; [flags]
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--file &lt;path&gt;</code></td>
+<td>string</td>
+<td>Audio file to transcribe (required; also accepted as a positional argument)</td>
+</tr>
+<tr>
+<td><code>--model &lt;model&gt;</code></td>
+<td>string</td>
+<td><code>asr-1.0</code> (default)</td>
+</tr>
+<tr>
+<td><code>--response-format &lt;fmt&gt;</code></td>
+<td>string</td>
+<td><code>json</code> (default), <code>verbose_json</code>, <code>srt</code>, <code>vtt</code></td>
+</tr>
+<tr>
+<td><code>--language &lt;code&gt;</code></td>
+<td>string</td>
+<td>BCP-47 language hint (<code>zh</code>, <code>en</code>, <code>ja</code>, ...). Omit for automatic/mixed-language detection</td>
+</tr>
+<tr>
+<td><code>--timestamp-level &lt;level&gt;</code></td>
+<td>string</td>
+<td><code>sentence</code> (default) or <code>word</code>; applies to <code>verbose_json</code> / <code>srt</code> / <code>vtt</code></td>
+</tr>
+<tr>
+<td><code>--stream</code></td>
+<td>boolean</td>
+<td>Stream incremental text to stdout. Requires <code>--response-format json</code></td>
+</tr>
+<tr>
+<td><code>--out &lt;path&gt;</code></td>
+<td>string</td>
+<td>Write the result to a file instead of stdout</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-bash">mmx speech transcribe --file meeting.mp3
+# stdout: transcript text
+
+mmx speech transcribe --file call.mp3 --language zh --output json
+# stdout: {&quot;text&quot;:&quot;...&quot;,&quot;duration&quot;:12.3,&quot;trace_id&quot;:&quot;...&quot;}
+
+mmx speech transcribe --file talk.mp3 --response-format verbose_json --timestamp-level word --output json
+# stdout: adds n_speakers and word-level segments
+
+mmx speech transcribe --file talk.mp3 --response-format srt --out talk.srt
+# saves talk.srt; stdout: {&quot;saved&quot;:&quot;.../talk.srt&quot;}
+
+mmx speech transcribe --file long.mp3 --stream
+# stdout: text as it is recognized (add --output text when piping)
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>mmx speech recognize</code> is an alias for <code>mmx speech transcribe</code>.</li>
+<li><code>--stream</code> cannot be combined with <code>--out</code>; redirect stdout instead.</li>
+<li><code>--stream</code> prints deltas only in text output mode. stdout that is not a terminal defaults to
+<code>json</code> (as everywhere else in this CLI), which accumulates the streamed text into one JSON
+result — pass <code>--output text</code> to pipe streamed text, e.g.
+<code>mmx speech transcribe --file long.mp3 --stream --output text &gt; transcript.txt</code>.</li>
+<li><code>srt</code> / <code>vtt</code> results are subtitle documents and are printed or saved verbatim.</li>
+<li>Without <code>--out</code>, <code>--output json</code> prints the full API response for <code>json</code> / <code>verbose_json</code>.
+Plain-text output prints the transcript only, so add <code>--output json</code> to read <code>n_speakers</code>
+and <code>segments</code>.</li>
+<li>A stream that ends without the API's final event raises a warning on stderr, since the
+transcript may be truncated.</li>
+<li>Input validation (missing file, unsupported format, over 50 MB, <code>--stream</code> with a non-json
+format) fails before anything is uploaded; the API stays the authority for the 500 s duration
+limit and codec support.</li>
+</ul>
+<hr>
+<h5>vision describe</h5>
+<p>Image understanding via VLM. Provide either <code>--image</code> or <code>--file-id</code>, not both.</p>
+<pre><code class="language-bash">mmx vision describe (--image &lt;path-or-url&gt; | --file-id &lt;id&gt;) [flags]
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--image &lt;path-or-url&gt;</code></td>
+<td>string</td>
+<td>Local path or URL (auto base64-encoded)</td>
+</tr>
+<tr>
+<td><code>--file-id &lt;id&gt;</code></td>
+<td>string</td>
+<td>Pre-uploaded file ID (skips base64)</td>
+</tr>
+<tr>
+<td><code>--prompt &lt;text&gt;</code></td>
+<td>string</td>
+<td>Question about the image (default: <code>&quot;Describe the image.&quot;</code>)</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-bash">mmx vision describe --image photo.jpg --prompt &quot;What breed?&quot; --output json
+</code></pre>
+<p><strong>stdout</strong>: description text (text mode) or full response (json mode).</p>
+<hr>
+<h5>search query</h5>
+<p>Web search via MiniMax.</p>
+<pre><code class="language-bash">mmx search query --q &lt;query&gt;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--q &lt;query&gt;</code></td>
+<td>string, <strong>required</strong></td>
+<td>Search query</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-bash">mmx search query --q &quot;MiniMax AI&quot; --output json --quiet
+</code></pre>
+<hr>
+<h5>quota show</h5>
+<p>Display Token Plan usage and remaining quotas.</p>
+<pre><code class="language-bash">mmx quota show [--output json]
+</code></pre>
+<hr>
+<h4>Tool Schema Export</h4>
+<p>Export all commands as Anthropic/OpenAI-compatible JSON tool schemas:</p>
+<pre><code class="language-bash"># All tool-worthy commands (excludes auth/config/update)
+mmx config export-schema
+
+# Single command
+mmx config export-schema --command &quot;video generate&quot;
+</code></pre>
+<p>Use this to dynamically register mmx commands as tools in your agent framework.</p>
+<hr>
+<h4>Exit Codes</h4>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Success</td>
+</tr>
+<tr>
+<td>1</td>
+<td>General error</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Usage error (bad flags, missing args)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Authentication error</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Quota exceeded</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Timeout</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Content filter triggered</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4>Piping Patterns</h4>
+<pre><code class="language-bash"># stdout is always clean data — safe to pipe
+mmx text chat --message &quot;Hi&quot; --output json | jq '.content'
+
+# stderr has progress/spinners — discard if needed
+mmx video generate --prompt &quot;Waves&quot; 2&gt;/dev/null
+
+# Chain: generate image → describe it
+URL=$(mmx image generate --prompt &quot;A sunset&quot; --quiet)
+mmx vision describe --image &quot;$URL&quot; --quiet
+
+# Async video workflow
+TASK=$(mmx video generate --prompt &quot;A robot&quot; --async --quiet | jq -r '.taskId')
+mmx video task get --task-id &quot;$TASK&quot; --output json
+mmx video download --task-id &quot;$TASK&quot; --out robot.mp4
+</code></pre>
+<hr>
+<h4>Configuration Precedence</h4>
+<p>CLI flags → environment variables → <code>~/.mmx/config.json</code> → defaults.</p>
+<pre><code class="language-bash"># Persistent config
+mmx config set --key region --value cn
+mmx config show
+
+# Environment
+export MINIMAX_API_KEY=sk-xxxxx
+export MINIMAX_REGION=cn
+</code></pre>
+<h5>Default Model Configuration</h5>
+<p>Set per-modality defaults so you don't need <code>--model</code> every time:</p>
+<pre><code class="language-bash"># Set defaults
+mmx config set --key default-text-model --value MiniMax-M3.1-Flash
+mmx config set --key default-speech-model --value speech-2.8-hd
+mmx config set --key default-video-model --value MiniMax-Hailuo-2.3
+
+# Use without --model
+mmx text chat --message &quot;Hello&quot;
+mmx speech synthesize --text &quot;Hello&quot; --out hello.mp3
+mmx video generate --prompt &quot;Ocean waves&quot;
+
+# --model still overrides per-call
+mmx text chat --model MiniMax-M3.1-Flash --message &quot;Hello&quot;
+</code></pre>
+<p><strong>Resolution priority</strong>: <code>--model</code> flag &gt; config default &gt; hardcoded fallback.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

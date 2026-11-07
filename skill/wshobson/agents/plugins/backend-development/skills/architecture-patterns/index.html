@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>architecture-patterns · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re designing a backend service, untangling business logic from ORM models or HTTP code, splitting a monolith into bounded contexts, or breaking dependency cycles between layers. It does: gives the agent the rules of Clean and Hexagonal Architecture and the strategic and tactical patterns of Domain-Driven Design, with Python examples. You get: a layered structure where dependencies point inward, interfaces at each boundary, and use cases you can test without a database. Also covers: troubleshooting, such as circular imports between layers, ORM annotations on domain entities, overgrown controllers and one context importing another&#039;s entities." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=wshobson%2Fagents">wshobson/agents</a></p>
+      <h1>architecture-patterns</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re designing a backend service, untangling business logic from ORM models or HTTP code, splitting a monolith into bounded contexts, or breaking dependency cycles between layers</dd></div><div><dt>It does</dt><dd>gives the agent the rules of Clean and Hexagonal Architecture and the strategic and tactical patterns of Domain-Driven Design, with Python examples</dd></div><div><dt>You get</dt><dd>a layered structure where dependencies point inward, interfaces at each boundary, and use cases you can test without a database</dd></div><div><dt>Also covers</dt><dd>troubleshooting, such as circular imports between layers, ORM annotations on domain entities, overgrown controllers and one context importing another&#39;s entities</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A reference for structuring backend code. Clean Architecture&#39;s layers (entities, use cases, interface adapters, frameworks) depend only inward. Hexagonal Architecture keeps the domain core behind ports, abstract interfaces, and plugs adapters such as a PostgreSQL or Stripe implementation in at the edges. From Domain-Driven Design it takes bounded contexts, a separate model per subdomain, and a ubiquitous language shared with domain experts, plus entities, value objects, aggregates, repositories and domain events. The sign it&#39;s done right: every use case runs in a plain unit test against an in-memory repository, with no database, Docker or network. Examples are in Python. Two more files hold worked implementations and advanced patterns: a multi-service project tree, Onion versus Clean Architecture, an anti-corruption layer between contexts, context maps, dependency injection wiring, aggregate design heuristics, domain events through a transactional outbox, and finding dependency cycles with pydeps.</p>
+      <p class="muted">Summarizes <a href="https://github.com/wshobson/agents/tree/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/backend-development/skills/architecture-patterns">the skill at 4bde316</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/wshobson/agents --skill architecture-patterns</code><button type="button" class="copy" data-copy="npx skills add https://github.com/wshobson/agents --skill architecture-patterns">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/wshobson/agents/architecture-patterns">skills.sh page</a> · <a href="https://github.com/wshobson/agents/tree/HEAD/plugins/backend-development/skills/architecture-patterns">Source on GitHub</a> · <a href="/skillhub/?repo=wshobson%2Fagents">All skills from wshobson/agents</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>25,000 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>42,267 <span class="muted">wshobson/agents</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">469</div>
+      <div class="stat-delta">+52% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 308; week to Sep 26: 312; week to Oct 3: 396; week to Oct 10: 453; week to Oct 17: 421; week to Oct 24: 397; week to Oct 31: 405; week to Nov 7: 469. Use the left and right arrow keys to read each week."
+        data-values="308,312,396,453,421,397,405,469" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,21.1 38.6,20.7 71.1,12.8 103.7,7.5 136.3,10.5 168.9,12.8 201.4,12.0 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>308</td></tr><tr><td>Sep 26</td><td>312</td></tr><tr><td>Oct 3</td><td>396</td></tr><tr><td>Oct 10</td><td>453</td></tr><tr><td>Oct 17</td><td>421</td></tr><tr><td>Oct 24</td><td>397</td></tr><tr><td>Oct 31</td><td>405</td></tr><tr><td>Nov 7</td><td>469</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/skillhub/?tag=type%3Aguidelines">type:guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="architecture" data-facet="topic" href="/skillhub/?tag=architecture">architecture</a><a class="tag" data-tag="domain-modeling" data-facet="topic" href="/skillhub/?tag=domain-modeling">domain-modeling</a><a class="tag" data-tag="backend" data-facet="topic" href="/skillhub/?tag=backend">backend</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:python" data-facet="stack" href="/skillhub/?tag=stack%3Apython">stack:python</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/wshobson/agents/blob/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/backend-development/skills/architecture-patterns/SKILL.md">wshobson/agents at 4bde316</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: architecture-patterns
+description: Implement proven backend architecture patterns including Clean Architecture, Hexagonal Architecture, and Domain-Driven Design. Use this skill when designing clean architecture for a new microservice, when refactoring a monolith to use bounded contexts, when implementing hexagonal or onion architecture patterns, or when debugging dependency cycles between application layers.</code></pre></details>
+        <div class="markdown"><h3>Architecture Patterns</h3>
+<p>Master proven backend architecture patterns including Clean Architecture, Hexagonal Architecture, and Domain-Driven Design to build maintainable, testable, and scalable systems.</p>
+<p><strong>Given:</strong> a service boundary or module to architect.
+<strong>Produces:</strong> layered structure with clear dependency rules, interface definitions, and test boundaries.</p>
+<h4>When to Use This Skill</h4>
+<ul>
+<li>Designing new backend services or microservices from scratch</li>
+<li>Refactoring monolithic applications where business logic is entangled with ORM models or HTTP concerns</li>
+<li>Establishing bounded contexts before splitting a system into services</li>
+<li>Debugging dependency cycles where infrastructure code bleeds into the domain layer</li>
+<li>Creating testable codebases where use-case tests do not require a running database</li>
+<li>Implementing domain-driven design tactical patterns (aggregates, value objects, domain events)</li>
+</ul>
+<h4>Core Concepts</h4>
+<h5>1. Clean Architecture (Uncle Bob)</h5>
+<p><strong>Layers (dependency flows inward):</strong></p>
+<ul>
+<li><strong>Entities</strong>: Core business models, no framework imports</li>
+<li><strong>Use Cases</strong>: Application business rules, orchestrate entities</li>
+<li><strong>Interface Adapters</strong>: Controllers, presenters, gateways — translate between use cases and external formats</li>
+<li><strong>Frameworks &amp; Drivers</strong>: UI, database, external services — all at the outermost ring</li>
+</ul>
+<p><strong>Key Principles:</strong></p>
+<ul>
+<li>Dependencies point inward only; inner layers know nothing about outer layers</li>
+<li>Business logic is independent of frameworks, databases, and delivery mechanisms</li>
+<li>Every layer boundary is crossed via an abstract interface</li>
+<li>Testable without UI, database, or external services</li>
+</ul>
+<h5>2. Hexagonal Architecture (Ports and Adapters)</h5>
+<p><strong>Components:</strong></p>
+<ul>
+<li><strong>Domain Core</strong>: Business logic lives here, framework-free</li>
+<li><strong>Ports</strong>: Abstract interfaces that define how the core interacts with the outside world (driving and driven)</li>
+<li><strong>Adapters</strong>: Concrete implementations of ports (PostgreSQL adapter, Stripe adapter, REST adapter)</li>
+</ul>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>Swap implementations without touching the core (e.g., replace PostgreSQL with DynamoDB)</li>
+<li>Use in-memory adapters in tests — no Docker required</li>
+<li>Technology decisions deferred to the edges</li>
+</ul>
+<h5>3. Domain-Driven Design (DDD)</h5>
+<p><strong>Strategic Patterns:</strong></p>
+<ul>
+<li><strong>Bounded Contexts</strong>: Isolate a coherent model for one subdomain; avoid sharing a single model across the whole system</li>
+<li><strong>Context Mapping</strong>: Define how contexts relate (Anti-Corruption Layer, Shared Kernel, Open Host Service)</li>
+<li><strong>Ubiquitous Language</strong>: Every term in code matches the term used by domain experts</li>
+</ul>
+<p><strong>Tactical Patterns:</strong></p>
+<ul>
+<li><strong>Entities</strong>: Objects with stable identity that change over time</li>
+<li><strong>Value Objects</strong>: Immutable objects identified by their attributes (Email, Money, Address)</li>
+<li><strong>Aggregates</strong>: Consistency boundaries; only the root is accessible from outside</li>
+<li><strong>Repositories</strong>: Persist and reconstitute aggregates; abstract over the storage mechanism</li>
+<li><strong>Domain Events</strong>: Capture things that happened inside the domain; used for cross-aggregate coordination</li>
+</ul>
+<h4>Detailed patterns and worked examples</h4>
+<p>Detailed pattern documentation lives in <code>references/details.md</code>. Read that file when the navigation tier above is insufficient.</p>
+<h4>Testing — In-Memory Adapters</h4>
+<p>The hallmark of correctly applied Clean Architecture is that every use case can be exercised in a plain unit test with no real database, no Docker, and no network:</p>
+<pre><code class="language-python"># tests/unit/test_create_user.py
+import asyncio
+from typing import Dict, Optional
+from domain.entities.user import User
+from domain.interfaces.user_repository import IUserRepository
+from use_cases.create_user import CreateUserUseCase, CreateUserRequest
+
+
+class InMemoryUserRepository(IUserRepository):
+    def __init__(self):
+        self._store: Dict[str, User] = {}
+
+    async def find_by_id(self, user_id: str) -&gt; Optional[User]:
+        return self._store.get(user_id)
+
+    async def find_by_email(self, email: str) -&gt; Optional[User]:
+        return next((u for u in self._store.values() if u.email == email), None)
+
+    async def save(self, user: User) -&gt; User:
+        self._store[user.id] = user
+        return user
+
+    async def delete(self, user_id: str) -&gt; bool:
+        return self._store.pop(user_id, None) is not None
+
+
+async def test_create_user_succeeds():
+    repo = InMemoryUserRepository()
+    use_case = CreateUserUseCase(user_repository=repo)
+
+    response = await use_case.execute(CreateUserRequest(email=&quot;alice@example.com&quot;, name=&quot;Alice&quot;))
+
+    assert response.success
+    assert response.user.email == &quot;alice@example.com&quot;
+    assert response.user.id is not None
+
+
+async def test_duplicate_email_rejected():
+    repo = InMemoryUserRepository()
+    use_case = CreateUserUseCase(user_repository=repo)
+
+    await use_case.execute(CreateUserRequest(email=&quot;alice@example.com&quot;, name=&quot;Alice&quot;))
+    response = await use_case.execute(CreateUserRequest(email=&quot;alice@example.com&quot;, name=&quot;Alice2&quot;))
+
+    assert not response.success
+    assert &quot;already exists&quot; in response.error
+</code></pre>
+<h4>Troubleshooting</h4>
+<h5>Use case tests require a running database</h5>
+<p>Business logic has leaked into the infrastructure layer. Move all database calls behind an <code>IRepository</code> interface and inject an in-memory implementation in tests (see Testing section above). The use case constructor must accept the abstract port, not the concrete class.</p>
+<h5>Circular imports between layers</h5>
+<p>A common symptom is <code>ImportError: cannot import name X</code> between <code>use_cases</code> and <code>adapters</code>. This happens when a use case imports a concrete adapter class instead of the abstract port. Enforce the rule: <code>use_cases/</code> imports only from <code>domain/</code> (entities and interfaces). It must never import from <code>adapters/</code> or <code>infrastructure/</code>.</p>
+<h5>Framework decorators appearing in domain entities</h5>
+<p>If SQLAlchemy <code>Column()</code> or Pydantic <code>Field()</code> annotations appear on domain entities, the entity is no longer pure. Create a separate ORM model in <code>adapters/repositories/</code> and map to/from the domain entity in the repository's <code>_to_entity()</code> method.</p>
+<h5>All logic ending up in controllers</h5>
+<p>When the controller grows beyond HTTP parsing and response formatting, extract the logic into a use case class. A controller method should do three things only: parse the request, call a use case, map the response.</p>
+<h5>Value objects raising errors too late</h5>
+<p>Validate invariants in <code>__post_init__</code> (Python) or the constructor so an invalid <code>Email</code> or <code>Money</code> cannot be constructed at all. This surfaces bad data at the boundary, not deep inside business logic.</p>
+<h5>Context bleed across bounded contexts</h5>
+<p>If the <code>Order</code> context is importing <code>User</code> entities from the <code>Identity</code> context, introduce an Anti-Corruption Layer. The <code>Order</code> context should hold its own lightweight <code>CustomerId</code> value object and only call the <code>Identity</code> context through an explicit interface.</p>
+<h4>Advanced Patterns</h4>
+<p>For detailed DDD bounded context mapping, full multi-service project trees, Anti-Corruption Layer implementations, and Onion Architecture comparisons, see:</p>
+<ul>
+<li><a href="https://github.com/wshobson/agents/blob/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/backend-development/skills/architecture-patterns/references/advanced-patterns.md"><code>references/advanced-patterns.md</code></a></li>
+</ul>
+<h4>Related Skills</h4>
+<ul>
+<li><code>microservices-patterns</code> — Apply these architecture patterns when decomposing a monolith into services</li>
+<li><code>cqrs-implementation</code> — Use Clean Architecture as the structural foundation for CQRS command/query separation</li>
+<li><code>saga-orchestration</code> — Sagas require well-defined aggregate boundaries, which DDD tactical patterns provide</li>
+<li><code>event-store-design</code> — Domain events produced by aggregates feed directly into an event store</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

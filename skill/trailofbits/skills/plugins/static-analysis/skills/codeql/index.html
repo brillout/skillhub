@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>codeql · SkillHub</title>
+    <meta name="description" content="Use it when: you want interprocedural security analysis of Python, JavaScript/TypeScript, Go, Java/Kotlin, C/C++, C#, Ruby or Swift code. It does: builds a CodeQL database, checks it really extracted code, adds data-extension models for project-specific sources and sinks, then runs an explicit query suite. You get: an output folder with the database, build log, extensions, and raw and final results.sarif. Unlike: the semgrep skill, meant for fast pattern matching or code with no build, it tracks data flow across functions. Needs: the CodeQL CLI, jq and uv on PATH; it stops before building if any is missing." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=trailofbits%2Fskills">trailofbits/skills</a></p>
+      <h1>codeql</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want interprocedural security analysis of Python, JavaScript/TypeScript, Go, Java/Kotlin, C/C++, C#, Ruby or Swift code</dd></div><div><dt>It does</dt><dd>builds a CodeQL database, checks it really extracted code, adds data-extension models for project-specific sources and sinks, then runs an explicit query suite</dd></div><div><dt>You get</dt><dd>an output folder with the database, build log, extensions, and raw and final results.sarif</dd></div><div><dt>Unlike</dt><dd>the semgrep skill, meant for fast pattern matching or code with no build, it tracks data flow across functions</dd></div><div><dt>Needs</dt><dd>the CodeQL CLI, jq and uv on PATH; it stops before building if any is missing</dd></div></dl></section>
+      
+      <p class="note">Needs the CodeQL CLI, jq and uv; compiled languages need a working build. Everything goes to ./static_analysis_codeql_N unless you name a folder.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Trail of Bits&#39; CodeQL skill, from its static-analysis plugin. It is built around results you can trust: a database that builds may still have extracted nothing, so a quality script runs after every build, and zero findings is a reason to investigate rather than a clean bill. Pack names are never passed straight to the analyzer, whose default suites can silently drop queries; it generates an explicit suite and verifies it resolves to a non-zero query count. Run-all mode imports both security-and-quality and security-experimental; important-only keeps high-precision results. It uses Trail of Bits and community query packs where available, and data extensions describe the project&#39;s own wrappers around databases, request parsing and shell calls that CodeQL doesn&#39;t model. If databases already exist it asks whether to reuse one or build new. On Apple Silicon it works around arm64e build failures before falling back to build-mode=none. The plugin also ships a /static-analysis:codeql-build command that drives the database build unattended.</p>
+      <p class="muted">Summarizes <a href="https://github.com/trailofbits/skills/tree/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql">the skill at e4dd0bb</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/trailofbits/skills --skill codeql</code><button type="button" class="copy" data-copy="npx skills add https://github.com/trailofbits/skills --skill codeql">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/trailofbits/skills/codeql">skills.sh page</a> · <a href="https://github.com/trailofbits/skills/tree/HEAD/plugins/static-analysis/skills/codeql">Source on GitHub</a> · <a href="/skillhub/?repo=trailofbits%2Fskills">All skills from trailofbits/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>8,700 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>8,053 <span class="muted">trailofbits/skills</span></dd></div><div><dt>First seen</dt><dd>Jan 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">263</div>
+      <div class="stat-delta">+57% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 168; week to Sep 26: 193; week to Oct 3: 159; week to Oct 10: 156; week to Oct 17: 168; week to Oct 24: 191; week to Oct 31: 244; week to Nov 7: 263. Use the left and right arrow keys to read each week."
+        data-values="168,193,159,156,168,191,244,263" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,21.9 38.6,17.7 71.1,23.4 103.7,23.9 136.3,21.9 168.9,18.0 201.4,9.2 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>168</td></tr><tr><td>Sep 26</td><td>193</td></tr><tr><td>Oct 3</td><td>159</td></tr><tr><td>Oct 10</td><td>156</td></tr><tr><td>Oct 17</td><td>168</td></tr><tr><td>Oct 24</td><td>191</td></tr><tr><td>Oct 31</td><td>244</td></tr><tr><td>Nov 7</td><td>263</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/skillhub/?tag=category%3Asecurity">category:security</a><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/skillhub/?tag=type%3Atool">type:tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a><a class="tag" data-tag="code-review" data-facet="topic" href="/skillhub/?tag=code-review">code-review</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:codeql" data-facet="stack" href="/skillhub/?tag=stack%3Acodeql">stack:codeql</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/SKILL.md">trailofbits/skills at e4dd0bb</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: codeql
+description: &#62;-
+  Scans a codebase for security vulnerabilities using CodeQL&#39;s interprocedural data flow and
+  taint tracking analysis. Triggers on &#34;run codeql&#34;, &#34;codeql scan&#34;, &#34;build codeql database&#34;,
+  &#34;SAST scan&#34;, &#34;taint analysis&#34;, &#34;dataflow analysis&#34;, or &#34;find vulnerabilities in this repo&#34;.
+  Covers Python, JavaScript/TypeScript, Go, Java/Kotlin, C/C++, C#, Ruby, and Swift. Supports
+  &#34;run all&#34; (security-and-quality + security-experimental) and &#34;important only&#34;
+  (high-precision) scan modes, and creates data extension models for project-specific sources
+  and sinks. For fast single-file pattern matching, or when no build is available for a
+  compiled language, use the semgrep skill; to parse SARIF that already exists rather than
+  produce it, use the sarif-parsing skill.
+allowed-tools: Bash Read Write Edit Glob Grep AskUserQuestion TaskCreate TaskList TaskUpdate TaskGet</code></pre></details>
+        <div class="markdown"><h3>CodeQL Analysis</h3>
+<p>Supported languages: Python, JavaScript/TypeScript, Go, Java/Kotlin, C/C++, C#, Ruby, Swift.</p>
+<p><strong>Skill resources:</strong> Reference files and templates are located at <code>{baseDir}/references/</code> and <code>{baseDir}/workflows/</code>.</p>
+<h4>Essential Principles</h4>
+<ol>
+<li>
+<p><strong>Database quality is non-negotiable.</strong> A database that builds is not automatically good — a cached build extracts nothing while reporting success.</p>
+</li>
+<li>
+<p><strong>Data extensions catch what CodeQL misses.</strong> Django, Spring, and Express projects still wrap database calls, request parsing, and shell execution in project-specific APIs that no shipped model covers.</p>
+</li>
+<li>
+<p><strong>Explicit suite references prevent silent query dropping.</strong> Never pass pack names to <code>codeql database analyze</code> — each pack's <code>defaultSuiteFile</code> applies hidden filters that can produce zero results. Always generate a <code>.qls</code>.</p>
+</li>
+<li>
+<p><strong>Zero findings needs investigation, not celebration.</strong> It can mean poor extraction, missing models, the wrong packs, or suite filtering. Run <code>{baseDir}/scripts/check_db_quality.py</code> after the build, confirm <code>{baseDir}/scripts/verify_query_suite.py</code> exited zero for the suite in use — the generation scripts run it, so invoke it by hand only for a reused or hand-edited suite — and say in the report that both passed.</p>
+</li>
+<li>
+<p><strong>macOS Apple Silicon requires workarounds for compiled languages.</strong> Exit code 137 is an <code>arm64e</code>/<code>arm64</code> mismatch, not a build failure. Try Homebrew arm64 tools or Rosetta before falling back to <code>build-mode=none</code>.</p>
+</li>
+<li>
+<p><strong>Follow workflows step by step.</strong> Each phase gates the next; skipping quality assessment or data extensions leaves the gap invisible in the results.</p>
+</li>
+</ol>
+<h4>Each Bash call is a fresh shell</h4>
+<p>Nothing carries across a Bash call: not variables, not arrays, not functions sourced from
+<code>build_log.sh</code>. Every block below that uses a value must re-establish it in the same block.
+The workflows point back here rather than repeating it; what they do state is the specific
+damage at that site, because each one fails differently and silently:</p>
+<ul>
+<li>a lost <strong>function</strong> makes <code>run_logged</code> exit 127, which the build ladder reads as a failed
+method and walks down to <code>--build-mode=none</code>, never having invoked CodeQL</li>
+<li>a lost <strong>array</strong> expands to nothing, so every <code>--threat-model</code> and <code>--model-packs</code> the user
+chose is dropped while the final report still lists them as used</li>
+<li>a lost <strong>scalar</strong> under <code>set -u</code> aborts the block with <code>unbound variable</code></li>
+</ul>
+<h4>Output Directory</h4>
+<p>All generated files (database, build logs, diagnostics, extensions, results) are stored in a single output directory.</p>
+<ul>
+<li><strong>If the user specifies an output directory</strong> in their prompt, use it as <code>OUTPUT_DIR</code>.</li>
+<li><strong>If not specified</strong>, default to <code>./static_analysis_codeql_1</code>. If that already exists, increment to <code>_2</code>, <code>_3</code>, etc.</li>
+</ul>
+<p>In both cases, <strong>always create the directory</strong> with <code>mkdir -p</code> before writing any files.</p>
+<p>Set <code>USER_SPECIFIED_DIR</code> to the literal path from the user's prompt before running this,
+or leave it unset to auto-increment. Nothing else assigns it.</p>
+<pre><code class="language-bash"># Resolve output directory
+USER_SPECIFIED_DIR=&quot;${USER_SPECIFIED_DIR:-}&quot;   # substitute the user's path here, if any
+if [ -n &quot;$USER_SPECIFIED_DIR&quot; ]; then
+  OUTPUT_DIR=&quot;$USER_SPECIFIED_DIR&quot;
+else
+  BASE=&quot;static_analysis_codeql&quot;
+  N=1
+  while [ -e &quot;${BASE}_${N}&quot; ]; do
+    N=$((N + 1))
+  done
+  OUTPUT_DIR=&quot;${BASE}_${N}&quot;
+fi
+mkdir -p &quot;$OUTPUT_DIR&quot;
+</code></pre>
+<p>The output directory is resolved <strong>once</strong> at the start before any workflow executes. All workflows receive <code>$OUTPUT_DIR</code> and store their artifacts there:</p>
+<pre><code>$OUTPUT_DIR/
+├── rulesets.txt                 # Selected query packs (logged after Step 3)
+├── codeql.db/                   # CodeQL database (dir containing codeql-database.yml)
+├── build.log                    # Build log
+├── codeql-config.yml            # Exclusion config (interpreted languages)
+├── diagnostics/                 # Diagnostic queries and CSVs
+├── extensions/                  # Data extension YAMLs
+├── raw/                         # Unfiltered analysis output
+│   ├── results.sarif
+│   └── run-all.qls | important-only.qls
+└── results/                     # Final results (filtered for important-only, copied for run-all)
+    └── results.sarif
+</code></pre>
+<h5>Database Discovery</h5>
+<p>A CodeQL database is identified by the presence of a <code>codeql-database.yml</code> marker file inside its directory. When searching for existing databases, <strong>always collect all matches</strong> — there may be multiple databases from previous runs or for different languages.</p>
+<p><strong>Discovery command.</strong> <code>find_databases.sh</code> prints one database path per line, filtering
+out the marker files a failed build leaves behind. Build the array <strong>in the same block
+that selects from it</strong> — each Bash call is a fresh shell, so an array built here is empty
+by the next call, and the run concludes there is no database:</p>
+<pre><code class="language-bash"># Command substitution, not `done &lt; &lt;(...)`: a process substitution discards the script's
+# exit status, so &quot;codeql is not on this shell's PATH&quot; (exit 2) would arrive as an empty
+# list and route to &quot;build a new database&quot; with three good ones sitting on disk.
+if ! DB_LIST=$(&quot;{baseDir}/scripts/find_databases.sh&quot; &quot;${OUTPUT_DIR:-.}&quot; .); then
+  echo &quot;ERROR: database discovery failed — see the message above&quot; &gt;&amp;2
+  exit 1
+fi
+
+FOUND_DBS=()
+while IFS= read -r db; do
+  [ -n &quot;$db&quot; ] || continue
+  FOUND_DBS+=(&quot;$db&quot;)
+done &lt;&lt;&lt;&quot;$DB_LIST&quot;
+
+echo &quot;Found ${#FOUND_DBS[@]} existing database(s)&quot;
+
+# The metadata the selection prompt needs, collected here rather than in a block of its
+# own: FOUND_DBS is gone by the next Bash call, and a loop over an array that no longer
+# exists prints nothing and reports success.
+for db in &quot;${FOUND_DBS[@]}&quot;; do
+  CODEQL_LANG=$(codeql resolve database --format=json -- &quot;$db&quot; 2&gt;/dev/null | jq -r '.languages[0]')
+  CREATED=$(grep '^creationMetadata:' -A5 &quot;$db/codeql-database.yml&quot; 2&gt;/dev/null | grep 'creationTime' | awk '{print $2}')
+  echo &quot;$db — language: $CODEQL_LANG, created: $CREATED&quot;
+done
+</code></pre>
+<p>Never assume a database is named <code>codeql.db</code> — discover it by its marker file.</p>
+<p><strong>When multiple databases are found:</strong> use <code>AskUserQuestion</code> to let the user select which database to use, or to build a new one, from the language and creation time printed above. <code>AskUserQuestion</code> takes at most four options, so with more databases than that, offer the three most recent plus &quot;Build a new database&quot; and list the rest in the prompt text. <strong>Skip <code>AskUserQuestion</code> if the user explicitly stated which database to use or to build a new one in their prompt.</strong></p>
+<h4>Quick Start</h4>
+<p>For the common case (&quot;scan this codebase for vulnerabilities&quot;):</p>
+<pre><code class="language-bash"># Verify CodeQL is installed. Stop here if it is not — every later command fails with
+# a less informative error, and the run wastes a build cycle before saying why.
+if ! command -v codeql &gt;/dev/null 2&gt;&amp;1; then
+  echo &quot;ERROR: codeql not found on PATH. Install it with one of:&quot; &gt;&amp;2
+  echo &quot;  gh extension install github/gh-codeql   # then: gh codeql install-stub&quot; &gt;&amp;2
+  echo &quot;  brew install --cask codeql&quot; &gt;&amp;2
+  echo &quot;  https://github.com/github/codeql-action/releases  (codeql-bundle)&quot; &gt;&amp;2
+  exit 1
+fi
+
+# jq parses `codeql resolve database --format=json` in the very next step. Without it
+# CODEQL_LANG comes back empty and the run continues against the wrong language.
+if ! command -v jq &gt;/dev/null 2&gt;&amp;1; then
+  echo &quot;ERROR: jq not found on PATH (brew install jq / apt install jq)&quot; &gt;&amp;2
+  exit 1
+fi
+
+# uv runs both guard scripts and both suite generators. Check it here rather than at
+# suite generation, which is after the build — otherwise a machine without uv spends
+# the whole build before failing.
+if ! command -v uv &gt;/dev/null 2&gt;&amp;1; then
+  echo &quot;ERROR: uv not found on PATH (https://docs.astral.sh/uv/getting-started/)&quot; &gt;&amp;2
+  exit 1
+fi
+
+codeql --version
+</code></pre>
+<p>Then resolve <code>OUTPUT_DIR</code> using the block in <a href="#output-directory">Output Directory</a> above —
+it honours a user-specified directory, which a bare auto-increment does not.</p>
+<p>Then execute the full pipeline: <strong>build database → create data extensions → run analysis</strong> using the workflows below.</p>
+<h4>Rationalizations to Reject</h4>
+<p>These shortcuts lead to missed findings. Do not accept them:</p>
+<ul>
+<li><strong>&quot;security-extended is enough&quot;</strong> - It is the baseline. Always check if Trail of Bits packs and Community Packs are available for the language. They catch categories <code>security-extended</code> misses entirely.</li>
+<li><strong>&quot;security-and-quality is the broadest suite&quot;</strong> - <code>security-and-quality</code> excludes all <code>experimental/</code> query paths. For run-all mode, import both <code>security-and-quality</code> and <code>security-experimental</code>. The delta is 1–52 queries depending on the language.</li>
+<li><strong>&quot;The database built, so it's good&quot;</strong> - A database that builds does not mean it extracted well. Always run quality assessment and check file counts against expected source files.</li>
+<li><strong>&quot;Data extensions aren't needed for standard frameworks&quot;</strong> - Even Django/Spring apps have custom wrappers that CodeQL does not model. Skipping extensions means missing vulnerabilities.</li>
+<li><strong>&quot;build-mode=none is fine for compiled languages&quot;</strong> - It produces severely incomplete analysis. Only use as an absolute last resort. On macOS, try the arm64 toolchain workaround or Rosetta first.</li>
+<li><strong>&quot;The build fails on macOS, just use build-mode=none&quot;</strong> - Exit code 137 is caused by <code>arm64e</code>/<code>arm64</code> mismatch, not a fundamental build failure. See <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/references/macos-arm64e-workaround.md">macos-arm64e-workaround.md</a>.</li>
+<li><strong>&quot;No findings means the code is secure&quot;</strong> - Run <code>check_db_quality.py</code> and <code>verify_query_suite.py</code> and report that they passed. Without them, zero findings and a database that extracted nothing are the same output.</li>
+<li><strong>&quot;I'll just run the default suite&quot;</strong> / <strong>&quot;I'll just pass the pack names directly&quot;</strong> - Each pack's <code>defaultSuiteFile</code> applies hidden filters and can produce zero results. Always use an explicit suite reference.</li>
+<li><strong>&quot;I'll put files in the current directory&quot;</strong> - All generated files must go in <code>$OUTPUT_DIR</code>. Scattering files in the working directory makes cleanup impossible and risks overwriting previous runs.</li>
+<li><strong>&quot;Just use the first database I find&quot;</strong> - Multiple databases may exist for different languages or from previous runs. When more than one is found, present all options to the user. Only skip the prompt when the user already specified which database to use.</li>
+<li><strong>&quot;The user said 'scan', that means they want me to pick a database&quot;</strong> - &quot;Scan&quot; is not database selection. If multiple databases exist and the user didn't name one, ask.</li>
+</ul>
+<hr>
+<h4>Workflow Selection</h4>
+<p>This skill has three workflows. <strong>Once a workflow is selected, execute it step by step without skipping phases.</strong></p>
+<p>These runs are long. A database build has four fallback methods, so use the task tools to
+track progress. Decide which steps are worth tracking based on the run.</p>
+<table>
+<thead>
+<tr>
+<th>Workflow</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/workflows/build-database.md">build-database</a></td>
+<td>Create CodeQL database using build methods in sequence</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/workflows/create-data-extensions.md">create-data-extensions</a></td>
+<td>Detect or generate data extension models for project APIs</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/workflows/run-analysis.md">run-analysis</a></td>
+<td>Select rulesets, execute queries, process results</td>
+</tr>
+</tbody>
+</table>
+<h5>Building unattended</h5>
+<p>This plugin ships <code>/static-analysis:codeql-build</code>, which runs the build-database steps
+end to end: detect the language and toolchain, walk the method ladder applying fixes from
+<a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/references/build-fixes.md">build-fixes.md</a> between rungs, and enforce the quality gate.</p>
+<pre><code>/static-analysis:codeql-build {&quot;target&quot;: &quot;/abs/path&quot;, &quot;lang&quot;: &quot;cpp&quot;}
+</code></pre>
+<p>It asks nothing. Every method failing, and a database that built but sits below the quality
+threshold, come back as statuses — <code>no-method-succeeded</code> and <code>built-below-threshold</code> — for you
+to act on here, because whether the remaining extractor errors are confined to code nobody
+needs analysed is a judgement call the run cannot make.</p>
+<p>Use it when the build is the long, uncertain part and you want it driven to a conclusion. Work
+<a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/workflows/build-database.md">build-database.md</a> by hand when you want a say in which method is
+tried, or when a build failure needs interpreting as it happens.</p>
+<h5>Auto-Detection Logic</h5>
+<p><strong>If user explicitly specifies</strong> what to do (e.g., &quot;build a database&quot;, &quot;run analysis on ./my-db&quot;), execute that workflow directly. <strong>Do NOT call <code>AskUserQuestion</code> for database selection if the user's prompt already makes their intent clear</strong> — e.g., &quot;build a new database&quot;, &quot;analyze the codeql database in static_analysis_codeql_2&quot;, &quot;run a full scan from scratch&quot;.</p>
+<p><strong>Default pipeline for &quot;test&quot;, &quot;scan&quot;, &quot;analyze&quot;, or similar:</strong> Discover existing databases
+using the command in <a href="#database-discovery">Database Discovery</a> above, then decide.</p>
+<table>
+<thead>
+<tr>
+<th>Condition</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No databases found</td>
+<td>Resolve new <code>$OUTPUT_DIR</code>, execute build → extensions → analysis (full pipeline)</td>
+</tr>
+<tr>
+<td>One database found</td>
+<td>Use <code>AskUserQuestion</code>: reuse it or build new?</td>
+</tr>
+<tr>
+<td>Multiple databases found</td>
+<td>Use <code>AskUserQuestion</code>, capped at four options — see <a href="#database-discovery">Database Discovery</a></td>
+</tr>
+<tr>
+<td>User explicitly stated intent</td>
+<td>Skip <code>AskUserQuestion</code>, act on their instructions directly</td>
+</tr>
+</tbody>
+</table>
+<h5>Database Selection Prompt</h5>
+<p>When existing databases are found <strong>and the user did not explicitly specify which to use</strong>,
+present them via <code>AskUserQuestion</code> under the header &quot;Existing CodeQL Databases&quot;. Label each
+option with the path, language, and creation time collected above — <code>./static_analysis_codeql_1/codeql.db (language: python, created: 2026-02-24)</code> — and make the last option &quot;Build a new database&quot;.</p>
+<p>After selection:</p>
+<ul>
+<li><strong>If user picks an existing database:</strong> Set <code>$OUTPUT_DIR</code> to its parent directory (or the directory containing it), set <code>$DB_NAME</code> to the selected path, then proceed to extensions → analysis.</li>
+<li><strong>If user picks &quot;Build new&quot;:</strong> Resolve a new <code>$OUTPUT_DIR</code>, execute build → extensions → analysis.</li>
+</ul>
+<h5>General Decision Prompt</h5>
+<p>If neither the database nor the workflow is clear from the prompt, offer the four
+workflows via <code>AskUserQuestion</code> — full scan (recommended), build database, create data
+extensions, run analysis — naming any databases found and the resolved <code>$OUTPUT_DIR</code>.</p>
+<hr>
+<h4>Reference Index</h4>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Scripts</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/scripts/verify_query_suite.py">scripts/verify_query_suite.py</a></td>
+<td>Fails a suite that resolves to zero queries. The generation scripts run it; invoke by hand only for a reused or hand-edited suite</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/scripts/check_db_quality.py">scripts/check_db_quality.py</a></td>
+<td>Fails a database with no analysable source. Run after every build</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/scripts/build_log.sh">scripts/build_log.sh</a></td>
+<td><code>log_step</code>/<code>run_logged</code> helpers; source before any build step</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/scripts/find_databases.sh">scripts/find_databases.sh</a></td>
+<td>Prints every database that <code>codeql resolve database</code> accepts, one per line. Build your array from it in the block that reads it</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/scripts/generate_suite.sh">scripts/generate_suite.sh</a></td>
+<td>Writes the run-all or important-only <code>.qls</code> and verifies it resolves to a non-zero query count</td>
+</tr>
+<tr>
+<td><strong>References</strong> — the three workflows are listed under <a href="#workflow-selection">Workflow Selection</a></td>
+<td></td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/references/macos-arm64e-workaround.md">references/macos-arm64e-workaround.md</a></td>
+<td>Apple Silicon build tracing workarounds</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/references/build-fixes.md">references/build-fixes.md</a></td>
+<td>Build failure fix catalog</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/references/quality-assessment.md">references/quality-assessment.md</a></td>
+<td>Database quality metrics and improvements</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/references/extension-yaml-format.md">references/extension-yaml-format.md</a></td>
+<td>Data extension YAML column definitions and examples</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/references/sarif-processing.md">references/sarif-processing.md</a></td>
+<td>jq commands for SARIF output processing</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/references/diagnostic-query-templates.md">references/diagnostic-query-templates.md</a></td>
+<td>QL queries for source/sink enumeration</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/references/important-only-suite.md">references/important-only-suite.md</a></td>
+<td>Important-only suite template and generation</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/references/run-all-suite.md">references/run-all-suite.md</a></td>
+<td>Run-all suite template</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/references/ruleset-catalog.md">references/ruleset-catalog.md</a></td>
+<td>Available query packs by language</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/references/threat-models.md">references/threat-models.md</a></td>
+<td>Threat model configuration</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/references/language-details.md">references/language-details.md</a></td>
+<td>Language-specific build and extraction details</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/static-analysis/skills/codeql/references/performance-tuning.md">references/performance-tuning.md</a></td>
+<td>Memory, threading, and timeout configuration</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4>Success Criteria</h4>
+<p>A complete CodeQL analysis run should satisfy:</p>
+<ul>
+<li>[ ] Output directory resolved (user-specified or auto-incremented default)</li>
+<li>[ ] All generated files stored inside <code>$OUTPUT_DIR</code></li>
+<li>[ ] Database built (discovered via <code>codeql-database.yml</code> marker) and <code>{baseDir}/scripts/check_db_quality.py</code> exited zero</li>
+<li>[ ] Data extensions evaluated — either created in <code>$OUTPUT_DIR/extensions/</code> or explicitly skipped with justification</li>
+<li>[ ] Analysis run with explicit suite reference (not default pack suite), and <code>{baseDir}/scripts/verify_query_suite.py</code> exited zero for it</li>
+<li>[ ] All installed query packs (official + Trail of Bits + Community) used or explicitly excluded</li>
+<li>[ ] Selected query packs logged to <code>$OUTPUT_DIR/rulesets.txt</code></li>
+<li>[ ] Unfiltered results preserved in <code>$OUTPUT_DIR/raw/results.sarif</code></li>
+<li>[ ] Final results in <code>$OUTPUT_DIR/results/results.sarif</code> (filtered for important-only, copied for run-all)</li>
+<li>[ ] Zero-finding results investigated (database quality, model coverage, suite selection)</li>
+<li>[ ] Build log preserved at <code>$OUTPUT_DIR/build.log</code> with all commands, fixes, and quality assessments</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

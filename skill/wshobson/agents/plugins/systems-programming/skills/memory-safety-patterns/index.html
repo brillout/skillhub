@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>memory-safety-patterns · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re writing or reviewing C, C++ or Rust and want to rule out leaks, dangling pointers, buffer overflows and data races. It does: gives the agent a table of six memory bug types and how each is prevented, with code patterns for each language. You get: code written along those patterns; it adds no steps or files of its own. Terms: RAII ties a resource to a scope, so it&#039;s freed when the scope ends; ownership is Rust&#039;s compile-time rule of one owner per value. Debugging tools: commands for AddressSanitizer, ThreadSanitizer, Valgrind and Rust&#039;s Miri." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=wshobson%2Fagents">wshobson/agents</a></p>
+      <h1>memory-safety-patterns</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re writing or reviewing C, C++ or Rust and want to rule out leaks, dangling pointers, buffer overflows and data races</dd></div><div><dt>It does</dt><dd>gives the agent a table of six memory bug types and how each is prevented, with code patterns for each language</dd></div><div><dt>You get</dt><dd>code written along those patterns; it adds no steps or files of its own</dd></div><div><dt>Terms</dt><dd>RAII ties a resource to a scope, so it&#39;s freed when the scope ends; ownership is Rust&#39;s compile-time rule of one owner per value</dd></div><div><dt>Debugging tools</dt><dd>commands for AddressSanitizer, ThreadSanitizer, Valgrind and Rust&#39;s Miri</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A reference, not a workflow. It places languages on a spectrum from manual memory management in C, through smart pointers in C++ and ownership in Rust, to garbage collection in Go and Java: safer toward the end, with less control. A reference file holds six patterns with code: RAII classes in C++ for files, locks and a transaction that rolls back unless committed; unique_ptr, shared_ptr and weak_ptr, with make_unique over raw new; Rust&#39;s moves, borrowing, lifetimes, interior mutability and Rc and Arc for shared ownership; cleanup functions and the GCC/Clang cleanup attribute in C, which has no RAII; bounds checking with containers, at() and std::span in C++ and slices in Rust; and data-race prevention with atomics, mutexes and read-write locks in both. Its rules include avoiding raw pointers except at C boundaries, never returning references to locals, keeping Rust&#39;s unsafe to a minimum and never assuming thread safety.</p>
+      <p class="muted">Summarizes <a href="https://github.com/wshobson/agents/tree/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/systems-programming/skills/memory-safety-patterns">the skill at 4bde316</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/wshobson/agents --skill memory-safety-patterns</code><button type="button" class="copy" data-copy="npx skills add https://github.com/wshobson/agents --skill memory-safety-patterns">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/wshobson/agents/memory-safety-patterns">skills.sh page</a> · <a href="https://github.com/wshobson/agents/tree/HEAD/plugins/systems-programming/skills/memory-safety-patterns">Source on GitHub</a> · <a href="/skillhub/?repo=wshobson%2Fagents">All skills from wshobson/agents</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>12,100 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>42,267 <span class="muted">wshobson/agents</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">189</div>
+      <div class="stat-delta">+10% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 172; week to Sep 26: 194; week to Oct 3: 227; week to Oct 10: 284; week to Oct 17: 223; week to Oct 24: 214; week to Oct 31: 205; week to Nov 7: 189. Use the left and right arrow keys to read each week."
+        data-values="172,194,227,284,223,214,205,189" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.4 38.6,19.9 71.1,14.8 103.7,6.0 136.3,15.5 168.9,16.8 201.4,18.2 234.0,20.7" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="20.7" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>172</td></tr><tr><td>Sep 26</td><td>194</td></tr><tr><td>Oct 3</td><td>227</td></tr><tr><td>Oct 10</td><td>284</td></tr><tr><td>Oct 17</td><td>223</td></tr><tr><td>Oct 24</td><td>214</td></tr><tr><td>Oct 31</td><td>205</td></tr><tr><td>Nov 7</td><td>189</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/skillhub/?tag=type%3Aguidelines">type:guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="code-quality" data-facet="topic" href="/skillhub/?tag=code-quality">code-quality</a><a class="tag" data-tag="debugging" data-facet="topic" href="/skillhub/?tag=debugging">debugging</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:c" data-facet="stack" href="/skillhub/?tag=stack%3Ac">stack:c</a><a class="tag" data-tag="stack:cpp" data-facet="stack" href="/skillhub/?tag=stack%3Acpp">stack:cpp</a><a class="tag" data-tag="stack:rust" data-facet="stack" href="/skillhub/?tag=stack%3Arust">stack:rust</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/wshobson/agents/blob/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/systems-programming/skills/memory-safety-patterns/SKILL.md">wshobson/agents at 4bde316</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: memory-safety-patterns
+description: Implement memory-safe programming with RAII, ownership, smart pointers, and resource management across Rust, C++, and C. Use when writing safe systems code, managing resources, or preventing memory bugs.</code></pre></details>
+        <div class="markdown"><h3>Memory Safety Patterns</h3>
+<p>Cross-language patterns for memory-safe programming including RAII, ownership, smart pointers, and resource management.</p>
+<h4>When to Use This Skill</h4>
+<ul>
+<li>Writing memory-safe systems code</li>
+<li>Managing resources (files, sockets, memory)</li>
+<li>Preventing use-after-free and leaks</li>
+<li>Implementing RAII patterns</li>
+<li>Choosing between languages for safety</li>
+<li>Debugging memory issues</li>
+</ul>
+<h4>Core Concepts</h4>
+<h5>1. Memory Bug Categories</h5>
+<table>
+<thead>
+<tr>
+<th>Bug Type</th>
+<th>Description</th>
+<th>Prevention</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Use-after-free</strong></td>
+<td>Access freed memory</td>
+<td>Ownership, RAII</td>
+</tr>
+<tr>
+<td><strong>Double-free</strong></td>
+<td>Free same memory twice</td>
+<td>Smart pointers</td>
+</tr>
+<tr>
+<td><strong>Memory leak</strong></td>
+<td>Never free memory</td>
+<td>RAII, GC</td>
+</tr>
+<tr>
+<td><strong>Buffer overflow</strong></td>
+<td>Write past buffer end</td>
+<td>Bounds checking</td>
+</tr>
+<tr>
+<td><strong>Dangling pointer</strong></td>
+<td>Pointer to freed memory</td>
+<td>Lifetime tracking</td>
+</tr>
+<tr>
+<td><strong>Data race</strong></td>
+<td>Concurrent unsynchronized access</td>
+<td>Ownership, Sync</td>
+</tr>
+</tbody>
+</table>
+<h5>2. Safety Spectrum</h5>
+<pre><code>Manual (C) → Smart Pointers (C++) → Ownership (Rust) → GC (Go, Java)
+Less safe                                              More safe
+More control                                           Less control
+</code></pre>
+<h4>Detailed patterns and worked examples</h4>
+<p>Detailed pattern documentation lives in <code>references/details.md</code>. Read that file when the navigation tier above is insufficient.</p>
+<h4>Best Practices</h4>
+<h5>Do's</h5>
+<ul>
+<li><strong>Prefer RAII</strong> - Tie resource lifetime to scope</li>
+<li><strong>Use smart pointers</strong> - Avoid raw pointers in C++</li>
+<li><strong>Understand ownership</strong> - Know who owns what</li>
+<li><strong>Check bounds</strong> - Use safe access methods</li>
+<li><strong>Use tools</strong> - AddressSanitizer, Valgrind, Miri</li>
+</ul>
+<h5>Don'ts</h5>
+<ul>
+<li><strong>Don't use raw pointers</strong> - Unless interfacing with C</li>
+<li><strong>Don't return local references</strong> - Dangling pointer</li>
+<li><strong>Don't ignore compiler warnings</strong> - They catch bugs</li>
+<li><strong>Don't use <code>unsafe</code> carelessly</strong> - In Rust, minimize it</li>
+<li><strong>Don't assume thread safety</strong> - Be explicit</li>
+</ul>
+<h4>Debugging Tools</h4>
+<pre><code class="language-bash"># AddressSanitizer (Clang/GCC)
+clang++ -fsanitize=address -g source.cpp
+
+# Valgrind
+valgrind --leak-check=full ./program
+
+# Rust Miri (undefined behavior detector)
+cargo +nightly miri run
+
+# ThreadSanitizer
+clang++ -fsanitize=thread -g source.cpp
+</code></pre>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

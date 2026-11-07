@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>task-coordination-strategies · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re splitting a large task among teammates, deciding which tasks block which, or a team&#039;s workload has become uneven. It does: splits work by layer, component, concern or file ownership, and keeps dependency graphs wide and shallow so more runs in parallel. You get: task descriptions with objective, owned files, requirements, interface contracts, acceptance criteria and out-of-scope items, from a template. Needs: Claude Code&#039;s Agent Teams task tools, which it uses to set blockers and reassign work." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=wshobson%2Fagents">wshobson/agents</a></p>
+      <h1>task-coordination-strategies</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re splitting a large task among teammates, deciding which tasks block which, or a team&#39;s workload has become uneven</dd></div><div><dt>It does</dt><dd>splits work by layer, component, concern or file ownership, and keeps dependency graphs wide and shallow so more runs in parallel</dd></div><div><dt>You get</dt><dd>task descriptions with objective, owned files, requirements, interface contracts, acceptance criteria and out-of-scope items, from a template</dd></div><div><dt>Needs</dt><dd>Claude Code&#39;s Agent Teams task tools, which it uses to set blockers and reassign work</dd></div></dl></section>
+      
+      <p class="note">Uses Claude Code&#39;s Agent Teams tools TaskCreate, TaskUpdate, TaskList and SendMessage; the agent-teams plugin&#39;s README turns that experimental feature on with CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Planning advice for a lead agent. It names four ways to split work: by layer for full-stack features, by component for modular systems, by concern for reviews and audits, and by file ownership to avoid conflicts. Dependency graphs should be wide and shallow, with blockedBy used only where truly needed and no cycles; the longest chain, the critical path, sets the minimum completion time. It draws three patterns, independent tasks feeding an integration task, a sequential chain and a diamond, and shows the TaskCreate and TaskUpdate calls that make an integration task wait for two others. Every task description carries six parts, shown in a template for an authentication API task. For workload, it reads the signals (a teammate idle while others are busy, one stuck on a task, everything blocked, one carrying three times the others&#39; load) and rebalances: check TaskList, find idle or overloaded teammates, reassign with TaskUpdate, tell those affected with SendMessage and watch throughput.</p>
+      <p class="muted">Summarizes <a href="https://github.com/wshobson/agents/tree/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/agent-teams/skills/task-coordination-strategies">the skill at 4bde316</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/wshobson/agents --skill task-coordination-strategies</code><button type="button" class="copy" data-copy="npx skills add https://github.com/wshobson/agents --skill task-coordination-strategies">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/wshobson/agents/task-coordination-strategies">skills.sh page</a> · <a href="https://github.com/wshobson/agents/tree/HEAD/plugins/agent-teams/skills/task-coordination-strategies">Source on GitHub</a> · <a href="/skillhub/?repo=wshobson%2Fagents">All skills from wshobson/agents</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>10,200 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>42,267 <span class="muted">wshobson/agents</span></dd></div><div><dt>First seen</dt><dd>Feb 5, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">176</div>
+      <div class="stat-delta">+1% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 174; week to Sep 26: 187; week to Oct 3: 214; week to Oct 10: 272; week to Oct 17: 215; week to Oct 24: 202; week to Oct 31: 189; week to Nov 7: 176. Use the left and right arrow keys to read each week."
+        data-values="174,187,214,272,215,202,189,176" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,21.9 38.6,19.8 71.1,15.4 103.7,6.0 136.3,15.2 168.9,17.3 201.4,19.4 234.0,21.5" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="21.5" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>174</td></tr><tr><td>Sep 26</td><td>187</td></tr><tr><td>Oct 3</td><td>214</td></tr><tr><td>Oct 10</td><td>272</td></tr><tr><td>Oct 17</td><td>215</td></tr><tr><td>Oct 24</td><td>202</td></tr><tr><td>Oct 31</td><td>189</td></tr><tr><td>Nov 7</td><td>176</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/skillhub/?tag=category%3Aagents">category:agents</a><a class="tag" data-tag="category:planning" data-facet="category" title="Make the agent question you and write the plan down before it writes code." href="/skillhub/?tag=category%3Aplanning">category:planning</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Make the agent question you and write the plan down before it writes code.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/skillhub/?tag=type%3Aguidelines">type:guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:subagents" data-facet="needs" title="Relies on the agent being able to spawn subagents." href="/skillhub/?tag=needs%3Asubagents">needs:subagents</a><a class="tag" data-tag="needs:claude-code" data-facet="needs" title="Uses Claude Code features such as hooks or background agents." href="/skillhub/?tag=needs%3Aclaude-code">needs:claude-code</a></div>
+          <p class="tag-meaning">Relies on the agent being able to spawn subagents.</p><p class="tag-meaning">Uses Claude Code features such as hooks or background agents.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="multi-agent" data-facet="topic" href="/skillhub/?tag=multi-agent">multi-agent</a><a class="tag" data-tag="planning" data-facet="topic" href="/skillhub/?tag=planning">planning</a><a class="tag" data-tag="agent-workflows" data-facet="topic" href="/skillhub/?tag=agent-workflows">agent-workflows</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/wshobson/agents/blob/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/agent-teams/skills/task-coordination-strategies/SKILL.md">wshobson/agents at 4bde316</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: task-coordination-strategies
+description: Decompose complex tasks, design dependency graphs, and coordinate multi-agent work with proper task descriptions and workload balancing. Use this skill when breaking down work for agent teams, managing task dependencies, or monitoring team progress.
+version: 1.0.2</code></pre></details>
+        <div class="markdown"><h3>Task Coordination Strategies</h3>
+<p>Strategies for decomposing complex tasks into parallelizable units, designing dependency graphs, writing effective task descriptions, and monitoring workload across agent teams.</p>
+<h4>When to Use This Skill</h4>
+<ul>
+<li>Breaking down a complex task for parallel execution</li>
+<li>Designing task dependency relationships (blockedBy/blocks)</li>
+<li>Writing task descriptions with clear acceptance criteria</li>
+<li>Monitoring and rebalancing workload across teammates</li>
+<li>Identifying the critical path in a multi-task workflow</li>
+</ul>
+<h4>Task Decomposition Strategies</h4>
+<h5>By Layer</h5>
+<p>Split work by architectural layer:</p>
+<ul>
+<li>Frontend components</li>
+<li>Backend API endpoints</li>
+<li>Database migrations/models</li>
+<li>Test suites</li>
+</ul>
+<p><strong>Best for</strong>: Full-stack features, vertical slices</p>
+<h5>By Component</h5>
+<p>Split work by functional component:</p>
+<ul>
+<li>Authentication module</li>
+<li>User profile module</li>
+<li>Notification module</li>
+</ul>
+<p><strong>Best for</strong>: Microservices, modular architectures</p>
+<h5>By Concern</h5>
+<p>Split work by cross-cutting concern:</p>
+<ul>
+<li>Security review</li>
+<li>Performance review</li>
+<li>Architecture review</li>
+</ul>
+<p><strong>Best for</strong>: Code reviews, audits</p>
+<h5>By File Ownership</h5>
+<p>Split work by file/directory boundaries:</p>
+<ul>
+<li><code>src/components/</code> — Implementer 1</li>
+<li><code>src/api/</code> — Implementer 2</li>
+<li><code>src/utils/</code> — Implementer 3</li>
+</ul>
+<p><strong>Best for</strong>: Parallel implementation, conflict avoidance</p>
+<h4>Dependency Graph Design</h4>
+<h5>Principles</h5>
+<ol>
+<li><strong>Minimize chain depth</strong> — Prefer wide, shallow graphs over deep chains</li>
+<li><strong>Identify the critical path</strong> — The longest chain determines minimum completion time</li>
+<li><strong>Use blockedBy sparingly</strong> — Only add dependencies that are truly required</li>
+<li><strong>Avoid circular dependencies</strong> — Task A blocks B blocks A is a deadlock</li>
+</ol>
+<h5>Patterns</h5>
+<p><strong>Independent (Best parallelism)</strong>:</p>
+<pre><code>Task A ─┐
+Task B ─┼─→ Integration
+Task C ─┘
+</code></pre>
+<p><strong>Sequential (Necessary dependencies)</strong>:</p>
+<pre><code>Task A → Task B → Task C
+</code></pre>
+<p><strong>Diamond (Mixed)</strong>:</p>
+<pre><code>        ┌→ Task B ─┐
+Task A ─┤          ├→ Task D
+        └→ Task C ─┘
+</code></pre>
+<h5>Using blockedBy/blocks</h5>
+<pre><code>TaskCreate: { subject: &quot;Build API endpoints&quot; }         → Task #1
+TaskCreate: { subject: &quot;Build frontend components&quot; }    → Task #2
+TaskCreate: { subject: &quot;Integration testing&quot; }          → Task #3
+TaskUpdate: { taskId: &quot;3&quot;, addBlockedBy: [&quot;1&quot;, &quot;2&quot;] }  → #3 waits for #1 and #2
+</code></pre>
+<h4>Task Description Best Practices</h4>
+<p>Every task should include:</p>
+<ol>
+<li><strong>Objective</strong> — What needs to be accomplished (1-2 sentences)</li>
+<li><strong>Owned Files</strong> — Explicit list of files/directories this teammate may modify</li>
+<li><strong>Requirements</strong> — Specific deliverables or behaviors expected</li>
+<li><strong>Interface Contracts</strong> — How this work connects to other teammates' work</li>
+<li><strong>Acceptance Criteria</strong> — How to verify the task is done correctly</li>
+<li><strong>Scope Boundaries</strong> — What is explicitly out of scope</li>
+</ol>
+<h5>Template</h5>
+<pre><code>## Objective
+Build the user authentication API endpoints.
+
+## Owned Files
+- src/api/auth.ts
+- src/api/middleware/auth-middleware.ts
+- src/types/auth.ts (shared — read only, do not modify)
+
+## Requirements
+- POST /api/login — accepts email/password, returns JWT
+- POST /api/register — creates new user, returns JWT
+- GET /api/me — returns current user profile (requires auth)
+
+## Interface Contract
+- Import User type from src/types/auth.ts (owned by implementer-1)
+- Export AuthResponse type for frontend consumption
+
+## Acceptance Criteria
+- All endpoints return proper HTTP status codes
+- JWT tokens expire after 24 hours
+- Passwords are hashed with bcrypt
+
+## Out of Scope
+- OAuth/social login
+- Password reset flow
+- Rate limiting
+</code></pre>
+<h4>Workload Monitoring</h4>
+<h5>Indicators of Imbalance</h5>
+<table>
+<thead>
+<tr>
+<th>Signal</th>
+<th>Meaning</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Teammate idle, others busy</td>
+<td>Uneven distribution</td>
+<td>Reassign pending tasks</td>
+</tr>
+<tr>
+<td>Teammate stuck on one task</td>
+<td>Possible blocker</td>
+<td>Check in, offer help</td>
+</tr>
+<tr>
+<td>All tasks blocked</td>
+<td>Dependency issue</td>
+<td>Resolve critical path first</td>
+</tr>
+<tr>
+<td>One teammate has 3x others</td>
+<td>Overloaded</td>
+<td>Split tasks or reassign</td>
+</tr>
+</tbody>
+</table>
+<h5>Rebalancing Steps</h5>
+<ol>
+<li>Call <code>TaskList</code> to assess current state</li>
+<li>Identify idle or overloaded teammates</li>
+<li>Use <code>TaskUpdate</code> to reassign tasks</li>
+<li>Use <code>SendMessage</code> to notify affected teammates</li>
+<li>Monitor for improved throughput</li>
+</ol>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

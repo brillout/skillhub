@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>unified-notifications-ops · SkillHub</title>
+    <meta name="description" content="Use it when: CI failures, review requests and issue updates land in scattered places and the noise gets ignored. It does: inventories event sources, channels, duplicate paths and silent failures, then routes each event family by a four-level severity model. You get: a routing plan from source to channel with an owner, what to suppress or merge, and the next ECC skill, hook or agent to build. Defaults: interrupt for release, CI, security and owner-blocking events; digest for medium updates; log-only for routine churn." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <h1>unified-notifications-ops</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>CI failures, review requests and issue updates land in scattered places and the noise gets ignored</dd></div><div><dt>It does</dt><dd>inventories event sources, channels, duplicate paths and silent failures, then routes each event family by a four-level severity model</dd></div><div><dt>You get</dt><dd>a routing plan from source to channel with an owner, what to suppress or merge, and the next ECC skill, hook or agent to build</dd></div><div><dt>Defaults</dt><dd>interrupt for release, CI, security and owner-blocking events; digest for medium updates; log-only for routine churn</dd></div></dl></section>
+      
+      <p class="note">Geared to ECC: its plan ends with the ECC skill, hook, agent or MCP to build next.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A design workflow from ECC for fragmented notifications. It starts from what exists: GitHub issues, PRs, reviews and CI, Linear movement, local hook and session events, desktop notifications, and any email or chat that&#39;s actually connected. Each event goes through capture, classification by urgency and owner, routing, collapsing of duplicates and an attached next action. The default severity model treats critical events (broken default-branch CI, security issues, failed deploys) as interruptions, high ones (review requests, failing PRs) as same-day alerts, medium ones as digest items and low ones as noise to suppress. Before adding channels it looks for the same event arriving in several places, repeated hook alerts and raw comment churn, aiming for one canonical summary, one owner, one primary channel and one fallback. For each need it defines source, gate, shape, channel and action, preferring hooks for automatic emission, skills for triage, an MCP bridge only when one is missing, and desktop notifications when they&#39;re enough. It never exposes tokens or webhook secrets, and returns a design to act on.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/unified-notifications-ops">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/affaan-m/ecc --skill unified-notifications-ops</code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill unified-notifications-ops">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/unified-notifications-ops">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/unified-notifications-ops">Source on GitHub</a> · <a href="/skillhub/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,200 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>298,660 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">465</div>
+      <div class="stat-delta">+64% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 284; week to Sep 26: 255; week to Oct 3: 159; week to Oct 10: 137; week to Oct 17: 228; week to Oct 24: 408; week to Oct 31: 396; week to Nov 7: 465. Use the left and right arrow keys to read each week."
+        data-values="284,255,159,137,228,408,396,465" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.1 38.6,25.9 71.1,35.0 103.7,37.0 136.3,28.4 168.9,11.4 201.4,12.5 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>284</td></tr><tr><td>Sep 26</td><td>255</td></tr><tr><td>Oct 3</td><td>159</td></tr><tr><td>Oct 10</td><td>137</td></tr><tr><td>Oct 17</td><td>228</td></tr><tr><td>Oct 24</td><td>408</td></tr><tr><td>Oct 31</td><td>396</td></tr><tr><td>Nov 7</td><td>465</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/skillhub/?tag=category%3Aagents">category:agents</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="observability" data-facet="topic" href="/skillhub/?tag=observability">observability</a><a class="tag" data-tag="issue-tracking" data-facet="topic" href="/skillhub/?tag=issue-tracking">issue-tracking</a><a class="tag" data-tag="ci" data-facet="topic" href="/skillhub/?tag=ci">ci</a><a class="tag" data-tag="agent-workflows" data-facet="topic" href="/skillhub/?tag=agent-workflows">agent-workflows</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:github" data-facet="stack" href="/skillhub/?tag=stack%3Agithub">stack:github</a><a class="tag" data-tag="stack:linear" data-facet="stack" href="/skillhub/?tag=stack%3Alinear">stack:linear</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/unified-notifications-ops/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: unified-notifications-ops
+description: Operate notifications as one ECC-native workflow across GitHub, Linear, desktop alerts, hooks, and connected communication surfaces. Use when the real problem is alert routing, deduplication, escalation, or inbox collapse.
+metadata:
+  origin: ECC</code></pre></details>
+        <div class="markdown"><h3>Unified Notifications Ops</h3>
+<p>Use this skill when the real problem is not a missing ping. The real problem is a fragmented notification system.</p>
+<p>The job is to turn scattered events into one operator surface with:</p>
+<ul>
+<li>clear severity</li>
+<li>clear ownership</li>
+<li>clear routing</li>
+<li>clear follow-up action</li>
+</ul>
+<h4>When to Use</h4>
+<ul>
+<li>the user wants a unified notification lane across GitHub, Linear, local hooks, desktop alerts, chat, or email</li>
+<li>CI failures, review requests, issue updates, and operator events are arriving in disconnected places</li>
+<li>the current setup creates noise instead of action</li>
+<li>the user wants to consolidate overlapping notification branches or backlog proposals into one ECC-native lane</li>
+<li>the workspace already has hooks, MCPs, or connected tools, but no coherent notification policy</li>
+</ul>
+<h4>Preferred Surface</h4>
+<p>Start from what already exists:</p>
+<ul>
+<li>GitHub issues, PRs, reviews, comments, and CI</li>
+<li>Linear issue/project movement</li>
+<li>local hook events and session lifecycle signals</li>
+<li>desktop notification primitives</li>
+<li>connected email/chat surfaces when they actually exist</li>
+</ul>
+<p>Prefer ECC-native orchestration over telling the user to adopt a separate notification product.</p>
+<h4>Non-Negotiable Rules</h4>
+<ul>
+<li>never expose tokens, secrets, webhook secrets, or internal identifiers</li>
+<li>separate:
+<ul>
+<li>event source</li>
+<li>severity</li>
+<li>routing channel</li>
+<li>operator action</li>
+</ul>
+</li>
+<li>default to digest-first when interruption cost is unclear</li>
+<li>do not fan out every event to every channel</li>
+<li>if the real fix is better issue triage, hook policy, or project flow, say so explicitly</li>
+</ul>
+<h4>Event Pipeline</h4>
+<p>Treat the lane as:</p>
+<ol>
+<li><strong>Capture</strong> the event</li>
+<li><strong>Classify</strong> urgency and owner</li>
+<li><strong>Route</strong> to the correct channel</li>
+<li><strong>Collapse</strong> duplicates and low-signal churn</li>
+<li><strong>Attach</strong> the next operator action</li>
+</ol>
+<p>The goal is fewer, better notifications.</p>
+<h4>Default Severity Model</h4>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Examples</th>
+<th>Default handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Critical</td>
+<td>broken default-branch CI, security issue, blocked release, failed deploy</td>
+<td>interrupt now</td>
+</tr>
+<tr>
+<td>High</td>
+<td>review requested, failing PR, owner-blocking handoff</td>
+<td>same-day alert</td>
+</tr>
+<tr>
+<td>Medium</td>
+<td>issue state changes, notable comments, backlog movement</td>
+<td>digest or queue</td>
+</tr>
+<tr>
+<td>Low</td>
+<td>repeat successes, routine churn, redundant lifecycle markers</td>
+<td>suppress or fold</td>
+</tr>
+</tbody>
+</table>
+<p>If the workspace has no severity model, build one before proposing automation.</p>
+<h4>Workflow</h4>
+<h5>1. Inventory the current surface</h5>
+<p>List:</p>
+<ul>
+<li>event sources</li>
+<li>current channels</li>
+<li>existing hooks/scripts that emit alerts</li>
+<li>duplicate paths for the same event</li>
+<li>silent failure cases where important things are not being surfaced</li>
+</ul>
+<p>Call out what ECC already owns.</p>
+<h5>2. Decide what deserves interruption</h5>
+<p>For each event family, answer:</p>
+<ul>
+<li>who needs to know?</li>
+<li>how fast do they need to know?</li>
+<li>should this interrupt, batch, or just log?</li>
+</ul>
+<p>Use these defaults:</p>
+<ul>
+<li>interrupt for release, CI, security, and owner-blocking events</li>
+<li>digest for medium-signal updates</li>
+<li>log-only for telemetry and low-signal lifecycle markers</li>
+</ul>
+<h5>3. Collapse duplicates before adding channels</h5>
+<p>Look for:</p>
+<ul>
+<li>the same PR event appearing in GitHub, Linear, and local logs</li>
+<li>repeated hook notifications for the same failure</li>
+<li>comments or status churn that should be summarized instead of forwarded raw</li>
+<li>channels that duplicate each other without adding a better action path</li>
+</ul>
+<p>Prefer:</p>
+<ul>
+<li>one canonical summary</li>
+<li>one owner</li>
+<li>one primary channel</li>
+<li>one fallback path</li>
+</ul>
+<h5>4. Design the ECC-native workflow</h5>
+<p>For each real notification need, define:</p>
+<ul>
+<li><strong>source</strong></li>
+<li><strong>gate</strong></li>
+<li><strong>shape</strong>: immediate alert, digest, queue, or dashboard-only</li>
+<li><strong>channel</strong></li>
+<li><strong>action</strong></li>
+</ul>
+<p>If ECC already has the primitive, prefer:</p>
+<ul>
+<li>a skill for operator triage</li>
+<li>a hook for automatic emission/enforcement</li>
+<li>an agent for delegated classification</li>
+<li>an MCP/connector only when a real bridge is missing</li>
+</ul>
+<h5>5. Return an action-biased design</h5>
+<p>End with:</p>
+<ul>
+<li>what to keep</li>
+<li>what to suppress</li>
+<li>what to merge</li>
+<li>what ECC should wrap next</li>
+</ul>
+<h4>Output Format</h4>
+<pre><code class="language-text">CURRENT SURFACE
+- sources
+- channels
+- duplicates
+- gaps
+
+EVENT MODEL
+- critical
+- high
+- medium
+- low
+
+ROUTING PLAN
+- source -&gt; channel
+- why
+- operator owner
+
+CONSOLIDATION
+- suppress
+- merge
+- canonical summaries
+
+NEXT ECC MOVE
+- skill / hook / agent / MCP
+- exact workflow to build next
+</code></pre>
+<h4>Recommendation Rules</h4>
+<ul>
+<li>prefer one strong lane over many weak ones</li>
+<li>prefer digests for medium and low-signal updates</li>
+<li>prefer hooks when the signal should emit automatically</li>
+<li>prefer operator skills when the work is triage, routing, and review-first decision-making</li>
+<li>prefer <code>project-flow-ops</code> when the root cause is backlog / PR coordination rather than alerts</li>
+<li>prefer <code>workspace-surface-audit</code> when the user first needs a source inventory</li>
+<li>if desktop notifications are enough, do not invent an unnecessary external bridge</li>
+</ul>
+<h4>Good Use Cases</h4>
+<ul>
+<li>&quot;We have GitHub, Linear, and local hook alerts, but no single operator flow&quot;</li>
+<li>&quot;Our CI failures are noisy and people ignore them&quot;</li>
+<li>&quot;I want one notification policy across Claude, OpenCode, and Codex surfaces&quot;</li>
+<li>&quot;Figure out what should interrupt versus land in a digest&quot;</li>
+<li>&quot;Collapse overlapping notification PR ideas into one canonical ECC lane&quot;</li>
+</ul>
+<h4>Related Skills</h4>
+<ul>
+<li><code>workspace-surface-audit</code></li>
+<li><code>project-flow-ops</code></li>
+<li><code>github-ops</code></li>
+<li><code>knowledge-ops</code></li>
+<li><code>customer-billing-ops</code> when the notification pain is billing/customer operations rather than engineering</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

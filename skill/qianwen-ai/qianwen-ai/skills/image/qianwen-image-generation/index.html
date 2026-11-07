@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>qianwen-image-generation · SkillHub</title>
+    <meta name="description" content="Use it when: you want images made from a prompt, or edited from reference photos, with QianWen&#039;s image models. It does: runs its bundled Python script against the QianWen API, picking the model from a catalog it fetches first; curl is the fallback. You get: image files under ./output/qianwen-image-generation/, plus image URLs valid for 24 hours to pass to the repo&#039;s video or vision skills. Needs: a QianWen API key, pay-as-you-go or Token Plan, and Python 3.9+ or curl." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=qianwen-ai%2Fqianwen-ai">qianwen-ai/qianwen-ai</a></p>
+      <h1>qianwen-image-generation</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want images made from a prompt, or edited from reference photos, with QianWen&#39;s image models</dd></div><div><dt>It does</dt><dd>runs its bundled Python script against the QianWen API, picking the model from a catalog it fetches first; curl is the fallback</dd></div><div><dt>You get</dt><dd>image files under ./output/qianwen-image-generation/, plus image URLs valid for 24 hours to pass to the repo&#39;s video or vision skills</dd></div><div><dt>Needs</dt><dd>a QianWen API key, pay-as-you-go or Token Plan, and Python 3.9+ or curl</dd></div></dl></section>
+      
+      <p class="note">Needs a QianWen API key, and every image is billed to that account. Local reference images are uploaded to DashScope&#39;s temporary storage for 48 hours. After runs it offers to install the repo&#39;s qianwen-update-check skill until you install it or choose never to be reminded.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>QianWen&#39;s own skill for its image models. It checks your API key&#39;s type without printing it: a Token Plan key limits it to that plan&#39;s models and to reference images given as URLs. Unless you name a model, it fetches QianWen&#39;s current image model catalog from a CDN, using a bundled copy if that fails, and it can hand the choice to the qianwen-model-selector skill. Its script covers text-to-image, edits from reference images (style transfer, keeping a subject consistent, combining several images, rendering text), sequences of up to 12 consistent images, and output that interleaves text and images. Local files are uploaded to DashScope&#39;s temporary storage for 48 hours, or to your own OSS bucket if you set one up. Each image is billed, and an &#34;AI Generated&#34; watermark is off unless you turn it on. Failures are matched against a table of fixes, from a missing key to SSL and rate-limit errors. If no key is set, it writes a .env file with a placeholder for you to fill in instead of asking for the key, and after runs it offers to install the repo&#39;s update checker.</p>
+      <p class="muted">Summarizes <a href="https://github.com/qianwen-ai/qianwen-ai/tree/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/image/qianwen-image-generation">the skill at 11b1805</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/qianwen-ai/qianwen-ai --skill qianwen-image-generation</code><button type="button" class="copy" data-copy="npx skills add https://github.com/qianwen-ai/qianwen-ai --skill qianwen-image-generation">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/qianwen-ai/qianwen-ai/qianwen-image-generation">skills.sh page</a> · <a href="https://github.com/qianwen-ai/qianwen-ai/tree/HEAD/skills/image/qianwen-image-generation">Source on GitHub</a> · <a href="/skillhub/?repo=qianwen-ai%2Fqianwen-ai">All skills from qianwen-ai/qianwen-ai</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>6,000 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>120 <span class="muted">qianwen-ai/qianwen-ai</span></dd></div><div><dt>First seen</dt><dd>May 12, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">193</div>
+      <div class="stat-delta">-30% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 277; week to Sep 26: 231; week to Oct 3: 186; week to Oct 10: 157; week to Oct 17: 182; week to Oct 24: 180; week to Oct 31: 259; week to Nov 7: 193. Use the left and right arrow keys to read each week."
+        data-values="277,231,186,157,182,180,259,193" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,13.3 71.1,20.5 103.7,25.1 136.3,21.1 168.9,21.4 201.4,8.9 234.0,19.3" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="19.3" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>277</td></tr><tr><td>Sep 26</td><td>231</td></tr><tr><td>Oct 3</td><td>186</td></tr><tr><td>Oct 10</td><td>157</td></tr><tr><td>Oct 17</td><td>182</td></tr><tr><td>Oct 24</td><td>180</td></tr><tr><td>Oct 31</td><td>259</td></tr><tr><td>Nov 7</td><td>193</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:media" data-facet="category" title="Generate and edit video, images and audio." href="/skillhub/?tag=category%3Amedia">category:media</a></div>
+          <p class="tag-meaning">Generate and edit video, images and audio.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/skillhub/?tag=type%3Atool">type:tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/skillhub/?tag=needs%3Aaccount">needs:account</a></div>
+          <p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="image" data-facet="topic" href="/skillhub/?tag=image">image</a><a class="tag" data-tag="ai-generation" data-facet="topic" href="/skillhub/?tag=ai-generation">ai-generation</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:qianwen" data-facet="stack" href="/skillhub/?tag=stack%3Aqianwen">stack:qianwen</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/image/qianwen-image-generation/SKILL.md">qianwen-ai/qianwen-ai at 11b1805</a>. Checked daily, last changed Nov 7, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: qianwen-image-generation
+description: &#34;Generate and edit images using Wan and Qwen Image models. Supports text-to-image, image editing (style transfer, subject consistency, text rendering), and interleaved text-image output. TRIGGER when: user wants to create illustrations, product images, artistic designs, posters, text-to-image generation, edit/transform existing images, apply style transfer, generate images based on reference photos, interleaved text-image content, mentions Wan/Qwen Image models/AI art creation, or explicitly invokes this skill by name (e.g. use qianwen-image-generation). DO NOT TRIGGER when: user wants to understand/analyze existing images or OCR (use qianwen-vision), video generation (use qianwen-video-generation), text-only tasks.&#34;
+compatibility: &#34;Requires Python 3.9+ and curl. Cursor: auto-loaded. Claude Code: read this skill&#39;s SKILL.md before first use.&#34;</code></pre></details>
+        <div class="markdown"><h3>Qwen Image Generation</h3>
+<p>Generate and edit images using Wan and Qwen Image models. Supports text-to-image, reference-image editing (style
+transfer, subject consistency, multi-image composition, text rendering), and interleaved text-image output.
+This skill is part of <strong>QianWen-AI/qianwen-ai</strong>.</p>
+<h4>Skill directory</h4>
+<p>Use this skill's internal files to execute and learn. Load reference files on demand when the default path fails or you need details.</p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scripts/image.py</code></td>
+<td>Default execution — sync/async, upload, download</td>
+</tr>
+<tr>
+<td><code>references/execution-guide.md</code></td>
+<td>Fallback: curl (sync/async), code generation</td>
+</tr>
+<tr>
+<td><code>references/prompt-guide.md</code></td>
+<td>Prompt formulas, style keywords, negative_prompt, prompt_extend decision</td>
+</tr>
+<tr>
+<td><code>references/api-guide.md</code></td>
+<td>API supplement</td>
+</tr>
+<tr>
+<td><code>references/sources.md</code></td>
+<td>Official documentation URLs</td>
+</tr>
+</tbody>
+</table>
+<h4>Security</h4>
+<p><strong>NEVER output any API key or credential in plaintext.</strong> Always use variable references (<code>$DASHSCOPE_API_KEY</code> in shell, <code>os.environ[&quot;DASHSCOPE_API_KEY&quot;]</code> in Python). Any check or detection of credentials must be <strong>non-plaintext</strong>: report only status (e.g. &quot;set&quot; / &quot;not set&quot;, &quot;valid&quot; / &quot;invalid&quot;), never the value. Never display contents of <code>.env</code> or config files that may contain secrets.</p>
+<p><strong>When the API key is not configured, NEVER ask the user to provide it directly.</strong> Instead, help create a <code>.env</code> file with a placeholder (<code>DASHSCOPE_API_KEY=sk-your-key-here</code>) and instruct the user to replace it with their actual key from the <a href="https://platform.qianwenai.com/home/api-keys">QianWen Console</a>. Only write the actual key value if the user explicitly requests it.</p>
+<h4>Key Compatibility</h4>
+<p>Both PAYG (<code>sk-ws-...</code>; legacy <code>sk-...</code>) and Token Plan (<code>sk-sp-...</code>) keys are supported. Detect
+the API key type without exposing the Key:</p>
+<pre><code class="language-bash">python3 -c &quot;
+import sys; sys.path.insert(0, 'scripts')
+from qianwen_lib import detect_api_key_type
+print(detect_api_key_type('scripts/qianwen_lib.py'))
+&quot;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Output</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>token-plan</code></td>
+<td>Token Plan key — use only models from the Token Plan catalog below.</td>
+</tr>
+<tr>
+<td><code>payg</code></td>
+<td>Pay-as-you-go key — full model catalog available.</td>
+</tr>
+<tr>
+<td><code>not-set</code></td>
+<td>No key configured.</td>
+</tr>
+</tbody>
+</table>
+<p>For Token Plan, fetch and read the current <a href="https://alioth.alicdn.com/skills-info/models/references/qianwen-token-plan-models.md">Token Plan model catalog</a>, then use an exact listed model. If CDN access fails, use the <a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/image/qianwen-image-generation/cdn/references/qianwen-token-plan-models.md">local fallback</a>.</p>
+<p>Token Plan does not support local file upload; for i2i mode, provide reference images as accessible
+URLs (<code>https://</code> or <code>oss://</code>) rather than local paths.</p>
+<p>Token Plan supports only specific models — use exactly a model from the references above; do not
+guess or probe model availability. For PAYG, continue below.</p>
+<h4>Mode Selection Guide</h4>
+<ol>
+<li><strong>User specified a model</strong> → use directly.</li>
+<li><strong>Consult the qianwen-model-selector skill</strong> when model choice depends on requirement, scenario, or pricing.</li>
+</ol>
+<p>Before choosing a mode or selecting, recommending, or defaulting a model, fetch and read the current <a href="https://alioth.alicdn.com/skills-info/models/references/qianwen-image-generation-models.md">Qwen image-generation model catalog</a>. It contains the mode-to-model recommendations, model list, basic model information, compatibility notes, and default model. If CDN access fails, use the <a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/image/qianwen-image-generation/cdn/references/qianwen-image-generation-models.md">local fallback</a>.</p>
+<blockquote>
+<p><strong>⚠️ Important</strong>: The model list above is a <strong>point-in-time snapshot</strong> and may be outdated. Model availability
+changes frequently. <strong>Always check the <a href="https://www.qianwenai.com/models">official model list</a>
+for the authoritative, up-to-date catalog before making model decisions.</strong></p>
+</blockquote>
+<blockquote>
+<p><strong>Model details</strong>: For more information about a specific model, direct the user to <code>https://www.qianwenai.com/models/&lt;model-name&gt;</code>. Replace <code>&lt;model-name&gt;</code> with the exact model ID; never modify or guess it.</p>
+</blockquote>
+<blockquote>
+<p><strong>Dynamic model queries</strong>: If the <strong>qianwen-model-selector</strong> skill or <strong>QianWen CLI</strong> (<code>qianwen models info &lt;model&gt;</code>) is available, use it for real-time model data. CLI requires authentication — see the <strong>qianwen-usage</strong> skill for login flow.</p>
+</blockquote>
+<h4>Execution</h4>
+<blockquote>
+<p><strong>⚠️ Multiple artifacts</strong>: When generating multiple files in a single session, you MUST append a numeric suffix to each filename (e.g. <code>out_1.png</code>, <code>out_2.png</code>) to prevent overwrites.</p>
+</blockquote>
+<h5>Prerequisites</h5>
+<ul>
+<li><strong>API Key</strong>: Use the non-plaintext detector in <strong>Key Compatibility</strong>; do not replace it with a
+variable-presence check. If no Key is found, use qianwen-ops-auth when available or guide the user
+to configure <code>DASHSCOPE_API_KEY</code>/<code>QIANWEN_API_KEY</code> in <code>.env</code>. Skills may be installed independently.</li>
+<li>Python 3.9+ (stdlib only, <strong>no pip install needed</strong>)</li>
+</ul>
+<h5>Environment Check</h5>
+<p>Before first execution, verify Python is available:</p>
+<pre><code class="language-bash">python3 --version  # must be 3.9+
+</code></pre>
+<p>If <code>python3</code> is not found, try <code>python --version</code> or <code>py -3 --version</code>. If Python is unavailable or below 3.9, skip to <strong>Path 2 (curl)</strong> in <a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/image/qianwen-image-generation/references/execution-guide.md">execution-guide.md</a>.</p>
+<h5>Default: Run Script</h5>
+<p><strong>Script path</strong>: Scripts are in the <code>scripts/</code> subdirectory <strong>of this skill's directory</strong> (the directory containing this
+SKILL.md). <strong>You MUST first locate this skill's installation directory, then ALWAYS use the full absolute path to execute
+scripts.</strong> Do NOT assume scripts are in the current working directory. Do NOT use <code>cd</code> to switch directories before
+execution.</p>
+<p><strong>Execution note:</strong> Run all scripts in the <strong>foreground</strong> — wait for stdout; do not background.</p>
+<p><strong>Discovery:</strong> Run <code>python3 &lt;this-skill-dir&gt;/scripts/image.py --help</code> first to see all available arguments.</p>
+<pre><code class="language-bash"># Text-to-image (use the default from the CDN model catalog)
+python3 &lt;this-skill-dir&gt;/scripts/image.py \
+  --request '{&quot;prompt&quot;:&quot;A cozy flower shop with wooden door&quot;}' \
+  --output output/qianwen-image-generation/images/out.png \
+  --print-response
+
+# Image editing with reference images (wan2.6-image)
+python3 &lt;this-skill-dir&gt;/scripts/image.py \
+  --model wan2.6-image \
+  --request '{&quot;prompt&quot;:&quot;Apply watercolor painting style to this photo&quot;,&quot;reference_images&quot;:[&quot;https://img.alicdn.com/imgextra/i1/NotRealJustExample/photo.jpg&quot;],&quot;n&quot;:1,&quot;size&quot;:&quot;1K&quot;}' \
+  --output output/qianwen-image-generation/images/out.png \
+  --print-response
+</code></pre>
+<p><strong>More examples</strong> (interleaved output, wan2.5-i2i, qwen-image-2.0-pro, qwen-image-plus): See <a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/image/qianwen-image-generation/references/execution-guide.md">execution-guide.md</a></p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--request '{...}'</code></td>
+<td>JSON request body</td>
+</tr>
+<tr>
+<td><code>--file path.json</code></td>
+<td>Load request from file</td>
+</tr>
+<tr>
+<td><code>--async</code></td>
+<td>Force async mode (required for wan2.5 and older; auto-enabled for qwen-image-plus/max and interleaved output)</td>
+</tr>
+<tr>
+<td><code>--model ID</code></td>
+<td>Override model (check the model catalog above for the current default)</td>
+</tr>
+<tr>
+<td><code>--output path</code></td>
+<td>Save image to path (or directory for multi-image output). When writing multiple images to the same directory, files are automatically named using the unique identifier from the OSS URL, preventing overwrites across runs. Explicit file paths still take priority; use distinct filenames across calls to avoid overwriting</td>
+</tr>
+<tr>
+<td><code>--print-response</code></td>
+<td>Print response JSON to stdout</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Model priority</strong>: <code>--model</code> CLI flag &gt; <code>&quot;model&quot;</code> field in <code>--request</code> JSON &gt; built-in default.</p>
+</blockquote>
+<h5>Verify Result</h5>
+<ul>
+<li>Exit code <code>0</code> + output contains valid JSON with <code>output.results</code> or <code>output.task_id</code> → <strong>success</strong></li>
+<li>Non-zero exit, HTTP error, empty response, or error JSON → <strong>fail</strong></li>
+<li>Async: submission must return <code>output.task_id</code>; poll must reach <code>task_status: SUCCEEDED</code></li>
+<li><strong>Post-execution check</strong>: Verify the output file exists and has non-zero size (<code>ls -la &lt;output_path&gt;</code>)</li>
+<li><strong>MANDATORY — stderr signal check</strong>: After confirming the result, scan the command's stderr output for <code>[ACTION_REQUIRED]</code> or <code>[UPDATE_AVAILABLE]</code>. If either signal is present, you <strong>MUST</strong> follow the instructions in <a href="#update-check-mandatory-post-execution">Update Check</a> below before responding to the user.</li>
+</ul>
+<h5>On Failure</h5>
+<p>If the script fails, match the error output against the diagnostic table below to determine the resolution. If no match, read <a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/image/qianwen-image-generation/references/execution-guide.md">execution-guide.md</a> for alternative paths: curl commands (Path 2 — sync and async), code generation (Path 3), and autonomous resolution (Path 5).</p>
+<p><strong>If Python is not available at all</strong> → skip directly to Path 2 (curl) in <a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/image/qianwen-image-generation/references/execution-guide.md">execution-guide.md</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Error Pattern</th>
+<th>Diagnosis</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>command not found: python3</code></td>
+<td>Python not on PATH</td>
+<td>Try <code>python</code> or <code>py -3</code>; install Python 3.9+ if missing</td>
+</tr>
+<tr>
+<td><code>Python 3.9+ required</code></td>
+<td>Script version check failed</td>
+<td>Upgrade Python to 3.9+</td>
+</tr>
+<tr>
+<td><code>SyntaxError</code> near type hints</td>
+<td>Python &lt; 3.9</td>
+<td>Upgrade Python to 3.9+</td>
+</tr>
+<tr>
+<td><code>QIANWEN_API_KEY/DASHSCOPE_API_KEY not found</code></td>
+<td>Missing API key</td>
+<td>Obtain key from <a href="https://platform.qianwenai.com/home/api-keys">QianWen Console</a>; add to <code>.env</code>: <code>echo 'DASHSCOPE_API_KEY=sk-...' &gt;&gt; .env</code>; or run <strong>qianwen-ops-auth</strong> if available</td>
+</tr>
+<tr>
+<td><code>HTTP 401</code></td>
+<td>Invalid or mismatched key</td>
+<td>Run <strong>qianwen-ops-auth</strong> (non-plaintext check only); verify key is valid</td>
+</tr>
+<tr>
+<td><code>SSL: CERTIFICATE_VERIFY_FAILED</code></td>
+<td>SSL cert issue (proxy/corporate)</td>
+<td>macOS: run <code>Install Certificates.command</code>; else set <code>SSL_CERT_FILE</code> env var</td>
+</tr>
+<tr>
+<td><code>URLError</code> / <code>ConnectionError</code></td>
+<td>Network unreachable</td>
+<td>Check internet; set <code>HTTPS_PROXY</code> if behind proxy</td>
+</tr>
+<tr>
+<td><code>HTTP 429</code></td>
+<td>Rate limited</td>
+<td>Wait and retry with backoff</td>
+</tr>
+<tr>
+<td><code>HTTP 5xx</code></td>
+<td>Server error</td>
+<td>Retry with backoff</td>
+</tr>
+<tr>
+<td><code>PermissionError</code></td>
+<td>Can't write output</td>
+<td>Use <code>--output</code> to specify writable directory</td>
+</tr>
+</tbody>
+</table>
+<h4>Quick Reference</h4>
+<h5>Request Fields (Common)</h5>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>prompt</code></td>
+<td>string</td>
+<td>Text description of the image to generate (required)</td>
+</tr>
+<tr>
+<td><code>negative_prompt</code></td>
+<td>string</td>
+<td>Content to avoid in the image (max 500 chars)</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td>string</td>
+<td>Resolution; supported values and defaults are model-specific, so read the model catalog above</td>
+</tr>
+<tr>
+<td><code>seed</code></td>
+<td>int</td>
+<td>Random seed for reproducibility [0, 2147483647]</td>
+</tr>
+<tr>
+<td><code>model</code></td>
+<td>string</td>
+<td>Model ID; check the model catalog above for the current default and supported models</td>
+</tr>
+<tr>
+<td><code>prompt_extend</code></td>
+<td>bool</td>
+<td>Enable prompt rewriting (default: true; image editing mode only)</td>
+</tr>
+</tbody>
+</table>
+<h5>Request Fields (wan2.7-image-pro / wan2.7-image — Multi-function)</h5>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reference_images</code></td>
+<td>string[]</td>
+<td>0–9 image URLs or local paths</td>
+</tr>
+<tr>
+<td><code>reference_image</code></td>
+<td>string</td>
+<td>Single image URL/path (shorthand)</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td>string</td>
+<td><code>1K</code>, <code>2K</code> (default), or <code>4K</code> (pro only, t2i mode). Or pixel dimensions</td>
+</tr>
+<tr>
+<td><code>enable_sequential</code></td>
+<td>bool</td>
+<td><code>true</code>: sequential multi-image mode (n=1–12). <code>false</code> (default): single/batch mode (n=1–4)</td>
+</tr>
+<tr>
+<td><code>n</code></td>
+<td>int</td>
+<td>Images to generate. Sequential mode: 1–12 (default 1). Non-sequential: 1–4 (default 1). <strong>Billed per image.</strong></td>
+</tr>
+<tr>
+<td><code>thinking_mode</code></td>
+<td>bool</td>
+<td>Enable enhanced reasoning for better quality (default: true). Only for t2i (no images, non-sequential)</td>
+</tr>
+<tr>
+<td><code>bbox_list</code></td>
+<td>List[List[List[int]]]</td>
+<td>Interactive editing regions. Format: <code>[[[x1,y1,x2,y2],...], ...]</code>. List length = image count. Empty <code>[]</code> for images without edits</td>
+</tr>
+<tr>
+<td><code>color_palette</code></td>
+<td>array</td>
+<td>Custom color theme (3–10 colors). Each: <code>{&quot;hex&quot;:&quot;#C2D1E6&quot;,&quot;ratio&quot;:&quot;23.51%&quot;}</code>. Sum of ratios = 100%. Non-sequential mode only</td>
+</tr>
+<tr>
+<td><code>watermark</code></td>
+<td>bool</td>
+<td>Add &quot;AI Generated&quot; watermark (default: false)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note</strong>: <code>thinking_mode</code> increases latency but improves quality. <code>enable_sequential</code> generates a coherent image sequence (e.g., same character across scenes).</p>
+<h5>Request Fields (wan2.6-image — Image Editing)</h5>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reference_images</code></td>
+<td>string[]</td>
+<td>1–4 image URLs or local paths for editing mode; 0–1 for interleave mode</td>
+</tr>
+<tr>
+<td><code>reference_image</code></td>
+<td>string</td>
+<td>Single image URL/path (shorthand; <code>reference_images</code> takes precedence)</td>
+</tr>
+<tr>
+<td><code>enable_interleave</code></td>
+<td>bool</td>
+<td><code>false</code> (default): image editing mode; <code>true</code>: interleaved text-image output</td>
+</tr>
+<tr>
+<td><code>n</code></td>
+<td>int</td>
+<td>Number of images to generate in editing mode (1–4, default: 1). <strong>Billed per image.</strong></td>
+</tr>
+<tr>
+<td><code>max_images</code></td>
+<td>int</td>
+<td>Max images in interleave mode (1–5, default: 5). <strong>Billed per image.</strong></td>
+</tr>
+<tr>
+<td><code>watermark</code></td>
+<td>bool</td>
+<td>Add &quot;AI Generated&quot; watermark (default: false)</td>
+</tr>
+</tbody>
+</table>
+<h5>Other Models</h5>
+<p>Use the model catalog linked above for the current model list and model-specific compatibility differences.</p>
+<p>For fixed-resolution asynchronous text-to-image models whose catalog entry allows multiple outputs, the bundled script currently clamps <code>n</code> to 1. Use the direct API flow in <a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/image/qianwen-image-generation/references/api-guide.md#text-to-image-models--endpoint--parameters">api-guide.md</a> when multiple outputs are required in one request.</p>
+<p><strong>Full parameter tables</strong>: See <a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/image/qianwen-image-generation/references/api-guide.md#wan25-i2i-preview--general-image-editing">api-guide.md</a> for detailed parameters.</p>
+<h5>Size Reference (wan2.6-image)</h5>
+<ul>
+<li><strong>Editing mode</strong>: <code>1K</code> (default, ~1280×1280) or <code>2K</code> (~2048×2048)</li>
+<li><strong>Interleave mode</strong>: pixel dimensions with total pixels in [768×768, 1280×1280]</li>
+</ul>
+<p><strong>Common aspect ratios</strong>: <code>1280*1280</code> (1:1), <code>960*1280</code> (3:4), <code>1280*960</code> (4:3), <code>720*1280</code> (9:16), <code>1280*720</code> (16:9)</p>
+<h5>Response Fields</h5>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>image_url</code></td>
+<td>URL of generated image (24h validity). <strong>Use this when chaining to another skill.</strong></td>
+</tr>
+<tr>
+<td><code>image_urls</code></td>
+<td>Array of all image URLs (multi-image output, wan2.6-image, qwen-image-edit)</td>
+</tr>
+<tr>
+<td><code>image_count</code></td>
+<td>Number of generated images</td>
+</tr>
+<tr>
+<td><code>local_path</code></td>
+<td>Local file path of the downloaded image. <strong>Use this for user preview or non-API operations.</strong></td>
+</tr>
+<tr>
+<td><code>local_paths</code></td>
+<td>Array of local file paths (multi-image output)</td>
+</tr>
+<tr>
+<td><code>interleaved_content</code></td>
+<td>Array of <code>{type, text/image}</code> objects (interleave mode)</td>
+</tr>
+<tr>
+<td><code>width</code> / <code>height</code></td>
+<td>Image dimensions</td>
+</tr>
+<tr>
+<td><code>seed</code></td>
+<td>Seed used</td>
+</tr>
+</tbody>
+</table>
+<h4>API Details</h4>
+<ul>
+<li><strong>Sync endpoint (wan2.6-t2i, wan2.6-image editing, qwen-image-edit series)</strong>: <code>POST /api/v1/services/aigc/multimodal-generation/generation</code></li>
+<li><strong>Async endpoint (wan2.6 and older t2i)</strong>: <code>POST /api/v1/services/aigc/image-generation/generation</code> with <code>X-DashScope-Async: enable</code></li>
+<li><strong>Async endpoint (wan2.5-i2i-preview)</strong>: <code>POST /api/v1/services/aigc/image2image/image-synthesis</code> with <code>X-DashScope-Async: enable</code></li>
+<li><strong>Async endpoint (qwen-image-plus, qwen-image-max)</strong>: <code>POST /api/v1/services/aigc/text2image/image-synthesis</code> with <code>X-DashScope-Async: enable</code></li>
+<li><strong>wan2.6-t2i resolution</strong>: Total pixels in [1280x1280, 1440x1440], aspect ratio [1:4, 4:1]</li>
+<li><strong>wan2.6-image resolution</strong>: Editing mode [768x768, 2048x2048]; Interleave mode [768x768, 1280x1280]; aspect ratio [1:4, 4:1]</li>
+<li><strong>Input images</strong> (wan2.6-image): JPEG/JPG/PNG/BMP/WEBP, 240–8000px per dimension, ≤10MB</li>
+<li><strong>Local files</strong>: Script auto-uploads to DashScope temp storage (<code>oss://</code> URL, 48h TTL). Pass local paths directly — no manual upload step needed.</li>
+<li><strong>Production</strong>: Default temp storage has <strong>48h TTL</strong> and <strong>100 QPS upload limit</strong> — not suitable for production, high-concurrency, or load-testing. To use your own OSS bucket, set <code>QWEN_TMP_OSS_BUCKET</code> and <code>QWEN_TMP_OSS_REGION</code> in <code>.env</code>, install <code>pip install alibabacloud-oss-v2</code>, and provide credentials via <code>QWEN_TMP_OSS_AK_ID</code> / <code>QWEN_TMP_OSS_AK_SECRET</code> or the standard <code>OSS_ACCESS_KEY_ID</code> / <code>OSS_ACCESS_KEY_SECRET</code>. Use a RAM user with least-privilege (<code>oss:PutObject</code> + <code>oss:GetObject</code> on target bucket only). If qianwen-ops-auth is installed, see its <code>references/custom-oss.md</code> for the full setup guide.</li>
+<li><strong>Interleaved sync</strong>: Requires streaming (<code>X-DashScope-Sse: enable</code> + <code>stream: true</code>); use async mode via this script instead</li>
+</ul>
+<h4>Cross-Skill Chaining</h4>
+<p>When using generated images as input for another skill (e.g., video-gen i2v, vision analyze):</p>
+<ul>
+<li><strong>Pass <code>image_url</code> directly</strong> — do NOT download and re-pass as local path</li>
+<li>All downstream scripts detect URL prefixes (<code>https://</code>, <code>oss://</code>) and pass them through without re-upload</li>
+<li>Use <code>local_path</code> only for user preview or non-API operations (e.g., opening in editor)</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Feed to another skill (video-gen, vision, image-edit)</td>
+<td><code>image_url</code> (URL)</td>
+</tr>
+<tr>
+<td>Show to user / open in editor</td>
+<td><code>local_path</code> (local file)</td>
+</tr>
+</tbody>
+</table>
+<h4>Error Handling</h4>
+<table>
+<thead>
+<tr>
+<th>HTTP</th>
+<th>Meaning</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>401</td>
+<td>Invalid or missing API key</td>
+<td>Run <strong>qianwen-ops-auth</strong> if available; else prompt user to set key (non-plaintext check only)</td>
+</tr>
+<tr>
+<td>400</td>
+<td>Bad request (invalid prompt, size)</td>
+<td>Verify parameters and constraints</td>
+</tr>
+<tr>
+<td>400 <code>The product is not activated</code> / <code>Model not subscribed</code></td>
+<td>Third-party model not enabled on account</td>
+<td>Visit <a href="https://www.qianwenai.com/models">Model Market</a>, find the model, click &quot;Enable&quot; / &quot;开通&quot;</td>
+</tr>
+<tr>
+<td>429</td>
+<td>Rate limited</td>
+<td>Retry with exponential backoff</td>
+</tr>
+<tr>
+<td>5xx</td>
+<td>Server error</td>
+<td>Retry with exponential backoff</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Usage &amp; billing</strong>: Use the <strong>qianwen-usage</strong> skill to check usage, free tier quota, and billing directly. Alternatively, the user can visit the QianWen console:
+<a href="https://platform.qianwenai.com/home/analytics">Usage Analytics</a> |
+<a href="https://platform.qianwenai.com/home/billing/pay-as-you-go">Pay-as-you-go Billing</a> |
+<a href="https://platform.qianwenai.com/home/billing/subscription/token-plan">Token Plan Subscription</a></p>
+<p><strong>NEVER fabricate, guess, or construct usage/billing/console URLs.</strong> Only provide the exact links listed in this skill. If a URL is not listed here, do not invent one.</p>
+</blockquote>
+<h4>Output Location</h4>
+<p>Prefer the <strong>current working directory</strong>. Default subdirectory: <code>./output/qianwen-image-generation/</code>.</p>
+<p><strong>Write prohibition</strong>: NEVER write output files into this skill's installation directory or any <code>skills/</code> hierarchy. All generated content must go to <code>output/</code> under the current working directory or a user-specified path.</p>
+<h4>Update Check (MANDATORY Post-Execution)</h4>
+<p>After script execution, check stderr for action signals. The script automatically detects update status and emits structured signals. You MUST act on them. This section also applies when the user explicitly asks to check for updates.</p>
+<h5>Signal: <code>[ACTION_REQUIRED] qianwen-update-check skill is not installed</code></h5>
+<p>When stderr contains this signal, you MUST present the following options to the user and <strong>wait for their response before proceeding</strong>. Do NOT silently skip this.</p>
+<blockquote>
+<p>The update-check skill is not installed. It keeps you informed about new QianWen-AI/qianwen-ai features and bug fixes.</p>
+<ol>
+<li><strong>Install now</strong> — I'll run the install command for you</li>
+<li><strong>Skip for now</strong> — do nothing this time</li>
+<li><strong>Never remind me</strong> — permanently suppress this prompt</li>
+</ol>
+</blockquote>
+<p>After the user responds:</p>
+<ul>
+<li>User chooses <strong>1</strong> → run: <code>npx skills add QianWen-AI/qianwen-ai --skill qianwen-update-check -y</code>, then run: <code>python3 &lt;this-skill-scripts-dir&gt;/gossamer.py --dismiss</code></li>
+<li>User chooses <strong>2</strong> → run: <code>python3 &lt;this-skill-scripts-dir&gt;/gossamer.py --dismiss</code>, then continue normally</li>
+<li>User chooses <strong>3</strong> → run: <code>python3 &lt;this-skill-scripts-dir&gt;/gossamer.py --never-install</code>, then continue normally</li>
+</ul>
+<h5>Signal: <code>[UPDATE_AVAILABLE]</code></h5>
+<p>When stderr contains this signal, you MUST append a brief update notice to your response, including the version info and the update command shown in the stderr output.</p>
+<h5>No signal in stderr</h5>
+<p>If stderr contains neither <code>[ACTION_REQUIRED]</code> nor <code>[UPDATE_AVAILABLE]</code>, no action is needed — the skill is installed and up to date (or cached within 24h).</p>
+<h5>Explicit user request</h5>
+<p>When the user explicitly asks to check for updates (e.g. &quot;check for updates&quot;, &quot;check version&quot;):</p>
+<ol>
+<li>Look for <code>qianwen-update-check/SKILL.md</code> in sibling skill directories.</li>
+<li>If found — run: <code>python3 &lt;qianwen-update-check-dir&gt;/scripts/check_update.py --print-response</code> and report the result.</li>
+<li>If not found — present the install options above.</li>
+</ol>
+<h4>References</h4>
+<ul>
+<li><a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/image/qianwen-image-generation/references/execution-guide.md">execution-guide.md</a> — Fallback paths (curl sync/async, code generation, autonomous)</li>
+<li><a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/image/qianwen-image-generation/references/api-guide.md">api-guide.md</a> — API supplementary guide</li>
+<li><a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/image/qianwen-image-generation/references/sources.md">sources.md</a> — Official documentation URLs</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

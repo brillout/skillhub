@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ai-behavior-trees-utility-ai · SkillHub</title>
+    <meta name="description" content="Use it when: an enemy or NPC needs decisions beyond a simple state machine, and you want your own reusable decision code rather than an engine&#039;s built-in assets. Behavior tree means: a tree of conditions and actions checked each decision step, each node reporting success, failure or still running to its parent. Utility AI means: scoring every possible action from 0 to 1 through response curves, then picking the best, so trade-offs such as distance against health are graded. You get: plain C# runtime code: a blackboard (per-agent shared memory), composites, decorators, curves and an evaluator, plus guard, villager and hybrid agent templates. Unlike: the repo&#039;s game-ai, which helps choose between state machines, behavior trees, steering and pathfinding, or unreal-behavior-trees, for Unreal&#039;s own tree assets. Code examples: C# using Unity&#039;s Vector2 member names, with the Godot C# equivalents named." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=gamedev-skills%2Fawesome-gamedev-agent-skills">gamedev-skills/awesome-gamedev-agent-skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/bundle/gamedev-skills/awesome-gamedev-agent-skills/">Gamedev Agent Skills</a></p>
+      <h1>ai-behavior-trees-utility-ai</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>an enemy or NPC needs decisions beyond a simple state machine, and you want your own reusable decision code rather than an engine&#39;s built-in assets</dd></div><div><dt>Behavior tree means</dt><dd>a tree of conditions and actions checked each decision step, each node reporting success, failure or still running to its parent</dd></div><div><dt>Utility AI means</dt><dd>scoring every possible action from 0 to 1 through response curves, then picking the best, so trade-offs such as distance against health are graded</dd></div><div><dt>You get</dt><dd>plain C# runtime code: a blackboard (per-agent shared memory), composites, decorators, curves and an evaluator, plus guard, villager and hybrid agent templates</dd></div><div><dt>Unlike</dt><dd>the repo&#39;s game-ai, which helps choose between state machines, behavior trees, steering and pathfinding, or unreal-behavior-trees, for Unreal&#39;s own tree assets</dd></div><div><dt>Code examples</dt><dd>C# using Unity&#39;s Vector2 member names, with the Godot C# equivalents named</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 4 of 27 in the <a href="/skillhub/bundle/gamedev-skills/awesome-gamedev-agent-skills/">Gamedev Agent Skills</a> bundle · Before it: <a href="/skillhub/skill/gamedev-skills/awesome-gamedev-agent-skills/skills/disciplines/game-ai/">game-ai</a> · After it: <a href="/skillhub/skill/gamedev-skills/awesome-gamedev-agent-skills/skills/disciplines/procedural-gen/">procedural-gen</a></p>
+    
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>The implementation companion to the repo&#39;s game-ai skill: game-ai picks a decision model, this one builds it. Its workflow takes a behavior tree for structured, prioritized, interruptible behavior, utility scoring for continuous choices such as targeting, or both. It designs the blackboard first, so leaves share it and never reference each other; writes conditions that answer at once and actions that return Running across frames; and composes them with Selector (first child that doesn&#39;t fail wins), Sequence (stops at the first that doesn&#39;t succeed), Parallel and decorators such as Inverter, Cooldown and Repeat. For utility, each fact passes through a curve normalized to 0..1; the results combine as a weighted sum, or as a product with a compensation factor so each extra consideration doesn&#39;t drag the score toward zero; hysteresis keeps agents from flip-flopping on near-ties. It ticks once per decision step and has you draw the active path and scores on screen while tuning. Its pitfalls cover restarting a running action every frame, guard conditions that stop being checked once an action runs, cooldowns cleared when a branch is abandoned, and allocations every tick. Four reference files hold the full C# code, the templates and best practices.</p>
+      <p class="muted">Summarizes <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/tree/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/ai-behavior-trees-utility-ai">the skill at 19d93f9</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/gamedev-skills/awesome-gamedev-agent-skills --skill ai-behavior-trees-utility-ai</code><button type="button" class="copy" data-copy="npx skills add https://github.com/gamedev-skills/awesome-gamedev-agent-skills --skill ai-behavior-trees-utility-ai">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/gamedev-skills/awesome-gamedev-agent-skills/ai-behavior-trees-utility-ai">skills.sh page</a> · <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/tree/HEAD/skills/disciplines/ai-behavior-trees-utility-ai">Source on GitHub</a> · <a href="/skillhub/?repo=gamedev-skills%2Fawesome-gamedev-agent-skills">All skills from gamedev-skills/awesome-gamedev-agent-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>7,700 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>7,309 <span class="muted">gamedev-skills/awesome-gamedev-agent-skills</span></dd></div><div><dt>First seen</dt><dd>Aug 24, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">1.9K</div>
+      <div class="stat-delta">+446% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 343; week to Sep 26: 337; week to Oct 3: 398; week to Oct 10: 400; week to Oct 17: 485; week to Oct 24: 668; week to Oct 31: 1,507; week to Nov 7: 1,874. Use the left and right arrow keys to read each week."
+        data-values="343,337,398,400,485,668,1507,1874" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,41.9 38.6,42.1 71.1,40.7 103.7,40.6 136.3,38.6 168.9,34.3 201.4,14.6 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>343</td></tr><tr><td>Sep 26</td><td>337</td></tr><tr><td>Oct 3</td><td>398</td></tr><tr><td>Oct 10</td><td>400</td></tr><tr><td>Oct 17</td><td>485</td></tr><tr><td>Oct 24</td><td>668</td></tr><tr><td>Oct 31</td><td>1,507</td></tr><tr><td>Nov 7</td><td>1,874</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:games" data-facet="category" title="Make games: design, genres, game feel and game-jam workflows, whatever the engine." href="/skillhub/?tag=category%3Agames">category:games</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Make games: design, genres, game feel and game-jam workflows, whatever the engine.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="architecture" data-facet="topic" href="/skillhub/?tag=architecture">architecture</a><a class="tag" data-tag="implementation" data-facet="topic" href="/skillhub/?tag=implementation">implementation</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:csharp" data-facet="stack" href="/skillhub/?tag=stack%3Acsharp">stack:csharp</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/ai-behavior-trees-utility-ai/SKILL.md">gamedev-skills/awesome-gamedev-agent-skills at 19d93f9</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: ai-behavior-trees-utility-ai
+description: &#62;
+  Build a production behavior-tree runtime (Blackboard, action/condition leaves,
+  sequence/selector/parallel composites, decorators) and a Utility AI system (response
+  curves — linear, exponential, sigmoid, quadratic — considerations, and action evaluators),
+  plus hybrid BT-drives-Utility agents. Use when implementing a reusable behavior-tree or
+  utility-based decision system, or tuning enemy/NPC decisions beyond a simple FSM, or when
+  the user mentions behavior tree, blackboard, decorator, selector, sequence, tick status,
+  utility AI, response/scoring curve, or consideration. For choosing between FSM/BT/steering
+  or for pathfinding, use game-ai; for Unreal&#39;s BehaviorTree/Blackboard assets, use
+  unreal-behavior-trees.</code></pre></details>
+        <div class="markdown"><h3>Behavior Trees &amp; Utility AI</h3>
+<p>Two complementary ways to structure NPC decision-making, plus how to combine them. A
+<strong>behavior tree (BT)</strong> expresses <em>structured, prioritized, reactive</em> logic as a tree that is
+&quot;ticked&quot; each step. <strong>Utility AI</strong> answers <em>&quot;how much do I want each option right now?&quot;</em> by
+scoring actions with normalized curves and picking the best. Ship believable agents by using a
+BT for structure and Utility AI where graded trade-offs matter.</p>
+<p>This skill is the <strong>implementation</strong> companion to <code>game-ai</code> (which helps you <em>choose</em> between
+FSM / BT / steering / pathfinding). Read <code>game-ai</code> to pick a model; read this to build the
+runtime.</p>
+<h4>When to use</h4>
+<ul>
+<li>Use to build a <strong>reusable BT runtime</strong>: a <code>Blackboard</code>, <code>Node</code> base, action/condition leaves,
+<code>Sequence</code>/<code>Selector</code>/<code>Parallel</code> composites, and decorators (Inverter, Cooldown, Repeat).</li>
+<li>Use to build a <strong>Utility AI</strong> decider: response curves, considerations, and an evaluator that
+scores and selects actions (max, softmax, or weighted-random for variety).</li>
+<li>Use to build <strong>hybrid AI</strong> — a BT whose leaf delegates the &quot;which attack / which target&quot;
+choice to a utility evaluator.</li>
+</ul>
+<p><strong>When <em>not</em> to use:</strong> to <em>choose</em> between FSM, BT, steering, or pathfinding, and for A*/navmesh
+routing, use <code>game-ai</code>. For Unreal's asset-based <code>BehaviorTree</code>/<code>Blackboard</code>, <code>BTTask</code>/<code>BTService</code>
+and <code>AIController</code>, use <code>unreal-behavior-trees</code>. For the navmesh agent that <em>moves</em> the NPC, use
+<code>unity-navmesh</code> or the engine's navigation node.</p>
+<h4>Core workflow</h4>
+<ol>
+<li><strong>Pick the model.</strong> Structured, prioritized, interruptible behavior → <strong>BT</strong>. Continuous
+&quot;score every option&quot; decisions (targeting, needs, item choice) → <strong>Utility</strong>. Both → <strong>hybrid</strong>.</li>
+<li><strong>Design the Blackboard first.</strong> One typed key/value store per agent is the shared memory that
+decouples nodes; leaves read/write it and never hold references to each other.</li>
+<li><strong>Write leaves.</strong> <em>Conditions</em> return <code>Success</code>/<code>Failure</code> immediately; <em>actions</em> return
+<code>Running</code> across frames until they finish. Keep leaves small and side-effect-explicit.</li>
+<li><strong>Compose.</strong> <code>Selector</code> = OR/fallback (first non-failure wins); <code>Sequence</code> = AND (stop at first
+non-success); <code>Parallel</code> for concurrent branches. Wrap with decorators for policy (invert,
+cooldown, repeat, force-success).</li>
+<li><strong>For Utility:</strong> enumerate considerations, map each raw fact through a <strong>normalized 0..1 curve</strong>,
+combine (weighted product with compensation, or weighted sum), then select the max — add
+hysteresis so agents don't flip-flop on ties.</li>
+<li><strong>Tick deliberately.</strong> Tick the tree/evaluator once per <em>decision step</em> (often slower than
+render). Preserve <code>Running</code> state between ticks; verify by drawing the active path and the
+per-action scores on screen while tuning.</li>
+</ol>
+<h4>Architecture at a glance</h4>
+<p>A behavior tree evaluates top-down, left-to-right; each node returns a status up to its parent:</p>
+<pre><code class="language-mermaid">flowchart TD
+    Root[&quot;Selector (root)&quot;] --&gt; Combat[&quot;Sequence: Combat&quot;]
+    Root --&gt; Patrol[&quot;Action: Patrol&quot;]
+    Combat --&gt; See[&quot;Condition: CanSeePlayer?&quot;]
+    Combat --&gt; InRange{&quot;Selector: Reach&quot;}
+    Combat --&gt; Attack[&quot;Action: Attack (Running)&quot;]
+    InRange --&gt; Close[&quot;Condition: InAttackRange?&quot;]
+    InRange --&gt; MoveTo[&quot;Action: MoveToPlayer (Running)&quot;]
+</code></pre>
+<p>Utility AI is a scoring pipeline — every candidate action is scored, then one is selected:</p>
+<pre><code class="language-text">facts (distance, health, ammo…)
+      │  each fact → a normalized 0..1 response curve (consideration)
+      ▼
+score(action) = weight · combine(consideration_1 … consideration_n)   # product+compensation or sum
+      ▼
+select: argmax  ·  or softmax / weighted-random for variety  ·  + hysteresis to avoid jitter
+</code></pre>
+<p><strong>Status is a three-value enum</strong> shared by every node — this is the contract that makes the tree
+composable:</p>
+<pre><code class="language-csharp">public enum Status { Success, Failure, Running }
+
+public abstract class Node
+{
+    public abstract Status Tick(Blackboard bb, float dt);
+    public virtual void Reset() { }   // called when a parent abandons this subtree
+}
+</code></pre>
+<pre><code class="language-csharp">// Selector = fallback/OR: return the first child that is not Failure.
+// `Current` (from Composite) remembers a Running child so the next tick resumes there.
+public sealed class Selector : Composite
+{
+    public override Status Tick(Blackboard bb, float dt)
+    {
+        for (; Current &lt; Children.Count; Current++)
+        {
+            var s = Children[Current].Tick(bb, dt);
+            if (s == Status.Running) return Status.Running;            // resume here next tick
+            if (s == Status.Success) { Current = 0; return Status.Success; }
+        }
+        Current = 0;
+        return Status.Failure;                                         // every child failed
+    }
+}
+</code></pre>
+<p>The reciprocal <code>Sequence</code> (AND — stop at first non-<code>Success</code>), the reactive variants that let a
+higher-priority branch interrupt a running one, <code>Parallel</code>, the <code>Blackboard</code>, the leaf base
+classes, and every decorator are in <code>references/behavior-tree-core.md</code>. The leaves use Unity's
+<code>Vector2</code> member names (<code>magnitude</code>, <code>normalized</code>, <code>sqrMagnitude</code>); in Godot C# use <code>Length()</code>,
+<code>Normalized()</code> and <code>LengthSquared()</code>.</p>
+<h4>Utility scoring in one snippet</h4>
+<pre><code class="language-csharp">// A consideration maps one raw fact to 0..1 through a response curve.
+float Score(Blackboard bb)
+{
+    float distance01 = Curves.InverseLerp01(bb.Get&lt;float&gt;(&quot;distToPlayer&quot;), 20f, 2f); // near = 1
+    float health01   = Curves.Sigmoid(bb.Get&lt;float&gt;(&quot;health01&quot;), k: 8f, mid: 0.4f);  // hurt = low
+    // A 0 in any factor still vetoes the action; compensation stops each extra
+    // consideration from dragging every score toward 0. No allocation per call.
+    return Curves.Compensate(distance01 * health01, count: 2);
+}
+</code></pre>
+<p>The full curve library (linear, quadratic, exponential, logistic/sigmoid, smoothstep), the
+<code>Consideration</code>/<code>UtilityAction</code> types, and the <code>UtilityEvaluator</code> selection strategies are in
+<code>references/utility-ai-system.md</code>.</p>
+<h4>Pitfalls</h4>
+<ul>
+<li><strong>Re-ticking a <code>Running</code> action from the root every frame restarts it.</strong> Return <code>Running</code> and
+resume where you left off; only <code>Reset()</code> a subtree when a parent actually abandons it.</li>
+<li><strong>Deep trees re-evaluated wholesale each tick</strong> waste time and cause thrash. Prefer shallow
+trees and <em>conditional aborts</em> (a higher-priority condition can interrupt a lower branch).</li>
+<li><strong>A guard condition stops being checked once the action after it is <code>Running</code>.</strong> A memory
+<code>Sequence</code> resumes at the running child, so <code>[CanSeePlayer?, Chase]</code> keeps chasing after sight
+is lost. Use a <code>ReactiveSequence</code> (re-checks from the first child each tick) or have the action
+itself fail when its blackboard input disappears.</li>
+<li><strong>A cooldown that clears on <code>Reset()</code></strong> lets an agent bypass it by flickering between branches.
+Keep the ready-time when the branch is aborted.</li>
+<li><strong>Un-normalized considerations.</strong> If one curve outputs 0..100 and another 0..1, the big one
+dominates. Every consideration must return 0..1.</li>
+<li><strong>Utility jitter on near-ties.</strong> Add hysteresis: give the currently-running action a small bonus
+so the agent commits instead of oscillating.</li>
+<li><strong>Allocating nodes, closures, or arrays every tick</strong> creates GC spikes. Build the tree once at
+spawn; keep per-tick work allocation-free.</li>
+</ul>
+<h4>References</h4>
+<ul>
+<li><code>references/behavior-tree-core.md</code> — Blackboard, <code>Node</code>/leaf base classes, action &amp; condition
+leaves, <code>Sequence</code>/<code>Selector</code>/<code>Parallel</code>, and the decorator library (full C#).</li>
+<li><code>references/utility-ai-system.md</code> — response-curve library, <code>Consideration</code>, <code>UtilityAction</code>,
+and the <code>UtilityEvaluator</code> (argmax, softmax, weighted-random, hysteresis).</li>
+<li><code>references/practical-examples.md</code> — a guard Patrol→Combat BT, a villager needs-based Utility
+AI, and a hybrid agent, as drop-in templates.</li>
+<li><code>references/best-practices-and-pitfalls.md</code> — memory management, profiling, avoiding deep trees,
+event-driven aborts, and combining Utility AI with BTs (hybrid architecture).</li>
+</ul>
+<h4>Related skills</h4>
+<ul>
+<li><code>game-ai</code> — choose between FSM / BT / steering; A* and navmesh pathfinding.</li>
+<li><code>unreal-behavior-trees</code> — Unreal's asset-based BT/Blackboard, tasks, decorators, services.</li>
+<li><code>unity-navmesh</code> — the <code>NavMeshAgent</code> that carries out &quot;move to&quot; intents.</li>
+<li><code>physics-tuning</code> — agent radius, movement, and collision response for the motion layer.</li>
+<li><code>tower-defense</code>, <code>fps-shooter</code>, <code>rpg</code> — genres that compose this decision layer.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

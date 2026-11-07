@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dubbing · SkillHub</title>
+    <meta name="description" content="Use it when: you want a video, podcast or recording in another language, voiced like its original speakers. It does: creates an ElevenLabs dubbing project from a file or URL, waits for the transcript, adds one target language per dub and downloads each when it&#039;s done. You get: a lossless audio file per language, from a download link that expires after about an hour. Also: edits the source transcript or single translations, then regenerates the dub; enterprise workspaces only. Works from: Python, JavaScript or the elevenlabs CLI, on the current Dubbing Projects API, never the legacy v1 one. Needs: an ElevenLabs API key." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=elevenlabs%2Fskills">elevenlabs/skills</a></p>
+      <h1>dubbing</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want a video, podcast or recording in another language, voiced like its original speakers</dd></div><div><dt>It does</dt><dd>creates an ElevenLabs dubbing project from a file or URL, waits for the transcript, adds one target language per dub and downloads each when it&#39;s done</dd></div><div><dt>You get</dt><dd>a lossless audio file per language, from a download link that expires after about an hour</dd></div><div><dt>Also</dt><dd>edits the source transcript or single translations, then regenerates the dub; enterprise workspaces only</dd></div><div><dt>Works from</dt><dd>Python, JavaScript or the elevenlabs CLI, on the current Dubbing Projects API, never the legacy v1 one</dd></div><div><dt>Needs</dt><dd>an ElevenLabs API key</dd></div></dl></section>
+      
+      <p class="note">Needs an ElevenLabs API key in ELEVENLABS_API_KEY; without one, it first runs the ElevenLabs CLI&#39;s onboarding, which signs you in and stores a key for the project. It uploads your media to ElevenLabs, and editing transcripts or regenerating dubs needs an enterprise workspace.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>ElevenLabs&#39; own reference for its Dubbing Projects API, on the dubbing_v2 model. A project holds one source, a file up to 3 GiB or a public URL, and its transcript: editable segments of text, speaker and timing that every language is translated from. The order it recommends is to finalize that transcript before adding languages, because editing it later marks finished languages stale and regenerating them is charged. Each language moves from queued to processing to completed, and with several the agent tracks them together. Options include the source language or auto-detection, up to 1,000 key terms such as brand names to guide transcription and translation, and how strongly dubbed voices clone the originals. It explains the project and language states, the revision counters that show when a dub is out of date, and errors such as a 409 while a language is still generating. As with the other ElevenLabs skills, a missing key sends the agent to the CLI&#39;s onboarding first.</p>
+      <p class="muted">Summarizes <a href="https://github.com/elevenlabs/skills/tree/9763c39a9d7add478b2f2d8229f0caadf5414f5f/dubbing">the skill at 9763c39</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/elevenlabs/skills --skill dubbing</code><button type="button" class="copy" data-copy="npx skills add https://github.com/elevenlabs/skills --skill dubbing">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/elevenlabs/skills/dubbing">skills.sh page</a> · <a href="https://github.com/elevenlabs/skills/tree/HEAD/dubbing">Source on GitHub</a> · <a href="/skillhub/?repo=elevenlabs%2Fskills">All skills from elevenlabs/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,600 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>536 <span class="muted">elevenlabs/skills</span></dd></div><div><dt>First seen</dt><dd>Aug 6, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">809</div>
+      <div class="stat-delta">+260% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 225; week to Sep 26: 287; week to Oct 3: 337; week to Oct 10: 516; week to Oct 17: 572; week to Oct 24: 584; week to Oct 31: 760; week to Nov 7: 809. Use the left and right arrow keys to read each week."
+        data-values="225,287,337,516,572,584,760,809" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,37.8 38.6,34.4 71.1,31.7 103.7,21.9 136.3,18.9 168.9,18.2 201.4,8.7 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>225</td></tr><tr><td>Sep 26</td><td>287</td></tr><tr><td>Oct 3</td><td>337</td></tr><tr><td>Oct 10</td><td>516</td></tr><tr><td>Oct 17</td><td>572</td></tr><tr><td>Oct 24</td><td>584</td></tr><tr><td>Oct 31</td><td>760</td></tr><tr><td>Nov 7</td><td>809</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:media" data-facet="category" title="Generate and edit video, images and audio." href="/skillhub/?tag=category%3Amedia">category:media</a></div>
+          <p class="tag-meaning">Generate and edit video, images and audio.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/skillhub/?tag=type%3Atool">type:tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:remote" data-facet="effect" title="Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service." href="/skillhub/?tag=effect%3Aremote">effect:remote</a></div>
+          <p class="tag-meaning">Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/skillhub/?tag=needs%3Aaccount">needs:account</a></div>
+          <p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="video" data-facet="topic" href="/skillhub/?tag=video">video</a><a class="tag" data-tag="audio" data-facet="topic" href="/skillhub/?tag=audio">audio</a><a class="tag" data-tag="ai-generation" data-facet="topic" href="/skillhub/?tag=ai-generation">ai-generation</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:elevenlabs" data-facet="stack" href="/skillhub/?tag=stack%3Aelevenlabs">stack:elevenlabs</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/elevenlabs/skills/blob/9763c39a9d7add478b2f2d8229f0caadf5414f5f/dubbing/SKILL.md">elevenlabs/skills at 9763c39</a>. Checked daily, last changed Nov 7, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: dubbing
+description: Dub audio and video into other languages using the ElevenLabs Dubbing API (dubbing_v2), preserving the original speakers&#39; voices. Use when translating videos, podcasts, or recordings into other languages, localizing media content, reviewing or correcting dubbing transcripts and translations, or regenerating a dub after edits.
+license: MIT
+compatibility: Requires internet access and an ElevenLabs API key (ELEVENLABS_API_KEY).
+metadata: {&#34;openclaw&#34;: {&#34;requires&#34;: {&#34;env&#34;: [&#34;ELEVENLABS_API_KEY&#34;]}, &#34;primaryEnv&#34;: &#34;ELEVENLABS_API_KEY&#34;}}</code></pre></details>
+        <div class="markdown"><h3>ElevenLabs Dubbing</h3>
+<p>Dub audio or video into other languages while preserving the original speakers' voices. Create a project from a file or URL, review and edit the source transcript, add one or more target languages, refine translations per segment, and regenerate outputs.</p>
+<blockquote>
+<p><strong>Important:</strong> Use the Dubbing Projects API — <code>elevenlabs.dubbing.project.*</code> in the SDKs, or the <code>/v1/dubbing/project</code> REST endpoints. Do <strong>not</strong> use the legacy v1 dubbing surface (<code>client.dubbing.create()</code>, <code>client.dubbing.get()</code>, <code>client.dubbing.audio.get()</code>, or bare <code>/v1/dubbing</code> routes) — that is the older dubbing API, now under Legacy in the API reference.</p>
+</blockquote>
+<blockquote>
+<p><strong>Setup, before writing any code:</strong> if <code>ELEVENLABS_API_KEY</code> isn't set for this project, run <code>npx -y @elevenlabs/cli@latest onboard init</code> from the app's folder first and follow what it prints: it signs the user in and stores a key for the project, so nobody copies one by hand. Otherwise see the <a href="https://github.com/elevenlabs/skills/blob/9763c39a9d7add478b2f2d8229f0caadf5414f5f/dubbing/references/installation.md">Installation Guide</a>. The <code>elevenlabs</code> CLI and the SDKs read <code>ELEVENLABS_API_KEY</code> automatically; REST base URL is <code>https://api.elevenlabs.io</code> with your API key in the <code>xi-api-key</code> header.</p>
+</blockquote>
+<h4>Concepts</h4>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Project</strong></td>
+<td>One source of media (file or URL) plus its source transcript. Prepared (transcribed) once, then rests in <code>ready</code> while you add languages.</td>
+</tr>
+<tr>
+<td><strong>Source transcript</strong></td>
+<td>Editable segments (text, speaker, timing) transcribed from the source. The single source of truth every language is translated from.</td>
+</tr>
+<tr>
+<td><strong>Language (target)</strong></td>
+<td>One dubbed output language. Each has its own transcript (source segments + a translation per segment) and its own dubbed audio output.</td>
+</tr>
+<tr>
+<td><strong>Revisions</strong></td>
+<td>Independent monotonic counters. The project's <code>revision</code> bumps on source-transcript edits; a language's <code>revision</code> bumps on translation edits or source edits that affect it. A language's <code>output_revision</code> is the revision its current audio was generated from — when it's behind <code>revision</code>, the output is out of date.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommended order of operations:</strong> finalize the source transcript <strong>before</strong> adding any languages. Translations are produced from the source, so correcting the source first means every language starts from the right text — editing the source after a language completes marks it <code>stale</code> and requires a (charged) regeneration.</p>
+<blockquote>
+<p><strong>Enterprise:</strong> Transcript editing and regeneration are available to enterprise workspaces only. Creating projects, adding languages, and downloading dubs work on all plans.</p>
+</blockquote>
+<h4>Workflow</h4>
+<ol>
+<li><strong>Create</strong> the project from a file or URL → <code>queued</code></li>
+<li><strong>Poll</strong> the project until <code>ready</code></li>
+<li><strong>Review and finalize the source transcript</strong> (edit/add/delete segments)</li>
+<li><strong>Add</strong> one language per target → <code>queued</code> → <code>processing</code> → <code>completed</code></li>
+<li><strong>Download</strong> each language's <code>outputs.lossless_audio</code> when <code>completed</code></li>
+<li><strong>Refine</strong> translations per segment if needed → the language goes <code>stale</code></li>
+<li><strong>Regenerate</strong> the language → <code>completed</code> again with fresh output</li>
+</ol>
+<h4>Quick Start (Python)</h4>
+<pre><code class="language-python">import os
+import time
+import requests
+from elevenlabs.client import ElevenLabs
+
+elevenlabs = ElevenLabs(api_key=os.getenv(&quot;ELEVENLABS_API_KEY&quot;))
+
+# 1. Create a project from a local file (or pass source_url=... instead of file)
+with open(&quot;promo.mp4&quot;, &quot;rb&quot;) as f:
+    project = elevenlabs.dubbing.project.create(
+        file=f,
+        source_language=&quot;en&quot;,
+        reference=&quot;Q3 marketing video&quot;,
+    )
+
+# 2. Wait for the source media to be transcribed
+while True:
+    project = elevenlabs.dubbing.project.get(project.project_id)
+    if project.status == &quot;ready&quot;:
+        break
+    if project.status == &quot;failed&quot;:
+        raise RuntimeError(&quot;Project preparation failed&quot;)
+    time.sleep(5)
+
+# 3. Add a Spanish language target
+language = elevenlabs.dubbing.project.language.create(
+    project.project_id,
+    target_language=&quot;es&quot;,
+)
+
+# 4. Wait for the dub to finish generating
+while True:
+    language = elevenlabs.dubbing.project.language.get(
+        project.project_id, language.language_id
+    )
+    if language.status == &quot;completed&quot;:
+        break
+    if language.status == &quot;failed&quot;:
+        raise RuntimeError(&quot;Dub generation failed&quot;)
+    time.sleep(5)
+
+# 5. Download the dubbed audio (signed URL, valid ~1 hour — re-fetch the language for a fresh one)
+audio = requests.get(language.outputs.lossless_audio)
+with open(&quot;promo_es.wav&quot;, &quot;wb&quot;) as f:
+    f.write(audio.content)
+</code></pre>
+<h4>Quick Start (JavaScript)</h4>
+<pre><code class="language-typescript">import { ElevenLabsClient } from &quot;@elevenlabs/elevenlabs-js&quot;;
+import { writeFile } from &quot;fs/promises&quot;;
+
+const elevenlabs = new ElevenLabsClient();
+
+// 1. Create a project (sourceUrl shown; file upload is also supported)
+let project = await elevenlabs.dubbing.project.create({
+  sourceUrl: &quot;https://example.com/promo.mp4&quot;,
+  sourceLanguage: &quot;en&quot;,
+  reference: &quot;Q3 marketing video&quot;,
+});
+
+// 2. Wait for the source media to be transcribed
+while (true) {
+  project = await elevenlabs.dubbing.project.get(project.projectId);
+  if (project.status === &quot;ready&quot;) break;
+  if (project.status === &quot;failed&quot;) throw new Error(&quot;Project preparation failed&quot;);
+  await new Promise((resolve) =&gt; setTimeout(resolve, 5000));
+}
+
+// 3. Add a Spanish language target
+let language = await elevenlabs.dubbing.project.language.create(project.projectId, {
+  targetLanguage: &quot;es&quot;,
+});
+
+// 4. Wait for the dub to finish generating
+while (true) {
+  language = await elevenlabs.dubbing.project.language.get(project.projectId, language.languageId);
+  if (language.status === &quot;completed&quot;) break;
+  if (language.status === &quot;failed&quot;) throw new Error(&quot;Dub generation failed&quot;);
+  await new Promise((resolve) =&gt; setTimeout(resolve, 5000));
+}
+
+// 5. Download the dubbed audio from the signed URL
+const response = await fetch(language.outputs!.losslessAudio!);
+await writeFile(&quot;promo_es.wav&quot;, Buffer.from(await response.arrayBuffer()));
+</code></pre>
+<h4>Quick Start (CLI)</h4>
+<p>The <code>elevenlabs</code> CLI reads <code>ELEVENLABS_API_KEY</code> from the environment automatically.</p>
+<pre><code class="language-bash"># 1. Create a project (use --source-url &quot;https://...&quot; instead of --file to dub from a URL)
+elevenlabs dubbing project create --file promo.mp4 --source-language en
+# → {&quot;project_id&quot;: &quot;proj_...&quot;, &quot;status&quot;: &quot;queued&quot;, ...}
+
+# 2. Poll until status is &quot;ready&quot;
+elevenlabs dubbing project get --project-id proj_...
+
+# 3. Add a target language
+elevenlabs dubbing project language create --project-id proj_... --target-language es
+
+# 4. Poll the language until &quot;completed&quot;, then download outputs.lossless_audio
+elevenlabs dubbing project language get --project-id proj_... --language-id lang_...
+</code></pre>
+<h4>Create Options</h4>
+<p><code>elevenlabs dubbing project create</code> (REST: <code>POST /v1/dubbing/project</code>, <code>multipart/form-data</code>) takes <strong>either</strong> <code>file</code> <strong>or</strong> <code>source_url</code> (not both):</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Required</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>file</code></td>
+<td>one of file/source_url</td>
+<td>Source media to dub (audio or video), up to 3 GiB</td>
+</tr>
+<tr>
+<td><code>source_url</code></td>
+<td>one of file/source_url</td>
+<td>Public URL to fetch the source media from</td>
+</tr>
+<tr>
+<td><code>source_language</code></td>
+<td>no</td>
+<td>ISO 639 code (e.g. <code>en</code>). Omit to auto-detect — the detected language is reported on the source transcript's <code>language</code> field</td>
+</tr>
+<tr>
+<td><code>reference</code></td>
+<td>no</td>
+<td>Free-form label to identify the project on your end (max 500 chars)</td>
+</tr>
+<tr>
+<td><code>model_id</code></td>
+<td>no</td>
+<td><code>dubbing_v2</code> (default)</td>
+</tr>
+<tr>
+<td><code>target_language</code></td>
+<td>no</td>
+<td>Optionally queue the first language target at creation; add more with <code>language.create</code></td>
+</tr>
+<tr>
+<td><code>keyterms</code></td>
+<td>no</td>
+<td>Terms to bias transcription/translation toward (product/brand names). Up to 1000 terms; each at most 50 chars and 5 words; <code>&lt;&gt;{}[]\</code> not allowed. Repeat the field once per term in multipart</td>
+</tr>
+</tbody>
+</table>
+<h4>Editing the Source Transcript</h4>
+<p>Once the project is <code>ready</code>, read the transcript, then correct it before adding languages. Every edit bumps the project's <code>revision</code>. Each segment has a stable <code>id</code> used to edit or delete it. (Enterprise workspaces only.)</p>
+<pre><code class="language-python"># Read the source transcript
+transcript = elevenlabs.dubbing.project.transcript.get(project_id)
+
+# Correct a segment's text — send only the fields to change (text, speaker_id, start_s, end_s)
+elevenlabs.dubbing.project.transcript.update_segment(
+    project_id,
+    segment_id=transcript.segments[0].id,
+    text=&quot;Welcome to our latest product demo.&quot;,
+)
+
+# Add a segment (reuse an existing speaker_id so it's dubbed with that speaker's voice)
+added = elevenlabs.dubbing.project.transcript.create_segment(
+    project_id,
+    text=&quot;Thanks for watching.&quot;,
+    speaker_id=transcript.segments[0].speaker_id,
+    start_s=40.0,
+    end_s=42.0,
+)
+
+# Delete a segment
+elevenlabs.dubbing.project.transcript.delete_segment(project_id, segment_id=added.segment.id)
+</code></pre>
+<p>Via the CLI: <code>elevenlabs dubbing project transcript get --project-id proj_...</code>, then update a segment with only the changed fields (<code>--text</code>, <code>--speaker-id</code>, <code>--start-s</code>, <code>--end-s</code>):</p>
+<pre><code class="language-bash">elevenlabs dubbing project transcript update_segment \
+  --project-id proj_... --segment-id seg_... \
+  --text &quot;Welcome to our latest product demo.&quot;
+</code></pre>
+<h4>Refining Translations and Regenerating</h4>
+<p>A language's transcript pairs each source segment with its <code>translation</code> (<code>null</code> = not yet translated; segment ids match the source). Edit a single translation, then regenerate. (Enterprise workspaces only.)</p>
+<pre><code class="language-python"># Read the language's translations
+target = elevenlabs.dubbing.project.language.transcript.get(project_id, language_id)
+
+# Refine a single translation (pass translation=None to clear it and mark for re-translation)
+elevenlabs.dubbing.project.language.transcript.update_segment(
+    project_id,
+    language_id,
+    segment_id=target.segments[0].id,
+    translation=&quot;Bienvenido a nuestra última demostración de producto.&quot;,
+)
+
+# Regenerate the dub from the current transcript (charged like a generation)
+elevenlabs.dubbing.project.language.transcript.regenerate(project_id, language_id)
+</code></pre>
+<p>Via the CLI: <code>elevenlabs dubbing project language transcript update_segment --project-id proj_... --language-id lang_... --segment-id seg_... --translation &quot;...&quot;</code>, then <code>elevenlabs dubbing project language transcript regenerate --project-id proj_... --language-id lang_...</code> (returns <code>202 Accepted</code>).</p>
+<p>A translation edit affects only that language. After the edit, a <code>completed</code> language becomes <code>stale</code> — it keeps serving its previous output until you regenerate. Poll until <code>completed</code>; <code>output_revision</code> then equals <code>revision</code> and <code>outputs.lossless_audio</code> reflects the current transcript.</p>
+<h4>Dubbing into Multiple Languages</h4>
+<p>Add one language target per language — each generates independently. Track them all with <code>language.list</code> instead of polling one by one:</p>
+<pre><code class="language-python">for lang in [&quot;es&quot;, &quot;fr&quot;, &quot;de&quot;, &quot;ja&quot;]:
+    elevenlabs.dubbing.project.language.create(project_id, target_language=lang)
+
+while True:
+    result = elevenlabs.dubbing.project.language.list(project_id)
+    if not any(l.status in (&quot;queued&quot;, &quot;processing&quot;) for l in result.languages):
+        break
+    time.sleep(5)
+</code></pre>
+<h4>States</h4>
+<p><strong>Project:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>queued</code></td>
+<td>Created; source fetch + preparation enqueued</td>
+</tr>
+<tr>
+<td><code>preparing</code></td>
+<td>Preparation (transcription) running</td>
+</tr>
+<tr>
+<td><code>ready</code></td>
+<td>Source transcript available; add/generate languages. Projects <strong>stay</strong> <code>ready</code> — per-language progress lives on the languages</td>
+</tr>
+<tr>
+<td><code>failed</code></td>
+<td>Preparation failed (e.g. source couldn't be fetched or decoded)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Language:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>queued</code></td>
+<td>Waiting on the project becoming <code>ready</code>, or on a generation worker</td>
+</tr>
+<tr>
+<td><code>processing</code></td>
+<td>The dub is being generated</td>
+</tr>
+<tr>
+<td><code>completed</code></td>
+<td>Finished; <code>outputs</code> populated with a signed download URL (valid ~1 hour — re-fetch for a fresh one)</td>
+</tr>
+<tr>
+<td><code>stale</code></td>
+<td>Previously completed, but the transcript changed; keeps the last output until regenerated</td>
+</tr>
+<tr>
+<td><code>failed</code></td>
+<td>Generation failed</td>
+</tr>
+</tbody>
+</table>
+<p>You can add a language before the project is <code>ready</code> — it stays <code>queued</code> and starts automatically once the project becomes <code>ready</code>. Adding a language accepts optional <code>model_id</code> (defaults to the project's) and <code>voice_settings</code> (e.g. <code>{&quot;cloning_strength&quot;: 7}</code>, range 0–10, default 7 — controls how strongly dubbed speakers clone the source voices).</p>
+<h4>Error Handling</h4>
+<ul>
+<li><strong>401</strong>: Invalid API key</li>
+<li><strong>409 Conflict</strong> on regenerate: The project isn't <code>ready</code> or the language isn't settled (e.g. already generating) — wait and retry</li>
+<li><strong>Expired download URL</strong>: <code>outputs.lossless_audio</code> is signed and valid ~1 hour; re-fetch the language for a fresh URL</li>
+<li><strong>Transcript editing / regeneration unavailable</strong>: These endpoints are enterprise-only — on other plans, create the project with a finalized source and add languages directly</li>
+</ul>
+<h4>References</h4>
+<ul>
+<li><a href="https://github.com/elevenlabs/skills/blob/9763c39a9d7add478b2f2d8229f0caadf5414f5f/dubbing/references/installation.md">Installation Guide</a></li>
+<li><a href="https://github.com/elevenlabs/skills/blob/9763c39a9d7add478b2f2d8229f0caadf5414f5f/dubbing/references/api-reference.md">API Reference</a> — every endpoint with full request/response schemas and SDK method names</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

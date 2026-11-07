@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>database-migration · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re changing a database schema, transforming existing data or moving between databases, and want a way back if it fails. It does: gives the agent migration patterns with up and down steps, mostly in Sequelize, plus the TypeORM and Prisma basics. Zero downtime: a column rename runs in steps: add the new column and copy the data, switch the app, then drop the old column. You get: migrations written along those patterns; it adds no steps or files of its own." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=wshobson%2Fagents">wshobson/agents</a></p>
+      <h1>database-migration</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re changing a database schema, transforming existing data or moving between databases, and want a way back if it fails</dd></div><div><dt>It does</dt><dd>gives the agent migration patterns with up and down steps, mostly in Sequelize, plus the TypeORM and Prisma basics</dd></div><div><dt>Zero downtime</dt><dd>a column rename runs in steps: add the new column and copy the data, switch the app, then drop the old column</dd></div><div><dt>You get</dt><dd>migrations written along those patterns; it adds no steps or files of its own</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>It&#39;s a reference, not a workflow. It opens with a create-table migration in each of Sequelize, TypeORM and Prisma, with the commands to run them. The rest is Sequelize code: adding a column with a default; renaming a column without downtime by adding the new one, copying the data, updating the app and only then removing the old one; and changing a column&#39;s type on a large table by adding a new column, casting the data into it, dropping the old one and renaming the new one. A data migration splits an address string into street, city and state, with a down step that rebuilds it. For rollbacks, it wraps changes in a transaction, or copies the table to a backup first, checks the result and restores the backup if the check fails. A separate file adds a five-phase blue-green migration (add the column, write to both, backfill, read from the new one, remove the old) and a migration that picks MySQL&#39;s JSON or PostgreSQL&#39;s JSONB column type depending on the database.</p>
+      <p class="muted">Summarizes <a href="https://github.com/wshobson/agents/tree/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/framework-migration/skills/database-migration">the skill at 4bde316</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/wshobson/agents --skill database-migration</code><button type="button" class="copy" data-copy="npx skills add https://github.com/wshobson/agents --skill database-migration">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/wshobson/agents/database-migration">skills.sh page</a> · <a href="https://github.com/wshobson/agents/tree/HEAD/plugins/framework-migration/skills/database-migration">Source on GitHub</a> · <a href="/skillhub/?repo=wshobson%2Fagents">All skills from wshobson/agents</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>18,000 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>42,267 <span class="muted">wshobson/agents</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">203</div>
+      <div class="stat-delta">-9% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 224; week to Sep 26: 239; week to Oct 3: 267; week to Oct 10: 320; week to Oct 17: 252; week to Oct 24: 228; week to Oct 31: 223; week to Nov 7: 203. Use the left and right arrow keys to read each week."
+        data-values="224,239,267,320,252,228,223,203" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,19.2 38.6,17.1 71.1,13.3 103.7,6.0 136.3,15.4 168.9,18.6 201.4,19.3 234.0,22.1" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="22.1" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>224</td></tr><tr><td>Sep 26</td><td>239</td></tr><tr><td>Oct 3</td><td>267</td></tr><tr><td>Oct 10</td><td>320</td></tr><tr><td>Oct 17</td><td>252</td></tr><tr><td>Oct 24</td><td>228</td></tr><tr><td>Oct 31</td><td>223</td></tr><tr><td>Nov 7</td><td>203</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:frameworks" data-facet="category" title="Guides for frameworks, databases and SDKs, mostly from their vendors." href="/skillhub/?tag=category%3Aframeworks">category:frameworks</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Guides for frameworks, databases and SDKs, mostly from their vendors.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/skillhub/?tag=type%3Aguidelines">type:guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="migration" data-facet="topic" href="/skillhub/?tag=migration">migration</a><a class="tag" data-tag="databases" data-facet="topic" href="/skillhub/?tag=databases">databases</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:sequelize" data-facet="stack" href="/skillhub/?tag=stack%3Asequelize">stack:sequelize</a><a class="tag" data-tag="stack:typeorm" data-facet="stack" href="/skillhub/?tag=stack%3Atypeorm">stack:typeorm</a><a class="tag" data-tag="stack:prisma" data-facet="stack" href="/skillhub/?tag=stack%3Aprisma">stack:prisma</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/wshobson/agents/blob/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/framework-migration/skills/database-migration/SKILL.md">wshobson/agents at 4bde316</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: database-migration
+description: Execute database migrations across ORMs and platforms with zero-downtime strategies, data transformation, and rollback procedures. Use when migrating databases, changing schemas, performing data transformations, or implementing zero-downtime deployment strategies.</code></pre></details>
+        <div class="markdown"><h3>Database Migration</h3>
+<p>Master database schema and data migrations across ORMs (Sequelize, TypeORM, Prisma), including rollback strategies and zero-downtime deployments.</p>
+<h4>When to Use This Skill</h4>
+<ul>
+<li>Migrating between different ORMs</li>
+<li>Performing schema transformations</li>
+<li>Moving data between databases</li>
+<li>Implementing rollback procedures</li>
+<li>Zero-downtime deployments</li>
+<li>Database version upgrades</li>
+<li>Data model refactoring</li>
+</ul>
+<h4>ORM Migrations</h4>
+<h5>Sequelize Migrations</h5>
+<pre><code class="language-javascript">// migrations/20231201-create-users.js
+module.exports = {
+  up: async (queryInterface, Sequelize) =&gt; {
+    await queryInterface.createTable(&quot;users&quot;, {
+      id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      email: {
+        type: Sequelize.STRING,
+        unique: true,
+        allowNull: false,
+      },
+      createdAt: Sequelize.DATE,
+      updatedAt: Sequelize.DATE,
+    });
+  },
+
+  down: async (queryInterface, Sequelize) =&gt; {
+    await queryInterface.dropTable(&quot;users&quot;);
+  },
+};
+
+// Run: npx sequelize-cli db:migrate
+// Rollback: npx sequelize-cli db:migrate:undo
+</code></pre>
+<h5>TypeORM Migrations</h5>
+<pre><code class="language-typescript">// migrations/1701234567-CreateUsers.ts
+import { MigrationInterface, QueryRunner, Table } from &quot;typeorm&quot;;
+
+export class CreateUsers1701234567 implements MigrationInterface {
+  public async up(queryRunner: QueryRunner): Promise&lt;void&gt; {
+    await queryRunner.createTable(
+      new Table({
+        name: &quot;users&quot;,
+        columns: [
+          {
+            name: &quot;id&quot;,
+            type: &quot;int&quot;,
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: &quot;increment&quot;,
+          },
+          {
+            name: &quot;email&quot;,
+            type: &quot;varchar&quot;,
+            isUnique: true,
+          },
+          {
+            name: &quot;created_at&quot;,
+            type: &quot;timestamp&quot;,
+            default: &quot;CURRENT_TIMESTAMP&quot;,
+          },
+        ],
+      }),
+    );
+  }
+
+  public async down(queryRunner: QueryRunner): Promise&lt;void&gt; {
+    await queryRunner.dropTable(&quot;users&quot;);
+  }
+}
+
+// Run: npm run typeorm migration:run
+// Rollback: npm run typeorm migration:revert
+</code></pre>
+<h5>Prisma Migrations</h5>
+<pre><code class="language-prisma">// schema.prisma
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+// Generate migration: npx prisma migrate dev --name create_users
+// Apply: npx prisma migrate deploy
+</code></pre>
+<h4>Schema Transformations</h4>
+<h5>Adding Columns with Defaults</h5>
+<pre><code class="language-javascript">// Safe migration: add column with default
+module.exports = {
+  up: async (queryInterface, Sequelize) =&gt; {
+    await queryInterface.addColumn(&quot;users&quot;, &quot;status&quot;, {
+      type: Sequelize.STRING,
+      defaultValue: &quot;active&quot;,
+      allowNull: false,
+    });
+  },
+
+  down: async (queryInterface) =&gt; {
+    await queryInterface.removeColumn(&quot;users&quot;, &quot;status&quot;);
+  },
+};
+</code></pre>
+<h5>Renaming Columns (Zero Downtime)</h5>
+<pre><code class="language-javascript">// Step 1: Add new column
+module.exports = {
+  up: async (queryInterface, Sequelize) =&gt; {
+    await queryInterface.addColumn(&quot;users&quot;, &quot;full_name&quot;, {
+      type: Sequelize.STRING,
+    });
+
+    // Copy data from old column
+    await queryInterface.sequelize.query(&quot;UPDATE users SET full_name = name&quot;);
+  },
+
+  down: async (queryInterface) =&gt; {
+    await queryInterface.removeColumn(&quot;users&quot;, &quot;full_name&quot;);
+  },
+};
+
+// Step 2: Update application to use new column
+
+// Step 3: Remove old column
+module.exports = {
+  up: async (queryInterface) =&gt; {
+    await queryInterface.removeColumn(&quot;users&quot;, &quot;name&quot;);
+  },
+
+  down: async (queryInterface, Sequelize) =&gt; {
+    await queryInterface.addColumn(&quot;users&quot;, &quot;name&quot;, {
+      type: Sequelize.STRING,
+    });
+  },
+};
+</code></pre>
+<h5>Changing Column Types</h5>
+<pre><code class="language-javascript">module.exports = {
+  up: async (queryInterface, Sequelize) =&gt; {
+    // For large tables, use multi-step approach
+
+    // 1. Add new column
+    await queryInterface.addColumn(&quot;users&quot;, &quot;age_new&quot;, {
+      type: Sequelize.INTEGER,
+    });
+
+    // 2. Copy and transform data
+    await queryInterface.sequelize.query(`
+      UPDATE users
+      SET age_new = CAST(age AS INTEGER)
+      WHERE age IS NOT NULL
+    `);
+
+    // 3. Drop old column
+    await queryInterface.removeColumn(&quot;users&quot;, &quot;age&quot;);
+
+    // 4. Rename new column
+    await queryInterface.renameColumn(&quot;users&quot;, &quot;age_new&quot;, &quot;age&quot;);
+  },
+
+  down: async (queryInterface, Sequelize) =&gt; {
+    await queryInterface.changeColumn(&quot;users&quot;, &quot;age&quot;, {
+      type: Sequelize.STRING,
+    });
+  },
+};
+</code></pre>
+<h4>Data Transformations</h4>
+<h5>Complex Data Migration</h5>
+<pre><code class="language-javascript">module.exports = {
+  up: async (queryInterface, Sequelize) =&gt; {
+    // Get all records
+    const [users] = await queryInterface.sequelize.query(
+      &quot;SELECT id, address_string FROM users&quot;,
+    );
+
+    // Transform each record
+    for (const user of users) {
+      const addressParts = user.address_string.split(&quot;,&quot;);
+
+      await queryInterface.sequelize.query(
+        `UPDATE users
+         SET street = :street,
+             city = :city,
+             state = :state
+         WHERE id = :id`,
+        {
+          replacements: {
+            id: user.id,
+            street: addressParts[0]?.trim(),
+            city: addressParts[1]?.trim(),
+            state: addressParts[2]?.trim(),
+          },
+        },
+      );
+    }
+
+    // Drop old column
+    await queryInterface.removeColumn(&quot;users&quot;, &quot;address_string&quot;);
+  },
+
+  down: async (queryInterface, Sequelize) =&gt; {
+    // Reconstruct original column
+    await queryInterface.addColumn(&quot;users&quot;, &quot;address_string&quot;, {
+      type: Sequelize.STRING,
+    });
+
+    await queryInterface.sequelize.query(`
+      UPDATE users
+      SET address_string = CONCAT(street, ', ', city, ', ', state)
+    `);
+
+    await queryInterface.removeColumn(&quot;users&quot;, &quot;street&quot;);
+    await queryInterface.removeColumn(&quot;users&quot;, &quot;city&quot;);
+    await queryInterface.removeColumn(&quot;users&quot;, &quot;state&quot;);
+  },
+};
+</code></pre>
+<h4>Rollback Strategies</h4>
+<h5>Transaction-Based Migrations</h5>
+<pre><code class="language-javascript">module.exports = {
+  up: async (queryInterface, Sequelize) =&gt; {
+    const transaction = await queryInterface.sequelize.transaction();
+
+    try {
+      await queryInterface.addColumn(
+        &quot;users&quot;,
+        &quot;verified&quot;,
+        { type: Sequelize.BOOLEAN, defaultValue: false },
+        { transaction },
+      );
+
+      await queryInterface.sequelize.query(
+        &quot;UPDATE users SET verified = true WHERE email_verified_at IS NOT NULL&quot;,
+        { transaction },
+      );
+
+      await transaction.commit();
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
+  },
+
+  down: async (queryInterface) =&gt; {
+    await queryInterface.removeColumn(&quot;users&quot;, &quot;verified&quot;);
+  },
+};
+</code></pre>
+<h5>Checkpoint-Based Rollback</h5>
+<pre><code class="language-javascript">module.exports = {
+  up: async (queryInterface, Sequelize) =&gt; {
+    // Create backup table
+    await queryInterface.sequelize.query(
+      &quot;CREATE TABLE users_backup AS SELECT * FROM users&quot;,
+    );
+
+    try {
+      // Perform migration
+      await queryInterface.addColumn(&quot;users&quot;, &quot;new_field&quot;, {
+        type: Sequelize.STRING,
+      });
+
+      // Verify migration
+      const [result] = await queryInterface.sequelize.query(
+        &quot;SELECT COUNT(*) as count FROM users WHERE new_field IS NULL&quot;,
+      );
+
+      if (result[0].count &gt; 0) {
+        throw new Error(&quot;Migration verification failed&quot;);
+      }
+
+      // Drop backup
+      await queryInterface.dropTable(&quot;users_backup&quot;);
+    } catch (error) {
+      // Restore from backup
+      await queryInterface.sequelize.query(&quot;DROP TABLE users&quot;);
+      await queryInterface.sequelize.query(
+        &quot;CREATE TABLE users AS SELECT * FROM users_backup&quot;,
+      );
+      await queryInterface.dropTable(&quot;users_backup&quot;);
+      throw error;
+    }
+  },
+};
+</code></pre>
+<h4>Additional patterns and templates</h4>
+<p>More detailed templates and worked examples live in <code>references/details.md</code>. Read that file for the full pattern library.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

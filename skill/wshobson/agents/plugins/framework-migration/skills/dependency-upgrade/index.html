@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dependency-upgrade · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re moving a JavaScript project to a new major version of a framework or library, or clearing out outdated and vulnerable packages. It does: audits what&#039;s outdated, maps compatible versions, then upgrades in three phases, one package at a time with tests after each, rolling back if they fail. You get: an UPGRADE_PLAN.md with the upgrade order, an updated package.json and lockfile, and compatibility tests. Also covers: jscodeshift codemods for breaking changes, Renovate and Dependabot configs, lockfile commands and peer-dependency conflicts." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=wshobson%2Fagents">wshobson/agents</a></p>
+      <h1>dependency-upgrade</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re moving a JavaScript project to a new major version of a framework or library, or clearing out outdated and vulnerable packages</dd></div><div><dt>It does</dt><dd>audits what&#39;s outdated, maps compatible versions, then upgrades in three phases, one package at a time with tests after each, rolling back if they fail</dd></div><div><dt>You get</dt><dd>an UPGRADE_PLAN.md with the upgrade order, an updated package.json and lockfile, and compatibility tests</dd></div><div><dt>Also covers</dt><dd>jscodeshift codemods for breaking changes, Renovate and Dependabot configs, lockfile commands and peer-dependency conflicts</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A staged process with npm and yarn commands, using a React upgrade as the running example. It opens with semantic versioning and the ^ and ~ ranges, then audits with npm outdated, npm audit and npm-check-updates and traces why a package is installed. A compatibility matrix records which versions of related packages go together, such as React with react-dom, React Router and Testing Library. Phase 1 lists current versions, reads changelogs and migration guides, and writes the upgrade order to UPGRADE_PLAN.md: TypeScript, then React, React Router, testing libraries and build tools. Phase 2 upgrades one package, and one major version, at a time, running tests and the build after each. Phase 3 adds tests that check matching versions and no peer-dependency warnings. Breaking changes get codemods (jscodeshift scripts that rewrite code, tried with a dry run first) or a custom find-and-replace script. Testing covers unit, integration, snapshot and Cypress end-to-end tests. A rollback script upgrades on a branch and commits only if tests pass. It ends with a Renovate config that auto-merges minor and patch updates but not majors, a weekly Dependabot config, and commands for lockfiles, peer dependencies and workspaces.</p>
+      <p class="muted">Summarizes <a href="https://github.com/wshobson/agents/tree/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/framework-migration/skills/dependency-upgrade">the skill at 4bde316</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/wshobson/agents --skill dependency-upgrade</code><button type="button" class="copy" data-copy="npx skills add https://github.com/wshobson/agents --skill dependency-upgrade">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/wshobson/agents/dependency-upgrade">skills.sh page</a> · <a href="https://github.com/wshobson/agents/tree/HEAD/plugins/framework-migration/skills/dependency-upgrade">Source on GitHub</a> · <a href="/skillhub/?repo=wshobson%2Fagents">All skills from wshobson/agents</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>11,400 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>42,267 <span class="muted">wshobson/agents</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">176</div>
+      <div class="stat-delta">-1% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 177; week to Sep 26: 195; week to Oct 3: 225; week to Oct 10: 265; week to Oct 17: 207; week to Oct 24: 186; week to Oct 31: 186; week to Nov 7: 176. Use the left and right arrow keys to read each week."
+        data-values="177,195,225,265,207,186,186,176" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,20.6 38.6,17.6 71.1,12.6 103.7,6.0 136.3,15.6 168.9,19.1 201.4,19.1 234.0,20.8" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="20.8" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>177</td></tr><tr><td>Sep 26</td><td>195</td></tr><tr><td>Oct 3</td><td>225</td></tr><tr><td>Oct 10</td><td>265</td></tr><tr><td>Oct 17</td><td>207</td></tr><tr><td>Oct 24</td><td>186</td></tr><tr><td>Oct 31</td><td>186</td></tr><tr><td>Nov 7</td><td>176</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="migration" data-facet="topic" href="/skillhub/?tag=migration">migration</a><a class="tag" data-tag="testing" data-facet="topic" href="/skillhub/?tag=testing">testing</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:javascript" data-facet="stack" href="/skillhub/?tag=stack%3Ajavascript">stack:javascript</a><a class="tag" data-tag="stack:npm" data-facet="stack" href="/skillhub/?tag=stack%3Anpm">stack:npm</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/wshobson/agents/blob/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/framework-migration/skills/dependency-upgrade/SKILL.md">wshobson/agents at 4bde316</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: dependency-upgrade
+description: Manage major dependency version upgrades with compatibility analysis, staged rollout, and comprehensive testing. Use when upgrading framework versions, updating major dependencies, or managing breaking changes in libraries.</code></pre></details>
+        <div class="markdown"><h3>Dependency Upgrade</h3>
+<p>Master major dependency version upgrades, compatibility analysis, staged upgrade strategies, and comprehensive testing approaches.</p>
+<h4>When to Use This Skill</h4>
+<ul>
+<li>Upgrading major framework versions</li>
+<li>Updating security-vulnerable dependencies</li>
+<li>Modernizing legacy dependencies</li>
+<li>Resolving dependency conflicts</li>
+<li>Planning incremental upgrade paths</li>
+<li>Testing compatibility matrices</li>
+<li>Automating dependency updates</li>
+</ul>
+<h4>Semantic Versioning Review</h4>
+<pre><code>MAJOR.MINOR.PATCH (e.g., 2.3.1)
+
+MAJOR: Breaking changes
+MINOR: New features, backward compatible
+PATCH: Bug fixes, backward compatible
+
+^2.3.1 = &gt;=2.3.1 &lt;3.0.0 (minor updates)
+~2.3.1 = &gt;=2.3.1 &lt;2.4.0 (patch updates)
+2.3.1 = exact version
+</code></pre>
+<h4>Dependency Analysis</h4>
+<h5>Audit Dependencies</h5>
+<pre><code class="language-bash"># npm
+npm outdated
+npm audit
+npm audit fix
+
+# yarn
+yarn outdated
+yarn audit
+
+# Check for major updates
+npx npm-check-updates
+npx npm-check-updates -u  # Update package.json
+</code></pre>
+<h5>Analyze Dependency Tree</h5>
+<pre><code class="language-bash"># See why a package is installed
+npm ls package-name
+yarn why package-name
+
+# Find duplicate packages
+npm dedupe
+yarn dedupe
+
+# Visualize dependencies
+npx madge --image graph.png src/
+</code></pre>
+<h4>Compatibility Matrix</h4>
+<pre><code class="language-javascript">// compatibility-matrix.js
+const compatibilityMatrix = {
+  react: {
+    &quot;16.x&quot;: {
+      &quot;react-dom&quot;: &quot;^16.0.0&quot;,
+      &quot;react-router-dom&quot;: &quot;^5.0.0&quot;,
+      &quot;@testing-library/react&quot;: &quot;^11.0.0&quot;,
+    },
+    &quot;17.x&quot;: {
+      &quot;react-dom&quot;: &quot;^17.0.0&quot;,
+      &quot;react-router-dom&quot;: &quot;^5.0.0 || ^6.0.0&quot;,
+      &quot;@testing-library/react&quot;: &quot;^12.0.0&quot;,
+    },
+    &quot;18.x&quot;: {
+      &quot;react-dom&quot;: &quot;^18.0.0&quot;,
+      &quot;react-router-dom&quot;: &quot;^6.0.0&quot;,
+      &quot;@testing-library/react&quot;: &quot;^13.0.0&quot;,
+    },
+  },
+};
+
+function checkCompatibility(packages) {
+  // Validate package versions against matrix
+}
+</code></pre>
+<h4>Staged Upgrade Strategy</h4>
+<h5>Phase 1: Planning</h5>
+<pre><code class="language-bash"># 1. Identify current versions
+npm list --depth=0
+
+# 2. Check for breaking changes
+# Read CHANGELOG.md and MIGRATION.md
+
+# 3. Create upgrade plan
+echo &quot;Upgrade order:
+1. TypeScript
+2. React
+3. React Router
+4. Testing libraries
+5. Build tools&quot; &gt; UPGRADE_PLAN.md
+</code></pre>
+<h5>Phase 2: Incremental Updates</h5>
+<pre><code class="language-bash"># Don't upgrade everything at once!
+
+# Step 1: Update TypeScript
+npm install typescript@latest
+
+# Test
+npm run test
+npm run build
+
+# Step 2: Update React (one major version at a time)
+npm install react@17 react-dom@17
+
+# Test again
+npm run test
+
+# Step 3: Continue with other packages
+npm install react-router-dom@6
+
+# And so on...
+</code></pre>
+<h5>Phase 3: Validation</h5>
+<pre><code class="language-javascript">// tests/compatibility.test.js
+describe(&quot;Dependency Compatibility&quot;, () =&gt; {
+  it(&quot;should have compatible React versions&quot;, () =&gt; {
+    const reactVersion = require(&quot;react/package.json&quot;).version;
+    const reactDomVersion = require(&quot;react-dom/package.json&quot;).version;
+
+    expect(reactVersion).toBe(reactDomVersion);
+  });
+
+  it(&quot;should not have peer dependency warnings&quot;, () =&gt; {
+    // Run npm ls and check for warnings
+  });
+});
+</code></pre>
+<h4>Breaking Change Handling</h4>
+<h5>Identifying Breaking Changes</h5>
+<pre><code class="language-bash"># Check the changelog directly
+curl https://raw.githubusercontent.com/facebook/react/master/CHANGELOG.md
+</code></pre>
+<h5>Codemod for Automated Fixes</h5>
+<pre><code class="language-bash"># Run jscodeshift with transform URL
+npx jscodeshift -t &lt;transform-url&gt; &lt;path&gt;
+
+# Example: Rename unsafe lifecycle methods
+npx jscodeshift -t https://raw.githubusercontent.com/reactjs/react-codemod/master/transforms/rename-unsafe-lifecycles.js src/
+
+# For TypeScript files
+npx jscodeshift -t https://raw.githubusercontent.com/reactjs/react-codemod/master/transforms/rename-unsafe-lifecycles.js --parser=tsx src/
+
+# Dry run to preview changes
+npx jscodeshift -t https://raw.githubusercontent.com/reactjs/react-codemod/master/transforms/rename-unsafe-lifecycles.js --dry src/
+</code></pre>
+<h5>Custom Migration Script</h5>
+<pre><code class="language-javascript">// migration-script.js
+const fs = require(&quot;fs&quot;);
+const glob = require(&quot;glob&quot;);
+
+glob(&quot;src/**/*.tsx&quot;, (err, files) =&gt; {
+  files.forEach((file) =&gt; {
+    let content = fs.readFileSync(file, &quot;utf8&quot;);
+
+    // Replace old API with new API
+    content = content.replace(
+      /componentWillMount/g,
+      &quot;UNSAFE_componentWillMount&quot;,
+    );
+
+    // Update imports
+    content = content.replace(
+      /import { Component } from 'react'/g,
+      &quot;import React, { Component } from 'react'&quot;,
+    );
+
+    fs.writeFileSync(file, content);
+  });
+});
+</code></pre>
+<h4>Testing Strategy</h4>
+<h5>Unit Tests</h5>
+<pre><code class="language-javascript">// Ensure tests pass before and after upgrade
+npm run test
+
+// Update test utilities if needed
+npm install @testing-library/react@latest
+</code></pre>
+<h5>Integration Tests</h5>
+<pre><code class="language-javascript">// tests/integration/app.test.js
+describe(&quot;App Integration&quot;, () =&gt; {
+  it(&quot;should render without crashing&quot;, () =&gt; {
+    render(&lt;App /&gt;);
+  });
+
+  it(&quot;should handle navigation&quot;, () =&gt; {
+    const { getByText } = render(&lt;App /&gt;);
+    fireEvent.click(getByText(&quot;Navigate&quot;));
+    expect(screen.getByText(&quot;New Page&quot;)).toBeInTheDocument();
+  });
+});
+</code></pre>
+<h5>Visual Regression Tests</h5>
+<pre><code class="language-javascript">// visual-regression.test.js
+describe(&quot;Visual Regression&quot;, () =&gt; {
+  it(&quot;should match snapshot&quot;, () =&gt; {
+    const { container } = render(&lt;App /&gt;);
+    expect(container.firstChild).toMatchSnapshot();
+  });
+});
+</code></pre>
+<h5>E2E Tests</h5>
+<pre><code class="language-javascript">// cypress/e2e/app.cy.js
+describe(&quot;E2E Tests&quot;, () =&gt; {
+  it(&quot;should complete user flow&quot;, () =&gt; {
+    cy.visit(&quot;/&quot;);
+    cy.get('[data-testid=&quot;login&quot;]').click();
+    cy.get('input[name=&quot;email&quot;]').type(&quot;user@example.com&quot;);
+    cy.get('button[type=&quot;submit&quot;]').click();
+    cy.url().should(&quot;include&quot;, &quot;/dashboard&quot;);
+  });
+});
+</code></pre>
+<h4>Automated Dependency Updates</h4>
+<h5>Renovate Configuration</h5>
+<pre><code class="language-json">// renovate.json
+{
+  &quot;extends&quot;: [&quot;config:base&quot;],
+  &quot;packageRules&quot;: [
+    {
+      &quot;matchUpdateTypes&quot;: [&quot;minor&quot;, &quot;patch&quot;],
+      &quot;automerge&quot;: true
+    },
+    {
+      &quot;matchUpdateTypes&quot;: [&quot;major&quot;],
+      &quot;automerge&quot;: false,
+      &quot;labels&quot;: [&quot;major-update&quot;]
+    }
+  ],
+  &quot;schedule&quot;: [&quot;before 3am on Monday&quot;],
+  &quot;timezone&quot;: &quot;America/New_York&quot;
+}
+</code></pre>
+<h5>Dependabot Configuration</h5>
+<pre><code class="language-yaml"># .github/dependabot.yml
+version: 2
+updates:
+  - package-ecosystem: &quot;npm&quot;
+    directory: &quot;/&quot;
+    schedule:
+      interval: &quot;weekly&quot;
+    open-pull-requests-limit: 5
+    reviewers:
+      - &quot;team-leads&quot;
+    commit-message:
+      prefix: &quot;chore&quot;
+      include: &quot;scope&quot;
+</code></pre>
+<h4>Rollback Plan</h4>
+<pre><code class="language-javascript">// rollback.sh
+#!/bin/bash
+
+# Save current state
+git stash
+git checkout -b upgrade-branch
+
+# Attempt upgrade
+npm install package@latest
+
+# Run tests
+if npm run test; then
+  echo &quot;Upgrade successful&quot;
+  git add package.json package-lock.json
+  git commit -m &quot;chore: upgrade package&quot;
+else
+  echo &quot;Upgrade failed, rolling back&quot;
+  git checkout main
+  git branch -D upgrade-branch
+  npm install  # Restore from package-lock.json
+fi
+</code></pre>
+<h4>Common Upgrade Patterns</h4>
+<h5>Lock File Management</h5>
+<pre><code class="language-bash"># npm
+npm install --package-lock-only  # Update lock file only
+npm ci  # Clean install from lock file
+
+# yarn
+yarn install --frozen-lockfile  # CI mode
+yarn upgrade-interactive  # Interactive upgrades
+</code></pre>
+<h5>Peer Dependency Resolution</h5>
+<pre><code class="language-bash"># npm 7+: strict peer dependencies
+npm install --legacy-peer-deps  # Ignore peer deps
+
+# npm 8+: override peer dependencies
+npm install --force
+</code></pre>
+<h5>Workspace Upgrades</h5>
+<pre><code class="language-bash"># Update all workspace packages
+npm install --workspaces
+
+# Update specific workspace
+npm install package@latest --workspace=packages/app
+</code></pre>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

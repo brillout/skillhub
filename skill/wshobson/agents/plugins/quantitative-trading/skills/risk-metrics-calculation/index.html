@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>risk-metrics-calculation · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re measuring portfolio risk, setting risk limits, or building a risk dashboard. It does: defines each metric and when to use it, then its reference file implements them in Python with pandas and NumPy. You get: risk code along these patterns; it adds no steps or files of its own. Covers: volatility, beta, VaR (historical, parametric, Cornish-Fisher), CVaR, drawdowns, Sharpe/Sortino/Calmar/Omega, and historical, hypothetical and Monte Carlo stress tests." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=wshobson%2Fagents">wshobson/agents</a></p>
+      <h1>risk-metrics-calculation</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re measuring portfolio risk, setting risk limits, or building a risk dashboard</dd></div><div><dt>It does</dt><dd>defines each metric and when to use it, then its reference file implements them in Python with pandas and NumPy</dd></div><div><dt>You get</dt><dd>risk code along these patterns; it adds no steps or files of its own</dd></div><div><dt>Covers</dt><dd>volatility, beta, VaR (historical, parametric, Cornish-Fisher), CVaR, drawdowns, Sharpe/Sortino/Calmar/Omega, and historical, hypothetical and Monte Carlo stress tests</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A reference for portfolio risk measurement, not a workflow. The SKILL.md groups metrics into volatility, tail risk, drawdown and risk-adjusted categories and sets out do&#39;s and don&#39;ts: use several metrics, don&#39;t lean on VaR alone, assume fat tails rather than normality, watch correlation in stress, and use long lookbacks. A reference file holds the Python: a RiskMetrics class (volatility, downside deviation, beta, three VaR methods, CVaR, drawdown series and durations, Sharpe, Sortino, Calmar, Omega, information ratio and a summary), a PortfolioRisk class (portfolio volatility, marginal and component risk contributions, risk-parity weights, diversification ratio, tracking error), rolling versions over a window, and a StressTester with named historical crises (2008, 2020 COVID, 2022 rate hikes, dot-com, flash crash), hypothetical shocks and Monte Carlo at elevated volatility.</p>
+      <p class="muted">Summarizes <a href="https://github.com/wshobson/agents/tree/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/quantitative-trading/skills/risk-metrics-calculation">the skill at 4bde316</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/wshobson/agents --skill risk-metrics-calculation</code><button type="button" class="copy" data-copy="npx skills add https://github.com/wshobson/agents --skill risk-metrics-calculation">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/wshobson/agents/risk-metrics-calculation">skills.sh page</a> · <a href="https://github.com/wshobson/agents/tree/HEAD/plugins/quantitative-trading/skills/risk-metrics-calculation">Source on GitHub</a> · <a href="/skillhub/?repo=wshobson%2Fagents">All skills from wshobson/agents</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>11,300 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>42,267 <span class="muted">wshobson/agents</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">188</div>
+      <div class="stat-delta">+7% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 176; week to Sep 26: 198; week to Oct 3: 220; week to Oct 10: 294; week to Oct 17: 236; week to Oct 24: 196; week to Oct 31: 203; week to Nov 7: 188. Use the left and right arrow keys to read each week."
+        data-values="176,198,220,294,236,196,203,188" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.7 38.6,20.4 71.1,17.1 103.7,6.0 136.3,14.7 168.9,20.7 201.4,19.6 234.0,21.9" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="21.9" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>176</td></tr><tr><td>Sep 26</td><td>198</td></tr><tr><td>Oct 3</td><td>220</td></tr><tr><td>Oct 10</td><td>294</td></tr><tr><td>Oct 17</td><td>236</td></tr><tr><td>Oct 24</td><td>196</td></tr><tr><td>Oct 31</td><td>203</td></tr><tr><td>Nov 7</td><td>188</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:science" data-facet="category" title="Research reproduction, financial data, charts and diagrams." href="/skillhub/?tag=category%3Ascience">category:science</a></div>
+          <p class="tag-meaning">Research reproduction, financial data, charts and diagrams.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/skillhub/?tag=type%3Aguidelines">type:guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="finance" data-facet="topic" href="/skillhub/?tag=finance">finance</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:python" data-facet="stack" href="/skillhub/?tag=stack%3Apython">stack:python</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/wshobson/agents/blob/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/quantitative-trading/skills/risk-metrics-calculation/SKILL.md">wshobson/agents at 4bde316</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: risk-metrics-calculation
+description: Calculate portfolio risk metrics including VaR, CVaR, Sharpe, Sortino, and drawdown analysis. Use when measuring portfolio risk, implementing risk limits, or building risk monitoring systems.</code></pre></details>
+        <div class="markdown"><h3>Risk Metrics Calculation</h3>
+<p>Comprehensive risk measurement toolkit for portfolio management, including Value at Risk, Expected Shortfall, and drawdown analysis.</p>
+<h4>When to Use This Skill</h4>
+<ul>
+<li>Measuring portfolio risk</li>
+<li>Implementing risk limits</li>
+<li>Building risk dashboards</li>
+<li>Calculating risk-adjusted returns</li>
+<li>Setting position sizes</li>
+<li>Regulatory reporting</li>
+</ul>
+<h4>Core Concepts</h4>
+<h5>1. Risk Metric Categories</h5>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Metrics</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Volatility</strong></td>
+<td>Std Dev, Beta</td>
+<td>General risk</td>
+</tr>
+<tr>
+<td><strong>Tail Risk</strong></td>
+<td>VaR, CVaR</td>
+<td>Extreme losses</td>
+</tr>
+<tr>
+<td><strong>Drawdown</strong></td>
+<td>Max DD, Calmar</td>
+<td>Capital preservation</td>
+</tr>
+<tr>
+<td><strong>Risk-Adjusted</strong></td>
+<td>Sharpe, Sortino</td>
+<td>Performance</td>
+</tr>
+</tbody>
+</table>
+<h5>2. Time Horizons</h5>
+<pre><code>Intraday:   Minute/hourly VaR for day traders
+Daily:      Standard risk reporting
+Weekly:     Rebalancing decisions
+Monthly:    Performance attribution
+Annual:     Strategic allocation
+</code></pre>
+<h4>Detailed patterns and worked examples</h4>
+<p>Detailed pattern documentation lives in <code>references/details.md</code>. Read that file when the navigation tier above is insufficient.</p>
+<h4>Best Practices</h4>
+<h5>Do's</h5>
+<ul>
+<li><strong>Use multiple metrics</strong> - No single metric captures all risk</li>
+<li><strong>Consider tail risk</strong> - VaR isn't enough, use CVaR</li>
+<li><strong>Rolling analysis</strong> - Risk changes over time</li>
+<li><strong>Stress test</strong> - Historical and hypothetical</li>
+<li><strong>Document assumptions</strong> - Distribution, lookback, etc.</li>
+</ul>
+<h5>Don'ts</h5>
+<ul>
+<li><strong>Don't rely on VaR alone</strong> - Underestimates tail risk</li>
+<li><strong>Don't assume normality</strong> - Returns are fat-tailed</li>
+<li><strong>Don't ignore correlation</strong> - Increases in stress</li>
+<li><strong>Don't use short lookbacks</strong> - Miss regime changes</li>
+<li><strong>Don't forget transaction costs</strong> - Affects realized risk</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mle-workflow · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re turning notebook code into a production model, or planning, reviewing or debugging a ranking, classifier, forecasting or embedding system. It does: pins the prediction and data contracts first, then builds reproducible training, declares promotion gates before training ends, and plans serving, monitoring and rollback. You get: concrete artifacts such as a data contract, promotion gates, a test plan, a rollout plan or review findings, and an iteration note short enough for a PR. Picks metrics: from what each kind of mistake costs, and compares against a baseline and the current production model." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <h1>mle-workflow</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re turning notebook code into a production model, or planning, reviewing or debugging a ranking, classifier, forecasting or embedding system</dd></div><div><dt>It does</dt><dd>pins the prediction and data contracts first, then builds reproducible training, declares promotion gates before training ends, and plans serving, monitoring and rollback</dd></div><div><dt>You get</dt><dd>concrete artifacts such as a data contract, promotion gates, a test plan, a rollout plan or review findings, and an iteration note short enough for a PR</dd></div><div><dt>Picks metrics</dt><dd>from what each kind of mistake costs, and compares against a baseline and the current production model</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>ECC&#39;s machine learning engineering skill treats ML as software engineering with stricter failure modes, and maps ten common tasks, from framing a fuzzy prediction problem to refreshing a production model, onto ECC&#39;s other skills and agents, though many it names, such as python-patterns, pytorch-patterns and postgres-patterns, aren&#39;t on SkillHub. Before touching model code it fills an iteration compact: goal, decision owner, success and guardrail metrics, acceptable and unacceptable mistakes, baseline, eval slices, risks and rollback. The core workflow defines the prediction contract, then locks the data contract (entity grain, label and feature timing, point-in-time joins, split policy, dataset snapshot) and checks for leakage first. Training must run without hidden notebook state, with pinned dependencies, seeds and recorded versions. Promotion gates fail closed when a metric is missing or out of bounds. Serving validates inputs and has a timeout and a fallback, and monitoring covers feature and prediction drift and delayed labels, not just uptime. After each run, an error analysis loop clusters false positives and negatives into the next falsifiable experiment, logged in an observation ledger. It scales down: no feature store or A/B test where a data contract, baseline and eval script will do.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/mle-workflow">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/affaan-m/ecc --skill mle-workflow</code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill mle-workflow">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/mle-workflow">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/mle-workflow">Source on GitHub</a> · <a href="/skillhub/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,400 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>298,660 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">488</div>
+      <div class="stat-delta">+66% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 294; week to Sep 26: 269; week to Oct 3: 173; week to Oct 10: 151; week to Oct 17: 244; week to Oct 24: 427; week to Oct 31: 426; week to Nov 7: 488. Use the left and right arrow keys to read each week."
+        data-values="294,269,173,151,244,427,426,488" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.5 38.6,25.7 71.1,34.4 103.7,36.4 136.3,28.0 168.9,11.5 201.4,11.6 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>294</td></tr><tr><td>Sep 26</td><td>269</td></tr><tr><td>Oct 3</td><td>173</td></tr><tr><td>Oct 10</td><td>151</td></tr><tr><td>Oct 17</td><td>244</td></tr><tr><td>Oct 24</td><td>427</td></tr><tr><td>Oct 31</td><td>426</td></tr><tr><td>Nov 7</td><td>488</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:science" data-facet="category" title="Research reproduction, financial data, charts and diagrams." href="/skillhub/?tag=category%3Ascience">category:science</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Research reproduction, financial data, charts and diagrams.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="ml-research" data-facet="topic" href="/skillhub/?tag=ml-research">ml-research</a><a class="tag" data-tag="deployment" data-facet="topic" href="/skillhub/?tag=deployment">deployment</a><a class="tag" data-tag="observability" data-facet="topic" href="/skillhub/?tag=observability">observability</a><a class="tag" data-tag="verification" data-facet="topic" href="/skillhub/?tag=verification">verification</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:python" data-facet="stack" href="/skillhub/?tag=stack%3Apython">stack:python</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/mle-workflow/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: mle-workflow
+description: Production machine-learning engineering workflow for data contracts, reproducible training, model evaluation, deployment, monitoring, and rollback. Use when building, reviewing, or hardening ML systems beyond one-off notebooks.
+license: MIT
+metadata:
+  origin: ECC</code></pre></details>
+        <div class="markdown"><h3>Machine Learning Engineering Workflow</h3>
+<p>Use this skill to turn model work into a production ML system with clear data contracts, repeatable training, measurable quality gates, deployable artifacts, and operational monitoring.</p>
+<h4>When to Activate</h4>
+<ul>
+<li>Planning or reviewing a production ML feature, model refresh, ranking system, recommender, classifier, embedding workflow, or forecasting pipeline</li>
+<li>Converting notebook code into a reusable training, evaluation, batch inference, or online inference pipeline</li>
+<li>Designing model promotion criteria, offline/online evals, experiment tracking, or rollback paths</li>
+<li>Debugging failures caused by data drift, label leakage, stale features, artifact mismatch, or inconsistent training and serving logic</li>
+<li>Adding model monitoring, canary rollout, shadow traffic, or post-deploy quality checks</li>
+</ul>
+<h4>Scope Calibration</h4>
+<p>Use only the lanes that fit the system in front of you. This skill is useful for ranking, search, recommendations, classifiers, forecasting, embeddings, LLM workflows, anomaly detection, and batch analytics, but it should not force one architecture onto all of them.</p>
+<ul>
+<li>Do not assume every model has supervised labels, online serving, a feature store, PyTorch, GPUs, human review, A/B tests, or real-time feedback.</li>
+<li>Do not add heavyweight MLOps machinery when a data contract, baseline, eval script, and rollback note would make the change reviewable.</li>
+<li>Do make assumptions explicit when the project lacks labels, delayed outcomes, slice definitions, production traffic, or monitoring ownership.</li>
+<li>Treat examples as interchangeable scaffolds. Replace metrics, serving mode, data stores, and rollout mechanics with the project-native equivalents.</li>
+</ul>
+<h4>Related Skills</h4>
+<ul>
+<li><code>python-patterns</code> and <code>python-testing</code> for Python implementation and pytest coverage</li>
+<li><code>pytorch-patterns</code> for deep learning models, data loaders, device handling, and training loops</li>
+<li><code>eval-harness</code> and <code>ai-regression-testing</code> for promotion gates and agent-assisted regression checks</li>
+<li><code>database-migrations</code>, <code>postgres-patterns</code>, and <code>clickhouse-io</code> for data storage and analytics surfaces</li>
+<li><code>deployment-patterns</code>, <code>docker-patterns</code>, and <code>security-review</code> for serving, secrets, containers, and production hardening</li>
+</ul>
+<h4>Reuse the SWE Surface</h4>
+<p>Do not treat MLE as separate from software engineering. Most ECC SWE workflows apply directly to ML systems, often with stricter failure modes:</p>
+<p>The recommended <code>minimal --with capability:machine-learning</code> install keeps the core agent surface available alongside this skill. For skill-only or agent-limited harnesses, pair <code>skill:mle-workflow</code> with <code>agent:mle-reviewer</code> where the target supports agents.</p>
+<table>
+<thead>
+<tr>
+<th>SWE surface</th>
+<th>MLE use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>product-capability</code> / <code>architecture-decision-records</code></td>
+<td>Turn model work into explicit product contracts and record irreversible data, model, and rollout choices</td>
+</tr>
+<tr>
+<td><code>repo-scan</code> / <code>codebase-onboarding</code> / <code>code-tour</code></td>
+<td>Find existing training, feature, serving, eval, and monitoring paths before introducing a parallel ML stack</td>
+</tr>
+<tr>
+<td><code>plan</code> / <code>feature-dev</code></td>
+<td>Scope model changes as product capabilities with data, eval, serving, and rollback phases</td>
+</tr>
+<tr>
+<td><code>tdd-workflow</code> / <code>python-testing</code></td>
+<td>Test feature transforms, split logic, metric calculations, artifact loading, and inference schemas before implementation</td>
+</tr>
+<tr>
+<td><code>code-reviewer</code> / <code>mle-reviewer</code></td>
+<td>Review code quality plus ML-specific leakage, reproducibility, promotion, and monitoring risks</td>
+</tr>
+<tr>
+<td><code>build-fix</code> / <code>pr-test-analyzer</code></td>
+<td>Diagnose broken CI, flaky evals, missing fixtures, and environment-specific model or dependency failures</td>
+</tr>
+<tr>
+<td><code>quality-gate</code> / <code>test-coverage</code></td>
+<td>Require automated evidence for transforms, metrics, inference contracts, promotion gates, and rollback behavior</td>
+</tr>
+<tr>
+<td><code>eval-harness</code> / <code>verification-loop</code></td>
+<td>Turn offline metrics, slice checks, latency budgets, and rollback drills into repeatable gates</td>
+</tr>
+<tr>
+<td><code>ai-regression-testing</code></td>
+<td>Preserve every production bug as a regression: missing feature, stale label, bad artifact, schema drift, or serving mismatch</td>
+</tr>
+<tr>
+<td><code>api-design</code> / <code>backend-patterns</code></td>
+<td>Design prediction APIs, batch jobs, idempotent retraining endpoints, and response envelopes</td>
+</tr>
+<tr>
+<td><code>database-migrations</code> / <code>postgres-patterns</code> / <code>clickhouse-io</code></td>
+<td>Version labels, feature snapshots, prediction logs, experiment metrics, and drift analytics</td>
+</tr>
+<tr>
+<td><code>deployment-patterns</code> / <code>docker-patterns</code></td>
+<td>Package reproducible training and serving images with health checks, resource limits, and rollback</td>
+</tr>
+<tr>
+<td><code>canary-watch</code> / <code>dashboard-builder</code></td>
+<td>Make rollout health visible with model-version, slice, drift, latency, cost, and delayed-label dashboards</td>
+</tr>
+<tr>
+<td><code>security-review</code> / <code>security-scan</code></td>
+<td>Check model artifacts, notebooks, prompts, datasets, and logs for secrets, PII, unsafe deserialization, and supply-chain risk</td>
+</tr>
+<tr>
+<td><code>e2e-testing</code> / <code>browser-qa</code> / <code>accessibility</code></td>
+<td>Test critical product flows that consume predictions, including explainability and fallback UI states</td>
+</tr>
+<tr>
+<td><code>benchmark</code> / <code>performance-optimizer</code></td>
+<td>Measure throughput, p95 latency, memory, GPU utilization, and cost per prediction or retrain</td>
+</tr>
+<tr>
+<td><code>cost-aware-llm-pipeline</code> / <code>token-budget-advisor</code></td>
+<td>Route LLM/embedding workloads by quality, latency, and budget instead of defaulting to the largest model</td>
+</tr>
+<tr>
+<td><code>documentation-lookup</code> / <code>search-first</code></td>
+<td>Verify current library behavior for model serving, feature stores, vector DBs, and eval tooling before coding</td>
+</tr>
+<tr>
+<td><code>git-workflow</code> / <code>github-ops</code> / <code>opensource-pipeline</code></td>
+<td>Package MLE changes for review with crisp scope, generated artifacts excluded, and reproducible test evidence</td>
+</tr>
+<tr>
+<td><code>strategic-compact</code> / <code>dmux-workflows</code></td>
+<td>Split long ML work into parallel tracks: data contract, eval harness, serving path, monitoring, and docs</td>
+</tr>
+</tbody>
+</table>
+<h4>Ten MLE Task Simulations</h4>
+<p>Use these simulations as coverage checks when planning or reviewing MLE work. A strong MLE workflow should reduce each task to explicit contracts, reusable SWE surfaces, automated evidence, and a reviewable artifact.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Common MLE task</th>
+<th>Streamlined ECC path</th>
+<th>Required output</th>
+<th>Pipeline lanes covered</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MLE-01</td>
+<td>Frame an ambiguous prediction, ranking, recommender, classifier, embedding, or forecast capability</td>
+<td><code>product-capability</code>, <code>plan</code>, <code>architecture-decision-records</code>, <code>mle-workflow</code></td>
+<td>Iteration Compact naming who cares, decision owner, success metric, unacceptable mistakes, assumptions, constraints, and first experiment</td>
+<td>product contract, stakeholder loss, risk, rollout</td>
+</tr>
+<tr>
+<td>MLE-02</td>
+<td>Define metric goals, labels, data sources, and the mistake budget</td>
+<td><code>repo-scan</code>, <code>database-reviewer</code>, <code>database-migrations</code>, <code>postgres-patterns</code>, <code>clickhouse-io</code></td>
+<td>Data and metric contract with entity grain, label timing, label confidence, feature timing, point-in-time joins, split policy, and dataset snapshot</td>
+<td>data contract, metric design, leakage, reproducibility</td>
+</tr>
+<tr>
+<td>MLE-03</td>
+<td>Build a baseline model and scoring path before adding complexity</td>
+<td><code>tdd-workflow</code>, <code>python-testing</code>, <code>python-patterns</code>, <code>code-reviewer</code></td>
+<td>Baseline scorer with confusion matrix, calibration notes, latency/cost estimate, known weaknesses, and tests for score shape and determinism</td>
+<td>baseline, scoring, testing, serving parity</td>
+</tr>
+<tr>
+<td>MLE-04</td>
+<td>Generate features from hypotheses about what separates outcomes</td>
+<td><code>python-patterns</code>, <code>pytorch-patterns</code>, <code>docker-patterns</code>, <code>deployment-patterns</code></td>
+<td>Feature plan and transform module covering signal source, missing values, outliers, correlations, leakage checks, and train/serve equivalence</td>
+<td>feature pipeline, leakage, training, artifacts</td>
+</tr>
+<tr>
+<td>MLE-05</td>
+<td>Tune thresholds, configs, and model complexity under tradeoffs</td>
+<td><code>eval-harness</code>, <code>ai-regression-testing</code>, <code>quality-gate</code>, <code>test-coverage</code></td>
+<td>Threshold/config report comparing precision, recall, F1, AUC, calibration, group slices, latency, cost, complexity, and acceptable error classes</td>
+<td>evaluation, threshold, promotion, regression</td>
+</tr>
+<tr>
+<td>MLE-06</td>
+<td>Run error analysis and turn mistakes into the next experiment</td>
+<td><code>eval-harness</code>, <code>ai-regression-testing</code>, <code>mle-reviewer</code>, <code>silent-failure-hunter</code></td>
+<td>Error cluster report for false positives, false negatives, ambiguous labels, stale features, missing signals, and bug traces with lessons captured</td>
+<td>error analysis, bug trace, iteration, regression</td>
+</tr>
+<tr>
+<td>MLE-07</td>
+<td>Package a model artifact for batch or online inference</td>
+<td><code>api-design</code>, <code>backend-patterns</code>, <code>security-review</code>, <code>security-scan</code></td>
+<td>Versioned artifact bundle with preprocessing, config, dependency constraints, schema validation, safe loading, and PII-safe logs</td>
+<td>artifact, security, inference contract</td>
+</tr>
+<tr>
+<td>MLE-08</td>
+<td>Ship online serving or batch scoring with feedback capture</td>
+<td><code>api-design</code>, <code>backend-patterns</code>, <code>e2e-testing</code>, <code>browser-qa</code>, <code>accessibility</code></td>
+<td>Prediction endpoint or batch job with response envelope, timeout, batching, fallback, model version, confidence, feedback logging, and product-flow tests</td>
+<td>serving, batch inference, fallback, user workflow</td>
+</tr>
+<tr>
+<td>MLE-09</td>
+<td>Roll out a model with shadow traffic, canary, A/B test, or rollback</td>
+<td><code>canary-watch</code>, <code>dashboard-builder</code>, <code>verification-loop</code>, <code>performance-optimizer</code></td>
+<td>Rollout plan naming traffic split, dashboards, p95 latency, cost, quality guardrails, rollback artifact, and rollback trigger</td>
+<td>deployment, canary, rollback</td>
+</tr>
+<tr>
+<td>MLE-10</td>
+<td>Operate, debug, and refresh a production model after launch</td>
+<td><code>silent-failure-hunter</code>, <code>dashboard-builder</code>, <code>mle-reviewer</code>, <code>doc-updater</code>, <code>github-ops</code></td>
+<td>Observation ledger and refresh plan with drift checks, delayed-label health, alert owners, runbook updates, retrain criteria, and PR evidence</td>
+<td>monitoring, incident response, retraining</td>
+</tr>
+</tbody>
+</table>
+<h4>Iteration Compact</h4>
+<p>Before touching model code, compress the work into one reviewable artifact. This should be short enough to fit in a PR description and precise enough that another engineer can challenge the tradeoffs.</p>
+<pre><code class="language-text">Goal:
+Who cares:
+Decision owner:
+User or system action changed by the model:
+Success metric:
+Guardrail metrics:
+Mistake budget:
+Unacceptable mistakes:
+Acceptable mistakes:
+Assumptions:
+Constraints:
+Labels and data snapshot:
+Baseline:
+Candidate signals:
+Threshold or config plan:
+Eval slices:
+Known risks:
+Next experiment:
+Rollback or fallback:
+</code></pre>
+<p>This compact is the MLE equivalent of a strong SWE design note. It keeps the team from optimizing a metric no one trusts, adding features that do not address the real error mode, or shipping complexity without a rollback.</p>
+<h4>Decision Brain</h4>
+<p>Use this loop whenever the task is ambiguous, high-impact, or metric-heavy:</p>
+<ol>
+<li>Start from the decision, not the model. Name the action that changes downstream behavior.</li>
+<li>Name who cares and why. Different stakeholders pay different costs for false positives, false negatives, latency, compute spend, opacity, or missed opportunities.</li>
+<li>Convert ambiguity into hypotheses. Ask what signal would separate outcomes, what evidence would disprove it, and what simple baseline should be hard to beat.</li>
+<li>Research prior art or a nearby known problem before inventing a bespoke system.</li>
+<li>Score choices with <code>(probability, confidence) x (cost, severity, importance, impact)</code>.</li>
+<li>Consider adversarial behavior, incentives, selective disclosure, distribution shift, and feedback loops.</li>
+<li>Prefer the simplest change that reduces the most important mistake. Simplicity is not laziness; it is a way to minimize blunders while preserving iteration speed.</li>
+<li>Capture the decision, evidence, counterargument, and next reversible step.</li>
+</ol>
+<h4>Metric and Mistake Economics</h4>
+<p>Choose metrics from failure costs, not habit:</p>
+<ul>
+<li>Use a confusion matrix early so the team can discuss concrete false positives and false negatives instead of abstract accuracy.</li>
+<li>Favor precision when the cost of an incorrect positive decision dominates.</li>
+<li>Favor recall when the cost of a missed positive dominates.</li>
+<li>Use F1 only when the precision/recall tradeoff is genuinely balanced and explainable.</li>
+<li>Use AUC or ranking metrics when ordering quality matters more than a single threshold.</li>
+<li>Track latency, throughput, memory, and cost as first-class metrics because they shape feasible model complexity.</li>
+<li>Compare against a baseline and the current production model before celebrating an offline gain.</li>
+<li>Treat real-world feedback signals as delayed labels with bias, lag, and coverage gaps; do not treat them as ground truth without analysis.</li>
+</ul>
+<p>Every metric choice should state which mistake it makes cheaper, which mistake it makes more likely, and who absorbs that cost.</p>
+<h4>Data and Feature Hypotheses</h4>
+<p>Features should come from a theory of separation:</p>
+<ul>
+<li>Text, categorical fields, numeric histories, graph relationships, recency, frequency, and aggregates are candidate signal families, not automatic features.</li>
+<li>For every feature family, state why it should separate outcomes and how it could leak future information.</li>
+<li>For noisy labels, consider adjudication, label confidence, soft targets, or confidence weighting.</li>
+<li>For class imbalance, compare weighted loss, resampling, threshold movement, and calibrated decision rules.</li>
+<li>For missing values, decide whether absence is informative, imputable, or a reason to abstain.</li>
+<li>For outliers, decide whether to clip, bucket, investigate, or preserve them as rare but important signal.</li>
+<li>For correlated features, check whether they are redundant, unstable, or proxies for unavailable future state.</li>
+</ul>
+<p>Do not add model complexity until error analysis shows that the baseline is failing for a reason additional signal or capacity can plausibly fix.</p>
+<h4>Error Analysis Loop</h4>
+<p>After each baseline, training run, threshold change, or config change:</p>
+<ol>
+<li>Split mistakes into false positives, false negatives, abstentions, low-confidence cases, and system failures.</li>
+<li>Cluster errors by shared traits: language, entity type, source, time, geography, device, sparsity, recency, feature freshness, label source, or model version.</li>
+<li>Separate model mistakes from data bugs, label ambiguity, product ambiguity, instrumentation gaps, and serving mismatches.</li>
+<li>Trace each major cluster to one of four moves: better labels, better features, better threshold/config, or better product fallback.</li>
+<li>Preserve every important mistake as a regression test, eval slice, dashboard panel, or runbook entry.</li>
+<li>Write the next iteration as a falsifiable experiment, not a vague &quot;improve model&quot; task.</li>
+</ol>
+<p>The strongest MLE loop is not train -&gt; metric -&gt; ship. It is mistake -&gt; cluster -&gt; hypothesis -&gt; experiment -&gt; evidence -&gt; simpler system.</p>
+<h4>Observation Ledger</h4>
+<p>Keep a compact decision and evidence trail beside the code, PR, experiment report, or runbook:</p>
+<pre><code class="language-text">Iteration:
+Change:
+Why this mattered:
+Metric movement:
+Slice movement:
+False positives:
+False negatives:
+Unexpected errors:
+Decision:
+Tradeoff accepted:
+Lesson captured:
+Regression added:
+Debt created:
+Next iteration:
+</code></pre>
+<p>Use the ledger to make model work cumulative. The goal is for each iteration to make the next decision easier, not merely to produce another artifact.</p>
+<h4>Core Workflow</h4>
+<h5>1. Define the Prediction Contract</h5>
+<p>Capture the product-level contract before writing model code:</p>
+<ul>
+<li>Prediction target and decision owner</li>
+<li>Input entity, output schema, confidence/calibration fields, and allowed latency</li>
+<li>Batch, online, streaming, or hybrid serving mode</li>
+<li>Fallback behavior when the model, feature store, or dependency is unavailable</li>
+<li>Human review or override path for high-impact decisions</li>
+<li>Privacy, retention, and audit requirements for inputs, predictions, and labels</li>
+</ul>
+<p>Do not accept &quot;improve the model&quot; as a requirement. Tie the model to an observable product behavior and a measurable acceptance gate.</p>
+<h5>2. Lock the Data Contract</h5>
+<p>Every ML task needs an explicit data contract:</p>
+<ul>
+<li>Entity grain and primary key</li>
+<li>Label definition, label timestamp, and label availability delay</li>
+<li>Feature timestamp, freshness SLA, and point-in-time join rules</li>
+<li>Train, validation, test, and backtest split policy</li>
+<li>Required columns, allowed nulls, ranges, categories, and units</li>
+<li>PII or sensitive fields that must not enter training artifacts or logs</li>
+<li>Dataset version or snapshot ID for reproducibility</li>
+</ul>
+<p>Guard against leakage first. If a feature is not available at prediction time, or is joined using future information, remove it or move it to an analysis-only path.</p>
+<h5>3. Build a Reproducible Pipeline</h5>
+<p>Training code should be runnable by another engineer without hidden notebook state:</p>
+<ul>
+<li>Use typed config files or dataclasses for all hyperparameters and paths</li>
+<li>Pin package and model dependencies</li>
+<li>Set random seeds and document any nondeterministic GPU behavior</li>
+<li>Record dataset version, code SHA, config hash, metrics, and artifact URI</li>
+<li>Save preprocessing logic with the model artifact, not separately in a notebook</li>
+<li>Keep train, eval, and inference transformations shared or generated from one source</li>
+<li>Make every step idempotent so retries do not corrupt artifacts or metrics</li>
+</ul>
+<p>Prefer immutable values and pure transformation functions. Avoid mutating shared data frames or global config during feature generation.</p>
+<pre><code class="language-python">import hashlib
+from dataclasses import dataclass
+from pathlib import Path
+
+
+@dataclass(frozen=True)
+class TrainingConfig:
+    dataset_uri: str
+    model_dir: Path
+    seed: int
+    learning_rate: float
+    batch_size: int
+
+
+def artifact_name(config: TrainingConfig, code_sha: str) -&gt; str:
+    config_key = f&quot;{config.dataset_uri}:{config.seed}:{config.learning_rate}:{config.batch_size}&quot;
+    config_hash = hashlib.sha256(config_key.encode(&quot;utf-8&quot;)).hexdigest()[:12]
+    return f&quot;{code_sha[:12]}-{config_hash}&quot;
+</code></pre>
+<h5>4. Evaluate Before Promotion</h5>
+<p>Promotion criteria should be declared before training finishes:</p>
+<ul>
+<li>Baseline model and current production model comparison</li>
+<li>Primary metric aligned to product behavior</li>
+<li>Guardrail metrics for latency, calibration, fairness slices, cost, and error concentration</li>
+<li>Slice metrics for important cohorts, geographies, devices, languages, or data sources</li>
+<li>Confidence intervals or repeated-run variance when metrics are noisy</li>
+<li>Failure examples reviewed by a human for high-impact models</li>
+<li>Explicit &quot;do not ship&quot; thresholds</li>
+</ul>
+<pre><code class="language-python">PROMOTION_GATES = {
+    &quot;auc&quot;: (&quot;min&quot;, 0.82),
+    &quot;calibration_error&quot;: (&quot;max&quot;, 0.04),
+    &quot;p95_latency_ms&quot;: (&quot;max&quot;, 80),
+}
+
+
+def assert_promotion_ready(metrics: dict[str, float]) -&gt; None:
+    missing = sorted(name for name in PROMOTION_GATES if name not in metrics)
+    if missing:
+        raise ValueError(f&quot;Model promotion metrics missing required gates: {missing}&quot;)
+
+    failures = {
+        name: value
+        for name, (direction, threshold) in PROMOTION_GATES.items()
+        for value in [metrics[name]]
+        if (direction == &quot;min&quot; and value &lt; threshold)
+        or (direction == &quot;max&quot; and value &gt; threshold)
+    }
+    if failures:
+        raise ValueError(f&quot;Model failed promotion gates: {failures}&quot;)
+</code></pre>
+<p>Use offline metrics as gates, not guarantees. When the model changes product behavior, plan shadow evaluation, canary rollout, or A/B testing before full rollout.</p>
+<h5>5. Package for Serving</h5>
+<p>An ML artifact is production-ready only when the serving contract is testable:</p>
+<ul>
+<li>Model artifact includes version, training data reference, config, and preprocessing</li>
+<li>Input schema rejects invalid, stale, or out-of-range features</li>
+<li>Output schema includes model version and confidence or explanation fields when useful</li>
+<li>Serving path has timeout, batching, resource limits, and fallback behavior</li>
+<li>CPU/GPU requirements are explicit and tested</li>
+<li>Prediction logs avoid PII and include enough identifiers for debugging and label joins</li>
+<li>Integration tests cover missing features, stale features, bad types, empty batches, and fallback path</li>
+</ul>
+<p>Never let training-only feature code diverge from serving feature code without a test that proves equivalence.</p>
+<h5>6. Operate the Model</h5>
+<p>Model monitoring needs both system and quality signals:</p>
+<ul>
+<li>Availability, error rate, timeout rate, queue depth, and p50/p95/p99 latency</li>
+<li>Feature null rate, range drift, categorical drift, and freshness drift</li>
+<li>Prediction distribution drift and confidence distribution drift</li>
+<li>Label arrival health and delayed quality metrics</li>
+<li>Business KPI guardrails and rollback triggers</li>
+<li>Per-version dashboards for canaries and rollbacks</li>
+</ul>
+<p>Every deployment should have a rollback plan that names the previous artifact, config, data dependency, and traffic-switch mechanism.</p>
+<h4>Review Checklist</h4>
+<ul>
+<li>[ ] Prediction contract is explicit and testable</li>
+<li>[ ] Data contract defines entity grain, label timing, feature timing, and snapshot/version</li>
+<li>[ ] Leakage risks were checked against prediction-time availability</li>
+<li>[ ] Training is reproducible from code, config, data version, and seed</li>
+<li>[ ] Metrics compare against baseline and current production model</li>
+<li>[ ] Slice metrics and guardrails are included for high-risk cohorts</li>
+<li>[ ] Promotion gates are automated and fail closed</li>
+<li>[ ] Training and serving transformations are shared or equivalence-tested</li>
+<li>[ ] Model artifact carries version, config, dataset reference, and preprocessing</li>
+<li>[ ] Serving path validates inputs and has timeout, fallback, and rollback behavior</li>
+<li>[ ] Monitoring covers system health, feature drift, prediction drift, and delayed labels</li>
+<li>[ ] Sensitive data is excluded from artifacts, logs, prompts, and examples</li>
+</ul>
+<h4>Anti-Patterns</h4>
+<ul>
+<li>Notebook state is required to reproduce the model</li>
+<li>Random split leaks future data into validation or test sets</li>
+<li>Feature joins ignore event time and label availability</li>
+<li>Offline metric improves while important slices regress</li>
+<li>Thresholds are tuned on the test set repeatedly</li>
+<li>Training preprocessing is copied manually into serving code</li>
+<li>Model version is missing from prediction logs</li>
+<li>Monitoring only checks service uptime, not data or prediction quality</li>
+<li>Rollback requires retraining instead of switching to a known-good artifact</li>
+</ul>
+<h4>Output Expectations</h4>
+<p>When using this skill, return concrete artifacts: data contract, promotion gates, pipeline steps, test plan, deployment plan, or review findings. Call out unknowns that block production readiness instead of filling them with assumptions.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>semgrep-rule-variant-creator · SkillHub</title>
+    <meta name="description" content="Use it when: you have a working Semgrep rule and want the same detection in Go, Java or other languages. It does: runs its plugin&#039;s workflow, which for each language judges applicability, writes tests first, translates the rule against the target&#039;s AST and fixes it until semgrep --test passes. You get: one folder per applicable language with the ported rule, renamed &lt;id&gt;-&lt;language&gt;, and its test file, plus which languages passed, failed, didn&#039;t apply or can&#039;t be parsed. Unlike: semgrep-rule-creator, which writes a new rule from a bug description; this starts from a finished rule." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=trailofbits%2Fskills">trailofbits/skills</a></p>
+      <h1>semgrep-rule-variant-creator</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you have a working Semgrep rule and want the same detection in Go, Java or other languages</dd></div><div><dt>It does</dt><dd>runs its plugin&#39;s workflow, which for each language judges applicability, writes tests first, translates the rule against the target&#39;s AST and fixes it until semgrep --test passes</dd></div><div><dt>You get</dt><dd>one folder per applicable language with the ported rule, renamed &#60;id&#62;-&#60;language&#62;, and its test file, plus which languages passed, failed, didn&#39;t apply or can&#39;t be parsed</dd></div><div><dt>Unlike</dt><dd>semgrep-rule-creator, which writes a new rule from a bug description; this starts from a finished rule</dd></div></dl></section>
+      
+      <p class="note">Needs the Semgrep CLI. Ports run through its plugin&#39;s /semgrep-rule-variant-creator:port-rule-to-languages workflow, so install the plugin from the trailofbits/skills marketplace; a single language can also be ported by hand.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>From Trail of Bits. Each language goes through four phases on its own. Applicability asks whether the bug class, and an equivalent of each source, sink and sanitizer, exist there; a not-applicable verdict goes to an independent refuter before the language is dropped, and whether Semgrep can parse the language at all is checked separately, since Perl has no frontend and Elixir&#39;s parser is Pro-only. Tests come next: at least two vulnerable and two safe cases, including the language&#39;s own idiomatic safe form. Translation follows the target&#39;s AST rather than how the source looks, keeps the original&#39;s intent and mode, and records where it was ported from. Validation must end with all tests passing on the Semgrep version recorded at the start, and the workflow retries failed validation up to three times. It warns that &#34;all tests passed&#34; can mean zero tests were graded, and that a green port is a candidate for review, not proof the bug exists there. It ports only what you asked for, without fixing the original or adding languages. For a single language you can run the phases by hand.</p>
+      <p class="muted">Summarizes <a href="https://github.com/trailofbits/skills/tree/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/semgrep-rule-variant-creator/skills/semgrep-rule-variant-creator">the skill at e4dd0bb</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/trailofbits/skills --skill semgrep-rule-variant-creator</code><button type="button" class="copy" data-copy="npx skills add https://github.com/trailofbits/skills --skill semgrep-rule-variant-creator">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/trailofbits/skills/semgrep-rule-variant-creator">skills.sh page</a> · <a href="https://github.com/trailofbits/skills/tree/HEAD/plugins/semgrep-rule-variant-creator/skills/semgrep-rule-variant-creator">Source on GitHub</a> · <a href="/skillhub/?repo=trailofbits%2Fskills">All skills from trailofbits/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,600 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>8,053 <span class="muted">trailofbits/skills</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">177</div>
+      <div class="stat-delta">+55% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 114; week to Sep 26: 104; week to Oct 3: 102; week to Oct 10: 94; week to Oct 17: 116; week to Oct 24: 125; week to Oct 31: 146; week to Nov 7: 177. Use the left and right arrow keys to read each week."
+        data-values="114,104,102,94,116,125,146,177" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,21.7 38.6,24.1 71.1,24.6 103.7,26.6 136.3,21.2 168.9,18.9 201.4,13.7 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>114</td></tr><tr><td>Sep 26</td><td>104</td></tr><tr><td>Oct 3</td><td>102</td></tr><tr><td>Oct 10</td><td>94</td></tr><tr><td>Oct 17</td><td>116</td></tr><tr><td>Oct 24</td><td>125</td></tr><tr><td>Oct 31</td><td>146</td></tr><tr><td>Nov 7</td><td>177</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/skillhub/?tag=category%3Asecurity">category:security</a><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a><a class="tag" data-tag="needs:subagents" data-facet="needs" title="Relies on the agent being able to spawn subagents." href="/skillhub/?tag=needs%3Asubagents">needs:subagents</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">Relies on the agent being able to spawn subagents.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a><a class="tag" data-tag="code-review" data-facet="topic" href="/skillhub/?tag=code-review">code-review</a><a class="tag" data-tag="code-quality" data-facet="topic" href="/skillhub/?tag=code-quality">code-quality</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:semgrep" data-facet="stack" href="/skillhub/?tag=stack%3Asemgrep">stack:semgrep</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/semgrep-rule-variant-creator/skills/semgrep-rule-variant-creator/SKILL.md">trailofbits/skills at e4dd0bb</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: semgrep-rule-variant-creator
+description: Creates language variants of existing Semgrep rules. Use when porting a Semgrep rule to specified target languages. Takes an existing rule and target languages as input, produces independent rule+test directories for each language.
+allowed-tools: Bash Read Write Edit Glob Grep WebFetch Workflow</code></pre></details>
+        <div class="markdown"><h3>Semgrep Rule Variant Creator</h3>
+<p>Port an existing Semgrep rule to other languages, one independent test-driven cycle per
+language.</p>
+<p>For a new rule rather than a port, use <code>semgrep-rule-creator</code> — it takes a bug pattern
+description where this skill takes a finished rule. That skill is also the reference for
+rule-writing fundamentals: taint mode versus pattern matching, why tests come first, and
+how to narrow a rule once it passes. Porting applies those same judgments in a new
+language, so start there when the rule structure itself is the open question.</p>
+<h4>Run it as a workflow</h4>
+<p>Porting is the same four phases repeated per language, so the orchestration ships as a
+dynamic workflow rather than as instructions to re-follow each run:</p>
+<pre><code>/semgrep-rule-variant-creator:port-rule-to-languages
+</code></pre>
+<p>Pass the three required arguments, and <code>outputDir</code> unless the working directory is where you
+want the variants. One language per entry: <code>&quot;Go and Java&quot;</code> ports a single language named after
+the phrase, and the script rejects it.</p>
+<p><code>referencesDir</code> has to be a resolved absolute path. Resolve it here, because no workflow script
+can expand a variable. Try in order, first hit wins — the <code>-d</code> is the point, since a bare <code>ls</code>
+prints the names of the files inside the directory rather than the directory itself and leaves
+nothing to copy:</p>
+<ol>
+<li><strong>Claude Code</strong> — <code>ls -d -- &quot;${CLAUDE_PLUGIN_ROOT}/skills/semgrep-rule-variant-creator/references&quot;</code></li>
+<li><strong>Codex</strong> — the same command with <code>${CODEX_PLUGIN_ROOT}</code>, if that variable is set instead</li>
+<li><strong>Neither set</strong> — resolve <code>{baseDir}/references</code> from the directory containing this loaded
+SKILL.md and print its absolute path with <code>ls -d -- &quot;&lt;resolved path&gt;&quot;</code>. Do not search caches
+or the target project for another copy.</li>
+</ol>
+<p>Then confirm the directory that printed holds both reference files, with <code>ls -1 -- &quot;&lt;that path&gt;&quot;</code>.</p>
+<p>Pass the path exactly as printed. If all three come back empty, stop and say so rather than
+assembling a path by hand: the script rejects a relative path and an unexpanded token, but a
+hand-built absolute path that happens not to exist clears every guard it has, and the run then
+reports every language as passed having read no guidance at all.</p>
+<pre><code class="language-json">{
+  &quot;rulePath&quot;: &quot;&lt;path to the rule being ported&gt;&quot;,
+  &quot;languages&quot;: [&quot;Go&quot;, &quot;Java&quot;],
+  &quot;referencesDir&quot;: &quot;&lt;the absolute path the ls above printed&gt;&quot;,
+  &quot;outputDir&quot;: &quot;&lt;where the variant directories should land&gt;&quot;
+}
+</code></pre>
+<p>A workflow script cannot expand <code>{baseDir}</code> or <code>${CLAUDE_PLUGIN_ROOT}</code>, and has no filesystem
+access to notice that it did not; an installed plugin does not sit in the user's project
+either, so <code>referencesDir</code> is the only route by which the references below reach the phase
+agents. The script rejects a run that omits it and one that passes a token instead of a path,
+rather than porting without them, since a port made without this guidance still reports every
+language as passed. <code>outputDir</code> is the one optional argument, defaulting to the working
+directory, which is rarely what you want inside a repository.</p>
+<p>It reads the rule once, then runs each language through the full cycle independently, and
+reports which languages passed, which failed validation, which it judged not applicable, which
+Semgrep cannot analyze at all, and which it stopped on — a language key it does not recognize,
+two entries resolving to one directory, or a refuter that never reported back. A stop names
+what to change and will happen again on a re-run, which is what separates it from an agent that
+died. The rule travels as a path, not as text: every phase
+reads the file, because an agent asked to repeat a rule back verbatim does not — one
+HTML-escaped <code>&lt;</code> and <code>&gt;</code> and broke the <code>&lt;... ...&gt;</code> operator for every phase downstream.</p>
+<p>If a run is interrupted while the session is still alive — you stopped it, or an agent hit a
+terminal error — relaunch it with
+<code>Workflow({scriptPath: &quot;…&quot;, resumeFromRunId: &quot;&lt;runId&gt;&quot;, args: {…}})</code>, passing the same
+arguments again. Arguments are not saved with a run, so a resume that omits them fails the
+pre-flight check above before replaying anything; with them, languages that finished replay
+from cache and only the unfinished ones re-run.</p>
+<p>Resume is same-session only, which rules it out for the interruption a long port is most
+likely to hit: a session limit ends the session, and runs are stored under that session's own
+directory, so the next session cannot reach them. A run id it cannot resolve is not an error
+either — the workflow starts from scratch under that id and re-runs every language at full
+cost, with nothing saying so. Check the id is still there before counting on a resume:</p>
+<pre><code>ls -d ~/.claude/projects/*/*/subagents/workflows/*/
+</code></pre>
+<p>That is where runs land today rather than a documented interface, so an empty result may mean the
+layout moved rather than that the run is gone. The safe reading is the same either way: if you
+cannot confirm the id, or the session ended, re-invoke with the same arguments and point
+<code>outputDir</code> somewhere fresh. The script never deletes a directory, so a language that flipped to
+<code>NOT_APPLICABLE</code> on the second run leaves the first run's variant behind.</p>
+<p>The script is <code>workflows/port-rule-to-languages.js</code> at the plugin root. It pins a
+reasoning effort per phase — cheap to read the rule, highest for translation and for the
+fix-until-green loop — and encodes the phase order, so a rule cannot be written before
+the tests that specify it. It also keeps the two decisions that have no oracle out of any
+single agent's hands: a <code>NOT_APPLICABLE</code> verdict goes to an independent refuter before the
+language is dropped, and failed validation is retried up to three times rather than
+trusting one agent to iterate until green.</p>
+<p>Run the phases by hand when you are porting to a single language and want to stay in the
+loop, or when a port is already half-finished and you only need one phase. The workflow is
+the only delegation a port needs: one agent to read the rule, and four per language when
+the port goes green first try — a refuted verdict adds one, and so does each validation
+retry. Nothing else here is large or independent enough to be worth its own agent, so
+running a phase by hand means doing it yourself rather than handing it to a subagent.</p>
+<h4>The four phases</h4>
+<p>Each language runs all four before its variant is finished. A language that fails
+validation is unfinished; a language judged not applicable produces no directory.</p>
+<p><strong>1. Applicability analysis</strong> — decide whether the pattern belongs in the target language
+at all: does the vulnerability class exist there, does an equivalent construct exist for
+each source, sink, and sanitizer, and would the ported rule detect real risk rather than
+a surface syntax match. Verdict is <code>APPLICABLE</code>, <code>APPLICABLE_WITH_ADAPTATION</code>, or
+<code>NOT_APPLICABLE</code>. <code>NOT_APPLICABLE</code> is the one verdict nothing downstream can contradict —
+it produces no tests, no rule, and no directory — so it earns a second opinion before you
+act on it. Answered separately, by running Semgrep: can Semgrep read this language at all?
+Perl has no frontend and Elixir's parser is Pro-only, and in both cases the bug class is
+present while the rule is ungradeable — a different finding from <code>NOT_APPLICABLE</code>, which
+claims the bug class is absent. See
+<a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/semgrep-rule-variant-creator/skills/semgrep-rule-variant-creator/%7BbaseDir%7D/references/applicability-analysis.md">applicability-analysis.md</a>
+for worked examples of each verdict.</p>
+<p><strong>2. Test creation</strong> — write the test file first, in idiomatic target-language code. At
+least two <code>ruleid:</code> cases and two <code>ok:</code> cases, each annotation on the line immediately
+above the code it grades. Include the safe form that is the language's own idiom for
+doing the thing correctly, since that is the false positive a port most often invents.</p>
+<p><strong>3. Rule translation</strong> — dump the AST for the target language and translate against what
+it shows, because pattern shape follows AST shape rather than source resemblance. Keep the
+original's detection intent and mode; change the id to <code>&lt;original-id&gt;-&lt;language&gt;</code>, the
+<code>languages</code> key, and add <code>original-rule</code> and <code>ported-from</code> metadata. See
+<a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/semgrep-rule-variant-creator/skills/semgrep-rule-variant-creator/%7BbaseDir%7D/references/language-syntax-guide.md">language-syntax-guide.md</a>.</p>
+<p><strong>4. Validation</strong> — <code>semgrep --test</code> is the acceptance criterion, and it must report that
+all tests passed. Missed lines mean the pattern is narrower than the vulnerability;
+incorrect lines mean it is broader. The test file is the specification, so fix the rule to
+satisfy it. Stopping while tests still fail leaves the language unfinished, not done. See
+<a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/semgrep-rule-variant-creator/skills/semgrep-rule-variant-creator/%7BbaseDir%7D/references/workflow.md">workflow.md</a> for reading a test failure and for
+troubleshooting when a pattern will not match or taint will not propagate.</p>
+<p>The acceptance criterion is one specific Semgrep: the version recorded when the rule was
+read. Switching binaries to get a green is the failure this guards against — an agent that
+could not pass its Elixir tests installed the last OSS build shipping the Elixir parser and
+reported its genuine &quot;All tests passed&quot; for a port that is red here. Two other greens mean
+nothing: a rule Semgrep <em>skipped</em> still ends its run in &quot;All tests passed&quot;, and so does a
+test file whose extension Semgrep does not associate with the rule's language, since it
+graded zero tests either way.</p>
+<h4>Output</h4>
+<p>One directory per applicable language, holding the ported rule and its test file:</p>
+<pre><code>python-command-injection-go/
+├── python-command-injection-go.yaml
+└── python-command-injection-go.go
+</code></pre>
+<p><code>All tests passed</code> means the rule and its test file agree with each other; it is not
+evidence that the vulnerability class is exploitable in the target language, since the same
+cycle wrote both, so treat a finished variant as a candidate for review rather than a
+validated rule.</p>
+<h4>Scope and reporting</h4>
+<p>Port the rule you were handed to the languages you were asked for. Do not repair the
+original, widen it to catch a nearby bug class, or add a language nobody named; if the
+original looks wrong or an obvious target is missing, say so in one sentence and carry on
+with the port as asked. Every language you were given gets finished — a port is done when
+its tests pass, not when its files exist.</p>
+<p>Keep prose short and spend it on the result. Before the first tool call, say in one
+sentence what you are about to do. While a port runs, speak up when a verdict changes,
+when the target needs a pattern shape the original does not have, or when the tests will
+not go green — not on every <code>semgrep --test</code> iteration. Then lead with the outcome: the
+first sentence says which languages passed, which failed validation, which were not
+applicable, and which Semgrep cannot analyze, with the detail after it. Correct an earlier statement when the error changes
+the rule, the verdict, or what to do next, then keep going; a slip that changes nothing
+needs no note.</p>
+<p>Rule and test files are the size of the problem. A test file earns its length from
+distinct constructs and distinct safe forms rather than from restatements of the same
+case, and neither file needs comments repeating what the code already says.</p>
+<h4>Rationalizations to Reject</h4>
+<table>
+<thead>
+<tr>
+<th>Rationalization</th>
+<th>Why It Fails</th>
+<th>Correct Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;Pattern structure is identical&quot;</td>
+<td>Different ASTs across languages</td>
+<td>Always dump AST for target language</td>
+</tr>
+<tr>
+<td>&quot;Same vulnerability, same detection&quot;</td>
+<td>Data flow differs between languages</td>
+<td>Analyze target language idioms</td>
+</tr>
+<tr>
+<td>&quot;Rule doesn't need tests since original worked&quot;</td>
+<td>Language edge cases differ</td>
+<td>Write NEW test cases for target</td>
+</tr>
+<tr>
+<td>&quot;Skip applicability - it obviously applies&quot;</td>
+<td>Some patterns are language-specific</td>
+<td>Complete applicability analysis first</td>
+</tr>
+<tr>
+<td>&quot;I'll create all variants then test&quot;</td>
+<td>Errors compound, hard to debug</td>
+<td>Finish each language before the next</td>
+</tr>
+<tr>
+<td>&quot;Library equivalent is close enough&quot;</td>
+<td>Surface similarity hides differences</td>
+<td>Verify API semantics match</td>
+</tr>
+<tr>
+<td>&quot;Just translate the syntax 1:1&quot;</td>
+<td>Languages have different idioms</td>
+<td>Research target language patterns</td>
+</tr>
+<tr>
+<td>&quot;Most tests pass&quot;</td>
+<td>A partial rule reports partial truth</td>
+<td><code>All tests passed</code>, or the port is unfinished</td>
+</tr>
+<tr>
+<td>&quot;An older semgrep still parses this language&quot;</td>
+<td>A green nobody can reproduce on the semgrep the rule must run under</td>
+<td>Report the failing output and say the parser is Pro-only</td>
+</tr>
+<tr>
+<td>&quot;The class exists there, so the rule ports&quot;</td>
+<td>Semgrep has no Perl frontend and Elixir's is Pro-only; taint no-ops silently</td>
+<td>Confirm semgrep can read the language before porting</td>
+</tr>
+<tr>
+<td>&quot;Semgrep said all tests passed&quot;</td>
+<td>It says that over zero graded tests, for a rule it skipped or a file it never matched</td>
+<td>Check the rule ran and the test file's extension matches</td>
+</tr>
+</tbody>
+</table>
+<h4>Quick Reference</h4>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Run tests</td>
+<td><code>semgrep --test --config rule.yaml test-file</code></td>
+</tr>
+<tr>
+<td>Validate YAML</td>
+<td><code>semgrep --validate --config rule.yaml</code></td>
+</tr>
+<tr>
+<td>Dump AST</td>
+<td><code>semgrep --dump-ast -l &lt;lang&gt; &lt;file&gt;</code></td>
+</tr>
+<tr>
+<td>Debug taint flow</td>
+<td><code>semgrep --dataflow-traces -f rule.yaml file</code></td>
+</tr>
+</tbody>
+</table>
+<h4>Documentation</h4>
+<ul>
+<li><a href="https://semgrep.dev/docs/writing-rules/pattern-syntax">Pattern Syntax</a> — metavariables and matching</li>
+<li><a href="https://semgrep.dev/docs/writing-rules/pattern-examples">Pattern Examples</a> — per-language references, the most useful page when translating</li>
+<li><a href="https://semgrep.dev/docs/writing-rules/testing-rules">Testing Rules</a> — annotation semantics</li>
+<li><a href="https://appsec.guide/docs/static-analysis/semgrep/advanced/">Trail of Bits Testing Handbook</a> — advanced taint patterns</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

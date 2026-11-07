@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>skill-improver · SkillHub</title>
+    <meta name="description" content="Use it when: a skill you&#039;re writing has quality problems and you want them fixed until it passes review, or to resume after the loop escalated. It does: starts the code-improver plugin&#039;s background workflow, which alternates the plugin-dev skill-reviewer agent with a fixer agent round after round. You get: fixes in your working tree, a findings ledger on disk, and a result: converged, capped but not converged, escalated or halted. Stops: on a clean review, at 5 rounds by default, when fixes stop converging, or when a change falls outside the skill&#039;s plugin folder. Unlike: a one-time review by the skill-reviewer agent, it keeps fixing and re-reviewing until a review comes back clean. Needs: Claude Code&#039;s Workflow tool, the code-improver plugin it ships in, and the plugin-dev plugin from claude-plugins-official." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=trailofbits%2Fskills">trailofbits/skills</a></p>
+      <h1>skill-improver</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>a skill you&#39;re writing has quality problems and you want them fixed until it passes review, or to resume after the loop escalated</dd></div><div><dt>It does</dt><dd>starts the code-improver plugin&#39;s background workflow, which alternates the plugin-dev skill-reviewer agent with a fixer agent round after round</dd></div><div><dt>You get</dt><dd>fixes in your working tree, a findings ledger on disk, and a result: converged, capped but not converged, escalated or halted</dd></div><div><dt>Stops</dt><dd>on a clean review, at 5 rounds by default, when fixes stop converging, or when a change falls outside the skill&#39;s plugin folder</dd></div><div><dt>Unlike</dt><dd>a one-time review by the skill-reviewer agent, it keeps fixing and re-reviewing until a review comes back clean</dd></div><div><dt>Needs</dt><dd>Claude Code&#39;s Workflow tool, the code-improver plugin it ships in, and the plugin-dev plugin from claude-plugins-official</dd></div></dl></section>
+      
+      <p class="note">Runs the code-improver plugin&#39;s improve.js workflow, which sits outside the skill folder, with the plugin-dev plugin&#39;s skill-reviewer agent: install code-improver from the trailofbits/skills marketplace and plugin-dev from claude-plugins-official. It needs Claude Code&#39;s Workflow tool.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>From Trail of Bits&#39; code-improver plugin. The skill finds the target skill, by path or by name among the repo&#39;s SKILL.md files, hands it to the plugin&#39;s workflow and relays the outcome; if the Workflow tool or the reviewer is missing it stops instead of improvising, because an inline loop has none of the guarantees. The ledger gives each finding a stable id and one verdict, fixed, rejected with a reason, or deferred, and is saved every round, so an escalated or interrupted run resumes without starting over. The loop escalates when blocking counts stop falling over three rounds, the same finding stays open three rounds in a row, or a finding is fixed twice; continuing means a fresh run with your decision passed in verbatim. A git-diff check after every fix round halts on any change outside the scope. Before finishing, a last pass strips loop narration, collapses version bumps to one and checks the docs against the code, and its own edits are checked too. Nothing is committed.</p>
+      <p class="muted">Summarizes <a href="https://github.com/trailofbits/skills/tree/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/code-improver/skills/skill-improver">the skill at e4dd0bb</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/trailofbits/skills --skill skill-improver</code><button type="button" class="copy" data-copy="npx skills add https://github.com/trailofbits/skills --skill skill-improver">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/trailofbits/skills/skill-improver">skills.sh page</a> · <a href="https://github.com/trailofbits/skills/tree/HEAD/plugins/code-improver/skills/skill-improver">Source on GitHub</a> · <a href="/skillhub/?repo=trailofbits%2Fskills">All skills from trailofbits/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,300 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>8,053 <span class="muted">trailofbits/skills</span></dd></div><div><dt>First seen</dt><dd>Feb 26, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">173</div>
+      <div class="stat-delta">+45% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 119; week to Sep 26: 106; week to Oct 3: 107; week to Oct 10: 103; week to Oct 17: 121; week to Oct 24: 125; week to Oct 31: 153; week to Nov 7: 173. Use the left and right arrow keys to read each week."
+        data-values="119,106,107,103,121,125,153,173" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,19.7 38.6,23.0 71.1,22.8 103.7,23.8 136.3,19.2 168.9,18.2 201.4,11.1 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>119</td></tr><tr><td>Sep 26</td><td>106</td></tr><tr><td>Oct 3</td><td>107</td></tr><tr><td>Oct 10</td><td>103</td></tr><tr><td>Oct 17</td><td>121</td></tr><tr><td>Oct 24</td><td>125</td></tr><tr><td>Oct 31</td><td>153</td></tr><tr><td>Nov 7</td><td>173</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:skill-tools" data-facet="category" title="Find, write, vet and route to other skills." href="/skillhub/?tag=category%3Askill-tools">category:skill-tools</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Find, write, vet and route to other skills.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:claude-code" data-facet="needs" title="Uses Claude Code features such as hooks or background agents." href="/skillhub/?tag=needs%3Aclaude-code">needs:claude-code</a><a class="tag" data-tag="needs:subagents" data-facet="needs" title="Relies on the agent being able to spawn subagents." href="/skillhub/?tag=needs%3Asubagents">needs:subagents</a></div>
+          <p class="tag-meaning">Uses Claude Code features such as hooks or background agents.</p><p class="tag-meaning">Relies on the agent being able to spawn subagents.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="skill-authoring" data-facet="topic" href="/skillhub/?tag=skill-authoring">skill-authoring</a><a class="tag" data-tag="code-review" data-facet="topic" href="/skillhub/?tag=code-review">code-review</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:claude" data-facet="stack" href="/skillhub/?tag=stack%3Aclaude">stack:claude</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/code-improver/skills/skill-improver/SKILL.md">trailofbits/skills at e4dd0bb</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: skill-improver
+description: &#34;Runs an autonomous review-and-fix improvement loop over a Claude Code skill until a review comes back clean, with a cross-round findings ledger, escalation when fixes stop converging, and a mechanical scope guard. Reviews are performed by the plugin-dev skill-reviewer agent. Use to fix skill quality issues, iteratively refine a skill, or resume a loop after an escalation (&#39;fix my skill&#39;, &#39;improve this skill until it passes review&#39;, &#39;skill improvement loop&#39;). NOT for a one-time review — use the plugin-dev skill-reviewer agent directly.&#34;
+argument-hint: &#34;&#60;SKILL_NAME_OR_PATH&#62; [--max-rounds N]&#34;
+allowed-tools: Bash Glob Read TaskOutput TaskStop Workflow</code></pre></details>
+        <div class="markdown"><h3>Skill Improver</h3>
+<p>Improve a Claude Code skill by running <code>/code-improver:improve</code> — a dynamic workflow
+that loops a reviewer and a fixer subagent until a review reports zero critical/major
+findings, then strips its own residue. This entry point wires the loop to the
+<code>plugin-dev:skill-reviewer</code> agent, so the <strong>plugin-dev plugin must be installed</strong>
+(marketplace <code>claude-plugins-official</code>). The loop, its ledger, and its guards live in
+the workflow; this skill resolves the target and relays the outcome.</p>
+<h4>Starting the loop</h4>
+<p>The user provided: <code>$ARGUMENTS</code> (if empty, take the target skill from the conversation).</p>
+<h5>1. Resolve the skill path</h5>
+<ol>
+<li>If the input ends with <code>/SKILL.md</code> and the file exists, use its directory</li>
+<li>If the input is a directory containing <code>SKILL.md</code>, use that path</li>
+<li>Otherwise <code>Glob(pattern=&quot;**/SKILL.md&quot;)</code> and filter by skill name or path substring:
+<ul>
+<li><strong>Multiple matches:</strong> ask the user to choose</li>
+<li><strong>No matches:</strong> report the available skills</li>
+<li><strong>Single match:</strong> proceed</li>
+</ul>
+</li>
+</ol>
+<h5>2. Resolve the loop script</h5>
+<p>Resolve <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/code-improver/workflows/improve.js"><code>improve.js</code></a> from this SKILL.md's installed location
+to an absolute path and confirm the file exists. Its plugin directory is <code>pluginRoot</code>.
+Use this exact plugin copy; if the file is missing, stop.</p>
+<h5>3. Invoke the workflow</h5>
+<p>Run it with the Workflow tool, <code>{scriptPath: &quot;&lt;the path from step 2&gt;&quot;, args: {...}}</code>:</p>
+<pre><code class="language-json">{
+  &quot;target&quot;: &quot;&lt;resolved absolute path&gt;&quot;,
+  &quot;reviewer&quot;: {
+    &quot;kind&quot;: &quot;agent&quot;,
+    &quot;name&quot;: &quot;plugin-dev:skill-reviewer&quot;,
+    &quot;notes&quot;: &quot;The target is a Claude Code skill directory; review it as a skill (frontmatter, triggering description, progressive disclosure, referenced files).&quot;
+  },
+  &quot;pluginRoot&quot;: &quot;&lt;the plugin directory from step 2&gt;&quot;,
+  &quot;maxRounds&quot;: 5
+}
+</code></pre>
+<ul>
+<li><code>maxRounds</code> only if the user asked for a different cap (<code>--max-rounds N</code>).</li>
+<li><code>pluginRoot</code> is the resolved plugin directory from step 2, for the metrics collector.</li>
+<li><code>scope</code> (repo-relative globs) only if the user restricted or widened what the loop may
+touch; by default the workflow scopes to the skill's plugin directory.</li>
+<li><code>decision</code> only on continuation (below).</li>
+</ul>
+<p>The workflow runs in the background and needs no babysitting: it reviews, fixes,
+re-reviews, checks scope after every fix round, and can only complete on a clean review.
+It never commits; all changes stay in the working tree.</p>
+<p><strong>If the Workflow tool is unavailable or denied, stop and say so.</strong> Do not improvise the
+loop inline with direct edits — the ledger, scope guard, and escalation guarantees live
+in the workflow, and an inline imitation has none of them (observed failure: an inline
+fallback &quot;fixed&quot; a finding by weakening the documented guarantee, exactly what the loop
+exists to prevent).</p>
+<p><strong>If the result is <code>halted: &quot;reviewer-unavailable&quot;</code>, relay it and stop.</strong> The reviewer
+this skill names is not installed; tell the user to install the <code>plugin-dev</code> plugin from
+the <code>claude-plugins-official</code> marketplace and re-run. Do not review the skill yourself.</p>
+<p><strong>Do not end your turn while the loop is running.</strong> The Workflow tool returns a task id
+immediately; the result comes later. In an interactive session the completion
+notification re-invokes you — wait for it. In a non-interactive run (scripted, CI, eval)
+there is no later turn: stopping abandons the loop mid-round, so after launching, poll
+the task (TaskOutput with the returned task id, or sleep-and-recheck) until it completes,
+then relay the result. A session that answers &quot;the loop is running, I'll report later&quot;
+has lost the run.</p>
+<h4>Relaying the result</h4>
+<p>The workflow returns a structured result. Report it honestly — the distinctions matter:</p>
+<ul>
+<li><strong><code>converged: true</code></strong> — the last action was a review with zero critical/major findings.
+Report rounds used, remaining minor findings (<code>open_minor_count</code>), and the artifact
+paths (<code>ledger_path</code>, <code>metrics</code>).</li>
+<li><strong><code>capped: true</code></strong> — the fix budget ran out and the FINAL review still found blocking
+issues. Say plainly: <strong>capped, NOT converged</strong>, and list <code>open_blocking</code>. Do not
+present this as success.</li>
+<li><strong><code>escalation</code></strong> — the loop detected it was not converging (recurring findings,
+non-decreasing counts, or a fix relocating a problem). Relay the escalation message and
+finding ids to the user: this needs a design decision, not more rounds.</li>
+<li><strong><code>halted</code></strong> — a guard fired (scope violation, unregistered new files, a dead or
+unavailable reviewer, or a finalize pass whose own edits failed the check that follows
+it). Relay the paths in <code>violations</code>/<code>new_untracked_files</code>, the sites in
+<code>finalize_regressions</code>, and the notes.</li>
+<li><strong><code>notes</code></strong> always travel with the result — surface them; they include loud warnings
+such as &quot;a git repository was initialized&quot;.</li>
+</ul>
+<h4>Continuing after an escalation</h4>
+<p>The loop stops on escalation by design. When the user decides (e.g. &quot;keep the blocklist
+and document the limitation&quot;), start a fresh run with the same <code>target</code> plus:</p>
+<pre><code class="language-json">{ &quot;decision&quot;: &quot;&lt;the user's ruling, verbatim&gt;&quot; }
+</code></pre>
+<p>The new run reloads the on-disk ledger, so every finding, rejection, and verdict carries
+over — rounds restart, re-derivation does not.</p>
+<p>To stop a running loop, stop the workflow task (TaskStop); the ledger on disk is current
+to the last round and a re-run resumes from it.</p>
+<h4>What the loop enforces (so you do not have to)</h4>
+<ul>
+<li><strong>Fix verification</strong> — the next review verifies every fix; fixes to executable
+behavior carry pins that fail against the pre-fix code.</li>
+<li><strong>Scope</strong> — a mechanical git-diff check after every fix round, and after the finalize
+pass, halts on any out-of-scope change; out-of-scope files git does not track are
+guarded by content hash, since no diff would show them; completion also requires no
+unregistered new files in scope.</li>
+<li><strong>Report everything</strong> — reviewers report all findings with severity; filtering happens
+once, at the ledger verdict, and rejections are not re-litigated without new evidence.</li>
+<li><strong>Finalize</strong> — before completion the loop strips narration comments, collapses version
+churn to exactly one bump (in <code>plugin.json</code> and the marketplace entry that repeats it),
+and runs a docs-match-code pass. Those edits land after the last review, so a check
+reads them: an over-eager narration strip or a false docs claim halts with
+<code>finalize-regression</code> instead of passing as done.</li>
+</ul>
+<h4>When NOT to use</h4>
+<ul>
+<li><strong>One-time review</strong>: dispatch the <code>plugin-dev:skill-reviewer</code> agent directly</li>
+<li><strong>Quick single fixes</strong>: edit the file directly</li>
+<li><strong>Non-skill targets</strong>: use the <code>code-improver</code> skill with a reviewer that fits the
+target, or <code>pr-improver</code> for a branch</li>
+<li><strong>Exploratory drafting</strong>: manual iteration gives more control while the shape is fluid</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

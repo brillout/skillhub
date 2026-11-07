@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>video-use · SkillHub</title>
+    <meta name="description" content="Use it when: you have raw takes, such as a talking head, tutorial, interview or travel footage, and want an edited video without a timeline editor. It does: transcribes every take word by word, proposes a plan in plain English, and edits only after you approve it. You get: final.mp4, with subtitles if you want them, plus an edit decision list and a project.md memory, all in an edit/ folder beside your footage. Checks: its render at every cut for flashes, audio pops and hidden subtitles, and measures loudness, up to three passes before you see it. Needs: ffmpeg, the cloned repo&#039;s Python helpers, an ElevenLabs key, and subagents for animations." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=browser-use%2Fvideo-use">browser-use/video-use</a></p>
+      <h1>video-use</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you have raw takes, such as a talking head, tutorial, interview or travel footage, and want an edited video without a timeline editor</dd></div><div><dt>It does</dt><dd>transcribes every take word by word, proposes a plan in plain English, and edits only after you approve it</dd></div><div><dt>You get</dt><dd>final.mp4, with subtitles if you want them, plus an edit decision list and a project.md memory, all in an edit/ folder beside your footage</dd></div><div><dt>Checks</dt><dd>its render at every cut for flashes, audio pops and hidden subtitles, and measures loudness, up to three passes before you see it</dd></div><div><dt>Needs</dt><dd>ffmpeg, the cloned repo&#39;s Python helpers, an ElevenLabs key, and subagents for animations</dd></div></dl></section>
+      
+      <p class="note">Needs an ElevenLabs API key: it uploads the audio of your footage to ElevenLabs Scribe for transcription. Set it up once with the repo&#39;s install.md, which clones video-use and installs ffmpeg and its Python helpers.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Video Use treats the transcript as the main view of your footage. It transcribes each source with ElevenLabs Scribe at word level, caches the result, and packs it into a phrase-level file the agent reads to choose cuts, looking at frames only at decision points. It describes the material, asks questions shaped by it, and proposes a strategy of four to eight sentences covering shape, takes, cuts, animations, grade and subtitles. Once you confirm, it writes an edit decision list, with an editor subagent picking the best take of each beat when there are many; cuts snap to word boundaries with padding and 30ms audio fades, color grades apply per segment, and animations are built in parallel subagents with HyperFrames, Remotion, Manim or PIL. Subtitles, when you want them, always go on last so overlays can&#39;t hide them. It previews at 720p, inspects every cut boundary of the render and measures loudness, and for anything you&#39;ll publish a critic subagent roasts the cut. Feedback leads to re-renders without re-transcribing, and each session is logged in project.md for next time.</p>
+      <p class="muted">Summarizes <a href="https://github.com/browser-use/video-use/tree/43cfc566833548093455c9d4a46bd69913b7e552">the skill at 43cfc56</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/browser-use/video-use --skill video-use</code><button type="button" class="copy" data-copy="npx skills add https://github.com/browser-use/video-use --skill video-use">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/browser-use/video-use/video-use">skills.sh page</a> · <a href="https://github.com/browser-use/video-use">Source on GitHub</a> · <a href="/skillhub/?repo=browser-use%2Fvideo-use">All skills from browser-use/video-use</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,600 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>30,667 <span class="muted">browser-use/video-use</span></dd></div><div><dt>First seen</dt><dd>Apr 16, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">291</div>
+      <div class="stat-delta">+112% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 137; week to Sep 26: 139; week to Oct 3: 171; week to Oct 10: 199; week to Oct 17: 227; week to Oct 24: 260; week to Oct 31: 328; week to Nov 7: 291. Use the left and right arrow keys to read each week."
+        data-values="137,139,171,199,227,260,328,291" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,31.6 38.6,31.4 71.1,27.1 103.7,23.3 136.3,19.5 168.9,15.1 201.4,6.0 234.0,11.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="11.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>137</td></tr><tr><td>Sep 26</td><td>139</td></tr><tr><td>Oct 3</td><td>171</td></tr><tr><td>Oct 10</td><td>199</td></tr><tr><td>Oct 17</td><td>227</td></tr><tr><td>Oct 24</td><td>260</td></tr><tr><td>Oct 31</td><td>328</td></tr><tr><td>Nov 7</td><td>291</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:media" data-facet="category" title="Generate and edit video, images and audio." href="/skillhub/?tag=category%3Amedia">category:media</a></div>
+          <p class="tag-meaning">Generate and edit video, images and audio.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/skillhub/?tag=needs%3Aaccount">needs:account</a><a class="tag" data-tag="needs:subagents" data-facet="needs" title="Relies on the agent being able to spawn subagents." href="/skillhub/?tag=needs%3Asubagents">needs:subagents</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">An account, API key or paid plan with an outside service.</p><p class="tag-meaning">Relies on the agent being able to spawn subagents.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="video" data-facet="topic" href="/skillhub/?tag=video">video</a><a class="tag" data-tag="audio" data-facet="topic" href="/skillhub/?tag=audio">audio</a><a class="tag" data-tag="animation" data-facet="topic" href="/skillhub/?tag=animation">animation</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:elevenlabs" data-facet="stack" href="/skillhub/?tag=stack%3Aelevenlabs">stack:elevenlabs</a><a class="tag" data-tag="stack:ffmpeg" data-facet="stack" href="/skillhub/?tag=stack%3Affmpeg">stack:ffmpeg</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/browser-use/video-use/blob/43cfc566833548093455c9d4a46bd69913b7e552/SKILL.md">browser-use/video-use at 43cfc56</a>. Checked daily, last changed Nov 7, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: video-use
+description: Edit any video by conversation. Transcribe, cut, color grade, generate overlay animations, burn subtitles — for talking heads, montages, tutorials, travel, interviews. No presets, no menus. Ask questions, confirm the plan, execute, iterate, persist. Production-correctness rules are hard; everything else is artistic freedom.</code></pre></details>
+        <div class="markdown"><h3>Video Use</h3>
+<h4>Principle</h4>
+<ol>
+<li><strong>LLM reasons from raw transcript + on-demand visuals.</strong> The only derived artifact that earns its keep is a packed phrase-level transcript (<code>takes_packed.md</code>). Everything else — filler tagging, retake detection, shot classification, emphasis scoring — you derive at decision time.</li>
+<li><strong>Audio is primary, visuals follow.</strong> Cut candidates come from speech boundaries and silence gaps. Drill into visuals only at decision points.</li>
+<li><strong>Ask → confirm → execute → iterate → persist.</strong> Never touch the cut until the user has confirmed the strategy in plain English.</li>
+<li><strong>Generalize.</strong> Do not assume what kind of video this is. Look at the material, ask the user, then edit.</li>
+<li><strong>Artistic freedom is the default.</strong> Every specific value, preset, font, color, duration, pitch structure, and technique in this document is a <em>worked example</em> from one proven video — not a mandate. Read them to understand what's possible and why each worked. Then make your own taste calls based on what the material actually is and what the user actually wants. <strong>The only things you MUST do are in the Hard Rules section below.</strong> Everything else is yours.</li>
+<li><strong>Invent freely.</strong> If the material calls for a technique not described here — split-screen, picture-in-picture, lower-third identity cards, reaction cuts, speed ramps, freeze frames, crossfades, match cuts, L-cuts, J-cuts, speed ramps over breath, whatever — build it. The helpers are ffmpeg and PIL. They can do anything the format supports. Do not wait for permission.</li>
+<li><strong>Verify your own output before showing it to the user.</strong> If you wouldn't ship it, don't present it.</li>
+</ol>
+<h4>Hard Rules (production correctness — non-negotiable)</h4>
+<p>These are the things where deviation produces silent failures or broken output. They are not taste, they are correctness. Memorize them.</p>
+<ol>
+<li><strong>Subtitles are applied LAST in the filter chain</strong>, after every overlay. Otherwise overlays hide captions. Silent failure.</li>
+<li><strong>Per-segment extract → lossless <code>-c copy</code> concat</strong>, not single-pass filtergraph. Otherwise you double-encode every segment when overlays are added.</li>
+<li><strong>30ms audio fades at every segment boundary</strong> (<code>afade=t=in:st=0:d=0.03,afade=t=out:st={dur-0.03}:d=0.03</code>). Otherwise audible pops at every cut.</li>
+<li><strong>Overlays use <code>setpts=PTS-STARTPTS+T/TB</code></strong> to shift the overlay's frame 0 to its window start. Otherwise you see the middle of the animation during the overlay window.</li>
+<li><strong>Master SRT uses output-timeline offsets</strong>: <code>output_time = word.start - segment_start + segment_offset</code>. Otherwise captions misalign after segment concat.</li>
+<li><strong>Never cut inside a word.</strong> Snap every cut edge to a word boundary from the Scribe transcript.</li>
+<li><strong>Pad every cut edge.</strong> Working window: 30–200ms. Scribe timestamps drift 50–100ms — padding absorbs the drift. Tighter for fast-paced, looser for cinematic.</li>
+<li><strong>Word-level verbatim ASR only.</strong> Never SRT/phrase mode (loses sub-second gap data). Never normalized fillers (loses editorial signal).</li>
+<li><strong>Cache transcripts per source.</strong> Never re-transcribe unless the source file itself changed.</li>
+<li><strong>Parallel sub-agents for multiple animations.</strong> Never sequential. Spawn N at once via the <code>Agent</code> tool; total wall time ≈ slowest one.</li>
+<li><strong>Strategy confirmation before execution.</strong> Never touch the cut until the user has approved the plain-English plan.</li>
+<li><strong>All session outputs in <code>&lt;videos_dir&gt;/edit/</code>.</strong> Never write inside the <code>video-use/</code> project directory.</li>
+</ol>
+<p>Everything else in this document is a worked example. Deviate whenever the material calls for it.</p>
+<h4>Directory layout</h4>
+<p>The skill lives in <code>video-use/</code>. User footage lives wherever they put it. All session outputs go into <code>&lt;videos_dir&gt;/edit/</code>.</p>
+<pre><code>&lt;videos_dir&gt;/
+├── &lt;source files, untouched&gt;
+└── edit/
+    ├── project.md               ← memory; appended every session
+    ├── takes_packed.md          ← phrase-level transcripts, the LLM's primary reading view
+    ├── edl.json                 ← cut decisions
+    ├── transcripts/&lt;name&gt;.json  ← cached raw Scribe JSON
+    ├── animations/slot_&lt;id&gt;/    ← per-animation source + render + reasoning
+    ├── clips_graded/            ← per-segment extracts with grade + fades
+    ├── master.srt               ← output-timeline subtitles
+    ├── downloads/               ← yt-dlp outputs
+    ├── verify/                  ← debug frames / timeline PNGs
+    ├── preview.mp4
+    └── final.mp4
+</code></pre>
+<h4>Setup</h4>
+<p>First-time install lives in <code>install.md</code> (clone, deps, ffmpeg, skill registration, API key). Don't re-run it every session; on cold start just verify:</p>
+<ul>
+<li><code>ELEVENLABS_API_KEY</code> resolves — either in the environment or in <code>.env</code> at the video-use repo root. If missing, ask the user to paste one and write it to <code>.env</code> (never to the user's <code>&lt;videos_dir&gt;</code>).</li>
+<li><code>ffmpeg</code> + <code>ffprobe</code> on PATH.</li>
+<li>Python deps installed (<code>uv sync</code> or <code>pip install -e .</code> inside the repo).</li>
+<li>Node.js + npm available if the session needs HyperFrames or Remotion slots. HyperFrames currently requires Node.js 22+.</li>
+<li><code>yt-dlp</code>, HyperFrames, Remotion, Manim installed only on first use.</li>
+<li>First-use animation setup happens inside the slot directory, never at the video-use repo root. HyperFrames can be invoked with <code>npx --yes hyperframes ...</code>; Remotion can be scaffolded with <code>npx create-video@latest</code> or installed as a project-local dependency before using its <code>remotion render</code> command.</li>
+<li>This skill vendors <code>skills/manim-video/</code>. Read its SKILL.md when building a Manim slot.</li>
+</ul>
+<p>Helpers (<code>helpers/transcribe.py</code>, <code>helpers/render.py</code>, etc.) live alongside this SKILL.md. Resolve their paths relative to the directory containing this file — the skill is typically symlinked at <code>~/.claude/skills/video-use/</code> or <code>~/.codex/skills/video-use/</code>.</p>
+<h4>Helpers</h4>
+<ul>
+<li><strong><code>transcribe.py &lt;video&gt;</code></strong> — single-file Scribe call. <code>--num-speakers N</code> optional. Cached.</li>
+<li><strong><code>transcribe_batch.py &lt;videos_dir&gt;</code></strong> — 4-worker parallel transcription. Use for multi-take.</li>
+<li><strong><code>pack_transcripts.py --edit-dir &lt;dir&gt;</code></strong> — <code>transcripts/*.json</code> → <code>takes_packed.md</code> (phrase-level, break on silence ≥ 0.5s).</li>
+<li><strong><code>timeline_view.py &lt;video&gt; &lt;start&gt; &lt;end&gt;</code></strong> — filmstrip + waveform PNG. On-demand visual drill-down. <strong>Not a scan tool</strong> — use it at decision points, not constantly.</li>
+<li><strong><code>render.py &lt;edl.json&gt; -o &lt;out&gt;</code></strong> — per-segment extract → concat → overlays (PTS-shifted) → subtitles LAST. <code>--preview</code> for 720p fast. <code>--build-subtitles</code> to generate master.srt inline.</li>
+<li><strong><code>grade.py &lt;in&gt; -o &lt;out&gt;</code></strong> — ffmpeg filter chain grade. Presets + <code>--filter '&lt;raw&gt;'</code> for custom.</li>
+</ul>
+<p>For animations, create <code>&lt;edit&gt;/animations/slot_&lt;id&gt;/</code> with <code>Bash</code> and spawn a sub-agent via the <code>Agent</code> tool.</p>
+<h4>The process</h4>
+<ol>
+<li>
+<p><strong>Inventory.</strong> <code>ffprobe</code> every source. <code>transcribe_batch.py</code> on the directory. <code>pack_transcripts.py</code> to produce <code>takes_packed.md</code>. Sample one or two <code>timeline_view</code>s for a visual first impression.</p>
+</li>
+<li>
+<p><strong>Pre-scan for problems.</strong> One pass over <code>takes_packed.md</code> to note verbal slips, obvious mis-speaks, or phrasings to avoid. Plain list, feed into the editor brief.</p>
+</li>
+<li>
+<p><strong>Converse.</strong> Describe what you see in plain English. Ask questions <em>shaped by the material</em>. Collect: content type, target length/aspect, aesthetic/brand direction, pacing feel, must-preserve moments, must-cut moments, animation and grade preferences, subtitle needs. Do not use a fixed checklist — the right questions are different every time.</p>
+</li>
+<li>
+<p><strong>Propose strategy.</strong> 4–8 sentences: shape, take choices, cut direction, animation plan, grade direction, subtitle style, length estimate. <strong>Wait for confirmation.</strong></p>
+</li>
+<li>
+<p><strong>Execute.</strong> Produce <code>edl.json</code> via the editor sub-agent brief. Drill into <code>timeline_view</code> at ambiguous moments. Build animations in parallel sub-agents. Apply grade per-segment. Compose via <code>render.py</code>.</p>
+</li>
+<li>
+<p><strong>Preview.</strong> <code>render.py --preview</code>.</p>
+</li>
+<li>
+<p><strong>Self-eval (before showing the user).</strong> Run <code>timeline_view</code> on the <strong>rendered output</strong> (not the sources) at every cut boundary (±1.5s window). Check each image for:</p>
+<ul>
+<li>Visual discontinuity / flash / jump at the cut</li>
+<li>Waveform spike at the boundary (audio pop that slipped past the 30ms fade)</li>
+<li>Subtitle hidden behind an overlay (Rule 1 violation)</li>
+<li>Overlay misaligned or showing wrong frames (Rule 4 violation)</li>
+</ul>
+<p>Also sample: first 2s, last 2s, and 2–3 mid-points — check grade consistency, subtitle readability, overall coherence. Run <code>ffprobe</code> on the output to verify duration matches the EDL expectation.</p>
+<p>Measure the audio, don't assume it: <code>ffmpeg -i out.mp4 -af ebur128=peak=true -f null -</code> for integrated loudness and true peak, plus RMS per section (dialogue, music-only, end card). An end card 15 dB under the dialogue, or effects louder than speech, is a bug. You cannot listen: say so, and report the numbers.</p>
+<p>For anything the user will publish (launch, promo, ad), also spawn one <strong>critic sub-agent</strong> with the rendered file, the EDL, and any reference videos the user gave. Brief it to roast, not to praise: a verdict, ranked problems with timecodes and evidence (frames, levels), and the 5 fixes to do first. Fresh eyes catch what the author stopped seeing — cut-off payoff lines, 0.5s memes, unreadable 28px text at phone size.</p>
+<p>If anything fails: fix → re-render → re-eval. <strong>Cap at 3 self-eval passes</strong> — if issues remain after 3, flag them to the user rather than looping forever. Only present the preview once the self-eval passes.</p>
+</li>
+<li>
+<p><strong>Iterate + persist.</strong> Natural-language feedback, re-plan, re-render. Never re-transcribe. Final render on confirmation. Append to <code>project.md</code>.</p>
+</li>
+</ol>
+<h4>Cut craft (techniques)</h4>
+<ul>
+<li><strong>Audio-first.</strong> Candidate cuts from word boundaries and silence gaps.</li>
+<li><strong>Preserve peaks.</strong> Laughs, punchlines, emphasis beats. Extend past punchlines to include reactions — the laugh IS the beat.</li>
+<li><strong>Speaker handoffs</strong> benefit from air between utterances. Common values: 400–600ms. Less for fast-paced, more for cinematic. Taste call.</li>
+<li><strong>Audio events as signals.</strong> <code>(laughs)</code>, <code>(sighs)</code>, <code>(applause)</code> mark beats. Extend past them.</li>
+<li><strong>Silence gaps are cut candidates.</strong> Silences ≥400ms are usually the cleanest. 150–400ms phrase boundaries are usable with a visual check. &lt;150ms is unsafe (mid-phrase).</li>
+<li><strong>Example cut padding</strong> (the launch video shipped with this): 50ms before the first kept word, 80ms after the last. Tighter for montage energy, looser for documentary. Stay in the 30–200ms working window (Hard Rule 7).</li>
+<li><strong>Never reason audio and video independently.</strong> Every cut must work on both tracks.</li>
+</ul>
+<h4>The packed transcript (primary reading view)</h4>
+<p><code>pack_transcripts.py</code> reads all <code>transcripts/*.json</code> and produces one markdown file where each take is a list of phrase-level lines, each prefixed with its <code>[start-end]</code> time range. Phrases break on any silence ≥ 0.5s OR speaker change. This is the artifact the editor sub-agent reads to pick cuts — it gives word-boundary precision from text alone at 1/10 the tokens of raw JSON.</p>
+<p>Example line:</p>
+<pre><code>## C0103  (duration: 43.0s, 8 phrases)
+  [002.52-005.36] S0 Ninety percent of what a web agent does is completely wasted.
+  [006.08-006.74] S0 We fixed this.
+</code></pre>
+<h4>Editor sub-agent brief (for multi-take selection)</h4>
+<p>When the task is &quot;pick the best take of each beat across many clips,&quot; spawn a dedicated sub-agent with a brief shaped like this. The structure is load-bearing; the pitch-shape example is not.</p>
+<pre><code>You are editing a &lt;type&gt; video. Pick the best take of each beat and 
+assemble them chronologically by beat, not by source clip order.
+
+INPUTS:
+  - takes_packed.md (time-annotated phrase-level transcripts of all takes)
+  - Product/narrative context: &lt;2 sentences from the user&gt;
+  - Speaker(s): &lt;name, role, delivery style note&gt;
+  - Expected structure: &lt;pick an archetype or invent one&gt;
+  - Verbal slips to avoid: &lt;list from the pre-scan pass&gt;
+  - Target runtime: &lt;seconds&gt;
+
+Common structural archetypes (pick, adapt, or invent):
+  - Tech launch / demo:   HOOK → PROBLEM → SOLUTION → BENEFIT → EXAMPLE → CTA
+  - Tutorial:             INTRO → SETUP → STEPS → GOTCHAS → RECAP
+  - Interview:            (QUESTION → ANSWER → FOLLOWUP) repeat
+  - Travel / event:       ARRIVAL → HIGHLIGHTS → QUIET MOMENTS → DEPARTURE
+  - Documentary:          THESIS → EVIDENCE → COUNTERPOINT → CONCLUSION
+  - Music / performance:  INTRO → VERSE → CHORUS → BRIDGE → OUTRO
+  - Or invent your own.
+
+RULES:
+  - Start/end times must fall on word boundaries from the transcript.
+  - Pad cut boundaries (working window 30–200ms).
+  - Prefer silences ≥ 400ms as cut targets.
+  - Unavoidable slips are kept if no better take exists. Note them in &quot;reason&quot;.
+  - If over budget, revise: drop a beat or trim tails. Report total and self-correct.
+
+OUTPUT (JSON array, no prose):
+  [{&quot;source&quot;: &quot;C0103&quot;, &quot;start&quot;: 2.42, &quot;end&quot;: 6.85, &quot;beat&quot;: &quot;HOOK&quot;,
+    &quot;quote&quot;: &quot;...&quot;, &quot;reason&quot;: &quot;...&quot;}, ...]
+
+Return the final EDL and a one-line total runtime check.
+</code></pre>
+<h4>Color grade (when requested)</h4>
+<p>Your job is to <strong>reason about the image</strong>, not apply a preset. Look at a frame (via <code>timeline_view</code>), decide what's wrong, adjust one thing, look again.</p>
+<p>Mental model is ASC CDL. Per channel: <code>out = (in * slope + offset) ** power</code>, then global saturation. <code>slope</code> → highlights, <code>offset</code> → shadows, <code>power</code> → midtones.</p>
+<p><strong>Example filter chains</strong> (<code>grade.py</code> has <code>--list-presets</code>; use them as starting points or mix your own):</p>
+<ul>
+<li><strong><code>warm_cinematic</code></strong> — retro/technical, subtle teal/orange split, desaturated. Shipped in a real launch video. Safe for talking heads.</li>
+<li><strong><code>neutral_punch</code></strong> — minimal corrective: contrast bump + gentle S-curve. No hue shifts.</li>
+<li><strong><code>none</code></strong> — straight copy. Default when the user hasn't asked.</li>
+</ul>
+<p>For anything else — portraiture, nature, product, music video, documentary — invent your own chain. <code>grade.py --filter '&lt;raw ffmpeg&gt;'</code> accepts any filter string.</p>
+<p>Hard rules: apply <strong>per-segment during extraction</strong> (not post-concat, which re-encodes twice). Never go aggressive without testing skin tones.</p>
+<h4>Subtitles (when requested)</h4>
+<p>Subtitles have three dimensions worth reasoning about: <strong>chunking</strong> (1/2/3/sentence per line), <strong>case</strong> (UPPER/Title/Natural), and <strong>placement</strong> (margin from bottom). The right combo depends on content.</p>
+<p><strong>Worked styles</strong> — pick, adapt, or invent:</p>
+<p><strong><code>bold-overlay</code></strong> — short-form tech launch, fast-paced social. ~2-word chunks, UPPERCASE, break on punctuation and pauses ≥ 0.3s, grow to 3 words rather than flash a cue &lt; 0.35s (<code>chunk_words</code> in <code>render.py</code>), Helvetica 18 Bold, white-on-outline, <code>MarginV=35</code>. <code>render.py</code> ships with this as <code>SUB_FORCE_STYLE</code>.</p>
+<pre><code>FontName=Helvetica,FontSize=18,Bold=1,
+PrimaryColour=&amp;H00FFFFFF,OutlineColour=&amp;H00000000,BackColour=&amp;H00000000,
+BorderStyle=1,Outline=2,Shadow=0,
+Alignment=2,MarginV=35
+</code></pre>
+<p><strong><code>natural-sentence</code></strong> (if you invent this mode) — narrative, documentary, education. 4–7 word chunks, sentence case, break on natural pauses, <code>MarginV=60–80</code>, larger font for readability, slightly wider max-width. No shipped force_style — design one if you need it.</p>
+<p>Invent a third style if neither fits. Hard rules: subtitles LAST (Rule 1), output-timeline offsets (Rule 5).</p>
+<h4>Animations (when requested)</h4>
+<p>Animations match the content and the brand. <strong>Get the palette, font, and visual language from the conversation</strong> — never assume a default. If the user hasn't told you, propose a palette in the strategy phase and wait for confirmation before building anything.</p>
+<p><strong>Tool options:</strong></p>
+<p>Pick the engine per animation slot. Do not default to Remotion just because the animation is web-adjacent.</p>
+<ul>
+<li><strong>HyperFrames</strong> — Browser-native HTML/CSS/GSAP video compositions: product UI motion, website-to-video or mockup-to-video captures, kinetic typography, landing-page/storyboard promos, data-driven UI states, transparent WebM overlays, and clips that need deterministic frame capture plus HyperFrames lint/validate/render checks. Best when the animation should be authored and verified like a web composition instead of a React component tree.</li>
+<li><strong>Remotion</strong> — React/CSS compositions with component state, reusable React primitives, or an existing Remotion brand system. Best when the user specifically asks for React/Remotion or when React composition is the simpler authoring model.</li>
+<li><strong>Manim</strong> — formal diagrams, state machines, equation derivations, graph morphs. Read <code>skills/manim-video/SKILL.md</code> and its references for depth.</li>
+<li><strong>PIL + PNG sequence + ffmpeg</strong> — simple overlay cards: counters, typewriter text, single bar reveals, progressive draws. Fast to iterate, any aesthetic you want. The launch video used this.</li>
+</ul>
+<p>For HyperFrames slots, scaffold the slot inside <code>edit/animations/slot_&lt;id&gt;/</code> with <code>npx --yes hyperframes init . --example blank --non-interactive --skip-skills</code>, build the HTML composition there, run the HyperFrames checks that fit the slot (<code>lint</code>, <code>validate</code>, and a draft render when practical), then produce the final overlay video with <code>npx --yes hyperframes render . -o render.mp4</code> or <code>--format webm -o render.webm</code> when alpha is required. Point the EDL overlay <code>file</code> at the actual rendered path.</p>
+<p>For Remotion slots, keep the Remotion project isolated inside the same slot directory, scaffold with <code>npx create-video@latest</code> or install Remotion locally there, render the composition to <code>render.mp4</code> with the project-local <code>remotion render</code> command, and verify duration and dimensions with <code>ffprobe</code>.</p>
+<p>None is mandatory. Invent hybrids if useful (e.g., PIL background with a HyperFrames or Remotion layer on top).</p>
+<p><strong>Duration rules of thumb, context-dependent:</strong></p>
+<ul>
+<li><strong>Sync-to-narration explanations.</strong> A viewer needs to parse the content at 1×. Rough floor 3s, typical 5–7s for simple cards, 8–14s for complex diagrams. The launch video shipped at 5–7s per simple card.</li>
+<li><strong>Beat-synced accents</strong> (music video, fast montage). 0.5–2s is fine — they're visual accents, not information. The &quot;readable at 1×&quot; rule becomes <em>&quot;recognizable at 1×&quot;</em>, not <em>&quot;fully parseable.&quot;</em></li>
+<li><strong>Hold the final frame ≥ 1s</strong> before the cut (universal).</li>
+<li><strong>Over voiceover:</strong> total duration ≥ <code>narration_length + 1s</code> (universal).</li>
+<li><strong>Never parallel-reveal independent elements</strong> — the eye can't track two new things at once. One thing, pause, next thing.</li>
+</ul>
+<p><strong>Animation payoff timing (rule for sync-to-narration):</strong> get the payoff word's timestamp. Start the overlay <code>reveal_duration</code> seconds earlier so the landing frame coincides with the spoken payoff word. Without this sync the animation feels disconnected.</p>
+<p><strong>Easing</strong> (universal — never <code>linear</code>, it looks robotic):</p>
+<pre><code class="language-python">def ease_out_cubic(t):    return 1 - (1 - t) ** 3
+def ease_in_out_cubic(t):
+    if t &lt; 0.5: return 4 * t ** 3
+    return 1 - (-2 * t + 2) ** 3 / 2
+</code></pre>
+<p><code>ease_out_cubic</code> for single reveals (slow landing). <code>ease_in_out_cubic</code> for continuous draws.</p>
+<p><strong>Typing text anchor trick:</strong> center on the FULL string's width, not the partial-string width — otherwise text slides left during reveal.</p>
+<p><strong>Example palette</strong> (the launch video — one aesthetic among infinite):</p>
+<ul>
+<li>Background <code>(10, 10, 10)</code> near-black</li>
+<li>Accent <code>#FF5A00</code> / <code>(255, 90, 0)</code> orange</li>
+<li>Labels <code>(110, 110, 110)</code> dim gray</li>
+<li>Font: Menlo Bold at <code>/System/Library/Fonts/Menlo.ttc</code> (index 1)</li>
+<li>≤ 2 accent colors, ~40% empty space, minimal chrome</li>
+<li>Result: terminal / retro tech feel</li>
+</ul>
+<p>This is one style. If the brand is warm and serif, use that. If it's colorful and playful, use that. If the user handed you a style guide, follow it. If they didn't, propose one and confirm.</p>
+<p><strong>Fonts fail silently.</strong> A web font that didn't load renders in a fallback face with no error — the video ships in &quot;almost Arial&quot;. In HyperFrames/Remotion, await the font load and then assert it: <code>if (!document.fonts.check('700 76px &quot;Inter&quot;')) throw new Error(...)</code>. In PIL, pass an explicit font path; never rely on the default.</p>
+<p><strong>Worked example — &quot;show the edit&quot; hook</strong> (a launch video for this tool). Instead of a title card, the first 3s visualize the editing itself: each transcript word pops in on its Scribe timestamp, with bars under it drawn from the real audio envelope; a filler (&quot;ummm&quot;) grows letter by letter while it is spoken, turns orange and is cut out on screen at the same frame the audio cuts, and the next line lands immediately. It works because the picture is <em>driven by the same data as the sound</em> — one composition (Remotion) reads frame-exact word/envelope JSON produced in Python, so nothing can drift. Use the idea whenever the story is &quot;we removed something&quot;: make the removal visible.</p>
+<p><strong>Parallel sub-agent brief</strong> — each animation is one sub-agent spawned via the <code>Agent</code> tool. Each prompt is self-contained (sub-agents have no parent context). Include:</p>
+<ol>
+<li>One-sentence goal: <em>&quot;Build ONE animation: [spec]. Nothing else.&quot;</em></li>
+<li>Absolute output path (<code>&lt;edit&gt;/animations/slot_&lt;id&gt;/render.mp4</code>)</li>
+<li>Exact technical spec: resolution, fps, codec, pix_fmt, CRF, duration</li>
+<li>Style palette as concrete values (RGB tuples, hex, or reference to a design system)</li>
+<li>Font path with index</li>
+<li>Frame-by-frame timeline (what happens when, with easing)</li>
+<li>Anti-list (&quot;no chrome, no extras, no titles unless specified&quot;)</li>
+<li>Code pattern reference (copy helpers inline, don't import across slots)</li>
+<li>Deliverable checklist (script, render, verify duration via ffprobe, report)</li>
+<li><strong>&quot;Do not ask questions. If anything is ambiguous, pick the most obvious interpretation and proceed.&quot;</strong></li>
+</ol>
+<p>One sub-agent = one file (unique filenames, parallel agents don't overwrite each other).</p>
+<h4>Music and sound effects (when requested)</h4>
+<p>Sound is where generated videos sound cheap. Worked rules from launch edits:</p>
+<ul>
+<li><strong>Fewer effects.</strong> Every effect is tied to something visible (a cut, a landing, a click). ~20 stock whooshes/risers/impacts in 18s reads as generic; ~8 reads as designed.</li>
+<li><strong>Hit on the frame.</strong> Most effects have an attack (silence or a build before the transient). Measure it (first sample above ~-30 dBFS of the peak) and start the file <code>attack</code> seconds <em>before</em> the visible contact frame.</li>
+<li><strong>Duck music under speech</strong> (roughly -12 to -15 dB relative to its music-only level), and ramp it out before a stinger or end card instead of letting its own tail decay under your CTA.</li>
+<li><strong>Master once:</strong> mix to PCM, then two-pass loudnorm (-14 LUFS, true peak ≤ -1 dBTP) on the final mix. Then measure per section (see Self-eval).</li>
+<li><strong>Music taste is the user's call.</strong> Generated music defaults to &quot;hype&quot;; offer two contrasting beds and let the user listen. Don't claim a mix sounds good — you can only measure it.</li>
+</ul>
+<h4>Output spec</h4>
+<p>Match the source unless the user asked for something specific. Common targets: <code>1920×1080@24</code> cinematic, <code>1920×1080@30</code> screen content, <code>1080×1920@30</code> vertical social, <code>3840×2160@24</code> 4K cinema, <code>1080×1080@30</code> square. <code>render.py</code> defaults the scale to 1080p from any source; pass <code>--filter</code> or edit the extract command for other targets. Worth asking the user which delivery format matters.</p>
+<h4>EDL format</h4>
+<pre><code class="language-json">{
+  &quot;version&quot;: 1,
+  &quot;sources&quot;: {&quot;C0103&quot;: &quot;/abs/path/C0103.MP4&quot;, &quot;C0108&quot;: &quot;/abs/path/C0108.MP4&quot;},
+  &quot;ranges&quot;: [
+    {&quot;source&quot;: &quot;C0103&quot;, &quot;start&quot;: 2.42, &quot;end&quot;: 6.85,
+     &quot;beat&quot;: &quot;HOOK&quot;, &quot;quote&quot;: &quot;...&quot;, &quot;reason&quot;: &quot;Cleanest delivery, stops before slip at 38.46.&quot;},
+    {&quot;source&quot;: &quot;C0108&quot;, &quot;start&quot;: 14.30, &quot;end&quot;: 28.90,
+     &quot;beat&quot;: &quot;SOLUTION&quot;, &quot;quote&quot;: &quot;...&quot;, &quot;reason&quot;: &quot;Only take without the false start.&quot;}
+  ],
+  &quot;grade&quot;: &quot;warm_cinematic&quot;,
+  &quot;overlays&quot;: [
+    {&quot;file&quot;: &quot;edit/animations/slot_1/render.mp4&quot;, &quot;start_in_output&quot;: 0.0, &quot;duration&quot;: 5.0}
+  ],
+  &quot;subtitles&quot;: &quot;edit/master.srt&quot;,
+  &quot;total_duration_s&quot;: 87.4
+}
+</code></pre>
+<p><code>grade</code> is a preset name or raw ffmpeg filter. <code>overlays</code> are rendered animation clips. <code>subtitles</code> is optional and applied LAST.</p>
+<h4>Memory — <code>project.md</code></h4>
+<p>Append one section per session at <code>&lt;edit&gt;/project.md</code>:</p>
+<pre><code class="language-markdown">## Session N — YYYY-MM-DD
+
+**Strategy:** one paragraph describing the approach
+**Decisions:** take choices, cuts, grades, animations + why
+**Reasoning log:** one-line rationale for non-obvious decisions
+**Outstanding:** deferred items
+</code></pre>
+<p>On startup, read <code>project.md</code> if it exists and summarize the last session in one sentence before asking whether to continue.</p>
+<h4>Anti-patterns</h4>
+<p>Things that consistently fail regardless of style:</p>
+<ul>
+<li><strong>Hierarchical pre-computed codec formats</strong> with USABILITY / tone tags / shot layers. Over-engineering. Derive from the transcript at decision time.</li>
+<li><strong>Hand-tuned moment-scoring functions.</strong> The LLM picks better than any heuristic you'll write.</li>
+<li><strong>Whisper SRT / phrase-level output.</strong> Loses sub-second gap data. Always word-level verbatim.</li>
+<li><strong>Running Whisper locally on CPU.</strong> Slow and it normalizes fillers. Use hosted Scribe.</li>
+<li><strong>Burning subtitles into base before compositing overlays.</strong> Overlays hide them. (Hard Rule 1.)</li>
+<li><strong>Single-pass filtergraph when you have overlays.</strong> Double re-encodes. Use per-segment extract → concat.</li>
+<li><strong>Linear animation easing.</strong> Looks robotic. Always cubic.</li>
+<li><strong>Unverified web fonts.</strong> A failed load silently falls back to a system face. Assert the font loaded before rendering.</li>
+<li><strong>Stock SFX on every transition.</strong> Tie each effect to a visible event; cap the count.</li>
+<li><strong>Hard audio cuts at segment boundaries.</strong> Audible pops. (Hard Rule 3.)</li>
+<li><strong>Typing text centered on the partial string.</strong> Text slides left as it grows.</li>
+<li><strong>Sequential sub-agents for multiple animations.</strong> Always parallel.</li>
+<li><strong>Editing before confirming the strategy.</strong> Never.</li>
+<li><strong>Re-transcribing cached sources.</strong> Immutable outputs of immutable inputs.</li>
+<li><strong>Assuming what kind of video it is.</strong> Look first, ask second, edit last.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

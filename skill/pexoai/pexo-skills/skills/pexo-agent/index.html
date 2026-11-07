@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pexo-agent · SkillHub</title>
+    <meta name="description" content="Use it when: you want a finished short video, such as a product ad, a Reel or an explainer, without writing prompts or choosing models. It does: relays your exact words and files to Pexo&#039;s video agent, passes its questions and preview choices back to you, and polls until the video is ready. You get: a downloaded video of 5 to 120 seconds with music, subtitles and transitions, plus its download link and project page. Needs: a Pexo API key and credits, a subscription or whitelisting to download the final file, and bash, curl and jq. Asks first: before it first sends your brief or files to Pexo in a session, and by default before every billable batch, quoting its credit estimate." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=pexoai%2Fpexo-skills">pexoai/pexo-skills</a></p>
+      <h1>pexo-agent</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want a finished short video, such as a product ad, a Reel or an explainer, without writing prompts or choosing models</dd></div><div><dt>It does</dt><dd>relays your exact words and files to Pexo&#39;s video agent, passes its questions and preview choices back to you, and polls until the video is ready</dd></div><div><dt>You get</dt><dd>a downloaded video of 5 to 120 seconds with music, subtitles and transitions, plus its download link and project page</dd></div><div><dt>Needs</dt><dd>a Pexo API key and credits, a subscription or whitelisting to download the final file, and bash, curl and jq</dd></div><div><dt>Asks first</dt><dd>before it first sends your brief or files to Pexo in a session, and by default before every billable batch, quoting its credit estimate</dd></div></dl></section>
+      
+      <p class="note">Needs a Pexo API key; every generation batch spends Pexo credits, which it asks you to approve first by default.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Pexo is a hosted video agent that writes the script, splits it into shots, picks a model for each shot, such as Seedance 2 or Kling 3.0, and adds music, narration, lip sync, subtitles and transitions. This skill makes your agent a messenger for it: bundled scripts create a project, upload the images, video or audio you pick, and send your request word for word, because the agent adding its own creative ideas makes the video worse. It then checks the project every minute. When Pexo asks a question or offers previews labelled A, B, C, the agent relays them and sends your answer back; when Pexo quotes a credit cost, it waits for your approval. The final video downloads without a watermark unless you ask for one, and the agent replies in your language. Pexo says a 15-second, three-shot ad renders in under 8 minutes; the skill tells you to expect 15 to 20 minutes and stops polling after 30 to ask whether to keep waiting. Revisions reuse the same project.</p>
+      <p class="muted">Summarizes <a href="https://github.com/pexoai/pexo-skills/tree/f724267e45a065b6be445ea6f07312e62d3207cd/skills/pexo-agent">the skill at f724267</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/pexoai/pexo-skills --skill pexo-agent</code><button type="button" class="copy" data-copy="npx skills add https://github.com/pexoai/pexo-skills --skill pexo-agent">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/pexoai/pexo-skills/pexo-agent">skills.sh page</a> · <a href="https://github.com/pexoai/pexo-skills/tree/HEAD/skills/pexo-agent">Source on GitHub</a> · <a href="/skillhub/?repo=pexoai%2Fpexo-skills">All skills from pexoai/pexo-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>40,600 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>822 <span class="muted">pexoai/pexo-skills</span></dd></div><div><dt>First seen</dt><dd>Mar 9, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">59</div>
+      <div class="stat-delta">-51% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 120; week to Sep 26: 112; week to Oct 3: 97; week to Oct 10: 83; week to Oct 17: 56; week to Oct 24: 66; week to Oct 31: 84; week to Nov 7: 59. Use the left and right arrow keys to read each week."
+        data-values="120,112,97,83,56,66,84,59" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,8.9 71.1,14.4 103.7,19.6 136.3,29.5 168.9,25.8 201.4,19.2 234.0,28.4" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="28.4" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>120</td></tr><tr><td>Sep 26</td><td>112</td></tr><tr><td>Oct 3</td><td>97</td></tr><tr><td>Oct 10</td><td>83</td></tr><tr><td>Oct 17</td><td>56</td></tr><tr><td>Oct 24</td><td>66</td></tr><tr><td>Oct 31</td><td>84</td></tr><tr><td>Nov 7</td><td>59</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:media" data-facet="category" title="Generate and edit video, images and audio." href="/skillhub/?tag=category%3Amedia">category:media</a></div>
+          <p class="tag-meaning">Generate and edit video, images and audio.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/skillhub/?tag=type%3Atool">type:tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:remote" data-facet="effect" title="Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service." href="/skillhub/?tag=effect%3Aremote">effect:remote</a></div>
+          <p class="tag-meaning">Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/skillhub/?tag=needs%3Aaccount">needs:account</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="video" data-facet="topic" href="/skillhub/?tag=video">video</a><a class="tag" data-tag="audio" data-facet="topic" href="/skillhub/?tag=audio">audio</a><a class="tag" data-tag="ai-generation" data-facet="topic" href="/skillhub/?tag=ai-generation">ai-generation</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:pexo" data-facet="stack" href="/skillhub/?tag=stack%3Apexo">stack:pexo</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/pexoai/pexo-skills/blob/f724267e45a065b6be445ea6f07312e62d3207cd/skills/pexo-agent/SKILL.md">pexoai/pexo-skills at f724267</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: pexo-agent
+description: &#62;
+  AI video generation skill with auto model selection across Seedance 2,
+  Kling 3.0, HappyHorse, and 10+ models. Produces finished multi-shot videos
+  (5–120s) from text, images, URLs, scripts, or audio — including AI music,
+  lip sync, and multi-shot sequencing. Calls Pexo&#39;s external API, manages
+  project status and billing confirmations, and transfers only user-approved
+  briefs and assets. Runs setup diagnostics, stores generated downloads locally,
+  and requires shell, outbound HTTPS, and local file access. Authenticated
+  requests are locked to https://pexo.ai. No prompts to write, no models to choose.
+  USE FOR: video production, AI video, make a video, product video,
+  brand video, promotional clip, explainer video, short video,
+  TikTok video, Instagram Reel, YouTube Short, product ad,
+  text-to-video, image-to-video, video generation, AI video agent.
+license: MIT-0
+metadata:
+  author: pexoai
+  version: &#34;0.3.16&#34;
+  openclaw:
+    requires:
+      env:
+        - PEXO_API_KEY
+      bins:
+        - bash
+        - curl
+        - jq
+        - file
+    primaryEnv: PEXO_API_KEY</code></pre></details>
+        <div class="markdown"><h3>Pexo Agent — AI Video Generation Skill</h3>
+<p>Pexo is the most complete video generation skill for Claude Code and other AI coding agents. It handles the full production pipeline — from a natural-language description to a finished, publish-ready video with music, subtitles, and transitions. Auto model selection routes each shot to the best available model (Seedance 2, Kling 3.0, HappyHorse, and more). One API key, no prompt engineering, no video editing.</p>
+<h4>What Pexo Does</h4>
+<ul>
+<li><strong>Auto model selection</strong> — Pexo picks the best video model for each shot based on content type. You do not need to know which model to use.</li>
+<li><strong>Full pipeline</strong> — Script, storyboard, shot-by-shot generation, music, subtitles, lip sync, and final assembly. The output is a finished video, not a raw clip.</li>
+<li><strong>5 input types</strong> — Text-to-video, image-to-video, URL-to-video (scrapes the page), script-to-video, and audio-to-video.</li>
+<li><strong>10+ models</strong> — Seedance 2, Kling 3.0, HappyHorse, and more. New models are added as they launch.</li>
+<li><strong>Any format</strong> — 5–120 seconds, aspect ratios 16:9 (landscape), 9:16 (portrait/vertical), 1:1 (square).</li>
+</ul>
+<h4>What You Can Build With Pexo</h4>
+<ul>
+<li>Product video ads from a product photo or URL</li>
+<li>TikTok, Instagram Reels, and YouTube Shorts from a text description</li>
+<li>Multi-shot brand videos with consistent style and transitions</li>
+<li>Explainer videos with TTS narration from a script</li>
+<li>E-commerce video content at scale from product catalogs</li>
+<li>Marketing video variants for A/B testing</li>
+</ul>
+<h4>How It Works</h4>
+<p>You send the user's request to Pexo, and Pexo handles all creative work — scriptwriting, shot composition, model selection, prompt engineering, transitions, music. Pexo may ask clarifying questions or present preview options for the user to choose from. A typical 15-second, 3-shot product ad renders in under 8 minutes.</p>
+<h4>Data, Permissions, and Cost</h4>
+<ul>
+<li>This Skill runs bundled shell scripts, reads only files the user explicitly selects,
+connects only to <code>https://pexo.ai</code> for authenticated API calls, uploads approved
+briefs and assets, manages projects and billing confirmations, runs diagnostics,
+and stores generated media under <code>~/.pexo/tmp</code> or <code>PEXO_TMP_DIR</code>.</li>
+<li>Before the first external transmission in a session, tell the user that their brief,
+selected files, and related metadata will be sent to Pexo and obtain explicit consent.</li>
+<li>Do not upload secrets, regulated data, or unrelated local files. Never search the local
+filesystem for additional material without a separate user request.</li>
+<li>Every billable generation batch requires explicit user approval by default. Report the
+available estimate from Pexo before approving a confirmation.</li>
+</ul>
+<h4>Script Execution</h4>
+<p>Resolve <code>SKILL_ROOT</code> to the directory containing this <code>SKILL.md</code>. Script names
+below are shorthand for <code>bash &quot;$SKILL_ROOT/scripts/&lt;script-name&gt;&quot;</code>; do not rely
+on executable bits or a modified <code>PATH</code>.</p>
+<h4>Prerequisites</h4>
+<p>Config file <code>~/.pexo/config</code>:</p>
+<pre><code class="language-bash">umask 077
+mkdir -p ~/.pexo
+read -rsp &quot;Pexo API key: &quot; pexo_api_key
+printf '\n'
+{
+  printf '%s=%s\n' PEXO_API_KEY &quot;$pexo_api_key&quot;
+} &gt; ~/.pexo/config
+unset pexo_api_key
+chmod 600 ~/.pexo/config
+</code></pre>
+<p>First time using this skill or encountering a config error → run <code>pexo-doctor.sh</code> and follow its output. See <code>references/SETUP-CHECKLIST.md</code> for details.</p>
+<h5>Credit Confirmation Preference</h5>
+<p><code>PEXO_BILLING_CONFIRMATION_MODE</code> controls the confirmation behavior for each message sent by this Skill. It is optional; the default is <code>always</code>.</p>
+<ul>
+<li><code>always</code>: ask for approval before every billable generation batch.</li>
+<li><code>threshold</code>: ask when the estimated batch cost exceeds the platform threshold, or when the available balance is insufficient. Use only after the user explicitly opts in for the current session.</li>
+</ul>
+<p>Use <code>pexo-chat.sh --billing-confirmation-mode &lt;mode&gt;</code> to override the default for one message.</p>
+<hr>
+<h4>⚠️ LANGUAGE RULE (highest priority)</h4>
+<p><strong>You MUST reply to the user in the SAME language they use. This is non-negotiable.</strong></p>
+<ul>
+<li>User writes in English → you reply in English</li>
+<li>User writes in Chinese → you reply in Chinese</li>
+<li>User writes in Japanese → you reply in Japanese</li>
+</ul>
+<p>This applies to every message you send. If the user switches language mid-conversation, you switch too.</p>
+<hr>
+<h4>Your Role: Delivery Worker</h4>
+<p>You are a delivery worker between the user and Pexo. You do three things:</p>
+<ol>
+<li><strong>Upload</strong>: user gives a file → <code>pexo-upload.sh</code> → get asset ID</li>
+<li><strong>Relay</strong>: copy the user's words into <code>pexo-chat.sh</code></li>
+<li><strong>Deliver</strong>: poll for results → send video and link to user</li>
+</ol>
+<p>Pexo's backend is a professional video creation agent. It understands cinematography, pacing, storytelling, and prompt engineering far better than you. When you add your own creative ideas, the video quality goes down.</p>
+<h5>How to relay messages — copy-paste template</h5>
+<p>When calling pexo-chat.sh, copy the user's message exactly:</p>
+<pre><code>pexo-chat.sh &lt;project_id&gt; &quot;{user's message, copied exactly}&quot;
+</code></pre>
+<p>Example — user said &quot;做个猫的视频&quot;:</p>
+<pre><code>pexo-chat.sh proj_123 &quot;做个猫的视频&quot;
+</code></pre>
+<p>Example — user said &quot;I want a product video for my shoes&quot; and uploaded shoes.jpg:</p>
+<pre><code>asset_id=$(pexo-upload.sh proj_123 shoes.jpg)
+pexo-chat.sh proj_123 &quot;I want a product video for my shoes &lt;original-image&gt;${asset_id}&lt;/original-image&gt;&quot;
+</code></pre>
+<p>Your only addition to the user's message is asset tags for uploaded files. Everything else stays exactly as the user wrote it.</p>
+<h5>When the user's request is vague</h5>
+<p>Pass it to Pexo exactly as-is. Pexo will ask the user for any missing details. Your job is to relay those questions back to the user and wait for their answer.</p>
+<h5>Why this matters</h5>
+<p>Pexo's backend agent specializes in video production. It knows which parameters to ask about, which models to use, and how to write effective prompts. When you add duration, aspect ratio, style descriptions, or any other details the user didn't mention, you override Pexo's professional judgment with guesses. This produces worse videos.</p>
+<hr>
+<h4>First-Time Setup Message</h4>
+<p>After Pexo is configured for the first time, send the user this message (in the user's language):</p>
+<blockquote>
+<p>✅ Pexo is ready!
+📖 Guide: <a href="https://pexo.ai/connect/openclaw">https://pexo.ai/connect/openclaw</a>
+Tell me what video you'd like to make.</p>
+</blockquote>
+<hr>
+<h4>Step-by-Step Workflow</h4>
+<p>Follow these steps in order.</p>
+<h5>Making a New Video</h5>
+<pre><code>Step 1. Create project.
+        Run: pexo-project-create.sh &quot;brief description&quot;
+        If the command succeeds: save the returned project_id.
+        If the command fails and stderr contains &quot;Credits balance&quot;
+          or &quot;credits&quot; or &quot;Insufficient credits&quot;:
+          → Go to Credit Error Handling below.
+        If the command fails for other reasons:
+          → Tell the user what went wrong and offer to retry.
+
+Step 2. Upload files (if user provided any images/videos/audio).
+        Run: pexo-upload.sh &lt;project_id&gt; &lt;file_path&gt;
+        Save the returned asset_id.
+        Wrap in tag: &lt;original-image&gt;asset_id&lt;/original-image&gt;
+        (or &lt;original-video&gt; / &lt;original-audio&gt; for other file types)
+
+Step 3. Send user's message to Pexo.
+        Run: pexo-chat.sh &lt;project_id&gt; &quot;{user's exact words} &lt;original-image&gt;asset_id&lt;/original-image&gt;&quot;
+        Copy the user's words exactly. Only add asset tags for uploaded files.
+        If the command fails and stderr contains &quot;Credits balance&quot;
+          or &quot;credits&quot; or &quot;Insufficient credits&quot;:
+          → Go to Credit Error Handling below.
+        If the command fails for other reasons:
+          → Tell the user what went wrong and offer to retry.
+
+Step 4. Notify the user (in the user's language).
+        Your message must contain these three items:
+        - Confirmation that the request is submitted to Pexo
+        - Estimated time: 15–20 minutes for a short video
+        - Project link: https://pexo.ai/project/{project_id}
+
+Step 5. Poll for status.
+        Run: sleep 60
+        Run: pexo-project-get.sh &lt;project_id&gt;
+        Read the nextAction field from the returned JSON.
+        Continue to Step 6.
+
+Step 6. Act on nextAction:
+
+        &quot;WAIT&quot; →
+          Go back to Step 5. Keep repeating.
+          Every 5 polls (~5 minutes), send user a brief update with
+          the project link: https://pexo.ai/project/{project_id}
+
+        &quot;CONFIRM&quot; →
+          Read the confirmation object. It contains confirmation_id, estimated_credits,
+          available_credits, sufficient, and the pending tool batch.
+
+          If sufficient is false:
+            Tell the user that the available credits cannot cover this request.
+            Go to Credit Error Handling below. Do not run pexo-billing-confirm.sh.
+
+          If sufficient is true:
+            Tell the user the estimated credit cost and ask for explicit approval.
+            Do not approve on the user's behalf.
+
+            After explicit approval:
+              Run: pexo-billing-confirm.sh &lt;project_id&gt; &lt;confirmation_id&gt; --user-approved
+              Go back to Step 5.
+
+            If the user changes the request instead:
+              Run: pexo-chat.sh &lt;project_id&gt; &quot;{user's exact revised request}&quot;
+              This cancels the pending confirmation before submitting the new message.
+              Go back to Step 5.
+
+        &quot;RESPOND&quot; →
+          Read the recentMessages array. Handle every event:
+
+          Event &quot;message&quot; (Pexo sent text):
+            Relay Pexo's text to the user in full.
+            If Pexo asked a question, wait for the user's answer.
+            Then run: pexo-chat.sh &lt;project_id&gt; &quot;{user's exact answer}&quot;
+            Go back to Step 5.
+
+          Event &quot;preview_video&quot; (Pexo sent preview options):
+            For each assetId in assetIds:
+              Run: pexo-asset-get.sh &lt;project_id&gt; &lt;assetId&gt;
+              Copy the &quot;url&quot; field from the returned JSON.
+            Show all preview URLs to the user with labels (A, B, C...).
+            Ask the user to pick one.
+            After user picks:
+              Run: pexo-chat.sh &lt;project_id&gt; &quot;{user's choice}&quot; --choice &lt;selected_asset_id&gt;
+            Go back to Step 5.
+
+          Event &quot;document&quot;:
+            Mention the document to the user.
+
+          Event &quot;attachment&quot;:
+            Fetch each assetId with pexo-asset-get.sh and deliver the resulting file or URL.
+
+        &quot;DELIVER&quot; →
+          Go to Step 7.
+
+        &quot;FAILED&quot; →
+          Go to Step 8.
+
+        &quot;RECONNECT&quot; →
+          Run: pexo-chat.sh &lt;project_id&gt; &quot;continue&quot;
+          Tell the user the connection was interrupted and you are reconnecting.
+          Go back to Step 5.
+
+Step 7. Deliver the final video.
+
+        7a. Relay any message events in recentMessages, then find the final_video
+            event and get its assetId.
+
+        7b. Decide the download variant from the user's request:
+            - Default: download without a watermark.
+            - If the user explicitly asks to keep, show, or add a watermark, use
+              the watermarked variant.
+            - Both variants require an active subscription or watermark whitelist.
+
+        7c. Run one of:
+            - pexo-asset-get.sh &lt;project_id&gt; &lt;assetId&gt;
+              (default, no watermark)
+            - pexo-asset-get.sh &lt;project_id&gt; &lt;assetId&gt; --with-watermark
+              (only when explicitly requested)
+
+        7d. Show the downloaded video file to the user.
+
+        7e. Also send the user a message (in their language) with:
+            - The video download URL (copy the &quot;url&quot; field from the JSON output).
+              Send the FULL URL as plain text, including all query parameters.
+              Example:
+              https://pexo-assets.oss-us-east-1.aliyuncs.com/projects%2F123%2Fassets%2Fvideo.mp4?OSSAccessKeyId=xxx&amp;Expires=xxx&amp;Signature=xxx
+            - Project page: https://pexo.ai/project/{project_id}
+            - Ask if satisfied or want revisions.
+
+        Common delivery mistakes to avoid:
+        ✗ Truncated URL (missing ?OSSAccessKeyId=...&amp;Signature=...) → 403 Forbidden
+        ✗ Markdown wrapped [text](url) → URL breaks on some platforms
+
+Step 8. Handle failure.
+
+        8a. Read failureReason, nextActionHint, and recentMessages from the JSON.
+        8b. If failureReason is &quot;INSUFFICIENT_CREDITS&quot;:
+              Tell the user prominently that production stopped because the account
+              has insufficient credits.
+              Go to Credit Error Handling below. Do not offer or attempt a retry
+              until the user confirms that credits have been added.
+            Otherwise, if stderr from the failed command contains &quot;Credits balance&quot;,
+            &quot;credits&quot;, or &quot;Insufficient credits&quot;:
+              Go to Credit Error Handling below.
+            Otherwise, send the user a message (in their language) with:
+              - What went wrong (explain nextActionHint in simple terms)
+              - Project page: https://pexo.ai/project/{project_id}
+              - Offer to retry.
+
+Step 9. Timeout.
+
+        If you have been in the Step 5 loop for more than 30 minutes
+        and nextAction is still &quot;WAIT&quot;:
+
+        Send the user a message (in their language) with:
+        - The video is taking longer than expected.
+        - Project page: https://pexo.ai/project/{project_id}
+        - Help guide: https://pexo.ai/connect/openclaw
+        - Ask whether to keep waiting or start over.
+        Stop polling. Wait for user instructions.
+</code></pre>
+<h5>Credit Error Handling</h5>
+<p>Use this flow when <code>pexo-project-get.sh</code> returns
+<code>failureReason: &quot;INSUFFICIENT_CREDITS&quot;</code>, or when a command fails and stderr
+contains credit-related information (look for: &quot;Credits balance&quot;, &quot;credits&quot;,
+or &quot;Insufficient credits&quot;):</p>
+<pre><code>Step A. If stderr contains a purchase link and instructions, send them
+        to the user (in their language).
+
+Step B. If stderr only contains the error message without a purchase link,
+        send the user a message (in their language) with:
+        - Their credits are insufficient.
+        - To add credits: visit https://pexo.ai/home?billing=credits
+          and complete the purchase flow.
+
+Step C. After the user confirms they have added credits, retry the failed step.
+</code></pre>
+<h5>Revising an Existing Video</h5>
+<pre><code>Step 1. Use the same project_id.
+Step 2. Run: pexo-chat.sh &lt;project_id&gt; &quot;{user's exact feedback}&quot;
+Step 3. Go to Step 5 of the main workflow (start polling).
+</code></pre>
+<hr>
+<h4>Asset Upload</h4>
+<p>Pexo can process a public <code>https://</code> webpage URL when it is included verbatim in the user's
+brief. Pass that webpage URL to Pexo; do not scrape or download the page locally.</p>
+<p>For a direct image, video, or audio file URL, ask for explicit approval before downloading it,
+then upload the downloaded file. Only fetch public <code>https://</code> URLs. Never fetch <code>http://</code>,
+localhost, loopback, link-local, private-network, credential-bearing, or signed/private URLs;
+ask the user to upload those files directly instead.</p>
+<p>Upload and reference workflow:</p>
+<pre><code class="language-bash"># Upload the file
+asset_id=$(pexo-upload.sh &lt;project_id&gt; photo.jpg)
+
+# Reference the asset in your message to Pexo
+pexo-chat.sh &lt;project_id&gt; &quot;Here is the product photo &lt;original-image&gt;${asset_id}&lt;/original-image&gt;, please use it as reference&quot;
+</code></pre>
+<p>Tag formats:</p>
+<pre><code>&lt;original-image&gt;asset-id&lt;/original-image&gt;
+&lt;original-video&gt;asset-id&lt;/original-video&gt;
+&lt;original-audio&gt;asset-id&lt;/original-audio&gt;
+</code></pre>
+<p>Tags are mandatory. Bare asset IDs in pexo-chat.sh messages are ignored by Pexo.</p>
+<hr>
+<h4>Important Rules</h4>
+<h5>Polling</h5>
+<ul>
+<li>During WAIT: only call pexo-project-get.sh. Calling pexo-chat.sh during WAIT triggers duplicate video production.</li>
+<li>Wait at least 60 seconds between each pexo-project-get.sh call.</li>
+<li>Process every event in recentMessages, not just the first one.</li>
+</ul>
+<h5>Credit Confirmation</h5>
+<ul>
+<li>Treat <code>nextAction=CONFIRM</code> as a user decision point, not as WAIT or RESPOND.</li>
+<li>Only run <code>pexo-billing-confirm.sh</code> after the user explicitly approves the displayed estimate;
+pass <code>--user-approved</code> to record that prior approval. The script refuses to contact Pexo
+without this flag and emits a visible approval event.</li>
+<li>Use the <code>confirmation_id</code> returned by <code>pexo-project-get.sh</code>; confirmation IDs apply only to the current pending batch.</li>
+<li>A revised message sent with <code>pexo-chat.sh</code> cancels the current pending confirmation before it starts the replacement request.</li>
+</ul>
+<h5>Delivery</h5>
+<ul>
+<li>Copy the &quot;url&quot; field from pexo-asset-get.sh output. Send it as plain text with all query parameters.</li>
+<li>Treat the script's <code>withWatermark</code> field as the authoritative selected variant.</li>
+<li>Do not claim a clean download if the request failed or <code>withWatermark</code> is not false.</li>
+<li>Show the downloaded video file to the user when possible.</li>
+</ul>
+<h5>Projects</h5>
+<ul>
+<li>New video → pexo-project-create.sh to create a new project.</li>
+<li>Revisions → reuse the existing project_id.</li>
+</ul>
+<h5>Cost</h5>
+<ul>
+<li>Each message to Pexo costs tokens. Consolidate information into one message when possible.</li>
+<li>For <code>nextAction=FAILED</code>, use <code>failureReason</code> for remediation. Do not infer a failure category from <code>nextActionHint</code> text.</li>
+</ul>
+<hr>
+<h4>Script Reference</h4>
+<table>
+<thead>
+<tr>
+<th>Script</th>
+<th>Usage</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pexo-project-create.sh</code></td>
+<td><code>[project_name]</code> or <code>--name &lt;n&gt;</code></td>
+<td><code>project_id</code> string. On <code>429</code>, inspect the returned message to distinguish credit and concurrency limits.</td>
+</tr>
+<tr>
+<td><code>pexo-project-list.sh</code></td>
+<td><code>[page_size]</code> or <code>--page &lt;n&gt; --page-size &lt;n&gt;</code></td>
+<td>Projects JSON</td>
+</tr>
+<tr>
+<td><code>pexo-project-get.sh</code></td>
+<td><code>&lt;project_id&gt; [--full-history]</code></td>
+<td>JSON with <code>nextAction</code>, <code>nextActionHint</code>, <code>recentMessages</code>; <code>CONFIRM</code> includes <code>confirmation</code>; recognized <code>FAILED</code> states include <code>failureReason</code>, and error events retain <code>errorCode</code>, <code>errorMessage</code>, and <code>toolCallId</code></td>
+</tr>
+<tr>
+<td><code>pexo-upload.sh</code></td>
+<td><code>&lt;project_id&gt; &lt;file_path&gt;</code></td>
+<td><code>asset_id</code> string</td>
+</tr>
+<tr>
+<td><code>pexo-chat.sh</code></td>
+<td><code>&lt;project_id&gt; &lt;message&gt; [--choice &lt;id&gt;] [--billing-confirmation-mode &lt;mode&gt;] [--timeout &lt;s&gt;]</code></td>
+<td>Acknowledgement JSON (async). A new message cancels a pending confirmation. On <code>429</code>/<code>412</code> or credit errors, error info printed to stderr.</td>
+</tr>
+<tr>
+<td><code>pexo-billing-confirm.sh</code></td>
+<td><code>&lt;project_id&gt; &lt;confirmation_id&gt; --user-approved [--timeout &lt;s&gt;]</code></td>
+<td>Approves the current sufficient credit confirmation after explicit user approval; refuses to make a request without the approval flag.</td>
+</tr>
+<tr>
+<td><code>pexo-asset-get.sh</code></td>
+<td><code>&lt;project_id&gt; &lt;asset_id&gt; [--with-watermark]</code></td>
+<td>JSON with video details, selected <code>url</code>, <code>localPath</code>, and <code>withWatermark</code></td>
+</tr>
+<tr>
+<td><code>pexo-doctor.sh</code></td>
+<td>(no args)</td>
+<td>Diagnostic report</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4>Pexo Capabilities</h4>
+<ul>
+<li>Output: 5–120 second finished videos with music, subtitles, and transitions</li>
+<li>Aspect ratios: 16:9 (landscape), 9:16 (portrait/vertical for TikTok, Reels, Shorts), 1:1 (square)</li>
+<li>Auto model selection: Seedance 2, Kling 3.0, HappyHorse, and more — Pexo picks the best model per shot</li>
+<li>Input types: text, images, URLs, scripts, audio</li>
+<li>Production time: ~8 minutes for a 15-second 3-shot video, ~20 minutes for a 60-second brand video</li>
+<li>Supported uploads: Images (jpg, png, webp, bmp, tiff, heic), Videos (mp4, mov, avi), Audio (mp3, wav, aac, m4a, ogg, flac)</li>
+<li>Post-production: AI music, TTS narration, voice cloning, lip sync, subtitles, transitions</li>
+</ul>
+<hr>
+<h4>References</h4>
+<p>Load these when needed:</p>
+<ul>
+<li><strong>First time or config error</strong> → read <code>references/SETUP-CHECKLIST.md</code></li>
+<li><strong>Error codes or failures</strong> → read <code>references/TROUBLESHOOTING.md</code></li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

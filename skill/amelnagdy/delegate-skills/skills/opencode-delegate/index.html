@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>opencode-delegate · SkillHub</title>
+    <meta name="description" content="Use it when: you want OpenCode to write the code for a task, or a queue of tasks, while your main agent stays the reviewer. It does: writes a self-contained brief, runs OpenCode headless through a bundled relay script, then re-runs your project&#039;s checks and reads the diff against the brief. Picks the model: from the models you allow, ideally listed in AGENTS.md or CLAUDE.md; with no list it asks, so a per-token model can&#039;t surprise you with a bill. You get: verified changes committed by your main agent, plus a result.json with OpenCode&#039;s report and the files it touched. Read-only runs: use OpenCode&#039;s plan agent, which never gets auto-approval, for reviews and diagnosis. Needs: the opencode CLI with a model provider signed in, Node 18+ and git." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=amelnagdy%2Fdelegate-skills">amelnagdy/delegate-skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/bundle/amelnagdy/delegate-skills/">Delegate skills</a></p>
+      <h1>opencode-delegate</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want OpenCode to write the code for a task, or a queue of tasks, while your main agent stays the reviewer</dd></div><div><dt>It does</dt><dd>writes a self-contained brief, runs OpenCode headless through a bundled relay script, then re-runs your project&#39;s checks and reads the diff against the brief</dd></div><div><dt>Picks the model</dt><dd>from the models you allow, ideally listed in AGENTS.md or CLAUDE.md; with no list it asks, so a per-token model can&#39;t surprise you with a bill</dd></div><div><dt>You get</dt><dd>verified changes committed by your main agent, plus a result.json with OpenCode&#39;s report and the files it touched</dd></div><div><dt>Read-only runs</dt><dd>use OpenCode&#39;s plan agent, which never gets auto-approval, for reviews and diagnosis</dd></div><div><dt>Needs</dt><dd>the opencode CLI with a model provider signed in, Node 18+ and git</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 3 of 5 in the <a href="/skillhub/bundle/amelnagdy/delegate-skills/">Delegate skills</a> bundle · Before it: <a href="/skillhub/skill/amelnagdy/delegate-skills/skills/codex-delegate/">codex-delegate</a> · After it: <a href="/skillhub/skill/amelnagdy/delegate-skills/skills/claude-delegate/">claude-delegate</a></p>
+    
+      <p class="note">Needs the OpenCode CLI with a signed-in model provider, Node 18+ and git. Write runs auto-approve every OpenCode permission by default; pass --no-auto to keep its own rules.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Your main agent is the orchestrator and OpenCode is the implementer. OpenCode has no default model, so each fresh run needs one: you decide which models are allowed, and the agent picks per task, a cheap fast one for a mechanical rename or removal, a strong one for a subtle bug or a payment path. The brief carries everything OpenCode needs, since it sees no chat history: the goal, what to change and leave alone, the project&#39;s real check commands and a report format, and it says not to commit. The bundled relay.mjs wraps opencode run with the write-capable build agent, passes --auto, which approves every permission request so a headless run never stalls (--no-auto keeps OpenCode&#39;s own rules), keeps its artifacts in a temp folder and blocks until done. The agent then re-runs the checks, reads the diff for scope creep or gaps, and commits only what holds; rework resumes the last OpenCode session with a delta brief. A fleet lane from the repo&#39;s delegate-setup skill can set the model and other options.</p>
+      <p class="muted">Summarizes <a href="https://github.com/amelnagdy/delegate-skills/tree/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/opencode-delegate">the skill at 7f8ae34</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/amelnagdy/delegate-skills --skill opencode-delegate</code><button type="button" class="copy" data-copy="npx skills add https://github.com/amelnagdy/delegate-skills --skill opencode-delegate">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/amelnagdy/delegate-skills/opencode-delegate">skills.sh page</a> · <a href="https://github.com/amelnagdy/delegate-skills/tree/HEAD/skills/opencode-delegate">Source on GitHub</a> · <a href="/skillhub/?repo=amelnagdy%2Fdelegate-skills">All skills from amelnagdy/delegate-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>7,000 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>2,571 <span class="muted">amelnagdy/delegate-skills</span></dd></div><div><dt>First seen</dt><dd>Jul 4, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">228</div>
+      <div class="stat-delta">-70% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 767; week to Sep 26: 489; week to Oct 3: 445; week to Oct 10: 316; week to Oct 17: 300; week to Oct 24: 393; week to Oct 31: 302; week to Nov 7: 228. Use the left and right arrow keys to read each week."
+        data-values="767,489,445,316,300,393,302,228" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,21.9 71.1,24.5 103.7,31.9 136.3,32.8 168.9,27.5 201.4,32.7 234.0,36.9" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="36.9" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>767</td></tr><tr><td>Sep 26</td><td>489</td></tr><tr><td>Oct 3</td><td>445</td></tr><tr><td>Oct 10</td><td>316</td></tr><tr><td>Oct 17</td><td>300</td></tr><tr><td>Oct 24</td><td>393</td></tr><tr><td>Oct 31</td><td>302</td></tr><tr><td>Nov 7</td><td>228</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/skillhub/?tag=category%3Aagents">category:agents</a><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/skillhub/?tag=needs%3Aaccount">needs:account</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="multi-agent" data-facet="topic" href="/skillhub/?tag=multi-agent">multi-agent</a><a class="tag" data-tag="agent-workflows" data-facet="topic" href="/skillhub/?tag=agent-workflows">agent-workflows</a><a class="tag" data-tag="implementation" data-facet="topic" href="/skillhub/?tag=implementation">implementation</a><a class="tag" data-tag="code-review" data-facet="topic" href="/skillhub/?tag=code-review">code-review</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:opencode" data-facet="stack" href="/skillhub/?tag=stack%3Aopencode">stack:opencode</a><a class="tag" data-tag="stack:git" data-facet="stack" href="/skillhub/?tag=stack%3Agit">stack:git</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/opencode-delegate/SKILL.md">amelnagdy/delegate-skills at 7f8ae34</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: opencode-delegate
+description: &#62;-
+  Delegate a coding task to the OpenCode CLI as a background implementer, then review its diff and
+  land it yourself. Use this whenever the user wants to hand implementation work to OpenCode — phrasings
+  like &#34;have OpenCode do X&#34;, &#34;delegate this to OpenCode&#34;, &#34;run it through OpenCode&#34;, or &#34;use OpenCode to
+  implement/fix/refactor&#34; — or wants to run a queue of coding tasks through OpenCode while staying the
+  reviewer. Prefer it when the user will review the diff and commit it themselves. DO NOT USE for tasks
+  small enough to do inline, or when the user wants the code written directly without delegating.
+license: MIT
+compatibility: Requires the `opencode` CLI installed and authenticated, Node 18+, and git. The orchestrating agent must be able to run shell commands and read files. Shell examples assume bash/zsh (macOS/Linux, or Git Bash/WSL on Windows).
+metadata:
+  version: 0.5.0</code></pre></details>
+        <div class="markdown"><h3>OpenCode Delegate</h3>
+<p>You are the <strong>orchestrator</strong>. This skill lets you hand a bounded coding task to a separate
+<strong>implementer</strong> — the OpenCode CLI — then review what it produced and land it yourself. You write
+the brief and own the judgment; OpenCode does the typing in its own session; you verify and commit.</p>
+<p>Nothing here is specific to one orchestrating agent. The loop needs only the ability to run a shell
+command and read a file, so any agent with those two capabilities — Claude Code, OpenCode driving a
+sibling session, or a comparable one — can drive it. (It is designed for and run on Claude Code; treat
+other orchestrators as designed-for, not yet proven.)</p>
+<h4>When NOT to use this</h4>
+<ul>
+<li>The task is small enough to just do inline — delegation overhead is not worth it.</li>
+<li>The <code>opencode</code> CLI is not installed or not authenticated (run <code>opencode auth login</code>).</li>
+<li>You want to write the code yourself, or you only need a review (use the <code>plan</code> agent via <code>--read-only</code>).</li>
+</ul>
+<h4>Prerequisites (check once)</h4>
+<ol>
+<li><code>opencode --version</code> succeeds. If not, install (<code>npm i -g opencode-ai</code>, or the native installer from
+opencode.ai) and <code>opencode auth login</code>.</li>
+<li><strong>Confirm which <code>opencode</code> is on PATH.</strong> <code>command -v opencode</code> shows the active binary and
+<code>opencode --version</code> its version. The relay records the version it ran into <code>result.json</code>, so a stale
+binary is visible after the fact.</li>
+<li>A model provider is authenticated — <code>opencode auth list</code> shows at least one credential.</li>
+<li>You are in (or will point <code>--cd</code> at) the target git repository.</li>
+</ol>
+<h4>Choose the implementer model</h4>
+<p>OpenCode has <strong>no safe default</strong> — a bare <code>opencode run</code> errors — so a fresh run needs a model via
+<code>--model</code> or a fleet <code>--lane</code> that sets one (a resumed run inherits its session's model). Naming the
+model is the one decision a single-model backend like codex-delegate never had, and it has two owners:</p>
+<ul>
+<li><strong>The human owns which models are allowed.</strong> <code>opencode models</code> lists hundreds of entries, most billed
+per token (OpenRouter and the like); only the human knows which are their flat-rate subscriptions, and
+the CLI can't tell them apart. So the usable set is theirs — ideally stated once in the repo's
+<code>AGENTS.md</code> or their <code>CLAUDE.md</code> (e.g. &quot;delegate mechanical work to <code>opencode-go/…</code>, hard logic to
+<code>…</code>&quot;).</li>
+<li><strong>You, the orchestrator, pick per task — from that set.</strong> Match the model to the brief: a cheap, fast
+model for a mechanical sweep (rename, migration, removal); a strong one for a subtle bug or a
+money/security path.</li>
+<li><strong>If no usable set is stated, ask — don't guess.</strong> Guessing from the catalog risks a metered model and
+a surprise bill. Name the constraint to the human and let them choose.</li>
+</ul>
+<p>More depth: <a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/opencode-delegate/references/writing-the-brief.md">references/writing-the-brief.md</a>.</p>
+<h4>The loop</h4>
+<p>Run these five steps per task. Steps 1, 4, and 5 are your judgment; 2 and 3 are mechanical.</p>
+<h5>1. Write the brief</h5>
+<p>OpenCode sees <strong>only</strong> the text you send plus what it can read from the working tree — no chat history,
+no shared context. Everything the task needs goes in the brief: the goal, the current state, what to
+change, what to leave untouched, the project's <strong>actual</strong> gate commands (discover them from the repo's
+AGENTS.md/CLAUDE.md/Makefile — do not assume), and a report contract. Tell OpenCode it will <strong>not</strong>
+commit (you will). Keep one task per brief. Full guidance and a template:
+<a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/opencode-delegate/references/writing-the-brief.md">references/writing-the-brief.md</a>.</p>
+<h5>2. Dispatch</h5>
+<p>Send the brief to OpenCode with the bundled helper. It wraps <code>opencode run</code>, captures the run, and
+writes a structured <code>result.json</code> — so your only job is &quot;run a command, read a file.&quot; (<code>&lt;skill-dir&gt;</code>
+below is this skill's installed directory — the folder containing this <code>SKILL.md</code>. Claude Code prints
+it as &quot;Base directory for this skill&quot; when the skill loads; on other orchestrators use that same
+directory — if unsure where it landed, run <code>find ~ -name relay.mjs -path '*opencode-delegate*'</code> and
+substitute the directory above it.)</p>
+<pre><code class="language-bash">node &quot;&lt;skill-dir&gt;/scripts/relay.mjs&quot; --brief brief.txt --model &lt;provider/model&gt; --cd /path/to/repo
+# --model (or a --lane that sets model) is required on a fresh run
+# fleet lane from delegate-setup:           add --lane &lt;name&gt;  (dials apply; flags still win)
+# read-only (review/diagnosis, no edits):   add --read-only   (uses the plan agent)
+# continue the previous OpenCode session:   add --resume-last  (delta brief only; keeps the model)
+# hard time limit (watchdog):               add --timeout 2h  (default: off; implementation runs routinely need 1-2h)
+# see all options:                          node .../relay.mjs --help
+</code></pre>
+<p>The helper defaults to the write-capable <code>build</code> agent and writes its artifacts to a temp dir, so the
+repo under review stays clean. It <strong>never commits</strong> — see step 5. Mechanics, flags, and the
+<code>result.json</code> shape: <a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/opencode-delegate/references/dispatch-and-poll.md">references/dispatch-and-poll.md</a>.</p>
+<h5>3. Wait for completion</h5>
+<p>The helper blocks until OpenCode finishes, so back it with whatever your orchestrator offers and resume
+when it returns:</p>
+<ul>
+<li><strong>Claude Code:</strong> run the Bash call with <code>run_in_background: true</code>; you are notified on completion.</li>
+<li><strong>Plain shell / other agents:</strong> run it in the foreground for short tasks, or background it and poll
+the result file — <code>… &amp;</code> in bash/zsh (including Git Bash/WSL), or your shell's equivalent (<code>Start-Job</code>
+in PowerShell, <code>start /b</code> in cmd). The run is done when <code>result.json</code> exists with a <code>status</code>. (A
+pre-run usage error — bad args or an empty brief — instead exits with code 2 and writes no result
+file, so check the exit code too. A missing <code>opencode</code> binary exits 127 but <em>does</em> write a
+<code>result.json</code> with status <code>opencode_unavailable</code>.)</li>
+</ul>
+<p>Do not trust progress trackers over reality: a run is finished when <code>result.json</code> is written and the
+process has exited. Read the working tree, not a status line. The implementer's full report is
+the <code>finalMessage</code> field in <code>result.json</code> (also printed in full on stdout between the report markers).</p>
+<h5>4. Review — do not trust the self-report</h5>
+<p>OpenCode's <code>result.json</code> includes its own final message and any gate claims. <strong>Re-verify, don't accept:</strong></p>
+<ul>
+<li><strong>Re-run the project's gates yourself</strong> (the test/lint/build commands from step 1). Never take
+&quot;gates passed&quot; on faith.</li>
+<li><strong>Read the diff</strong> against the brief: did OpenCode do what was asked, nothing more (scope creep) and
+nothing less? <code>touchedFiles</code> in the result is your starting point.</li>
+<li><strong>Run the relevant guard skills</strong> on the diff if you have them installed (clean-code-guard,
+test-guard, etc. from <code>guard-skills</code>) — this skill produces the work; those skills judge it.</li>
+<li>For schema/migration changes, round-trip them; for removals, grep for dangling references.</li>
+</ul>
+<p>Full checklist: <a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/opencode-delegate/references/review-and-land.md">references/review-and-land.md</a>.</p>
+<h5>5. Land it</h5>
+<p>The implementer edits the working tree; <strong>the orchestrator commits.</strong> Committing should be the act of
+the party that verified the work. Only after the gates pass and the diff holds:</p>
+<ul>
+<li>Commit the verified work yourself, with a clear message.</li>
+<li>If it needs changes, send a delta brief with <code>--resume-last</code> (don't restate the whole task) and
+review again.</li>
+</ul>
+<h4>Autonomy model</h4>
+<p>OpenCode's autonomy is governed by the <strong>agent</strong>, not a sandbox enum:</p>
+<ul>
+<li><strong><code>build</code></strong> (the relay default) — write-capable; edits files in the working dir headlessly. The
+equivalent of &quot;let it implement.&quot;</li>
+<li><strong><code>plan</code></strong> (via <code>--read-only</code>) — read-only; reviews and diagnoses without touching the tree. The
+equivalent of &quot;let it look but not edit.&quot;</li>
+</ul>
+<p>Permissions <strong>auto-approve by default</strong>: the relay passes <code>--auto</code> so a headless run never blocks on a
+prompt no one can answer. That is the point of unattended delegation — the orchestrator's diff review
+and the implementer sweep (step 4) are the safety net, not a per-action prompt. Pass <code>--no-auto</code> to
+honor the agent's own permission config instead (allow/ask/deny per action); pair it with an agent whose
+in-workspace permissions are set to <em>allow</em>, or a headless run can hang waiting on an <code>ask</code>.
+<strong>Read-only (<code>plan</code>) runs never get <code>--auto</code></strong> — auto-approving would let the plan agent's ask-gated
+edit/bash permissions through and defeat &quot;read-only,&quot; so a review can't be tricked into touching the tree.</p>
+<h4>Authorization model</h4>
+<p>Delegation is something the human opts into. Once they have (&quot;run this queue&quot;, &quot;proceed&quot;), committing
+verified, gate-passing work is the agreed contract — that is the whole point. Two limits on that
+mandate: <strong>surface, don't absorb</strong> (report OpenCode's design decisions, defensible-but-unasked turns,
+and non-blocking nitpicks rather than silently keeping them) and <strong>stop for scope changes</strong> (if correct
+completion needs going beyond the brief, ask — don't expand the mandate yourself). The full treatment
+is in <a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/opencode-delegate/references/review-and-land.md">references/review-and-land.md</a>.</p>
+<h4>References</h4>
+<ul>
+<li><a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/opencode-delegate/references/writing-the-brief.md">references/writing-the-brief.md</a> — how to write a brief OpenCode can
+execute blind: structure, XML blocks, the report contract, embedding the real gate commands.</li>
+<li><a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/opencode-delegate/references/dispatch-and-poll.md">references/dispatch-and-poll.md</a> — <code>relay.mjs</code> flags, the
+<code>result.json</code> contract, backgrounding per orchestrator, and recovery when a run misbehaves.</li>
+<li><a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/opencode-delegate/references/review-and-land.md">references/review-and-land.md</a> — the review checklist, the commit
+boundary, and the rework cycle via <code>--resume-last</code>.</li>
+<li><a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/opencode-delegate/references/multi-task-queues.md">references/multi-task-queues.md</a> — running a sequential queue:
+carrying constraints forward, progress tracking, and the end-of-run coherence check.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

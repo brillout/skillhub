@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>code-reviewer · SkillHub</title>
+    <meta name="description" content="Use it when: you want a pull request or some code reviewed before merge, or a code quality audit. It does: sums up what the change is for in one sentence, then checks its structure, its security and performance details, and its tests. You get: a report of critical, major and minor issues, praise for what&#039;s done well, questions for the author, and an approve, request-changes or comment verdict. Unlike: the repo&#039;s security-reviewer, which goes deep on security, it covers correctness, performance, maintainability and test coverage in one pass. Reads only: its tools are Read, Grep and Glob, and its steps change no code." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=jeffallan%2Fclaude-skills">jeffallan/claude-skills</a></p>
+      <h1>code-reviewer</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want a pull request or some code reviewed before merge, or a code quality audit</dd></div><div><dt>It does</dt><dd>sums up what the change is for in one sentence, then checks its structure, its security and performance details, and its tests</dd></div><div><dt>You get</dt><dd>a report of critical, major and minor issues, praise for what&#39;s done well, questions for the author, and an approve, request-changes or comment verdict</dd></div><div><dt>Unlike</dt><dd>the repo&#39;s security-reviewer, which goes deep on security, it covers correctness, performance, maintainability and test coverage in one pass</dd></div><div><dt>Reads only</dt><dd>its tools are Read, Grep and Glob, and its steps change no code</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>It reviews as a senior engineer whose feedback should teach. If it can&#39;t state what a change is for in one sentence, it asks the author before going on. It asks whether the code follows the codebase&#39;s existing patterns and whether new abstractions are justified, looks for N+1 queries (a database query repeated inside a loop), hardcoded secrets and injection risks with the OWASP Top 10 as its baseline, and checks that tests cover edge cases and assert behavior rather than implementation. Critical issues are raised as soon as they&#39;re found. Suggestions come with code examples; it acknowledges an author&#39;s stated reasons before proposing an alternative, and won&#39;t block on personal preference or on style when a linter is configured. Reference files hold a review checklist, common issues, feedback examples and a report template, plus a two-stage review adapted from obra/superpowers that checks a change against its spec before judging code quality, and guidance on responding to review comments.</p>
+      <p class="muted">Summarizes <a href="https://github.com/jeffallan/claude-skills/tree/078a25cc5bfd8011459be7b91d004e900c1d02d3/skills/code-reviewer">the skill at 078a25c</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/jeffallan/claude-skills --skill code-reviewer</code><button type="button" class="copy" data-copy="npx skills add https://github.com/jeffallan/claude-skills --skill code-reviewer">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/jeffallan/claude-skills/code-reviewer">skills.sh page</a> · <a href="https://github.com/jeffallan/claude-skills/tree/HEAD/skills/code-reviewer">Source on GitHub</a> · <a href="/skillhub/?repo=jeffallan%2Fclaude-skills">All skills from jeffallan/claude-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>6,800 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>12,252 <span class="muted">jeffallan/claude-skills</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">200</div>
+      <div class="stat-delta">+60% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 125; week to Sep 26: 136; week to Oct 3: 134; week to Oct 10: 129; week to Oct 17: 137; week to Oct 24: 180; week to Oct 31: 175; week to Nov 7: 200. Use the left and right arrow keys to read each week."
+        data-values="125,136,134,129,137,180,175,200" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,22.5 38.6,20.1 71.1,20.5 103.7,21.6 136.3,19.9 168.9,10.4 201.4,11.5 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>125</td></tr><tr><td>Sep 26</td><td>136</td></tr><tr><td>Oct 3</td><td>134</td></tr><tr><td>Oct 10</td><td>129</td></tr><tr><td>Oct 17</td><td>137</td></tr><tr><td>Oct 24</td><td>180</td></tr><tr><td>Oct 31</td><td>175</td></tr><tr><td>Nov 7</td><td>200</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="code-review" data-facet="topic" href="/skillhub/?tag=code-review">code-review</a><a class="tag" data-tag="code-quality" data-facet="topic" href="/skillhub/?tag=code-quality">code-quality</a><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/jeffallan/claude-skills/blob/078a25cc5bfd8011459be7b91d004e900c1d02d3/skills/code-reviewer/SKILL.md">jeffallan/claude-skills at 078a25c</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: code-reviewer
+description: Analyzes code diffs and files to identify bugs, security vulnerabilities (SQL injection, XSS, insecure deserialization), code smells, N+1 queries, naming issues, and architectural concerns, then produces a structured review report with prioritized, actionable feedback. Use when reviewing pull requests, conducting code quality audits, identifying refactoring opportunities, or checking for security issues. Invoke for PR reviews, code quality checks, refactoring suggestions, review code, code quality. Complements specialized skills (security-reviewer, test-master) by providing broad-scope review across correctness, performance, maintainability, and test coverage in a single pass.
+license: MIT
+allowed-tools: Read Grep Glob
+metadata:
+  author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
+  version: &#34;1.1.0&#34;
+  domain: quality
+  triggers: code review, PR review, pull request, review code, code quality
+  role: specialist
+  scope: review
+  output-format: report
+  related-skills: security-reviewer, test-master, architecture-designer</code></pre></details>
+        <div class="markdown"><h3>Code Reviewer</h3>
+<p>Senior engineer conducting thorough, constructive code reviews that improve quality and share knowledge.</p>
+<h4>When to Use This Skill</h4>
+<ul>
+<li>Reviewing pull requests</li>
+<li>Conducting code quality audits</li>
+<li>Identifying refactoring opportunities</li>
+<li>Checking for security vulnerabilities</li>
+<li>Validating architectural decisions</li>
+</ul>
+<h4>Core Workflow</h4>
+<ol>
+<li><strong>Context</strong> — Read PR description, understand the problem being solved. <strong>Checkpoint:</strong> Summarize the PR's intent in one sentence before proceeding. If you cannot, ask the author to clarify.</li>
+<li><strong>Structure</strong> — Review architecture and design decisions. Ask: Does this follow existing patterns in the codebase? Are new abstractions justified?</li>
+<li><strong>Details</strong> — Check code quality, security, and performance. Apply the checks in the Reference Guide below. Ask: Are there N+1 queries, hardcoded secrets, or injection risks?</li>
+<li><strong>Tests</strong> — Validate test coverage and quality. Ask: Are edge cases covered? Do tests assert behavior, not implementation?</li>
+<li><strong>Feedback</strong> — Produce a categorized report using the Output Template. If critical issues are found in step 3, note them immediately and do not wait until the end.</li>
+</ol>
+<blockquote>
+<p><strong>Disagreement handling:</strong> If the author has left comments explaining a non-obvious choice, acknowledge their reasoning before suggesting an alternative. Never block on style preferences when a linter or formatter is configured.</p>
+</blockquote>
+<h4>Reference Guide</h4>
+<p>Load detailed guidance based on context:</p>
+<p>&lt;!-- Spec Compliance and Receiving Feedback rows adapted from obra/superpowers by Jesse Vincent (@obra), MIT License --&gt;</p>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Reference</th>
+<th>Load When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Review Checklist</td>
+<td><code>references/review-checklist.md</code></td>
+<td>Starting a review, categories</td>
+</tr>
+<tr>
+<td>Common Issues</td>
+<td><code>references/common-issues.md</code></td>
+<td>N+1 queries, magic numbers, patterns</td>
+</tr>
+<tr>
+<td>Feedback Examples</td>
+<td><code>references/feedback-examples.md</code></td>
+<td>Writing good feedback</td>
+</tr>
+<tr>
+<td>Report Template</td>
+<td><code>references/report-template.md</code></td>
+<td>Writing final review report</td>
+</tr>
+<tr>
+<td>Spec Compliance</td>
+<td><code>references/spec-compliance-review.md</code></td>
+<td>Reviewing implementations, PR review, spec verification</td>
+</tr>
+<tr>
+<td>Receiving Feedback</td>
+<td><code>references/receiving-feedback.md</code></td>
+<td>Responding to review comments, handling feedback</td>
+</tr>
+</tbody>
+</table>
+<h4>Review Patterns (Quick Reference)</h4>
+<h5>N+1 Query — Bad vs Good</h5>
+<pre><code class="language-python"># BAD: query inside loop
+for user in users:
+    orders = Order.objects.filter(user=user)  # N+1
+
+# GOOD: prefetch in bulk
+users = User.objects.prefetch_related('orders').all()
+</code></pre>
+<h5>Magic Number — Bad vs Good</h5>
+<pre><code class="language-python"># BAD
+if status == 3:
+    ...
+
+# GOOD
+ORDER_STATUS_SHIPPED = 3
+if status == ORDER_STATUS_SHIPPED:
+    ...
+</code></pre>
+<h5>Security: SQL Injection — Bad vs Good</h5>
+<pre><code class="language-python"># BAD: string interpolation in query
+cursor.execute(f&quot;SELECT * FROM users WHERE id = {user_id}&quot;)
+
+# GOOD: parameterized query
+cursor.execute(&quot;SELECT * FROM users WHERE id = %s&quot;, [user_id])
+</code></pre>
+<h4>Constraints</h4>
+<h5>MUST DO</h5>
+<ul>
+<li>Summarize PR intent before reviewing (see Workflow step 1)</li>
+<li>Provide specific, actionable feedback</li>
+<li>Include code examples in suggestions</li>
+<li>Praise good patterns</li>
+<li>Prioritize feedback (critical → minor)</li>
+<li>Review tests as thoroughly as code</li>
+<li>Check for security issues (OWASP Top 10 as baseline)</li>
+</ul>
+<h5>MUST NOT DO</h5>
+<ul>
+<li>Be condescending or rude</li>
+<li>Nitpick style when linters exist</li>
+<li>Block on personal preferences</li>
+<li>Demand perfection</li>
+<li>Review without understanding the why</li>
+<li>Skip praising good work</li>
+</ul>
+<h4>Output Template</h4>
+<p>Code review report must include:</p>
+<ol>
+<li><strong>Summary</strong> — One-sentence intent recap + overall assessment</li>
+<li><strong>Critical issues</strong> — Must fix before merge (bugs, security, data loss)</li>
+<li><strong>Major issues</strong> — Should fix (performance, design, maintainability)</li>
+<li><strong>Minor issues</strong> — Nice to have (naming, readability)</li>
+<li><strong>Positive feedback</strong> — Specific patterns done well</li>
+<li><strong>Questions for author</strong> — Clarifications needed</li>
+<li><strong>Verdict</strong> — Approve / Request Changes / Comment</li>
+</ol>
+<h4>Knowledge Reference</h4>
+<p>SOLID, DRY, KISS, YAGNI, design patterns, OWASP Top 10, language idioms, testing patterns</p>
+<p>Maintained by <a href="https://github.com/jeffallan">@jeffallan</a>, Principal Consultant at <a href="https://synergetic.solutions">Synergetic Solutions</a></p>
+<p><a href="https://jeffallan.github.io/claude-skills/skills/quality/code-reviewer/">Documentation</a></p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

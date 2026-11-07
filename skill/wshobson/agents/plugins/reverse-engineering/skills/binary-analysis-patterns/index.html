@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>binary-analysis-patterns · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re reverse-engineering an executable, analyzing malware, or reading a decompiler&#039;s output and want to recover the original logic. It does: catalogs how compilers turn C into assembly — branches, loops, switch tables, arrays, structs, string ops — and how to read it back. You get: patterns for recognizing idioms and recovering variables, function signatures and types, plus Ghidra and IDAPython snippets. Needs: a disassembler or decompiler such as Ghidra, IDA Pro or Binary Ninja." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=wshobson%2Fagents">wshobson/agents</a></p>
+      <h1>binary-analysis-patterns</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re reverse-engineering an executable, analyzing malware, or reading a decompiler&#39;s output and want to recover the original logic</dd></div><div><dt>It does</dt><dd>catalogs how compilers turn C into assembly — branches, loops, switch tables, arrays, structs, string ops — and how to read it back</dd></div><div><dt>You get</dt><dd>patterns for recognizing idioms and recovering variables, function signatures and types, plus Ghidra and IDAPython snippets</dd></div><div><dt>Needs</dt><dd>a disassembler or decompiler such as Ghidra, IDA Pro or Binary Ninja</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A reference of patterns for static binary analysis. The SKILL.md maps common assembly idioms to their source constructs: conditional branches and signed/unsigned comparisons, for/while/do-while loops, jump-table and sequential switch statements, array and multi-dimensional indexing, struct field offsets, linked-list traversal, string and memory operations, constant multiplication and division by shifts, and bit manipulation. It then covers decompilation: recovering local variables and stack arrays, inferring parameters from register use under the System V convention, and guessing types from operand sizes. Ghidra scripting examples fix function signatures and define structures; IDAPython examples find calls to dangerous functions and rename by string hints. A reference file adds prologue/epilogue, calling conventions and ARM patterns. It closes with an analysis workflow — triage, strings, functions, control flow, data structures, algorithms, documentation — and pitfalls from optimization such as inlining, tail calls and position-independent code.</p>
+      <p class="muted">Summarizes <a href="https://github.com/wshobson/agents/tree/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/reverse-engineering/skills/binary-analysis-patterns">the skill at 4bde316</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/wshobson/agents --skill binary-analysis-patterns</code><button type="button" class="copy" data-copy="npx skills add https://github.com/wshobson/agents --skill binary-analysis-patterns">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/wshobson/agents/binary-analysis-patterns">skills.sh page</a> · <a href="https://github.com/wshobson/agents/tree/HEAD/plugins/reverse-engineering/skills/binary-analysis-patterns">Source on GitHub</a> · <a href="/skillhub/?repo=wshobson%2Fagents">All skills from wshobson/agents</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>11,300 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>42,267 <span class="muted">wshobson/agents</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">207</div>
+      <div class="stat-delta">+11% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 187; week to Sep 26: 195; week to Oct 3: 234; week to Oct 10: 297; week to Oct 17: 247; week to Oct 24: 220; week to Oct 31: 226; week to Nov 7: 207. Use the left and right arrow keys to read each week."
+        data-values="187,195,234,297,247,220,226,207" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,22.3 38.6,21.1 71.1,15.3 103.7,6.0 136.3,13.4 168.9,17.4 201.4,16.5 234.0,19.3" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="19.3" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>187</td></tr><tr><td>Sep 26</td><td>195</td></tr><tr><td>Oct 3</td><td>234</td></tr><tr><td>Oct 10</td><td>297</td></tr><tr><td>Oct 17</td><td>247</td></tr><tr><td>Oct 24</td><td>220</td></tr><tr><td>Oct 31</td><td>226</td></tr><tr><td>Nov 7</td><td>207</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/skillhub/?tag=category%3Asecurity">category:security</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/skillhub/?tag=type%3Aguidelines">type:guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:ghidra" data-facet="stack" href="/skillhub/?tag=stack%3Aghidra">stack:ghidra</a><a class="tag" data-tag="stack:ida" data-facet="stack" href="/skillhub/?tag=stack%3Aida">stack:ida</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/wshobson/agents/blob/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/reverse-engineering/skills/binary-analysis-patterns/SKILL.md">wshobson/agents at 4bde316</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: binary-analysis-patterns
+description: Master binary analysis patterns including disassembly, decompilation, control flow analysis, and code pattern recognition. Use when analyzing executables, understanding compiled code, or performing static analysis on binaries.</code></pre></details>
+        <div class="markdown"><h3>Binary Analysis Patterns</h3>
+<p>Comprehensive patterns and techniques for analyzing compiled binaries, understanding assembly code, and reconstructing program logic.</p>
+<h4>When to Use This Skill</h4>
+<ul>
+<li>Reverse-engineering an unknown executable to understand its behavior</li>
+<li>Analyzing malware or obfuscated binaries with Ghidra / IDA Pro / Binary Ninja</li>
+<li>Recognizing common assembly idioms (function prologues, switch tables, vtable dispatch)</li>
+<li>Reconstructing high-level control flow from compiled code</li>
+<li>Identifying compiler-introduced patterns (stack canaries, PIC trampolines)</li>
+</ul>
+<h4>Detailed section: Disassembly Fundamentals</h4>
+<p>Originally a 2047-byte section in this SKILL.md. Moved to <code>references/details.md</code> to fit Codex's 8 KB skill body cap.</p>
+<h4>Control Flow Patterns</h4>
+<h5>Conditional Branches</h5>
+<pre><code class="language-asm">; if (a == b)
+cmp eax, ebx
+jne skip_block
+; ... if body ...
+skip_block:
+
+; if (a &lt; b) - signed
+cmp eax, ebx
+jge skip_block    ; Jump if greater or equal
+; ... if body ...
+skip_block:
+
+; if (a &lt; b) - unsigned
+cmp eax, ebx
+jae skip_block    ; Jump if above or equal
+; ... if body ...
+skip_block:
+</code></pre>
+<h5>Loop Patterns</h5>
+<pre><code class="language-asm">; for (int i = 0; i &lt; n; i++)
+xor ecx, ecx           ; i = 0
+loop_start:
+cmp ecx, [n]           ; i &lt; n
+jge loop_end
+; ... loop body ...
+inc ecx                ; i++
+jmp loop_start
+loop_end:
+
+; while (condition)
+jmp loop_check
+loop_body:
+; ... body ...
+loop_check:
+cmp eax, ebx
+jl loop_body
+
+; do-while
+loop_body:
+; ... body ...
+cmp eax, ebx
+jl loop_body
+</code></pre>
+<h5>Switch Statement Patterns</h5>
+<pre><code class="language-asm">; Jump table pattern
+mov eax, [switch_var]
+cmp eax, max_case
+ja default_case
+jmp [jump_table + eax*8]
+
+; Sequential comparison (small switch)
+cmp eax, 1
+je case_1
+cmp eax, 2
+je case_2
+cmp eax, 3
+je case_3
+jmp default_case
+</code></pre>
+<h4>Data Structure Patterns</h4>
+<h5>Array Access</h5>
+<pre><code class="language-asm">; array[i] - 4-byte elements
+mov eax, [rbx + rcx*4]        ; rbx=base, rcx=index
+
+; array[i] - 8-byte elements
+mov rax, [rbx + rcx*8]
+
+; Multi-dimensional array[i][j]
+; arr[i][j] = base + (i * cols + j) * element_size
+imul eax, [cols]
+add eax, [j]
+mov edx, [rbx + rax*4]
+</code></pre>
+<h5>Structure Access</h5>
+<pre><code class="language-c">struct Example {
+    int a;      // offset 0
+    char b;     // offset 4
+    // padding  // offset 5-7
+    long c;     // offset 8
+    short d;    // offset 16
+};
+</code></pre>
+<pre><code class="language-asm">; Accessing struct fields
+mov rdi, [struct_ptr]
+mov eax, [rdi]         ; s-&gt;a (offset 0)
+movzx eax, byte [rdi+4] ; s-&gt;b (offset 4)
+mov rax, [rdi+8]       ; s-&gt;c (offset 8)
+movzx eax, word [rdi+16] ; s-&gt;d (offset 16)
+</code></pre>
+<h5>Linked List Traversal</h5>
+<pre><code class="language-asm">; while (node != NULL)
+list_loop:
+test rdi, rdi          ; node == NULL?
+jz list_done
+; ... process node ...
+mov rdi, [rdi+8]       ; node = node-&gt;next (assuming next at offset 8)
+jmp list_loop
+list_done:
+</code></pre>
+<h4>Common Code Patterns</h4>
+<h5>String Operations</h5>
+<pre><code class="language-asm">; strlen pattern
+xor ecx, ecx
+strlen_loop:
+cmp byte [rdi + rcx], 0
+je strlen_done
+inc ecx
+jmp strlen_loop
+strlen_done:
+; ecx contains length
+
+; strcpy pattern
+strcpy_loop:
+mov al, [rsi]
+mov [rdi], al
+test al, al
+jz strcpy_done
+inc rsi
+inc rdi
+jmp strcpy_loop
+strcpy_done:
+
+; memcpy using rep movsb
+mov rdi, dest
+mov rsi, src
+mov rcx, count
+rep movsb
+</code></pre>
+<h5>Arithmetic Patterns</h5>
+<pre><code class="language-asm">; Multiplication by constant
+; x * 3
+lea eax, [rax + rax*2]
+
+; x * 5
+lea eax, [rax + rax*4]
+
+; x * 10
+lea eax, [rax + rax*4]  ; x * 5
+add eax, eax            ; * 2
+
+; Division by power of 2 (signed)
+mov eax, [x]
+cdq                     ; Sign extend to EDX:EAX
+and edx, 7              ; For divide by 8
+add eax, edx            ; Adjust for negative
+sar eax, 3              ; Arithmetic shift right
+
+; Modulo power of 2
+and eax, 7              ; x % 8
+</code></pre>
+<h5>Bit Manipulation</h5>
+<pre><code class="language-asm">; Test specific bit
+test eax, 0x80          ; Test bit 7
+jnz bit_set
+
+; Set bit
+or eax, 0x10            ; Set bit 4
+
+; Clear bit
+and eax, ~0x10          ; Clear bit 4
+
+; Toggle bit
+xor eax, 0x10           ; Toggle bit 4
+
+; Count leading zeros
+bsr eax, ecx            ; Bit scan reverse
+xor eax, 31             ; Convert to leading zeros
+
+; Population count (popcnt)
+popcnt eax, ecx         ; Count set bits
+</code></pre>
+<h4>Decompilation Patterns</h4>
+<h5>Variable Recovery</h5>
+<pre><code class="language-asm">; Local variable at rbp-8
+mov qword [rbp-8], rax  ; Store to local
+mov rax, [rbp-8]        ; Load from local
+
+; Stack-allocated array
+lea rax, [rbp-0x40]     ; Array starts at rbp-0x40
+mov [rax], edx          ; array[0] = value
+mov [rax+4], ecx        ; array[1] = value
+</code></pre>
+<h5>Function Signature Recovery</h5>
+<pre><code class="language-asm">; Identify parameters by register usage
+func:
+    ; rdi used as first param (System V)
+    mov [rbp-8], rdi    ; Save param to local
+    ; rsi used as second param
+    mov [rbp-16], rsi
+    ; Identify return by RAX at end
+    mov rax, [result]
+    ret
+</code></pre>
+<h5>Type Recovery</h5>
+<pre><code class="language-asm">; 1-byte operations suggest char/bool
+movzx eax, byte [rdi]   ; Zero-extend byte
+movsx eax, byte [rdi]   ; Sign-extend byte
+
+; 2-byte operations suggest short
+movzx eax, word [rdi]
+movsx eax, word [rdi]
+
+; 4-byte operations suggest int/float
+mov eax, [rdi]
+movss xmm0, [rdi]       ; Float
+
+; 8-byte operations suggest long/double/pointer
+mov rax, [rdi]
+movsd xmm0, [rdi]       ; Double
+</code></pre>
+<h4>Ghidra Analysis Tips</h4>
+<h5>Improving Decompilation</h5>
+<pre><code class="language-java">// In Ghidra scripting
+// Fix function signature
+Function func = getFunctionAt(toAddr(0x401000));
+func.setReturnType(IntegerDataType.dataType, SourceType.USER_DEFINED);
+
+// Create structure type
+StructureDataType struct = new StructureDataType(&quot;MyStruct&quot;, 0);
+struct.add(IntegerDataType.dataType, &quot;field_a&quot;, null);
+struct.add(PointerDataType.dataType, &quot;next&quot;, null);
+
+// Apply to memory
+createData(toAddr(0x601000), struct);
+</code></pre>
+<h5>Pattern Matching Scripts</h5>
+<pre><code class="language-python"># Find all calls to dangerous functions
+for func in currentProgram.getFunctionManager().getFunctions(True):
+    for ref in getReferencesTo(func.getEntryPoint()):
+        if func.getName() in [&quot;strcpy&quot;, &quot;sprintf&quot;, &quot;gets&quot;]:
+            print(f&quot;Dangerous call at {ref.getFromAddress()}&quot;)
+</code></pre>
+<h4>IDA Pro Patterns</h4>
+<h5>IDAPython Analysis</h5>
+<pre><code class="language-python">import idaapi
+import idautils
+import idc
+
+# Find all function calls
+def find_calls(func_name):
+    for func_ea in idautils.Functions():
+        for head in idautils.Heads(func_ea, idc.find_func_end(func_ea)):
+            if idc.print_insn_mnem(head) == &quot;call&quot;:
+                target = idc.get_operand_value(head, 0)
+                if idc.get_func_name(target) == func_name:
+                    print(f&quot;Call to {func_name} at {hex(head)}&quot;)
+
+# Rename functions based on strings
+def auto_rename():
+    for s in idautils.Strings():
+        for xref in idautils.XrefsTo(s.ea):
+            func = idaapi.get_func(xref.frm)
+            if func and &quot;sub_&quot; in idc.get_func_name(func.start_ea):
+                # Use string as hint for naming
+                pass
+</code></pre>
+<h4>Best Practices</h4>
+<h5>Analysis Workflow</h5>
+<ol>
+<li><strong>Initial triage</strong>: File type, architecture, imports/exports</li>
+<li><strong>String analysis</strong>: Identify interesting strings, error messages</li>
+<li><strong>Function identification</strong>: Entry points, exports, cross-references</li>
+<li><strong>Control flow mapping</strong>: Understand program structure</li>
+<li><strong>Data structure recovery</strong>: Identify structs, arrays, globals</li>
+<li><strong>Algorithm identification</strong>: Crypto, hashing, compression</li>
+<li><strong>Documentation</strong>: Comments, renamed symbols, type definitions</li>
+</ol>
+<h5>Common Pitfalls</h5>
+<ul>
+<li><strong>Optimizer artifacts</strong>: Code may not match source structure</li>
+<li><strong>Inline functions</strong>: Functions may be expanded inline</li>
+<li><strong>Tail call optimization</strong>: <code>jmp</code> instead of <code>call</code> + <code>ret</code></li>
+<li><strong>Dead code</strong>: Unreachable code from optimization</li>
+<li><strong>Position-independent code</strong>: RIP-relative addressing</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

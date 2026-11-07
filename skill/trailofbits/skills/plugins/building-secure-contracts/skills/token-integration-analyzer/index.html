@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>token-integration-analyzer · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re building a token, or your protocol accepts arbitrary ERC20 or ERC721 tokens and you need to know which non-standard ones could break it. It does: runs Slither&#039;s ERC conformity, summary and property tools on Solidity, reviews composition and owner privileges, and checks 24 weird ERC20 patterns. You get: a compliance checklist, a present-or-absent verdict with evidence per weird-token pattern, an integration safety assessment and fixes ranked Critical to Low. On-chain: given a deployed address and an RPC endpoint, it also looks at supply, holder concentration and exchange listings." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=trailofbits%2Fskills">trailofbits/skills</a></p>
+      <h1>token-integration-analyzer</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re building a token, or your protocol accepts arbitrary ERC20 or ERC721 tokens and you need to know which non-standard ones could break it</dd></div><div><dt>It does</dt><dd>runs Slither&#39;s ERC conformity, summary and property tools on Solidity, reviews composition and owner privileges, and checks 24 weird ERC20 patterns</dd></div><div><dt>You get</dt><dd>a compliance checklist, a present-or-absent verdict with evidence per weird-token pattern, an integration safety assessment and fixes ranked Critical to Low</dd></div><div><dt>On-chain</dt><dd>given a deployed address and an RPC endpoint, it also looks at supply, holder concentration and exchange listings</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Trail of Bits&#39; token integration checklist, from its building-secure-contracts plugin, combined with its database of weird ERC20 behavior. Weird tokens are real tokens that break assumptions: USDT returns no value from transfer, STA and PAXG take a fee on transfer, Ampleforth changes balances outside transfers, USDC and USDT can block addresses or be upgraded, DAI can be flash-minted, and decimals range from 2 to 24. Its ten categories cover general considerations such as audits and security contacts, contract composition, owner privileges like minting, pausing and upgrades, ERC20 conformity, risks from extensions such as hooks and rebasing, token scarcity, the weird patterns, integration safety such as safe transfer wrappers and measuring balances before and after a transfer, and ERC721 conformity and risks. It rejects shortcuts such as trusting a passing ERC20 check, a reputable team or OpenZeppelin to cover integration risks, and if Slither can&#39;t run it checks those criteria by hand or documents why it couldn&#39;t. Detailed criteria and report templates live in separate resource files.</p>
+      <p class="muted">Summarizes <a href="https://github.com/trailofbits/skills/tree/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/building-secure-contracts/skills/token-integration-analyzer">the skill at e4dd0bb</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/trailofbits/skills --skill token-integration-analyzer</code><button type="button" class="copy" data-copy="npx skills add https://github.com/trailofbits/skills --skill token-integration-analyzer">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/trailofbits/skills/token-integration-analyzer">skills.sh page</a> · <a href="https://github.com/trailofbits/skills/tree/HEAD/plugins/building-secure-contracts/skills/token-integration-analyzer">Source on GitHub</a> · <a href="/skillhub/?repo=trailofbits%2Fskills">All skills from trailofbits/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,800 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>8,053 <span class="muted">trailofbits/skills</span></dd></div><div><dt>First seen</dt><dd>Jan 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">171</div>
+      <div class="stat-delta">+27% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 135; week to Sep 26: 124; week to Oct 3: 105; week to Oct 10: 96; week to Oct 17: 121; week to Oct 24: 126; week to Oct 31: 160; week to Nov 7: 171. Use the left and right arrow keys to read each week."
+        data-values="135,124,105,96,121,126,160,171" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,15.3 38.6,18.1 71.1,23.0 103.7,25.3 136.3,18.9 168.9,17.6 201.4,8.8 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>135</td></tr><tr><td>Sep 26</td><td>124</td></tr><tr><td>Oct 3</td><td>105</td></tr><tr><td>Oct 10</td><td>96</td></tr><tr><td>Oct 17</td><td>121</td></tr><tr><td>Oct 24</td><td>126</td></tr><tr><td>Oct 31</td><td>160</td></tr><tr><td>Nov 7</td><td>171</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/skillhub/?tag=category%3Asecurity">category:security</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a><a class="tag" data-tag="web3" data-facet="topic" href="/skillhub/?tag=web3">web3</a><a class="tag" data-tag="code-review" data-facet="topic" href="/skillhub/?tag=code-review">code-review</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:solidity" data-facet="stack" href="/skillhub/?tag=stack%3Asolidity">stack:solidity</a><a class="tag" data-tag="stack:slither" data-facet="stack" href="/skillhub/?tag=stack%3Aslither">stack:slither</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/building-secure-contracts/skills/token-integration-analyzer/SKILL.md">trailofbits/skills at e4dd0bb</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: token-integration-analyzer
+description: Token integration and implementation analyzer based on Trail of Bits&#39; token integration checklist. Analyzes token implementations for ERC20/ERC721 conformity, checks for 20+ weird token patterns, assesses contract composition and owner privileges, performs on-chain scarcity analysis, and evaluates how protocols handle non-standard tokens. Use when integrating or accepting arbitrary ERC20/ERC721 tokens, auditing a token implementation for standards conformity, or assessing risk from weird tokens such as fee-on-transfer, rebasing, missing return values, or blocklists.</code></pre></details>
+        <div class="markdown"><h3>Token Integration Analyzer</h3>
+<h4>Purpose</h4>
+<p>Systematically analyzes the codebase for token-related security concerns using Trail of Bits' token integration checklist:</p>
+<ol>
+<li><strong>Token Implementations</strong>: Analyze if your token follows ERC20/ERC721 standards or has non-standard behavior</li>
+<li><strong>Token Integrations</strong>: Analyze how your protocol handles arbitrary tokens, including weird/non-standard tokens</li>
+<li><strong>On-chain Analysis</strong>: Query deployed contracts for scarcity, distribution, and configuration</li>
+<li><strong>Security Assessment</strong>: Identify risks from 20+ known weird token patterns</li>
+</ol>
+<p><strong>Framework</strong>: Building Secure Contracts - Token Integration Checklist + Weird ERC20 Database</p>
+<hr>
+<h4>How This Works</h4>
+<h5>Phase 1: Context Discovery</h5>
+<p>Determines analysis context:</p>
+<ul>
+<li><strong>Token implementation</strong>: Are you building a token contract?</li>
+<li><strong>Token integration</strong>: Does your protocol interact with external tokens?</li>
+<li><strong>Platform</strong>: Ethereum, other EVM chains, or different platform?</li>
+<li><strong>Token types</strong>: ERC20, ERC721, or both?</li>
+</ul>
+<h5>Phase 2: Slither Analysis (if Solidity)</h5>
+<p>For Solidity projects, I'll help run:</p>
+<ul>
+<li><code>slither-check-erc</code> - ERC conformity checks</li>
+<li><code>slither --print human-summary</code> - Complexity and upgrade analysis</li>
+<li><code>slither --print contract-summary</code> - Function analysis</li>
+<li><code>slither-prop</code> - Property generation for testing</li>
+</ul>
+<h5>Phase 3: Code Analysis</h5>
+<p>Analyzes:</p>
+<ul>
+<li>Contract composition and complexity</li>
+<li>Owner privileges and centralization risks</li>
+<li>ERC20/ERC721 conformity</li>
+<li>Known weird token patterns</li>
+<li>Integration safety patterns</li>
+</ul>
+<h5>Phase 4: On-chain Analysis (if deployed)</h5>
+<p>If you provide a contract address, I'll query:</p>
+<ul>
+<li>Token scarcity and distribution</li>
+<li>Total supply and holder concentration</li>
+<li>Exchange listings</li>
+<li>On-chain configuration</li>
+</ul>
+<h5>Phase 5: Risk Assessment</h5>
+<p>Provides:</p>
+<ul>
+<li>Identified vulnerabilities</li>
+<li>Non-standard behaviors</li>
+<li>Integration risks</li>
+<li>Prioritized recommendations</li>
+</ul>
+<hr>
+<h4>Assessment Categories</h4>
+<p>I check 10 comprehensive categories covering all aspects of token security. For detailed criteria, patterns, and checklists, see <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/building-secure-contracts/skills/token-integration-analyzer/resources/ASSESSMENT_CATEGORIES.md">ASSESSMENT_CATEGORIES.md</a>.</p>
+<h5>Quick Reference:</h5>
+<ol>
+<li><strong>General Considerations</strong> - Security reviews, team transparency, security contacts</li>
+<li><strong>Contract Composition</strong> - Complexity analysis, SafeMath usage, function count, entry points</li>
+<li><strong>Owner Privileges</strong> - Upgradeability, minting, pausability, blacklisting, team accountability</li>
+<li><strong>ERC20 Conformity</strong> - Return values, metadata, decimals, race conditions, Slither checks</li>
+<li><strong>ERC20 Extension Risks</strong> - External calls/hooks, transfer fees, rebasing/yield-bearing tokens</li>
+<li><strong>Token Scarcity Analysis</strong> - Supply distribution, holder concentration, exchange distribution, flash loan/mint risks</li>
+<li><strong>Weird ERC20 Patterns</strong> (24 patterns including):
+<ul>
+<li>Reentrant calls (ERC777 hooks)</li>
+<li>Missing return values (USDT, BNB, OMG)</li>
+<li>Fee on transfer (STA, PAXG)</li>
+<li>Balance modifications outside transfers (Ampleforth, Compound)</li>
+<li>Upgradable tokens (USDC, USDT)</li>
+<li>Flash mintable (DAI)</li>
+<li>Blocklists (USDC, USDT)</li>
+<li>Pausable tokens (BNB, ZIL)</li>
+<li>Approval race protections (USDT, KNC)</li>
+<li>Revert on approval/transfer to zero address</li>
+<li>Revert on zero value approvals/transfers</li>
+<li>Multiple token addresses</li>
+<li>Low decimals (USDC: 6, Gemini: 2)</li>
+<li>High decimals (YAM-V2: 24)</li>
+<li>transferFrom with src == msg.sender</li>
+<li>Non-string metadata (MKR)</li>
+<li>No revert on failure (ZRX, EURS)</li>
+<li>Revert on large approvals (UNI, COMP)</li>
+<li>Code injection via token name</li>
+<li>Unusual permit function (DAI, RAI, GLM)</li>
+<li>Transfer less than amount (cUSDCv3)</li>
+<li>ERC-20 native currency representation (Celo, Polygon, zkSync)</li>
+<li><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/building-secure-contracts/skills/token-integration-analyzer/resources/ASSESSMENT_CATEGORIES.md#7-weird-erc20-patterns">And more...</a></li>
+</ul>
+</li>
+<li><strong>Token Integration Safety</strong> - Safe transfer patterns, balance verification, allowlists, wrappers, defensive patterns</li>
+<li><strong>ERC721 Conformity</strong> - Transfer to 0x0, safeTransferFrom, metadata, ownerOf, approval clearing, token ID immutability</li>
+<li><strong>ERC721 Common Risks</strong> - onERC721Received reentrancy, safe minting, burning approval clearing</li>
+</ol>
+<hr>
+<h4>Example Output</h4>
+<p>When analysis is complete, you'll receive a comprehensive report structured as follows:</p>
+<pre><code>=== TOKEN INTEGRATION ANALYSIS REPORT ===
+
+Project: MultiToken DEX
+Token Analyzed: Custom Reward Token + Integration Safety
+Platform: Solidity 0.8.20
+Analysis Date: March 15, 2024
+
+---
+
+## EXECUTIVE SUMMARY
+
+Token Type: ERC20 Implementation + Protocol Integrating External Tokens
+Overall Risk Level: MEDIUM
+Critical Issues: 2
+High Issues: 3
+Medium Issues: 4
+
+**Top Concerns:**
+⚠ Fee-on-transfer tokens not handled correctly
+⚠ No validation for missing return values (USDT compatibility)
+⚠ Owner can mint unlimited tokens without cap
+
+**Recommendation:** Address critical/high issues before mainnet launch.
+
+---
+
+## 1. GENERAL CONSIDERATIONS
+
+✓ Contract audited by CertiK (June 2023)
+✓ Team contactable via security@project.com
+✗ No security mailing list for critical announcements
+
+**Risk:** Users won't be notified of critical issues
+**Action:** Set up security@project.com mailing list
+
+---
+
+## 2. CONTRACT COMPOSITION
+
+### Complexity Analysis
+
+**Slither human-summary Results:**
+- 456 lines of code
+- Cyclomatic complexity: Average 6, Max 14 (transferWithFee())
+- 12 functions, 8 state variables
+- Inheritance depth: 3 (moderate)
+
+✓ Contract complexity is reasonable
+⚠ transferWithFee() complexity high (14) - consider splitting
+
+### SafeMath Usage
+
+✓ Using Solidity 0.8.20 (built-in overflow protection)
+✓ No unchecked blocks found
+✓ All arithmetic operations protected
+
+### Non-Token Functions
+
+**Functions Beyond ERC20:**
+- setFeeCollector() - Admin function ✓
+- setTransferFee() - Admin function ✓
+- withdrawFees() - Admin function ✓
+- pause()/unpause() - Emergency functions ✓
+
+⚠ 4 non-token functions (acceptable but adds complexity)
+
+### Address Entry Points
+
+✓ Single contract address
+✓ No proxy with multiple entry points
+✓ No token migration creating address confusion
+
+**Status:** PASS
+
+---
+
+## 3. OWNER PRIVILEGES
+
+### Upgradeability
+
+⚠ Contract uses TransparentUpgradeableProxy
+**Risk:** Owner can change contract logic at any time
+
+**Current Implementation:**
+- ProxyAdmin: 0x1234... (2/3 multisig) ✓
+- Timelock: None ✗
+
+**Recommendation:** Add 48-hour timelock to all upgrades
+
+### Minting Capabilities
+
+❌ CRITICAL: Unlimited minting
+File: contracts/RewardToken.sol:89
+```solidity
+function mint(address to, uint256 amount) external onlyOwner {
+    _mint(to, amount);  // No cap!
+}
+</code></pre>
+<p><strong>Risk:</strong> Owner can inflate supply arbitrarily
+<strong>Fix:</strong> Add maximum supply cap or rate-limited minting</p>
+<h5>Pausability</h5>
+<p>✓ Pausable pattern implemented (OpenZeppelin)
+✓ Only owner can pause
+⚠ Paused state affects all transfers (including existing holders)</p>
+<p><strong>Risk:</strong> Owner can trap all user funds
+<strong>Mitigation:</strong> Use multi-sig for pause function (already implemented ✓)</p>
+<h5>Blacklisting</h5>
+<p>✗ No blacklist functionality
+<strong>Assessment:</strong> Good - no centralized censorship risk</p>
+<h5>Team Transparency</h5>
+<p>✓ Team members public (team.md)
+✓ Company registered in Switzerland
+✓ Accountable and contactable</p>
+<p><strong>Status:</strong> ACCEPTABLE</p>
+<hr>
+<h4>4. ERC20 CONFORMITY</h4>
+<h5>Slither-check-erc Results</h5>
+<p>Command: slither-check-erc . RewardToken --erc erc20</p>
+<p>✓ transfer returns bool
+✓ transferFrom returns bool
+✓ name, decimals, symbol present
+✓ decimals returns uint8 (value: 18)
+✓ Race condition mitigated (increaseAllowance/decreaseAllowance)</p>
+<p><strong>Status:</strong> FULLY COMPLIANT</p>
+<h5>slither-prop Test Results</h5>
+<p>Command: slither-prop . --contract RewardToken</p>
+<p><strong>Generated 12 properties, all passed:</strong>
+✓ Transfer doesn't change total supply
+✓ Allowance correctly updates
+✓ Balance updates match transfer amounts
+✓ No balance manipulation possible
+[... 8 more properties ...]</p>
+<p><strong>Echidna fuzzing:</strong> 50,000 runs, no violations ✓</p>
+<p><strong>Status:</strong> EXCELLENT</p>
+<hr>
+<h4>5. WEIRD TOKEN PATTERN ANALYSIS</h4>
+<h5>Integration Safety Check</h5>
+<p><strong>Your Protocol Integrates 5 External Tokens:</strong></p>
+<ol>
+<li>USDT (0xdac17f9...)</li>
+<li>USDC (0xa0b86991...)</li>
+<li>DAI (0x6b175474...)</li>
+<li>WETH (0xc02aaa39...)</li>
+<li>UNI (0x1f9840a8...)</li>
+</ol>
+<h5>Critical Issues Found</h5>
+<p>❌ <strong>Pattern 7.2: Missing Return Values</strong>
+<strong>Found in:</strong> USDT integration
+File: contracts/Vault.sol:156</p>
+<pre><code class="language-solidity">IERC20(usdt).transferFrom(msg.sender, address(this), amount);
+// No return value check! USDT doesn't return bool
+</code></pre>
+<p><strong>Risk:</strong> Silent failures on USDT transfers
+<strong>Exploit:</strong> User appears to deposit, but no tokens moved
+<strong>Fix:</strong> Use OpenZeppelin SafeERC20 wrapper</p>
+<hr>
+<p>❌ <strong>Pattern 7.3: Fee on Transfer</strong>
+<strong>Risk for:</strong> Any token with transfer fees
+File: contracts/Vault.sol:170</p>
+<pre><code class="language-solidity">uint256 balanceBefore = IERC20(token).balanceOf(address(this));
+token.transferFrom(msg.sender, address(this), amount);
+shares = amount * exchangeRate;  // WRONG! Should use actual received amount
+</code></pre>
+<p><strong>Risk:</strong> Accounting mismatch if token takes fees
+<strong>Exploit:</strong> User credited more shares than tokens deposited
+<strong>Fix:</strong> Calculate shares from <code>balanceAfter - balanceBefore</code></p>
+<hr>
+<h5>Known Non-Standard Token Handling</h5>
+<p>✓ <strong>USDC:</strong> Properly handled (SafeERC20, 6 decimals accounted for)
+⚠ <strong>DAI:</strong> permit() function not used (opportunity for gas savings)
+✗ <strong>USDT:</strong> Missing return value not handled (CRITICAL)
+✓ <strong>WETH:</strong> Standard wrapper, properly handled
+⚠ <strong>UNI:</strong> Large approval handling not checked (reverts &gt;= 2^96)</p>
+<hr>
+<p>[... Additional sections for remaining analysis categories ...]</p>
+<pre><code>
+For complete report template and deliverables format, see [REPORT_TEMPLATES.md](resources/REPORT_TEMPLATES.md).
+
+---
+
+## Rationalizations (Do Not Skip)
+
+| Rationalization | Why It's Wrong | Required Action |
+|-----------------|----------------|-----------------|
+| &quot;Token looks standard, ERC20 checks pass&quot; | 20+ weird token patterns exist beyond ERC20 compliance | Check ALL weird token patterns from database (missing return, revert on zero, hooks, etc.) |
+| &quot;Slither shows no issues, integration is safe&quot; | Slither detects some patterns, misses integration logic | Complete manual analysis of all 5 token integration criteria |
+| &quot;No fee-on-transfer detected, skip that check&quot; | Fee-on-transfer can be owner-controlled or conditional | Test all transfer scenarios, check for conditional fee logic |
+| &quot;Balance checks exist, handling is safe&quot; | Balance checks alone don't protect against all weird tokens | Verify safe transfer wrappers, revert handling, approval patterns |
+| &quot;Token is deployed by reputable team, assume standard&quot; | Reputation doesn't guarantee standard behavior | Analyze actual code and on-chain behavior, don't trust assumptions |
+| &quot;Integration uses OpenZeppelin, must be safe&quot; | OpenZeppelin libraries don't protect against weird external tokens | Verify defensive patterns around all external token calls |
+| &quot;Can't run Slither, skipping automated analysis&quot; | Slither provides critical ERC conformance checks | Manually verify all slither-check-erc criteria or document why blocked |
+| &quot;This pattern seems fine&quot; | Intuition misses subtle token integration bugs | Systematically check all 20+ weird token patterns with code evidence |
+
+---
+
+## Deliverables
+
+When analysis is complete, I'll provide:
+
+1. **Compliance Checklist** - Checkboxes for all assessment categories
+2. **Weird Token Pattern Analysis** - Presence/absence of all 24 patterns with risk levels and evidence
+3. **On-chain Analysis Report** (if applicable) - Holder distribution, exchange listings, configuration
+4. **Integration Safety Assessment** (if applicable) - Safe transfer usage, defensive patterns, weird token handling
+5. **Prioritized Recommendations** - CRITICAL/HIGH/MEDIUM/LOW issues with specific fixes
+
+Complete deliverable templates available in [REPORT_TEMPLATES.md](resources/REPORT_TEMPLATES.md).
+
+---
+
+## Ready to Begin
+
+**What I'll need**:
+- Your codebase
+- Context: Token implementation or integration?
+- Token type: ERC20, ERC721, or both?
+- Contract address (if deployed and want on-chain analysis)
+- RPC endpoint (if querying on-chain)
+
+Let's analyze your token implementation or integration for security risks!
+</code></pre>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

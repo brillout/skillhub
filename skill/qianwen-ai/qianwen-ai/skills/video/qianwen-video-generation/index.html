@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>qianwen-video-generation · SkillHub</title>
+    <meta name="description" content="Use it when: you want a clip made from a prompt or images, characters from references acting a new script, or an existing video edited. It does: detects the mode from your request, submits an async job to the QianWen API and polls every 15 seconds until it&#039;s done. You get: the video downloaded under ./output/qianwen-video-generation/, plus a URL valid for 24 hours. Watch for: first-and-last-frame clips are a fixed five seconds and VACE edits at most five, both silent. Needs: a QianWen API key and Python 3.9+, or curl." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=qianwen-ai%2Fqianwen-ai">qianwen-ai/qianwen-ai</a></p>
+      <h1>qianwen-video-generation</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want a clip made from a prompt or images, characters from references acting a new script, or an existing video edited</dd></div><div><dt>It does</dt><dd>detects the mode from your request, submits an async job to the QianWen API and polls every 15 seconds until it&#39;s done</dd></div><div><dt>You get</dt><dd>the video downloaded under ./output/qianwen-video-generation/, plus a URL valid for 24 hours</dd></div><div><dt>Watch for</dt><dd>first-and-last-frame clips are a fixed five seconds and VACE edits at most five, both silent</dd></div><div><dt>Needs</dt><dd>a QianWen API key and Python 3.9+, or curl</dd></div></dl></section>
+      
+      <p class="note">Needs a QianWen API key, and video is billed per second to that account. Local images, video and audio you pass are uploaded to DashScope&#39;s temporary storage for 48 hours. After runs it offers to install the repo&#39;s qianwen-update-check skill until you install it or choose never to be reminded.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>QianWen&#39;s own skill for its Wan and HappyHorse video models. Its modes are text-to-video, image-to-video, first-to-last-frame transitions, role-play from reference characters, and editing (VACE: repainting, local edits, extending or outpainting). It checks your key&#39;s type without printing it; a Token Plan key limits it to that plan&#39;s models and to inputs given as URLs. Unless you name a model, it picks one from QianWen&#39;s current catalog, fetched from a CDN with a bundled copy as fallback. Role-play takes up to five references, at most three of them videos, named character1, character2 and so on in the prompt. It waits up to 10 minutes by default, or can submit a job and exit, then pick up its task ID later. Local images, video and audio are uploaded to DashScope&#39;s temporary storage for 48 hours; output from the repo&#39;s image or speech skills passes in by URL. For joining, trimming or adding audio it points to ffmpeg or moviepy recipes. Video is billed per second; it never quotes prices, only the official pricing page. If no key is set, it writes a .env placeholder for you to fill in, and after runs it offers to install the repo&#39;s update checker.</p>
+      <p class="muted">Summarizes <a href="https://github.com/qianwen-ai/qianwen-ai/tree/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/video/qianwen-video-generation">the skill at 11b1805</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/qianwen-ai/qianwen-ai --skill qianwen-video-generation</code><button type="button" class="copy" data-copy="npx skills add https://github.com/qianwen-ai/qianwen-ai --skill qianwen-video-generation">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/qianwen-ai/qianwen-ai/qianwen-video-generation">skills.sh page</a> · <a href="https://github.com/qianwen-ai/qianwen-ai/tree/HEAD/skills/video/qianwen-video-generation">Source on GitHub</a> · <a href="/skillhub/?repo=qianwen-ai%2Fqianwen-ai">All skills from qianwen-ai/qianwen-ai</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,800 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>120 <span class="muted">qianwen-ai/qianwen-ai</span></dd></div><div><dt>First seen</dt><dd>May 12, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">189</div>
+      <div class="stat-delta">-28% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 264; week to Sep 26: 230; week to Oct 3: 178; week to Oct 10: 151; week to Oct 17: 176; week to Oct 24: 176; week to Oct 31: 248; week to Nov 7: 189. Use the left and right arrow keys to read each week."
+        data-values="264,230,178,151,176,176,248,189" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,11.7 71.1,20.3 103.7,24.8 136.3,20.7 168.9,20.7 201.4,8.7 234.0,18.5" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="18.5" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>264</td></tr><tr><td>Sep 26</td><td>230</td></tr><tr><td>Oct 3</td><td>178</td></tr><tr><td>Oct 10</td><td>151</td></tr><tr><td>Oct 17</td><td>176</td></tr><tr><td>Oct 24</td><td>176</td></tr><tr><td>Oct 31</td><td>248</td></tr><tr><td>Nov 7</td><td>189</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:media" data-facet="category" title="Generate and edit video, images and audio." href="/skillhub/?tag=category%3Amedia">category:media</a></div>
+          <p class="tag-meaning">Generate and edit video, images and audio.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/skillhub/?tag=type%3Atool">type:tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/skillhub/?tag=needs%3Aaccount">needs:account</a></div>
+          <p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="video" data-facet="topic" href="/skillhub/?tag=video">video</a><a class="tag" data-tag="ai-generation" data-facet="topic" href="/skillhub/?tag=ai-generation">ai-generation</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:qianwen" data-facet="stack" href="/skillhub/?tag=stack%3Aqianwen">stack:qianwen</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/video/qianwen-video-generation/SKILL.md">qianwen-ai/qianwen-ai at 11b1805</a>. Checked daily, last changed Nov 7, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: qianwen-video-generation
+description: &#34;Generate videos using Wan and HappyHorse models. Supports text-to-video, image-to-video, first+last frame, reference-based role-play, and video editing (VACE). TRIGGER when: user wants to create, generate, or edit video content, mentions video generation/animation/video clips/Wan/HappyHorse models, or explicitly invokes this skill by name (e.g. use qianwen-video-generation). DO NOT TRIGGER when: user wants to generate images (use qianwen-image-generation), understand/analyze existing videos (use qianwen-vision), text-only tasks.&#34;
+compatibility: &#34;Requires Python 3.9+ and curl. Cursor: auto-loaded. Claude Code: read this skill&#39;s SKILL.md before first use.&#34;</code></pre></details>
+        <div class="markdown"><h3>Qwen Video Generation</h3>
+<p>Generate videos using Wan and HappyHorse models. All tasks are <strong>asynchronous</strong> — submit, then poll until
+completion.
+This skill is part of <strong>QianWen-AI/qianwen-ai</strong>.</p>
+<blockquote>
+<p><strong>⚠️ Critical Parameter Differences:</strong></p>
+<ul>
+<li><strong>kf2v (First+Last Frame)</strong>: Duration is <strong>fixed at 5 seconds</strong> — other values will fail. Output is <strong>silent only</strong>.</li>
+<li><strong>Resolution parameters vary by model family, not mode alone</strong>: Check the current model catalog before choosing <code>size</code>, <code>resolution</code>, or <code>ratio</code>. For example, <code>happyhorse-1.1-t2v</code> uses <code>resolution</code> + <code>ratio</code>, while <code>wan2.6-t2v</code> uses <code>size</code>.</li>
+</ul>
+</blockquote>
+<h4>Skill directory</h4>
+<p>Use this skill's internal files to execute and learn. Load reference files on demand when the default path fails or you need details.</p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scripts/video.py</code></td>
+<td>Default execution — mode auto-detect, submit, poll, download</td>
+</tr>
+<tr>
+<td><code>references/execution-guide.md</code></td>
+<td>Fallback: curl for all 5 modes, code generation</td>
+</tr>
+<tr>
+<td><code>references/request-fields.md</code></td>
+<td>Field tables and audio handling by mode</td>
+</tr>
+<tr>
+<td><code>references/workflows.md</code></td>
+<td>Duration extensions, multi-shot, VACE pipelines</td>
+</tr>
+<tr>
+<td><code>references/polling-guide.md</code></td>
+<td>Polling patterns and timing</td>
+</tr>
+<tr>
+<td><code>references/merge-media.md</code></td>
+<td>Concat, trim, audio overlay — ffmpeg/moviepy recipes</td>
+</tr>
+<tr>
+<td><code>references/prompt-guide.md</code></td>
+<td>Per-mode prompt formulas, sound description, multi-shot structure</td>
+</tr>
+<tr>
+<td><code>references/examples.md</code></td>
+<td>Full script examples per mode</td>
+</tr>
+<tr>
+<td><code>references/sources.md</code></td>
+<td>Official documentation URLs</td>
+</tr>
+</tbody>
+</table>
+<h4>Security</h4>
+<p><strong>NEVER output any API key or credential in plaintext.</strong> Always use variable references (<code>$DASHSCOPE_API_KEY</code> in shell, <code>os.environ[&quot;DASHSCOPE_API_KEY&quot;]</code> in Python). Any check or detection of credentials must be <strong>non-plaintext</strong>: report only status (e.g. &quot;set&quot; / &quot;not set&quot;, &quot;valid&quot; / &quot;invalid&quot;), never the value. Never display contents of <code>.env</code> or config files that may contain secrets.</p>
+<p><strong>When the API key is not configured, NEVER ask the user to provide it directly.</strong> Instead, help create a <code>.env</code> file with a placeholder (<code>DASHSCOPE_API_KEY=sk-your-key-here</code>) and instruct the user to replace it with their actual key from the <a href="https://platform.qianwenai.com/home/api-keys">QianWen Console</a>. Only write the actual key value if the user explicitly requests it.</p>
+<h4>Key Compatibility</h4>
+<p>Both PAYG (<code>sk-ws-...</code>; legacy <code>sk-...</code>) and Token Plan (<code>sk-sp-...</code>) keys are supported. Detect
+the API key type without exposing the Key:</p>
+<pre><code class="language-bash">python3 -c &quot;
+import sys; sys.path.insert(0, 'scripts')
+from qianwen_lib import detect_api_key_type
+print(detect_api_key_type('scripts/qianwen_lib.py'))
+&quot;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Output</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>token-plan</code></td>
+<td>Token Plan key — use only models from the Token Plan catalog below.</td>
+</tr>
+<tr>
+<td><code>payg</code></td>
+<td>Pay-as-you-go key — full model catalog available.</td>
+</tr>
+<tr>
+<td><code>not-set</code></td>
+<td>No key configured.</td>
+</tr>
+</tbody>
+</table>
+<p>For Token Plan, fetch and read the current <a href="https://alioth.alicdn.com/skills-info/models/references/qianwen-token-plan-models.md">Token Plan model catalog</a>, then use an exact listed model. If CDN access fails, use the <a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/video/qianwen-video-generation/cdn/references/qianwen-token-plan-models.md">local fallback</a>.</p>
+<p>Token Plan does not support local file upload; for i2v/r2v/kf2v modes, provide reference images/videos
+as accessible URLs (<code>https://</code> or <code>oss://</code>) rather than local paths.</p>
+<p>Token Plan supports only specific models — use exactly a model from the references above; do not
+guess or probe model availability. For PAYG, continue below.</p>
+<h4>Mode Selection Guide</h4>
+<table>
+<thead>
+<tr>
+<th>User Want</th>
+<th>Mode</th>
+<th>Key Field</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Generate video from text description only</td>
+<td><strong>t2v</strong></td>
+<td><code>prompt</code> only</td>
+</tr>
+<tr>
+<td>Animate a single image</td>
+<td><strong>i2v</strong></td>
+<td><code>img_url</code> or <code>reference_image</code></td>
+</tr>
+<tr>
+<td>wan2.7 unified i2v: first frame, first+last frame, video continuation, audio sync</td>
+<td><strong>i2v</strong></td>
+<td><code>media[]</code>, <code>first_frame_url</code>, <code>first_clip_url</code>, <code>driving_audio_url</code></td>
+</tr>
+<tr>
+<td>Transition between two images (<strong>⚠️ 5s fixed, silent only</strong>)</td>
+<td><strong>kf2v</strong></td>
+<td><code>first_frame_url</code> + <code>last_frame_url</code></td>
+</tr>
+<tr>
+<td>Role-play: make characters act a new script</td>
+<td><strong>r2v</strong></td>
+<td><code>reference_urls</code> or <code>media</code>; read the CDN model catalog for model-specific limits</td>
+</tr>
+<tr>
+<td>Video editing: multi-image ref, repainting, local edit, extend, outpaint</td>
+<td><strong>vace</strong></td>
+<td><code>function</code>; read the CDN model catalog for the current default</td>
+</tr>
+<tr>
+<td>Video editing (no <code>function</code> field, uses media array)</td>
+<td><strong>videoedit</strong></td>
+<td><code>model</code>; read the CDN model catalog for supported models</td>
+</tr>
+</tbody>
+</table>
+<h5>Model Selection</h5>
+<ol>
+<li><strong>User specified a model</strong> → use directly.</li>
+<li><strong>Consult the qianwen-model-selector skill</strong> when model choice depends on capability, scenario, or pricing.</li>
+</ol>
+<p>Before selecting, recommending, or defaulting a model, fetch and read the current <a href="https://alioth.alicdn.com/skills-info/models/references/qianwen-video-generation-models.md">Qwen video-generation model catalog</a>. It contains the model list, basic model information, mode recommendations, compatibility notes, and defaults. If CDN access fails, use the <a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/video/qianwen-video-generation/cdn/references/qianwen-video-generation-models.md">local fallback</a>.</p>
+<p>Endpoint: <code>/services/aigc/video-generation/video-synthesis</code>.</p>
+<blockquote>
+<p><strong>⚠️ Important</strong>: The model list above is a <strong>point-in-time snapshot</strong> and may be outdated. Model availability
+changes frequently. <strong>Always check the <a href="https://www.qianwenai.com/models">official model list</a>
+for the authoritative, up-to-date catalog before making model decisions.</strong></p>
+</blockquote>
+<blockquote>
+<p><strong>Model details</strong>: For more information about a specific model, direct the user to <code>https://www.qianwenai.com/models/&lt;model-name&gt;</code>. Replace <code>&lt;model-name&gt;</code> with the exact model ID; never modify or guess it.</p>
+</blockquote>
+<blockquote>
+<p><strong>Dynamic model queries</strong>: If the <strong>qianwen-model-selector</strong> skill or <strong>QianWen CLI</strong> (<code>qianwen models info &lt;model&gt;</code>) is available, use it for real-time model data. CLI requires authentication — see the <strong>qianwen-usage</strong> skill for login flow.</p>
+</blockquote>
+<h4>Execution</h4>
+<blockquote>
+<p><strong>⚠️ Multiple artifacts</strong>: When generating multiple files in a single session, you MUST append a numeric suffix to each filename (e.g. <code>out_1.mp4</code>, <code>out_2.mp4</code>) to prevent overwrites.</p>
+</blockquote>
+<h5>Prerequisites</h5>
+<ul>
+<li><strong>API Key</strong>: Use the non-plaintext detector in <strong>Key Compatibility</strong>; do not replace it with a
+variable-presence check. If no Key is found, use qianwen-ops-auth when available or guide the user
+to configure <code>DASHSCOPE_API_KEY</code>/<code>QIANWEN_API_KEY</code> in <code>.env</code>. Skills may be installed independently.</li>
+<li>Python 3.9+ (stdlib only, <strong>no pip install needed</strong>)</li>
+<li>For media merging (concat, trim, audio overlay): see <a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/video/qianwen-video-generation/references/merge-media.md">merge-media.md</a> for ffmpeg/moviepy recipes suited to the user's environment</li>
+</ul>
+<h5>Environment Check</h5>
+<p>Before first execution, verify Python is available:</p>
+<pre><code class="language-bash">python3 --version  # must be 3.9+
+</code></pre>
+<p>If <code>python3</code> is not found, try <code>python --version</code> or <code>py -3 --version</code>. If Python is unavailable or below 3.9, skip to <strong>Path 2 (curl)</strong> in <a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/video/qianwen-video-generation/references/execution-guide.md">execution-guide.md</a>.</p>
+<h5>Default: Run Script</h5>
+<p><strong>Script path</strong>: Scripts are in the <code>scripts/</code> subdirectory <strong>of this skill's directory</strong> (the directory containing this SKILL.md). <strong>You MUST first locate this skill's installation directory, then ALWAYS use the full absolute path to execute scripts.</strong> Do NOT assume scripts are in the current working directory. Do NOT use <code>cd</code> to switch directories before execution.</p>
+<p><strong>Execution note:</strong> Run all scripts in the <strong>foreground</strong> — wait for stdout; do not background.</p>
+<p><strong>Discovery:</strong> Run <code>python3 &lt;this-skill-dir&gt;/scripts/video.py --help</code> first to see all available arguments.</p>
+<pre><code class="language-bash">python3 &lt;this-skill-dir&gt;/scripts/video.py \
+  --request '{&quot;model&quot;:&quot;happyhorse-1.1-t2v&quot;,&quot;prompt&quot;:&quot;A detective in a rainy city at night&quot;,&quot;resolution&quot;:&quot;720P&quot;,&quot;ratio&quot;:&quot;16:9&quot;,&quot;duration&quot;:5}' \
+  --print-response
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--request '{...}'</code></td>
+<td>JSON request body</td>
+</tr>
+<tr>
+<td><code>--file path.json</code></td>
+<td>Load request from file</td>
+</tr>
+<tr>
+<td><code>--mode MODE</code></td>
+<td>Override auto-detected mode (t2v/i2v/kf2v/r2v/vace)</td>
+</tr>
+<tr>
+<td><code>--model ID</code></td>
+<td>Override model</td>
+</tr>
+<tr>
+<td><code>--output path</code></td>
+<td>Directory or file path. If path ends with a video extension (.mp4/.mov/.webm/.mkv/.m4v etc.), it is used as the output filename (parent dir auto-created). Otherwise treated as directory — video is auto-named from the OSS URL basename, preventing overwrites across runs; use distinct filenames across calls to avoid overwriting response data</td>
+</tr>
+<tr>
+<td><code>--print-response</code></td>
+<td>Print response JSON to stdout</td>
+</tr>
+<tr>
+<td><code>--submit-only</code></td>
+<td>Submit and exit (print task_id)</td>
+</tr>
+<tr>
+<td><code>--task-id ID</code></td>
+<td>Operate on existing task</td>
+</tr>
+<tr>
+<td><code>--poll-interval N</code></td>
+<td>Seconds between polls (default: 15)</td>
+</tr>
+<tr>
+<td><code>--timeout N</code></td>
+<td>Max wait seconds (default: 600)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Model priority</strong>: <code>--model</code> CLI flag &gt; <code>&quot;model&quot;</code> field in <code>--request</code> JSON &gt; configured default. The configured default is used when no model is specified and is not necessarily the newest or strongest model.</p>
+</blockquote>
+<h5>Verify Result</h5>
+<ul>
+<li>Exit code <code>0</code> + response has <code>output.task_id</code> → <strong>submission success</strong></li>
+<li>Poll reaches <code>task_status: SUCCEEDED</code> → <strong>generation complete</strong></li>
+<li>Non-zero exit, HTTP error, or <code>FAILED</code> status → <strong>fail</strong></li>
+<li><strong>Post-execution check</strong>: Verify the output video file exists and has non-zero size (<code>ls -la &lt;output_dir&gt;</code>)</li>
+<li><strong>MANDATORY — stderr signal check</strong>: After confirming the result, scan the command's stderr output for <code>[ACTION_REQUIRED]</code> or <code>[UPDATE_AVAILABLE]</code>. If either signal is present, you <strong>MUST</strong> follow the instructions in <a href="#update-check-mandatory-post-execution">Update Check</a> below before responding to the user.</li>
+</ul>
+<h5>On Failure</h5>
+<p>If the script fails, match the error output against the diagnostic table below to determine the resolution. If no match, read <a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/video/qianwen-video-generation/references/execution-guide.md">execution-guide.md</a> for alternative paths: curl commands (Path 2 — all 5 modes), code generation (Path 3), and autonomous resolution (Path 5).</p>
+<p><strong>If Python is not available at all</strong> → skip directly to Path 2 (curl) in <a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/video/qianwen-video-generation/references/execution-guide.md">execution-guide.md</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Error Pattern</th>
+<th>Diagnosis</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>command not found: python3</code></td>
+<td>Python not on PATH</td>
+<td>Try <code>python</code> or <code>py -3</code>; install Python 3.9+ if missing</td>
+</tr>
+<tr>
+<td><code>Python 3.9+ required</code></td>
+<td>Script version check failed</td>
+<td>Upgrade Python to 3.9+</td>
+</tr>
+<tr>
+<td><code>SyntaxError</code> near type hints</td>
+<td>Python &lt; 3.9</td>
+<td>Upgrade Python to 3.9+</td>
+</tr>
+<tr>
+<td><code>QIANWEN_API_KEY/DASHSCOPE_API_KEY not found</code></td>
+<td>Missing API key</td>
+<td>Obtain key from <a href="https://platform.qianwenai.com/home/api-keys">QianWen Console</a>; add to <code>.env</code>: <code>echo 'DASHSCOPE_API_KEY=sk-...' &gt;&gt; .env</code>; or run <strong>qianwen-ops-auth</strong> if available</td>
+</tr>
+<tr>
+<td><code>HTTP 401</code></td>
+<td>Invalid or mismatched key</td>
+<td>Run <strong>qianwen-ops-auth</strong> (non-plaintext check only); verify key is valid</td>
+</tr>
+<tr>
+<td><code>SSL: CERTIFICATE_VERIFY_FAILED</code></td>
+<td>SSL cert issue (proxy/corporate)</td>
+<td>macOS: run <code>Install Certificates.command</code>; else set <code>SSL_CERT_FILE</code> env var</td>
+</tr>
+<tr>
+<td><code>URLError</code> / <code>ConnectionError</code></td>
+<td>Network unreachable</td>
+<td>Check internet; set <code>HTTPS_PROXY</code> if behind proxy</td>
+</tr>
+<tr>
+<td><code>HTTP 429</code></td>
+<td>Rate limited</td>
+<td>Wait and retry with backoff</td>
+</tr>
+<tr>
+<td><code>HTTP 5xx</code></td>
+<td>Server error</td>
+<td>Retry with backoff</td>
+</tr>
+<tr>
+<td><code>ImportError: moviepy</code></td>
+<td>moviepy not installed</td>
+<td><code>pip install moviepy</code>, or use system ffmpeg instead (see <a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/video/qianwen-video-generation/references/merge-media.md">merge-media.md</a>)</td>
+</tr>
+<tr>
+<td><code>PermissionError</code></td>
+<td>Can't write output</td>
+<td>Use <code>--output</code> to specify writable directory</td>
+</tr>
+</tbody>
+</table>
+<h4>Request Fields Summary</h4>
+<p>All modes require <code>prompt</code>. See <a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/video/qianwen-video-generation/references/request-fields.md">request-fields.md</a> for full field tables per mode.</p>
+<h5>⚠️ Resolution Parameters by Model Family (Critical)</h5>
+<p>The resolution field varies by model family. Check the model catalog above before choosing between <code>size</code>, <code>resolution</code>, and <code>ratio</code>; using the wrong field can cause the API call to fail.</p>
+<h5>Mode-Specific Required Fields</h5>
+<ul>
+<li>Required fields vary by model family. Use <a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/video/qianwen-video-generation/references/request-fields.md">request-fields.md</a> for payload shapes and the model catalog above for current model-specific compatibility.</li>
+</ul>
+<h4>Cost Estimation</h4>
+<blockquote>
+<p>🚨 <strong>NEVER guess or fabricate any price figure.</strong> Always direct the user to the
+<a href="https://platform.qianwenai.com/docs/developer-guides/getting-started/pricing">official pricing page</a> for exact rates.</p>
+</blockquote>
+<p>Cost is billed per second of generated video. Price varies by model and resolution. Fetch the <a href="https://alioth.alicdn.com/skills-info/models/references/qianwen-model-pricing.md">CDN model-pricing reference</a>, and use the official pricing page for exact current rates. Some models may offer a limited free quota — <strong>do not assume any call is free</strong>; use the <strong>qianwen-usage</strong> skill to check remaining free tier quota, or verify in the user's <a href="https://platform.qianwenai.com/home/benefits">QianWen console</a>. If CDN access fails, use the <a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/video/qianwen-video-generation/cdn/references/qianwen-model-pricing.md">local fallback</a>.</p>
+<p>To check actual usage and bills: use the <strong>qianwen-usage</strong> skill, or visit the console:
+<a href="https://platform.qianwenai.com/home/analytics">Usage Analytics</a> |
+<a href="https://platform.qianwenai.com/home/billing/pay-as-you-go">Pay-as-you-go Billing</a> |
+<a href="https://platform.qianwenai.com/home/billing/subscription/token-plan">Token Plan Subscription</a></p>
+<blockquote>
+<p><strong>NEVER fabricate, guess, or construct usage/billing/console URLs.</strong> Only provide the exact links listed in this skill. If a URL is not listed here, do not invent one.</p>
+</blockquote>
+<h4>Local File Handling</h4>
+<p>When the user provides local file paths (images, videos, audio), pass them directly to the script. The script <strong>automatically uploads</strong> local files to DashScope temporary storage (<code>oss://</code> URL, 48h TTL) and injects the <code>X-DashScope-OssResourceResolve: enable</code> header. No manual upload step is needed.</p>
+<blockquote>
+<p><strong>Production</strong>: Default temp storage has <strong>48h TTL</strong> and <strong>100 QPS upload limit</strong> — not suitable for production, high-concurrency, or load-testing. To use your own OSS bucket, set <code>QWEN_TMP_OSS_BUCKET</code> and <code>QWEN_TMP_OSS_REGION</code> in <code>.env</code>, install <code>pip install alibabacloud-oss-v2</code>, and provide credentials via <code>QWEN_TMP_OSS_AK_ID</code> / <code>QWEN_TMP_OSS_AK_SECRET</code> or the standard <code>OSS_ACCESS_KEY_ID</code> / <code>OSS_ACCESS_KEY_SECRET</code>. Use a RAM user with least-privilege (<code>oss:PutObject</code> + <code>oss:GetObject</code> on target bucket only). If qianwen-ops-auth is installed, see its <code>references/custom-oss.md</code> for the full setup guide.</p>
+</blockquote>
+<h4>Cross-Skill Chaining</h4>
+<p>When using output from another skill as input (e.g., image-gen → i2v, audio-tts → audio overlay):</p>
+<ul>
+<li><strong>Pass the URL directly</strong> (e.g., <code>&quot;img_url&quot;: &quot;&lt;image_url from image-gen&gt;&quot;</code>) — do NOT download and re-pass as local path</li>
+<li>The script detects URL prefixes (<code>https://</code>, <code>oss://</code>) and passes them through without re-upload</li>
+<li>Use <code>local_path</code> from the response only for user preview or non-API operations</li>
+</ul>
+<p>When passing this skill's output to another skill (e.g., vace edit, vision analyze):</p>
+<ul>
+<li><strong>Pass <code>video_url</code> from the response</strong> — do NOT download and re-pass as local path</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Feed to another skill</td>
+<td><code>video_url</code> / <code>image_url</code> (URL)</td>
+</tr>
+<tr>
+<td>Show to user / local playback</td>
+<td><code>local_path</code> (local file)</td>
+</tr>
+</tbody>
+</table>
+<h4>Important Notes</h4>
+<ul>
+<li><strong>Async only</strong>: All video APIs require <code>X-DashScope-Async: enable</code> header.</li>
+<li><strong>kf2v</strong>: Uses a <strong>different API endpoint</strong>. Duration <strong>fixed at 5s</strong>, <strong>silent only</strong>.</li>
+<li><strong>r2v</strong>: Use <code>character1</code>/<code>character2</code>/... in prompt. Up to 5 references (max 3 videos).</li>
+<li><strong>vace</strong>: Must specify <code>function</code>. <strong>Silent only</strong>, output <strong>≤5s</strong>.</li>
+<li><strong>Multi-shot</strong>: Set <code>shot_type: &quot;multi&quot;</code> AND <code>prompt_extend: true</code>.</li>
+<li><strong>Video URL expires in 24h</strong> — the script auto-downloads to <code>--output</code> dir. When chaining to another skill (e.g., vace edit), pass <code>video_url</code> directly — do NOT re-download.</li>
+<li>For advanced workflows → see <a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/video/qianwen-video-generation/references/workflows.md">workflows.md</a>.</li>
+</ul>
+<h4>Error Handling</h4>
+<table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Cause</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>401 Unauthorized</code></td>
+<td>Invalid or missing API key</td>
+<td>Run <strong>qianwen-ops-auth</strong> if available; else prompt user to set key (non-plaintext check only)</td>
+</tr>
+<tr>
+<td><code>current user api does not support synchronous calls</code></td>
+<td>Missing async header</td>
+<td>Add <code>X-DashScope-Async: enable</code></td>
+</tr>
+<tr>
+<td><code>429</code> / <code>5xx</code></td>
+<td>Rate limit or server error</td>
+<td>Retry with backoff</td>
+</tr>
+<tr>
+<td><code>The product is not activated</code> / <code>Model not subscribed</code></td>
+<td>Third-party model not enabled on account</td>
+<td>Visit <a href="https://www.qianwenai.com/models">Model Market</a>, find the model, click &quot;Enable&quot; / &quot;开通&quot;</td>
+</tr>
+<tr>
+<td>Task <code>FAILED</code></td>
+<td>Generation failed</td>
+<td>Check <code>output.message</code> in poll response</td>
+</tr>
+</tbody>
+</table>
+<h4>Output Location</h4>
+<p>Prefer the <strong>current working directory</strong>. Default subdirectory: <code>./output/qianwen-video-generation/</code>.</p>
+<p><strong>Write prohibition</strong>: NEVER write output files into this skill's installation directory or any <code>skills/</code> hierarchy. All generated content must go to <code>output/</code> under the current working directory or a user-specified path.</p>
+<h4>Update Check (MANDATORY Post-Execution)</h4>
+<p>After script execution, check stderr for action signals. The script automatically detects update status and emits structured signals. You MUST act on them. This section also applies when the user explicitly asks to check for updates.</p>
+<h5>Signal: <code>[ACTION_REQUIRED] qianwen-update-check skill is not installed</code></h5>
+<p>When stderr contains this signal, you MUST present the following options to the user and <strong>wait for their response before proceeding</strong>. Do NOT silently skip this.</p>
+<blockquote>
+<p>The update-check skill is not installed. It keeps you informed about new QianWen-AI/qianwen-ai features and bug fixes.</p>
+<ol>
+<li><strong>Install now</strong> — I'll run the install command for you</li>
+<li><strong>Skip for now</strong> — do nothing this time</li>
+<li><strong>Never remind me</strong> — permanently suppress this prompt</li>
+</ol>
+</blockquote>
+<p>After the user responds:</p>
+<ul>
+<li>User chooses <strong>1</strong> → run: <code>npx skills add QianWen-AI/qianwen-ai --skill qianwen-update-check -y</code>, then run: <code>python3 &lt;this-skill-scripts-dir&gt;/gossamer.py --dismiss</code></li>
+<li>User chooses <strong>2</strong> → run: <code>python3 &lt;this-skill-scripts-dir&gt;/gossamer.py --dismiss</code>, then continue normally</li>
+<li>User chooses <strong>3</strong> → run: <code>python3 &lt;this-skill-scripts-dir&gt;/gossamer.py --never-install</code>, then continue normally</li>
+</ul>
+<h5>Signal: <code>[UPDATE_AVAILABLE]</code></h5>
+<p>When stderr contains this signal, you MUST append a brief update notice to your response, including the version info and the update command shown in the stderr output.</p>
+<h5>No signal in stderr</h5>
+<p>If stderr contains neither <code>[ACTION_REQUIRED]</code> nor <code>[UPDATE_AVAILABLE]</code>, no action is needed — the skill is installed and up to date (or cached within 24h).</p>
+<h5>Explicit user request</h5>
+<p>When the user explicitly asks to check for updates (e.g. &quot;check for updates&quot;, &quot;check version&quot;):</p>
+<ol>
+<li>Look for <code>qianwen-update-check/SKILL.md</code> in sibling skill directories.</li>
+<li>If found — run: <code>python3 &lt;qianwen-update-check-dir&gt;/scripts/check_update.py --print-response</code> and report the result.</li>
+<li>If not found — present the install options above.</li>
+</ol>
+<h4>References</h4>
+<ul>
+<li><a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/video/qianwen-video-generation/references/execution-guide.md">execution-guide.md</a> — Fallback paths (curl for all modes, code generation, autonomous)</li>
+<li><a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/video/qianwen-video-generation/references/request-fields.md">request-fields.md</a> — Detailed field tables by mode + audio handling</li>
+<li><a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/video/qianwen-video-generation/references/workflows.md">workflows.md</a> — Duration extensions, audio workarounds, multi-shot, VACE pipelines</li>
+<li><a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/video/qianwen-video-generation/references/polling-guide.md">polling-guide.md</a> — Polling patterns and timing recommendations</li>
+<li><a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/video/qianwen-video-generation/references/merge-media.md">merge-media.md</a> — Guide for generating merge/trim/audio-overlay code</li>
+<li><a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/video/qianwen-video-generation/references/examples.md">examples.md</a> — Full script execution examples for all modes</li>
+<li><a href="https://github.com/qianwen-ai/qianwen-ai/blob/11b1805167d91bc931dbaad85e17036a72e98ae0/skills/video/qianwen-video-generation/references/sources.md">sources.md</a> — Official documentation URLs</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

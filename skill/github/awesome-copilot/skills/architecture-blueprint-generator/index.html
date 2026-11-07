@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>architecture-blueprint-generator · SkillHub</title>
+    <meta name="description" content="Use it when: you want one reference document of how an existing codebase is built, so new work stays consistent with it. It does: detects the stack and architecture pattern from project files, dependencies and folders, then documents components, layers, data, cross-cutting concerns, testing and deployment. You get: Project_Architecture_Blueprint.md, with C4, UML, flow or component diagrams and a blueprint for adding features. Settings: eight variables at the top: project type, architecture pattern, diagram type, detail level, and whether to add code examples, implementation patterns, decision records and extension guidance." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=github%2Fawesome-copilot">github/awesome-copilot</a></p>
+      <h1>architecture-blueprint-generator</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want one reference document of how an existing codebase is built, so new work stays consistent with it</dd></div><div><dt>It does</dt><dd>detects the stack and architecture pattern from project files, dependencies and folders, then documents components, layers, data, cross-cutting concerns, testing and deployment</dd></div><div><dt>You get</dt><dd>Project_Architecture_Blueprint.md, with C4, UML, flow or component diagrams and a blueprint for adding features</dd></div><div><dt>Settings</dt><dd>eight variables at the top: project type, architecture pattern, diagram type, detail level, and whether to add code examples, implementation patterns, decision records and extension guidance</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A long prompt template that turns a codebase into its own architecture reference. Unless you name them, the agent works out the stack and the pattern (Clean Architecture, microservices, layered, MVVM, MVC, hexagonal, event-driven, serverless and others) from configuration files, dependencies, folder organization and component boundaries. It then documents what it finds: the overall approach and how its boundaries are enforced; each component&#39;s responsibility, internal structure, interactions and extension points; layer dependencies, including circular ones and violations; the data architecture; and how authentication, error handling, logging, validation and configuration are implemented. Further sections cover service communication, patterns specific to .NET, Java, React, Angular or Python, testing and deployment architecture, and governance. Optional sections add representative code examples and decisions inferred from the code. Diagrams must match the actual code, not textbook patterns. The document ends with a guide for new development, covering where new components go, templates and common pitfalls, and notes when it was generated and how to keep it current.</p>
+      <p class="muted">Summarizes <a href="https://github.com/github/awesome-copilot/tree/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/architecture-blueprint-generator">the skill at 797337f</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/github/awesome-copilot --skill architecture-blueprint-generator</code><button type="button" class="copy" data-copy="npx skills add https://github.com/github/awesome-copilot --skill architecture-blueprint-generator">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/github/awesome-copilot/architecture-blueprint-generator">skills.sh page</a> · <a href="https://github.com/github/awesome-copilot/tree/HEAD/skills/architecture-blueprint-generator">Source on GitHub</a> · <a href="/skillhub/?repo=github%2Fawesome-copilot">All skills from github/awesome-copilot</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>12,300 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>40,883 <span class="muted">github/awesome-copilot</span></dd></div><div><dt>First seen</dt><dd>Feb 25, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">39</div>
+      <div class="stat-delta">-43% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 68; week to Sep 26: 50; week to Oct 3: 65; week to Oct 10: 68; week to Oct 17: 57; week to Oct 24: 54; week to Oct 31: 44; week to Nov 7: 39. Use the left and right arrow keys to read each week."
+        data-values="68,50,65,68,57,54,44,39" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,17.6 71.1,7.9 103.7,6.0 136.3,13.1 168.9,15.1 201.4,21.5 234.0,24.8" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="24.8" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>68</td></tr><tr><td>Sep 26</td><td>50</td></tr><tr><td>Oct 3</td><td>65</td></tr><tr><td>Oct 10</td><td>68</td></tr><tr><td>Oct 17</td><td>57</td></tr><tr><td>Oct 24</td><td>54</td></tr><tr><td>Oct 31</td><td>44</td></tr><tr><td>Nov 7</td><td>39</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:writing" data-facet="category" title="Articles, docs, internal comms, research write-ups and prose that doesn&#39;t read as generated." href="/skillhub/?tag=category%3Awriting">category:writing</a></div>
+          <p class="tag-meaning">Articles, docs, internal comms, research write-ups and prose that doesn&#39;t read as generated.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:command" data-facet="type" title="A one-shot action you invoke by name, such as turning the conversation into a PRD." href="/skillhub/?tag=type%3Acommand">type:command</a></div>
+          <p class="tag-meaning">A one-shot action you invoke by name, such as turning the conversation into a PRD.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="architecture" data-facet="topic" href="/skillhub/?tag=architecture">architecture</a><a class="tag" data-tag="docs-writing" data-facet="topic" href="/skillhub/?tag=docs-writing">docs-writing</a><a class="tag" data-tag="diagrams" data-facet="topic" href="/skillhub/?tag=diagrams">diagrams</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/github/awesome-copilot/blob/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/architecture-blueprint-generator/SKILL.md">github/awesome-copilot at 797337f</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: architecture-blueprint-generator
+description: &#39;Comprehensive project architecture blueprint generator that analyzes codebases to create detailed architectural documentation. Automatically detects technology stacks and architectural patterns, generates visual diagrams, documents implementation patterns, and provides extensible blueprints for maintaining architectural consistency and guiding new development.&#39;</code></pre></details>
+        <div class="markdown"><h3>Comprehensive Project Architecture Blueprint Generator</h3>
+<h4>Configuration Variables</h4>
+<p>${PROJECT_TYPE=&quot;Auto-detect|.NET|Java|React|Angular|Python|Node.js|Flutter|Other&quot;} &lt;!-- Primary technology --&gt;
+${ARCHITECTURE_PATTERN=&quot;Auto-detect|Clean Architecture|Microservices|Layered|MVVM|MVC|Hexagonal|Event-Driven|Serverless|Monolithic|Other&quot;} &lt;!-- Primary architectural pattern --&gt;
+${DIAGRAM_TYPE=&quot;C4|UML|Flow|Component|None&quot;} &lt;!-- Architecture diagram type --&gt;
+${DETAIL_LEVEL=&quot;High-level|Detailed|Comprehensive|Implementation-Ready&quot;} &lt;!-- Level of detail to include --&gt;
+${INCLUDES_CODE_EXAMPLES=true|false} &lt;!-- Include sample code to illustrate patterns --&gt;
+${INCLUDES_IMPLEMENTATION_PATTERNS=true|false} &lt;!-- Include detailed implementation patterns --&gt;
+${INCLUDES_DECISION_RECORDS=true|false} &lt;!-- Include architectural decision records --&gt;
+${FOCUS_ON_EXTENSIBILITY=true|false} &lt;!-- Emphasize extension points and patterns --&gt;</p>
+<h4>Generated Prompt</h4>
+<p>&quot;Create a comprehensive 'Project_Architecture_Blueprint.md' document that thoroughly analyzes the architectural patterns in the codebase to serve as a definitive reference for maintaining architectural consistency. Use the following approach:</p>
+<h5>1. Architecture Detection and Analysis</h5>
+<ul>
+<li>
+<p>${PROJECT_TYPE == &quot;Auto-detect&quot; ? &quot;Analyze the project structure to identify all technology stacks and frameworks in use by examining:</p>
+<ul>
+<li>Project and configuration files</li>
+<li>Package dependencies and import statements</li>
+<li>Framework-specific patterns and conventions</li>
+<li>Build and deployment configurations&quot; : &quot;Focus on ${PROJECT_TYPE} specific patterns and practices&quot;}</li>
+</ul>
+</li>
+<li>
+<p>${ARCHITECTURE_PATTERN == &quot;Auto-detect&quot; ? &quot;Determine the architectural pattern(s) by analyzing:</p>
+<ul>
+<li>Folder organization and namespacing</li>
+<li>Dependency flow and component boundaries</li>
+<li>Interface segregation and abstraction patterns</li>
+<li>Communication mechanisms between components&quot; : &quot;Document how the ${ARCHITECTURE_PATTERN} architecture is implemented&quot;}</li>
+</ul>
+</li>
+</ul>
+<h5>2. Architectural Overview</h5>
+<ul>
+<li>Provide a clear, concise explanation of the overall architectural approach</li>
+<li>Document the guiding principles evident in the architectural choices</li>
+<li>Identify architectural boundaries and how they're enforced</li>
+<li>Note any hybrid architectural patterns or adaptations of standard patterns</li>
+</ul>
+<h5>3. Architecture Visualization</h5>
+<p>${DIAGRAM_TYPE != &quot;None&quot; ? `Create ${DIAGRAM_TYPE} diagrams at multiple levels of abstraction:</p>
+<ul>
+<li>High-level architectural overview showing major subsystems</li>
+<li>Component interaction diagrams showing relationships and dependencies</li>
+<li>Data flow diagrams showing how information moves through the system</li>
+<li>Ensure diagrams accurately reflect the actual implementation, not theoretical patterns` : &quot;Describe the component relationships based on actual code dependencies, providing clear textual explanations of:</li>
+<li>Subsystem organization and boundaries</li>
+<li>Dependency directions and component interactions</li>
+<li>Data flow and process sequences&quot;}</li>
+</ul>
+<h5>4. Core Architectural Components</h5>
+<p>For each architectural component discovered in the codebase:</p>
+<ul>
+<li>
+<p><strong>Purpose and Responsibility</strong>:</p>
+<ul>
+<li>Primary function within the architecture</li>
+<li>Business domains or technical concerns addressed</li>
+<li>Boundaries and scope limitations</li>
+</ul>
+</li>
+<li>
+<p><strong>Internal Structure</strong>:</p>
+<ul>
+<li>Organization of classes/modules within the component</li>
+<li>Key abstractions and their implementations</li>
+<li>Design patterns utilized</li>
+</ul>
+</li>
+<li>
+<p><strong>Interaction Patterns</strong>:</p>
+<ul>
+<li>How the component communicates with others</li>
+<li>Interfaces exposed and consumed</li>
+<li>Dependency injection patterns</li>
+<li>Event publishing/subscription mechanisms</li>
+</ul>
+</li>
+<li>
+<p><strong>Evolution Patterns</strong>:</p>
+<ul>
+<li>How the component can be extended</li>
+<li>Variation points and plugin mechanisms</li>
+<li>Configuration and customization approaches</li>
+</ul>
+</li>
+</ul>
+<h5>5. Architectural Layers and Dependencies</h5>
+<ul>
+<li>Map the layer structure as implemented in the codebase</li>
+<li>Document the dependency rules between layers</li>
+<li>Identify abstraction mechanisms that enable layer separation</li>
+<li>Note any circular dependencies or layer violations</li>
+<li>Document dependency injection patterns used to maintain separation</li>
+</ul>
+<h5>6. Data Architecture</h5>
+<ul>
+<li>Document domain model structure and organization</li>
+<li>Map entity relationships and aggregation patterns</li>
+<li>Identify data access patterns (repositories, data mappers, etc.)</li>
+<li>Document data transformation and mapping approaches</li>
+<li>Note caching strategies and implementations</li>
+<li>Document data validation patterns</li>
+</ul>
+<h5>7. Cross-Cutting Concerns Implementation</h5>
+<p>Document implementation patterns for cross-cutting concerns:</p>
+<ul>
+<li>
+<p><strong>Authentication &amp; Authorization</strong>:</p>
+<ul>
+<li>Security model implementation</li>
+<li>Permission enforcement patterns</li>
+<li>Identity management approach</li>
+<li>Security boundary patterns</li>
+</ul>
+</li>
+<li>
+<p><strong>Error Handling &amp; Resilience</strong>:</p>
+<ul>
+<li>Exception handling patterns</li>
+<li>Retry and circuit breaker implementations</li>
+<li>Fallback and graceful degradation strategies</li>
+<li>Error reporting and monitoring approaches</li>
+</ul>
+</li>
+<li>
+<p><strong>Logging &amp; Monitoring</strong>:</p>
+<ul>
+<li>Instrumentation patterns</li>
+<li>Observability implementation</li>
+<li>Diagnostic information flow</li>
+<li>Performance monitoring approach</li>
+</ul>
+</li>
+<li>
+<p><strong>Validation</strong>:</p>
+<ul>
+<li>Input validation strategies</li>
+<li>Business rule validation implementation</li>
+<li>Validation responsibility distribution</li>
+<li>Error reporting patterns</li>
+</ul>
+</li>
+<li>
+<p><strong>Configuration Management</strong>:</p>
+<ul>
+<li>Configuration source patterns</li>
+<li>Environment-specific configuration strategies</li>
+<li>Secret management approach</li>
+<li>Feature flag implementation</li>
+</ul>
+</li>
+</ul>
+<h5>8. Service Communication Patterns</h5>
+<ul>
+<li>Document service boundary definitions</li>
+<li>Identify communication protocols and formats</li>
+<li>Map synchronous vs. asynchronous communication patterns</li>
+<li>Document API versioning strategies</li>
+<li>Identify service discovery mechanisms</li>
+<li>Note resilience patterns in service communication</li>
+</ul>
+<h5>9. Technology-Specific Architectural Patterns</h5>
+<p>${PROJECT_TYPE == &quot;Auto-detect&quot; ? &quot;For each detected technology stack, document specific architectural patterns:&quot; : <code>Document ${PROJECT_TYPE}-specific architectural patterns:</code>}</p>
+<p>${(PROJECT_TYPE == &quot;.NET&quot; || PROJECT_TYPE == &quot;Auto-detect&quot;) ?
+&quot;#### .NET Architectural Patterns (if detected)</p>
+<ul>
+<li>Host and application model implementation</li>
+<li>Middleware pipeline organization</li>
+<li>Framework service integration patterns</li>
+<li>ORM and data access approaches</li>
+<li>API implementation patterns (controllers, minimal APIs, etc.)</li>
+<li>Dependency injection container configuration&quot; : &quot;&quot;}</li>
+</ul>
+<p>${(PROJECT_TYPE == &quot;Java&quot; || PROJECT_TYPE == &quot;Auto-detect&quot;) ?
+&quot;#### Java Architectural Patterns (if detected)</p>
+<ul>
+<li>Application container and bootstrap process</li>
+<li>Dependency injection framework usage (Spring, CDI, etc.)</li>
+<li>AOP implementation patterns</li>
+<li>Transaction boundary management</li>
+<li>ORM configuration and usage patterns</li>
+<li>Service implementation patterns&quot; : &quot;&quot;}</li>
+</ul>
+<p>${(PROJECT_TYPE == &quot;React&quot; || PROJECT_TYPE == &quot;Auto-detect&quot;) ?
+&quot;#### React Architectural Patterns (if detected)</p>
+<ul>
+<li>Component composition and reuse strategies</li>
+<li>State management architecture</li>
+<li>Side effect handling patterns</li>
+<li>Routing and navigation approach</li>
+<li>Data fetching and caching patterns</li>
+<li>Rendering optimization strategies&quot; : &quot;&quot;}</li>
+</ul>
+<p>${(PROJECT_TYPE == &quot;Angular&quot; || PROJECT_TYPE == &quot;Auto-detect&quot;) ?
+&quot;#### Angular Architectural Patterns (if detected)</p>
+<ul>
+<li>Module organization strategy</li>
+<li>Component hierarchy design</li>
+<li>Service and dependency injection patterns</li>
+<li>State management approach</li>
+<li>Reactive programming patterns</li>
+<li>Route guard implementation&quot; : &quot;&quot;}</li>
+</ul>
+<p>${(PROJECT_TYPE == &quot;Python&quot; || PROJECT_TYPE == &quot;Auto-detect&quot;) ?
+&quot;#### Python Architectural Patterns (if detected)</p>
+<ul>
+<li>Module organization approach</li>
+<li>Dependency management strategy</li>
+<li>OOP vs. functional implementation patterns</li>
+<li>Framework integration patterns</li>
+<li>Asynchronous programming approach&quot; : &quot;&quot;}</li>
+</ul>
+<h5>10. Implementation Patterns</h5>
+<p>${INCLUDES_IMPLEMENTATION_PATTERNS ?
+&quot;Document concrete implementation patterns for key architectural components:</p>
+<ul>
+<li>
+<p><strong>Interface Design Patterns</strong>:</p>
+<ul>
+<li>Interface segregation approaches</li>
+<li>Abstraction level decisions</li>
+<li>Generic vs. specific interface patterns</li>
+<li>Default implementation patterns</li>
+</ul>
+</li>
+<li>
+<p><strong>Service Implementation Patterns</strong>:</p>
+<ul>
+<li>Service lifetime management</li>
+<li>Service composition patterns</li>
+<li>Operation implementation templates</li>
+<li>Error handling within services</li>
+</ul>
+</li>
+<li>
+<p><strong>Repository Implementation Patterns</strong>:</p>
+<ul>
+<li>Query pattern implementations</li>
+<li>Transaction management</li>
+<li>Concurrency handling</li>
+<li>Bulk operation patterns</li>
+</ul>
+</li>
+<li>
+<p><strong>Controller/API Implementation Patterns</strong>:</p>
+<ul>
+<li>Request handling patterns</li>
+<li>Response formatting approaches</li>
+<li>Parameter validation</li>
+<li>API versioning implementation</li>
+</ul>
+</li>
+<li>
+<p><strong>Domain Model Implementation</strong>:</p>
+<ul>
+<li>Entity implementation patterns</li>
+<li>Value object patterns</li>
+<li>Domain event implementation</li>
+<li>Business rule enforcement&quot; : &quot;Mention that detailed implementation patterns vary across the codebase.&quot;}</li>
+</ul>
+</li>
+</ul>
+<h5>11. Testing Architecture</h5>
+<ul>
+<li>Document testing strategies aligned with the architecture</li>
+<li>Identify test boundary patterns (unit, integration, system)</li>
+<li>Map test doubles and mocking approaches</li>
+<li>Document test data strategies</li>
+<li>Note testing tools and frameworks integration</li>
+</ul>
+<h5>12. Deployment Architecture</h5>
+<ul>
+<li>Document deployment topology derived from configuration</li>
+<li>Identify environment-specific architectural adaptations</li>
+<li>Map runtime dependency resolution patterns</li>
+<li>Document configuration management across environments</li>
+<li>Identify containerization and orchestration approaches</li>
+<li>Note cloud service integration patterns</li>
+</ul>
+<h5>13. Extension and Evolution Patterns</h5>
+<p>${FOCUS_ON_EXTENSIBILITY ?
+&quot;Provide detailed guidance for extending the architecture:</p>
+<ul>
+<li>
+<p><strong>Feature Addition Patterns</strong>:</p>
+<ul>
+<li>How to add new features while preserving architectural integrity</li>
+<li>Where to place new components by type</li>
+<li>Dependency introduction guidelines</li>
+<li>Configuration extension patterns</li>
+</ul>
+</li>
+<li>
+<p><strong>Modification Patterns</strong>:</p>
+<ul>
+<li>How to safely modify existing components</li>
+<li>Strategies for maintaining backward compatibility</li>
+<li>Deprecation patterns</li>
+<li>Migration approaches</li>
+</ul>
+</li>
+<li>
+<p><strong>Integration Patterns</strong>:</p>
+<ul>
+<li>How to integrate new external systems</li>
+<li>Adapter implementation patterns</li>
+<li>Anti-corruption layer patterns</li>
+<li>Service facade implementation&quot; : &quot;Document key extension points in the architecture.&quot;}</li>
+</ul>
+</li>
+</ul>
+<p>${INCLUDES_CODE_EXAMPLES ?
+&quot;### 14. Architectural Pattern Examples
+Extract representative code examples that illustrate key architectural patterns:</p>
+<ul>
+<li>
+<p><strong>Layer Separation Examples</strong>:</p>
+<ul>
+<li>Interface definition and implementation separation</li>
+<li>Cross-layer communication patterns</li>
+<li>Dependency injection examples</li>
+</ul>
+</li>
+<li>
+<p><strong>Component Communication Examples</strong>:</p>
+<ul>
+<li>Service invocation patterns</li>
+<li>Event publication and handling</li>
+<li>Message passing implementation</li>
+</ul>
+</li>
+<li>
+<p><strong>Extension Point Examples</strong>:</p>
+<ul>
+<li>Plugin registration and discovery</li>
+<li>Extension interface implementations</li>
+<li>Configuration-driven extension patterns</li>
+</ul>
+</li>
+</ul>
+<p>Include enough context with each example to show the pattern clearly, but keep examples concise and focused on architectural concepts.&quot; : &quot;&quot;}</p>
+<p>${INCLUDES_DECISION_RECORDS ?
+&quot;### 15. Architectural Decision Records
+Document key architectural decisions evident in the codebase:</p>
+<ul>
+<li>
+<p><strong>Architectural Style Decisions</strong>:</p>
+<ul>
+<li>Why the current architectural pattern was chosen</li>
+<li>Alternatives considered (based on code evolution)</li>
+<li>Constraints that influenced the decision</li>
+</ul>
+</li>
+<li>
+<p><strong>Technology Selection Decisions</strong>:</p>
+<ul>
+<li>Key technology choices and their architectural impact</li>
+<li>Framework selection rationales</li>
+<li>Custom vs. off-the-shelf component decisions</li>
+</ul>
+</li>
+<li>
+<p><strong>Implementation Approach Decisions</strong>:</p>
+<ul>
+<li>Specific implementation patterns chosen</li>
+<li>Standard pattern adaptations</li>
+<li>Performance vs. maintainability tradeoffs</li>
+</ul>
+</li>
+</ul>
+<p>For each decision, note:</p>
+<ul>
+<li>Context that made the decision necessary</li>
+<li>Factors considered in making the decision</li>
+<li>Resulting consequences (positive and negative)</li>
+<li>Future flexibility or limitations introduced&quot; : &quot;&quot;}</li>
+</ul>
+<h5>${INCLUDES_DECISION_RECORDS ? &quot;16&quot; : INCLUDES_CODE_EXAMPLES ? &quot;15&quot; : &quot;14&quot;}. Architecture Governance</h5>
+<ul>
+<li>Document how architectural consistency is maintained</li>
+<li>Identify automated checks for architectural compliance</li>
+<li>Note architectural review processes evident in the codebase</li>
+<li>Document architectural documentation practices</li>
+</ul>
+<h5>${INCLUDES_DECISION_RECORDS ? &quot;17&quot; : INCLUDES_CODE_EXAMPLES ? &quot;16&quot; : &quot;15&quot;}. Blueprint for New Development</h5>
+<p>Create a clear architectural guide for implementing new features:</p>
+<ul>
+<li>
+<p><strong>Development Workflow</strong>:</p>
+<ul>
+<li>Starting points for different feature types</li>
+<li>Component creation sequence</li>
+<li>Integration steps with existing architecture</li>
+<li>Testing approach by architectural layer</li>
+</ul>
+</li>
+<li>
+<p><strong>Implementation Templates</strong>:</p>
+<ul>
+<li>Base class/interface templates for key architectural components</li>
+<li>Standard file organization for new components</li>
+<li>Dependency declaration patterns</li>
+<li>Documentation requirements</li>
+</ul>
+</li>
+<li>
+<p><strong>Common Pitfalls</strong>:</p>
+<ul>
+<li>Architecture violations to avoid</li>
+<li>Common architectural mistakes</li>
+<li>Performance considerations</li>
+<li>Testing blind spots</li>
+</ul>
+</li>
+</ul>
+<p>Include information about when this blueprint was generated and recommendations for keeping it updated as the architecture evolves.&quot;</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

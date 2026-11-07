@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>coding-agent · SkillHub</title>
+    <meta name="description" content="Use it when: you want OpenClaw to hand a feature build, PR review, large refactor or issue-to-PR job to Codex, Claude Code or OpenCode, running in the background. It does: prepares an isolated git worktree from a freshly fetched base, writes the worker&#039;s prompt to a file, launches the worker and monitors it. You get: the worker&#039;s session ID right away, then one completion or failure message from the worker in your chat. Needs: OpenClaw with this skill enabled in its config, and the claude, codex or opencode CLI, signed in. Watch for: Claude Code runs with --permission-mode bypassPermissions; Codex gets a separate login in ~/.codex-coding-agent, never your usual ~/.codex. Not for: simple edits, read-only code lookup, or work inside OpenClaw&#039;s own state directories." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=openclaw%2Fopenclaw">openclaw/openclaw</a></p>
+      <h1>coding-agent</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want OpenClaw to hand a feature build, PR review, large refactor or issue-to-PR job to Codex, Claude Code or OpenCode, running in the background</dd></div><div><dt>It does</dt><dd>prepares an isolated git worktree from a freshly fetched base, writes the worker&#39;s prompt to a file, launches the worker and monitors it</dd></div><div><dt>You get</dt><dd>the worker&#39;s session ID right away, then one completion or failure message from the worker in your chat</dd></div><div><dt>Needs</dt><dd>OpenClaw with this skill enabled in its config, and the claude, codex or opencode CLI, signed in</dd></div><div><dt>Watch for</dt><dd>Claude Code runs with --permission-mode bypassPermissions; Codex gets a separate login in ~/.codex-coding-agent, never your usual ~/.codex</dd></div><div><dt>Not for</dt><dd>simple edits, read-only code lookup, or work inside OpenClaw&#39;s own state directories</dd></div></dl></section>
+      
+      <p class="note">Runs only in OpenClaw, once skills.entries.coding-agent.enabled is set in its config. It launches Claude Code with --permission-mode bypassPermissions, and its workers can push branches and open PRs.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A delegation playbook for OpenClaw. Every worker starts in the background and reports back itself, with openclaw message send, to a chat route captured before launch; the agent watches it with OpenClaw&#39;s process tool, reports only milestones, questions, errors and the finish, and respawns or asks rather than quietly coding the task itself if a worker fails. Before work that changes a git project, the agent proves the target repo, remote and base branch, fetches, creates a fresh worktree and branch, checks that its starting commit matches the fetched base, and pastes those facts into the worker&#39;s prompt. Code from untrusted contributors is never checked out outside the repo&#39;s own sandboxed review workflow, nor given to a permission-bypassed worker. For long jobs, a GitHub issue serves as the spec: the worker implements, tests, reviews until no actionable findings remain and opens the PR, checking just before pushing that its branch still sits on the latest base. Shared branches aren&#39;t rebased, reset or force-pushed unless you ask. A scratch mode runs Codex in a throwaway repo for work outside any project.</p>
+      <p class="muted">Summarizes <a href="https://github.com/openclaw/openclaw/tree/f99d785d2ac6269b37a1c88eb8d5ef2283b76b99/skills/coding-agent">the skill at f99d785</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/openclaw/openclaw --skill coding-agent</code><button type="button" class="copy" data-copy="npx skills add https://github.com/openclaw/openclaw --skill coding-agent">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/openclaw/openclaw/coding-agent">skills.sh page</a> · <a href="https://github.com/openclaw/openclaw/tree/HEAD/skills/coding-agent">Source on GitHub</a> · <a href="/skillhub/?repo=openclaw%2Fopenclaw">All skills from openclaw/openclaw</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>6,500 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>394,088 <span class="muted">openclaw/openclaw</span></dd></div><div><dt>First seen</dt><dd>Jan 24, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">6</div>
+      <div class="stat-delta">-95% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 130; week to Sep 26: 126; week to Oct 3: 124; week to Oct 10: 120; week to Oct 17: 16; week to Oct 24: 13; week to Oct 31: 9; week to Nov 7: 6. Use the left and right arrow keys to read each week."
+        data-values="130,126,124,120,16,13,9,6" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,7.4 71.1,8.0 103.7,9.4 136.3,44.6 168.9,45.6 201.4,47.0 234.0,48.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="48.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>130</td></tr><tr><td>Sep 26</td><td>126</td></tr><tr><td>Oct 3</td><td>124</td></tr><tr><td>Oct 10</td><td>120</td></tr><tr><td>Oct 17</td><td>16</td></tr><tr><td>Oct 24</td><td>13</td></tr><tr><td>Oct 31</td><td>9</td></tr><tr><td>Nov 7</td><td>6</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/skillhub/?tag=category%3Aagents">category:agents</a><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:remote" data-facet="effect" title="Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service." href="/skillhub/?tag=effect%3Aremote">effect:remote</a></div>
+          <p class="tag-meaning">Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:openclaw" data-facet="needs" title="Built for the OpenClaw agent." href="/skillhub/?tag=needs%3Aopenclaw">needs:openclaw</a><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/skillhub/?tag=needs%3Aaccount">needs:account</a><a class="tag" data-tag="needs:issue-tracker" data-facet="needs" title="Reads or writes an issue tracker, GitHub Issues by default." href="/skillhub/?tag=needs%3Aissue-tracker">needs:issue-tracker</a></div>
+          <p class="tag-meaning">Built for the OpenClaw agent.</p><p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">An account, API key or paid plan with an outside service.</p><p class="tag-meaning">Reads or writes an issue tracker, GitHub Issues by default.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="multi-agent" data-facet="topic" href="/skillhub/?tag=multi-agent">multi-agent</a><a class="tag" data-tag="agent-workflows" data-facet="topic" href="/skillhub/?tag=agent-workflows">agent-workflows</a><a class="tag" data-tag="git" data-facet="topic" href="/skillhub/?tag=git">git</a><a class="tag" data-tag="implementation" data-facet="topic" href="/skillhub/?tag=implementation">implementation</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:codex" data-facet="stack" href="/skillhub/?tag=stack%3Acodex">stack:codex</a><a class="tag" data-tag="stack:claude" data-facet="stack" href="/skillhub/?tag=stack%3Aclaude">stack:claude</a><a class="tag" data-tag="stack:opencode" data-facet="stack" href="/skillhub/?tag=stack%3Aopencode">stack:opencode</a><a class="tag" data-tag="stack:git" data-facet="stack" href="/skillhub/?tag=stack%3Agit">stack:git</a><a class="tag" data-tag="stack:github" data-facet="stack" href="/skillhub/?tag=stack%3Agithub">stack:github</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/openclaw/openclaw/blob/f99d785d2ac6269b37a1c88eb8d5ef2283b76b99/skills/coding-agent/SKILL.md">openclaw/openclaw at f99d785</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: coding-agent
+description: &#34;Delegate coding work to Codex, Claude Code, or OpenCode as background workers; not simple edits or read-only code lookup.&#34;
+metadata:
+  {
+    &#34;openclaw&#34;:
+      {
+        &#34;emoji&#34;: &#34;🧩&#34;,
+        &#34;requires&#34;:
+          {
+            &#34;anyBins&#34;: [&#34;claude&#34;, &#34;codex&#34;, &#34;opencode&#34;],
+            &#34;config&#34;: [&#34;skills.entries.coding-agent.enabled&#34;],
+          },
+        &#34;install&#34;:
+          [
+            {
+              &#34;id&#34;: &#34;node-claude&#34;,
+              &#34;kind&#34;: &#34;node&#34;,
+              &#34;package&#34;: &#34;@anthropic-ai/claude-code&#34;,
+              &#34;bins&#34;: [&#34;claude&#34;],
+              &#34;label&#34;: &#34;Install Claude Code CLI (npm)&#34;,
+            },
+            {
+              &#34;id&#34;: &#34;node-codex&#34;,
+              &#34;kind&#34;: &#34;node&#34;,
+              &#34;package&#34;: &#34;@openai/codex&#34;,
+              &#34;bins&#34;: [&#34;codex&#34;],
+              &#34;label&#34;: &#34;Install Codex CLI (npm)&#34;,
+            },
+          ],
+      },
+  }</code></pre></details>
+        <div class="markdown"><h3>Coding Agent</h3>
+<p>Use for background feature builds, PR reviews, large refactors, and issue-to-PR loops. Do not use for simple edits, read-only lookup, ACP thread-bound work, or any run inside <code>~/.openclaw</code>, <code>$OPENCLAW_STATE_DIR</code>, or active OpenClaw state dirs.</p>
+<h4>Hard rules</h4>
+<ul>
+<li>Always launch with <code>background:true</code>.</li>
+<li>Codex and OpenCode: use <code>pty:true</code>.</li>
+<li>Codex: never inherit ambient <code>CODEX_HOME</code> or the default <code>~/.codex</code>. Use a
+separately authenticated coding-agent home and scope it to each Codex command.</li>
+<li>Claude Code: no PTY; use <code>claude --permission-mode bypassPermissions --print</code>.</li>
+<li>Capture a real notification route before spawning.</li>
+<li>Worker must send completion/failure via <code>openclaw message send</code>.</li>
+<li>Do not rely on heartbeat, system events, or notify-on-exit.</li>
+<li>Monitor with <code>process</code>; do not kill slow workers without cause.</li>
+<li>If user asked for a specific agent, use that agent.</li>
+<li>If worker fails/hangs, respawn or ask; do not silently hand-code instead.</li>
+<li>Never checkout branches or run background coding agents in <code>~/Projects/openclaw</code>; use an isolated checkout.</li>
+<li>Classify the source ref as trusted or untrusted before any checkout or worktree creation. Never materialize a contributor-controlled ref outside the repository's approved untrusted-PR sandbox/review workflow, and never launch a permission-bypassed worker in it.</li>
+<li>For tasks that modify a Git-backed project, prepare and verify the Git worktree before launch, then include the exact Git preparation block below in the worker prompt.</li>
+</ul>
+<h4>Mandatory Git preparation</h4>
+<p>Before launching Codex, Claude Code, or OpenCode for work that modifies a Git-backed project:</p>
+<ol>
+<li>Establish the intended target repository, then select its canonical remote. Prefer <code>upstream</code> when it exists and matches that target; otherwise verify <code>origin</code>. Resolve the selected remote's default branch dynamically. Determine the target base from an explicit task branch or authoritative existing-PR metadata; for other shared branches, prove the configured/tracked base or ask. Use the canonical default only for new work with no other specified base. Stop if the repository, remote, or target base cannot be proven.</li>
+<li>Classify the source ref as trusted or untrusted before any checkout or worktree creation. For contributor-controlled refs, use the repository's approved untrusted-PR sandbox/review workflow, which must own ref materialization inside the sandbox, or stop. The remaining steps and launch forms are for trusted refs only.</li>
+<li>For trusted new work, run <code>git fetch --prune &lt;canonical&gt;</code> immediately before creating a new isolated worktree and branch from <code>&lt;canonical&gt;/&lt;targetBaseBranch&gt;</code>.</li>
+<li>For trusted new work, verify the worktree's initial <code>HEAD</code> equals the fetched target-base SHA. Record the canonical remote, canonical default branch, target base branch, base SHA, worktree path, and branch.</li>
+<li>For a trusted existing PR or shared branch, fetch the canonical target base and source branch immediately before creating an isolated worktree from the fetched source branch. Record that source ref and starting SHA, report its divergence from the refreshed target base, and do not automatically rebase, merge, reset, force-push, or otherwise rewrite shared history.</li>
+<li>Launch the worker in the isolated worktree, never the primary checkout. For OpenClaw, the primary checkout under <code>~/Projects/openclaw</code> remains forbidden.</li>
+</ol>
+<p>For tasks that modify a Git-backed project, append this block to the worker prompt with real values:</p>
+<pre><code class="language-text">Git preparation (mandatory before edits):
+- canonical remote: &lt;canonicalRemote&gt;
+- canonical default branch: &lt;canonicalDefaultBranch&gt;
+- target base branch: &lt;targetBaseBranch&gt;
+- fetched target base SHA: &lt;targetBaseSha&gt;
+- preparation mode: &lt;new work | existing PR/shared branch&gt;
+- checkout trust: trusted
+- prepared source ref: &lt;canonicalRemote/targetBaseBranch | fetched trusted source ref&gt;
+- prepared start SHA: &lt;preparedStartSha&gt;
+- isolated worktree: &lt;worktreePath&gt;
+- working branch: &lt;branch&gt;
+- preparation receipt: &lt;new work: `git fetch --prune &lt;canonicalRemote&gt;` ran immediately before creation from `&lt;canonicalRemote&gt;/&lt;targetBaseBranch&gt;` | existing branch: the canonical target base and trusted source ref were fetched immediately before the worktree was created from `&lt;preparedSourceRef&gt;` at `&lt;preparedStartSha&gt;`&gt;
+
+Before editing, verify the current directory is the isolated worktree and its initial HEAD equals &lt;preparedStartSha&gt;. For new work, that SHA must equal &lt;targetBaseSha&gt;. Never edit the primary checkout. For existing PR/shared-branch work, report divergence and do not rebase, merge, reset, force-push, or otherwise rewrite shared history unless explicitly asked.
+Immediately before the final push or PR for newly authored work, run `git fetch --prune &lt;canonicalRemote&gt;` and `git merge-base --is-ancestor &lt;canonicalRemote&gt;/&lt;targetBaseBranch&gt; HEAD`. If the ancestry check fails, update the new branch onto the latest target base, rerun the relevant proof, and only then push without force. For existing PR/shared-branch work, report a failed ancestry check and follow the repository workflow without rewriting the branch.
+</code></pre>
+<p>For trusted refs, the launcher must create and verify the worktree before starting the editing worker; do not delegate worktree creation to that worker. The approved untrusted-PR workflow must instead own checkout and worktree materialization inside its sandbox. Never start a worker in <code>~/Projects/openclaw</code>. Read-only tasks and non-project scratch work do not require the Git preparation block.</p>
+<h4>Notification block</h4>
+<p>Append this shape to every worker prompt with real values:</p>
+<pre><code class="language-text">Notification route:
+- channel: &lt;notifyChannel&gt;
+- target: &lt;notifyTarget&gt;
+- account: &lt;notifyAccount or omit&gt;
+- reply_to: &lt;notifyReplyTo or omit&gt;
+- thread_id: &lt;notifyThreadId or omit&gt;
+
+When finished, send exactly one completion or failure message using:
+openclaw message send --channel &lt;channel&gt; --target '&lt;target&gt;' --message '&lt;brief result&gt;'
+Add --account, --reply-to, or --thread-id only when present above.
+Do not use openclaw system event or heartbeat.
+</code></pre>
+<p>If no trustworthy route exists, say completion auto-notify is unavailable.</p>
+<h4>Launch forms</h4>
+<p>Write the worker prompt to a temp file first. This avoids shell quoting bugs when the required notification block contains quotes or newlines.</p>
+<pre><code class="language-bash">PROMPT=$(mktemp -t openclaw-worker-prompt.XXXXXX)
+cat &gt;&quot;$PROMPT&quot; &lt;&lt;'EOF'
+Task.
+&lt;mandatory Git preparation block&gt;
+&lt;notification block&gt;
+EOF
+printf 'prompt file: %s\n' &quot;$PROMPT&quot;
+</code></pre>
+<p>Use <code>$PROMPT</code> when launching from the same shell/session. If using a separate tool call, substitute the printed path. The launch forms below are for trusted checkouts only; untrusted contributor refs require the repository's approved sandbox/review workflow.</p>
+<p>Before the first Codex worker on a host, prepare a dedicated auth home in the
+foreground. Do not copy <code>auth.json</code> or other credentials from ambient
+<code>~/.codex</code>; authorize this home separately. Codex scopes both file and keyring
+credentials by <code>CODEX_HOME</code>.</p>
+<pre><code class="language-bash">CODEX_WORKER_HOME=&quot;$HOME/.codex-coding-agent&quot;
+mkdir -p &quot;$CODEX_WORKER_HOME&quot;
+if ! env -u CODEX_API_KEY -u CODEX_ACCESS_TOKEN -u OPENAI_API_KEY \
+  CODEX_HOME=&quot;$CODEX_WORKER_HOME&quot; codex login status &gt;/dev/null 2&gt;&amp;1; then
+  printf 'Codex coding-agent login required for %s\n' &quot;$CODEX_WORKER_HOME&quot;
+  env -u CODEX_API_KEY -u CODEX_ACCESS_TOKEN -u OPENAI_API_KEY \
+    CODEX_HOME=&quot;$CODEX_WORKER_HOME&quot; codex login --device-auth
+fi
+printf 'Codex worker home: %s\n' &quot;$CODEX_WORKER_HOME&quot;
+</code></pre>
+<p>The login is an interactive foreground setup step, not a background worker.
+The launch command repeats the fixed, quoted home and removes ambient Codex and
+OpenAI auth overrides. Never export the worker home into the OpenClaw Gateway
+environment.</p>
+<p>Codex:</p>
+<pre><code class="language-bash">bash pty:true background:true workdir:/path/isolated-worktree command:&quot;env -u CODEX_API_KEY -u CODEX_ACCESS_TOKEN -u OPENAI_API_KEY CODEX_HOME=\&quot;$HOME/.codex-coding-agent\&quot; codex exec - &lt; \&quot;$PROMPT\&quot;&quot;
+</code></pre>
+<p>Claude Code:</p>
+<pre><code class="language-bash">bash background:true workdir:/path/isolated-worktree command:&quot;claude --permission-mode bypassPermissions --print &lt; \&quot;$PROMPT\&quot;&quot;
+</code></pre>
+<p>OpenCode:</p>
+<pre><code class="language-bash">bash pty:true background:true workdir:/path/isolated-worktree command:&quot;opencode run &lt; \&quot;$PROMPT\&quot;&quot;
+</code></pre>
+<h4>Long issue-to-PR work</h4>
+<ol>
+<li>Create/reuse a GitHub issue as durable spec.</li>
+<li>Include issue URL, repo, canonical remote/default branch, target base branch/SHA, isolated worktree, working branch, expected PR, proof, and notification route.</li>
+<li>Include the mandatory Git preparation block, then tell the worker to implement, test, run review until no accepted actionable findings, and open the PR.</li>
+<li>Return issue URL and <code>sessionId</code> immediately.</li>
+<li>Monitor with <code>process</code>; cancel through Task Registry if mirrored there.</li>
+</ol>
+<h4>Scratch Codex</h4>
+<p>Codex needs a trusted git repo. This throwaway scaffold is not project work and has no canonical remote, so the Git preparation block does not apply:</p>
+<pre><code class="language-bash">SCRATCH=$(mktemp -d)
+git -C &quot;$SCRATCH&quot; init
+PROMPT=$(mktemp -t openclaw-worker-prompt.XXXXXX)
+cat &gt;&quot;$PROMPT&quot; &lt;&lt;'EOF'
+Build X.
+&lt;notification block&gt;
+EOF
+printf 'prompt file: %s\n' &quot;$PROMPT&quot;
+bash pty:true background:true workdir:$SCRATCH command:&quot;env -u CODEX_API_KEY -u CODEX_ACCESS_TOKEN -u OPENAI_API_KEY CODEX_HOME=\&quot;$HOME/.codex-coding-agent\&quot; codex exec - &lt; \&quot;$PROMPT\&quot;&quot;
+</code></pre>
+<h4>Process actions</h4>
+<ul>
+<li><code>list</code>: running/recent sessions.</li>
+<li><code>poll</code>: status.</li>
+<li><code>log</code>: output.</li>
+<li><code>submit</code>: send input + Enter.</li>
+<li><code>write</code>: raw stdin.</li>
+<li><code>paste</code>: paste text.</li>
+<li><code>kill</code>: terminate.</li>
+</ul>
+<h4>Status to user</h4>
+<ul>
+<li>Say what started, where, and <code>sessionId</code>.</li>
+<li>Update only on milestone, worker question, error, user action needed, or finish.</li>
+<li>If killed, say why.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

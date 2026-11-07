@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>network-interface-health · SkillHub</title>
+    <meta name="description" content="Use it when: a host or VLAN has packet loss or intermittent reachability, or a switch port shows CRCs, drops, resets or flaps. It does: captures a counter baseline, waits, captures again and compares the increments, on both ends of the link. You get: a likely cause from a counter table, such as a bad cable or optic, a duplex or MTU mismatch, or a congested uplink. Also has: a Python parser for show interfaces output that slices each interface block cleanly." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <h1>network-interface-health</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>a host or VLAN has packet loss or intermittent reachability, or a switch port shows CRCs, drops, resets or flaps</dd></div><div><dt>It does</dt><dd>captures a counter baseline, waits, captures again and compares the increments, on both ends of the link</dd></div><div><dt>You get</dt><dd>a likely cause from a counter table, such as a bad cable or optic, a duplex or MTU mismatch, or a congested uplink</dd></div><div><dt>Also has</dt><dd>a Python parser for show interfaces output that slices each interface block cleanly</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A diagnostic flow from ECC for problems that may sit in a physical link, switch port, cable, transceiver, duplex setting or congested interface. Counters are evidence, but the trend matters more than the total, so the agent records a baseline, waits a measurement interval and compares the increments: show interfaces and show logging on network gear, ip -s link and ethtool on Linux hosts. A counter table maps CRCs, input errors, runts, giants, input and output drops, resets and collisions to their usual causes. For CRCs it checks both ends, since receive errors point at the signal arriving on that side, then the cable, fiber or optic, then speed and duplex. For drops it separates input from output and proves congestion before tuning queues. It prefers auto-negotiation on both sides and never mixes fixed and auto settings. Worked examples cover CRCs on one switch port and slow internet with a healthy LAN. Anti-patterns include clearing counters before saving a baseline and blaming the cable for output drops.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/network-interface-health">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/affaan-m/ecc --skill network-interface-health</code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill network-interface-health">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/network-interface-health">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/network-interface-health">Source on GitHub</a> · <a href="/skillhub/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,200 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>298,660 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">473</div>
+      <div class="stat-delta">+64% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 289; week to Sep 26: 255; week to Oct 3: 156; week to Oct 10: 140; week to Oct 17: 232; week to Oct 24: 406; week to Oct 31: 405; week to Nov 7: 473. Use the left and right arrow keys to read each week."
+        data-values="289,255,156,140,232,406,405,473" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.1 38.6,26.3 71.1,35.5 103.7,37.0 136.3,28.4 168.9,12.2 201.4,12.3 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>289</td></tr><tr><td>Sep 26</td><td>255</td></tr><tr><td>Oct 3</td><td>156</td></tr><tr><td>Oct 10</td><td>140</td></tr><tr><td>Oct 17</td><td>232</td></tr><tr><td>Oct 24</td><td>406</td></tr><tr><td>Oct 31</td><td>405</td></tr><tr><td>Nov 7</td><td>473</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:networking" data-facet="category" title="Computer networks: home labs, VLANs, VPNs, DNS, routing and network diagnostics." href="/skillhub/?tag=category%3Anetworking">category:networking</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Computer networks: home labs, VLANs, VPNs, DNS, routing and network diagnostics.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="debugging" data-facet="topic" href="/skillhub/?tag=debugging">debugging</a><a class="tag" data-tag="infrastructure" data-facet="topic" href="/skillhub/?tag=infrastructure">infrastructure</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/network-interface-health/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: network-interface-health
+description: Diagnose interface errors, drops, CRCs, duplex mismatches, flapping, speed negotiation issues, and counter trends on routers, switches, and Linux hosts. Use when an interface shows errors, drops, CRCs, flapping, or a duplex or speed mismatch.
+metadata:
+  origin: community</code></pre></details>
+        <div class="markdown"><h3>Network Interface Health</h3>
+<p>Use this skill when a network symptom might be caused by a physical link, switch
+port, cable, transceiver, duplex setting, or congested interface.</p>
+<h4>When to Use</h4>
+<ul>
+<li>A host or VLAN has packet loss, latency spikes, or intermittent reachability.</li>
+<li>A switch or router interface shows CRCs, runts, giants, drops, resets, or flaps.</li>
+<li>You need to compare both ends of a link before replacing hardware.</li>
+<li>A change window needs before/after interface counter evidence.</li>
+<li>Monitoring reports rising <code>ifInErrors</code>, <code>ifOutErrors</code>, or <code>ifOutDiscards</code>.</li>
+</ul>
+<h4>How It Works</h4>
+<p>Interface counters are evidence, but the trend matters more than the absolute
+number. Capture a baseline, wait a measurement interval, capture again, then
+compare increments.</p>
+<pre><code class="language-text">show interfaces &lt;interface&gt;
+show interfaces &lt;interface&gt; status
+show logging | include &lt;interface&gt;|changed state|line protocol
+</code></pre>
+<p>On Linux hosts:</p>
+<pre><code class="language-text">ip -s link show &lt;interface&gt;
+ethtool &lt;interface&gt;
+ethtool -S &lt;interface&gt;
+</code></pre>
+<h4>Counter Reference</h4>
+<table>
+<thead>
+<tr>
+<th>Counter</th>
+<th>Meaning</th>
+<th>Common cause</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CRC</td>
+<td>Received frame checksum failed</td>
+<td>Bad cable, dirty fiber, bad optic, duplex mismatch</td>
+</tr>
+<tr>
+<td>input errors</td>
+<td>Aggregate receive-side errors</td>
+<td>Check sub-counters before concluding</td>
+</tr>
+<tr>
+<td>runts</td>
+<td>Frames below minimum Ethernet size</td>
+<td>Duplex mismatch, collision domain, faulty NIC</td>
+</tr>
+<tr>
+<td>giants</td>
+<td>Frames larger than expected MTU</td>
+<td>MTU mismatch or jumbo-frame boundary</td>
+</tr>
+<tr>
+<td>input drops</td>
+<td>Device could not accept inbound packets</td>
+<td>Burst, oversubscription, CPU path, queue pressure</td>
+</tr>
+<tr>
+<td>output drops</td>
+<td>Egress queue discarded packets</td>
+<td>Congestion, QoS policy, undersized uplink</td>
+</tr>
+<tr>
+<td>resets</td>
+<td>Interface hardware reset</td>
+<td>Flapping, keepalive, driver, optic, power</td>
+</tr>
+<tr>
+<td>collisions</td>
+<td>Ethernet collision counter</td>
+<td>Half duplex or negotiation mismatch</td>
+</tr>
+</tbody>
+</table>
+<h4>Diagnosis Flow</h4>
+<h5>CRCs Or Input Errors</h5>
+<ol>
+<li>Confirm counters are incrementing, not just historical.</li>
+<li>Check both ends of the link. Receive-side errors usually point to the signal
+arriving on that side, not necessarily the port reporting the error.</li>
+<li>Replace patch cable or clean/replace fiber and optics.</li>
+<li>Confirm speed/duplex settings match on both sides.</li>
+<li>Check logs for flap events around the same timestamp.</li>
+</ol>
+<h5>Drops</h5>
+<ol>
+<li>Separate input drops from output drops.</li>
+<li>Compare interface rate against capacity.</li>
+<li>Check QoS policy, queue counters, and whether the link is an oversubscribed
+uplink.</li>
+<li>Treat queue tuning as secondary. First prove whether the link is congested.</li>
+</ol>
+<h5>Duplex And Speed</h5>
+<p>Prefer auto-negotiation on modern Ethernet links when both sides support it. If
+one side must be fixed, configure both sides explicitly and document why. Never
+mix fixed speed/duplex on one side with auto on the other.</p>
+<pre><code class="language-text">show interfaces &lt;interface&gt; | include duplex|speed
+</code></pre>
+<h4>Safe Parser Example</h4>
+<p>Slice each interface block from one header to the next. Do not use an arbitrary
+character window; large interface blocks can cause counters to be missed or
+assigned to the wrong port.</p>
+<pre><code class="language-python">import re
+from typing import Any
+
+HEADER_RE = re.compile(
+    r&quot;^(?P&lt;name&gt;\S+) is (?P&lt;status&gt;(?:administratively )?down|up), &quot;
+    r&quot;line protocol is (?P&lt;protocol&gt;up|down)&quot;,
+    re.I | re.M,
+)
+ERROR_RE = re.compile(r&quot;(?P&lt;input&gt;\d+) input errors, (?P&lt;crc&gt;\d+) CRC&quot;, re.I)
+DROP_RE = re.compile(r&quot;(?P&lt;output&gt;\d+) output errors&quot;, re.I)
+DUPLEX_RE = re.compile(r&quot;(?P&lt;duplex&gt;Full|Half|Auto)-duplex,\s+(?P&lt;speed&gt;[^,]+)&quot;, re.I)
+
+def parse_show_interfaces(raw: str) -&gt; list[dict[str, Any]]:
+    headers = list(HEADER_RE.finditer(raw))
+    interfaces = []
+    for index, header in enumerate(headers):
+        end = headers[index + 1].start() if index + 1 &lt; len(headers) else len(raw)
+        block = raw[header.start():end]
+        errors = ERROR_RE.search(block)
+        drops = DROP_RE.search(block)
+        duplex = DUPLEX_RE.search(block)
+        interfaces.append({
+            &quot;name&quot;: header.group(&quot;name&quot;),
+            &quot;status&quot;: header.group(&quot;status&quot;),
+            &quot;protocol&quot;: header.group(&quot;protocol&quot;),
+            &quot;duplex&quot;: duplex.group(&quot;duplex&quot;) if duplex else &quot;unknown&quot;,
+            &quot;speed&quot;: duplex.group(&quot;speed&quot;).strip() if duplex else &quot;unknown&quot;,
+            &quot;input_errors&quot;: int(errors.group(&quot;input&quot;)) if errors else 0,
+            &quot;crc_errors&quot;: int(errors.group(&quot;crc&quot;)) if errors else 0,
+            &quot;output_errors&quot;: int(drops.group(&quot;output&quot;)) if drops else 0,
+        })
+    return interfaces
+</code></pre>
+<h4>Examples</h4>
+<h5>CRCs On One Switch Port</h5>
+<ol>
+<li>Capture counters on the local port.</li>
+<li>Capture counters on the connected remote port.</li>
+<li>Replace the cable or optic before changing routing or firewall rules.</li>
+<li>Clear counters only after recording the baseline.</li>
+<li>Recheck after a fixed interval.</li>
+</ol>
+<h5>Internet Slow But LAN Is Fine</h5>
+<ol>
+<li>Check WAN interface drops/errors.</li>
+<li>Check LAN uplink utilization and output drops.</li>
+<li>Check gateway CPU if the WAN link is clean but throughput is still low.</li>
+<li>Compare wired and wireless tests before blaming upstream service.</li>
+</ol>
+<h4>Anti-Patterns</h4>
+<ul>
+<li>Clearing counters before saving a baseline.</li>
+<li>Looking at only one side of a link.</li>
+<li>Assuming all historical CRCs are active problems without a time window.</li>
+<li>Mixing auto-negotiation on one side with fixed speed/duplex on the other.</li>
+<li>Treating output drops as a cable problem before checking congestion.</li>
+</ul>
+<h4>See Also</h4>
+<ul>
+<li>Agent: <code>network-troubleshooter</code></li>
+<li>Skill: <code>network-config-validation</code></li>
+<li>Skill: <code>homelab-network-setup</code></li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

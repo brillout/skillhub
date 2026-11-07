@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nature-downloader · SkillHub</title>
+    <meta name="description" content="Use it when: you need to batch-download papers you have lawful access to, Chinese ones through CNKI. It does: routes each paper to a publisher API, open access, CNKI or your institution&#039;s logged-in Chrome session, and verifies each file. You get: PDFs or native full text, optional supporting information, and a manifest of route, format, checksum and failures. Needs: Node.js 22+ and Python 3; institutional routes need your logged-in Chrome, the web-access skill and your library URL. Keeps: your cookies and passwords untouched, and hands secret-bearing checks such as OTP or QR login to you." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=yuan1z0825%2Fnature-skills">yuan1z0825/nature-skills</a></p>
+      <h1>nature-downloader</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you need to batch-download papers you have lawful access to, Chinese ones through CNKI</dd></div><div><dt>It does</dt><dd>routes each paper to a publisher API, open access, CNKI or your institution&#39;s logged-in Chrome session, and verifies each file</dd></div><div><dt>You get</dt><dd>PDFs or native full text, optional supporting information, and a manifest of route, format, checksum and failures</dd></div><div><dt>Needs</dt><dd>Node.js 22+ and Python 3; institutional routes need your logged-in Chrome, the web-access skill and your library URL</dd></div><div><dt>Keeps</dt><dd>your cookies and passwords untouched, and hands secret-bearing checks such as OTP or QR login to you</dd></div></dl></section>
+      
+      <p class="note">Uses only lawful open access, publisher APIs and your own authorized institutional access; needs Node.js 22+ and Python 3. CNKI, institutional and SI routes also need your logged-in Chrome with remote debugging, the separate web-access skill&#39;s CDP proxy and your library resource URL. It tries slider and checkbox verification challenges automatically before handing off to you.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A download orchestrator that picks a lawful route per paper. Chinese literature always goes through CNKI. Elsevier, Springer Nature and IEEE articles try a publisher API with your configured key first, then legitimate open access (PMC, Unpaywall, arXiv); other English articles check open access first, then use Web Access, your institution&#39;s authorized access in your own browser. After an API and open access both fail it asks before switching to Web Access. It drives your already-authenticated Chrome through remote debugging, via the separate web-access skill&#39;s proxy, and never exports cookies, passwords or session files, nor bypasses paywalls, DRM or two-factor. It asks once whether you also want Supporting Information, confirms the paper list, and writes a manifest recording route, access mode, format, checksum and typed failure states. A batch script, which can also collect papers by Web of Science topic, keeps large pages and bytes out of the agent context. It tries slider puzzles and Turnstile or reCAPTCHA checkboxes, at most twice per tab, then hands off to you. API keys are stored locally with owner-only permissions and kept out of logs and manifests.</p>
+      <p class="muted">Summarizes <a href="https://github.com/yuan1z0825/nature-skills/tree/d774add241c65e89ed17a4da573b472b0972fd42/skills/nature-downloader">the skill at d774add</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/yuan1z0825/nature-skills --skill nature-downloader</code><button type="button" class="copy" data-copy="npx skills add https://github.com/yuan1z0825/nature-skills --skill nature-downloader">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/yuan1z0825/nature-skills/nature-downloader">skills.sh page</a> · <a href="https://github.com/yuan1z0825/nature-skills/tree/HEAD/skills/nature-downloader">Source on GitHub</a> · <a href="/skillhub/?repo=yuan1z0825%2Fnature-skills">All skills from yuan1z0825/nature-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>12,700 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>52,568 <span class="muted">yuan1z0825/nature-skills</span></dd></div><div><dt>First seen</dt><dd>Jun 30, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">440</div>
+      <div class="stat-delta">-54% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 955; week to Sep 26: 931; week to Oct 3: 749; week to Oct 10: 516; week to Oct 17: 659; week to Oct 24: 655; week to Oct 31: 599; week to Nov 7: 440. Use the left and right arrow keys to read each week."
+        data-values="955,931,749,516,659,655,599,440" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,7.1 71.1,15.5 103.7,26.2 136.3,19.6 168.9,19.8 201.4,22.4 234.0,29.7" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="29.7" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>955</td></tr><tr><td>Sep 26</td><td>931</td></tr><tr><td>Oct 3</td><td>749</td></tr><tr><td>Oct 10</td><td>516</td></tr><tr><td>Oct 17</td><td>659</td></tr><tr><td>Oct 24</td><td>655</td></tr><tr><td>Oct 31</td><td>599</td></tr><tr><td>Nov 7</td><td>440</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:science" data-facet="category" title="Research reproduction, financial data, charts and diagrams." href="/skillhub/?tag=category%3Ascience">category:science</a><a class="tag" data-tag="category:browser" data-facet="category" title="Drive browsers, scrape pages and search the web." href="/skillhub/?tag=category%3Abrowser">category:browser</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Research reproduction, financial data, charts and diagrams.</p><p class="tag-meaning">Drive browsers, scrape pages and search the web.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/skillhub/?tag=type%3Atool">type:tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a><a class="tag" data-tag="needs:browser" data-facet="needs" title="Drives a real Chromium or Chrome browser." href="/skillhub/?tag=needs%3Abrowser">needs:browser</a><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/skillhub/?tag=needs%3Aaccount">needs:account</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">Drives a real Chromium or Chrome browser.</p><p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="research" data-facet="topic" href="/skillhub/?tag=research">research</a><a class="tag" data-tag="browser-automation" data-facet="topic" href="/skillhub/?tag=browser-automation">browser-automation</a><a class="tag" data-tag="pdf" data-facet="topic" href="/skillhub/?tag=pdf">pdf</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:cnki" data-facet="stack" href="/skillhub/?tag=stack%3Acnki">stack:cnki</a><a class="tag" data-tag="stack:web-of-science" data-facet="stack" href="/skillhub/?tag=stack%3Aweb-of-science">stack:web-of-science</a><a class="tag" data-tag="stack:elsevier" data-facet="stack" href="/skillhub/?tag=stack%3Aelsevier">stack:elsevier</a><a class="tag" data-tag="stack:springer-nature" data-facet="stack" href="/skillhub/?tag=stack%3Aspringer-nature">stack:springer-nature</a><a class="tag" data-tag="stack:ieee" data-facet="stack" href="/skillhub/?tag=stack%3Aieee">stack:ieee</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Flags</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="flag:dual-use" data-facet="flag" title="Legitimate uses exist, but the same capability can evade bot detection or investigate other people. Read the SKILL.md before installing." href="/skillhub/?tag=flag%3Adual-use">flag:dual-use</a></div>
+          <p class="tag-meaning">Legitimate uses exist, but the same capability can evade bot detection or investigate other people. Read the SKILL.md before installing.</p>
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/yuan1z0825/nature-skills/blob/d774add241c65e89ed17a4da573b472b0972fd42/skills/nature-downloader/SKILL.md">yuan1z0825/nature-skills at d774add</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: nature-downloader
+description: Use when a user needs lawful academic full text, CNKI institutional access, English OA retrieval, publisher API access, institutional browser fallback, or supporting information downloads.
+metadata:
+  compatibility: Requires Node.js 22+ and Python 3. CNKI, Web Access, and SI routes additionally require the user&#39;s authenticated Chrome session and remote debugging. Uses only lawful OA, publisher API, and user-authorized institutional access.</code></pre></details>
+        <div class="markdown"><h3>Nature Literature Downloader</h3>
+<p>This skill routes literature through lawful open-access, publisher-API, CNKI institutional, and browser-based institutional providers. <code>scripts/batch_download.mjs</code> is the orchestration entry point; school configuration, publisher credentials, metadata/OA resolution, provider downloads, content validation, and manifests are separate modules.</p>
+<p>Verified routes are examples, not defaults. Every institution should start from the user's actual library resource URL, because resource portals, CAS callbacks, EZproxy, WebVPN, IP-authenticated database pages, and database detail pages reveal the live authorization path more reliably than a school name.</p>
+<blockquote>
+<p><strong>SI confirmation gate — do this first.</strong> Before downloading any PDF, CAJ, HTML, XML, archive, or attachment, ask whether the user wants Supporting Information. An explicit request for SI counts as yes; an explicit request for正文 only counts as no. Otherwise ask once for the whole batch. Run the downloader with exactly one of <code>--si</code> or <code>--no-si</code>. Without either flag the script returns <code>si_confirmation_required</code> and does not create the output directory.</p>
+</blockquote>
+<blockquote>
+<p><strong>Main workflow.</strong> Normalize the DOI/title and identify language and publisher before routing. Chinese literature always uses CNKI. For English Elsevier, Springer Nature, and IEEE articles with usable provider credentials, try the publisher API first and do not require an OA determination after a successful API download. If that API attempt fails, automatically check legitimate OA sources. Other English publishers check OA first, then use the institutional Web Access route when OA is unavailable.</p>
+</blockquote>
+<pre><code class="language-text">规范化 DOI/题名并识别语言、出版商
+├─ 中文文献：直接走 CNKI
+└─ 英文文献
+   ├─ Elsevier / Springer Nature / IEEE，且已配置有效 Key
+   │  ├─ 优先通过出版商 API 下载
+   │  ├─ API 下载成功：结束，不强制判断 OA
+   │  └─ API 下载失败：检查文章级 OA，再走 PMC / Unpaywall / 合法仓储
+   └─ 其他出版商
+      ├─ 检查文章级 OA
+      └─ OA 不可用：走 Web Access 机构授权
+</code></pre>
+<blockquote>
+<p><strong>Chinese literature is CNKI-only.</strong> A Chinese title, <code>zh</code> metadata language, explicit CNKI source URL, or <code>--route cnki</code> must use CNKI even if another OA copy appears to exist. Reuse the user's current Chrome library/CNKI login state and prefer configured <code>discovery.cnki_url</code>. Never export cookies or collect the institutional password.</p>
+</blockquote>
+<blockquote>
+<p><strong>Publisher API fallback.</strong> A valid API key does not guarantee full-text entitlement. When an Elsevier, Springer Nature, or IEEE API attempt returns no entitlement or no usable full text, automatically try legitimate OA sources first. Return <code>api_fallback_confirmation_required</code> and ask once whether to use Web Access only after both the publisher API and OA routes fail. Do not switch to institutional Web Access automatically.</p>
+</blockquote>
+<blockquote>
+<p><strong>Browser-state principle.</strong> Authorized downloads depend on the exact browser profile where the user is logged in. If a proxy, CDP session, or browser automation tool opens a fresh profile or a different browser with no login state, do not treat the failure as missing library permission. Switch to a control path that reuses the user's active browser session, or ask the user to authenticate in the controlled browser instance.</p>
+</blockquote>
+<blockquote>
+<p><strong>Format principle.</strong> PDF, HTML full text, and database-native formats such as CAJ are different deliverables. If the user asks for PDF only, require a real PDF link or <code>%PDF</code> response and report <code>no_authorized_pdf_found</code> / <code>pdf_fetch_failed</code> when none exists. Do not save CAJ, HTML, or a login page as if it were a PDF.</p>
+</blockquote>
+<h4>Download Intake and First-Run Configuration</h4>
+<p>For every download request, first establish the paper list and ask:</p>
+<pre><code class="language-text">是否同时下载这些文献的 Supporting Information（SI，补充材料）？
+</code></pre>
+<p>Do metadata lookup before this question only when needed to identify the requested papers. Do not download files until the answer is known. Configure a library only when the selected route is CNKI or Web Access. Configure a publisher API only when the selected English article belongs to Elsevier, Springer Nature, or IEEE; an OA determination is not required before trying a configured provider API.</p>
+<h5>Paid Library Resource Configuration</h5>
+<p>Ask for the library resource URL the user actually uses:</p>
+<pre><code class="language-text">请发你平时进入图书馆电子资源/数据库的平台链接。
+可以是资源门户、数据库列表、Web of Science 入口、某个数据库详情页，
+或跳转到统一身份认证的登录链接。
+</code></pre>
+<p>Then infer the authorization route from the URL before saving config:</p>
+<pre><code class="language-bash">python3 scripts/configure_school.py infer &quot;https://example.edu/library/resources&quot;
+python3 scripts/configure_school.py url &quot;https://example.edu/library/resources&quot;
+python3 scripts/configure_school.py show
+python3 scripts/configure_school.py health --force
+</code></pre>
+<p>The distributed skill contains no school presets. If the user cannot provide a resource URL, ask them to locate their institution's library/database entry instead of guessing a school-specific domain.</p>
+<p>The default config path is:</p>
+<pre><code class="language-text">~/.config/lit-dl/school.json
+</code></pre>
+<p>For tests or isolated profiles, set:</p>
+<pre><code class="language-bash">LIT_DL_CONFIG_DIR=/path/to/configdir
+</code></pre>
+<p>The downloader reads this config automatically. If <code>discovery.web_of_science_url</code> is present, <code>scripts/batch_download.mjs</code> uses it as the Web of Science entry; otherwise it falls back to <code>https://www.webofscience.com/wos/woscc/basic-search</code>.</p>
+<p>For Chinese literature, the downloader also reads <code>discovery.cnki_url</code> when present. If absent, <code>scripts/batch_download.mjs --title &quot;&lt;中文题名&gt;&quot;</code> falls back to <code>https://kns.cnki.net/kns8s/defaultresult/index</code>.</p>
+<h5>API-First and Open-Access Fallback</h5>
+<p>For an English article, identify its publisher before deciding when to resolve article-level OA:</p>
+<ol>
+<li>
+<p>Collect a DOI, PMID, exact title, article URL, or a definite paper list, then normalize its metadata and publisher.</p>
+</li>
+<li>
+<p>If it belongs to Elsevier, Springer Nature, or IEEE and usable provider credentials are configured, try that publisher API first. On success, record <code>accessMode: publisher_api</code> and <code>oa_status: not_checked_api_first</code>; do not run OA resolution only to label the article.</p>
+</li>
+<li>
+<p>If the publisher API fails, automatically search legitimate OA sources such as PMC, Unpaywall, publisher OA pages, arXiv, and other lawful repositories or clearly open PDF URLs. Preserve the failed API attempt in the manifest.</p>
+</li>
+<li>
+<p>For all other English publishers, search those legitimate OA sources before Web Access.</p>
+</li>
+<li>
+<p>For an exact title or an explicit OA-only request, prefer:</p>
+<pre><code class="language-bash">node scripts/batch_download.mjs --title &quot;&lt;exact title&gt;&quot; --open-access --no-si --out &quot;&lt;project&gt;&quot;
+</code></pre>
+<p>Use <code>--pdf-url</code> when the user supplies a known legitimate OA PDF URL.</p>
+</li>
+<li>
+<p>Verify the downloaded file and record the source. Mark a successful PDF as <code>open_access_downloaded</code>.</p>
+</li>
+<li>
+<p>If no lawful OA full text is found, mark <code>oa_not_found</code>. For a supported publisher whose API already failed, request confirmation before Web Access. For another publisher, continue to Web Access. If <code>--route open_access</code> was explicitly requested, stop after the OA result.</p>
+</li>
+</ol>
+<h5>Publisher API Credentials</h5>
+<p>Configure credentials lazily, only when the route first needs them:</p>
+<pre><code class="language-bash">python3 scripts/configure_credentials.py set elsevier
+python3 scripts/configure_credentials.py set springer_nature --service openaccess
+python3 scripts/configure_credentials.py set springer_nature --service fulltext
+python3 scripts/configure_credentials.py set springer_nature --service metadata
+python3 scripts/configure_credentials.py set ieee --fulltext-endpoint 'https://issued-endpoint.example/articles/{doi}'
+python3 scripts/configure_credentials.py set elsevier --stdin
+python3 scripts/configure_credentials.py show
+python3 scripts/configure_credentials.py validate &lt;provider&gt;
+python3 scripts/configure_credentials.py validate springer_nature --service openaccess
+python3 scripts/configure_credentials.py validate springer_nature --service fulltext
+python3 scripts/configure_credentials.py validate springer_nature --service metadata
+python3 scripts/configure_credentials.py delete &lt;provider&gt;
+python3 scripts/configure_credentials.py contact-email researcher@example.org
+</code></pre>
+<p>Give the user the official registration link: Elsevier <code>https://dev.elsevier.com/</code>, Springer Nature <code>https://dev.springernature.com/docs/quick-start/api-access/</code>, or IEEE <code>https://developer.ieee.org/member/register</code>.</p>
+<p>Springer credentials are scoped by service: <code>metadata_api_key</code> validates against <code>/meta/v2/json</code> and cannot enable a download; <code>openaccess_api_key</code> uses <code>/openaccess/jats</code>; <code>fulltext_api_key</code> uses <code>/xmldata/jats</code> under a Full Text agreement. Configure only the services the user has activated. A key may be reused explicitly for multiple services if the account grants each service; do not assume either shared or distinct keys. For Full Text, enter the complete issued <code>KEY/METRIC</code> value in the hidden prompt or via <code>--stdin</code> when required by the account. Setting one Springer service preserves the others. The legacy <code>api_key</code> (including <code>set springer_nature</code> without <code>--service</code>) remains a Full Text credential for compatibility, never an inferred Meta or OA credential.</p>
+<p>Springer downloads try the configured Full Text service first, then the configured OA service on failure. OA-only credentials go directly to the OA service. Meta-only credentials do not qualify for API-first downloading. Both full-text services retain content validation and secret-free source URLs. The existing general OA and confirmed Web Access fallbacks follow if these services fail. Validation defaults to the Full Text service; <code>--service metadata</code> and <code>--service openaccess</code> probe only the selected service and credential. Validation checks an HTTP response, leaving article entitlement unverified. Meta validation cannot prove OA or Full Text access, and even a successful full-text service probe cannot guarantee a particular article. Official service references: <a href="https://dev.springernature.com/docs/api-endpoints/meta-api/">Meta</a>, <a href="https://dev.springernature.com/docs/api-endpoints/open-access/">OA</a>, <a href="https://dev.springernature.com/docs/api-endpoints/fulltext-api/">Full Text</a>.</p>
+<p>Do not proactively ask the user to paste an API key into chat. If the user voluntarily sends a publisher API key, treat that as authorization to save that exact key: do not reject it, ask them to regenerate it, or repeat it back. Pass it to <code>configure_credentials.py set &lt;provider&gt; --stdin</code>, keep it out of command-line arguments, logs, replies, and manifests, then report only the masked confirmation and validation status. The local hidden prompt remains the preferred path when the key has not already been provided. IEEE Metadata API access is not paid full-text access; require the issued Full-Text Access endpoint/template before treating IEEE as downloadable through the API. Secrets are stored in <code>~/.config/lit-dl/credentials.json</code> with mode <code>0600</code>.</p>
+<h4>Resource URL Triage</h4>
+<p>Classify the user-provided URL before choosing an access path:</p>
+<pre><code class="language-text">cas.* / /authserver/login        CAS / SSO login page; inspect service= callback, then return to the service portal
+idp/shibboleth / carsi           CARSI / Shibboleth institutional route
+ezproxy / libproxy               EZproxy remote-access proxy
+webvpn / vpn                     WebVPN route
+metaersp / metaauth / uas        Library resource aggregation portal
+webofscience / sciencedirect     Database or publisher entry; check whether it was reached through a portal
+</code></pre>
+<p>If the URL is a login page with a <code>service=</code> parameter, treat the callback host as the resource service and do not make the login page the whole workflow. For example, <code>https://login.university.example/authserver/login?service=https://resources.university.example/callback</code> means the identity service returns to the user's resource portal after authentication.</p>
+<h4>Institution-Specific Domains</h4>
+<p>Confirm against what actually appears in the user's address bar; correct these for each institution instead of assuming a preset is complete.</p>
+<pre><code class="language-text">Library home / aggregation:  library.example.edu, resources.example.edu
+Discovery/database entry:    webofscience.com, clarivate.com, cnki.net, sciencedirect.com, provider.example.com
+Unified identity / SSO:      sso.example.edu, cas.example.edu, idp.example.edu
+Federation / WAYF:           ds.carsi.edu.cn, wayf.example.org, shibboleth/openathens hosts
+Proxy / WebVPN:              ezproxy.example.edu, webvpn.example.edu
+</code></pre>
+<p>Treat configured institutional login, federation, proxy, and database-login hosts as sign-in stages. Do not treat reaching them as a final failure.</p>
+<h4>Boundaries</h4>
+<p>Use only the user's legitimate institutional access. Do not bypass paywalls, DRM, or two-factor authentication.</p>
+<p><strong>Verification-first rule:</strong> When a visible slider, checkbox, robot check, or simple verification control appears in the user's authenticated Chrome session, attempt it in the browser before asking the user to intervene. Keep the attempt bounded (at most two attempts on one tab), verify that the challenge disappeared, and continue from that same tab when successful.</p>
+<ul>
+<li>Slider/drag challenges (including CNKI puzzle sliders): estimate the visible travel distance and simulate a gradual drag.</li>
+<li>ScienceDirect robot checks, managed Turnstile, and reCAPTCHA checkbox stages: try the visible checkbox once.</li>
+<li>Simple <code>Continue</code>, <code>Verify</code>, or equivalent visible controls: click once, then re-check the page state.</li>
+</ul>
+<p><strong>User handoff:</strong> Ask the user only after the bounded attempt fails, or immediately when the page requires secret or identity-bearing input such as an image-selection answer, QR approval, SMS/OTP, passkey, hardware key, or two-factor authentication. Keep the challenged tab open and never ask the user to paste credentials or codes into chat.</p>
+<p>Avoid unbounded or indiscriminate downloading. Process only the definite paper list confirmed by the user, apply provider-friendly pacing, and leave a clear audit trail of what was downloaded, from where, and whether supporting information was found.</p>
+<p>Do not ask the user to paste institutional passwords, database passwords, OTP codes, recovery codes, or session tokens into chat or terminal. If the user offers one of those identity-bearing secrets, decline and use the handoff-login workflow instead. Publisher API keys follow the separate save-on-receipt rule above.</p>
+<p>Exception for saved institutional login pages: if the user explicitly says that the browser has already filled credentials and authorizes clicking the visible login/confirm button, the agent may click that button once on the expected institutional SSO / CAS / CARSI / Shibboleth page without reading, copying, or typing any credential. This exception does not apply to CAPTCHA, QR login, SMS/OTP, publisher bot checks, consent/security warnings, or any page outside the expected institutional login flow.</p>
+<p>Do not inspect or export cookies, passwords, local storage, browser profiles, or session files. Use the browser's already-authenticated page context only.</p>
+<h4>Preconditions</h4>
+<p>Before attempting downloads, confirm the conditions that apply to the selected access branch.</p>
+<p>For the OA-only branch, confirm the target paper identifier/list, output folder, Node.js 22+, and Python 3 when PDF verification needs it. Do not require a library configuration or institutional browser login.</p>
+<p>For the paid-library branch, confirm these conditions:</p>
+<ol>
+<li>The browser that holds the user's library/database login state is open on the user's machine.</li>
+<li>The school configuration exists and is valid.
+<ul>
+<li>Run <code>python3 scripts/configure_school.py show</code>.</li>
+<li>If missing, run <code>python3 scripts/configure_school.py preset &quot;&lt;school name&gt;&quot;</code> or guide the user through <code>src/wizard.py</code>.</li>
+</ul>
+</li>
+<li>The user has personally logged in to their institution/library route in that same browser, and can reach the library aggregation service, target database, or discovery entry.</li>
+<li>The browser-control path can reuse that same logged-in browser profile.
+<ul>
+<li>For Chrome CDP, ask the user to open <code>chrome://inspect/#remote-debugging</code> and enable remote debugging for the current browser instance.</li>
+<li>If CDP attaches to a stale browser, a temporary profile, or a different browser, use a browser-control channel that can reuse the user's active session instead of launching a new profile.</li>
+</ul>
+</li>
+<li>The environment can run Node.js 22+.
+<ul>
+<li>Try <code>node --version</code>.</li>
+<li>If <code>node</code> is not on PATH in Codex Desktop, try <code>%LOCALAPPDATA%\OpenAI\Codex\bin\node.exe</code>.</li>
+</ul>
+</li>
+<li>The environment can run Python 3 for configuration and PDF text verification.
+<ul>
+<li>Try <code>python3 --version</code>.</li>
+<li>Install Python helpers with <code>pip install -r requirements.txt</code> when needed.</li>
+</ul>
+</li>
+<li>The web-access CDP proxy is available or can be started.
+<ul>
+<li>Typical Claude Code path: <code>%USERPROFILE%\.claude\skills\web-access-main\scripts\check-deps.mjs</code>.</li>
+<li>Typical shared agent path: <code>%USERPROFILE%\.agents\skills\web-access-main\scripts\check-deps.mjs</code>.</li>
+<li>In Codex-only setups also check <code>%USERPROFILE%\.codex\skills\web-access-main\scripts\check-deps.mjs</code>.</li>
+</ul>
+</li>
+<li>The user has approved the target output folder.</li>
+</ol>
+<p>If Claude Code says this skill is not installed, install or copy it to:</p>
+<pre><code class="language-powershell">$env:USERPROFILE\.claude\skills\nature-downloader
+</code></pre>
+<p>Codex and other agent setups may instead use <code>.codex\skills</code> or <code>.agents\skills</code>; treat the three locations as install targets, not as different skill versions.</p>
+<h4>Batch Scope</h4>
+<p>Definite DOI/title/PMID lists are supported without a fixed per-batch paper-count recommendation.</p>
+<p>Operational safeguards:</p>
+<ul>
+<li>pace requests appropriately for each provider and maintain the manifest throughout the batch</li>
+<li>attempt visible verification controls first; stop after at most two failed attempts, on institutional login expiry, or when an unusual/security-sensitive prompt appears</li>
+</ul>
+<p>Do not turn a broad keyword search into unlimited automatic downloading. Do not download whole journal issues, volumes, or large result sets.</p>
+<h4>Status Categories</h4>
+<p>Classify every paper into one of these statuses, and keep the status in the manifest:</p>
+<pre><code class="language-text">downloaded
+downloaded_with_si
+open_access_downloaded
+full_text_html_available
+available_not_downloaded
+native_fulltext_downloaded
+si_confirmation_required
+credentials_missing
+credentials_invalid
+api_not_entitled
+api_fulltext_unavailable
+api_fallback_confirmation_required
+oa_not_found
+oa_resolution_inconclusive
+metadata_ambiguous
+carsi_waiting_user
+carsi_resolved_retry_needed
+publisher_verification_waiting_user
+sciencedirect_robot_check
+retry_after_user_verification
+verification_auto_passed
+verification_auto_failed
+do_not_auto_retry
+url_needs_repair
+library_no_permission
+no_full_text_link
+publisher_blocked_waiting_user
+no_authorized_pdf_found
+failed_after_retry
+</code></pre>
+<p>Use <code>verification_auto_passed</code> when an automatic CAPTCHA/slider/robot check was successfully solved by the skill, and the download then proceeded normally.</p>
+<p>Use <code>verification_auto_failed</code> when auto-verification was attempted but could not pass the challenge. This is a user-handoff status, not a final failure.</p>
+<p>Use <code>carsi_waiting_user</code> only when the browser is visibly at an institutional SSO / CAS / CARSI-Shibboleth / OpenAthens / database authentication page. Do not treat this as a final failure.</p>
+<p>Use <code>publisher_verification_waiting_user</code> or <code>sciencedirect_robot_check</code> when a publisher page shows a verification challenge but no automatic interaction was possible. When a bounded automatic attempt was made and failed, use <code>verification_auto_failed</code> instead. None of these is a final download failure.</p>
+<p>Use <code>open_access_downloaded</code> when a legitimate open-access route such as PMC, the publisher's OA PDF, arXiv, or another lawful open PDF source provides the downloaded PDF without institutional authorization.</p>
+<p>For a successful API-first download, record <code>oa_status: not_checked_api_first</code>; this means OA resolution was intentionally skipped, not that the article is non-OA. Use <code>api_fallback_confirmation_required</code> only after a supported publisher API attempt and its automatic OA fallback both fail.</p>
+<p>Use <code>full_text_html_available</code> when the library/full-text resolver grants access to a readable HTML full text but no valid PDF link or <code>%PDF</code> response is available. This is a successful full-text access result, not a PDF download. Save the HTML/text if the user asked for the article, and explicitly tell the user that the PDF was not available through the current authorized route.</p>
+<p>Use <code>library_no_permission</code> when the library portal, SFX/OpenURL resolver, database, or publisher page clearly says the user's institution has no full-text entitlement for the paper. Tell the user plainly that the current library resources do not have permission for this article. Do not retry direct publisher access as if it were a temporary network problem.</p>
+<h4>Start Browser Control</h4>
+<p>Use the web-access CDP proxy when it can attach to the same logged-in browser instance the user is using. If the task depends on existing login state and CDP opens a blank/new profile, prefer a browser-control channel that reuses the user's active browser session.</p>
+<p>On Windows PowerShell:</p>
+<pre><code class="language-powershell">$node = &quot;node&quot;
+if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
+  $node = &quot;$env:LOCALAPPDATA\OpenAI\Codex\bin\node.exe&quot;
+}
+$checkDepsCandidates = @(
+  &quot;$env:USERPROFILE\.claude\skills\web-access-main\scripts\check-deps.mjs&quot;,
+  &quot;$env:USERPROFILE\.agents\skills\web-access-main\scripts\check-deps.mjs&quot;,
+  &quot;$env:USERPROFILE\.codex\skills\web-access-main\scripts\check-deps.mjs&quot;
+)
+$checkDeps = $checkDepsCandidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+if (-not $checkDeps) { throw &quot;web-access-main/scripts/check-deps.mjs not found&quot; }
+&amp; $node $checkDeps
+</code></pre>
+<p>Then test:</p>
+<pre><code class="language-powershell">Invoke-WebRequest -UseBasicParsing -Uri &quot;http://127.0.0.1:3456/targets&quot; -TimeoutSec 10
+</code></pre>
+<p>If this hangs or fails:</p>
+<ul>
+<li>Ask the user to confirm the remote debugging checkbox.</li>
+<li>Check <code>%TEMP%\cdp-proxy.log</code>.</li>
+<li>If targets appear but the database/library page is unauthenticated, suspect a stale CDP endpoint, wrong browser, or fresh browser profile before suspecting missing library permission.</li>
+<li>Do not attempt to read Chrome session files.</li>
+</ul>
+<h4>Fast Batch Path (default for 2+ papers — fast &amp; token-efficient)</h4>
+<p>For anything beyond a single paper, run <code>scripts/batch_download.mjs</code> instead of driving the browser step-by-step. OA and publisher APIs run without CDP; CNKI, Web Access, and requested SI lazily attach to the authenticated browser. Large DOMs and file bytes remain inside the scripts.</p>
+<p>The script reads <code>~/.config/lit-dl/school.json</code> automatically. When the config contains <code>discovery.web_of_science_url</code>, that URL is used as the Web of Science entry; otherwise the script falls back to its compiled default Web of Science URL.</p>
+<pre><code class="language-bash"># by topic (collects N records from Web of Science Core Collection):
+node scripts/batch_download.mjs --topic &quot;rice blast resistance gene&quot; --count 10 --no-si --out &quot;&lt;project&gt;&quot;
+# by explicit DOIs:
+node scripts/batch_download.mjs --dois &quot;10.1007/s00122-021-03957-1,10.1111/pbi.14066&quot; --no-si --out &quot;&lt;project&gt;&quot;
+# by exact open-access title (arXiv fallback, useful for DOI-less papers):
+node scripts/batch_download.mjs --title &quot;Attention Is All You Need&quot; --open-access --no-si --out &quot;&lt;project&gt;&quot;
+# by Chinese exact title (default CNKI route):
+node scripts/batch_download.mjs --title &quot;乡村振兴背景下数字治理研究&quot; --no-si --out &quot;&lt;project&gt;&quot;
+# by Chinese exact title, PDF only:
+node scripts/batch_download.mjs --title &quot;乡村振兴背景下数字治理研究&quot; --cnki-format pdf --no-si --out &quot;&lt;project&gt;&quot;
+# by Chinese exact title with a library-provided CNKI entry:
+node scripts/batch_download.mjs --title &quot;乡村振兴背景下数字治理研究&quot; --cnki-url &quot;https://kns.cnki.net/kns8s/defaultresult/index&quot; --no-si --out &quot;&lt;project&gt;&quot;
+# by known PDF URL:
+node scripts/batch_download.mjs --pdf-url &quot;https://arxiv.org/pdf/1706.03762&quot; --title &quot;Attention Is All You Need&quot; --no-si --out &quot;&lt;project&gt;&quot;
+# replace --no-si with --si only after the user explicitly requests SI
+</code></pre>
+<p>Output includes <code>{ summary, manifest, results }</code>. The script writes <code>&lt;project&gt;/manifest.json</code> with route, OA evidence, access mode, format, MIME, bytes, SHA-256, SI choice, and typed failures; secret-looking fields are removed recursively. PDFs go under <code>PDFs/</code>, native HTML/XML under <code>FullText/</code>, CAJ under <code>CNKI/</code>, and supplements under <code>SupportingInformation/</code>.</p>
+<p><strong>Token discipline (applies to all paths):</strong> never <code>eval</code> a whole page DOM, search result, or PDF/SI bytes back into the agent context. Keep large data inside Node/<code>scripts/*.mjs</code> and surface only compact status. Reserve interactive <code>/eval</code> + <code>cdp_open_url.mjs</code> for the single-paper route below or for diagnosing one stuck paper after the batch run.</p>
+<h4>Advanced Browser and Delivery Routes</h4>
+<p>Keep this router compact and load the detailed operational references only when their conditions
+apply:</p>
+<ul>
+<li>Load <a href="https://github.com/yuan1z0825/nature-skills/blob/d774add241c65e89ed17a4da573b472b0972fd42/skills/nature-downloader/references/institutional-browser-workflow.md">references/institutional-browser-workflow.md</a>
+when legitimate OA and applicable publisher-API routes are exhausted and the task needs Web of
+Science, an institution-authorized browser session, publisher verification, an authentication
+handoff, or browser-context PDF transfer.</li>
+<li>Load
+<a href="https://github.com/yuan1z0825/nature-skills/blob/d774add241c65e89ed17a4da573b472b0972fd42/skills/nature-downloader/references/delivery-verification-and-failures.md">references/delivery-verification-and-failures.md</a>
+when the user requests Supporting Information, downloaded files need final verification and
+naming, or an access attempt reaches a typed failure or retry state.</li>
+</ul>
+<p>The boundaries, SI confirmation gate, browser-state principle, status semantics, and token
+discipline in this router remain mandatory when either reference is loaded. Do not treat the
+references as permission to bypass access controls or to expose credentials, cookies, or session
+data.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

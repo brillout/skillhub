@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>entry-point-analyzer · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re starting a smart contract audit and need to know which functions can change state and who can call them. It does: detects the language, runs Slither&#039;s entry-points printer on Solidity if installed, then classifies every externally callable, state-changing function. You get: a markdown report counting and listing entry points as public, role-restricted, restricted (review required) or contract-only, each with file and line. Covers: Solidity, Vyper, Solana (Rust), Move on Sui and Aptos, TON (FunC and Tact) and CosmWasm. Leaves out: view, pure and other read-only functions; it maps the surface and doesn&#039;t hunt for vulnerabilities." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=trailofbits%2Fskills">trailofbits/skills</a></p>
+      <h1>entry-point-analyzer</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re starting a smart contract audit and need to know which functions can change state and who can call them</dd></div><div><dt>It does</dt><dd>detects the language, runs Slither&#39;s entry-points printer on Solidity if installed, then classifies every externally callable, state-changing function</dd></div><div><dt>You get</dt><dd>a markdown report counting and listing entry points as public, role-restricted, restricted (review required) or contract-only, each with file and line</dd></div><div><dt>Covers</dt><dd>Solidity, Vyper, Solana (Rust), Move on Sui and Aptos, TON (FunC and Tact) and CosmWasm</dd></div><div><dt>Leaves out</dt><dd>view, pure and other read-only functions; it maps the surface and doesn&#39;t hunt for vulnerabilities</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>From Trail of Bits. The report is a map of the attack surface, not a list of bugs: public functions that change state come first, as the place to start looking. Access is judged from the actual checks, not from names. It verifies what a modifier does, counts a callback with no caller check as public, flags a check against a configured address whose identity isn&#39;t established for review, and records msg.sender != tx.origin as a call-path condition rather than trust. When a role is ambiguous it flags the function for review instead of guessing. It notes access control inherited from parent contracts and every access-related modifier, and watches for initializers, upgrades, pause and fee-setting functions. Move public functions without entry are included because transactions can still reach them. It loads a reference file for each detected language, and without Slither, or when Slither fails, it does the analysis by hand. Files it can&#39;t parse are listed as warnings, and you can limit it to one directory. Vulnerability hunting is left to skills such as audit-context-building.</p>
+      <p class="muted">Summarizes <a href="https://github.com/trailofbits/skills/tree/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/entry-point-analyzer/skills/entry-point-analyzer">the skill at e4dd0bb</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/trailofbits/skills --skill entry-point-analyzer</code><button type="button" class="copy" data-copy="npx skills add https://github.com/trailofbits/skills --skill entry-point-analyzer">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/trailofbits/skills/entry-point-analyzer">skills.sh page</a> · <a href="https://github.com/trailofbits/skills/tree/HEAD/plugins/entry-point-analyzer/skills/entry-point-analyzer">Source on GitHub</a> · <a href="/skillhub/?repo=trailofbits%2Fskills">All skills from trailofbits/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>6,100 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>8,053 <span class="muted">trailofbits/skills</span></dd></div><div><dt>First seen</dt><dd>Jan 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">212</div>
+      <div class="stat-delta">+43% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 148; week to Sep 26: 136; week to Oct 3: 117; week to Oct 10: 116; week to Oct 17: 146; week to Oct 24: 177; week to Oct 31: 189; week to Nov 7: 212. Use the left and right arrow keys to read each week."
+        data-values="148,136,117,116,146,177,189,212" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,19.3 38.6,21.8 71.1,25.7 103.7,25.9 136.3,19.7 168.9,13.3 201.4,10.8 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>148</td></tr><tr><td>Sep 26</td><td>136</td></tr><tr><td>Oct 3</td><td>117</td></tr><tr><td>Oct 10</td><td>116</td></tr><tr><td>Oct 17</td><td>146</td></tr><tr><td>Oct 24</td><td>177</td></tr><tr><td>Oct 31</td><td>189</td></tr><tr><td>Nov 7</td><td>212</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/skillhub/?tag=category%3Asecurity">category:security</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a><a class="tag" data-tag="web3" data-facet="topic" href="/skillhub/?tag=web3">web3</a><a class="tag" data-tag="code-review" data-facet="topic" href="/skillhub/?tag=code-review">code-review</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:solidity" data-facet="stack" href="/skillhub/?tag=stack%3Asolidity">stack:solidity</a><a class="tag" data-tag="stack:vyper" data-facet="stack" href="/skillhub/?tag=stack%3Avyper">stack:vyper</a><a class="tag" data-tag="stack:solana" data-facet="stack" href="/skillhub/?tag=stack%3Asolana">stack:solana</a><a class="tag" data-tag="stack:move" data-facet="stack" href="/skillhub/?tag=stack%3Amove">stack:move</a><a class="tag" data-tag="stack:ton" data-facet="stack" href="/skillhub/?tag=stack%3Aton">stack:ton</a><a class="tag" data-tag="stack:cosmwasm" data-facet="stack" href="/skillhub/?tag=stack%3Acosmwasm">stack:cosmwasm</a><a class="tag" data-tag="stack:slither" data-facet="stack" href="/skillhub/?tag=stack%3Aslither">stack:slither</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/entry-point-analyzer/skills/entry-point-analyzer/SKILL.md">trailofbits/skills at e4dd0bb</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: entry-point-analyzer
+description: Analyzes smart contract codebases to identify state-changing entry points for security auditing. Detects externally callable functions that modify state, categorizes them by access level (public, admin, role-restricted, contract-only), and generates structured audit reports. Excludes view/pure/read-only functions. Use when auditing smart contracts (Solidity, Vyper, Solana/Rust, Move, TON, CosmWasm) or when asked to find entry points, audit flows, external functions, access control patterns, or privileged operations.</code></pre></details>
+        <div class="markdown"><h3>Entry Point Analyzer</h3>
+<p>Systematically identify all <strong>state-changing</strong> entry points in a smart contract codebase to guide security audits.</p>
+<h4>Execution in Codex</h4>
+<p>Use the available file-reading, search, and shell tools. Resolve bundled reference
+links relative to this SKILL.md, not the audited repository. Slither is optional;
+use manual inspection if it is unavailable or fails. Report unreadable source or
+reference files as coverage gaps. Runtime permissions come from the workspace.</p>
+<h4>When to Use</h4>
+<p>Use this skill when:</p>
+<ul>
+<li>Starting a smart contract security audit to map the attack surface</li>
+<li>Asked to find entry points, external functions, or audit flows</li>
+<li>Analyzing access control patterns across a codebase</li>
+<li>Identifying privileged operations and role-restricted functions</li>
+<li>Building an understanding of which functions can modify contract state</li>
+</ul>
+<h4>When NOT to Use</h4>
+<p>Do NOT use this skill for:</p>
+<ul>
+<li>Vulnerability detection (use audit-context-building or domain-specific-audits)</li>
+<li>Writing exploit POCs (use solidity-poc-builder)</li>
+<li>Code quality or gas optimization analysis</li>
+<li>Non-smart-contract codebases</li>
+<li>Analyzing read-only functions (this skill excludes them)</li>
+</ul>
+<h4>Scope: State-Changing Functions Only</h4>
+<p>This skill focuses exclusively on functions that can modify state. <strong>Excluded:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Language</th>
+<th>Excluded Patterns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Solidity</td>
+<td><code>view</code>, <code>pure</code> functions</td>
+</tr>
+<tr>
+<td>Vyper</td>
+<td><code>@view</code>, <code>@pure</code> functions</td>
+</tr>
+<tr>
+<td>Solana</td>
+<td>Functions without <code>mut</code> account references</td>
+</tr>
+<tr>
+<td>Move</td>
+<td>Read-only function bodies; visibility alone does not establish mutability</td>
+</tr>
+<tr>
+<td>TON</td>
+<td><code>get</code> methods (FunC), read-only receivers (Tact)</td>
+</tr>
+<tr>
+<td>CosmWasm</td>
+<td><code>query</code> entry point and its handlers</td>
+</tr>
+</tbody>
+</table>
+<p>Include state-changing Move <code>public fun</code> even without <code>entry</code>: Aptos transaction
+scripts and Sui programmable transaction blocks can reach them. Trace callees when
+needed to determine state effects, and record signer, capability, and object
+ownership requirements separately from visibility.</p>
+<p><strong>Why exclude read-only functions?</strong> They cannot directly cause loss of funds or state corruption. While they may leak information, the primary audit focus is on functions that can change state.</p>
+<h4>Workflow</h4>
+<ol>
+<li><strong>Detect Language</strong> - Identify contract language(s) from file extensions and syntax</li>
+<li><strong>Use Tooling (if available)</strong> - For Solidity, check if Slither is available and use it</li>
+<li><strong>Locate Contracts</strong> - Find all contract/module files (apply directory filter if specified)</li>
+<li><strong>Extract Entry Points</strong> - Parse each file for externally callable, state-changing functions</li>
+<li><strong>Classify Access</strong> - Categorize each function by access level</li>
+<li><strong>Generate Report</strong> - Output structured markdown report</li>
+</ol>
+<h4>Slither Integration (Solidity)</h4>
+<p>For Solidity codebases, Slither can automatically extract entry points. Before manual analysis:</p>
+<h5>1. Check if Slither is Available</h5>
+<pre><code class="language-bash">which slither
+</code></pre>
+<h5>2. If Slither is Detected, Run Entry Points Printer</h5>
+<pre><code class="language-bash">slither . --print entry-points
+</code></pre>
+<p>This outputs a table of all state-changing entry points with:</p>
+<ul>
+<li>Contract name</li>
+<li>Function name</li>
+<li>Visibility</li>
+<li>Modifiers applied</li>
+</ul>
+<h5>3. Use Slither Output as Foundation</h5>
+<ul>
+<li>Parse the Slither output table to populate your analysis</li>
+<li>Cross-reference with manual inspection for access control classification</li>
+<li>Slither may miss some patterns (callbacks, dynamic access control)—supplement with manual review</li>
+<li>If Slither fails (compilation errors, unsupported features), fall back to manual analysis</li>
+</ul>
+<h5>4. When Slither is NOT Available</h5>
+<p>If <code>which slither</code> returns nothing, proceed with manual analysis using the language-specific reference files.</p>
+<h4>Language Detection</h4>
+<table>
+<thead>
+<tr>
+<th>Extension</th>
+<th>Language</th>
+<th>Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.sol</code></td>
+<td>Solidity</td>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/entry-point-analyzer/skills/entry-point-analyzer/references/solidity.md">references/solidity.md</a></td>
+</tr>
+<tr>
+<td><code>.vy</code></td>
+<td>Vyper</td>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/entry-point-analyzer/skills/entry-point-analyzer/references/vyper.md">references/vyper.md</a></td>
+</tr>
+<tr>
+<td><code>.rs</code> + <code>Cargo.toml</code> with <code>solana-program</code></td>
+<td>Solana (Rust)</td>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/entry-point-analyzer/skills/entry-point-analyzer/references/solana.md">references/solana.md</a></td>
+</tr>
+<tr>
+<td><code>.move</code> + <code>Move.toml</code> with <code>edition</code></td>
+<td>Move (Sui)</td>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/entry-point-analyzer/skills/entry-point-analyzer/references/move-sui.md">references/move-sui.md</a></td>
+</tr>
+<tr>
+<td><code>.move</code> + <code>Move.toml</code> with <code>Aptos</code></td>
+<td>Move (Aptos)</td>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/entry-point-analyzer/skills/entry-point-analyzer/references/move-aptos.md">references/move-aptos.md</a></td>
+</tr>
+<tr>
+<td><code>.fc</code>, <code>.func</code>, <code>.tact</code></td>
+<td>TON (FunC/Tact)</td>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/entry-point-analyzer/skills/entry-point-analyzer/references/ton.md">references/ton.md</a></td>
+</tr>
+<tr>
+<td><code>.rs</code> + <code>Cargo.toml</code> with <code>cosmwasm-std</code></td>
+<td>CosmWasm</td>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/entry-point-analyzer/skills/entry-point-analyzer/references/cosmwasm.md">references/cosmwasm.md</a></td>
+</tr>
+</tbody>
+</table>
+<p>Load the appropriate reference file(s) based on detected language before analysis.</p>
+<h4>Access Classification</h4>
+<p>Classify each state-changing entry point into one of these categories:</p>
+<h5>1. Public (Unrestricted)</h5>
+<p>Functions with no caller-identity or role restriction. Record state conditions such as pause
+flags separately; they do not make a function privileged.</p>
+<h5>2. Role-Restricted</h5>
+<p>Functions limited to specific roles. Common patterns to detect:</p>
+<ul>
+<li>Explicit role names: <code>admin</code>, <code>owner</code>, <code>governance</code>, <code>guardian</code>, <code>operator</code>, <code>manager</code>, <code>minter</code>, <code>pauser</code>, <code>keeper</code>, <code>relayer</code>, <code>lender</code>, <code>borrower</code></li>
+<li>Role-checking patterns: <code>onlyRole</code>, <code>hasRole</code>, <code>require(msg.sender == X)</code>, <code>assert_owner</code>, <code>#[access_control]</code></li>
+<li>When role is ambiguous, flag as <strong>&quot;Restricted (review required)&quot;</strong> with the restriction pattern noted</li>
+</ul>
+<h5>3. Contract-Only (Internal Integration Points)</h5>
+<p>Functions whose enforced caller restrictions limit them to other contracts. Cite
+the actual check and the identity or provenance of the permitted caller. A
+callback name, implemented interface, or intended integration is not access control.</p>
+<ul>
+<li>A callback without caller checks is <strong>Public (Unrestricted)</strong>.</li>
+<li>A check against a configured address is <strong>Restricted (Review Required)</strong> if its
+identity is unresolved; use <strong>Contract-Only</strong> when that address is established as
+the integration contract.</li>
+<li><code>msg.sender != tx.origin</code> establishes a call-path condition, not authentication
+of a trusted protocol. Record that condition without inferring a trusted caller.</li>
+</ul>
+<h4>Output Format</h4>
+<p>Generate a markdown report with this structure:</p>
+<pre><code class="language-markdown"># Entry Point Analysis: [Project Name]
+
+**Analyzed**: [timestamp]
+**Scope**: [directories analyzed or &quot;full codebase&quot;]
+**Languages**: [detected languages]
+**Focus**: State-changing functions only (view/pure excluded)
+
+## Summary
+
+| Category | Count |
+|----------|-------|
+| Public (Unrestricted) | X |
+| Role-Restricted | X |
+| Restricted (Review Required) | X |
+| Contract-Only | X |
+| **Total** | **X** |
+
+---
+
+## Public Entry Points (Unrestricted)
+
+State-changing functions callable by anyone—prioritize for attack surface analysis.
+
+| Function | File | Notes |
+|----------|------|-------|
+| `functionName(params)` | `path/to/file.sol:L42` | Brief note if relevant |
+
+---
+
+## Role-Restricted Entry Points
+
+### Admin / Owner
+| Function | File | Restriction |
+|----------|------|-------------|
+| `setFee(uint256)` | `Config.sol:L15` | `onlyOwner` |
+
+### Governance
+| Function | File | Restriction |
+|----------|------|-------------|
+
+### Guardian / Pauser
+| Function | File | Restriction |
+|----------|------|-------------|
+
+### Other Roles
+| Function | File | Restriction | Role |
+|----------|------|-------------|------|
+
+---
+
+## Restricted (Review Required)
+
+Functions with access control patterns that need manual verification.
+
+| Function | File | Pattern | Why Review |
+|----------|------|---------|------------|
+| `execute(bytes)` | `Executor.sol:L88` | `require(trusted[msg.sender])` | Dynamic trust list |
+
+---
+
+## Contract-Only (Internal Integration Points)
+
+Functions only callable by other contracts—useful for understanding trust boundaries.
+
+| Function | File | Expected Caller |
+|----------|------|-----------------|
+| `onFlashLoan(...)` | `Vault.sol:L200` | Flash loan provider |
+
+---
+
+## Files Analyzed
+
+- `path/to/file1.sol` (X state-changing entry points)
+- `path/to/file2.sol` (X state-changing entry points)
+</code></pre>
+<h4>Filtering</h4>
+<p>When user specifies a directory filter:</p>
+<ul>
+<li>Only analyze files within that path</li>
+<li>Note the filter in the report header</li>
+<li>Example: &quot;Analyze only <code>src/core/</code>&quot; → scope = <code>src/core/</code></li>
+</ul>
+<h4>Analysis Guidelines</h4>
+<ol>
+<li><strong>Be thorough</strong>: Don't skip files. Every state-changing externally callable function matters.</li>
+<li><strong>Be conservative</strong>: When uncertain about access level, flag for review rather than miscategorize.</li>
+<li><strong>Skip read-only</strong>: Exclude <code>view</code>, <code>pure</code>, and equivalent read-only functions.</li>
+<li><strong>Note inheritance</strong>: If a function's access control comes from a parent contract, note this.</li>
+<li><strong>Track modifiers</strong>: List all access-related modifiers/decorators applied to each function.</li>
+<li><strong>Identify patterns</strong>: Look for common patterns like:
+<ul>
+<li>Initializer functions (often unrestricted on first call)</li>
+<li>Upgrade functions (high-privilege)</li>
+<li>Emergency/pause functions (guardian-level)</li>
+<li>Fee/parameter setters (admin-level)</li>
+<li>Token transfers and approvals (often public)</li>
+</ul>
+</li>
+</ol>
+<h4>Common Role Patterns by Protocol Type</h4>
+<table>
+<thead>
+<tr>
+<th>Protocol Type</th>
+<th>Common Roles</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DEX</td>
+<td><code>owner</code>, <code>feeManager</code>, <code>pairCreator</code></td>
+</tr>
+<tr>
+<td>Lending</td>
+<td><code>admin</code>, <code>guardian</code>, <code>liquidator</code>, <code>oracle</code></td>
+</tr>
+<tr>
+<td>Governance</td>
+<td><code>proposer</code>, <code>executor</code>, <code>canceller</code>, <code>timelock</code></td>
+</tr>
+<tr>
+<td>NFT</td>
+<td><code>minter</code>, <code>admin</code>, <code>royaltyReceiver</code></td>
+</tr>
+<tr>
+<td>Bridge</td>
+<td><code>relayer</code>, <code>guardian</code>, <code>validator</code>, <code>operator</code></td>
+</tr>
+<tr>
+<td>Vault/Yield</td>
+<td><code>strategist</code>, <code>keeper</code>, <code>harvester</code>, <code>manager</code></td>
+</tr>
+</tbody>
+</table>
+<h4>Rationalizations to Reject</h4>
+<p>When analyzing entry points, reject these shortcuts:</p>
+<ul>
+<li>&quot;This function looks standard&quot; → Still classify it; standard functions can have non-standard access control</li>
+<li>&quot;The modifier name is clear&quot; → Verify the modifier's actual implementation</li>
+<li>&quot;This is obviously admin-only&quot; → Trace the actual restriction; &quot;obvious&quot; assumptions miss subtle bypasses</li>
+<li>&quot;I'll skip the callbacks&quot; → Callbacks define trust boundaries; always include them</li>
+<li>&quot;It doesn't modify much state&quot; → Any state change can be exploited; include all non-view functions</li>
+</ul>
+<h4>Error Handling</h4>
+<p>If a file cannot be parsed:</p>
+<ol>
+<li>Note it in the report under &quot;Analysis Warnings&quot;</li>
+<li>Continue with remaining files</li>
+<li>Suggest manual review for unparsable files</li>
+</ol>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>secrets-management · SkillHub</title>
+    <meta name="description" content="Use it when: your pipelines need API keys, database passwords or certificates, and you want them stored, injected and rotated without hardcoding them. It does: shows how to store secrets in Vault or AWS Secrets Manager and pull them into GitHub Actions, GitLab CI, Terraform and Kubernetes. You get: pipeline snippets that inject secrets as environment variables without printing them, rotation steps, and secret scanning with TruffleHog before commits and in CI. Compares: HashiCorp Vault, AWS Secrets Manager, Azure Key Vault and Google Secret Manager, in a few lines each." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=wshobson%2Fagents">wshobson/agents</a></p>
+      <h1>secrets-management</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>your pipelines need API keys, database passwords or certificates, and you want them stored, injected and rotated without hardcoding them</dd></div><div><dt>It does</dt><dd>shows how to store secrets in Vault or AWS Secrets Manager and pull them into GitHub Actions, GitLab CI, Terraform and Kubernetes</dd></div><div><dt>You get</dt><dd>pipeline snippets that inject secrets as environment variables without printing them, rotation steps, and secret scanning with TruffleHog before commits and in CI</dd></div><div><dt>Compares</dt><dd>HashiCorp Vault, AWS Secrets Manager, Azure Key Vault and Google Secret Manager, in a few lines each</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A reference of copyable snippets rather than a workflow. After a short comparison of four secret stores, it starts a Vault dev server and stores a secret, then reads Vault secrets from GitHub Actions, with HashiCorp&#39;s vault-action, and from GitLab CI, with the vault CLI. For AWS it creates a secret with the CLI, reads it in GitHub Actions while masking it in the logs, and passes it to a Terraform database resource. It covers GitHub repository and environment secrets, GitLab&#39;s protected, masked and file variables, and the External Secrets Operator, which copies Vault secrets into Kubernetes secrets on a schedule. Rotation comes as an AWS Lambda function plus five manual steps: generate, store, update the apps, verify, revoke the old secret. Secret scanning runs TruffleHog in a pre-commit hook and as a CI job. Ten best practices round it off, among them never committing secrets, separate secrets per environment, least privilege, audit logs, masking and short-lived tokens. It points to github-actions-templates, gitlab-ci-patterns and deployment-pipeline-design for the rest of the pipeline.</p>
+      <p class="muted">Summarizes <a href="https://github.com/wshobson/agents/tree/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/cicd-automation/skills/secrets-management">the skill at 4bde316</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/wshobson/agents --skill secrets-management</code><button type="button" class="copy" data-copy="npx skills add https://github.com/wshobson/agents --skill secrets-management">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/wshobson/agents/secrets-management">skills.sh page</a> · <a href="https://github.com/wshobson/agents/tree/HEAD/plugins/cicd-automation/skills/secrets-management">Source on GitHub</a> · <a href="/skillhub/?repo=wshobson%2Fagents">All skills from wshobson/agents</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>13,600 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>42,267 <span class="muted">wshobson/agents</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">230</div>
+      <div class="stat-delta">+10% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 209; week to Sep 26: 244; week to Oct 3: 259; week to Oct 10: 344; week to Oct 17: 269; week to Oct 24: 233; week to Oct 31: 218; week to Nov 7: 230. Use the left and right arrow keys to read each week."
+        data-values="209,244,259,344,269,233,218,230" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.3 38.6,18.8 71.1,16.9 103.7,6.0 136.3,15.6 168.9,20.2 201.4,22.1 234.0,20.6" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="20.6" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>209</td></tr><tr><td>Sep 26</td><td>244</td></tr><tr><td>Oct 3</td><td>259</td></tr><tr><td>Oct 10</td><td>344</td></tr><tr><td>Oct 17</td><td>269</td></tr><tr><td>Oct 24</td><td>233</td></tr><tr><td>Oct 31</td><td>218</td></tr><tr><td>Nov 7</td><td>230</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/skillhub/?tag=category%3Asecurity">category:security</a><a class="tag" data-tag="category:cloud" data-facet="category" title="Deploy, provision, observe and debug cloud apps." href="/skillhub/?tag=category%3Acloud">category:cloud</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Deploy, provision, observe and debug cloud apps.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/skillhub/?tag=type%3Aguidelines">type:guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a><a class="tag" data-tag="ci" data-facet="topic" href="/skillhub/?tag=ci">ci</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:vault" data-facet="stack" href="/skillhub/?tag=stack%3Avault">stack:vault</a><a class="tag" data-tag="stack:amazon" data-facet="stack" href="/skillhub/?tag=stack%3Aamazon">stack:amazon</a><a class="tag" data-tag="stack:github" data-facet="stack" href="/skillhub/?tag=stack%3Agithub">stack:github</a><a class="tag" data-tag="stack:gitlab" data-facet="stack" href="/skillhub/?tag=stack%3Agitlab">stack:gitlab</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/wshobson/agents/blob/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/cicd-automation/skills/secrets-management/SKILL.md">wshobson/agents at 4bde316</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: secrets-management
+description: Implement secure secrets management for CI/CD pipelines using Vault, AWS Secrets Manager, or native platform solutions. Use when handling sensitive credentials, rotating secrets, or securing CI/CD environments.</code></pre></details>
+        <div class="markdown"><h3>Secrets Management</h3>
+<p>Secure secrets management practices for CI/CD pipelines using Vault, AWS Secrets Manager, and other tools.</p>
+<h4>Purpose</h4>
+<p>Implement secure secrets management in CI/CD pipelines without hardcoding sensitive information.</p>
+<h4>When to Use</h4>
+<ul>
+<li>Store API keys and credentials</li>
+<li>Manage database passwords</li>
+<li>Handle TLS certificates</li>
+<li>Rotate secrets automatically</li>
+<li>Implement least-privilege access</li>
+</ul>
+<h4>Secrets Management Tools</h4>
+<h5>HashiCorp Vault</h5>
+<ul>
+<li>Centralized secrets management</li>
+<li>Dynamic secrets generation</li>
+<li>Secret rotation</li>
+<li>Audit logging</li>
+<li>Fine-grained access control</li>
+</ul>
+<h5>AWS Secrets Manager</h5>
+<ul>
+<li>AWS-native solution</li>
+<li>Automatic rotation</li>
+<li>Integration with RDS</li>
+<li>CloudFormation support</li>
+</ul>
+<h5>Azure Key Vault</h5>
+<ul>
+<li>Azure-native solution</li>
+<li>HSM-backed keys</li>
+<li>Certificate management</li>
+<li>RBAC integration</li>
+</ul>
+<h5>Google Secret Manager</h5>
+<ul>
+<li>GCP-native solution</li>
+<li>Versioning</li>
+<li>IAM integration</li>
+</ul>
+<h4>HashiCorp Vault Integration</h4>
+<h5>Setup Vault</h5>
+<pre><code class="language-bash"># Start Vault dev server
+vault server -dev
+
+# Set environment
+export VAULT_ADDR='http://127.0.0.1:8200'
+export VAULT_TOKEN='root'
+
+# Enable secrets engine
+vault secrets enable -path=secret kv-v2
+
+# Store secret
+vault kv put secret/database/config username=admin password=secret
+</code></pre>
+<h5>GitHub Actions with Vault</h5>
+<pre><code class="language-yaml">name: Deploy with Vault Secrets
+
+on: [push]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Import Secrets from Vault
+        uses: hashicorp/vault-action@v2
+        with:
+          url: https://vault.example.com:8200
+          token: ${{ secrets.VAULT_TOKEN }}
+          secrets: |
+            secret/data/database username | DB_USERNAME ;
+            secret/data/database password | DB_PASSWORD ;
+            secret/data/api key | API_KEY
+
+      - name: Use secrets
+        run: |
+          echo &quot;Connecting to database as $DB_USERNAME&quot;
+          # Use $DB_PASSWORD, $API_KEY
+</code></pre>
+<h5>GitLab CI with Vault</h5>
+<pre><code class="language-yaml">deploy:
+  image: vault:1.17
+  before_script:
+    - export VAULT_ADDR=https://vault.example.com:8200
+    - export VAULT_TOKEN=$VAULT_TOKEN
+    - apk add curl jq
+  script:
+    - |
+      DB_PASSWORD=$(vault kv get -field=password secret/database/config)
+      API_KEY=$(vault kv get -field=key secret/api/credentials)
+      echo &quot;Deploying with secrets...&quot;
+      # Use $DB_PASSWORD, $API_KEY
+</code></pre>
+<h4>AWS Secrets Manager</h4>
+<h5>Store Secret</h5>
+<pre><code class="language-bash">aws secretsmanager create-secret \
+  --name production/database/password \
+  --secret-string &quot;super-secret-password&quot;
+</code></pre>
+<h5>Retrieve in GitHub Actions</h5>
+<pre><code class="language-yaml">- name: Configure AWS credentials
+  uses: aws-actions/configure-aws-credentials@v4
+  with:
+    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    aws-region: us-west-2
+
+- name: Get secret from AWS
+  run: |
+    SECRET=$(aws secretsmanager get-secret-value \
+      --secret-id production/database/password \
+      --query SecretString \
+      --output text)
+    echo &quot;::add-mask::$SECRET&quot;
+    echo &quot;DB_PASSWORD=$SECRET&quot; &gt;&gt; $GITHUB_ENV
+
+- name: Use secret
+  run: |
+    # Use $DB_PASSWORD
+    ./deploy.sh
+</code></pre>
+<h5>Terraform with AWS Secrets Manager</h5>
+<pre><code class="language-hcl">data &quot;aws_secretsmanager_secret_version&quot; &quot;db_password&quot; {
+  secret_id = &quot;production/database/password&quot;
+}
+
+resource &quot;aws_db_instance&quot; &quot;main&quot; {
+  allocated_storage    = 100
+  engine              = &quot;postgres&quot;
+  instance_class      = &quot;db.t3.large&quot;
+  username            = &quot;admin&quot;
+  password            = jsondecode(data.aws_secretsmanager_secret_version.db_password.secret_string)[&quot;password&quot;]
+}
+</code></pre>
+<h4>GitHub Secrets</h4>
+<h5>Organization/Repository Secrets</h5>
+<pre><code class="language-yaml">- name: Use GitHub secret
+  env:
+    API_KEY: ${{ secrets.API_KEY }}
+    DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  run: |
+    # Secrets are injected as env vars — never print them to logs
+    ./deploy.sh
+</code></pre>
+<h5>Environment Secrets</h5>
+<pre><code class="language-yaml">deploy:
+  runs-on: ubuntu-latest
+  environment: production
+  steps:
+    - name: Deploy
+      env:
+        PROD_API_KEY: ${{ secrets.PROD_API_KEY }}
+      run: |
+        # Secret injected as env var — never print to logs
+        ./deploy.sh
+</code></pre>
+<h4>GitLab CI/CD Variables</h4>
+<h5>Project Variables</h5>
+<pre><code class="language-yaml">deploy:
+  script:
+    # Fail if a variable is missing, but never print its value
+    - test -n &quot;$API_KEY&quot; || { echo &quot;API_KEY is not set&quot;; exit 1; }
+    - test -n &quot;$DATABASE_URL&quot; || { echo &quot;DATABASE_URL is not set&quot;; exit 1; }
+</code></pre>
+<h5>Protected and Masked Variables</h5>
+<ul>
+<li>Protected: Only available in protected branches</li>
+<li>Masked: Hidden in job logs</li>
+<li>File type: Stored as file</li>
+</ul>
+<h4>Best Practices</h4>
+<ol>
+<li><strong>Never commit secrets</strong> to Git</li>
+<li><strong>Use different secrets</strong> per environment</li>
+<li><strong>Rotate secrets regularly</strong></li>
+<li><strong>Implement least-privilege access</strong></li>
+<li><strong>Enable audit logging</strong></li>
+<li><strong>Use secret scanning</strong> (GitGuardian, TruffleHog)</li>
+<li><strong>Mask secrets in logs</strong></li>
+<li><strong>Encrypt secrets at rest</strong></li>
+<li><strong>Use short-lived tokens</strong> when possible</li>
+<li><strong>Document secret requirements</strong></li>
+</ol>
+<h4>Secret Rotation</h4>
+<h5>Automated Rotation with AWS</h5>
+<pre><code class="language-python">import boto3
+import json
+
+def lambda_handler(event, context):
+    client = boto3.client('secretsmanager')
+
+    # Get current secret
+    response = client.get_secret_value(SecretId='my-secret')
+    current_secret = json.loads(response['SecretString'])
+
+    # Generate new password
+    new_password = generate_strong_password()
+
+    # Update database password
+    update_database_password(new_password)
+
+    # Update secret
+    client.put_secret_value(
+        SecretId='my-secret',
+        SecretString=json.dumps({
+            'username': current_secret['username'],
+            'password': new_password
+        })
+    )
+
+    return {'statusCode': 200}
+</code></pre>
+<h5>Manual Rotation Process</h5>
+<ol>
+<li>Generate new secret</li>
+<li>Update secret in secret store</li>
+<li>Update applications to use new secret</li>
+<li>Verify functionality</li>
+<li>Revoke old secret</li>
+</ol>
+<h4>External Secrets Operator</h4>
+<h5>Kubernetes Integration</h5>
+<pre><code class="language-yaml">apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: vault-backend
+  namespace: production
+spec:
+  provider:
+    vault:
+      server: &quot;https://vault.example.com:8200&quot;
+      path: &quot;secret&quot;
+      version: &quot;v2&quot;
+      auth:
+        kubernetes:
+          mountPath: &quot;kubernetes&quot;
+          role: &quot;production&quot;
+
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: database-credentials
+  namespace: production
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: vault-backend
+    kind: SecretStore
+  target:
+    name: database-credentials
+    creationPolicy: Owner
+  data:
+    - secretKey: username
+      remoteRef:
+        key: database/config
+        property: username
+    - secretKey: password
+      remoteRef:
+        key: database/config
+        property: password
+</code></pre>
+<h4>Secret Scanning</h4>
+<h5>Pre-commit Hook</h5>
+<pre><code class="language-bash">#!/bin/bash
+# .git/hooks/pre-commit
+
+# Check for secrets with TruffleHog
+docker run --rm -v &quot;$(pwd):/repo&quot; \
+  trufflesecurity/trufflehog:3.88 \
+  filesystem --directory=/repo
+
+if [ $? -ne 0 ]; then
+  echo &quot;❌ Secret detected! Commit blocked.&quot;
+  exit 1
+fi
+</code></pre>
+<h5>CI/CD Secret Scanning</h5>
+<pre><code class="language-yaml">secret-scan:
+  stage: security
+  image: trufflesecurity/trufflehog:3.88
+  script:
+    - trufflehog filesystem .
+  allow_failure: false
+</code></pre>
+<h4>Related Skills</h4>
+<ul>
+<li><code>github-actions-templates</code> - For GitHub Actions integration</li>
+<li><code>gitlab-ci-patterns</code> - For GitLab CI integration</li>
+<li><code>deployment-pipeline-design</code> - For pipeline architecture</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

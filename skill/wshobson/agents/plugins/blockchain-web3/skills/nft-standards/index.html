@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nft-standards · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re launching an NFT collection, game items or non-transferable badges, or adding royalties for marketplaces. You get: Solidity contracts for a capped, paid ERC-721 mint and an ERC-1155 set of game items with per-item supply caps, batch minting and burning. Also covers: IPFS metadata JSON with traits, on-chain metadata with a placeholder SVG, EIP-2981 royalties capped at 10%, soulbound tokens, NFTs that level up and ERC721A for cheaper batch mints." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=wshobson%2Fagents">wshobson/agents</a></p>
+      <h1>nft-standards</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re launching an NFT collection, game items or non-transferable badges, or adding royalties for marketplaces</dd></div><div><dt>You get</dt><dd>Solidity contracts for a capped, paid ERC-721 mint and an ERC-1155 set of game items with per-item supply caps, batch minting and burning</dd></div><div><dt>Also covers</dt><dd>IPFS metadata JSON with traits, on-chain metadata with a placeholder SVG, EIP-2981 royalties capped at 10%, soulbound tokens, NFTs that level up and ERC721A for cheaper batch mints</dd></div></dl></section>
+      
+      <p class="note">Its contracts are written against OpenZeppelin 4.x, using Counters and the _beforeTokenTransfer hook that OpenZeppelin 5 removed, so they need changes to compile with the current version.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Templates for the two NFT standards. ERC-721 gives every token its own ID: the example caps supply at 10,000, charges a price per mint, limits mints per transaction, sets an IPFS token URI and lets the owner withdraw the proceeds. ERC-1155 holds many token types in one contract: the example defines a sword, a shield and a potion with separate supply caps, owner-only single and batch minting, and burning. Metadata can live off-chain as JSON on IPFS with name, description, image and attributes, or be generated on-chain as Base64 JSON with an SVG image, whose drawing is left as a stub. Royalties follow EIP-2981, which tells marketplaces who receives what share of a resale. A reference file adds soulbound tokens, which can be minted and burned but never transferred; dynamic NFTs whose level rises with experience, with the metadata that follows their state left as a stub; and ERC721A, a library that makes minting several tokens at once cheaper in gas.</p>
+      <p class="muted">Summarizes <a href="https://github.com/wshobson/agents/tree/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/blockchain-web3/skills/nft-standards">the skill at 4bde316</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/wshobson/agents --skill nft-standards</code><button type="button" class="copy" data-copy="npx skills add https://github.com/wshobson/agents --skill nft-standards">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/wshobson/agents/nft-standards">skills.sh page</a> · <a href="https://github.com/wshobson/agents/tree/HEAD/plugins/blockchain-web3/skills/nft-standards">Source on GitHub</a> · <a href="/skillhub/?repo=wshobson%2Fagents">All skills from wshobson/agents</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>10,600 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>42,267 <span class="muted">wshobson/agents</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">170</div>
+      <div class="stat-delta">+3% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 165; week to Sep 26: 178; week to Oct 3: 206; week to Oct 10: 261; week to Oct 17: 206; week to Oct 24: 175; week to Oct 31: 176; week to Nov 7: 170. Use the left and right arrow keys to read each week."
+        data-values="165,178,206,261,206,175,176,170" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,22.2 38.6,20.0 71.1,15.3 103.7,6.0 136.3,15.3 168.9,20.5 201.4,20.3 234.0,21.3" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="21.3" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>165</td></tr><tr><td>Sep 26</td><td>178</td></tr><tr><td>Oct 3</td><td>206</td></tr><tr><td>Oct 10</td><td>261</td></tr><tr><td>Oct 17</td><td>206</td></tr><tr><td>Oct 24</td><td>175</td></tr><tr><td>Oct 31</td><td>176</td></tr><tr><td>Nov 7</td><td>170</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/skillhub/?tag=type%3Aguidelines">type:guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="web3" data-facet="topic" href="/skillhub/?tag=web3">web3</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:solidity" data-facet="stack" href="/skillhub/?tag=stack%3Asolidity">stack:solidity</a><a class="tag" data-tag="stack:openzeppelin" data-facet="stack" href="/skillhub/?tag=stack%3Aopenzeppelin">stack:openzeppelin</a><a class="tag" data-tag="stack:ipfs" data-facet="stack" href="/skillhub/?tag=stack%3Aipfs">stack:ipfs</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/wshobson/agents/blob/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/blockchain-web3/skills/nft-standards/SKILL.md">wshobson/agents at 4bde316</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: nft-standards
+description: Implement NFT standards (ERC-721, ERC-1155) with proper metadata handling, minting strategies, and marketplace integration. Use when creating NFT contracts, building NFT marketplaces, or implementing digital asset systems.</code></pre></details>
+        <div class="markdown"><h3>NFT Standards</h3>
+<p>Master ERC-721 and ERC-1155 NFT standards, metadata best practices, and advanced NFT features.</p>
+<h4>When to Use This Skill</h4>
+<ul>
+<li>Creating NFT collections (art, gaming, collectibles)</li>
+<li>Implementing marketplace functionality</li>
+<li>Building on-chain or off-chain metadata</li>
+<li>Creating soulbound tokens (non-transferable)</li>
+<li>Implementing royalties and revenue sharing</li>
+<li>Developing dynamic/evolving NFTs</li>
+</ul>
+<h4>ERC-721 (Non-Fungible Token Standard)</h4>
+<pre><code class="language-solidity">// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import &quot;@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol&quot;;
+import &quot;@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol&quot;;
+import &quot;@openzeppelin/contracts/access/Ownable.sol&quot;;
+import &quot;@openzeppelin/contracts/utils/Counters.sol&quot;;
+
+contract MyNFT is ERC721URIStorage, ERC721Enumerable, Ownable {
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIds;
+
+    uint256 public constant MAX_SUPPLY = 10000;
+    uint256 public constant MINT_PRICE = 0.08 ether;
+    uint256 public constant MAX_PER_MINT = 20;
+
+    constructor() ERC721(&quot;MyNFT&quot;, &quot;MNFT&quot;) {}
+
+    function mint(uint256 quantity) external payable {
+        require(quantity &gt; 0 &amp;&amp; quantity &lt;= MAX_PER_MINT, &quot;Invalid quantity&quot;);
+        require(_tokenIds.current() + quantity &lt;= MAX_SUPPLY, &quot;Exceeds max supply&quot;);
+        require(msg.value &gt;= MINT_PRICE * quantity, &quot;Insufficient payment&quot;);
+
+        for (uint256 i = 0; i &lt; quantity; i++) {
+            _tokenIds.increment();
+            uint256 newTokenId = _tokenIds.current();
+            _safeMint(msg.sender, newTokenId);
+            _setTokenURI(newTokenId, generateTokenURI(newTokenId));
+        }
+    }
+
+    function generateTokenURI(uint256 tokenId) internal pure returns (string memory) {
+        // Return IPFS URI or on-chain metadata
+        return string(abi.encodePacked(&quot;ipfs://QmHash/&quot;, Strings.toString(tokenId), &quot;.json&quot;));
+    }
+
+    // Required overrides
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId,
+        uint256 batchSize
+    ) internal override(ERC721, ERC721Enumerable) {
+        super._beforeTokenTransfer(from, to, tokenId, batchSize);
+    }
+
+    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+        super._burn(tokenId);
+    }
+
+    function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
+        return super.tokenURI(tokenId);
+    }
+
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(ERC721, ERC721Enumerable)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
+    }
+
+    function withdraw() external onlyOwner {
+        payable(owner()).transfer(address(this).balance);
+    }
+}
+</code></pre>
+<h4>ERC-1155 (Multi-Token Standard)</h4>
+<pre><code class="language-solidity">// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import &quot;@openzeppelin/contracts/token/ERC1155/ERC1155.sol&quot;;
+import &quot;@openzeppelin/contracts/access/Ownable.sol&quot;;
+
+contract GameItems is ERC1155, Ownable {
+    uint256 public constant SWORD = 1;
+    uint256 public constant SHIELD = 2;
+    uint256 public constant POTION = 3;
+
+    mapping(uint256 =&gt; uint256) public tokenSupply;
+    mapping(uint256 =&gt; uint256) public maxSupply;
+
+    constructor() ERC1155(&quot;ipfs://QmBaseHash/{id}.json&quot;) {
+        maxSupply[SWORD] = 1000;
+        maxSupply[SHIELD] = 500;
+        maxSupply[POTION] = 10000;
+    }
+
+    function mint(
+        address to,
+        uint256 id,
+        uint256 amount
+    ) external onlyOwner {
+        require(tokenSupply[id] + amount &lt;= maxSupply[id], &quot;Exceeds max supply&quot;);
+
+        _mint(to, id, amount, &quot;&quot;);
+        tokenSupply[id] += amount;
+    }
+
+    function mintBatch(
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts
+    ) external onlyOwner {
+        for (uint256 i = 0; i &lt; ids.length; i++) {
+            require(tokenSupply[ids[i]] + amounts[i] &lt;= maxSupply[ids[i]], &quot;Exceeds max supply&quot;);
+            tokenSupply[ids[i]] += amounts[i];
+        }
+
+        _mintBatch(to, ids, amounts, &quot;&quot;);
+    }
+
+    function burn(
+        address from,
+        uint256 id,
+        uint256 amount
+    ) external {
+        require(from == msg.sender || isApprovedForAll(from, msg.sender), &quot;Not authorized&quot;);
+        _burn(from, id, amount);
+        tokenSupply[id] -= amount;
+    }
+}
+</code></pre>
+<h4>Metadata Standards</h4>
+<h5>Off-Chain Metadata (IPFS)</h5>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;NFT #1&quot;,
+  &quot;description&quot;: &quot;Description of the NFT&quot;,
+  &quot;image&quot;: &quot;ipfs://QmImageHash&quot;,
+  &quot;attributes&quot;: [
+    {
+      &quot;trait_type&quot;: &quot;Background&quot;,
+      &quot;value&quot;: &quot;Blue&quot;
+    },
+    {
+      &quot;trait_type&quot;: &quot;Rarity&quot;,
+      &quot;value&quot;: &quot;Legendary&quot;
+    },
+    {
+      &quot;trait_type&quot;: &quot;Power&quot;,
+      &quot;value&quot;: 95,
+      &quot;display_type&quot;: &quot;number&quot;,
+      &quot;max_value&quot;: 100
+    }
+  ]
+}
+</code></pre>
+<h5>On-Chain Metadata</h5>
+<pre><code class="language-solidity">contract OnChainNFT is ERC721 {
+    struct Traits {
+        uint8 background;
+        uint8 body;
+        uint8 head;
+        uint8 rarity;
+    }
+
+    mapping(uint256 =&gt; Traits) public tokenTraits;
+
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        Traits memory traits = tokenTraits[tokenId];
+
+        string memory json = Base64.encode(
+            bytes(
+                string(
+                    abi.encodePacked(
+                        '{&quot;name&quot;: &quot;NFT #', Strings.toString(tokenId), '&quot;,',
+                        '&quot;description&quot;: &quot;On-chain NFT&quot;,',
+                        '&quot;image&quot;: &quot;data:image/svg+xml;base64,', generateSVG(traits), '&quot;,',
+                        '&quot;attributes&quot;: [',
+                        '{&quot;trait_type&quot;: &quot;Background&quot;, &quot;value&quot;: &quot;', Strings.toString(traits.background), '&quot;},',
+                        '{&quot;trait_type&quot;: &quot;Rarity&quot;, &quot;value&quot;: &quot;', getRarityName(traits.rarity), '&quot;}',
+                        ']}'
+                    )
+                )
+            )
+        );
+
+        return string(abi.encodePacked(&quot;data:application/json;base64,&quot;, json));
+    }
+
+    function generateSVG(Traits memory traits) internal pure returns (string memory) {
+        // Generate SVG based on traits
+        return &quot;...&quot;;
+    }
+}
+</code></pre>
+<h4>Royalties (EIP-2981)</h4>
+<pre><code class="language-solidity">import &quot;@openzeppelin/contracts/interfaces/IERC2981.sol&quot;;
+
+contract NFTWithRoyalties is ERC721, IERC2981 {
+    address public royaltyRecipient;
+    uint96 public royaltyFee = 500; // 5%
+
+    constructor() ERC721(&quot;Royalty NFT&quot;, &quot;RNFT&quot;) {
+        royaltyRecipient = msg.sender;
+    }
+
+    function royaltyInfo(uint256 tokenId, uint256 salePrice)
+        external
+        view
+        override
+        returns (address receiver, uint256 royaltyAmount)
+    {
+        return (royaltyRecipient, (salePrice * royaltyFee) / 10000);
+    }
+
+    function setRoyalty(address recipient, uint96 fee) external onlyOwner {
+        require(fee &lt;= 1000, &quot;Royalty fee too high&quot;); // Max 10%
+        royaltyRecipient = recipient;
+        royaltyFee = fee;
+    }
+
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(ERC721, IERC165)
+        returns (bool)
+    {
+        return interfaceId == type(IERC2981).interfaceId ||
+               super.supportsInterface(interfaceId);
+    }
+}
+</code></pre>
+<h4>Additional patterns and templates</h4>
+<p>More detailed templates and worked examples live in <code>references/details.md</code>. Read that file for the full pattern library.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

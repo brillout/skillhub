@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>shader-programming · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re writing a vertex or fragment shader, building an effect such as dissolve, outline, rim light or vignette, or porting a shader between GLSL, HLSL and engines. It does: tracks which stage and coordinate space it&#039;s in, drives effects with UVs and time, prefers mix and smoothstep over branches, and validates the source before testing visually. You get: shader code, checked with glslangValidator or naga when installed, then looked at on the hardware it ships to. Leaves to others: each engine&#039;s shader syntax and built-ins, to godot-shaders or the engine&#039;s material docs, and particle systems, to unreal-niagara." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=gamedev-skills%2Fawesome-gamedev-agent-skills">gamedev-skills/awesome-gamedev-agent-skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/bundle/gamedev-skills/awesome-gamedev-agent-skills/">Gamedev Agent Skills</a></p>
+      <h1>shader-programming</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re writing a vertex or fragment shader, building an effect such as dissolve, outline, rim light or vignette, or porting a shader between GLSL, HLSL and engines</dd></div><div><dt>It does</dt><dd>tracks which stage and coordinate space it&#39;s in, drives effects with UVs and time, prefers mix and smoothstep over branches, and validates the source before testing visually</dd></div><div><dt>You get</dt><dd>shader code, checked with glslangValidator or naga when installed, then looked at on the hardware it ships to</dd></div><div><dt>Leaves to others</dt><dd>each engine&#39;s shader syntax and built-ins, to godot-shaders or the engine&#39;s material docs, and particle systems, to unreal-niagara</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 9 of 27 in the <a href="/skillhub/bundle/gamedev-skills/awesome-gamedev-agent-skills/">Gamedev Agent Skills</a> bundle · Before it: <a href="/skillhub/skill/gamedev-skills/awesome-gamedev-agent-skills/skills/disciplines/audio-design/">audio-design</a> · After it: <a href="/skillhub/skill/gamedev-skills/awesome-gamedev-agent-skills/skills/disciplines/physics-tuning/">physics-tuning</a></p>
+    
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A discipline skill from a game-development collection: the shader concepts that carry across engines, where only the dialect and built-in names change. Its snippets are desktop GLSL 330 that pass glslangValidator, with notes for GLSL ES in WebGL2, three.js and PixiJS, and HLSL names in comments. Patterns cover sampling and tinting a texture, scrolling UVs driven by a real time uniform so speed stays steady, a dissolve that thresholds a noise map with a glowing edge and no stray specks at zero, and a fresnel rim light that brightens silhouettes. It explains why GPUs pay for both sides of a branch that differs between neighbouring pixels, and why texture samples dominate cost. Pitfalls include mixing coordinate spaces, unnormalized interpolated normals, V flipped on some engines, discard defeating early depth tests on mobile, reversed smoothstep edges, shimmer at low precision, GLSL-to-HLSL differences such as mod and fmod, and raw GLSL rendering nothing under three.js&#39;s WebGPURenderer. A reference holds outline, vignette and color-grading shaders and the full GLSL-to-HLSL table.</p>
+      <p class="muted">Summarizes <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/tree/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/shader-programming">the skill at 19d93f9</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/gamedev-skills/awesome-gamedev-agent-skills --skill shader-programming</code><button type="button" class="copy" data-copy="npx skills add https://github.com/gamedev-skills/awesome-gamedev-agent-skills --skill shader-programming">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/gamedev-skills/awesome-gamedev-agent-skills/shader-programming">skills.sh page</a> · <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/tree/HEAD/skills/disciplines/shader-programming">Source on GitHub</a> · <a href="/skillhub/?repo=gamedev-skills%2Fawesome-gamedev-agent-skills">All skills from gamedev-skills/awesome-gamedev-agent-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>9,800 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>7,309 <span class="muted">gamedev-skills/awesome-gamedev-agent-skills</span></dd></div><div><dt>First seen</dt><dd>Jun 27, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">2K</div>
+      <div class="stat-delta">+416% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 379; week to Sep 26: 354; week to Oct 3: 419; week to Oct 10: 429; week to Oct 17: 509; week to Oct 24: 708; week to Oct 31: 1,564; week to Nov 7: 1,957. Use the left and right arrow keys to read each week."
+        data-values="379,354,419,429,509,708,1564,1957" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,41.5 38.6,42.0 71.1,40.6 103.7,40.4 136.3,38.6 168.9,34.1 201.4,14.8 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>379</td></tr><tr><td>Sep 26</td><td>354</td></tr><tr><td>Oct 3</td><td>419</td></tr><tr><td>Oct 10</td><td>429</td></tr><tr><td>Oct 17</td><td>509</td></tr><tr><td>Oct 24</td><td>708</td></tr><tr><td>Oct 31</td><td>1,564</td></tr><tr><td>Nov 7</td><td>1,957</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:games" data-facet="category" title="Make games: design, genres, game feel and game-jam workflows, whatever the engine." href="/skillhub/?tag=category%3Agames">category:games</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Make games: design, genres, game feel and game-jam workflows, whatever the engine.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="implementation" data-facet="topic" href="/skillhub/?tag=implementation">implementation</a><a class="tag" data-tag="performance" data-facet="topic" href="/skillhub/?tag=performance">performance</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:glsl" data-facet="stack" href="/skillhub/?tag=stack%3Aglsl">stack:glsl</a><a class="tag" data-tag="stack:hlsl" data-facet="stack" href="/skillhub/?tag=stack%3Ahlsl">stack:hlsl</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/shader-programming/SKILL.md">gamedev-skills/awesome-gamedev-agent-skills at 19d93f9</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: shader-programming
+description: &#62;
+  Write game shaders from cross-engine fundamentals — the vertex→fragment
+  pipeline, coordinate spaces, UV math, and common 2D/3D effects (tint, UV
+  scroll, dissolve, outline, fresnel rim, vignette) in GLSL with HLSL
+  equivalents. Use when the user mentions shaders, fragment/pixel shader, vertex
+  shader, UV, GLSL, HLSL, or effects like dissolve, outline, or rim light.</code></pre></details>
+        <div class="markdown"><h3>Shader programming (cross-engine)</h3>
+<p>Shaders are small programs that run <strong>per vertex</strong> and <strong>per pixel</strong> on the GPU.
+The concepts — the pipeline, coordinate spaces, UVs, and how common effects are
+built — port across engines; only the language dialect and built-in variable
+names change. This skill teaches those portable fundamentals in GLSL with HLSL
+equivalents; use <code>godot-shaders</code> (or Unity/Unreal material docs) for the exact
+engine syntax and built-ins.</p>
+<h4>When to use</h4>
+<ul>
+<li>Use to understand or write vertex/fragment shaders and to reason about UVs,
+coordinate spaces, and the GPU pipeline.</li>
+<li>Use to build common effects: tint/recolor, scrolling textures, dissolve,
+outlines, fresnel/rim light, vignette, color grading.</li>
+<li>Use to translate a shader concept between GLSL and HLSL, or between engines.</li>
+</ul>
+<p><strong>When <em>not</em> to use:</strong> for an engine's exact shader language and built-ins, use
+<code>godot-shaders</code> (Godot shading language) or the engine's material docs. For full
+particle VFX systems, see <code>unreal-niagara</code>. For post-process <em>stacks</em>, defer to
+the engine's renderer settings.</p>
+<h4>Core workflow</h4>
+<ol>
+<li><strong>Know which stage you're in.</strong> The <strong>vertex</strong> shader transforms each vertex
+into clip space and passes data (UVs, normals) onward; the <strong>fragment/pixel</strong>
+shader runs per rasterized pixel and outputs a color. Most game effects live
+in the fragment stage.</li>
+<li><strong>Track coordinate spaces.</strong> Positions move model → world → view → clip space;
+normals belong in world or view space. Mixing spaces is the most common bug.</li>
+<li><strong>Drive effects with UVs and time.</strong> UVs are <code>0..1</code> texture coordinates;
+offset, scale, or distort them, and animate with a <code>time</code> uniform.</li>
+<li><strong>Work per pixel, branch-light.</strong> Prefer <code>mix</code>, <code>step</code>, <code>smoothstep</code>, and
+<code>clamp</code> over <code>if</code> where possible; GPUs run pixels in lockstep, so a branch
+whose condition differs between neighbouring pixels runs both sides. A branch
+on a uniform (same for the whole draw) is cheap.</li>
+<li><strong>Pass data via uniforms</strong> (constant per draw) and <strong>varyings</strong> (interpolated
+vertex→fragment). Keep texture samples few; they dominate cost.</li>
+<li><strong>Validate source before visual testing when the tools are already available.</strong> For
+GLSL, run <code>glslangValidator path/to/shader.frag</code> with the matching stage suffix;
+for WGSL, run <code>naga path/to/shader.wgsl</code>. Check Godot <code>.gdshader</code> files by
+opening the project in Godot, which has no standalone validator for them.</li>
+<li><strong>Verify visually and on target hardware.</strong> Shaders that look right on desktop
+can break on mobile (precision, missing features). Test where it ships.</li>
+</ol>
+<h4>Patterns</h4>
+<p>GLSL fragment snippets for desktop <code>#version 330</code> (each passes
+<code>glslangValidator</code> with that header; close to Godot's <code>canvas_item</code>/<code>spatial</code>
+shaders). For GLSL ES 3.00 — WebGL2, three.js <code>ShaderMaterial</code>, PixiJS filters —
+add <code>precision highp float;</code> and set uniform defaults from code: ES rejects
+<code>uniform float edge = 0.05;</code> with &quot;cannot initialize this type of qualifier&quot;
+(Godot's shading language accepts it). See <code>references/effects.md</code> for the HLSL
+equivalents and the full outline/fresnel/vignette shaders.</p>
+<h5>1. Fragment basics: sample, tint, and combine</h5>
+<pre><code class="language-glsl">// Per-pixel: read the texture at this UV, multiply by a color (tint), keep alpha.
+uniform sampler2D tex;
+uniform vec4 tint;          // e.g. (1,0,0,1) reddens; multiply is non-destructive
+in vec2 uv;                 // interpolated 0..1 texture coordinate (a &quot;varying&quot;)
+out vec4 frag;
+void main() {
+    vec4 c = texture(tex, uv);   // HLSL: tex.Sample(samp, uv)
+    frag = c * tint;             // component-wise multiply tints without clipping
+}
+</code></pre>
+<h5>2. Scrolling UVs (animated texture) — frame-rate independent</h5>
+<pre><code class="language-glsl">// Add time * speed to the UV to scroll. fract() wraps it into 0..1 so it tiles.
+uniform sampler2D tex;
+uniform float time;          // seconds, supplied by the engine
+uniform vec2 scroll_speed;   // UV units per second, e.g. (0.1, 0.0)
+in vec2 uv;
+out vec4 frag;
+void main() {
+    vec2 scrolled = fract(uv + scroll_speed * time);  // HLSL: frac(...)
+    frag = texture(tex, scrolled);
+}
+// Drive with a real time uniform, not a per-frame accumulator, so speed is stable.
+</code></pre>
+<h5>3. Dissolve (threshold a noise map, glow the edge)</h5>
+<pre><code class="language-glsl">// Hide pixels where noise &lt; threshold; tint a thin band at the boundary.
+uniform sampler2D tex;
+uniform sampler2D noise_tex;     // grayscale noise, 0..1
+uniform float amount;            // 0 = fully visible, 1 = fully dissolved
+uniform float edge = 0.05;       // width of the glowing edge band
+uniform vec4 edge_color;
+in vec2 uv;
+out vec4 frag;
+void main() {
+    vec4 c = texture(tex, uv);
+    float n = texture(noise_tex, uv).r;
+    float cut = amount * (1.0 + edge) - edge;  // edge band starts below 0 -&gt; none at amount 0
+    if (n &lt;= cut) discard;                     // cut away dissolved pixels (all of them at 1)
+    float e = smoothstep(cut, cut + edge, n);  // 0 at the edge -&gt; 1 inside; keep edge &gt; 0
+    frag = mix(edge_color, c, e);              // HLSL: lerp(edge_color, c, e)
+}
+// WRONG: thresholding at `amount` directly — at amount 0 every pixel with
+// n &lt; edge is still tinted, so the &quot;fully visible&quot; sprite shows glowing specks.
+</code></pre>
+<h5>4. Fresnel rim light (3D) — brighten glancing angles</h5>
+<pre><code class="language-glsl">// Rim = 1 where the surface is edge-on to the camera (silhouette glow).
+in vec3 world_normal;        // normalized, world space (from the vertex stage)
+in vec3 view_dir;            // normalized, surface -&gt; camera, world space
+uniform float power = 3.0;
+uniform vec3 rim_color;
+out vec4 frag;
+void main() {
+    float f = pow(1.0 - clamp(dot(world_normal, view_dir), 0.0, 1.0), power);
+    frag = vec4(rim_color * f, 1.0);   // add to lighting; f peaks at the silhouette
+}
+// Correctness: normal and view_dir MUST be in the same space and normalized.
+</code></pre>
+<h4>Pitfalls</h4>
+<ul>
+<li><strong>Mixing coordinate spaces</strong> (lighting a world-space normal against a
+view-space light) yields subtly wrong shading. Pick one space and convert
+everything into it.</li>
+<li><strong>Forgetting to normalize</strong> interpolated normals/directions: interpolation
+shortens vectors, so <code>dot()</code> results drift. <code>normalize()</code> in the fragment stage.</li>
+<li><strong>UV assumptions across engines.</strong> Some engines flip V (top-left vs bottom-left
+origin); a texture may appear upside-down. Know your engine's convention.</li>
+<li><strong>Heavy branching / dynamic loops</strong> stall GPUs. Prefer <code>step</code>/<code>smoothstep</code>/
+<code>mix</code>; reserve <code>if</code>/<code>discard</code> for genuinely cheap early-outs.</li>
+<li><strong><code>discard</code> defeats early-Z</strong> and can hurt performance on tiled mobile GPUs;
+prefer alpha blending where you can.</li>
+<li><strong>Reversed <code>smoothstep</code> edges.</strong> The GLSL spec leaves <code>smoothstep(e0, e1, x)</code>
+undefined when <code>e0 &gt;= e1</code>, so <code>smoothstep(1.0, 0.5, d)</code> may work on one GPU
+and not another. Write <code>1.0 - smoothstep(0.5, 1.0, d)</code>.</li>
+<li><strong>Precision on mobile</strong>: <code>highp</code> vs <code>mediump</code> matters; large UVs or time values
+in low precision shimmer. Use adequate precision for coordinates and time.</li>
+<li><strong>Assuming GLSL == HLSL.</strong> <code>mix</code>↔<code>lerp</code>, <code>fract</code>↔<code>frac</code>, <code>texture()</code>↔<code>.Sample()</code>,
+<code>vec2</code>↔<code>float2</code>, <code>M * v</code>↔<code>mul(M, v)</code>, <code>mod</code>↔<code>fmod</code> (different for negatives).
+See the reference mapping.</li>
+<li><strong>A GLSL <code>ShaderMaterial</code> that renders nothing in three.js</strong> under
+<code>WebGPURenderer</code>: that renderer only runs node materials (TSL), on its WebGPU
+and WebGL 2 backends alike. Keep <code>WebGLRenderer</code> for raw GLSL or port to TSL.</li>
+</ul>
+<h4>References</h4>
+<ul>
+<li><code>references/effects.md</code> — full outline (2D sprite + 3D), vignette, and color
+grading shaders; the GLSL↔HLSL function/type mapping table; per-engine notes
+(Godot <code>canvas_item</code>/<code>spatial</code>, Unity ShaderLab/HLSL, Unreal material nodes).</li>
+</ul>
+<h4>Related skills</h4>
+<ul>
+<li><code>godot-shaders</code> — Godot shading language syntax, built-ins, and screen-reading.</li>
+<li><code>unreal-niagara</code> — GPU particle VFX (a different shader use).</li>
+<li><code>procedural-gen</code> — the noise that drives dissolve and procedural texturing.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

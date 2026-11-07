@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>invoice-generator · SkillHub</title>
+    <meta name="description" content="Use it when: you need to bill a client and want a correctly laid-out invoice without an invoicing app. It does: numbers the invoice, adds dates, both parties, line items and totals, applies VAT, GST or sales tax, and states payment terms and late fees. You get: invoice text in Markdown, or HTML or plain text on request, to paste into Word, Google Docs or a web page. Tax notes: invoice requirements and example rates for the US, EU, China and Australia, including the EU reverse charge and Chinese fapiao. Limits: no PDF, no accounting-software link and no payment processing; tax figures are estimates to check with an accountant." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=claude-office-skills%2Fskills">claude-office-skills/skills</a></p>
+      <h1>invoice-generator</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you need to bill a client and want a correctly laid-out invoice without an invoicing app</dd></div><div><dt>It does</dt><dd>numbers the invoice, adds dates, both parties, line items and totals, applies VAT, GST or sales tax, and states payment terms and late fees</dd></div><div><dt>You get</dt><dd>invoice text in Markdown, or HTML or plain text on request, to paste into Word, Google Docs or a web page</dd></div><div><dt>Tax notes</dt><dd>invoice requirements and example rates for the US, EU, China and Australia, including the EU reverse charge and Chinese fapiao</dd></div><div><dt>Limits</dt><dd>no PDF, no accounting-software link and no payment processing; tax figures are estimates to check with an accountant</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>From Claude Office Skills. You give your business details, the client, the items with quantities and rates, an invoice number (or let it suggest one), the currency, any tax, and the payment terms. The agent lays out the invoice with the required elements (number, issue and due dates, from, bill to, line items, total) and adds optional ones when they apply, such as a tax ID, PO number, tax breakdown, late-fee terms, bank details or a payment link. Reference tables cover payment terms from due on receipt to 2/10 net 30, late-fee caps in the US, UK and EU, and numbering schemes such as year-sequence or client-sequence, never reusing a number. It works in English or Chinese. Its frontmatter lists Word, template and PDF tools of the repo&#39;s office-mcp server, but its instructions never call them, and it says itself that it produces text, not PDFs.</p>
+      <p class="muted">Summarizes <a href="https://github.com/claude-office-skills/skills/tree/9c4c7d5cd2813a8936bf2c9fdb174ea883b85a11/invoice-generator">the skill at 9c4c7d5</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/claude-office-skills/skills --skill invoice-generator</code><button type="button" class="copy" data-copy="npx skills add https://github.com/claude-office-skills/skills --skill invoice-generator">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/claude-office-skills/skills/invoice-generator">skills.sh page</a> · <a href="https://github.com/claude-office-skills/skills/tree/HEAD/invoice-generator">Source on GitHub</a> · <a href="/skillhub/?repo=claude-office-skills%2Fskills">All skills from claude-office-skills/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,200 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>567 <span class="muted">claude-office-skills/skills</span></dd></div><div><dt>First seen</dt><dd>Mar 9, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">66</div>
+      <div class="stat-delta">+35% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 49; week to Sep 26: 83; week to Oct 3: 61; week to Oct 10: 70; week to Oct 17: 107; week to Oct 24: 225; week to Oct 31: 180; week to Nov 7: 66. Use the left and right arrow keys to read each week."
+        data-values="49,83,61,70,107,225,180,66" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,40.4 38.6,33.8 71.1,38.1 103.7,36.3 136.3,29.1 168.9,6.0 201.4,14.8 234.0,37.1" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="37.1" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>49</td></tr><tr><td>Sep 26</td><td>83</td></tr><tr><td>Oct 3</td><td>61</td></tr><tr><td>Oct 10</td><td>70</td></tr><tr><td>Oct 17</td><td>107</td></tr><tr><td>Oct 24</td><td>225</td></tr><tr><td>Oct 31</td><td>180</td></tr><tr><td>Nov 7</td><td>66</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:documents" data-facet="category" title="Office files, notes and suites like Lark and Google Workspace." href="/skillhub/?tag=category%3Adocuments">category:documents</a><a class="tag" data-tag="category:business" data-facet="category" title="Run a company outside its code and marketing: strategy, sales, finance, operations, legal, management and hiring." href="/skillhub/?tag=category%3Abusiness">category:business</a></div>
+          <p class="tag-meaning">Office files, notes and suites like Lark and Google Workspace.</p><p class="tag-meaning">Run a company outside its code and marketing: strategy, sales, finance, operations, legal, management and hiring.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/skillhub/?tag=type%3Aguidelines">type:guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="finance" data-facet="topic" href="/skillhub/?tag=finance">finance</a><a class="tag" data-tag="documents" data-facet="topic" href="/skillhub/?tag=documents">documents</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/claude-office-skills/skills/blob/9c4c7d5cd2813a8936bf2c9fdb174ea883b85a11/invoice-generator/SKILL.md">claude-office-skills/skills at 9c4c7d5</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code># ═══════════════════════════════════════════════════════════════════════════════
+# CLAUDE OFFICE SKILL - Enhanced Metadata v2.0
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Basic Information
+name: invoice-generator
+description: &#34;Create professional invoices with proper formatting for freelancers and small businesses. Supports multiple currencies and tax calculations.&#34;
+version: &#34;1.0.0&#34;
+author: claude-office-skills
+license: MIT
+
+# Categorization
+category: finance
+tags:
+  - invoice
+  - billing
+  - generator
+  - finance
+  - business
+department: Finance
+
+# AI Model Compatibility
+models:
+  recommended:
+    - claude-sonnet-4
+    - claude-opus-4
+  compatible:
+    - claude-3-5-sonnet
+    - gpt-4
+    - gpt-4o
+
+# MCP Tools Integration
+mcp:
+  server: office-mcp
+  tools:
+    - create_docx
+    - fill_docx_template
+    - docx_to_pdf
+  optional_tools:
+    - create_xlsx
+
+# Skill Capabilities
+capabilities:
+  - invoice_creation
+  - tax_calculation
+  - currency_handling
+  - professional_formatting
+
+# Input/Output Specification
+input:
+  required:
+    - type: text
+      name: client_info
+      description: Client name, address, contact
+    - type: text
+      name: line_items
+      description: Products/services with quantities and prices
+  optional:
+    - type: text
+      name: currency
+      description: Currency (USD, EUR, CNY, etc.)
+    - type: text
+      name: tax_rate
+      description: Tax rate percentage
+    - type: text
+      name: payment_terms
+      description: Payment terms and due date
+
+output:
+  primary:
+    type: document
+    formats: [docx, pdf]
+  artifacts:
+    - type: file
+      name: invoice.docx
+      description: Generated invoice document
+
+# Language Support
+languages:
+  - en
+  - zh
+
+# Related Skills
+related_skills:
+  - invoice-template
+  - invoice-organizer
+  - expense-report</code></pre></details>
+        <div class="markdown"><h3>Invoice Generator Skill</h3>
+<h4>Overview</h4>
+<p>I help freelancers and small businesses create professional invoices quickly. Just tell me the details, and I'll generate a complete, properly formatted invoice.</p>
+<p><strong>What I can do:</strong></p>
+<ul>
+<li>Create professional invoices in multiple formats</li>
+<li>Calculate taxes (VAT, GST, sales tax)</li>
+<li>Handle multiple currencies</li>
+<li>Support various payment terms</li>
+<li>Generate in English or Chinese</li>
+</ul>
+<p><strong>What I cannot do:</strong></p>
+<ul>
+<li>File taxes for you</li>
+<li>Guarantee compliance with all local regulations</li>
+<li>Process actual payments</li>
+</ul>
+<hr>
+<h4>How to Use Me</h4>
+<h5>Step 1: Provide Basic Info</h5>
+<p>Tell me:</p>
+<ol>
+<li><strong>Your business details</strong> (name, address, tax ID if needed)</li>
+<li><strong>Client details</strong> (name, address)</li>
+<li><strong>Items/services</strong> (description, quantity, rate)</li>
+<li><strong>Invoice number</strong> (or I'll suggest one)</li>
+<li><strong>Payment terms</strong> (due date, accepted methods)</li>
+</ol>
+<h5>Step 2: I'll Generate</h5>
+<p>I'll create a complete invoice with:</p>
+<ul>
+<li>Professional layout</li>
+<li>Proper calculations</li>
+<li>Payment instructions</li>
+<li>Terms and conditions</li>
+</ul>
+<h5>Step 3: Export</h5>
+<p>Copy the output to your preferred tool:</p>
+<ul>
+<li>Paste into Word/Google Docs</li>
+<li>Use the markdown version</li>
+<li>Request HTML for web display</li>
+</ul>
+<hr>
+<h4>Invoice Components</h4>
+<h5>Required Elements</h5>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Invoice Number</strong></td>
+<td>Unique identifier</td>
+<td>INV-2026-0001</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>Issue date</td>
+<td>January 29, 2026</td>
+</tr>
+<tr>
+<td><strong>Due Date</strong></td>
+<td>Payment deadline</td>
+<td>February 28, 2026</td>
+</tr>
+<tr>
+<td><strong>From</strong></td>
+<td>Your business info</td>
+<td>Company name, address</td>
+</tr>
+<tr>
+<td><strong>Bill To</strong></td>
+<td>Client info</td>
+<td>Client name, address</td>
+</tr>
+<tr>
+<td><strong>Line Items</strong></td>
+<td>Services/products</td>
+<td>Description, qty, rate, amount</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td>Sum due</td>
+<td>Amount with currency</td>
+</tr>
+</tbody>
+</table>
+<h5>Optional Elements</h5>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>When to Include</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tax ID</strong></td>
+<td>Required in many countries for B2B</td>
+</tr>
+<tr>
+<td><strong>PO Number</strong></td>
+<td>If client provided purchase order</td>
+</tr>
+<tr>
+<td><strong>Tax Breakdown</strong></td>
+<td>When charging VAT/GST/Sales Tax</td>
+</tr>
+<tr>
+<td><strong>Late Fee Terms</strong></td>
+<td>If you charge for late payment</td>
+</tr>
+<tr>
+<td><strong>Bank Details</strong></td>
+<td>For wire transfers</td>
+</tr>
+<tr>
+<td><strong>Payment Link</strong></td>
+<td>For online payment</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4>Tax Guidance by Region</h4>
+<h5>United States</h5>
+<p><strong>No federal invoice requirements</strong>, but good practices:</p>
+<ul>
+<li>Include your EIN if B2B</li>
+<li>State sales tax if applicable (varies by state)</li>
+<li>1099 reporting if paying contractors $600+</li>
+</ul>
+<p><strong>Sales Tax Rates (examples):</strong></p>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Rate</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>California</td>
+<td>7.25% base</td>
+<td>Up to 10.75% with local</td>
+</tr>
+<tr>
+<td>Texas</td>
+<td>6.25% base</td>
+<td>Up to 8.25% with local</td>
+</tr>
+<tr>
+<td>New York</td>
+<td>4% state</td>
+<td>Up to 8.875% with local</td>
+</tr>
+<tr>
+<td>Oregon</td>
+<td>0%</td>
+<td>No sales tax</td>
+</tr>
+</tbody>
+</table>
+<h5>European Union</h5>
+<p><strong>VAT Invoice Requirements:</strong></p>
+<ul>
+<li>Must include VAT number if registered</li>
+<li>Reverse charge for B2B cross-border</li>
+<li>Sequential invoice numbering required</li>
+</ul>
+<p><strong>Standard VAT Rates:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Country</th>
+<th>Rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Germany</td>
+<td>19%</td>
+</tr>
+<tr>
+<td>France</td>
+<td>20%</td>
+</tr>
+<tr>
+<td>UK (post-Brexit)</td>
+<td>20%</td>
+</tr>
+<tr>
+<td>Netherlands</td>
+<td>21%</td>
+</tr>
+<tr>
+<td>Ireland</td>
+<td>23%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Reverse Charge:</strong> For B2B services in EU, buyer may handle VAT. Include &quot;Reverse Charge - VAT to be paid by recipient.&quot;</p>
+<h5>China</h5>
+<p><strong>Invoice Requirements:</strong></p>
+<ul>
+<li>Regular invoice vs. VAT special invoice (fapiao)</li>
+<li>Tax registration number required</li>
+<li>Official invoices must be issued through tax authority system</li>
+</ul>
+<p><strong>VAT Rates:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>General Goods</td>
+<td>13%</td>
+</tr>
+<tr>
+<td>Services</td>
+<td>6%</td>
+</tr>
+<tr>
+<td>Small-scale Taxpayer</td>
+<td>3%</td>
+</tr>
+</tbody>
+</table>
+<h5>Australia</h5>
+<p><strong>GST Requirements:</strong></p>
+<ul>
+<li>10% GST on most goods/services</li>
+<li>Must include ABN if registered</li>
+<li>GST-free for exports</li>
+</ul>
+<hr>
+<h4>Payment Terms Reference</h4>
+<h5>Common Terms</h5>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Due on Receipt</strong></td>
+<td>Pay immediately</td>
+</tr>
+<tr>
+<td><strong>Net 15</strong></td>
+<td>Due within 15 days</td>
+</tr>
+<tr>
+<td><strong>Net 30</strong></td>
+<td>Due within 30 days (most common)</td>
+</tr>
+<tr>
+<td><strong>Net 60</strong></td>
+<td>Due within 60 days</td>
+</tr>
+<tr>
+<td><strong>2/10 Net 30</strong></td>
+<td>2% discount if paid in 10 days, otherwise due in 30</td>
+</tr>
+</tbody>
+</table>
+<h5>Late Payment Policies</h5>
+<p><strong>Example language:</strong></p>
+<blockquote>
+<p>&quot;Invoices not paid within [X] days will incur a late fee of [1.5%] per month on the outstanding balance.&quot;</p>
+</blockquote>
+<p><strong>Legal maximums vary:</strong></p>
+<ul>
+<li>US: Generally up to 18-24% annually</li>
+<li>UK: 8% + Bank of England base rate</li>
+<li>EU: ECB rate + 8%</li>
+</ul>
+<hr>
+<h4>Output Format</h4>
+<h5>Markdown Invoice</h5>
+<pre><code># INVOICE
+
+**Invoice Number:** INV-2026-0042
+**Date:** January 29, 2026
+**Due Date:** February 28, 2026
+
+---
+
+## From
+[Your Business Name]
+[Your Address]
+[Your Email]
+[Tax ID: XXX-XX-XXXX]
+
+## Bill To
+[Client Name]
+[Client Address]
+[Client Email]
+
+---
+
+## Items
+
+| Description | Qty | Rate | Amount |
+|-------------|-----|------|--------|
+| [Service 1] | 10 hrs | $100/hr | $1,000.00 |
+| [Service 2] | 1 | $500 | $500.00 |
+
+---
+
+|  | |
+|---|---|
+| **Subtotal** | $1,500.00 |
+| **Tax (10%)** | $150.00 |
+| **Total Due** | **$1,650.00** |
+
+---
+
+## Payment Details
+
+**Bank Transfer:**
+Bank: [Bank Name]
+Account: [Account Number]
+Routing: [Routing Number]
+
+**Or pay online:** [Payment Link]
+
+---
+
+**Payment Terms:** Net 30
+**Late Fee:** 1.5% per month on overdue balance
+
+Thank you for your business!
+</code></pre>
+<hr>
+<h4>Examples</h4>
+<h5>Example 1: Simple Freelance Invoice</h5>
+<p><strong>User</strong>: Create an invoice for 20 hours of web development at $75/hour for Acme Corp. I'm John Smith, based in Austin, TX.</p>
+<p><strong>Me</strong>:</p>
+<h3>INVOICE</h3>
+<p><strong>Invoice Number:</strong> INV-2026-0001
+<strong>Date:</strong> January 29, 2026
+<strong>Due Date:</strong> February 28, 2026</p>
+<hr>
+<h4>From</h4>
+<p>John Smith
+Austin, TX 78701
+<a href="mailto:john@example.com">john@example.com</a></p>
+<h4>Bill To</h4>
+<p>Acme Corp
+[Client Address]</p>
+<hr>
+<h4>Items</h4>
+<table>
+<thead>
+<tr>
+<th>Description</th>
+<th>Qty</th>
+<th>Rate</th>
+<th>Amount</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Web Development Services</td>
+<td>20 hrs</td>
+<td>$75.00/hr</td>
+<td>$1,500.00</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Total Due</strong></td>
+<td><strong>$1,500.00 USD</strong></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><strong>Payment Terms:</strong> Net 30</p>
+<hr>
+<h5>Example 2: With VAT (UK)</h5>
+<p><strong>User</strong>: Invoice for consulting services to a UK client, £2000, need to add VAT</p>
+<p><strong>Me</strong>:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Subtotal</strong></td>
+<td>£2,000.00</td>
+</tr>
+<tr>
+<td><strong>VAT (20%)</strong></td>
+<td>£400.00</td>
+</tr>
+<tr>
+<td><strong>Total Due</strong></td>
+<td><strong>£2,400.00 GBP</strong></td>
+</tr>
+</tbody>
+</table>
+<p>VAT Registration: GB123456789</p>
+<hr>
+<h5>Example 3: Multiple Line Items</h5>
+<p><strong>User</strong>: Invoice for: Logo design $500, Brand guidelines $1200, Business card design $300. Client is StartupXYZ.</p>
+<p><strong>Me</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Description</th>
+<th>Qty</th>
+<th>Rate</th>
+<th>Amount</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Logo Design</td>
+<td>1</td>
+<td>$500.00</td>
+<td>$500.00</td>
+</tr>
+<tr>
+<td>Brand Guidelines Document</td>
+<td>1</td>
+<td>$1,200.00</td>
+<td>$1,200.00</td>
+</tr>
+<tr>
+<td>Business Card Design</td>
+<td>1</td>
+<td>$300.00</td>
+<td>$300.00</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Total Due</strong></td>
+<td><strong>$2,000.00 USD</strong></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4>Invoice Numbering Best Practices</h4>
+<h5>Format Options</h5>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Example</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sequential</td>
+<td>001, 002, 003</td>
+<td>Simple, low volume</td>
+</tr>
+<tr>
+<td>Year-Seq</td>
+<td>2026-001</td>
+<td>Easy to track by year</td>
+</tr>
+<tr>
+<td>Client-Seq</td>
+<td>ACME-001</td>
+<td>Multiple clients</td>
+</tr>
+<tr>
+<td>Date-Seq</td>
+<td>20260129-01</td>
+<td>Date-based tracking</td>
+</tr>
+</tbody>
+</table>
+<h5>Tips</h5>
+<ul>
+<li>Never reuse invoice numbers</li>
+<li>Keep numbers sequential (gaps may raise audit questions)</li>
+<li>Include prefix for different services if needed</li>
+</ul>
+<hr>
+<h4>Tips for Better Results</h4>
+<ol>
+<li><strong>Provide complete info</strong> - The more details, the better the invoice</li>
+<li><strong>Specify currency</strong> - USD, EUR, GBP, CNY, etc.</li>
+<li><strong>Include tax requirements</strong> - Tell me if you need VAT/GST</li>
+<li><strong>Mention payment methods</strong> - Bank, PayPal, Stripe, etc.</li>
+<li><strong>Request specific format</strong> - Markdown, HTML, or plain text</li>
+</ol>
+<hr>
+<h4>Common Mistakes to Avoid</h4>
+<ol>
+<li><strong>Missing due date</strong> - Always specify when payment is expected</li>
+<li><strong>Vague descriptions</strong> - &quot;Consulting&quot; is worse than &quot;Marketing strategy consulting - Q1 campaign planning&quot;</li>
+<li><strong>Wrong calculations</strong> - I'll double-check, but verify final numbers</li>
+<li><strong>Missing tax info</strong> - Required for B2B in many countries</li>
+<li><strong>No payment instructions</strong> - Make it easy to pay you!</li>
+</ol>
+<hr>
+<h4>Limitations</h4>
+<ul>
+<li>I generate text invoices, not PDFs directly</li>
+<li>Tax calculations are estimates - verify with accountant</li>
+<li>Can't integrate with accounting software</li>
+<li>Don't know your specific local requirements</li>
+</ul>
+<hr>
+<h4>Languages</h4>
+<p>Works with multiple languages including English and Chinese.
+Just specify your preferred language when requesting an invoice.</p>
+<hr>
+<p><em>Built by the Claude Office Skills community. Get paid faster!</em></p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

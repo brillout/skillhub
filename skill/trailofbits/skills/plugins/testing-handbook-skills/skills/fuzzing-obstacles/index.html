@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>fuzzing-obstacles · SkillHub</title>
+    <meta name="description" content="Use it when: a fuzzer is stuck at checksum, hash or format validation, or the same input behaves differently between runs. It does: finds the blocking check through coverage and code reading, wraps it in a fuzzing-only build flag, measures coverage again, then weighs the false-positive risk. You get: small, commented patches to the code under test that apply only in fuzzing builds. Uses: FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION in C and C++, cfg!(fuzzing) in Rust." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=trailofbits%2Fskills">trailofbits/skills</a></p>
+      <h1>fuzzing-obstacles</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>a fuzzer is stuck at checksum, hash or format validation, or the same input behaves differently between runs</dd></div><div><dt>It does</dt><dd>finds the blocking check through coverage and code reading, wraps it in a fuzzing-only build flag, measures coverage again, then weighs the false-positive risk</dd></div><div><dt>You get</dt><dd>small, commented patches to the code under test that apply only in fuzzing builds</dd></div><div><dt>Uses</dt><dd>FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION in C and C++, cfg!(fuzzing) in Rust</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>From Trail of Bits&#39; Testing Handbook skills. Many programs weren&#39;t written to be fuzzed: a fuzzer will never guess a valid checksum, a time-seeded random generator makes the same input behave differently, and strict validation spends the fuzzer&#39;s effort on rejections. The fix is conditional compilation, so the fuzzing build skips or neuters the obstacle while production keeps it. Patterns cover bypassing checksum checks, seeding a random generator deterministically, skipping validation carefully and getting past complex format checks. Skipping a check can create states that can&#39;t happen in production, so before keeping a patch it asks whether later code relies on what was validated, and prefers a narrower patch when crashes would be false positives. It warns against skipping all validation, patching without measuring, and letting the fuzzing build drift far from production. It isn&#39;t needed when a seed corpus or dictionary would get past the check, and it has notes for libFuzzer, AFL++, honggfuzz, cargo-fuzz and LibAFL.</p>
+      <p class="muted">Summarizes <a href="https://github.com/trailofbits/skills/tree/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/testing-handbook-skills/skills/fuzzing-obstacles">the skill at e4dd0bb</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/trailofbits/skills --skill fuzzing-obstacles</code><button type="button" class="copy" data-copy="npx skills add https://github.com/trailofbits/skills --skill fuzzing-obstacles">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/trailofbits/skills/fuzzing-obstacles">skills.sh page</a> · <a href="https://github.com/trailofbits/skills/tree/HEAD/plugins/testing-handbook-skills/skills/fuzzing-obstacles">Source on GitHub</a> · <a href="/skillhub/?repo=trailofbits%2Fskills">All skills from trailofbits/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,700 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>8,053 <span class="muted">trailofbits/skills</span></dd></div><div><dt>First seen</dt><dd>Jan 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">166</div>
+      <div class="stat-delta">+46% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 114; week to Sep 26: 108; week to Oct 3: 108; week to Oct 10: 97; week to Oct 17: 120; week to Oct 24: 124; week to Oct 31: 155; week to Nov 7: 166. Use the left and right arrow keys to read each week."
+        data-values="114,108,108,97,120,124,155,166" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,19.8 38.6,21.4 71.1,21.4 103.7,24.3 136.3,18.2 168.9,17.1 201.4,8.9 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>114</td></tr><tr><td>Sep 26</td><td>108</td></tr><tr><td>Oct 3</td><td>108</td></tr><tr><td>Oct 10</td><td>97</td></tr><tr><td>Oct 17</td><td>120</td></tr><tr><td>Oct 24</td><td>124</td></tr><tr><td>Oct 31</td><td>155</td></tr><tr><td>Nov 7</td><td>166</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/skillhub/?tag=category%3Asecurity">category:security</a><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="testing" data-facet="topic" href="/skillhub/?tag=testing">testing</a><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:c" data-facet="stack" href="/skillhub/?tag=stack%3Ac">stack:c</a><a class="tag" data-tag="stack:cpp" data-facet="stack" href="/skillhub/?tag=stack%3Acpp">stack:cpp</a><a class="tag" data-tag="stack:rust" data-facet="stack" href="/skillhub/?tag=stack%3Arust">stack:rust</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/testing-handbook-skills/skills/fuzzing-obstacles/SKILL.md">trailofbits/skills at e4dd0bb</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: fuzzing-obstacles
+type: technique
+description: &#34;Patches past the barriers that stop a fuzzer making progress — checksum and hash verification, magic-value validation, time-based seeds, and other non-deterministic global state. Covers locating the blocking check, neutering it behind a fuzzing build flag, and avoiding the false positives a patch can introduce. Use when a fuzzer is stuck at validation, when coverage shows large regions behind a checksum, or when valid inputs are impractical to generate.&#34;</code></pre></details>
+        <div class="markdown"><h3>Overcoming Fuzzing Obstacles</h3>
+<p>Codebases often contain anti-fuzzing patterns that prevent effective coverage. Checksums, global state (like time-seeded PRNGs), and validation checks can block the fuzzer from exploring deeper code paths. This technique shows how to patch your System Under Test (SUT) to bypass these obstacles during fuzzing while preserving production behavior.</p>
+<h4>Overview</h4>
+<p>Many real-world programs were not designed with fuzzing in mind. They may:</p>
+<ul>
+<li>Verify checksums or cryptographic hashes before processing input</li>
+<li>Rely on global state (e.g., system time, environment variables)</li>
+<li>Use non-deterministic random number generators</li>
+<li>Perform complex validation that makes it difficult for the fuzzer to generate valid inputs</li>
+</ul>
+<p>These patterns make fuzzing difficult because:</p>
+<ol>
+<li><strong>Checksums:</strong> The fuzzer must guess correct hash values (astronomically unlikely)</li>
+<li><strong>Global state:</strong> Same input produces different behavior across runs (breaks determinism)</li>
+<li><strong>Complex validation:</strong> The fuzzer spends effort hitting validation failures instead of exploring deeper code</li>
+</ol>
+<p>The solution is conditional compilation: modify code behavior during fuzzing builds while keeping production code unchanged.</p>
+<h5>Key Concepts</h5>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SUT Patching</td>
+<td>Modifying System Under Test to be fuzzing-friendly</td>
+</tr>
+<tr>
+<td>Conditional Compilation</td>
+<td>Code that behaves differently based on compile-time flags</td>
+</tr>
+<tr>
+<td>Fuzzing Build Mode</td>
+<td>Special build configuration that enables fuzzing-specific patches</td>
+</tr>
+<tr>
+<td>False Positives</td>
+<td>Crashes found during fuzzing that cannot occur in production</td>
+</tr>
+<tr>
+<td>Determinism</td>
+<td>Same input always produces same behavior (critical for fuzzing)</td>
+</tr>
+</tbody>
+</table>
+<h4>When to Apply</h4>
+<p><strong>Apply this technique when:</strong></p>
+<ul>
+<li>The fuzzer gets stuck at checksum or hash verification</li>
+<li>Coverage reports show large blocks of unreachable code behind validation</li>
+<li>Code uses time-based seeds or other non-deterministic global state</li>
+<li>Complex validation makes it nearly impossible to generate valid inputs</li>
+<li>You see the fuzzer repeatedly hitting the same validation failures</li>
+</ul>
+<p><strong>Skip this technique when:</strong></p>
+<ul>
+<li>The obstacle can be overcome with a good seed corpus or dictionary</li>
+<li>The validation is simple enough for the fuzzer to learn (e.g., magic bytes)</li>
+<li>You're doing grammar-based or structure-aware fuzzing that handles validation</li>
+<li>Skipping the check would introduce too many false positives</li>
+<li>The code is already fuzzing-friendly</li>
+</ul>
+<h4>Quick Reference</h4>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>C/C++</th>
+<th>Rust</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Check if fuzzing build</td>
+<td><code>#ifdef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION</code></td>
+<td><code>cfg!(fuzzing)</code></td>
+</tr>
+<tr>
+<td>Skip check during fuzzing</td>
+<td><code>#ifndef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION return -1; #endif</code></td>
+<td><code>if !cfg!(fuzzing) { return Err(...) }</code></td>
+</tr>
+<tr>
+<td>Common obstacles</td>
+<td>Checksums, PRNGs, time-based logic</td>
+<td>Checksums, PRNGs, time-based logic</td>
+</tr>
+<tr>
+<td>Supported fuzzers</td>
+<td>libFuzzer, AFL++, LibAFL, honggfuzz</td>
+<td>cargo-fuzz, libFuzzer</td>
+</tr>
+</tbody>
+</table>
+<h4>Step-by-Step</h4>
+<h5>Step 1: Identify the Obstacle</h5>
+<p>Run the fuzzer and analyze coverage to find code that's unreachable. Common patterns:</p>
+<ol>
+<li>Look for checksum/hash verification before deeper processing</li>
+<li>Check for calls to <code>rand()</code>, <code>time()</code>, or <code>srand()</code> with system seeds</li>
+<li>Find validation functions that reject most inputs</li>
+<li>Identify global state initialization that differs across runs</li>
+</ol>
+<p><strong>Tools to help:</strong></p>
+<ul>
+<li>Coverage reports (see coverage-analysis technique)</li>
+<li>Profiling with <code>-fprofile-instr-generate</code></li>
+<li>Manual code inspection of entry points</li>
+</ul>
+<h5>Step 2: Add Conditional Compilation</h5>
+<p>Modify the obstacle to bypass it during fuzzing builds.</p>
+<p><strong>C/C++ Example:</strong></p>
+<pre><code class="language-c++">// Before: Hard obstacle
+if (checksum != expected_hash) {
+    return -1;  // Fuzzer never gets past here
+}
+
+// After: Conditional bypass
+if (checksum != expected_hash) {
+#ifndef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION
+    return -1;  // Only enforced in production
+#endif
+}
+// Fuzzer can now explore code beyond this check
+</code></pre>
+<p><strong>Rust Example:</strong></p>
+<pre><code class="language-rust">// Before: Hard obstacle
+if checksum != expected_hash {
+    return Err(MyError::Hash);  // Fuzzer never gets past here
+}
+
+// After: Conditional bypass
+if checksum != expected_hash {
+    if !cfg!(fuzzing) {
+        return Err(MyError::Hash);  // Only enforced in production
+    }
+}
+// Fuzzer can now explore code beyond this check
+</code></pre>
+<h5>Step 3: Verify Coverage Improvement</h5>
+<p>After patching:</p>
+<ol>
+<li>Rebuild with fuzzing instrumentation</li>
+<li>Run the fuzzer for a short time</li>
+<li>Compare coverage to the unpatched version</li>
+<li>Confirm new code paths are being explored</li>
+</ol>
+<h5>Step 4: Assess False Positive Risk</h5>
+<p>Consider whether skipping the check introduces impossible program states:</p>
+<ul>
+<li>Does code after the check assume validated properties?</li>
+<li>Could skipping validation cause crashes that cannot occur in production?</li>
+<li>Is there implicit state dependency?</li>
+</ul>
+<p>If false positives are likely, consider a more targeted patch (see Common Patterns below).</p>
+<h4>Common Patterns</h4>
+<h5>Pattern: Bypass Checksum Validation</h5>
+<p><strong>Use Case:</strong> Hash/checksum blocks all fuzzer progress</p>
+<p><strong>Before:</strong></p>
+<pre><code class="language-c++">uint32_t computed = hash_function(data, size);
+if (computed != expected_checksum) {
+    return ERROR_INVALID_HASH;
+}
+process_data(data, size);
+</code></pre>
+<p><strong>After:</strong></p>
+<pre><code class="language-c++">uint32_t computed = hash_function(data, size);
+if (computed != expected_checksum) {
+#ifndef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION
+    return ERROR_INVALID_HASH;
+#endif
+}
+process_data(data, size);
+</code></pre>
+<p><strong>False positive risk:</strong> LOW - If data processing doesn't depend on checksum correctness</p>
+<h5>Pattern: Deterministic PRNG Seeding</h5>
+<p><strong>Use Case:</strong> Non-deterministic random state prevents reproducibility</p>
+<p><strong>Before:</strong></p>
+<pre><code class="language-c++">void initialize() {
+    srand(time(NULL));  // Different seed each run
+}
+</code></pre>
+<p><strong>After:</strong></p>
+<pre><code class="language-c++">void initialize() {
+#ifdef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION
+    srand(12345);  // Fixed seed for fuzzing
+#else
+    srand(time(NULL));
+#endif
+}
+</code></pre>
+<p><strong>False positive risk:</strong> LOW - Fuzzer can explore all code paths with fixed seed</p>
+<h5>Pattern: Careful Validation Skip</h5>
+<p><strong>Use Case:</strong> Validation must be skipped but downstream code has assumptions</p>
+<p><strong>Before (Dangerous):</strong></p>
+<pre><code class="language-c++">#ifndef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION
+if (!validate_config(&amp;config)) {
+    return -1;  // Ensures config.x != 0
+}
+#endif
+
+int32_t result = 100 / config.x;  // CRASH: Division by zero in fuzzing!
+</code></pre>
+<p><strong>After (Safe):</strong></p>
+<pre><code class="language-c++">#ifndef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION
+if (!validate_config(&amp;config)) {
+    return -1;
+}
+#else
+// During fuzzing, use safe defaults for failed validation
+if (!validate_config(&amp;config)) {
+    config.x = 1;  // Prevent division by zero
+    config.y = 1;
+}
+#endif
+
+int32_t result = 100 / config.x;  // Safe in both builds
+</code></pre>
+<p><strong>False positive risk:</strong> MITIGATED - Provides safe defaults instead of skipping</p>
+<h5>Pattern: Bypass Complex Format Validation</h5>
+<p><strong>Use Case:</strong> Multi-step validation makes valid input generation nearly impossible</p>
+<p><strong>Rust Example:</strong></p>
+<pre><code class="language-rust">// Before: Multiple validation stages
+pub fn parse_message(data: &amp;[u8]) -&gt; Result&lt;Message, Error&gt; {
+    validate_magic_bytes(data)?;
+    validate_structure(data)?;
+    validate_checksums(data)?;
+    validate_crypto_signature(data)?;
+
+    deserialize_message(data)
+}
+
+// After: Skip expensive validation during fuzzing
+pub fn parse_message(data: &amp;[u8]) -&gt; Result&lt;Message, Error&gt; {
+    validate_magic_bytes(data)?;  // Keep cheap checks
+
+    if !cfg!(fuzzing) {
+        validate_structure(data)?;
+        validate_checksums(data)?;
+        validate_crypto_signature(data)?;
+    }
+
+    deserialize_message(data)
+}
+</code></pre>
+<p><strong>False positive risk:</strong> MEDIUM - Deserialization must handle malformed data gracefully</p>
+<h4>Advanced Usage</h4>
+<h5>Tips and Tricks</h5>
+<table>
+<thead>
+<tr>
+<th>Tip</th>
+<th>Why It Helps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Keep cheap validation</td>
+<td>Magic bytes and size checks guide fuzzer without much cost</td>
+</tr>
+<tr>
+<td>Use fixed seeds for PRNGs</td>
+<td>Makes behavior deterministic while exploring all code paths</td>
+</tr>
+<tr>
+<td>Patch incrementally</td>
+<td>Skip one obstacle at a time and measure coverage impact</td>
+</tr>
+<tr>
+<td>Add defensive defaults</td>
+<td>When skipping validation, provide safe fallback values</td>
+</tr>
+<tr>
+<td>Document all patches</td>
+<td>Future maintainers need to understand fuzzing vs. production differences</td>
+</tr>
+</tbody>
+</table>
+<h5>Real-World Examples</h5>
+<p><strong>OpenSSL:</strong> Uses <code>FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION</code> to modify cryptographic algorithm behavior. For example, in <a href="https://github.com/openssl/openssl/blob/afb19f07aecc84998eeea56c4d65f5e0499abb5a/crypto/cmp/cmp_vfy.c#L665-L678">crypto/cmp/cmp_vfy.c</a>, certain signature checks are relaxed during fuzzing to allow deeper exploration of certificate validation logic.</p>
+<p><strong>ogg crate (Rust):</strong> Uses <code>cfg!(fuzzing)</code> to <a href="https://github.com/RustAudio/ogg/blob/5ee8316e6e907c24f6d7ec4b3a0ed6a6ce854cc1/src/reading.rs#L298-L300">skip checksum verification</a> during fuzzing. This allows the fuzzer to explore audio processing code without spending effort guessing correct checksums.</p>
+<h5>Measuring Patch Effectiveness</h5>
+<p>After applying patches, quantify the improvement:</p>
+<ol>
+<li><strong>Line coverage:</strong> Use <code>llvm-cov</code> or <code>cargo-cov</code> to see new reachable lines</li>
+<li><strong>Basic block coverage:</strong> More fine-grained than line coverage</li>
+<li><strong>Function coverage:</strong> How many more functions are now reachable?</li>
+<li><strong>Corpus size:</strong> Does the fuzzer generate more diverse inputs?</li>
+</ol>
+<p>Effective patches typically increase coverage by 10-50% or more.</p>
+<h5>Combining with Other Techniques</h5>
+<p>Obstacle patching works well with:</p>
+<ul>
+<li><strong>Corpus seeding:</strong> Provide valid inputs that get past initial parsing</li>
+<li><strong>Dictionaries:</strong> Help fuzzer learn magic bytes and common values</li>
+<li><strong>Structure-aware fuzzing:</strong> Use protobuf or grammar definitions for complex formats</li>
+<li><strong>Harness improvements:</strong> Better harness can sometimes avoid obstacles entirely</li>
+</ul>
+<h4>Anti-Patterns</h4>
+<table>
+<thead>
+<tr>
+<th>Anti-Pattern</th>
+<th>Problem</th>
+<th>Correct Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Skip all validation wholesale</td>
+<td>Creates false positives and unstable fuzzing</td>
+<td>Skip only specific obstacles that block coverage</td>
+</tr>
+<tr>
+<td>No risk assessment</td>
+<td>False positives waste time and hide real bugs</td>
+<td>Analyze downstream code for assumptions</td>
+</tr>
+<tr>
+<td>Forget to document patches</td>
+<td>Future maintainers don't understand the differences</td>
+<td>Add comments explaining why patch is safe</td>
+</tr>
+<tr>
+<td>Patch without measuring</td>
+<td>Don't know if it helped</td>
+<td>Compare coverage before and after</td>
+</tr>
+<tr>
+<td>Over-patching</td>
+<td>Makes fuzzing build diverge too much from production</td>
+<td>Minimize differences between builds</td>
+</tr>
+</tbody>
+</table>
+<h4>Tool-Specific Guidance</h4>
+<h5>libFuzzer</h5>
+<p>libFuzzer automatically defines <code>FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION</code> during compilation.</p>
+<pre><code class="language-bash"># C++ compilation
+clang++ -g -fsanitize=fuzzer,address -DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION \
+    harness.cc target.cc -o fuzzer
+
+# The macro is usually defined automatically by -fsanitize=fuzzer
+clang++ -g -fsanitize=fuzzer,address harness.cc target.cc -o fuzzer
+</code></pre>
+<p><strong>Integration tips:</strong></p>
+<ul>
+<li>The macro is defined automatically; manual definition is usually unnecessary</li>
+<li>Use <code>#ifdef</code> to check for the macro</li>
+<li>Combine with sanitizers to detect bugs in newly reachable code</li>
+</ul>
+<h5>AFL++</h5>
+<p>AFL++ also defines <code>FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION</code> when using its compiler wrappers.</p>
+<pre><code class="language-bash"># Compilation with AFL++ wrappers
+afl-clang-fast++ -g -fsanitize=address target.cc harness.cc -o fuzzer
+
+# The macro is defined automatically by afl-clang-fast
+</code></pre>
+<p><strong>Integration tips:</strong></p>
+<ul>
+<li>Use <code>afl-clang-fast</code> or <code>afl-clang-lto</code> for automatic macro definition</li>
+<li>Persistent mode harnesses benefit most from obstacle patching</li>
+<li>Consider using <code>AFL_LLVM_LAF_ALL</code> for additional input-to-state transformations</li>
+</ul>
+<h5>honggfuzz</h5>
+<p>honggfuzz also supports the macro when building targets.</p>
+<pre><code class="language-bash"># Compilation
+hfuzz-clang++ -g -fsanitize=address target.cc harness.cc -o fuzzer
+</code></pre>
+<p><strong>Integration tips:</strong></p>
+<ul>
+<li>Use <code>hfuzz-clang</code> or <code>hfuzz-clang++</code> wrappers</li>
+<li>The macro is available for conditional compilation</li>
+<li>Combine with honggfuzz's feedback-driven fuzzing</li>
+</ul>
+<h5>cargo-fuzz (Rust)</h5>
+<p>cargo-fuzz automatically sets the <code>fuzzing</code> cfg option during builds.</p>
+<pre><code class="language-bash"># Build fuzz target (cfg!(fuzzing) is automatically set)
+cargo fuzz build fuzz_target_name
+
+# Run fuzz target
+cargo fuzz run fuzz_target_name
+</code></pre>
+<p><strong>Integration tips:</strong></p>
+<ul>
+<li>Use <code>cfg!(fuzzing)</code> for runtime checks in production builds</li>
+<li>Use <code>#[cfg(fuzzing)]</code> for compile-time conditional compilation</li>
+<li>The fuzzing cfg is only set during <code>cargo fuzz</code> builds, not regular <code>cargo build</code></li>
+<li>Can be manually enabled with <code>RUSTFLAGS=&quot;--cfg fuzzing&quot;</code> for testing</li>
+</ul>
+<h5>LibAFL</h5>
+<p>LibAFL supports the C/C++ macro for targets written in C/C++.</p>
+<pre><code class="language-bash"># Compilation
+clang++ -g -fsanitize=address -DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION \
+    target.cc -c -o target.o
+</code></pre>
+<p><strong>Integration tips:</strong></p>
+<ul>
+<li>Define the macro manually or use compiler flags</li>
+<li>Works the same as with libFuzzer</li>
+<li>Useful when building custom LibAFL-based fuzzers</li>
+</ul>
+<h4>Troubleshooting</h4>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Cause</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Coverage doesn't improve after patching</td>
+<td>Wrong obstacle identified</td>
+<td>Profile execution to find actual bottleneck</td>
+</tr>
+<tr>
+<td>Many false positive crashes</td>
+<td>Downstream code has assumptions</td>
+<td>Add defensive defaults or partial validation</td>
+</tr>
+<tr>
+<td>Code compiles differently</td>
+<td>Macro not defined in all build configs</td>
+<td>Verify macro in all source files and dependencies</td>
+</tr>
+<tr>
+<td>Fuzzer finds bugs in patched code</td>
+<td>Patch introduced invalid states</td>
+<td>Review patch for state invariants; consider safer approach</td>
+</tr>
+<tr>
+<td>Can't reproduce production bugs</td>
+<td>Build differences too large</td>
+<td>Minimize patches; keep validation for state-critical checks</td>
+</tr>
+</tbody>
+</table>
+<h4>Related Skills</h4>
+<h5>Tools That Use This Technique</h5>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>How It Applies</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>libfuzzer</strong></td>
+<td>Defines <code>FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION</code> automatically</td>
+</tr>
+<tr>
+<td><strong>aflpp</strong></td>
+<td>Supports the macro via compiler wrappers</td>
+</tr>
+<tr>
+<td><strong>honggfuzz</strong></td>
+<td>Uses the macro for conditional compilation</td>
+</tr>
+<tr>
+<td><strong>cargo-fuzz</strong></td>
+<td>Sets <code>cfg!(fuzzing)</code> for Rust conditional compilation</td>
+</tr>
+</tbody>
+</table>
+<h5>Related Techniques</h5>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Relationship</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>fuzz-harness-writing</strong></td>
+<td>Better harnesses may avoid obstacles; patching enables deeper exploration</td>
+</tr>
+<tr>
+<td><strong>coverage-analysis</strong></td>
+<td>Use coverage to identify obstacles and measure patch effectiveness</td>
+</tr>
+<tr>
+<td><strong>corpus-seeding</strong></td>
+<td>Seed corpus can help overcome obstacles without patching</td>
+</tr>
+<tr>
+<td><strong>dictionary-generation</strong></td>
+<td>Dictionaries help with magic bytes but not checksums or complex validation</td>
+</tr>
+</tbody>
+</table>
+<h4>Resources</h4>
+<h5>Key External Resources</h5>
+<p><strong><a href="https://github.com/openssl/openssl/tree/master/fuzz">OpenSSL Fuzzing Documentation</a></strong>
+OpenSSL's fuzzing infrastructure demonstrates large-scale use of <code>FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION</code>. The project uses this macro to modify cryptographic validation, certificate parsing, and other security-critical code paths to enable deeper fuzzing while maintaining production correctness.</p>
+<p><strong><a href="https://llvm.org/docs/LibFuzzer.html">LibFuzzer Documentation on Flags</a></strong>
+Official LLVM documentation for libFuzzer, including how the fuzzer defines compiler macros and how to use them effectively. Covers integration with sanitizers and coverage instrumentation.</p>
+<p><strong><a href="https://doc.rust-lang.org/reference/conditional-compilation.html">Rust cfg Attribute Reference</a></strong>
+Complete reference for Rust conditional compilation, including <code>cfg!(fuzzing)</code> and <code>cfg!(test)</code>. Explains compile-time vs. runtime conditional compilation and best practices.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

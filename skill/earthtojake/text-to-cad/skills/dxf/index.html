@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dxf · SkillHub</title>
+    <meta name="description" content="Use it when: you need a 2D profile, gasket, panel, template, flat pattern or cut layout as a DXF for laser, plasma, waterjet or CNC routing. It does: writes each drawing as a Python build123d function returning flat geometry, builds it with text-to-cad&#039;s cad run, and writes the DXF with cad export. You get: the drawing&#039;s Python script and a DXF with cut, bend or engrave layers and true arcs and circles, plus a viewer link when you ask to see it. Checks: units set, nothing drawn twice, no zero-length entities and every cut profile closed; a failed check refuses the file. Needs: text-to-cad&#039;s cad command, which it installs with a curl-to-shell script if missing. Not for: the 3D part itself (the cad skill) or a cutting service&#039;s order preflight (sendcutsend)." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=earthtojake%2Ftext-to-cad">earthtojake/text-to-cad</a> <span aria-hidden="true">/</span> <a href="/skillhub/bundle/earthtojake/text-to-cad/">text-to-cad</a></p>
+      <h1>dxf</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you need a 2D profile, gasket, panel, template, flat pattern or cut layout as a DXF for laser, plasma, waterjet or CNC routing</dd></div><div><dt>It does</dt><dd>writes each drawing as a Python build123d function returning flat geometry, builds it with text-to-cad&#39;s cad run, and writes the DXF with cad export</dd></div><div><dt>You get</dt><dd>the drawing&#39;s Python script and a DXF with cut, bend or engrave layers and true arcs and circles, plus a viewer link when you ask to see it</dd></div><div><dt>Checks</dt><dd>units set, nothing drawn twice, no zero-length entities and every cut profile closed; a failed check refuses the file</dd></div><div><dt>Needs</dt><dd>text-to-cad&#39;s cad command, which it installs with a curl-to-shell script if missing</dd></div><div><dt>Not for</dt><dd>the 3D part itself (the cad skill) or a cutting service&#39;s order preflight (sendcutsend)</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 3 of 10 in the <a href="/skillhub/bundle/earthtojake/text-to-cad/">text-to-cad</a> bundle · Before it: <a href="/skillhub/skill/earthtojake/text-to-cad/skills/step-parts/">step-parts</a> · After it: <a href="/skillhub/skill/earthtojake/text-to-cad/skills/sendcutsend/">sendcutsend</a></p>
+    
+      <p class="note">If the cad command is missing it installs text-to-cad with a curl-to-shell script.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>In text-to-cad a drawing is a model: a Python file whose parameterless @model function returns 2D build123d geometry on the z=0 plane, with its dimensions as named constants. One shape becomes the CUT layer, and a compound of labelled children gives one layer per label, for engraving or bend lines. There are three workflows: drafting from scratch, flattening a part the project already models by importing and calling it, and flattening a vendor STEP kept in a vendor folder. For CAD-backed parts the contours come from the real geometry through text-to-cad&#39;s flatten helpers, which also apply kerf compensation, rather than being redrawn. cad run builds the drawing in text-to-cad&#39;s server and writes nothing; cad export writes the DXF only after the drawing checks pass, and an unchanged drawing exports a byte-identical file. Text goes in as engraved outlines, never as DXF text entities, and the agent verifies the dimensions you asked for with ezdxf reads. The CAD Viewer opens the DXF as a 2D drawing with its layers, and cad snapshot renders it to a PNG. The reply lists the files, any viewer links, the checks that actually ran and its assumptions.</p>
+      <p class="muted">Summarizes <a href="https://github.com/earthtojake/text-to-cad/tree/4099cac3ddc56a5e696138c53fd7bee685e8ad9d/skills/dxf">the skill at 4099cac</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/earthtojake/text-to-cad --skill dxf</code><button type="button" class="copy" data-copy="npx skills add https://github.com/earthtojake/text-to-cad --skill dxf">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/earthtojake/text-to-cad/dxf">skills.sh page</a> · <a href="https://github.com/earthtojake/text-to-cad/tree/HEAD/skills/dxf">Source on GitHub</a> · <a href="/skillhub/?repo=earthtojake%2Ftext-to-cad">All skills from earthtojake/text-to-cad</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>10,200 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>25,720 <span class="muted">earthtojake/text-to-cad</span></dd></div><div><dt>First seen</dt><dd>Jun 10, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">892</div>
+      <div class="stat-delta">+47% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 607; week to Sep 26: 534; week to Oct 3: 330; week to Oct 10: 355; week to Oct 17: 492; week to Oct 24: 629; week to Oct 31: 563; week to Nov 7: 892. Use the left and right arrow keys to read each week."
+        data-values="607,534,330,355,492,629,563,892" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,20.1 38.6,23.7 71.1,33.7 103.7,32.5 136.3,25.7 168.9,19.0 201.4,22.2 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>607</td></tr><tr><td>Sep 26</td><td>534</td></tr><tr><td>Oct 3</td><td>330</td></tr><tr><td>Oct 10</td><td>355</td></tr><tr><td>Oct 17</td><td>492</td></tr><tr><td>Oct 24</td><td>629</td></tr><tr><td>Oct 31</td><td>563</td></tr><tr><td>Nov 7</td><td>892</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:hardware" data-facet="category" title="Build physical things: CAD models, 3D printing, fabrication files, robots and embedded systems." href="/skillhub/?tag=category%3Ahardware">category:hardware</a></div>
+          <p class="tag-meaning">Build physical things: CAD models, 3D printing, fabrication files, robots and embedded systems.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/skillhub/?tag=type%3Atool">type:tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="prototyping" data-facet="topic" href="/skillhub/?tag=prototyping">prototyping</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:text-to-cad" data-facet="stack" href="/skillhub/?tag=stack%3Atext-to-cad">stack:text-to-cad</a><a class="tag" data-tag="stack:build123d" data-facet="stack" href="/skillhub/?tag=stack%3Abuild123d">stack:build123d</a><a class="tag" data-tag="stack:python" data-facet="stack" href="/skillhub/?tag=stack%3Apython">stack:python</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/earthtojake/text-to-cad/blob/4099cac3ddc56a5e696138c53fd7bee685e8ad9d/skills/dxf/SKILL.md">earthtojake/text-to-cad at 4099cac</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: dxf
+description: Generates, regenerates and validates 2D DXF drawings from Python build123d models, exported by text-to-cad. Use for DXF files, `.py` drawing scripts, 2D profiles, outlines, templates, gaskets, panels, flat patterns, laser/plasma/waterjet cut layouts, and 2D drawing exports of CAD geometry. Opens and visually reviews existing DXF files in the CAD Viewer. Covers the 2D drawing, not the 3D part or assembly it derives from, and not a cutting service&#39;s order preflight.
+license: MIT
+metadata:
+  repository: earthtojake/text-to-cad</code></pre></details>
+        <div class="markdown"><h3>DXF generation and validation</h3>
+<h4>Setup</h4>
+<p>Run the <code>cad</code> command (<code>~/.local/bin/cad</code> where <code>~/.local/bin</code> is not on your PATH, or where a
+project's environment puts its own <code>cad</code> first; <code>cad.cmd</code> on Windows). If <code>cad</code> is not found and
+the CAD app was only just added, its server may still be starting: wait five seconds and run the
+command again, for up to a minute, before anything else. Otherwise install text-to-cad, outside a sandbox or with its permission:</p>
+<pre><code class="language-bash">curl -fsSL https://texttocad.dev/install.sh | sh
+</code></pre>
+<p>On Windows, in PowerShell: <code>irm https://www.texttocad.dev/install.ps1 | iex</code>. Any other failure
+says what to do, and <code>cad doctor</code> explains the installation.</p>
+<p>Drawings are build123d geometry, so a drawing builds in the server's warm worker
+like any model: the first run of a script loads the CAD kernel (a few seconds),
+and later runs reuse it.</p>
+<h4>Purpose</h4>
+<p>Create or modify 2D DXF drawings from natural-language requirements or from CAD
+geometry, export validated DXF files, and return checked outputs. A drawing's source
+of truth is a Python file named <code>&lt;name&gt;.py</code> defining a parameterless <code>@model</code> function
+that returns planar geometry.</p>
+<p><strong>A drawing is a model.</strong> It builds as any text-to-cad model does: <code>cad run &lt;name&gt;.py</code>
+rebuilds it in the server, prints its document's <code>id:</code> and page, and writes nothing.
+The DXF is exported from that document, by build123d's own exporter, once the drawing
+checks pass: <code>cad export &lt;id&gt; drawing.dxf</code>. A drawing that calls a part model
+(<code>bracket()</code> in its body) builds that part in the same run. The CAD Viewer and
+<code>cad snapshot</code> read the <code>.dxf</code> itself, so the file you hand a cutting service,
+the file the viewer draws and the file a snapshot renders are one and the same.</p>
+<h4>The contract</h4>
+<p><strong>A drawing is a <code>@model</code> function that takes no parameters and returns build123d 2D
+geometry on z=0: a sketch, a face, wires or edges. <code>cad export</code> writes the DXF.</strong>
+You never construct a document, name an entity, or write a file from the model.</p>
+<pre><code class="language-python">import build123d as bd
+from cad import model
+
+HOLE_D = 4.5
+
+
+@model
+def gasket():
+    with bd.BuildSketch() as cut:
+        bd.Rectangle(60, 40)
+        bd.Circle(HOLE_D / 2, mode=bd.Mode.SUBTRACT)
+    return cut.sketch          # one shape: the CUT layer
+
+
+if __name__ == &quot;__main__&quot;:
+    gasket()                   # decoration only declares: this call builds it
+</code></pre>
+<pre><code class="language-bash">cad run src/gasket.py                   # prints id: and view:
+cad export &quot;$ID&quot; DXF/gasket.dxf         # ID: the id: line it printed
+</code></pre>
+<ul>
+<li>
+<p><strong>One shape</strong> is one layer, <code>CUT</code>. That is the whole contract for most drawings.</p>
+</li>
+<li>
+<p><strong>A layer per part</strong> when the drawing genuinely has more than one CAM operation:
+return a <code>Compound</code> of labelled children, each label its layer
+(<code>profile.label, marks.label = &quot;CUT&quot;, &quot;ENGRAVE&quot;</code>). Children sharing a label share
+a layer, and several shapes make one part of a layer as
+<code>bd.Compound([a, b], label=&quot;ENGRAVE&quot;)</code>. A layer name may not be empty or hold any
+of <code>&lt;&gt;/\&quot;:;?*|=</code> and a backtick.</p>
+</li>
+<li>
+<p><strong>Planar means 2D, on z=0.</strong> The export refuses a document holding a solid
+(<code>bracket is 3D: a DXF is drawn from 2D geometry a model returns</code>) and an edge with
+any point more than 1e-6 mm off z=0, by its element name. A face taken from a solid
+sits at that solid's height; relocate it (<code>flatten.flatten_face(face)</code>, or
+<code>bd.Location((0, 0, -z)) * face</code>).</p>
+</li>
+<li>
+<p><strong>No parameters.</strong> Dimensions are module constants (<code>HOLE_D = 4.5</code>) or constants
+imported from the part the drawing derives from; a different drawing is a
+different <code>@model</code> function.</p>
+</li>
+<li>
+<p><strong>Text</strong> is <code>bd.Text(...)</code> engraved OUTLINES on a marking layer, never a DXF
+<code>TEXT</code> entity: cut and marking toolchains consume geometry, and font rendering
+inside CAM is unreliable.</p>
+</li>
+<li>
+<p><strong>Output bytes are a function of the geometry.</strong> Layers are written in name order
+and entities in an order of their content, so an unchanged drawing exports an
+identical file, on any machine, and the file is replaced only when its bytes
+change.</p>
+</li>
+<li>
+<p><strong>Drawings delivered after every change</strong> go in an <code>exports.py</code> beside them that
+imports each drawing and calls <code>export(drawing, path)</code> (the model function itself,
+or the handle its call returns):</p>
+<pre><code class="language-python"># src/exports.py
+from pathlib import Path
+
+from cad import export
+
+from gasket import gasket
+
+ROOT = Path(__file__).resolve().parent.parent
+
+if __name__ == &quot;__main__&quot;:
+    export(gasket, ROOT / &quot;DXF/gasket.dxf&quot;)
+</code></pre>
+</li>
+</ul>
+<h4>The three DXF workflows</h4>
+<p>Copy the full template for the applicable workflow from
+<code>references/generator-templates.md</code> when creating a new drawing.</p>
+<ol>
+<li>
+<p><strong>Drafted from scratch</strong> (gaskets, panels, templates, cut layouts with no 3D
+model behind them): a <code>&lt;name&gt;.py</code> that builds sketches and returns them.</p>
+</li>
+<li>
+<p><strong>Flat pattern of a part this project models</strong>: a drawing script beside the
+model it derives from, with its OWN stem (<code>bracket_drawing.py</code> beside
+<code>bracket.py</code>). Import the model and call it, exactly as an assembly composes a
+child: importing never builds, and inside the drawing's run the call builds the
+part in the same run and returns its geometry.</p>
+<pre><code class="language-python">from cad import flatten, model
+
+from bracket import bracket        # the model: importing builds nothing
+
+KERF = 0.15
+
+
+@model
+def bracket_drawing():
+    return flatten.flat_pattern(bracket().shape, coordinate=3.0, kerf=KERF)   # the top face's height
+
+
+if __name__ == &quot;__main__&quot;:
+    bracket_drawing()
+</code></pre>
+<p>An edit to the part re-runs the drawing's body on its next run; an edit the
+part's body does not reach (a comment, another model) re-runs nothing.</p>
+</li>
+<li>
+<p><strong>Flat pattern of an imported STEP</strong> (a <code>.step</code>/<code>.stp</code> with no Python source):
+read it with <code>read_step</code>, or convert it once (<code>cad export vendor_panel.step vendor_panel.xbf</code>) and read the xbf with <code>read_xbf</code>, which is faster. Like every
+file a run reads, it is an input: replacing the vendor file re-runs the drawing.</p>
+<pre><code class="language-python">from pathlib import Path
+
+from cad import flatten, model, read_step
+
+HERE = Path(__file__).resolve().parent
+
+KERF = 0.15
+
+
+@model
+def panel_flat():
+    panel = read_step(HERE / &quot;vendor&quot; / &quot;vendor_panel.step&quot;)   # an input, by its bytes
+    return flatten.flat_pattern(panel, coordinate=3.0, kerf=KERF)
+
+
+if __name__ == &quot;__main__&quot;:
+    panel_flat()
+</code></pre>
+<p><strong>Never read a file this project exports.</strong> Keep source STEPs in a <code>vendor/</code>
+directory beside the drawing, committed like any other input. For a part this
+project models, use workflow 2: import the model and call it.</p>
+</li>
+</ol>
+<p>One model per file is the recommendation, and a drawing gets its own script. A
+file MAY declare several models (two drawings, or a drawing beside a part's
+<code>@model</code>): <code>cad run &lt;file&gt;.py</code> builds every one its <code>__main__</code> block calls, each with
+its own id. A drawing composes models, never the reverse.</p>
+<h4>Use this skill when</h4>
+<p>Use this skill when the user asks for DXF files, 2D drawings, profiles, outlines,
+templates, gaskets, panels, flat patterns, or cut layouts for laser, plasma,
+waterjet, or CNC routing.</p>
+<h4>Defaults</h4>
+<p>Use these defaults unless the user specifies otherwise:</p>
+<ul>
+<li>Units: millimeters. The server sets them; a drawing never declares units.</li>
+<li>Geometry lives at 1:1 scale in the XY plane.</li>
+<li>Cut profiles close. Open contours belong on bend/engrave/reference layers:
+the drawing checks enforce this (see Validation).</li>
+<li>For CAD-backed parts, derive contours from the real topology with
+<code>cad.flatten</code> rather than redrawing them: <code>planar_faces</code> selects,
+<code>flatten_face</code> lays a face into XY exactly, <code>union_faces</code> fuses, and
+<code>flat_pattern</code> does all of it in one call. Hand-drawn parametric outlines only
+when there is no reliable 3D topology.</li>
+<li>Kerf / tool-radius compensation is <code>flatten.offset_profile(shape, amount)</code> or
+<code>flat_pattern(..., kerf=...)</code>; never hand-offset coordinates.</li>
+<li><strong>Curves stay curves.</strong> The union and the offset are exact OCC operations, and
+each edge is written as one entity, so a filleted corner exports as an <code>ARC</code> and a
+hole as a <code>CIRCLE</code>, kerf included. A profile that comes out as hundreds of short
+<code>LINE</code>s means something fell back to the sampled path: investigate rather than
+accept it.</li>
+<li>Layers carry intent: keep cut geometry and bend/fold lines on separate layers,
+and name bend layers with <code>bend</code> or <code>fold</code> so downstream tools classify them as
+bends rather than cuts.</li>
+<li>DXF layers are drawing structure, not STEP part/assembly structure.</li>
+</ul>
+<h4>Tool</h4>
+<pre><code class="language-bash">cad run path/to/drawing.py                               # builds every model its __main__ calls
+cad export &quot;$ID&quot; path/to/drawing.dxf                     # writes the DXF, running the drawing checks
+cad snapshot path/to/drawing.dxf review.png              # draws it
+cad snapshot path/to/drawing.dxf review.png --display '{&quot;appearance&quot;: &quot;dark&quot;}'
+</code></pre>
+<p><strong>Running the script is the only way to build a drawing, and exporting it the only
+way to write its DXF.</strong> <code>cad run &lt;drawing&gt;.py</code> takes no options and writes nothing; it
+prints each model's report (<code>built src/gasket.py::gasket cold in 2.29s: ...</code>), its
+<code>id:</code> and its page, and exits 1 when a body raises. <code>cad export</code> exits 2 when the
+export refuses the drawing (3D, off the plane, a failed drawing check), naming which.
+An imported <code>.dxf</code> needs nothing at all: hand it straight to a snapshot or the viewer.</p>
+<p>Paths on the command line, and those <code>export</code> takes from Python, resolve from the
+working directory; anchor them on <code>__file__</code> in an <code>exports.py</code>. Keep a drawing
+script in the same directory as the geometry it derives from, named <code>&lt;name&gt;.py</code>.</p>
+<p><code>cad snapshot</code> draws a drawing the way the CAD Viewer's drawing pane does: whole,
+from above, fitted with a margin, in the pens the file declares (an entity with no
+pen of its own takes the paper's ink), on light paper or, with
+<code>--display '{&quot;appearance&quot;: &quot;dark&quot;}'</code>, dark. <code>--size-profile</code>, <code>--width</code> and
+<code>--height</code> size it; <code>--camera</code> takes a plan view (below), <code>--annotation</code> ink on the
+sheet and <code>--measurements</code> dimensions; every other flag is refused by name, and what
+it does not draw (points, hatch patterns, images) is named in a warning. OUT is
+written exactly as given and must be a <code>.png</code>; check the exit status before reading
+it, since a refused or failed snapshot writes nothing.</p>
+<p>A Quick Edit prompt from a drawing carries a packet (inline JSON or a
+<code>.snapshot.json</code> path; save inline JSON to a file first) whose views are plan-view
+<code>camera</code> windows (<code>{&quot;position&quot;: [x, y, d], &quot;target&quot;: [x, y, 0], &quot;up&quot;: [0, 1, 0], &quot;orthographicHalfHeight&quot;: h}</code>, looking straight down) and whose <code>annotation</code> marks
+are in drawing coordinates, on the sheet. Draw what the person saw, each window with
+their ink and dimensions on it, before editing:</p>
+<pre><code class="language-bash">cad snapshot --job tmp/panel.snapshot.json                     # every view, into the paths its jobs name
+cad snapshot panel.dxf tmp/view.png --annotation tmp/panel.snapshot.json --camera authored
+</code></pre>
+<p>No CLI inspects an existing <code>.dxf</code>. For entity/layer checks read it with <code>ezdxf</code>
+directly (it arrives with build123d), and <code>validate_dxf_file</code> for the drawing
+checks; review geometry visually (see <a href="#show-the-model">Show the model</a>).</p>
+<h4>Workflow</h4>
+<ol>
+<li>Convert the request into a short brief: outline dimensions, holes and slots, layers, units, output path, and validation targets.</li>
+<li>Pick the workflow: drafted from scratch, flat pattern of a modelled part (create and validate the 3D model first), or flat pattern of an imported STEP.</li>
+<li>Write or edit the <code>&lt;name&gt;.py</code> source with meaningful dimensions as named constants, reusing the model's geometry helpers instead of duplicating formulas.</li>
+<li>Run each drawing script directly (<code>cad run &lt;drawing&gt;.py</code>); do not sweep directories. Then export each drawing to its DXF:</li>
+</ol>
+<pre><code class="language-bash">cad run path/to/source.py
+cad export &quot;$ID&quot; path/to/drawing.dxf
+</code></pre>
+<ol start="5">
+<li>Validate the exported DXF deterministically, then hand off and report.</li>
+</ol>
+<h4>Show the model</h4>
+<p>Show the user each model you create or change, and any model or file they ask to see.
+A file you export is a download: give its path, do not open it.
+Snapshots and validation don't replace this. Never screenshot the viewer to confirm your
+own work; review with <code>cad snapshot</code>.</p>
+<ul>
+<li>
+<p>If your tools include <code>cad_show</code> (your host may prefix it), call it with the model's id
+or the file's absolute path, and follow its description for when to call it again.
+The other tools depend on the host. A host that draws CAD cards or tabs (Claude
+Desktop, the Codex app) also has <code>cad_view</code>, which reads what the user selected, and
+<code>cad_screenshot</code>, which shows you what they see, both of a card or tab that is open, for
+when they ask about it. A text host (Claude Code in a terminal, <code>codex exec</code>) draws
+nothing: its <code>cad_show</code> opens the model's page in the user's browser and answers with
+the URL to give them, and it has no view to read. <code>cad_inspect</code>, <code>cad_snapshot</code> and
+<code>cad_export</code> are on every host. Call only the tools you have, and never say a card
+shows a model when your host drew none.</p>
+</li>
+<li>
+<p>Otherwise give the user the page's link once: a model's page is the <code>view:</code> line its
+run prints. For a file, run the CAD Viewer, from any folder:</p>
+<pre><code class="language-bash">cad viewer --json FILE [FILE ...]
+</code></pre>
+<p>The command ensures this installation's server, registers each file and prints
+its page, <code>/&lt;id&gt;</code>, then exits. Read each file's <code>url</code> from <code>documents</code> in its one
+JSON line (never guess the port); the URL carries its token query. A page follows
+every later run of its model and every rewrite of its file, so share it once.
+Return that link to the user. If it fails to launch, say so.</p>
+</li>
+</ul>
+<p>A drawing script's model has a page, but it shows a flat face in the 3D viewer, with no
+pens, layers or entity refs. The drawing a person wants is the exported <code>.dxf</code>, which the
+viewer opens as a read-only 2D drawing with its layers (it never runs drawing scripts):
+show the <code>.dxf</code> when they ask to see the drawing, and give its path otherwise. Drag to pan, wheel/pinch to zoom, double-click to fit. Its
+Select, Pencil, Shapes and Measure feed Quick Edit, whose prompt names what the person
+picked as references into the drawing by entity HANDLE: <code>panel.dxf#h2F</code> is the
+modelspace entity whose handle is <code>2F</code> (<code>doc.entitydb[&quot;2F&quot;]</code> in ezdxf); anything a
+block reference draws is named by its INSERT, and a dimension is one entity. The
+prompt's chip reads it as the entity's type and layer (&quot;Circle on CUT&quot;). Measurements
+are in the unit <code>$INSUNITS</code> declares (&quot;units&quot; when it declares none).</p>
+<h4>Validation</h4>
+<p>Validation happens IN the export, not after: every DXF export runs the drawing
+checks on the document it is about to write, and an error refuses the file, naming
+the check (<code>[error] open_cut_profile: cut layer 'CUT' has segment endpoints that do not close a loop ...</code>). The checks: units are set, nothing is drawn twice (an exact
+duplicate is a double cut), no entity has zero length, every cut profile closes
+(polylines, circles, and chains of lines, arcs and splines), and something is drawn.
+Open geometry is allowed only on a layer whose name's words make it a bend (<code>bend</code>,
+<code>fold</code>), engraving (<code>engrave</code>, <code>etch</code>) or reference layer (<code>ref</code>, <code>note</code>,
+<code>construction</code>, <code>dim</code>, <code>center</code>, <code>hidden</code> and the like).</p>
+<p>The same checks run on any existing <code>.dxf</code> file, including one that never came
+from a model:</p>
+<pre><code class="language-python">from cad.engine.export.dxf import validate_dxf_file
+
+for finding in validate_dxf_file(&quot;path/to/file.dxf&quot;):
+    print(finding.render())
+</code></pre>
+<p>Beyond the built-in checks, verify requested dimensions with targeted <code>ezdxf</code> reads
+(entity counts by layer, drawing extents, every dimension the user specified)
+against the exported <code>.dxf</code>, and review geometry visually in the CAD Viewer:</p>
+<pre><code class="language-python">import ezdxf
+
+doc = ezdxf.readfile(&quot;path/to/drawing.dxf&quot;)
+msp = doc.modelspace()
+cut = msp.query('*[layer==&quot;CUT&quot;]')
+holes = msp.query('CIRCLE[layer==&quot;CUT&quot;]')
+</code></pre>
+<p>Report only checks that actually ran.</p>
+<h4>Handoff</h4>
+<p>Give the path of every <code>.dxf</code> you created or changed, and show it when the person asks to
+see the drawing (<a href="#show-the-model">Show the model</a>).
+Report any failure explicitly.</p>
+<p>Final responses should include generated files, returned viewer links, validation
+actually run, and assumptions.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

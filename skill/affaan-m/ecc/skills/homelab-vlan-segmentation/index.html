@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>homelab-vlan-segmentation · SkillHub</title>
+    <meta name="description" content="Use it when: you want IoT devices, guests and your own computers on separate networks at home, or inter-VLAN rules aren&#039;t working. It does: lays out a five-VLAN design with subnets, then gives click paths for UniFi and pfSense/OPNsense and commands for MikroTik. You get: a VLAN table, SSID-to-VLAN mapping, a trunk and access port layout, and firewall rules that keep IoT and guests away from your devices. Unlike: homelab-network-readiness, which plans and reviews the change without vendor configuration." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <h1>homelab-vlan-segmentation</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want IoT devices, guests and your own computers on separate networks at home, or inter-VLAN rules aren&#39;t working</dd></div><div><dt>It does</dt><dd>lays out a five-VLAN design with subnets, then gives click paths for UniFi and pfSense/OPNsense and commands for MikroTik</dd></div><div><dt>You get</dt><dd>a VLAN table, SSID-to-VLAN mapping, a trunk and access port layout, and firewall rules that keep IoT and guests away from your devices</dd></div><div><dt>Unlike</dt><dd>homelab-network-readiness, which plans and reviews the change without vendor configuration</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A how-to from ECC for what it calls the most impactful security upgrade for a home network. On a flat network a compromised smart TV can reach your NAS, so it splits devices into VLANs: trusted (10), IoT (20), servers (30), guest (40) and management (99), each with its own /24 subnet. A worked example for a UniFi house shows SSID mapping, trunk ports to the router and access points, access ports for the NAS and Pi-hole, and the firewall matrix: IoT blocked from trusted devices and servers except Pi-hole DNS, guests internet-only. Configuration follows for the UniFi controller, pfSense or OPNsense (VLAN interfaces, DHCP per VLAN, ordered rules with the DNS exception above the private-range block) and MikroTik bridge VLAN filtering. It explains trunk versus access ports. Anti-patterns include VLANs without firewall rules, which isolate nothing, a native VLAN equal to the management VLAN, which allows VLAN hopping, and one Wi-Fi password for the IoT and trusted SSIDs. All its rules add isolation, and it says to test after each change by pinging a trusted device from the IoT VLAN.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/homelab-vlan-segmentation">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/affaan-m/ecc --skill homelab-vlan-segmentation</code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill homelab-vlan-segmentation">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/homelab-vlan-segmentation">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/homelab-vlan-segmentation">Source on GitHub</a> · <a href="/skillhub/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,300 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>298,660 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">473</div>
+      <div class="stat-delta">+64% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 289; week to Sep 26: 257; week to Oct 3: 162; week to Oct 10: 145; week to Oct 17: 236; week to Oct 24: 412; week to Oct 31: 411; week to Nov 7: 473. Use the left and right arrow keys to read each week."
+        data-values="289,257,162,145,236,412,411,473" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.1 38.6,26.1 71.1,34.9 103.7,36.5 136.3,28.0 168.9,11.7 201.4,11.8 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>289</td></tr><tr><td>Sep 26</td><td>257</td></tr><tr><td>Oct 3</td><td>162</td></tr><tr><td>Oct 10</td><td>145</td></tr><tr><td>Oct 17</td><td>236</td></tr><tr><td>Oct 24</td><td>412</td></tr><tr><td>Oct 31</td><td>411</td></tr><tr><td>Nov 7</td><td>473</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/skillhub/?tag=category%3Asecurity">category:security</a><a class="tag" data-tag="category:networking" data-facet="category" title="Computer networks: home labs, VLANs, VPNs, DNS, routing and network diagnostics." href="/skillhub/?tag=category%3Anetworking">category:networking</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Computer networks: home labs, VLANs, VPNs, DNS, routing and network diagnostics.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/skillhub/?tag=type%3Aguidelines">type:guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="infrastructure" data-facet="topic" href="/skillhub/?tag=infrastructure">infrastructure</a><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a><a class="tag" data-tag="personal" data-facet="topic" href="/skillhub/?tag=personal">personal</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:unifi" data-facet="stack" href="/skillhub/?tag=stack%3Aunifi">stack:unifi</a><a class="tag" data-tag="stack:pfsense" data-facet="stack" href="/skillhub/?tag=stack%3Apfsense">stack:pfsense</a><a class="tag" data-tag="stack:opnsense" data-facet="stack" href="/skillhub/?tag=stack%3Aopnsense">stack:opnsense</a><a class="tag" data-tag="stack:mikrotik" data-facet="stack" href="/skillhub/?tag=stack%3Amikrotik">stack:mikrotik</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/homelab-vlan-segmentation/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: homelab-vlan-segmentation
+description: Segmenting home networks into VLANs for IoT, guest, trusted, and server traffic using UniFi, pfSense/OPNsense, and MikroTik — including switch trunk config, firewall rules, and wireless SSID mapping. Use when splitting a home network into IoT, guest, trusted, and server VLANs on UniFi, pfSense/OPNsense, or MikroTik.
+metadata:
+  origin: community</code></pre></details>
+        <div class="markdown"><h3>Homelab VLAN Segmentation</h3>
+<p>How to split a home network into isolated VLANs so IoT devices, guests, and your main
+PCs cannot talk to each other. The most impactful security upgrade for a home network.</p>
+<p>All firewall rules shown here add isolation between segments — they do not remove
+existing protections. Apply changes in a maintenance window and verify connectivity
+between segments after each step before moving on.</p>
+<h4>When to Use</h4>
+<ul>
+<li>Setting up VLANs on a home network for the first time</li>
+<li>Isolating IoT devices (smart bulbs, cameras, TVs) from trusted devices</li>
+<li>Creating a guest Wi-Fi network that cannot reach home devices</li>
+<li>Explaining how VLANs work to someone unfamiliar with the concept</li>
+<li>Configuring trunk ports, access ports, and SSID-to-VLAN mapping</li>
+<li>Troubleshooting inter-VLAN routing or firewall rule issues on pfSense/OPNsense/UniFi</li>
+</ul>
+<h4>How It Works</h4>
+<pre><code>Without VLANs — flat network:
+  All devices on 192.168.1.0/24
+  Smart TV (potential malware) → can reach your NAS, PCs, everything
+
+With VLANs:
+  VLAN 10 — Trusted    192.168.10.0/24  (PCs, phones, laptops)
+  VLAN 20 — IoT        192.168.20.0/24  (smart TV, bulbs, cameras)
+  VLAN 30 — Servers    192.168.30.0/24  (NAS, Pi, VMs)
+  VLAN 40 — Guest      192.168.40.0/24  (visitor Wi-Fi)
+  VLAN 99 — Management 192.168.99.0/24  (switch/AP web UIs)
+
+  Smart TV → blocked from reaching 192.168.10.0/24 and 192.168.30.0/24
+  Guests → internet only, cannot see any home devices
+</code></pre>
+<h4>VLAN Design Template</h4>
+<pre><code>VLAN  Name        Subnet              Gateway         Purpose
+10    trusted     192.168.10.0/24     192.168.10.1    PCs, phones, laptops
+20    iot         192.168.20.0/24     192.168.20.1    Smart home devices
+30    servers     192.168.30.0/24     192.168.30.1    NAS, Pi, self-hosted
+40    guest       192.168.40.0/24     192.168.40.1    Visitor Wi-Fi
+99    management  192.168.99.0/24     192.168.99.1    Network gear web UIs
+</code></pre>
+<h4>Examples</h4>
+<p><strong>Typical homelab with UniFi AP and managed switch:</strong></p>
+<pre><code>Scenario: 3-bedroom house, UniFi Dream Machine + UniFi 8-port switch + 2 APs
+
+VLAN 10 — Trusted    192.168.10.0/24   MacBook, iPhones, iPad
+VLAN 20 — IoT        192.168.20.0/24   Nest thermostat, Philips Hue, Ring doorbell, smart TVs
+VLAN 30 — Servers    192.168.30.0/24   Synology NAS (192.168.30.10), Pi-hole (192.168.30.2)
+VLAN 40 — Guest      192.168.40.0/24   Visitor Wi-Fi — internet only
+
+SSID → VLAN mapping:
+  &quot;Home&quot;      → VLAN 10 (WPA2, strong password, trusted devices only)
+  &quot;IoT&quot;       → VLAN 20 (WPA2, separate password, printed on router for setup)
+  &quot;Guest&quot;     → VLAN 40 (WPA2, simple password you can share freely)
+
+Switch port behavior:
+  Port 1  → trunk to router (tagged VLANs 10,20,30,40,99)
+  Port 2  → trunk to APs (tagged VLANs 10,20,40; AP handles per-SSID tagging)
+  Port 3  → access VLAN 30 (NAS — untagged, no VLAN awareness needed)
+  Port 4  → access VLAN 30 (Pi-hole — untagged)
+  Port 5–8 → access VLAN 10 (wired workstations)
+
+Firewall rules applied (all rules add isolation, none remove existing protections):
+  IoT → Trusted: BLOCK
+  IoT → Servers: BLOCK except 192.168.30.2:53 (Pi-hole DNS allowed)
+  IoT → Internet: ALLOW
+  Guest → Local networks: BLOCK
+  Guest → Internet: ALLOW
+  Trusted → everywhere: ALLOW
+</code></pre>
+<h4>UniFi Configuration</h4>
+<h5>Create Networks in UniFi Controller</h5>
+<pre><code>Settings → Networks → Create New Network
+
+For each VLAN:
+  Name: IoT
+  Purpose: Corporate  (gives DHCP + routing)
+  VLAN ID: 20
+  Network: 192.168.20.0/24
+  Gateway IP: 192.168.20.1
+  DHCP: Enable
+  DHCP Range: 192.168.20.100 – 192.168.20.254
+</code></pre>
+<h5>Map SSIDs to VLANs (UniFi)</h5>
+<pre><code>Settings → WiFi → Create New WiFi
+
+  Name: IoT-Network
+  Password: &lt;separate password&gt;
+  Network: IoT  ← select your VLAN here
+  # All devices connecting to this SSID land in VLAN 20
+
+  Name: Guest
+  Password: &lt;guest password&gt;
+  Network: Guest
+  Guest Policy: Enable  ← isolates guests from each other too
+</code></pre>
+<h5>UniFi Firewall Rules (Traffic Rules)</h5>
+<pre><code>Settings → Traffic &amp; Security → Traffic Rules
+
+# Block IoT from reaching Trusted VLAN
+  Action: Block
+  Category: Local Network
+  Source: IoT (192.168.20.0/24)
+  Destination: Trusted (192.168.10.0/24)
+
+# Allow IoT to reach internet only
+  Action: Allow
+  Source: IoT
+  Destination: Internet
+
+# Block Guest from all local networks
+  Action: Block
+  Source: Guest
+  Destination: Local Networks
+</code></pre>
+<h4>pfSense / OPNsense Configuration</h4>
+<h5>Create VLANs</h5>
+<pre><code>Interfaces → Assignments → VLANs → Add
+
+  Parent Interface: em1  (your LAN NIC)
+  VLAN Tag: 20
+  Description: IoT
+
+# Repeat for each VLAN, then assign each VLAN to an interface:
+Interfaces → Assignments → Add
+  Select the VLAN you created → click Add
+  Enable the interface, set IP to gateway address (192.168.20.1/24)
+</code></pre>
+<h5>DHCP for Each VLAN</h5>
+<pre><code>Services → DHCP Server → Select your VLAN interface
+
+  Enable DHCP
+  Range: 192.168.20.100 to 192.168.20.254
+  DNS Servers: 192.168.30.2  ← Pi-hole IP if you have one
+</code></pre>
+<h5>Firewall Rules (pfSense/OPNsense)</h5>
+<pre><code># Rules are processed top-to-bottom, first match wins.
+
+# On the IoT interface (VLAN 20):
+  Rule 1: Allow IoT → Pi-hole DNS  ← MUST come before the RFC1918 block rule
+    Protocol: UDP/TCP
+    Source: IoT net
+    Destination: 192.168.30.2 port 53
+    Action: Allow
+
+  Rule 2: Block IoT → RFC1918 (all private IP ranges)
+    Protocol: any
+    Source: IoT net
+    Destination: RFC1918  (192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12)
+    Action: Block
+
+  Rule 3: Allow IoT → internet
+    Protocol: any
+    Source: IoT net
+    Destination: any
+    Action: Allow
+
+# On the Trusted interface (VLAN 10):
+  Allow all (trusted devices can reach everything)
+    Source: Trusted net
+    Destination: any
+    Action: Allow
+
+# Additional exceptions for IoT devices that need specific local services:
+  Insert before Rule 2 (the RFC1918 block):
+    Protocol: TCP
+    Source: IoT net
+    Destination: 192.168.30.x port 8123  ← Home Assistant
+    Action: Allow
+</code></pre>
+<h4>MikroTik Configuration</h4>
+<pre><code># Step 1: Create a bridge with VLAN filtering enabled
+/interface bridge
+add name=bridge vlan-filtering=yes
+
+# Step 2: Add physical ports to the bridge
+# Trunk port to router/uplink (tagged for all VLANs)
+/interface bridge port
+add bridge=bridge interface=ether1 frame-types=admit-only-vlan-tagged
+
+# Access port for trusted devices (untagged VLAN 10)
+/interface bridge port
+add bridge=bridge interface=ether2 pvid=10 frame-types=admit-only-untagged-and-priority-tagged
+
+# Access port for IoT devices (untagged VLAN 20)
+/interface bridge port
+add bridge=bridge interface=ether3 pvid=20 frame-types=admit-only-untagged-and-priority-tagged
+
+# Step 3: Define which VLANs are allowed on which ports
+/interface bridge vlan
+add bridge=bridge tagged=ether1 untagged=ether2 vlan-ids=10
+add bridge=bridge tagged=ether1 untagged=ether3 vlan-ids=20
+
+# Step 4: Create VLAN interfaces on the bridge (gateway IPs)
+/interface vlan
+add interface=bridge name=vlan10 vlan-id=10
+add interface=bridge name=vlan20 vlan-id=20
+
+# Step 5: Assign gateway IPs
+/ip address
+add interface=vlan10 address=192.168.10.1/24
+add interface=vlan20 address=192.168.20.1/24
+
+# Step 6: DHCP pools and servers
+/ip pool
+add name=pool-trusted ranges=192.168.10.100-192.168.10.254
+add name=pool-iot ranges=192.168.20.100-192.168.20.254
+
+/ip dhcp-server
+add interface=vlan10 address-pool=pool-trusted name=dhcp-trusted
+add interface=vlan20 address-pool=pool-iot name=dhcp-iot
+
+/ip dhcp-server network
+add address=192.168.10.0/24 gateway=192.168.10.1
+add address=192.168.20.0/24 gateway=192.168.20.1
+
+# Step 7: Firewall — block IoT from reaching trusted VLAN
+/ip firewall filter
+add chain=forward src-address=192.168.20.0/24 dst-address=192.168.10.0/24 \
+    action=drop comment=&quot;Block IoT to Trusted&quot;
+</code></pre>
+<h4>Switch Trunk vs Access Ports</h4>
+<pre><code># Trunk port: carries multiple VLANs (tagged) — connects switch-to-switch, switch-to-router, switch-to-AP
+# Access port: carries one VLAN (untagged) — connects to end devices (PC, camera, NAS)
+
+# A managed switch port connected to your router should be a trunk:
+  Allowed VLANs: 10, 20, 30, 40, 99
+
+# A port connecting to a PC should be an access port:
+  VLAN: 10 (trusted)
+  No tagging — the PC does not know or care about VLANs
+
+# A port connecting to an AP must be a trunk:
+  The AP tags traffic from each SSID with the right VLAN ID
+  Allowed VLANs: 10, 20, 40  (whichever SSIDs the AP serves)
+</code></pre>
+<h4>Anti-Patterns</h4>
+<pre><code># BAD: Creating VLANs without adding firewall rules
+# VLANs without firewall rules do not provide security — inter-VLAN routing is open by default
+# GOOD: Add explicit block rules immediately after creating VLANs
+
+# BAD: Putting the Pi-hole in the IoT VLAN
+# IoT devices can reach it but trusted devices cannot (without extra rules)
+# GOOD: Pi-hole in the Servers VLAN with a rule allowing all VLANs to reach port 53
+
+# BAD: Native VLAN equals management VLAN
+# Untagged traffic landing in your management VLAN enables VLAN hopping attacks
+# GOOD: Use a dedicated unused VLAN as native (e.g. VLAN 999), keep management traffic tagged
+
+# BAD: Same Wi-Fi password for IoT SSID and trusted SSID
+# Anyone who learns the password can connect IoT devices to the wrong segment
+</code></pre>
+<h4>Best Practices</h4>
+<ul>
+<li>Start with 4 VLANs: Trusted, IoT, Servers, Guest — add more as needed</li>
+<li>Put Pi-hole in the Servers VLAN (192.168.30.x)</li>
+<li>Add a firewall rule allowing DNS (port 53) from all VLANs to the Pi-hole IP — before any RFC1918 block rule</li>
+<li>Test isolation after every rule change: from the IoT VLAN, try to ping a trusted device — it should fail</li>
+<li>Use a management VLAN for switch and AP web UIs and restrict access to the Trusted VLAN only</li>
+<li>Document your VLAN design in a table (VLAN ID, name, subnet, purpose)</li>
+</ul>
+<h4>Related Skills</h4>
+<ul>
+<li>homelab-network-setup</li>
+<li>homelab-pihole-dns</li>
+<li>homelab-wireguard-vpn</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

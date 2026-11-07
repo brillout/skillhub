@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>git-workflow · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re picking a branching strategy, setting commit conventions, deciding between merge and rebase, or resolving conflicts. It does: compares GitHub Flow, trunk-based development and GitFlow by team size and release cadence, then sets conventions for commits, branches, PRs and tags. You get: commit, PR title and PR description templates, a code review checklist for reviewers and authors, and branch naming rules. Also covers: safe rebasing, undoing mistakes, syncing forks, stashes, semantic versioning, git config and aliases, and pre-commit and pre-push hooks." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <h1>git-workflow</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re picking a branching strategy, setting commit conventions, deciding between merge and rebase, or resolving conflicts</dd></div><div><dt>It does</dt><dd>compares GitHub Flow, trunk-based development and GitFlow by team size and release cadence, then sets conventions for commits, branches, PRs and tags</dd></div><div><dt>You get</dt><dd>commit, PR title and PR description templates, a code review checklist for reviewers and authors, and branch naming rules</dd></div><div><dt>Also covers</dt><dd>safe rebasing, undoing mistakes, syncing forks, stashes, semantic versioning, git config and aliases, and pre-commit and pre-push hooks</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A reference of git practice from ECC. It sets out three branching strategies: GitHub Flow, recommended for most teams and for continuous deployment; trunk-based development, for experienced teams with strong CI and feature flags; and GitFlow, for scheduled releases and enterprise projects, with a table of which fits which team. Commits follow Conventional Commits: a type, a scope and an imperative subject of at most 50 characters, with a body that explains why. It explains when to merge and when to rebase, and never to rebase shared, protected or merged branches. Pull requests get a title format, a what, why, how and testing description template, and review checklists for reviewers and authors. Further sections cover resolving and preventing conflicts, branch naming and cleanup, stashes, semantic versioning, annotated tags and changelogs, recommended git config and aliases, a .gitignore, commands for common tasks such as starting a feature, syncing a fork or undoing a commit, and sample pre-commit and pre-push hooks. It closes with anti-patterns such as committing to main, committing secrets, giant PRs and long-lived branches.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/git-workflow">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/affaan-m/ecc --skill git-workflow</code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill git-workflow">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/git-workflow">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/git-workflow">Source on GitHub</a> · <a href="/skillhub/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,900 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>298,660 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">495</div>
+      <div class="stat-delta">+61% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 307; week to Sep 26: 466; week to Oct 3: 202; week to Oct 10: 182; week to Oct 17: 251; week to Oct 24: 427; week to Oct 31: 433; week to Nov 7: 495. Use the left and right arrow keys to read each week."
+        data-values="307,466,202,182,251,427,433,495" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,22.7 38.6,8.6 71.1,32.0 103.7,33.8 136.3,27.7 168.9,12.0 201.4,11.5 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>307</td></tr><tr><td>Sep 26</td><td>466</td></tr><tr><td>Oct 3</td><td>202</td></tr><tr><td>Oct 10</td><td>182</td></tr><tr><td>Oct 17</td><td>251</td></tr><tr><td>Oct 24</td><td>427</td></tr><tr><td>Oct 31</td><td>433</td></tr><tr><td>Nov 7</td><td>495</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/skillhub/?tag=category%3Aengineering">category:engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/skillhub/?tag=type%3Aguidelines">type:guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="git" data-facet="topic" href="/skillhub/?tag=git">git</a><a class="tag" data-tag="code-review" data-facet="topic" href="/skillhub/?tag=code-review">code-review</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:git" data-facet="stack" href="/skillhub/?tag=stack%3Agit">stack:git</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/git-workflow/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: git-workflow
+description: Git workflow patterns including branching strategies, commit conventions, keeping history clean and readable, tidying local commits before merging, merge vs rebase, conflict resolution, and collaborative development best practices for teams of all sizes. Use when choosing a branching strategy, writing commit conventions, cleaning up history before a pull request, deciding merge versus rebase, or resolving conflicts.
+metadata:
+  origin: ECC</code></pre></details>
+        <div class="markdown"><h3>Git Workflow Patterns</h3>
+<p>Best practices for Git version control, branching strategies, and collaborative development.</p>
+<h4>When to Activate</h4>
+<ul>
+<li>Setting up Git workflow for a new project</li>
+<li>Deciding on branching strategy (GitFlow, trunk-based, GitHub flow)</li>
+<li>Writing commit messages and PR descriptions</li>
+<li>Resolving merge conflicts</li>
+<li>Managing releases and version tags</li>
+<li>Onboarding new team members to Git practices</li>
+</ul>
+<h4>Branching Strategies</h4>
+<h5>GitHub Flow (Simple, Recommended for Most)</h5>
+<p>Best for continuous deployment and small-to-medium teams.</p>
+<pre><code>main (protected, always deployable)
+  │
+  ├── feature/user-auth      → PR → merge to main
+  ├── feature/payment-flow   → PR → merge to main
+  └── fix/login-bug          → PR → merge to main
+</code></pre>
+<p><strong>Rules:</strong></p>
+<ul>
+<li><code>main</code> is always deployable</li>
+<li>Create feature branches from <code>main</code></li>
+<li>Open Pull Request when ready for review</li>
+<li>After approval and CI passes, merge to <code>main</code></li>
+<li>Deploy immediately after merge</li>
+</ul>
+<h5>Trunk-Based Development (High-Velocity Teams)</h5>
+<p>Best for teams with strong CI/CD and feature flags.</p>
+<pre><code>main (trunk)
+  │
+  ├── short-lived feature (1-2 days max)
+  ├── short-lived feature
+  └── short-lived feature
+</code></pre>
+<p><strong>Rules:</strong></p>
+<ul>
+<li>Everyone commits to <code>main</code> or very short-lived branches</li>
+<li>Feature flags hide incomplete work</li>
+<li>CI must pass before merge</li>
+<li>Deploy multiple times per day</li>
+</ul>
+<h5>GitFlow (Complex, Release-Cycle Driven)</h5>
+<p>Best for scheduled releases and enterprise projects.</p>
+<pre><code>main (production releases)
+  │
+  └── develop (integration branch)
+        │
+        ├── feature/user-auth
+        ├── feature/payment
+        │
+        ├── release/1.0.0    → merge to main and develop
+        │
+        └── hotfix/critical  → merge to main and develop
+</code></pre>
+<p><strong>Rules:</strong></p>
+<ul>
+<li><code>main</code> contains production-ready code only</li>
+<li><code>develop</code> is the integration branch</li>
+<li>Feature branches from <code>develop</code>, merge back to <code>develop</code></li>
+<li>Release branches from <code>develop</code>, merge to <code>main</code> and <code>develop</code></li>
+<li>Hotfix branches from <code>main</code>, merge to both <code>main</code> and <code>develop</code></li>
+</ul>
+<h5>When to Use Which</h5>
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Team Size</th>
+<th>Release Cadence</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GitHub Flow</td>
+<td>Any</td>
+<td>Continuous</td>
+<td>SaaS, web apps, startups</td>
+</tr>
+<tr>
+<td>Trunk-Based</td>
+<td>5+ experienced</td>
+<td>Multiple/day</td>
+<td>High-velocity teams, feature flags</td>
+</tr>
+<tr>
+<td>GitFlow</td>
+<td>10+</td>
+<td>Scheduled</td>
+<td>Enterprise, regulated industries</td>
+</tr>
+</tbody>
+</table>
+<h4>Commit Messages</h4>
+<h5>Conventional Commits Format</h5>
+<pre><code>&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;
+
+[optional body]
+
+[optional footer(s)]
+</code></pre>
+<h5>Types</h5>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Use For</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>feat</code></td>
+<td>New feature</td>
+<td><code>feat(auth): add OAuth2 login</code></td>
+</tr>
+<tr>
+<td><code>fix</code></td>
+<td>Bug fix</td>
+<td><code>fix(api): handle null response in user endpoint</code></td>
+</tr>
+<tr>
+<td><code>docs</code></td>
+<td>Documentation</td>
+<td><code>docs(readme): update installation instructions</code></td>
+</tr>
+<tr>
+<td><code>style</code></td>
+<td>Formatting, no code change</td>
+<td><code>style: fix indentation in login component</code></td>
+</tr>
+<tr>
+<td><code>refactor</code></td>
+<td>Code refactoring</td>
+<td><code>refactor(db): extract connection pool to module</code></td>
+</tr>
+<tr>
+<td><code>test</code></td>
+<td>Adding/updating tests</td>
+<td><code>test(auth): add unit tests for token validation</code></td>
+</tr>
+<tr>
+<td><code>chore</code></td>
+<td>Maintenance tasks</td>
+<td><code>chore(deps): update dependencies</code></td>
+</tr>
+<tr>
+<td><code>perf</code></td>
+<td>Performance improvement</td>
+<td><code>perf(query): add index to users table</code></td>
+</tr>
+<tr>
+<td><code>ci</code></td>
+<td>CI/CD changes</td>
+<td><code>ci: add PostgreSQL service to test workflow</code></td>
+</tr>
+<tr>
+<td><code>revert</code></td>
+<td>Revert previous commit</td>
+<td><code>revert: revert &quot;feat(auth): add OAuth2 login&quot;</code></td>
+</tr>
+</tbody>
+</table>
+<h5>Good vs Bad Examples</h5>
+<pre><code># BAD: Vague, no context
+git commit -m &quot;fixed stuff&quot;
+git commit -m &quot;updates&quot;
+git commit -m &quot;WIP&quot;
+
+# GOOD: Clear, specific, explains why
+git commit -m &quot;fix(api): retry requests on 503 Service Unavailable
+
+The external API occasionally returns 503 errors during peak hours.
+Added exponential backoff retry logic with max 3 attempts.
+
+Closes #123&quot;
+</code></pre>
+<h5>Commit Message Template</h5>
+<p>Create <code>.gitmessage</code> in repo root:</p>
+<pre><code># &lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;
+# # Types: feat, fix, docs, style, refactor, test, chore, perf, ci, revert
+# Scope: api, ui, db, auth, etc.
+# Subject: imperative mood, no period, max 50 chars
+#
+# [optional body] - explain why, not what
+# [optional footer] - Breaking changes, closes #issue
+</code></pre>
+<p>Enable with: <code>git config commit.template .gitmessage</code></p>
+<h4>Merge vs Rebase</h4>
+<h5>Merge (Preserves History)</h5>
+<pre><code class="language-bash"># Creates a merge commit
+git checkout main
+git merge feature/user-auth
+
+# Result:
+# *   merge commit
+# |\
+# | * feature commits
+# |/
+# * main commits
+</code></pre>
+<p><strong>Use when:</strong></p>
+<ul>
+<li>Merging feature branches into <code>main</code></li>
+<li>You want to preserve exact history</li>
+<li>Multiple people worked on the branch</li>
+<li>The branch has been pushed and others may have based work on it</li>
+</ul>
+<h5>Rebase (Linear History)</h5>
+<pre><code class="language-bash"># Rewrites feature commits onto target branch
+git checkout feature/user-auth
+git rebase main
+
+# Result:
+# * feature commits (rewritten)
+# * main commits
+</code></pre>
+<p><strong>Use when:</strong></p>
+<ul>
+<li>Updating your local feature branch with latest <code>main</code></li>
+<li>You want a linear, clean history</li>
+<li>The branch is local-only (not pushed)</li>
+<li>You're the only one working on the branch</li>
+</ul>
+<h5>Rebase Workflow</h5>
+<pre><code class="language-bash"># Update feature branch with latest main (before PR)
+git checkout feature/user-auth
+git fetch origin
+git rebase origin/main
+
+# Fix any conflicts
+# Tests should still pass
+
+# Force push (only if you're the only contributor)
+git push --force-with-lease origin feature/user-auth
+</code></pre>
+<h5>When NOT to Rebase</h5>
+<pre><code># NEVER rebase branches that:
+- Have been pushed to a shared repository
+- Other people have based work on
+- Are protected branches (main, develop)
+- Are already merged
+
+# Why: Rebase rewrites history, breaking others' work
+</code></pre>
+<h4>Pull Request Workflow</h4>
+<h5>PR Title Format</h5>
+<pre><code>&lt;type&gt;(&lt;scope&gt;): &lt;description&gt;
+
+Examples:
+feat(auth): add SSO support for enterprise users
+fix(api): resolve race condition in order processing
+docs(api): add OpenAPI specification for v2 endpoints
+</code></pre>
+<h5>PR Description Template</h5>
+<pre><code class="language-markdown">## What
+
+Brief description of what this PR does.
+
+## Why
+
+Explain the motivation and context.
+
+## How
+
+Key implementation details worth highlighting.
+
+## Testing
+
+- [ ] Unit tests added/updated
+- [ ] Integration tests added/updated
+- [ ] Manual testing performed
+
+## Screenshots (if applicable)
+
+Before/after screenshots for UI changes.
+
+## Checklist
+
+- [ ] Code follows project style guidelines
+- [ ] Self-review completed
+- [ ] Comments added for complex logic
+- [ ] Documentation updated
+- [ ] No new warnings introduced
+- [ ] Tests pass locally
+- [ ] Related issues linked
+
+Closes #123
+</code></pre>
+<h5>Code Review Checklist</h5>
+<p><strong>For Reviewers:</strong></p>
+<ul>
+<li>[ ] Does the code solve the stated problem?</li>
+<li>[ ] Are there any edge cases not handled?</li>
+<li>[ ] Is the code readable and maintainable?</li>
+<li>[ ] Are there sufficient tests?</li>
+<li>[ ] Are there security concerns?</li>
+<li>[ ] Is the commit history clean (squashed if needed)?</li>
+</ul>
+<p><strong>For Authors:</strong></p>
+<ul>
+<li>[ ] Self-review completed before requesting review</li>
+<li>[ ] CI passes (tests, lint, typecheck)</li>
+<li>[ ] PR size is reasonable (&lt;500 lines ideal)</li>
+<li>[ ] Related to a single feature/fix</li>
+<li>[ ] Description clearly explains the change</li>
+</ul>
+<h4>Conflict Resolution</h4>
+<h5>Identify Conflicts</h5>
+<pre><code class="language-bash"># Check for conflicts before merge
+git checkout main
+git merge feature/user-auth --no-commit --no-ff
+
+# If conflicts, Git will show:
+# CONFLICT (content): Merge conflict in src/auth/login.ts
+# Automatic merge failed; fix conflicts and then commit the result.
+</code></pre>
+<h5>Resolve Conflicts</h5>
+<pre><code class="language-bash"># See conflicted files
+git status
+
+# View conflict markers in file
+# &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+# content from main
+# =======
+# content from feature branch
+# &gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/user-auth
+
+# Option 1: Manual resolution
+# Edit file, remove markers, keep correct content
+
+# Option 2: Use merge tool
+git mergetool
+
+# Option 3: Accept one side
+git checkout --ours src/auth/login.ts    # Keep main version
+git checkout --theirs src/auth/login.ts  # Keep feature version
+
+# After resolving, stage and commit
+git add src/auth/login.ts
+git commit
+</code></pre>
+<h5>Conflict Prevention Strategies</h5>
+<pre><code class="language-bash"># 1. Keep feature branches small and short-lived
+# 2. Rebase frequently onto main
+git checkout feature/user-auth
+git fetch origin
+git rebase origin/main
+
+# 3. Communicate with team about touching shared files
+# 4. Use feature flags instead of long-lived branches
+# 5. Review and merge PRs promptly
+</code></pre>
+<h4>Branch Management</h4>
+<h5>Naming Conventions</h5>
+<pre><code># Feature branches
+feature/user-authentication
+feature/JIRA-123-payment-integration
+
+# Bug fixes
+fix/login-redirect-loop
+fix/456-null-pointer-exception
+
+# Hotfixes (production issues)
+hotfix/critical-security-patch
+hotfix/database-connection-leak
+
+# Releases
+release/1.2.0
+release/2024-01-hotfix
+
+# Experiments/POCs
+experiment/new-caching-strategy
+poc/graphql-migration
+</code></pre>
+<h5>Branch Cleanup</h5>
+<pre><code class="language-bash"># Delete local branches that are merged
+git branch --merged main | grep -v &quot;^\*\|main&quot; | xargs -n 1 git branch -d
+
+# Delete remote-tracking references for deleted remote branches
+git fetch -p
+
+# Delete local branch
+git branch -d feature/user-auth  # Safe delete (only if merged)
+git branch -D feature/user-auth  # Force delete
+
+# Delete remote branch
+git push origin --delete feature/user-auth
+</code></pre>
+<h5>Stash Workflow</h5>
+<pre><code class="language-bash"># Save work in progress
+git stash push -m &quot;WIP: user authentication&quot;
+
+# List stashes
+git stash list
+
+# Apply most recent stash
+git stash pop
+
+# Apply specific stash
+git stash apply stash@{2}
+
+# Drop stash
+git stash drop stash@{0}
+</code></pre>
+<h4>Release Management</h4>
+<h5>Semantic Versioning</h5>
+<pre><code>MAJOR.MINOR.PATCH
+
+MAJOR: Breaking changes
+MINOR: New features, backward compatible
+PATCH: Bug fixes, backward compatible
+
+Examples:
+1.0.0 → 1.0.1 (patch: bug fix)
+1.0.1 → 1.1.0 (minor: new feature)
+1.1.0 → 2.0.0 (major: breaking change)
+</code></pre>
+<h5>Creating Releases</h5>
+<pre><code class="language-bash"># Create annotated tag
+git tag -a v1.2.0 -m &quot;Release v1.2.0
+
+Features:
+- Add user authentication
+- Implement password reset
+
+Fixes:
+- Resolve login redirect issue
+
+Breaking Changes:
+- None&quot;
+
+# Push tag to remote
+git push origin v1.2.0
+
+# List tags
+git tag -l
+
+# Delete tag
+git tag -d v1.2.0
+git push origin --delete v1.2.0
+</code></pre>
+<h5>Changelog Generation</h5>
+<pre><code class="language-bash"># Generate changelog from commits
+git log v1.1.0..v1.2.0 --oneline --no-merges
+
+# Or use conventional-changelog
+npx conventional-changelog -i CHANGELOG.md -s
+</code></pre>
+<h4>Git Configuration</h4>
+<h5>Essential Configs</h5>
+<pre><code class="language-bash"># User identity
+git config --global user.name &quot;Your Name&quot;
+git config --global user.email &quot;your@email.com&quot;
+
+# Default branch name
+git config --global init.defaultBranch main
+
+# Pull behavior (rebase instead of merge)
+git config --global pull.rebase true
+
+# Push behavior (push current branch only)
+git config --global push.default current
+
+# Auto-correct typos
+git config --global help.autocorrect 1
+
+# Better diff algorithm
+git config --global diff.algorithm histogram
+
+# Color output
+git config --global color.ui auto
+</code></pre>
+<h5>Useful Aliases</h5>
+<pre><code class="language-bash"># Add to ~/.gitconfig
+[alias]
+    co = checkout
+    br = branch
+    ci = commit
+    st = status
+    unstage = reset HEAD --
+    last = log -1 HEAD
+    visual = log --oneline --graph --all
+    amend = commit --amend --no-edit
+    wip = commit -m &quot;WIP&quot;
+    undo = reset --soft HEAD~1
+    contributors = shortlog -sn
+</code></pre>
+<h5>Gitignore Patterns</h5>
+<pre><code class="language-gitignore"># Dependencies
+node_modules/
+vendor/
+
+# Build outputs
+dist/
+build/
+*.o
+*.exe
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Test coverage
+coverage/
+
+# Cache
+.cache/
+*.tsbuildinfo
+</code></pre>
+<h4>Common Workflows</h4>
+<h5>Starting a New Feature</h5>
+<pre><code class="language-bash"># 1. Update main branch
+git checkout main
+git pull origin main
+
+# 2. Create feature branch
+git checkout -b feature/user-auth
+
+# 3. Make changes and commit
+git add .
+git commit -m &quot;feat(auth): implement OAuth2 login&quot;
+
+# 4. Push to remote
+git push -u origin feature/user-auth
+
+# 5. Create Pull Request on GitHub/GitLab
+</code></pre>
+<h5>Updating a PR with New Changes</h5>
+<pre><code class="language-bash"># 1. Make additional changes
+git add .
+git commit -m &quot;feat(auth): add error handling&quot;
+
+# 2. Push updates
+git push origin feature/user-auth
+</code></pre>
+<h5>Syncing Fork with Upstream</h5>
+<pre><code class="language-bash"># 1. Add upstream remote (once)
+git remote add upstream https://github.com/original/repo.git
+
+# 2. Fetch upstream
+git fetch upstream
+
+# 3. Merge upstream/main into your main
+git checkout main
+git merge upstream/main
+
+# 4. Push to your fork
+git push origin main
+</code></pre>
+<h5>Undoing Mistakes</h5>
+<pre><code class="language-bash"># Undo last commit (keep changes)
+git reset --soft HEAD~1
+
+# Undo last commit (discard changes)
+git reset --hard HEAD~1
+
+# Undo last commit pushed to remote
+git revert HEAD
+git push origin main
+
+# Undo specific file changes
+git checkout HEAD -- path/to/file
+
+# Fix last commit message
+git commit --amend -m &quot;New message&quot;
+
+# Add forgotten file to last commit
+git add forgotten-file
+git commit --amend --no-edit
+</code></pre>
+<h4>Git Hooks</h4>
+<h5>Pre-Commit Hook</h5>
+<pre><code class="language-bash">#!/bin/bash
+# .git/hooks/pre-commit
+
+# Run linting
+npm run lint || exit 1
+
+# Run tests
+npm test || exit 1
+
+# Check for secrets
+if git diff --cached | grep -E '(password|api_key|secret)'; then
+    echo &quot;Possible secret detected. Commit aborted.&quot;
+    exit 1
+fi
+</code></pre>
+<h5>Pre-Push Hook</h5>
+<pre><code class="language-bash">#!/bin/bash
+# .git/hooks/pre-push
+
+# Run full test suite
+npm run test:all || exit 1
+
+# Check for console.log statements
+if git diff origin/main | grep -E 'console\.log'; then
+    echo &quot;Remove console.log statements before pushing.&quot;
+    exit 1
+fi
+</code></pre>
+<h4>Anti-Patterns</h4>
+<pre><code># BAD: Committing directly to main
+git checkout main
+git commit -m &quot;fix bug&quot;
+
+# GOOD: Use feature branches and PRs
+
+# BAD: Committing secrets
+git add .env  # Contains API keys
+
+# GOOD: Add to .gitignore, use environment variables
+
+# BAD: Giant PRs (1000+ lines)
+# GOOD: Break into smaller, focused PRs
+
+# BAD: &quot;Update&quot; commit messages
+git commit -m &quot;update&quot;
+git commit -m &quot;fix&quot;
+
+# GOOD: Descriptive messages
+git commit -m &quot;fix(auth): resolve redirect loop after login&quot;
+
+# BAD: Rewriting public history
+git push --force origin main
+
+# GOOD: Use revert for public branches
+git revert HEAD
+
+# BAD: Long-lived feature branches (weeks/months)
+# GOOD: Keep branches short (days), rebase frequently
+
+# BAD: Committing generated files
+git add dist/
+git add node_modules/
+
+# GOOD: Add to .gitignore
+</code></pre>
+<h4>Quick Reference</h4>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Create branch</td>
+<td><code>git checkout -b feature/name</code></td>
+</tr>
+<tr>
+<td>Switch branch</td>
+<td><code>git checkout branch-name</code></td>
+</tr>
+<tr>
+<td>Delete branch</td>
+<td><code>git branch -d branch-name</code></td>
+</tr>
+<tr>
+<td>Merge branch</td>
+<td><code>git merge branch-name</code></td>
+</tr>
+<tr>
+<td>Rebase branch</td>
+<td><code>git rebase main</code></td>
+</tr>
+<tr>
+<td>View history</td>
+<td><code>git log --oneline --graph</code></td>
+</tr>
+<tr>
+<td>View changes</td>
+<td><code>git diff</code></td>
+</tr>
+<tr>
+<td>Stage changes</td>
+<td><code>git add .</code> or <code>git add -p</code></td>
+</tr>
+<tr>
+<td>Commit</td>
+<td><code>git commit -m &quot;message&quot;</code></td>
+</tr>
+<tr>
+<td>Push</td>
+<td><code>git push origin branch-name</code></td>
+</tr>
+<tr>
+<td>Pull</td>
+<td><code>git pull origin branch-name</code></td>
+</tr>
+<tr>
+<td>Stash</td>
+<td><code>git stash push -m &quot;message&quot;</code></td>
+</tr>
+<tr>
+<td>Undo last commit</td>
+<td><code>git reset --soft HEAD~1</code></td>
+</tr>
+<tr>
+<td>Revert commit</td>
+<td><code>git revert HEAD</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>browser-automation · SkillHub</title>
+    <meta name="description" content="Use it when: you want the agent to browse, fill forms, upload files, scrape data or test a web page by what it looks like, not its DOM. It does: runs one Midscene command at a time: connect to a page, act on a plain-language goal, take a screenshot, assert what the page shows. Modes: by default a headless Chrome through Puppeteer that stays open between commands; CDP or the Midscene extension drive your own Chrome and its logins. You get: a summary of what it did and found, screenshots, and an HTML report with replay videos that converts to Markdown or JSON. Needs: Node.js and an API key for a vision model that can locate elements on a screenshot, such as Gemini, Qwen or Doubao." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=web-infra-dev%2Fmidscene-skills">web-infra-dev/midscene-skills</a></p>
+      <h1>browser-automation</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want the agent to browse, fill forms, upload files, scrape data or test a web page by what it looks like, not its DOM</dd></div><div><dt>It does</dt><dd>runs one Midscene command at a time: connect to a page, act on a plain-language goal, take a screenshot, assert what the page shows</dd></div><div><dt>Modes</dt><dd>by default a headless Chrome through Puppeteer that stays open between commands; CDP or the Midscene extension drive your own Chrome and its logins</dd></div><div><dt>You get</dt><dd>a summary of what it did and found, screenshots, and an HTML report with replay videos that converts to Markdown or JSON</dd></div><div><dt>Needs</dt><dd>Node.js and an API key for a vision model that can locate elements on a screenshot, such as Gemini, Qwen or Doubao</dd></div></dl></section>
+      
+      <p class="note">Needs Node.js and an API key for a vision model you configure, such as Gemini, Qwen or Doubao, which reads the page screenshots. In CDP or Bridge mode it drives your own Chrome, signed in to your accounts.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Midscene&#39;s skill for the web. Its default mode launches a headless Chrome through Puppeteer, isolated from your browser, that stays open across commands until you close it. When you ask it to use your Chrome, or the task needs your login, such as checking your orders, it connects over the DevTools Protocol after a quick check that remote debugging is on, or through the Midscene Chrome extension in Bridge mode. `act` takes a whole goal in plain words and handles clicks, hovers, typing, scrolling and drags itself; uploads only reach files inside a folder passed with the command, the smallest that holds them. `assert` checks the visible page against a sentence or reference images, and a recorder running in its own terminal catches toasts and transitions that vanish too fast. Tabs can be listed and switched without reloading, custom HTTP headers can go with every CDP command, and `--deep-locate` or `--deep-think` trade speed for precision. Commands run one at a time in the foreground, about a minute each; the agent reads each screenshot before deciding the next step and reports results at the end. Because it works from screenshots, it needs no selectors, DOM or accessibility labels.</p>
+      <p class="muted">Summarizes <a href="https://github.com/web-infra-dev/midscene-skills/tree/e6836973627a20edc34b844a2e20d4180602ae5d/skills/browser">the skill at e683697</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/web-infra-dev/midscene-skills --skill browser-automation</code><button type="button" class="copy" data-copy="npx skills add https://github.com/web-infra-dev/midscene-skills --skill browser-automation">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/web-infra-dev/midscene-skills/browser-automation">skills.sh page</a> · <a href="https://github.com/web-infra-dev/midscene-skills/tree/HEAD/skills/browser">Source on GitHub</a> · <a href="/skillhub/?repo=web-infra-dev%2Fmidscene-skills">All skills from web-infra-dev/midscene-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,400 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>319 <span class="muted">web-infra-dev/midscene-skills</span></dd></div><div><dt>First seen</dt><dd>Mar 6, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">30</div>
+      <div class="stat-delta">-71% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 102; week to Sep 26: 66; week to Oct 3: 45; week to Oct 10: 32; week to Oct 17: 28; week to Oct 24: 59; week to Oct 31: 47; week to Nov 7: 30. Use the left and right arrow keys to read each week."
+        data-values="102,66,45,32,28,59,47,30" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,21.5 71.1,30.6 103.7,36.2 136.3,37.9 168.9,24.5 201.4,29.7 234.0,37.1" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="37.1" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>102</td></tr><tr><td>Sep 26</td><td>66</td></tr><tr><td>Oct 3</td><td>45</td></tr><tr><td>Oct 10</td><td>32</td></tr><tr><td>Oct 17</td><td>28</td></tr><tr><td>Oct 24</td><td>59</td></tr><tr><td>Oct 31</td><td>47</td></tr><tr><td>Nov 7</td><td>30</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:browser" data-facet="category" title="Drive browsers, scrape pages and search the web." href="/skillhub/?tag=category%3Abrowser">category:browser</a><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Drive browsers, scrape pages and search the web.</p><p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/skillhub/?tag=type%3Atool">type:tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:remote" data-facet="effect" title="Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service." href="/skillhub/?tag=effect%3Aremote">effect:remote</a></div>
+          <p class="tag-meaning">Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a><a class="tag" data-tag="needs:browser" data-facet="needs" title="Drives a real Chromium or Chrome browser." href="/skillhub/?tag=needs%3Abrowser">needs:browser</a><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/skillhub/?tag=needs%3Aaccount">needs:account</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">Drives a real Chromium or Chrome browser.</p><p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="browser-automation" data-facet="topic" href="/skillhub/?tag=browser-automation">browser-automation</a><a class="tag" data-tag="scraping" data-facet="topic" href="/skillhub/?tag=scraping">scraping</a><a class="tag" data-tag="testing" data-facet="topic" href="/skillhub/?tag=testing">testing</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:midscene" data-facet="stack" href="/skillhub/?tag=stack%3Amidscene">stack:midscene</a><a class="tag" data-tag="stack:puppeteer" data-facet="stack" href="/skillhub/?tag=stack%3Apuppeteer">stack:puppeteer</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/web-infra-dev/midscene-skills/blob/e6836973627a20edc34b844a2e20d4180602ae5d/skills/browser/SKILL.md">web-infra-dev/midscene-skills at e683697</a>. Checked daily, last changed Nov 7, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: browser-automation
+description: |
+  Vision-driven browser automation using Midscene. Operates from screenshots — no DOM or accessibility labels needed.
+
+  Runs in headless Puppeteer — does NOT take over the user&#39;s mouse or keyboard.
+  Also supports CDP mode and Bridge mode to connect to an existing Chrome.
+
+  Use this skill when the user wants to:
+  - Browse, navigate, or open web pages
+  - Scrape, extract, or collect data from websites
+  - Fill out forms, upload local files, click buttons, or interact with web elements
+  - Verify, validate, test, or QA frontend UI behavior
+  - Take screenshots of web pages
+  - Automate multi-step web workflows
+  - Test what was just built, see if it works in browser
+  - Connect to Chrome via CDP, DevTools Protocol, or remote debugging
+  - Connect to user&#39;s Chrome browser, control my browser, operate my Chrome
+
+  Powered by Midscene.js (https://midscenejs.com)
+allowed-tools:
+  - Bash</code></pre></details>
+        <div class="markdown"><h3>Browser Automation</h3>
+<blockquote>
+<p><strong>CRITICAL RULES — VIOLATIONS WILL BREAK THE WORKFLOW:</strong></p>
+<ol>
+<li><strong>Never run midscene commands in the background.</strong> Each command must run synchronously so you can read its output (especially screenshots) before deciding the next action. Background execution breaks the screenshot-analyze-act loop.</li>
+<li><strong>Run only one midscene command at a time.</strong> Wait for the previous command to finish, read the screenshot, then decide the next action. Never chain multiple commands together.</li>
+<li><strong>Allow enough time for each command to complete.</strong> Midscene commands involve AI inference and screen interaction, which can take longer than typical shell commands. A typical command needs about 1 minute; complex <code>act</code> commands may need even longer.</li>
+<li><strong>Always report task results before finishing.</strong> After completing the automation task, you MUST proactively summarize the results to the user — including key data found, actions completed, screenshots taken, and any relevant findings. Never silently end after the last automation step; the user expects a complete response in a single interaction.</li>
+</ol>
+</blockquote>
+<p>Automate web browsing using <code>npx -y @midscene/web@1</code>. By default, launches a headless Chrome via Puppeteer that <strong>persists across CLI calls</strong> — no session loss between commands. Also supports <strong>CDP mode</strong> and <strong>Bridge mode</strong> to connect to an existing Chrome browser.</p>
+<h4>What <code>act</code> Can Do</h4>
+<p>Inside a single <code>act</code> call in the browser, Midscene can click, right-click, double-click, hover, type or clear text, press keys, scroll, drag, long-press, and continue through multi-step page flows based on what is currently visible. When touch input is enabled, it can also handle swipe- or pinch-style interactions on touch-oriented pages.</p>
+<h4>When to Use</h4>
+<p>This skill has three modes. Choose based on the user's intent:</p>
+<h5>Mode Selection Guide</h5>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>When to use</th>
+<th>How it works</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Puppeteer (default)</strong></td>
+<td>User wants to browse a URL, scrape data, test UI — no need for their own browser</td>
+<td>Launches a new headless Chrome, isolated from user's browser</td>
+</tr>
+<tr>
+<td><strong>CDP mode</strong></td>
+<td>User says &quot;connect to my Chrome&quot;, &quot;control my browser&quot;, &quot;CDP&quot;, &quot;remote debugging&quot;, or wants to operate their existing browser. Also use when the task <strong>implicitly requires login state</strong> (e.g., &quot;check my orders&quot;, &quot;open my dashboard&quot;, &quot;look at my account&quot;)</td>
+<td>Connects to user's Chrome via DevTools Protocol. Requires remote debugging enabled (<code>chrome://inspect</code> &gt; &quot;Allow remote debugging&quot;). No extension needed</td>
+</tr>
+<tr>
+<td><strong>Bridge mode</strong></td>
+<td>User explicitly mentions &quot;bridge&quot;, &quot;extension&quot;, or has Midscene Chrome Extension installed and prefers to use it</td>
+<td>Connects to user's Chrome via the Midscene Chrome Extension</td>
+</tr>
+</tbody>
+</table>
+<p><strong>CDP vs Bridge</strong>: Both control the user's real Chrome with login sessions preserved. CDP only needs a Chrome setting toggle; Bridge needs a Chrome Extension installed. If the user doesn't specify, prefer <strong>CDP mode</strong> as it has fewer prerequisites.</p>
+<h5>Precheck: detect available CDP target</h5>
+<p>Before using CDP mode, run a quick precheck to verify Chrome's remote debugging port is reachable. This avoids long timeouts when the user hasn't enabled remote debugging.</p>
+<pre><code class="language-bash"># CDP precheck (port 9222, 2s timeout) — returns &quot;101&quot; if Chrome is listening for DevTools
+curl -s --max-time 2 -o /dev/null -w &quot;%{http_code}&quot; -H &quot;Upgrade: websocket&quot; -H &quot;Connection: Upgrade&quot; -H &quot;Sec-WebSocket-Version: 13&quot; -H &quot;Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==&quot; http://127.0.0.1:9222/devtools/browser
+</code></pre>
+<p><strong>How to use the precheck result:</strong></p>
+<ul>
+<li>Returns <code>101</code> → CDP mode is available, use <code>--cdp</code></li>
+<li>Fails (curl exit 7 or HTTP <code>000</code>) → Chrome is not running with remote debugging enabled. Start Chrome with <code>--remote-debugging-port=9222</code>, wait 2-3 seconds, then re-run the precheck. If it still fails, fall back to Puppeteer mode (or use Bridge mode if the Midscene Chrome Extension is installed).</li>
+</ul>
+<blockquote>
+<p><strong>Bridge mode has no usable precheck.</strong> Despite port 3766 being involved, the bridge server is started <strong>by the CLI</strong> (<code>npx ... --bridge connect</code> opens 3766 itself); the extension is the <strong>client</strong> that hooks in. Checking 3766 before the CLI runs always returns nothing. Just run <code>--bridge connect</code> directly — its first log line (<code>waiting for bridge to connect...</code> → <code>one client connected</code>) tells you whether the extension picked it up.</p>
+</blockquote>
+<h4>Prerequisites</h4>
+<p>Midscene requires models with strong visual grounding capabilities. The following environment variables must be configured — either as system environment variables or in a <code>.env</code> file in the current working directory (Midscene loads <code>.env</code> automatically):</p>
+<pre><code class="language-bash">MIDSCENE_MODEL_API_KEY=&quot;your-api-key&quot;
+MIDSCENE_MODEL_NAME=&quot;model-name&quot;
+MIDSCENE_MODEL_BASE_URL=&quot;https://...&quot;
+MIDSCENE_MODEL_FAMILY=&quot;family-identifier&quot;
+</code></pre>
+<p>Example: Gemini (Gemini-3-Flash)</p>
+<pre><code class="language-bash">MIDSCENE_MODEL_API_KEY=&quot;your-google-api-key&quot;
+MIDSCENE_MODEL_NAME=&quot;gemini-3-flash&quot;
+MIDSCENE_MODEL_BASE_URL=&quot;https://generativelanguage.googleapis.com/v1beta/openai/&quot;
+MIDSCENE_MODEL_FAMILY=&quot;gemini&quot;
+</code></pre>
+<p>Example: Qwen 3.5</p>
+<pre><code class="language-bash">MIDSCENE_MODEL_API_KEY=&quot;your-aliyun-api-key&quot;
+MIDSCENE_MODEL_NAME=&quot;qwen3.5-plus&quot;
+MIDSCENE_MODEL_BASE_URL=&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot;
+MIDSCENE_MODEL_FAMILY=&quot;qwen3.5&quot;
+MIDSCENE_MODEL_REASONING_ENABLED=&quot;false&quot;
+# If using OpenRouter, set:
+# MIDSCENE_MODEL_API_KEY=&quot;your-openrouter-api-key&quot;
+# MIDSCENE_MODEL_NAME=&quot;qwen/qwen3.5-plus&quot;
+# MIDSCENE_MODEL_BASE_URL=&quot;https://openrouter.ai/api/v1&quot;
+</code></pre>
+<p>Example: Doubao Seed 2.0 Lite</p>
+<pre><code class="language-bash">MIDSCENE_MODEL_API_KEY=&quot;your-doubao-api-key&quot;
+MIDSCENE_MODEL_NAME=&quot;doubao-seed-2-0-lite&quot;
+MIDSCENE_MODEL_BASE_URL=&quot;https://ark.cn-beijing.volces.com/api/v3&quot;
+MIDSCENE_MODEL_FAMILY=&quot;doubao-seed&quot;
+</code></pre>
+<p>Commonly used models: Doubao Seed 2.0 Lite, Qwen 3.5, Zhipu GLM-4.6V, Gemini-3-Pro, Gemini-3-Flash.</p>
+<p>If the model is not configured, ask the user to set it up. See <a href="https://midscenejs.com/model-common-config">Model Configuration</a> for supported providers.</p>
+<h4>CDP Mode (Connect to Existing Browser)</h4>
+<p>Use CDP mode to control the user's existing Chrome browser. The default CDP endpoint is <code>ws://127.0.0.1:9222/devtools/browser</code> (port 9222 is Chrome's standard remote debugging port). If the user specifies a different port, replace 9222 accordingly.</p>
+<p>Add <code>--cdp &lt;ws-endpoint&gt;</code> to every command:</p>
+<pre><code class="language-bash">npx -y @midscene/web@1 connect --cdp ws://127.0.0.1:9222/devtools/browser --url https://example.com
+npx -y @midscene/web@1 act --cdp ws://127.0.0.1:9222/devtools/browser --prompt &quot;click the button&quot;
+npx -y @midscene/web@1 take_screenshot --cdp ws://127.0.0.1:9222/devtools/browser
+npx -y @midscene/web@1 disconnect --cdp ws://127.0.0.1:9222/devtools/browser
+</code></pre>
+<h5>Custom HTTP Headers in CDP Mode</h5>
+<p>When the user needs custom request headers in CDP mode, such as routing requests to a PPE environment, pass each header through a separate <code>--extra-http-header 'Name:Value'</code> option. Repeat the option to send multiple headers. Use the exact header names and values supplied by the user; do not guess environment names or authentication values.</p>
+<pre><code class="language-bash">npx -y @midscene/web@1 connect \
+  --cdp ws://127.0.0.1:9222/devtools/browser \
+  --extra-http-header 'x-use-ppe:1' \
+  --extra-http-header 'x-tt-env:ppe_example' \
+  --url https://example.com
+
+npx -y @midscene/web@1 act \
+  --cdp ws://127.0.0.1:9222/devtools/browser \
+  --extra-http-header 'x-use-ppe:1' \
+  --extra-http-header 'x-tt-env:ppe_example' \
+  --prompt &quot;click the button&quot;
+</code></pre>
+<p>Each CLI command creates a new CDP session. Repeat every required <code>--extra-http-header 'Name:Value'</code> option on each CDP command that may issue requests, including <code>connect</code>, <code>act</code>, and <code>assert</code>. Split each entry at the first colon, so values may contain additional colons. The headers are applied before <code>connect --url</code> navigates, so the initial document request includes them. Do not print header values in task summaries, and avoid putting sensitive authentication values directly in shell history.</p>
+<h5>Important notes for CDP mode</h5>
+<ul>
+<li>The browser is managed externally — <code>disconnect</code> releases the connection but does NOT close the browser. There is no <code>close</code> command in CDP mode.</li>
+<li>In CDP mode, <code>connect --url</code> navigates the <strong>existing active tab</strong> instead of opening a new tab.</li>
+<li><code>connect</code> without <code>--url</code> attaches to the current active tab without navigating.</li>
+<li>If connection fails, ask the user to enable remote debugging: open <code>chrome://inspect</code> in Chrome and turn on &quot;Allow remote debugging&quot;.</li>
+</ul>
+<h4>Bridge Mode (Connect via Chrome Extension)</h4>
+<p>Use Bridge mode when the user explicitly mentions &quot;bridge&quot;, &quot;extension&quot;, or has the Midscene Chrome Extension installed. Add <code>--bridge</code> to every command:</p>
+<pre><code class="language-bash">npx -y @midscene/web@1 --bridge connect --url https://example.com
+npx -y @midscene/web@1 --bridge act --prompt &quot;click the button&quot;
+npx -y @midscene/web@1 --bridge take_screenshot
+npx -y @midscene/web@1 --bridge disconnect
+</code></pre>
+<h5>Important notes for Bridge mode</h5>
+<ul>
+<li>The user must have Chrome (or any Chromium-based browser that supports Chrome extensions, e.g. Edge, Arc, Dia) open with the Midscene Extension installed and enabled.</li>
+<li>Install the extension from Chrome Web Store: <a href="https://chromewebstore.google.com/detail/midscenejs/gbldofcpkknbggpkmbdaefngejllnief">https://chromewebstore.google.com/detail/midscenejs/gbldofcpkknbggpkmbdaefngejllnief</a></li>
+<li><strong>Handshake direction</strong>: the <strong>CLI is the server</strong> (listens on <code>127.0.0.1:3766</code>); the <strong>extension is the client</strong> that connects to it. The &quot;Listening&quot; status shown in the extension panel means &quot;ready to connect to a CLI&quot;, not that the extension itself opened a port. Practically: launch <code>--bridge connect</code> first; the extension will hook in within a second or two.</li>
+<li><strong>Active tab must be a normal web page.</strong> The extension cannot operate <code>chrome://</code>, <code>chrome-extension://</code>, the Chrome Web Store, or other privileged URLs. If the active tab is one of those, the CLI will return <code>Cannot access a chrome:// URL</code>. Ask the user to switch to a regular <code>http(s)://</code> tab before reconnecting.</li>
+<li><strong>File upload permission</strong>: local file uploads in Bridge mode require the Midscene extension's &quot;Allow access to file URLs&quot; permission. Ask the user to open <code>chrome://extensions</code>, find Midscene, click &quot;Details&quot;, enable the switch, then switch back to the target <code>http(s)://</code> tab before reconnecting. If upload fails with a permission or <code>Not allowed</code> error, check this first.</li>
+<li><code>connect</code> without <code>--url</code> attaches to the current active tab; <code>connect --url &lt;href&gt;</code> opens a new tab at that URL. Use <code>switch-tab</code> to return to an existing tab without navigating.</li>
+<li><code>disconnect</code> only closes the CLI-side bridge connection, not the browser or tabs.</li>
+<li>If the extension is not installed, guide the user to install it or suggest switching to CDP mode instead.</li>
+<li>See the <a href="https://midscenejs.com/bridge-mode-by-chrome-extension.html">Bridge Mode documentation</a>.</li>
+</ul>
+<h4>Commands</h4>
+<h5>Connect to a Web Page</h5>
+<pre><code class="language-bash">npx -y @midscene/web@1 connect --url https://example.com
+</code></pre>
+<h5>Switch Browser Tabs</h5>
+<p>Use <code>tabs</code> to list open tabs and <code>switch-tab --id &lt;id&gt;</code> to select an existing tab without navigating or reloading it. Before using this workflow, check <code>npx -y @midscene/web@1 --help</code> for both commands. If they are missing, use a CLI release that includes tab management before proceeding. Bridge mode also requires an updated Midscene Chrome extension.</p>
+<p>Save the original tab's ID before clicking a link that opens a new tab. Run each command separately and read its output before continuing:</p>
+<pre><code class="language-bash">npx -y @midscene/web@1 tabs
+npx -y @midscene/web@1 act --prompt &quot;click the link that opens the details in a new tab&quot;
+npx -y @midscene/web@1 tabs
+npx -y @midscene/web@1 switch-tab --id &lt;new-tab-id&gt;
+npx -y @midscene/web@1 take_screenshot
+# After completing the task in the new tab, return to the original tab:
+npx -y @midscene/web@1 switch-tab --id &lt;original-tab-id&gt;
+npx -y @midscene/web@1 take_screenshot
+</code></pre>
+<p><code>tabs</code> returns a JSON array with <code>id</code>, <code>title</code>, <code>url</code>, and <code>active</code>. Save the ID marked <code>active</code> as the original tab ID, then identify the newly opened tab in the updated list using its title and URL. Replace the placeholders above with the returned IDs; do not guess IDs or assume the last tab is the new tab. If the new tab has not appeared yet, wait briefly and list again.</p>
+<p>Keep the same connection mode on every command: add <code>--cdp &lt;ws-endpoint&gt;</code> in CDP mode or <code>--bridge</code> in Bridge mode. Default Puppeteer and CDP modes keep using the selected tab across CLI calls and do not automatically switch to newly opened tabs. Bridge switching activates the tab in the current Chrome window; subsequent commands attach to the foreground tab, so manually switching tabs changes the next command's target.</p>
+<p>Switching preserves the existing page state. Do not use <code>connect --url</code> or browser Back to return to the original tab. If an ID is missing or closed, the command fails: list tabs again and select an available target. <code>disconnect</code> releases the connection; <code>close</code> in Puppeteer mode closes the entire browser, including the original and new tabs.</p>
+<h5>Take Screenshot</h5>
+<pre><code class="language-bash">npx -y @midscene/web@1 take_screenshot
+</code></pre>
+<p>After taking a screenshot, read the saved image file to understand the current page state before deciding the next action.</p>
+<h5>Perform Action</h5>
+<p>Use <code>act</code> to interact with the page and get the result. It autonomously handles all UI interactions internally — clicking, typing, scrolling, hovering, waiting, and navigating — so you should give it complex, high-level tasks as a whole rather than breaking them into small steps. Describe <strong>what you want to do and the desired effect</strong> in natural language:</p>
+<pre><code class="language-bash"># specific instructions
+npx -y @midscene/web@1 act --prompt &quot;click the Login button and fill in the email field with 'user@example.com'&quot;
+npx -y @midscene/web@1 act --prompt &quot;scroll down and click the Submit button&quot;
+
+# or target-driven instructions
+npx -y @midscene/web@1 act --prompt &quot;click the country dropdown and select Japan&quot;
+</code></pre>
+<h5>Upload Files</h5>
+<p>When a prompt asks Midscene to upload files, <code>act</code> requires an explicit <code>--file-chooser-allowed-dir</code>. Use the smallest directory that contains the test fixtures; do not grant the project root or a home directory. Refer to files by paths relative to that directory in the prompt.</p>
+<p>In Bridge mode, also confirm the Midscene extension has &quot;Allow access to file URLs&quot; enabled in <code>chrome://extensions</code> &gt; Midscene &gt; &quot;Details&quot;, and reconnect from the target <code>http(s)://</code> tab after changing the switch.</p>
+<pre><code class="language-bash">npx -y @midscene/web@1 act \
+  --file-chooser-allowed-dir ./fixtures \
+  --prompt &quot;click the upload button and upload avatar.png&quot;
+</code></pre>
+<h5>Assert Current Page State</h5>
+<p>Use <code>assert</code> to verify that the current page satisfies a natural language condition. It does not perform UI actions; it checks the visible page state and passes only when the assertion is true. Use this for validation, QA checks, and final state verification after <code>act</code>.</p>
+<pre><code class="language-bash">npx -y @midscene/web@1 assert --prompt &quot;there is a login button visible&quot;
+npx -y @midscene/web@1 assert --prompt &quot;the checkout page shows the order total and a Pay button&quot;
+</code></pre>
+<p>In CDP or Bridge mode, pass the same connection flags you use for other commands:</p>
+<pre><code class="language-bash">npx -y @midscene/web@1 assert --cdp ws://127.0.0.1:9222/devtools/browser --prompt &quot;the dashboard is loaded&quot;
+npx -y @midscene/web@1 --bridge assert --prompt &quot;the profile page shows the user's avatar&quot;
+</code></pre>
+<p>By default a failed assertion throws an AI-generated reason. Pass <code>--message</code> to throw a custom error message instead, which is useful for surfacing the intended outcome in QA and CI logs.</p>
+<pre><code class="language-bash">npx -y @midscene/web@1 assert \
+  --prompt &quot;the checkout page shows an order confirmation&quot; \
+  --message &quot;the order should be confirmed after clicking Pay&quot;
+</code></pre>
+<p>When the assertion needs to compare against a reference image (icon, logo, screenshot), pass <code>--image</code> for the URL/path and <code>--image-name</code> for its display name. Each <code>--image</code> may be an http(s) link, a <code>data:</code> URI, or a local file path. Repeat both flags in matching order when you need to attach more than one image. Add <code>--convertHttpImage2Base64 true</code> when the model cannot reach the URL directly. Requires <code>@midscene/web@1.9.0+</code>.</p>
+<pre><code class="language-bash">npx -y @midscene/web@1 assert \
+  --prompt &quot;the page shows the same logo as the reference image&quot; \
+  --image &quot;https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png&quot; \
+  --image-name &quot;logo&quot; \
+  --convertHttpImage2Base64 true
+
+# or with a local file
+npx -y @midscene/web@1 assert \
+  --prompt &quot;the visible header matches the supplied screenshot&quot; \
+  --image &quot;./fixtures/header.png&quot; \
+  --image-name &quot;header&quot;
+
+# multiple reference images — pair --image and --image-name by order
+npx -y @midscene/web@1 assert \
+  --prompt &quot;the page shows both the logo and the header&quot; \
+  --image &quot;./fixtures/logo.png&quot;   --image-name &quot;logo&quot; \
+  --image &quot;./fixtures/header.png&quot; --image-name &quot;header&quot;
+</code></pre>
+<h5>Record and Assert Transient UI</h5>
+<p>Use a recording when the state to verify may disappear before a current-screen assertion runs, such as a toast, loading banner, animation, or transition. Run the recorder in a dedicated interactive terminal:</p>
+<pre><code class="language-bash"># Terminal 1: keep this foreground command running
+npx -y @midscene/web@1 record start \
+  --output ./submission-observation.json
+
+# Terminal 2, while Terminal 1 records
+npx -y @midscene/web@1 act --prompt &quot;click the Submit button&quot;
+
+# Send Ctrl+C to Terminal 1 and wait for the saved-path message, then assert
+npx -y @midscene/web@1 assert \
+  --record ./submission-observation.json \
+  --prompt &quot;a success toast appeared during submission&quot;
+</code></pre>
+<p>Pass the normal target flags and <code>--output</code> to <code>record start</code>, then wait for <code>Recording. Press Ctrl+C to stop and save.</code> Keep the recorder as a foreground process in its terminal; never add shell <code>&amp;</code>. Perform the interaction manually or from a second terminal, send Ctrl+C to the recorder, and wait until it prints the saved path before asserting. In CDP mode, repeat <code>--cdp ws://127.0.0.1:9222/devtools/browser</code> on <code>record start</code>, actions, and <code>assert</code>. In Bridge mode, the foreground recorder owns the single Bridge connection, so interact manually instead of starting a second Bridge CLI action.</p>
+<p>Optional capture flags on <code>record start</code> are <code>--interval-ms</code>, <code>--max-frames</code>, and <code>--watchdog-ms</code>; <code>--max-frames</code> caps sampled frames, and the manifest may contain one additional final representative frame. The default watchdog finalizes and saves the recording after five minutes, while <code>--watchdog-ms 0</code> disables that safety limit. The output is a JSON manifest plus an adjacent <code>&lt;name&gt;.frames</code> image directory, not an encoded video or archive. The manifest contains relative JPEG/PNG paths and no base64 image bodies. Keep or move the JSON file and image directory together, and pass the JSON path to <code>assert --record</code>. Use ordinary <code>assert</code> without <code>--record</code> when only the current page matters.</p>
+<h5>Use a Reference Image for Precise Targeting</h5>
+<p>When the user provides a screenshot, icon, logo, or reference image and wants an exact visual match, prefer <code>tap --locate</code> instead of a generic <code>act --prompt</code>. Pass <code>--locate</code> as JSON. The <code>prompt</code> describes the target, <code>images</code> supplies named reference images, and <code>convertHttpImage2Base64: true</code> is useful when the image URL may not be directly accessible to the model.</p>
+<pre><code class="language-bash">npx -y @midscene/web@1 tap --locate '{
+  &quot;prompt&quot;: &quot;tap the area contains the image&quot;,
+  &quot;images&quot;: [
+    {
+      &quot;name&quot;: &quot;target image&quot;,
+      &quot;url&quot;: &quot;https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png&quot;
+    }
+  ],
+  &quot;convertHttpImage2Base64&quot;: true
+}'
+</code></pre>
+<p>The same <code>locate</code> JSON shape also works for other commands that accept a <code>locate</code> parameter.</p>
+<h5>Disconnect</h5>
+<p>Disconnect from the page but keep the browser running:</p>
+<pre><code class="language-bash">npx -y @midscene/web@1 disconnect
+</code></pre>
+<h5>Close Browser</h5>
+<p>Close the browser completely when finished (Puppeteer mode only):</p>
+<pre><code class="language-bash">npx -y @midscene/web@1 close
+</code></pre>
+<h5>Consume Report Files</h5>
+<p>The generated HTML report is recommended for human reading first. It includes step-by-step execution details and replay videos for each operation, which makes it much easier to understand what happened and troubleshoot problems.</p>
+<p>If another skill or tool needs to consume the report, first convert it with <code>report-tool</code> from the same platform CLI package. Prefer Markdown for LLM-based workflows. Use JSON when the report needs to be processed programmatically.</p>
+<pre><code class="language-bash">npx -y @midscene/web@1 report-tool --action to-markdown --htmlPath ./midscene_run/report/.../index.html --outputDir ./output-markdown
+npx -y @midscene/web@1 report-tool --action split --htmlPath ./midscene_run/report/.../index.html --outputDir ./output-data
+</code></pre>
+<h4>Workflow Pattern</h4>
+<p>The browser <strong>persists across CLI calls</strong> via a background Chrome process. Follow this pattern:</p>
+<ol>
+<li><strong>Connect</strong> to the target page using the chosen mode. Use <code>connect</code> without <code>--url</code> to attach to an existing page in CDP or Bridge mode.</li>
+<li><strong>Take screenshot</strong> to see the current state, make sure the page is loaded.</li>
+<li><strong>Execute action</strong> using <code>act</code> to perform the desired action or target-driven instructions. Use <code>assert</code> for the resulting page state, or keep <code>record start --output ...</code> running in a dedicated terminal during transient-state workflows, stop it with Ctrl+C, and then use <code>assert --record</code>.</li>
+<li><strong>Close</strong> the browser when done (or <strong>disconnect</strong> to keep it for later)</li>
+<li><strong>Report results</strong> — summarize what was accomplished, present key findings and data extracted during the task, and list any generated files (screenshots, logs, etc.) with their paths</li>
+</ol>
+<h4>Best Practices</h4>
+<ol>
+<li><strong>Connect before interacting</strong>: Use <code>connect --url</code> for a target URL, or <code>connect</code> without <code>--url</code> to attach to an existing page in CDP or Bridge mode. During a multi-tab task, use <code>tabs</code> and <code>switch-tab</code> to select the page while preserving its state.</li>
+<li><strong>Inspect visible state</strong>: After navigation or actions that trigger page changes, take a screenshot and read it before deciding the next step.</li>
+<li><strong>Use natural, specific prompts</strong>: Describe visible UI and desired outcomes, such as <code>&quot;click the blue Submit button in the contact form&quot;</code>, not selectors like <code>&quot;#submit&quot;</code>.</li>
+<li><strong>Batch related operations into a single <code>act</code> command</strong>: For example, fill the email and password fields, then click Log In in one prompt. Use separate commands when you need to inspect the intermediate state.</li>
+<li><strong>Choose the right verification window</strong>: Use <code>assert --prompt &quot;...&quot;</code> for the current page. For a toast, banner, animation, or transition, run <code>record start --output ...</code> in a dedicated terminal, perform the interaction, stop recording with Ctrl+C, wait for the saved-path message, then pass the artifact to <code>assert --record</code>.</li>
+<li><strong>Prefer <code>tap --locate</code> when a reference image is provided</strong>: If the user shares a screenshot, icon, or logo and wants that exact visual target, use <code>tap --locate</code> with a multimodal <code>locate</code> JSON object such as <code>{ &quot;prompt&quot;: &quot;...&quot;, &quot;images&quot;: [...] }</code> instead of relying only on <code>act --prompt</code>.</li>
+</ol>
+<p><strong>Example — Dropdown selection:</strong></p>
+<pre><code class="language-bash">npx -y @midscene/web@1 act --prompt &quot;click the country dropdown and select Japan&quot;
+npx -y @midscene/web@1 take_screenshot
+</code></pre>
+<p><strong>Example — Form interaction:</strong></p>
+<pre><code class="language-bash">npx -y @midscene/web@1 act --prompt &quot;fill in the email field with 'user@example.com' and the password field with 'pass123', then click the Log In button&quot;
+npx -y @midscene/web@1 take_screenshot
+</code></pre>
+<h4>Improve Precision (Deep Locate / Deep Think)</h4>
+<p>Two optional global flags help when Midscene struggles with a task. Put them anywhere in the command (before or after the sub-command); once set, the relevant operations use them by default, so you don't pass a per-call parameter.</p>
+<ul>
+<li><code>--deep-locate</code> — spends an extra round of visual reasoning to pinpoint the target element. Use it when an action interacts with the wrong spot (location drift / offset). It applies to every operation that locates an element, including <code>tap --locate</code> and the locating that happens inside <code>act</code>.</li>
+<li><code>--deep-think</code> — plans <code>act</code> with deeper reasoning (richer context and sub-goal decomposition). Use it for complex, multi-step <code>act</code> instructions; it only affects planning.</li>
+</ul>
+<p>Both trade a little speed for better results, and you can combine them.</p>
+<pre><code class="language-bash"># more accurate element location (helps act's internal locating too)
+npx -y @midscene/web@1 act --deep-locate --prompt &quot;click the tiny gear icon in the top-right toolbar&quot;
+
+# deeper planning for a complex, multi-step act
+npx -y @midscene/web@1 act --deep-think --prompt &quot;complete the multi-step checkout form&quot;
+
+# combine both
+npx -y @midscene/web@1 act --deep-locate --deep-think --prompt &quot;open the settings menu, go to Preferences, and enable dark mode&quot;
+</code></pre>
+<p>In CDP or Bridge mode, keep your usual <code>--cdp</code> / <code>--bridge</code> flags alongside these.</p>
+<h4>Troubleshooting</h4>
+<h5>Connection Failures</h5>
+<ul>
+<li>Ensure Chrome/Chromium is installed on the system (Puppeteer downloads its own by default).</li>
+<li>Check that no firewall blocks local Chrome debugging ports.</li>
+</ul>
+<h5>API Key Errors</h5>
+<ul>
+<li>Check <code>.env</code> file contains <code>MIDSCENE_MODEL_API_KEY=&lt;your-key&gt;</code>.</li>
+<li>Verify the key is valid for the configured model provider.</li>
+</ul>
+<h5>Timeouts</h5>
+<ul>
+<li>Web pages may take time to load. After connecting, take a screenshot to verify readiness before interacting.</li>
+<li>For slow pages, wait briefly between steps.</li>
+</ul>
+<h5><code>@midscene/*</code> Dependency Version Outdated</h5>
+<ul>
+<li>Check local versions: <code>npm ls @midscene/web @midscene/core @midscene/shared</code> (or <code>pnpm why @midscene/web</code>).</li>
+<li>Check latest versions: <code>npm view @midscene/web version</code>, <code>npm view @midscene/core version</code>, <code>npm view @midscene/shared version</code>.</li>
+<li>Upgrade dependencies: <code>npm i @midscene/web@latest @midscene/core@latest @midscene/shared@latest</code>.</li>
+</ul>
+<h5>Screenshots Not Displaying</h5>
+<ul>
+<li>The screenshot path is an absolute path to a local file. Use the Read tool to view it.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

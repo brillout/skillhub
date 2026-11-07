@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>security-review · SkillHub</title>
+    <meta name="description" content="Use it when: you want a security review of a file, diff or component: injection, XSS, authentication, authorization, cryptography, SSRF and the like. It does: loads reference guides for the kind of code and its language, researches the whole codebase to trace each input, and reports only what it confirms is exploitable. You get: a report of findings rated Critical to Low, each with location, impact, evidence and fix, plus a separate Needs verification list. Won&#039;t flag: test files, dead code, constants, server-side settings, code reachable only after authentication, or framework patterns that already escape or parameterize, unless they&#039;re bypassed. Language guides: Python and JavaScript; other languages rely on its general references and the framework&#039;s protections checked in the code." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=getsentry%2Fskills">getsentry/skills</a></p>
+      <h1>security-review</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want a security review of a file, diff or component: injection, XSS, authentication, authorization, cryptography, SSRF and the like</dd></div><div><dt>It does</dt><dd>loads reference guides for the kind of code and its language, researches the whole codebase to trace each input, and reports only what it confirms is exploitable</dd></div><div><dt>You get</dt><dd>a report of findings rated Critical to Low, each with location, impact, evidence and fix, plus a separate Needs verification list</dd></div><div><dt>Won&#39;t flag</dt><dd>test files, dead code, constants, server-side settings, code reachable only after authentication, or framework patterns that already escape or parameterize, unless they&#39;re bypassed</dd></div><div><dt>Language guides</dt><dd>Python and JavaScript; other languages rely on its general references and the framework&#39;s protections checked in the code</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Sentry&#39;s security review hunts only for vulnerabilities an attacker could actually exploit. It reports on the file, diff or code you give it, but researches the whole codebase first: where each input really comes from, whether it&#39;s validated elsewhere, and what configuration and the framework already protect. Values from settings, environment variables or constants count as server-controlled, and auto-escaped templates or ORM queries are flagged only when bypassed, as with mark_safe, dangerouslySetInnerHTML, v-html or raw SQL. For each kind of code, such as endpoints, templates, file uploads, crypto, serialization or CI, it loads matching reference guides based on OWASP&#39;s cheat sheets, plus a Python or JavaScript guide and, for Dockerfiles, a Docker guide. Only high-confidence findings are reported; medium-confidence ones go under Needs verification, and theoretical or best-practice issues are left out. Some patterns are always flagged, such as eval or pickle on user input, SQL built from strings and hardcoded secrets. If nothing qualifies, it says &#34;No high-confidence vulnerabilities identified.&#34; For Django access control and GitHub Actions workflows, it uses the same repo&#39;s django-access-review and gha-security-review when they&#39;re installed.</p>
+      <p class="muted">Summarizes <a href="https://github.com/getsentry/skills/tree/e94f22214528d69899d09c627b3315ddc3544816/skills/security-review">the skill at e94f222</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/getsentry/skills --skill security-review</code><button type="button" class="copy" data-copy="npx skills add https://github.com/getsentry/skills --skill security-review">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/getsentry/skills/security-review">skills.sh page</a> · <a href="https://github.com/getsentry/skills/tree/HEAD/skills/security-review">Source on GitHub</a> · <a href="/skillhub/?repo=getsentry%2Fskills">All skills from getsentry/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>22,700 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>1,129 <span class="muted">getsentry/skills</span></dd></div><div><dt>First seen</dt><dd>Jan 29, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">853</div>
+      <div class="stat-delta">+46% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 584; week to Sep 26: 452; week to Oct 3: 451; week to Oct 10: 1,892; week to Oct 17: 920; week to Oct 24: 785; week to Oct 31: 847; week to Nov 7: 853. Use the left and right arrow keys to read each week."
+        data-values="584,452,451,1892,920,785,847,853" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,36.4 38.6,39.5 71.1,39.5 103.7,6.0 136.3,28.6 168.9,31.7 201.4,30.3 234.0,30.2" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="30.2" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>584</td></tr><tr><td>Sep 26</td><td>452</td></tr><tr><td>Oct 3</td><td>451</td></tr><tr><td>Oct 10</td><td>1,892</td></tr><tr><td>Oct 17</td><td>920</td></tr><tr><td>Oct 24</td><td>785</td></tr><tr><td>Oct 31</td><td>847</td></tr><tr><td>Nov 7</td><td>853</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/skillhub/?tag=category%3Asecurity">category:security</a><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/skillhub/?tag=effect%3Anone">effect:none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/skillhub/?tag=by%3Aofficial">by:official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/skillhub/?tag=security">security</a><a class="tag" data-tag="code-review" data-facet="topic" href="/skillhub/?tag=code-review">code-review</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/getsentry/skills/blob/e94f22214528d69899d09c627b3315ddc3544816/skills/security-review/SKILL.md">getsentry/skills at e94f222</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: security-review
+description: Security code review for vulnerabilities. Use when asked to &#34;security review&#34;, &#34;find vulnerabilities&#34;, &#34;check for security issues&#34;, &#34;audit security&#34;, &#34;OWASP review&#34;, or review code for injection, XSS, authentication, authorization, cryptography issues. Provides systematic review with confidence-based reporting.
+allowed-tools: Read Grep Glob Bash Task
+license: LICENSE</code></pre></details>
+        <div class="markdown"><p>&lt;!--
+Reference material based on OWASP Cheat Sheet Series (CC BY-SA 4.0)
+<a href="https://cheatsheetseries.owasp.org/">https://cheatsheetseries.owasp.org/</a>
+--&gt;</p>
+<h3>Security Review Skill</h3>
+<p>Identify exploitable security vulnerabilities in code. Report only <strong>HIGH CONFIDENCE</strong> findings—clear vulnerable patterns with attacker-controlled input.</p>
+<h4>Scope: Research vs. Reporting</h4>
+<p><strong>CRITICAL DISTINCTION:</strong></p>
+<ul>
+<li><strong>Report on</strong>: Only the specific file, diff, or code provided by the user</li>
+<li><strong>Research</strong>: The ENTIRE codebase to build confidence before reporting</li>
+</ul>
+<p>Before flagging any issue, you MUST research the codebase to understand:</p>
+<ul>
+<li>Where does this input actually come from? (Trace data flow)</li>
+<li>Is there validation/sanitization elsewhere?</li>
+<li>How is this configured? (Check settings, config files, middleware)</li>
+<li>What framework protections exist?</li>
+</ul>
+<p><strong>Do NOT report issues based solely on pattern matching.</strong> Investigate first, then report only what you're confident is exploitable.</p>
+<h4>Confidence Levels</h4>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Criteria</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>HIGH</strong></td>
+<td>Vulnerable pattern + attacker-controlled input confirmed</td>
+<td><strong>Report</strong> with severity</td>
+</tr>
+<tr>
+<td><strong>MEDIUM</strong></td>
+<td>Vulnerable pattern, input source unclear</td>
+<td><strong>Note</strong> as &quot;Needs verification&quot;</td>
+</tr>
+<tr>
+<td><strong>LOW</strong></td>
+<td>Theoretical, best practice, defense-in-depth</td>
+<td><strong>Do not report</strong></td>
+</tr>
+</tbody>
+</table>
+<h4>Do Not Flag</h4>
+<h5>General Rules</h5>
+<ul>
+<li>Test files (unless explicitly reviewing test security)</li>
+<li>Dead code, commented code, documentation strings</li>
+<li>Patterns using <strong>constants</strong> or <strong>server-controlled configuration</strong></li>
+<li>Code paths that require prior authentication to reach (note the auth requirement instead)</li>
+</ul>
+<h5>Server-Controlled Values (NOT Attacker-Controlled)</h5>
+<p>These are configured by operators, not controlled by attackers:</p>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Example</th>
+<th>Why It's Safe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Django settings</td>
+<td><code>settings.API_URL</code>, <code>settings.ALLOWED_HOSTS</code></td>
+<td>Set via config/env at deployment</td>
+</tr>
+<tr>
+<td>Environment variables</td>
+<td><code>os.environ.get('DATABASE_URL')</code></td>
+<td>Deployment configuration</td>
+</tr>
+<tr>
+<td>Config files</td>
+<td><code>config.yaml</code>, <code>app.config['KEY']</code></td>
+<td>Server-side files</td>
+</tr>
+<tr>
+<td>Framework constants</td>
+<td><code>django.conf.settings.*</code></td>
+<td>Not user-modifiable</td>
+</tr>
+<tr>
+<td>Hardcoded values</td>
+<td><code>BASE_URL = &quot;https://api.internal&quot;</code></td>
+<td>Compile-time constants</td>
+</tr>
+</tbody>
+</table>
+<p><strong>SSRF Example - NOT a vulnerability:</strong></p>
+<pre><code class="language-python"># SAFE: URL comes from Django settings (server-controlled)
+response = requests.get(f&quot;{settings.SEER_AUTOFIX_URL}{path}&quot;)
+</code></pre>
+<p><strong>SSRF Example - IS a vulnerability:</strong></p>
+<pre><code class="language-python"># VULNERABLE: URL comes from request (attacker-controlled)
+response = requests.get(request.GET.get('url'))
+</code></pre>
+<h5>Framework-Mitigated Patterns</h5>
+<p>Check language guides before flagging. Common false positives:</p>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Why It's Usually Safe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Django <code>{{ variable }}</code></td>
+<td>Auto-escaped by default</td>
+</tr>
+<tr>
+<td>React <code>{variable}</code></td>
+<td>Auto-escaped by default</td>
+</tr>
+<tr>
+<td>Vue <code>{{ variable }}</code></td>
+<td>Auto-escaped by default</td>
+</tr>
+<tr>
+<td><code>User.objects.filter(id=input)</code></td>
+<td>ORM parameterizes queries</td>
+</tr>
+<tr>
+<td><code>cursor.execute(&quot;...%s&quot;, (input,))</code></td>
+<td>Parameterized query</td>
+</tr>
+<tr>
+<td><code>innerHTML = &quot;&lt;b&gt;Loading...&lt;/b&gt;&quot;</code></td>
+<td>Constant string, no user input</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Only flag these when:</strong></p>
+<ul>
+<li>Django: <code>{{ var|safe }}</code>, <code>{% autoescape off %}</code>, <code>mark_safe(user_input)</code></li>
+<li>React: <code>dangerouslySetInnerHTML={{__html: userInput}}</code></li>
+<li>Vue: <code>v-html=&quot;userInput&quot;</code></li>
+<li>ORM: <code>.raw()</code>, <code>.extra()</code>, <code>RawSQL()</code> with string interpolation</li>
+</ul>
+<h4>Review Process</h4>
+<h5>1. Detect Context</h5>
+<p>What type of code am I reviewing?</p>
+<table>
+<thead>
+<tr>
+<th>Code Type</th>
+<th>Load These References</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>API endpoints, routes</td>
+<td><code>authorization.md</code>, <code>authentication.md</code>, <code>injection.md</code></td>
+</tr>
+<tr>
+<td>Django/DRF views, permission classes, object-level access</td>
+<td>Use the <code>django-access-review</code> skill if available for access control; otherwise <code>authorization.md</code></td>
+</tr>
+<tr>
+<td>Frontend, templates</td>
+<td><code>xss.md</code>, <code>csrf.md</code>, <code>modern-threats.md</code> (DOM clobbering, prototype pollution)</td>
+</tr>
+<tr>
+<td>File handling, uploads</td>
+<td><code>file-security.md</code></td>
+</tr>
+<tr>
+<td>Crypto, secrets, tokens</td>
+<td><code>cryptography.md</code>, <code>data-protection.md</code></td>
+</tr>
+<tr>
+<td>Data serialization</td>
+<td><code>deserialization.md</code></td>
+</tr>
+<tr>
+<td>External requests</td>
+<td><code>ssrf.md</code></td>
+</tr>
+<tr>
+<td>Business workflows</td>
+<td><code>business-logic.md</code></td>
+</tr>
+<tr>
+<td>GraphQL, REST design</td>
+<td><code>api-security.md</code></td>
+</tr>
+<tr>
+<td>Config, headers, CORS</td>
+<td><code>misconfiguration.md</code></td>
+</tr>
+<tr>
+<td>CI/CD, dependencies</td>
+<td><code>supply-chain.md</code></td>
+</tr>
+<tr>
+<td>Error handling</td>
+<td><code>error-handling.md</code></td>
+</tr>
+<tr>
+<td>Audit, logging</td>
+<td><code>logging.md</code></td>
+</tr>
+<tr>
+<td>Object merging/cloning, <code>__proto__</code>, DOM <code>id</code>/<code>name</code> lookups, WebSocket handlers, LLM prompt construction</td>
+<td><code>modern-threats.md</code></td>
+</tr>
+</tbody>
+</table>
+<h5>2. Load Language Guide</h5>
+<p>Based on file extension or imports:</p>
+<table>
+<thead>
+<tr>
+<th>Indicators</th>
+<th>Guide</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.py</code>, <code>django</code>, <code>flask</code>, <code>fastapi</code></td>
+<td><code>languages/python.md</code></td>
+</tr>
+<tr>
+<td><code>.js</code>, <code>.ts</code>, <code>express</code>, <code>react</code>, <code>vue</code>, <code>next</code></td>
+<td><code>languages/javascript.md</code></td>
+</tr>
+</tbody>
+</table>
+<p>For other languages there is no dedicated guide; rely on the <code>references/</code> files and verify framework protections directly in the codebase.</p>
+<h5>3. Load Infrastructure Guide (if applicable)</h5>
+<table>
+<thead>
+<tr>
+<th>File Type</th>
+<th>Guide</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Dockerfile</code>, <code>.dockerignore</code></td>
+<td><code>infrastructure/docker.md</code></td>
+</tr>
+<tr>
+<td>GitHub Actions workflows</td>
+<td>Use the <code>gha-security-review</code> skill if available; otherwise <code>references/supply-chain.md</code></td>
+</tr>
+<tr>
+<td>Other CI/CD pipelines, lockfiles, package manifests</td>
+<td><code>references/supply-chain.md</code></td>
+</tr>
+</tbody>
+</table>
+<h5>4. Research Before Flagging</h5>
+<p><strong>For each potential issue, research the codebase to build confidence:</strong></p>
+<ul>
+<li>Where does this value actually come from? Trace the data flow.</li>
+<li>Is it configured at deployment (settings, env vars) or from user input?</li>
+<li>Is there validation, sanitization, or allowlisting elsewhere?</li>
+<li>What framework protections apply?</li>
+</ul>
+<p>Only report issues where you have HIGH confidence after understanding the broader context.</p>
+<h5>5. Verify Exploitability</h5>
+<p>For each potential finding, confirm:</p>
+<p><strong>Is the input attacker-controlled?</strong></p>
+<table>
+<thead>
+<tr>
+<th>Attacker-Controlled (Investigate)</th>
+<th>Server-Controlled (Usually Safe)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>request.GET</code>, <code>request.POST</code>, <code>request.args</code></td>
+<td><code>settings.X</code>, <code>app.config['X']</code></td>
+</tr>
+<tr>
+<td><code>request.json</code>, <code>request.data</code>, <code>request.body</code></td>
+<td><code>os.environ.get('X')</code></td>
+</tr>
+<tr>
+<td><code>request.headers</code> (most headers)</td>
+<td>Hardcoded constants</td>
+</tr>
+<tr>
+<td><code>request.cookies</code> (unsigned)</td>
+<td>Internal service URLs from config</td>
+</tr>
+<tr>
+<td>URL path segments: <code>/users/&lt;id&gt;/</code></td>
+<td>Database content from admin/system</td>
+</tr>
+<tr>
+<td>File uploads (content and names)</td>
+<td>Signed session data</td>
+</tr>
+<tr>
+<td>Database content from other users</td>
+<td>Framework settings</td>
+</tr>
+<tr>
+<td>WebSocket messages</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Does the framework mitigate this?</strong></p>
+<ul>
+<li>Check language guide for auto-escaping, parameterization</li>
+<li>Check for middleware/decorators that sanitize</li>
+</ul>
+<p><strong>Is there validation upstream?</strong></p>
+<ul>
+<li>Input validation before this code</li>
+<li>Sanitization libraries (DOMPurify, bleach, etc.)</li>
+</ul>
+<h5>6. Report HIGH Confidence Only</h5>
+<p>Skip theoretical issues. Report only what you've confirmed is exploitable after research.</p>
+<hr>
+<h4>Severity Classification</h4>
+<table>
+<thead>
+<tr>
+<th>Severity</th>
+<th>Impact</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Critical</strong></td>
+<td>Direct exploit, severe impact, no auth required</td>
+<td>RCE, SQL injection to data, auth bypass, hardcoded secrets</td>
+</tr>
+<tr>
+<td><strong>High</strong></td>
+<td>Exploitable with conditions, significant impact</td>
+<td>Stored XSS, SSRF to metadata, IDOR to sensitive data</td>
+</tr>
+<tr>
+<td><strong>Medium</strong></td>
+<td>Specific conditions required, moderate impact</td>
+<td>Reflected XSS, CSRF on state-changing actions, path traversal</td>
+</tr>
+<tr>
+<td><strong>Low</strong></td>
+<td>Defense-in-depth, minimal direct impact</td>
+<td>Missing headers, verbose errors, weak algorithms in non-critical context</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4>Quick Patterns Reference</h4>
+<h5>Always Flag (Critical)</h5>
+<pre><code>eval(user_input)           # Any language
+exec(user_input)           # Any language
+pickle.loads(user_data)    # Python
+yaml.load(user_data)       # Python (not safe_load)
+unserialize($user_data)    # PHP
+deserialize(user_data)     # Java ObjectInputStream
+shell=True + user_input    # Python subprocess
+child_process.exec(user)   # Node.js
+</code></pre>
+<h5>Always Flag (High)</h5>
+<pre><code>innerHTML = userInput              # DOM XSS
+dangerouslySetInnerHTML={user}     # React XSS
+v-html=&quot;userInput&quot;                 # Vue XSS
+f&quot;SELECT * FROM x WHERE {user}&quot;    # SQL injection
+`SELECT * FROM x WHERE ${user}`    # SQL injection
+os.system(f&quot;cmd {user_input}&quot;)     # Command injection
+</code></pre>
+<h5>Always Flag (Secrets)</h5>
+<pre><code>password = &quot;hardcoded&quot;
+api_key = &quot;sk-...&quot;
+AWS_SECRET_ACCESS_KEY = &quot;...&quot;
+private_key = &quot;-----BEGIN&quot;
+</code></pre>
+<h5>Check Context First (MUST Investigate Before Flagging)</h5>
+<pre><code># SSRF - ONLY if URL is from user input, NOT from settings/config
+requests.get(request.GET['url'])     # FLAG: User-controlled URL
+requests.get(settings.API_URL)       # SAFE: Server-controlled config
+requests.get(f&quot;{settings.BASE}/{x}&quot;) # CHECK: Is 'x' user input?
+
+# Path traversal - ONLY if path is from user input
+open(request.GET['file'])            # FLAG: User-controlled path
+open(settings.LOG_PATH)              # SAFE: Server-controlled config
+open(f&quot;{BASE_DIR}/{filename}&quot;)       # CHECK: Is 'filename' user input?
+
+# Open redirect - ONLY if URL is from user input
+redirect(request.GET['next'])        # FLAG: User-controlled redirect
+redirect(settings.LOGIN_URL)         # SAFE: Server-controlled config
+
+# Weak crypto - ONLY if used for security purposes
+hashlib.md5(file_content)            # SAFE: File checksums, caching
+hashlib.md5(password)                # FLAG: Password hashing
+random.random()                      # SAFE: Non-security uses (UI, sampling)
+random.random() for token            # FLAG: Security tokens need secrets module
+</code></pre>
+<hr>
+<h4>Output Format</h4>
+<pre><code class="language-markdown">## Security Review: [File/Component Name]
+
+### Summary
+- **Findings**: X (Y Critical, Z High, ...)
+- **Risk Level**: Critical/High/Medium/Low
+- **Confidence**: High/Mixed
+
+### Findings
+
+#### [VULN-001] [Vulnerability Type] (Severity)
+- **Location**: `file.py:123`
+- **Confidence**: High
+- **Issue**: [What the vulnerability is]
+- **Impact**: [What an attacker could do]
+- **Evidence**:
+  ```python
+  [Vulnerable code snippet]
+</code></pre>
+<ul>
+<li><strong>Fix</strong>: [How to remediate]</li>
+</ul>
+<h5>Needs Verification</h5>
+<h6>[VERIFY-001] [Potential Issue]</h6>
+<ul>
+<li><strong>Location</strong>: <code>file.py:456</code></li>
+<li><strong>Question</strong>: [What needs to be verified]</li>
+</ul>
+<pre><code>
+If no vulnerabilities found, state: &quot;No high-confidence vulnerabilities identified.&quot;
+
+---
+
+## Reference Files
+
+### Core Vulnerabilities (`references/`)
+| File | Covers |
+|------|--------|
+| `injection.md` | SQL, NoSQL, OS command, LDAP, template injection |
+| `xss.md` | Reflected, stored, DOM-based XSS |
+| `authorization.md` | Authorization, IDOR, privilege escalation |
+| `authentication.md` | Sessions, credentials, password storage |
+| `cryptography.md` | Algorithms, key management, randomness |
+| `deserialization.md` | Pickle, YAML, Java, PHP deserialization |
+| `file-security.md` | Path traversal, uploads, XXE |
+| `ssrf.md` | Server-side request forgery |
+| `csrf.md` | Cross-site request forgery |
+| `data-protection.md` | Secrets exposure, PII, logging |
+| `api-security.md` | REST, GraphQL, mass assignment |
+| `business-logic.md` | Race conditions, workflow bypass |
+| `modern-threats.md` | Prototype pollution, LLM injection, WebSocket |
+| `misconfiguration.md` | Headers, CORS, debug mode, defaults |
+| `error-handling.md` | Fail-open, information disclosure |
+| `supply-chain.md` | Dependencies, build security |
+| `logging.md` | Audit failures, log injection |
+
+### Language Guides (`languages/`)
+- `python.md` - Django, Flask, FastAPI patterns
+- `javascript.md` - Node, Express, React, Vue, Next.js
+
+### Infrastructure (`infrastructure/`)
+- `docker.md` - Container security
+</code></pre>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

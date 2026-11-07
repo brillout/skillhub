@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>minimal-run-and-audit · SkillHub</title>
+    <meta name="description" content="Use it when: setup is done and you want a short documented run, such as a smoke test, inference or evaluation, with its evidence on record. It does: runs that one command, or takes output already captured, and writes standard report files about it. You get: a repro_outputs folder: summary, commands, log and status, plus notes on what changed and how comparable the result is. Not for: training runs, choosing what to reproduce, or setting up the environment. Usually called by: RigorPilot&#039;s main skill, which reproduces a research repo from its README, which picks the command to run." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=lllllllama%2Frigorpilot-skills">lllllllama/rigorpilot-skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/bundle/lllllllama/rigorpilot-skills/">RigorPilot</a></p>
+      <h1>minimal-run-and-audit</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>setup is done and you want a short documented run, such as a smoke test, inference or evaluation, with its evidence on record</dd></div><div><dt>It does</dt><dd>runs that one command, or takes output already captured, and writes standard report files about it</dd></div><div><dt>You get</dt><dd>a repro_outputs folder: summary, commands, log and status, plus notes on what changed and how comparable the result is</dd></div><div><dt>Not for</dt><dd>training runs, choosing what to reproduce, or setting up the environment</dd></div><div><dt>Usually called by</dt><dd>RigorPilot&#39;s main skill, which reproduces a research repo from its README, which picks the command to run</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 6 of 11 in the <a href="/skillhub/bundle/lllllllama/rigorpilot-skills/">RigorPilot</a> bundle · Before it: <a href="/skillhub/skill/lllllllama/rigorpilot-skills/skills/analyze-project/">analyze-project</a> · After it: <a href="/skillhub/skill/lllllllama/rigorpilot-skills/skills/run-train/">run-train</a></p>
+    <p class="note">Only works inside its bundle: Its run and report scripts load a shared runtime that ships inside ai-research-reproduction, the repo&#39;s main skill, and stop with an error without it. Install <a href="/skillhub/bundle/lllllllama/rigorpilot-skills/">RigorPilot</a> instead.</p>
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>The evidence step in RigorPilot, a set of skills that reproduces deep-learning research code by following its README. A run that passes shows the chosen command works, not that the paper&#39;s numbers were reproduced, and the reports keep that distinction. Each one states whether the run was full, partial, only a quick check, or blocked, names the documented command, separates facts from inferences and puts the main blocker up front. Two files guard what the result means: a scientific changelog lists anything that changed it, such as a different preprocessing step or checkpoint, and a comparability report says how far it can be compared with the README, the paper or a baseline. If repo files were edited to make the run work, PATCHES.md lists them, and no change to evaluation, preprocessing, checkpoints or metrics may be hidden.</p>
+      <p class="muted">Summarizes <a href="https://github.com/lllllllama/rigorpilot-skills/tree/fb3ccdf5aa64b1fa5b1d0463e666a8bc8bc26e01/skills/minimal-run-and-audit">the skill at fb3ccdf</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/lllllllama/rigorpilot-skills --skill minimal-run-and-audit</code><button type="button" class="copy" data-copy="npx skills add https://github.com/lllllllama/rigorpilot-skills --skill minimal-run-and-audit">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/lllllllama/rigorpilot-skills/minimal-run-and-audit">skills.sh page</a> · <a href="https://github.com/lllllllama/rigorpilot-skills/tree/HEAD/skills/minimal-run-and-audit">Source on GitHub</a> · <a href="/skillhub/?repo=lllllllama%2Frigorpilot-skills">All skills from lllllllama/rigorpilot-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>489,379 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>486 <span class="muted">lllllllama/rigorpilot-skills</span></dd></div><div><dt>First seen</dt><dd>Mar 30, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">8.7K</div>
+      <div class="stat-delta">+29050% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 30; week to Sep 26: 29; week to Oct 3: 40; week to Oct 10: 82; week to Oct 17: 3,504; week to Oct 24: 10,916; week to Oct 31: 11,043; week to Nov 7: 8,745. Use the left and right arrow keys to read each week."
+        data-values="30,29,40,82,3504,10916,11043,8745" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,49.9 38.6,49.9 71.1,49.8 103.7,49.7 136.3,36.0 168.9,6.5 201.4,6.0 234.0,15.2" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="15.2" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>30</td></tr><tr><td>Sep 26</td><td>29</td></tr><tr><td>Oct 3</td><td>40</td></tr><tr><td>Oct 10</td><td>82</td></tr><tr><td>Oct 17</td><td>3,504</td></tr><tr><td>Oct 24</td><td>10,916</td></tr><tr><td>Oct 31</td><td>11,043</td></tr><tr><td>Nov 7</td><td>8,745</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:science" data-facet="category" title="Research reproduction, financial data, charts and diagrams." href="/skillhub/?tag=category%3Ascience">category:science</a></div>
+          <p class="tag-meaning">Research reproduction, financial data, charts and diagrams.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="ml-research" data-facet="topic" href="/skillhub/?tag=ml-research">ml-research</a><a class="tag" data-tag="verification" data-facet="topic" href="/skillhub/?tag=verification">verification</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:python" data-facet="stack" href="/skillhub/?tag=stack%3Apython">stack:python</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/lllllllama/rigorpilot-skills/blob/fb3ccdf5aa64b1fa5b1d0463e666a8bc8bc26e01/skills/minimal-run-and-audit/SKILL.md">lllllllama/rigorpilot-skills at fb3ccdf</a>. Checked daily, last changed Oct 20, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: minimal-run-and-audit
+description: Rigor Run skill for README-first deep learning repo reproduction. Use when the task is specifically to capture or normalize evidence from the selected smoke test or documented inference or evaluation command and write standardized `repro_outputs/` files, including patch notes when repository files changed. Do not use for training execution, initial repo intake, generic environment setup, paper lookup, target selection, hidden scientific-meaning changes, or end-to-end orchestration by itself.</code></pre></details>
+        <div class="markdown"><h3>minimal-run-and-audit</h3>
+<p>Use this as the Rigor Run skill. The installed slug remains
+<code>minimal-run-and-audit</code> for compatibility.</p>
+<p>Use the shared operating principles in
+<code>../ai-research-reproduction/references/agent-operating-principles.md</code>; this skill should make run
+evidence auditable without turning every command into a rigid protocol.</p>
+<h4>When to apply</h4>
+<ul>
+<li>After a reproduction target and setup plan exist.</li>
+<li>When the main skill needs execution evidence and normalized outputs.</li>
+<li>When a smoke test, documented inference run, documented evaluation run, or other short non-training verification is appropriate.</li>
+<li>When the user already knows what command should be attempted and wants execution plus reporting only.</li>
+</ul>
+<h4>When not to apply</h4>
+<ul>
+<li>During initial repo scanning.</li>
+<li>When environment or assets are still undefined enough to make execution meaningless.</li>
+<li>When the task is a literature lookup rather than repository execution.</li>
+<li>When the user is still deciding which reproduction target should count as the main run.</li>
+</ul>
+<h4>Clear boundaries</h4>
+<ul>
+<li>This skill owns normalized reporting for an attempted command.</li>
+<li>It may receive execution evidence from the main skill or a thin helper.</li>
+<li>It does not choose the overall target on its own.</li>
+<li>It does not perform broad paper analysis.</li>
+<li>It does not own training startup, resume, or long-running training state.</li>
+<li>It should not normalize risky code edits into acceptable practice.</li>
+<li>It must not hide changes that alter evaluation, preprocessing, checkpoints,
+metrics, or other scientific meaning.</li>
+</ul>
+<h4>Input expectations</h4>
+<ul>
+<li>selected reproduction goal</li>
+<li>runnable commands or smoke commands</li>
+<li>environment and asset assumptions</li>
+<li>optional patch metadata</li>
+</ul>
+<h4>Output expectations</h4>
+<ul>
+<li>execution result summary</li>
+<li>standardized <code>repro_outputs/</code> files</li>
+<li><code>SCIENTIFIC_CHANGELOG.md</code> for changed scientific meaning and evidence status</li>
+<li><code>COMPARABILITY_REPORT.md</code> for README/paper/baseline comparability</li>
+<li>clear distinction between verified, partial, and blocked states</li>
+<li><code>PATCHES.md</code> when repo files changed</li>
+</ul>
+<h4>Notes</h4>
+<p>Use <code>references/reporting-policy.md</code>, <code>../ai-research-reproduction/references/research-rigor-principles.md</code>, <code>scripts/run_command.py</code>, and <code>scripts/write_outputs.py</code>.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

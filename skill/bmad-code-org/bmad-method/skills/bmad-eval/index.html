@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bmad-eval · SkillHub</title>
+    <meta name="description" content="Use it when: you want evidence that a skill beats the bare model, that a section earns its place, or that its description fires when it should. It does: runs each case in a clean temporary workspace with only the skill under test staged, through the agent CLI you work in. Modes: baseline against no skill, variant against a stripped or prior version, quality graded on a rubric by a subagent, and trigger accuracy. You get: a timestamped run folder with each case&#039;s prompt, transcript, workspace, timing and grades; fewer than three runs per case counts as a quick look. Works on: any folder with a SKILL.md, BMad&#039;s or not; it reads cases you wrote and never invents them. Needs: uv and your agent CLI; to record how to run that CLI, BMad set up with bmad-customize, or else a harness JSON file you pass in." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=bmad-code-org%2Fbmad-method">bmad-code-org/bmad-method</a> <span aria-hidden="true">/</span> <a href="/skillhub/bundle/bmad-code-org/bmad-method/">BMad Method</a></p>
+      <h1>bmad-eval</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want evidence that a skill beats the bare model, that a section earns its place, or that its description fires when it should</dd></div><div><dt>It does</dt><dd>runs each case in a clean temporary workspace with only the skill under test staged, through the agent CLI you work in</dd></div><div><dt>Modes</dt><dd>baseline against no skill, variant against a stripped or prior version, quality graded on a rubric by a subagent, and trigger accuracy</dd></div><div><dt>You get</dt><dd>a timestamped run folder with each case&#39;s prompt, transcript, workspace, timing and grades; fewer than three runs per case counts as a quick look</dd></div><div><dt>Works on</dt><dd>any folder with a SKILL.md, BMad&#39;s or not; it reads cases you wrote and never invents them</dd></div><div><dt>Needs</dt><dd>uv and your agent CLI; to record how to run that CLI, BMad set up with bmad-customize, or else a harness JSON file you pass in</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 25 of 25 in the <a href="/skillhub/bundle/bmad-code-org/bmad-method/">BMad Method</a> bundle · Before it: <a href="/skillhub/skill/bmad-code-org/bmad-method/skills/bmad-toolsmith/">bmad-toolsmith</a></p>
+    
+      <p class="note">Needs uv and the agent CLI you work in. Each case runs that CLI with its permission prompts off, uncontained unless the recorded command adds a sandbox.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>BMad&#39;s eval runner. Cases live in the skill&#39;s evals/cases.json, each an input, a rubric and optional fixture files, plus an optional bracketed prefix that starts the skill mid-workflow; trigger queries are a query and whether it should fire. A skill-creator evals.json converts to this format. On the first run it works out how to call your CLI headless (the command, its skills folder, environment variables and login files to copy into a fresh home), proves that on one case and records it through bmad-customize; without BMad you pass the same keys as a JSON file. Before running it shows a summary and warns that permission prompts are off. Quality grading checks each expectation against the transcript and files and flags assertions a wrong output would also pass. Trigger mode detects a load with a canary token. An optional loop writes about twenty queries, half of them near misses that shouldn&#39;t fire, rewrites the description from 60% of them for up to five rounds and keeps the version that scores best on the rest; an opt-in loop has bmad-toolsmith review a weak skill, then fixes and re-evaluates it within a round limit. Run folders are never deleted or overwritten.</p>
+      <p class="muted">Summarizes <a href="https://github.com/bmad-code-org/bmad-method/tree/e734d3ac3c0f4ea31cc2c2bbbe79e86e54f2cae6/skills/bmad-eval">the skill at e734d3a</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/bmad-code-org/bmad-method --skill bmad-eval</code><button type="button" class="copy" data-copy="npx skills add https://github.com/bmad-code-org/bmad-method --skill bmad-eval">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/bmad-code-org/bmad-method/bmad-eval">skills.sh page</a> · <a href="https://github.com/bmad-code-org/bmad-method/tree/HEAD/skills/bmad-eval">Source on GitHub</a> · <a href="/skillhub/?repo=bmad-code-org%2Fbmad-method">All skills from bmad-code-org/bmad-method</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>7,000 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>55,089 <span class="muted">bmad-code-org/bmad-method</span></dd></div><div><dt>First seen</dt><dd>Oct 6, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">1.3K</div>
+      <div class="stat-delta">week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 0; week to Sep 26: 0; week to Oct 3: 0; week to Oct 10: 0; week to Oct 17: 1,732; week to Oct 24: 1,307; week to Oct 31: 1,526; week to Nov 7: 1,319. Use the left and right arrow keys to read each week."
+        data-values="0,0,0,0,1732,1307,1526,1319" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,50.0 38.6,50.0 71.1,50.0 103.7,50.0 136.3,6.0 168.9,16.8 201.4,11.2 234.0,16.5" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="16.5" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>0</td></tr><tr><td>Sep 26</td><td>0</td></tr><tr><td>Oct 3</td><td>0</td></tr><tr><td>Oct 10</td><td>0</td></tr><tr><td>Oct 17</td><td>1,732</td></tr><tr><td>Oct 24</td><td>1,307</td></tr><tr><td>Oct 31</td><td>1,526</td></tr><tr><td>Nov 7</td><td>1,319</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:skill-tools" data-facet="category" title="Find, write, vet and route to other skills." href="/skillhub/?tag=category%3Askill-tools">category:skill-tools</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Find, write, vet and route to other skills.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/skillhub/?tag=needs%3Acli">needs:cli</a><a class="tag" data-tag="needs:subagents" data-facet="needs" title="Relies on the agent being able to spawn subagents." href="/skillhub/?tag=needs%3Asubagents">needs:subagents</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">Relies on the agent being able to spawn subagents.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="skill-authoring" data-facet="topic" href="/skillhub/?tag=skill-authoring">skill-authoring</a><a class="tag" data-tag="testing" data-facet="topic" href="/skillhub/?tag=testing">testing</a><a class="tag" data-tag="verification" data-facet="topic" href="/skillhub/?tag=verification">verification</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/bmad-code-org/bmad-method/blob/e734d3ac3c0f4ea31cc2c2bbbe79e86e54f2cae6/skills/bmad-eval/SKILL.md">bmad-code-org/bmad-method at e734d3a</a>. Checked daily, last changed Nov 7, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: bmad-eval
+description: &#39;Runs the evals of a BMad skill through the agent harness the user works in and reports what they show: baseline against the bare model, variant against a stripped or prior version, quality against a rubric, and trigger accuracy of the description with an optional optimization loop. Use when the user asks to evaluate, benchmark, test the triggers of, grade, or compare versions of a skill, or when the bmad-toolsmith skill asks for an eval of a skill it built.&#39;</code></pre></details>
+        <div class="markdown"><h3>Skill Eval Runner</h3>
+<p>You run a skill's evals and report what they say. Cite specific findings, flag evals that pass for trivial reasons, and never widen a tolerance to make a run look like it succeeded. No model or harness is named in this skill: the harness a project's evals run through is recorded in this skill's customization at the first run.</p>
+<h4>The four modes</h4>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Question it answers</th>
+<th>Script / reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>baseline</td>
+<td>Does the skill beat the bare model on the same input?</td>
+<td><code>references/eval-format.md</code>, <code>scripts/run_evals.py</code></td>
+</tr>
+<tr>
+<td>variant</td>
+<td>Does a section earn its place, or does a stripped version do as well?</td>
+<td><code>references/eval-format.md</code>, <code>scripts/run_evals.py</code></td>
+</tr>
+<tr>
+<td>quality</td>
+<td>Does the output meet the named rubric?</td>
+<td><code>references/grader.md</code>, <code>references/eval-format.md</code></td>
+</tr>
+<tr>
+<td>trigger</td>
+<td>Does the description fire on the right queries and stay quiet on the rest?</td>
+<td><code>references/harness.md</code>, <code>scripts/run_triggers.py</code></td>
+</tr>
+</tbody>
+</table>
+<p>Baseline runs every case with the skill staged and with nothing staged. Variant runs the skill against the one at <code>--variant-path</code>. Quality grades one config against its rubric. Trigger measures real firing; <code>references/description-optimization.md</code> improves the description across rounds.</p>
+<h4>Case format</h4>
+<p>A case is <code>input + rubric + optional state_prefix + optional fixture files</code>; the <code>state_prefix</code> is a bracketed prime prepended to the input that places the skill mid-workflow in one shot. Cases live in <code>&lt;skill&gt;/evals/cases.json</code>, trigger queries as <code>{query, should_trigger}</code> in <code>&lt;skill&gt;/evals/triggers.json</code>. The full shape and the strong-versus-weak expectation taxonomy are in <code>references/eval-format.md</code>. A skill-creator <code>evals.json</code> converts with <code>uv run {skill-root}/scripts/convert_cases.py &lt;evals.json&gt; --output &lt;cases.json&gt;</code> (<code>--to skill-creator</code> reverses it).</p>
+<h4>On activation</h4>
+<ol>
+<li>Read config with <code>uv run {project-root}/_bmad/scripts/resolve_config.py --project-root {project-root} --key core.output_folder</code> and customization with <code>uv run {project-root}/_bmad/scripts/resolve_customization.py --skill {skill-root} --project-root {project-root} --key workflow</code>. Absent keys are fine. <code>{reports_folder}</code> is <code>{workflow.reports_folder}</code> with <code>{output_folder}</code> filled in.</li>
+<li>Verify <code>&lt;skill-path&gt;/SKILL.md</code> exists; halt with a clear error if not.</li>
+<li>When <code>workflow.harness.command</code> came back empty, work out the harness facts for the CLI you are running in per <code>references/harness.md</code>, prove them on one case, and record them by invoking the <code>bmad-customize</code> skill (install: <code>npx skills add bmad-code-org/BMAD-METHOD --skill bmad-customize</code>); the runner reads them from there. When nobody is at the keyboard, stop and show the table to record instead.</li>
+<li>Find the cases file: the one the user named, then <code>&lt;skill-path&gt;/evals/</code>, then <code>&lt;project-root&gt;/evals/&lt;skill-name&gt;/</code>, then anywhere under <code>&lt;project-root&gt;/evals/</code>. If nothing is found, halt and say so; the runner does not invent cases.</li>
+<li>Confirm the run summary unless the user asked for a non-interactive run, then execute. The summary names the skill, cases, modes and output dir, shows the harness command, and says that it runs with permission prompts off and is not contained unless the command wraps it in a sandbox. A non-interactive run needs the harness already recorded.</li>
+</ol>
+<h4>Run execution</h4>
+<p>The user asks for a run in <code>&lt;mode&gt;</code> mode on <code>&lt;skill&gt;</code> (the directory holding <code>SKILL.md</code>), with a variant skill for variant mode. The project root is the first ancestor of the skill holding <code>_bmad/</code> or <code>.git/</code>; the output dir is <code>{reports_folder}</code> when BMad is set up, else <code>~/bmad-evals/</code>. Every run is its own timestamped folder there, so runs never collide. Each case runs in a clean room, a temporary folder outside the project with a copy of the skill staged into its workspace and an environment built from scratch, so host config, prior runs, the project's instruction files and its installed skills cannot bias the result. The runner reads the harness from customization itself; in a project without BMad, pass <code>--harness &lt;json&gt;</code> with the same keys.</p>
+<p>Baseline, variant and quality:</p>
+<pre><code>uv run {skill-root}/scripts/run_evals.py \
+  --cases &lt;cases-file&gt; --skill-path &lt;skill&gt; --output-dir &lt;dir&gt; \
+  --mode quality|baseline|variant [--variant-path &lt;skill&gt;] \
+  --label &lt;skill-name&gt;-&lt;mode&gt; [--runs N]
+</code></pre>
+<p><code>--runs</code> defaults to 1 for a quick look; a result counts as settled only at 3 or more. Case subsets, timeouts and workers are in the script docstrings. Exit 0 is a complete run; 1 means a case errored or timed out or the command was not found, 3 that no harness is recorded; a trigger query failing its threshold is a result, not an error.</p>
+<p>Trigger:</p>
+<pre><code>uv run {skill-root}/scripts/run_triggers.py \
+  --skill-path &lt;skill&gt; --queries &lt;queries-file&gt; --output-dir &lt;dir&gt; \
+  [--runs-per-query N]
+</code></pre>
+<p>For quality, spawn the grader in <code>references/grader.md</code> per case with its rubric, transcript path, artifacts dir (the case's <code>cwd/</code>) and <code>grading_path</code> of <code>&lt;case-folder&gt;/grading.json</code>. Relay its rubric feedback. If a grader errors, mark the case <code>grading_error</code>, never a default verdict.</p>
+<p>When <code>--runs</code> is greater than one, <code>uv run {skill-root}/scripts/aggregate_benchmark.py --baseline &lt;run-dir&gt;/&lt;config-a&gt; --variant &lt;run-dir&gt;/&lt;config-b&gt;</code> gives mean, sample standard deviation, min, max and delta (<code>--runs &lt;run-dir&gt;/&lt;config&gt;</code> for one config).</p>
+<p>When a run comes back weak and the user wants the skill improved from it, follow <code>references/self-improvement.md</code>.</p>
+<h4>Artifacts</h4>
+<p>Each run is a dated folder under the output dir, with <code>run.json</code> naming the harness command; each case folder, and each trigger attempt, holds its prompt, the transcript (what the harness printed), <code>stderr.txt</code>, <code>cwd/</code> (the workspace after the run), <code>timing.json</code> (written the moment the invocation ends) and <code>grading.json</code> when quality ran. Never delete, overwrite or rotate a run folder. Tell the user where it is when you finish.</p>
+<h4>Outcomes</h4>
+<ul>
+<li>The run reflects the skill in a clean working directory, not the host shell.</li>
+<li>Failures cite specific expectations with evidence; a superficial pass is flagged.</li>
+<li>A result from fewer than 3 runs per case (or per trigger query) is reported as a quick look, never as settled.</li>
+<li>A baseline the skill no longer wins points to retiring the skill, not patching it.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>

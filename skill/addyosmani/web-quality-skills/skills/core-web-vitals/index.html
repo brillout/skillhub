@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/skillhub/assets/static/style-da232d78.lGfFyJxd.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>core-web-vitals · SkillHub</title>
+    <meta name="description" content="Use it when: a page&#039;s Core Web Vitals fail: the main content appears late (LCP), clicks respond slowly (INP), or the layout jumps (CLS). It does: checks real-user Chrome data at the 75th percentile, records a browser trace, reads only the insights for the failing metric, fixes the code behind it and re-measures. You get: fixes with lab before-and-after numbers; it won&#039;t claim a real-user improvement until new visits show one. Unlike performance: its sibling skill for loading and runtime speed in general, it targets these three metrics and their good, needs-work and poor thresholds. Install with: the repo&#039;s performance skill: it reads that skill&#039;s measurement workflow and real-user monitoring files." />
+    <link rel="icon" type="image/svg+xml" href="/skillhub/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/skillhub/">
+        <img src="/skillhub/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/skillhub/tags/">Tags</a><a href="/skillhub/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/skillhub/">Skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/?repo=addyosmani%2Fweb-quality-skills">addyosmani/web-quality-skills</a> <span aria-hidden="true">/</span> <a href="/skillhub/bundle/addyosmani/web-quality-skills/">Web Quality Skills</a></p>
+      <h1>core-web-vitals</h1>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>a page&#39;s Core Web Vitals fail: the main content appears late (LCP), clicks respond slowly (INP), or the layout jumps (CLS)</dd></div><div><dt>It does</dt><dd>checks real-user Chrome data at the 75th percentile, records a browser trace, reads only the insights for the failing metric, fixes the code behind it and re-measures</dd></div><div><dt>You get</dt><dd>fixes with lab before-and-after numbers; it won&#39;t claim a real-user improvement until new visits show one</dd></div><div><dt>Unlike performance</dt><dd>its sibling skill for loading and runtime speed in general, it targets these three metrics and their good, needs-work and poor thresholds</dd></div><div><dt>Install with</dt><dd>the repo&#39;s performance skill: it reads that skill&#39;s measurement workflow and real-user monitoring files</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 3 of 6 in the <a href="/skillhub/bundle/addyosmani/web-quality-skills/">Web Quality Skills</a> bundle · Before it: <a href="/skillhub/skill/addyosmani/web-quality-skills/skills/performance/">performance</a> · After it: <a href="/skillhub/skill/addyosmani/web-quality-skills/skills/accessibility/">accessibility</a></p>
+    <p class="note">Only works inside its bundle: Reads the measurement workflow and the real-user monitoring reference that ship with the performance skill. Install <a href="/skillhub/bundle/addyosmani/web-quality-skills/">Web Quality Skills</a> instead.</p>
+      <p class="note">Reads the measurement and real-user monitoring files in the performance skill&#39;s folder, so install the repo&#39;s performance skill with it.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>LCP (Largest Contentful Paint) is when the biggest visible element renders, good at 2.5 seconds or less; INP (Interaction to Next Paint) is how fast the page responds to clicks, taps and key presses, good at 200 ms; CLS (Cumulative Layout Shift) measures unexpected jumps, good at 0.1. Each must be met by 75% of visits. With only source code, it names likely causes but won&#39;t call a metric failing without runtime evidence. For LCP it covers slow server response, render-blocking CSS, hero images discovered late, client-side rendering, and Speculation Rules prerendering of the likely next page, with its costs: each prerender is roughly a full page load and fires analytics early. LCP, INP and CLS each have a detailed reference file, read only when a trace or field data points to that metric. It adds quick fixes for Next.js, React and Vue/Nuxt, and recommends Google&#39;s web-vitals library over hand-written observers for production data.</p>
+      <p class="muted">Summarizes <a href="https://github.com/addyosmani/web-quality-skills/tree/afa8da942115f2961fdbfa80807ea0b232ff6c00/skills/core-web-vitals">the skill at afa8da9</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code>npx skills add https://github.com/addyosmani/web-quality-skills --skill core-web-vitals</code><button type="button" class="copy" data-copy="npx skills add https://github.com/addyosmani/web-quality-skills --skill core-web-vitals">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/addyosmani/web-quality-skills/core-web-vitals">skills.sh page</a> · <a href="https://github.com/addyosmani/web-quality-skills/tree/HEAD/skills/core-web-vitals">Source on GitHub</a> · <a href="/skillhub/?repo=addyosmani%2Fweb-quality-skills">All skills from addyosmani/web-quality-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>34,000 <span class="muted">on skills.sh, Nov 7, 2026</span></dd></div><div><dt>Repo stars</dt><dd>3,052 <span class="muted">addyosmani/web-quality-skills</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">1.1K</div>
+      <div class="stat-delta">-13% over 8 weeks · week to Nov 7</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 19: 1,220; week to Sep 26: 1,074; week to Oct 3: 1,024; week to Oct 10: 1,030; week to Oct 17: 1,061; week to Oct 24: 1,058; week to Oct 31: 1,118; week to Nov 7: 1,057. Use the left and right arrow keys to read each week."
+        data-values="1220,1074,1024,1030,1061,1058,1118,1057" data-weeks="Sep 19|Sep 26|Oct 3|Oct 10|Oct 17|Oct 24|Oct 31|Nov 7">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,11.3 71.1,13.1 103.7,12.9 136.3,11.7 168.9,11.8 201.4,9.7 234.0,11.9" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="11.9" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 19</td><td>1,220</td></tr><tr><td>Sep 26</td><td>1,074</td></tr><tr><td>Oct 3</td><td>1,024</td></tr><tr><td>Oct 10</td><td>1,030</td></tr><tr><td>Oct 17</td><td>1,061</td></tr><tr><td>Oct 24</td><td>1,058</td></tr><tr><td>Oct 31</td><td>1,118</td></tr><tr><td>Nov 7</td><td>1,057</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/skillhub/?tag=category%3Adebugging">category:debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/skillhub/?tag=category%3Asoftware-engineering">category:software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/skillhub/?tag=type%3Aworkflow">type:workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/skillhub/?tag=effect%3Alocal">effect:local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/skillhub/?tag=needs%3Anone">needs:none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/skillhub/?tag=by%3Acommunity">by:community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="performance" data-facet="topic" href="/skillhub/?tag=performance">performance</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/addyosmani/web-quality-skills/blob/afa8da942115f2961fdbfa80807ea0b232ff6c00/skills/core-web-vitals/SKILL.md">addyosmani/web-quality-skills at afa8da9</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: core-web-vitals
+description: Optimize Core Web Vitals (LCP, INP, CLS) for better page experience using field and lab evidence. Use when asked to &#34;improve Core Web Vitals&#34;, &#34;fix LCP&#34;, &#34;reduce CLS&#34;, &#34;optimize INP&#34;, &#34;page experience optimization&#34;, or &#34;fix layout shifts&#34;.
+license: MIT
+metadata:
+  author: web-quality-skills
+  version: &#34;2.0&#34;</code></pre></details>
+        <div class="markdown"><h3>Core Web Vitals optimization</h3>
+<p>Targeted optimization for the three Core Web Vitals using field data to identify user impact and browser traces to diagnose causes.</p>
+<h4>Measure before optimizing</h4>
+<p>When a runnable URL is available, read <a href="https://github.com/addyosmani/web-quality-skills/blob/afa8da942115f2961fdbfa80807ea0b232ff6c00/skills/performance/references/MEASUREMENT.md">the performance measurement workflow</a>. Prefer this sequence:</p>
+<ol>
+<li>Check page-level CrUX p75 data, with a clearly labeled origin fallback when page data is unavailable.</li>
+<li>Record a browser performance trace under stated conditions. With Chrome DevTools MCP, trace summaries can include CrUX alongside the observed lab metrics.</li>
+<li>Analyze only the insights associated with the failing metric, then inspect the implicated code and resources.</li>
+<li>Re-run equivalent lab measurements after the fix. Do not claim an immediate field improvement; CrUX and first-party RUM need new user visits.</li>
+</ol>
+<p>If only source code is available, identify likely causes but do not claim that LCP, INP, or CLS is failing without runtime evidence.</p>
+<h4>The three metrics</h4>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Measures</th>
+<th>Good</th>
+<th>Needs work</th>
+<th>Poor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>LCP</strong></td>
+<td>Loading</td>
+<td>≤ 2.5s</td>
+<td>2.5s – 4s</td>
+<td>&gt; 4s</td>
+</tr>
+<tr>
+<td><strong>INP</strong></td>
+<td>Interactivity</td>
+<td>≤ 200ms</td>
+<td>200ms – 500ms</td>
+<td>&gt; 500ms</td>
+</tr>
+<tr>
+<td><strong>CLS</strong></td>
+<td>Visual Stability</td>
+<td>≤ 0.1</td>
+<td>0.1 – 0.25</td>
+<td>&gt; 0.25</td>
+</tr>
+</tbody>
+</table>
+<p>Google measures at the <strong>75th percentile</strong> — 75% of page visits must meet &quot;Good&quot; thresholds.</p>
+<hr>
+<h4>LCP: Largest Contentful Paint</h4>
+<p>LCP measures when the largest visible content element renders. Usually this is:</p>
+<ul>
+<li>Hero image or video</li>
+<li>Large text block</li>
+<li>Background image</li>
+<li><code>&lt;svg&gt;</code> element</li>
+</ul>
+<h5>Common LCP issues</h5>
+<p><strong>1. Slow server response (TTFB &gt; 800ms)</strong></p>
+<pre><code>Fix: CDN, caching, optimized backend, edge rendering
+</code></pre>
+<p><strong>2. Render-blocking resources</strong></p>
+<pre><code class="language-html">&lt;!-- ❌ Blocks rendering --&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;/all-styles.css&quot;&gt;
+
+&lt;!-- ✅ Critical CSS inlined, rest deferred --&gt;
+&lt;style&gt;/* Critical above-fold CSS */&lt;/style&gt;
+&lt;link rel=&quot;preload&quot; href=&quot;/styles.css&quot; as=&quot;style&quot; 
+      onload=&quot;this.onload=null;this.rel='stylesheet'&quot;&gt;
+</code></pre>
+<p><strong>3. Slow resource load times</strong></p>
+<pre><code class="language-html">&lt;!-- ❌ LCP image is discovered only after a stylesheet loads --&gt;
+&lt;div class=&quot;hero&quot;&gt;&lt;/div&gt;
+
+&lt;!-- ✅ Discoverable in initial HTML and prioritized --&gt;
+&lt;link rel=&quot;preload&quot; href=&quot;/hero.webp&quot; as=&quot;image&quot; fetchpriority=&quot;high&quot;&gt;
+&lt;img src=&quot;/hero.webp&quot; alt=&quot;Hero&quot; fetchpriority=&quot;high&quot;&gt;
+</code></pre>
+<p>Prefer a discoverable <code>&lt;img&gt;</code> with <code>fetchpriority=&quot;high&quot;</code>. Add the preload only when the trace shows that the resource would otherwise be discovered late; duplicate or speculative preloads can compete for bandwidth.</p>
+<p><strong>4. Client-side rendering delays</strong></p>
+<pre><code class="language-javascript">// ❌ Content loads after JavaScript
+useEffect(() =&gt; {
+  fetch('/api/hero-text').then(r =&gt; r.json()).then(setHeroText);
+}, []);
+
+// ✅ Server-side or static rendering
+// Use SSR, SSG, or streaming to send HTML with content
+export async function getServerSideProps() {
+  const heroText = await fetchHeroText();
+  return { props: { heroText } };
+}
+</code></pre>
+<p><strong>5. Make navigations instant with the Speculation Rules API</strong></p>
+<p>For sites with predictable same-origin journeys, prerendering a likely next page can make a successful subsequent navigation much faster. Treat this as a measured navigation optimization, not a substitute for fixing the current page's LCP.</p>
+<pre><code class="language-html">&lt;script type=&quot;speculationrules&quot;&gt;
+{
+  &quot;prerender&quot;: [{
+    &quot;where&quot;: { &quot;href_matches&quot;: &quot;/*&quot; },
+    &quot;eagerness&quot;: &quot;moderate&quot;
+  }]
+}
+&lt;/script&gt;
+</code></pre>
+<p>Current Chrome behavior is specific enough to guide the choice:</p>
+<table>
+<thead>
+<tr>
+<th><code>eagerness</code></th>
+<th>Trigger</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>conservative</code></td>
+<td>Pointer or touch down</td>
+</tr>
+<tr>
+<td><code>moderate</code></td>
+<td>Desktop: 200ms hover, or earlier pointer down; mobile: viewport heuristics</td>
+</tr>
+<tr>
+<td><code>eager</code></td>
+<td>Chrome 143+: desktop 10ms hover; mobile 50ms after the anchor enters the viewport</td>
+</tr>
+<tr>
+<td><code>immediate</code></td>
+<td>As soon as the rules are observed</td>
+</tr>
+</tbody>
+</table>
+<p>Start conservatively and measure prediction hit rate, transferred bytes, server load, and navigation improvement before expanding the rules. Recheck <a href="https://developer.chrome.com/docs/web-platform/prerender-pages#eagerness">Chrome's maintained eagerness documentation</a> before hardcoding timing-sensitive behavior.</p>
+<p>Caveats:</p>
+<ul>
+<li><strong>Bandwidth/CPU cost.</strong> Each prerender is roughly a full page load. Scope <code>where</code> carefully (<code>href_matches</code> patterns, exclude logout/checkout) and avoid <code>immediate</code> outside small sites.</li>
+<li><strong>Side effects fire early.</strong> Analytics, ads, and any code that runs on load will fire when the prerender starts, not when the user navigates. Gate side effects on the <a href="https://developer.chrome.com/docs/web-platform/prerender-pages#detect_when_a_page_is_prerendered_or_used_for_a_full_navigation"><code>prerenderingchange</code> event</a> or <code>document.prerendering</code>.</li>
+<li><strong>Chromium-only.</strong> Safari and Firefox ignore the script — it's a progressive enhancement, never a regression.</li>
+</ul>
+<h5>LCP optimization checklist</h5>
+<pre><code class="language-markdown">- [ ] TTFB &lt; 800ms (use CDN, edge caching)
+- [ ] LCP resource is discoverable in initial HTML and prioritized; preload only if the trace shows late discovery
+- [ ] LCP image optimized (WebP/AVIF, correct size)
+- [ ] Critical CSS inlined (&lt; 14KB)
+- [ ] No render-blocking JavaScript in &lt;head&gt;
+- [ ] Fonts don't block text rendering (font-display: swap)
+- [ ] LCP element in initial HTML (not JS-rendered)
+- [ ] Speculation Rules added for likely-next navigations (moderate eagerness)
+</code></pre>
+<h5>LCP element identification</h5>
+<p>This snippet diagnoses the current page session. It is not field data.</p>
+<pre><code class="language-javascript">// Find your LCP element
+new PerformanceObserver((list) =&gt; {
+  const entries = list.getEntries();
+  const lastEntry = entries[entries.length - 1];
+  console.log('LCP element:', lastEntry.element);
+  console.log('LCP time:', lastEntry.startTime);
+}).observe({ type: 'largest-contentful-paint', buffered: true });
+</code></pre>
+<hr>
+<h4>INP: Interaction to Next Paint</h4>
+<p>INP measures responsiveness across clicks, taps, and key presses during a visit. Diagnose its input delay, processing time, and presentation delay separately; a slow interaction may involve main-thread contention before the handler, expensive application work, or delayed rendering after it.</p>
+<p>When field INP is poor or a trace identifies a slow interaction, read <a href="https://github.com/addyosmani/web-quality-skills/blob/afa8da942115f2961fdbfa80807ea0b232ff6c00/skills/core-web-vitals/references/INP.md">the INP reference</a> for trace interpretation, yielding patterns, third-party and rendering causes, a single-session observer, and first-party attribution.</p>
+<hr>
+<h4>CLS: Cumulative Layout Shift</h4>
+<p>CLS measures unexpected layout shifts across a page visit. Use field attribution or a trace to identify the shifted node and the trigger; do not assume the visible victim caused the shift.</p>
+<p>When field CLS is poor or a trace reports shifts, read <a href="https://github.com/addyosmani/web-quality-skills/blob/afa8da942115f2961fdbfa80807ea0b232ff6c00/skills/core-web-vitals/references/CLS.md">the CLS reference</a> for reserved-space patterns, dynamic content, font and animation fixes, a debugging observer, and a verification checklist.</p>
+<hr>
+<h4>Measurement sources</h4>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Browser performance trace (Chrome DevTools MCP: <code>performance_start_trace</code>)</td>
+<td>Observe one load or interaction and diagnose focused insights; use included CrUX context when available</td>
+</tr>
+<tr>
+<td>CrUX or Search Console</td>
+<td>Prioritize aggregated real-user outcomes at p75</td>
+</tr>
+<tr>
+<td>Lighthouse CLI or PageSpeed Insights</td>
+<td>Controlled lab fallback when DevTools tools are unavailable</td>
+</tr>
+<tr>
+<td>First-party RUM</td>
+<td>Segment current production experience by route, device, release, and attribution</td>
+</tr>
+<tr>
+<td>Raw <code>PerformanceObserver</code></td>
+<td>Inspect one page session during debugging</td>
+</tr>
+</tbody>
+</table>
+<p>Do not route performance through Chrome DevTools MCP's <code>lighthouse_audit</code>; that capability intentionally covers non-performance Lighthouse categories. Do not compare a single lab value directly with a field p75 as if they were equivalent samples.</p>
+<p>When adding or reviewing production collection, read <a href="https://github.com/addyosmani/web-quality-skills/blob/afa8da942115f2961fdbfa80807ea0b232ff6c00/skills/performance/references/RUM.md">the first-party RUM reference</a>. Prefer the <code>web-vitals</code> library because raw browser APIs do not by themselves implement every Core Web Vital's lifecycle and reporting rules.</p>
+<hr>
+<h4>Framework quick fixes</h4>
+<h5>Next.js</h5>
+<pre><code class="language-jsx">// LCP: Use next/image with priority
+import Image from 'next/image';
+&lt;Image src=&quot;/hero.jpg&quot; priority fill alt=&quot;Hero&quot; /&gt;
+
+// INP: Use dynamic imports
+const HeavyComponent = dynamic(() =&gt; import('./Heavy'), { ssr: false });
+
+// CLS: Image component handles dimensions automatically
+</code></pre>
+<h5>React</h5>
+<pre><code class="language-jsx">// LCP: Preload in head
+&lt;link rel=&quot;preload&quot; href=&quot;/hero.jpg&quot; as=&quot;image&quot; fetchpriority=&quot;high&quot; /&gt;
+
+// INP: Memoize and useTransition
+const [isPending, startTransition] = useTransition();
+startTransition(() =&gt; setExpensiveState(newValue));
+
+// CLS: Always specify dimensions in img tags
+</code></pre>
+<h5>Vue/Nuxt</h5>
+<pre><code class="language-vue">&lt;!-- LCP: Use nuxt/image with preload --&gt;
+&lt;NuxtImg src=&quot;/hero.jpg&quot; preload loading=&quot;eager&quot; /&gt;
+
+&lt;!-- INP: Use async components --&gt;
+&lt;component :is=&quot;() =&gt; import('./Heavy.vue')&quot; /&gt;
+
+&lt;!-- CLS: Use aspect-ratio CSS --&gt;
+&lt;img :style=&quot;{ aspectRatio: '16/9' }&quot; /&gt;
+</code></pre>
+<h4>References</h4>
+<ul>
+<li><a href="https://github.com/addyosmani/web-quality-skills/blob/afa8da942115f2961fdbfa80807ea0b232ff6c00/skills/core-web-vitals/references/LCP.md">Detailed LCP optimization</a> — read when an LCP trace points to discovery, loading, or render delay</li>
+<li><a href="https://github.com/addyosmani/web-quality-skills/blob/afa8da942115f2961fdbfa80807ea0b232ff6c00/skills/core-web-vitals/references/INP.md">Detailed INP optimization</a> — read when a trace or field attribution identifies a slow interaction</li>
+<li><a href="https://github.com/addyosmani/web-quality-skills/blob/afa8da942115f2961fdbfa80807ea0b232ff6c00/skills/core-web-vitals/references/CLS.md">Detailed CLS optimization</a> — read when a trace or field attribution identifies unexpected shifts</li>
+<li><a href="https://web.dev/articles/lcp">web.dev LCP</a></li>
+<li><a href="https://web.dev/articles/inp">web.dev INP</a></li>
+<li><a href="https://web.dev/articles/cls">web.dev CLS</a></li>
+<li><a href="https://github.com/addyosmani/web-quality-skills/blob/afa8da942115f2961fdbfa80807ea0b232ff6c00/skills/performance/SKILL.md">Performance skill</a></li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/skillhub/assets/entries/pages_skill_client.Dld0rBVU.js" type="module" async></script>
+  </body>
+</html>
