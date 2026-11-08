@@ -11,9 +11,11 @@ on:
 permissions:
   contents: read
 
-# Allow only one concurrent deployment, but let in-progress runs finish.
+# Allow only one concurrent deployment, but let in-progress runs finish. One group per branch: in a
+# group, a newly queued run cancels the one waiting, so with one group for all, a push to any branch
+# cancelled the default branch's waiting deploy, and the site stayed behind.
 concurrency:
-  group: deploy
+  group: deploy-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
