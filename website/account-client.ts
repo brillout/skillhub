@@ -4,14 +4,22 @@
  * what they saved. Its last answer is kept in localStorage, so that a page shows it at once, before
  * the API answers.
  *
- * The Save buttons and the Saved switch are pre-rendered, as if nobody were logged in, and show at
- * once: the click handler below makes them work, and paint() shows what you saved. The header's Log
- * in stays hidden until the API has answered once, in this browser, so that it doesn't flash for
- * whoever is logged in. See [data-account] in style.css.
+ * The Save buttons, the Saved switch and the header's Log in are pre-rendered, as if nobody were
+ * logged in, and show at once: the click handler below makes them work, and paint() shows who's
+ * logged in and what they saved. For whoever the last answer said was logged in, Log in stays
+ * hidden until paint() replaces it, so that it doesn't flash: see loggedInScript in saves.ts.
  */
 
 import { esc, href } from "./format.ts";
-import { account, bookmarkSvg, loginHref, saveLabel, savedCount, type Account } from "./saves.ts";
+import {
+  ACCOUNT_CACHE,
+  account,
+  bookmarkSvg,
+  loginHref,
+  saveLabel,
+  savedCount,
+  type Account,
+} from "./saves.ts";
 
 /**
  * Fired on `document` when `account` changes: its `detail` is "load" when the API told who's
@@ -20,7 +28,6 @@ import { account, bookmarkSvg, loginHref, saveLabel, savedCount, type Account } 
 export const ACCOUNT_EVENT = "skillhub:account";
 export type AccountChange = "load" | "toggle";
 
-const CACHE = "skillhub:account";
 interface Me {
   user: Account["user"];
   saved: string[];
@@ -33,7 +40,10 @@ function apply(me: Me) {
 
 function store() {
   try {
-    localStorage.setItem(CACHE, JSON.stringify({ user: account.user, saved: [...account.saved] }));
+    localStorage.setItem(
+      ACCOUNT_CACHE,
+      JSON.stringify({ user: account.user, saved: [...account.saved] }),
+    );
   } catch {}
 }
 
@@ -182,7 +192,7 @@ document.addEventListener("click", (event) => {
 });
 
 try {
-  const cached = localStorage.getItem(CACHE);
+  const cached = localStorage.getItem(ACCOUNT_CACHE);
   if (cached) {
     apply(JSON.parse(cached));
     reachable();

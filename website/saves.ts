@@ -22,6 +22,16 @@ export interface Account {
 }
 export const account: Account = { user: null, saved: new Set() };
 
+/** Where account-client.ts keeps the API's last answer, so that a page shows it at once. */
+export const ACCOUNT_CACHE = "skillhub:account";
+
+/**
+ * Inline in every page's <head>: marks <html data-logged-in> when the last answer said someone was
+ * logged in, before the page is drawn, so that the pre-rendered Log in doesn't flash for them (see
+ * [data-logged-in] in style.css). Whoever isn't logged in sees Log in at once.
+ */
+export const loggedInScript = `try { if (JSON.parse(localStorage.getItem(${JSON.stringify(ACCOUNT_CACHE)}) || "null")?.user) document.documentElement.dataset.loggedIn = ""; } catch {}`;
+
 /** Log in with GitHub, then back to this page, with `save` saved. */
 export function loginHref(save?: string): string {
   const p = new URLSearchParams({
