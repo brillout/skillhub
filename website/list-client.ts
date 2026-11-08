@@ -23,6 +23,7 @@ import {
   rowCount,
   rowsHtml,
   settingsHtml,
+  showHtml,
   toggleTag,
   type Preset,
   type Prop,
@@ -81,7 +82,7 @@ function focusSelector(): string | null {
   ]) {
     const v = el.getAttribute(attr);
     if (v !== null)
-      return `#${["facets", "settings", "scope"].find((id) => el.closest(`#${id}`)) ?? "results"} [${attr}="${CSS.escape(v)}"]`;
+      return `#${["facets", "settings", "show", "scope"].find((id) => el.closest(`#${id}`)) ?? "results"} [${attr}="${CSS.escape(v)}"]`;
   }
   return el.id ? `#${CSS.escape(el.id)}` : null;
 }
@@ -184,6 +185,7 @@ function render() {
   syncRanges();
   syncSaved();
   (document.getElementById("settings") as HTMLElement).innerHTML = settingsHtml(state);
+  (document.getElementById("show") as HTMLElement).innerHTML = showHtml(state);
   syncFiltersToggle();
   renderFacets();
   renderScope();

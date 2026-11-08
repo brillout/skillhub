@@ -950,7 +950,7 @@ export function rangesHtml(st: State): string {
   }).join("");
 }
 
-/** The presets, then the sort and its order, and what to show. Re-rendered with the list, since a search adds Best match. */
+/** The presets, then the sort and its order. Re-rendered with the list, since a search adds Best match. */
 export function settingsHtml(st: State): string {
   const presets = (Object.keys(PRESETS) as Preset[])
     .map((id) => {
@@ -985,18 +985,18 @@ export function settingsHtml(st: State): string {
     <section class="facet settings">
       <div class="sort-head"><h2><label for="sort">Sort by</label></h2>${order}</div>
       <select id="sort">${options}</select>
-    </section>
-    <section class="facet settings">
-      <h2 id="show-label">Show</h2>
-      <div class="show-switch" role="group" aria-labelledby="show-label">${SHOWS.map(
-        ([v, label]) =>
-          `<button type="button" data-show="${v}" aria-pressed="${st.show === v}">${label}</button>`,
-      ).join("")}</div>
     </section>`;
 }
 
+/** Show's buttons: Skills & bundles, Skills or Bundles. Re-rendered with the list. */
+export const showHtml = (st: State) =>
+  SHOWS.map(
+    ([v, label]) =>
+      `<button type="button" data-show="${v}" aria-pressed="${st.show === v}">${label}</button>`,
+  ).join("");
+
 /**
- * Under Show, the last of the settings: a switch that shows only what you saved. list-client.ts keeps it in step with
+ * Under Show's heading, before its buttons: a switch that shows only what you saved. list-client.ts keeps it in step with
  * the state rather than re-rendering it, so that it slides; account-client.ts keeps its count.
  */
 const savedSwitchHtml = (st: State) =>
@@ -1014,7 +1014,11 @@ export function listView(st: State, reviewed: number): string {
       <aside id="filters" aria-label="Settings and filters">
         ${brandHtml()}
         <div id="settings">${settingsHtml(st)}</div>
-        ${savedSwitchHtml(st)}
+        <section class="facet">
+          <h2 id="show-label">Show</h2>
+          ${savedSwitchHtml(st)}
+          <div id="show" class="show-switch" role="group" aria-labelledby="show-label">${showHtml(st)}</div>
+        </section>
         <section id="ranges" class="facet"><h2>Filter</h2><div class="ranges">${rangesHtml(st)}</div></section>
         <div id="facets">${facetsHtml(st, false)}</div>
       </aside>
