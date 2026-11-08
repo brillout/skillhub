@@ -829,10 +829,10 @@ const shownOf = (st: State) => {
   return lastShown.n;
 };
 
-/** The list's heading: how many skills (or bundles) it shows. */
+/** The list's heading: how many agent skills (or bundles) it shows. */
 export function countHtml(st: State): string {
   const n = shownOf(st);
-  return `${n.toLocaleString("en")} ${unitOf(st)}${n === 1 ? "" : "s"}`;
+  return `${n.toLocaleString("en")} ${st.show === "bundles" ? "" : "agent "}${unitOf(st)}${n === 1 ? "" : "s"}`;
 }
 
 /** The search's scope, for one state at a time: how many skills (or bundles) the filters leave. */
