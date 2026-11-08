@@ -829,10 +829,10 @@ const shownOf = (st: State) => {
   return lastShown.n;
 };
 
-/** The list's heading: how many skills (or bundles) it shows, and a link to how they get here. */
+/** The list's heading: how many skills (or bundles) it shows. */
 export function countHtml(st: State): string {
   const n = shownOf(st);
-  return `${n.toLocaleString("en")} <a href="${href("about/")}">curated</a> ${unitOf(st)}${n === 1 ? "" : "s"}`;
+  return `${n.toLocaleString("en")} ${unitOf(st)}${n === 1 ? "" : "s"}`;
 }
 
 /** The search's scope, for one state at a time: how many skills (or bundles) the filters leave. */
@@ -1016,9 +1016,10 @@ const savedSwitchHtml = (st: State) =>
 /**
  * The skills list's page, under the site's header. The left sidebar holds every setting: presets,
  * sort, sliders and tags. The right side holds what the page is for: the two ways to search, and
- * the list.
+ * the list. `reviewed` is how many skills SkillHub reviewed, from review.ts, which only the server
+ * reads: the line saying so isn't re-rendered.
  */
-export function listView(st: State): string {
+export function listView(st: State, reviewed: number): string {
   return `
     <div class="skills-view">
       <aside id="filters" aria-label="Settings and filters">
@@ -1034,6 +1035,7 @@ export function listView(st: State): string {
       </aside>
       <div class="list-main">
         <h1 id="count" class="list-head" aria-live="polite">${countHtml(st)}</h1>
+        <p class="list-sub"><a href="${href("about/")}">Curated from ${reviewed.toLocaleString("en")} reviewed skills</a></p>
         <div class="finder">
           <p id="scope" class="scope">${scopeHtml(st)}</p>
           <div class="search-field" data-action="focus-search">
