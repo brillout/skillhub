@@ -1,4 +1,4 @@
-import { date, esc } from "../../format.ts";
+import { esc } from "../../format.ts";
 import { skillsLink } from "../../list.ts";
 import {
   FACET_ORDER,
@@ -54,7 +54,6 @@ export default function Page(): string {
   return `
     <div class="page">
       <h1>Tags</h1>
-      <p class="lede">Tags say what area a skill is for, how it works, what it needs, what it can change on its own, who publishes it and what it's about. Faceted tags carry a prefix, such as <code>needs:cli</code>; topics don't. Tags were assigned from each skill's SKILL.md on ${date(data.asOf.tags)}. Pick a tag to list its skills.</p>
       <div class="tag-search">
         <label for="tag-q" class="sr-only">Search tags</label>
         <input id="tag-q" type="search" placeholder="Search tags" autocomplete="off" spellcheck="false" aria-controls="tag-sections" />

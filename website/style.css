@@ -420,14 +420,36 @@ body:has(.skills-view) {
 
 /*
  * A click that saves or unsaves draws the eye here, so that you know where to find what you saved
- * (account-client.ts sets the attributes): the count rolls in from below, or from above when it
- * drops, and shows in garnet for a moment; on a save, a garnet ring ripples out of the switch and
- * its bookmark pops. One-off sequences, so keyframes. With reduced motion, only the color.
+ * (account-client.ts sets the attributes). On a save, a garnet bookmark flies here from the Save
+ * button (.save-flight); as it lands, the count rolls in large and stays garnet for a while, the
+ * switch flashes rose, bumps, and a garnet ring ripples out of it, and its bookmark pops. Unsaving
+ * only rolls the count down. One-off sequences, so keyframes. With reduced motion, no flight and
+ * nothing moves: only the colors.
  */
+.save-flight {
+  position: fixed;
+  z-index: 10;
+  width: 24px;
+  height: 24px;
+  color: var(--garnet);
+  pointer-events: none;
+}
+
+.save-flight svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 2px 4px oklch(0 0 0 / 0.25));
+}
+
 .saved-switch .n[data-bump="up"] {
   animation:
-    count-up 350ms cubic-bezier(0.2, 0, 0, 1),
-    count-flash 1.4s ease-out;
+    count-up 500ms cubic-bezier(0.2, 0, 0, 1),
+    count-flash 2.2s ease-out;
 }
 
 .saved-switch .n[data-bump="down"] {
@@ -435,17 +457,25 @@ body:has(.skills-view) {
 }
 
 .saved-switch[data-pulse] {
-  animation: saved-ripple 700ms ease-out;
+  animation:
+    saved-ripple 900ms ease-out,
+    saved-flash 1.8s ease-out,
+    saved-bump 500ms cubic-bezier(0.2, 0, 0, 1);
 }
 
 .saved-switch[data-pulse] svg {
-  animation: saved-pop 500ms cubic-bezier(0.2, 0, 0, 1);
+  animation: saved-pop 2.2s cubic-bezier(0.2, 0, 0, 1);
 }
 
 @keyframes count-up {
   from {
     opacity: 0;
-    translate: 0 0.7em;
+    translate: 0 0.9em;
+    scale: 1.9;
+  }
+
+  50% {
+    scale: 1.5;
   }
 }
 
@@ -458,7 +488,7 @@ body:has(.skills-view) {
 
 @keyframes count-flash {
   from,
-  50% {
+  60% {
     color: var(--garnet-text);
     font-weight: 700;
   }
@@ -466,30 +496,54 @@ body:has(.skills-view) {
 
 @keyframes saved-ripple {
   from {
-    outline: 2px solid var(--garnet);
+    outline: 3px solid var(--garnet);
     outline-offset: 0;
   }
 
   to {
-    outline: 2px solid transparent;
-    outline-offset: 8px;
+    outline: 3px solid transparent;
+    outline-offset: 12px;
+  }
+}
+
+@keyframes saved-flash {
+  from,
+  35% {
+    background-color: var(--rose);
+  }
+}
+
+@keyframes saved-bump {
+  35% {
+    scale: 1.04;
   }
 }
 
 @keyframes saved-pop {
-  40% {
+  from,
+  60% {
     color: var(--garnet-text);
     fill-opacity: 1;
-    scale: 1.3;
+  }
+
+  12% {
+    scale: 1.45;
+  }
+
+  30% {
+    scale: 1;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .saved-switch .n[data-bump] {
-    animation: count-flash 1.4s ease-out;
+    animation: count-flash 2.2s ease-out;
   }
 
-  .saved-switch[data-pulse],
+  .saved-switch[data-pulse] {
+    animation: saved-flash 1.8s ease-out;
+  }
+
   .saved-switch[data-pulse] svg {
     animation: none;
   }

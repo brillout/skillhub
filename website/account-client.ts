@@ -11,7 +11,7 @@
  */
 
 import { esc, href } from "./format.ts";
-import { account, loginHref, saveLabel, savedCount, type Account } from "./saves.ts";
+import { account, bookmarkSvg, loginHref, saveLabel, savedCount, type Account } from "./saves.ts";
 
 /**
  * Fired on `document` when `account` changes: its `detail` is "load" when the API told who's
@@ -47,10 +47,47 @@ function changed(change: AccountChange) {
 const reachable = () => document.documentElement.setAttribute("data-account", "");
 
 /**
+ * On a save, a garnet bookmark flies from the Save button to the Saved switch's, so that you see
+ * where what you save goes; null when nothing is flying. The switch's count waits for it to land.
+ */
+let landing: Promise<void> | null = null;
+
+function fly(from: Element) {
+  const to = document.querySelector("#saved-switch svg");
+  const a = from.getBoundingClientRect();
+  const b = to?.getBoundingClientRect();
+  if (!b?.width || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const icon = document.createElement("div");
+  icon.className = "save-flight";
+  icon.innerHTML = bookmarkSvg;
+  const [x, y] = [a.left + a.width / 2, a.top + a.height / 2];
+  icon.style.left = `${x - 12}px`;
+  icon.style.top = `${y - 12}px`;
+  document.body.append(icon);
+  // Toward the switch: to the window's edge when it's scrolled out of view, such as on a phone.
+  const clamp = (v: number, max: number) => Math.min(Math.max(v, 24), max - 24);
+  const dx = clamp(b.left + b.width / 2, innerWidth) - x;
+  const dy = clamp(b.top + b.height / 2, innerHeight) - y;
+  // An arc: up and bigger first, then down into the switch's bookmark.
+  const flight = icon.animate(
+    [
+      { transform: "translate(0, 0) scale(1)" },
+      { transform: `translate(${dx * 0.4}px, ${dy * 0.4 - 90}px) scale(1.7)`, offset: 0.4 },
+      { transform: `translate(${dx}px, ${dy}px) scale(0.7)`, opacity: 0.4 },
+    ],
+    { duration: 750, easing: "cubic-bezier(0.45, 0, 0.25, 1)" },
+  );
+  landing = flight.finished.then(() => {
+    icon.remove();
+    landing = null;
+  });
+}
+
+/**
  * Draw the eye to the Saved switch when a click changes how many you saved, so that you know where
- * to find them: its count rolls to the new number, and on a save, the switch ripples in garnet.
- * The animations are in style.css, on [data-bump] and [data-pulse]; reading offsetWidth between
- * removing and setting them restarts them for a quick second click.
+ * to find them: its count rolls to the new number, and on a save, the switch flashes and ripples
+ * in garnet. The animations are in style.css, on [data-bump] and [data-pulse]; reading offsetWidth
+ * between removing and setting them restarts them for a quick second click.
  */
 function bump(n: HTMLElement, up: boolean) {
   const row = n.closest<HTMLElement>(".saved-switch");
@@ -80,9 +117,14 @@ function paint(animate = false) {
   }
   for (const n of document.querySelectorAll<HTMLElement>("[data-saved-count]")) {
     const before = Number(n.textContent) || 0;
-    n.textContent = savedCount();
-    const after = Number(n.textContent) || 0;
-    if (animate && after !== before) bump(n, after > before);
+    const after = Number(savedCount()) || 0;
+    if (!animate || after === before) n.textContent = savedCount();
+    // Once the flying bookmark, if any, has landed.
+    else
+      void (landing ?? Promise.resolve()).then(() => {
+        n.textContent = savedCount();
+        bump(n, after > before);
+      });
   }
 }
 
@@ -128,11 +170,13 @@ document.addEventListener("click", (event) => {
   if (login) login.href = loginHref();
   else if (el.closest("[data-logout]")) void logout();
   else {
-    const key = el.closest<HTMLElement>("[data-save]")?.dataset.save;
-    if (!key) return;
+    const clicked = el.closest<HTMLElement>("[data-save]");
+    const key = clicked?.dataset.save;
+    if (!clicked || !key) return;
     // Its icon animates from now on, unlike when the page's load sets what's saved.
     for (const button of document.querySelectorAll<HTMLElement>(`[data-save="${CSS.escape(key)}"]`))
       button.dataset.toggled = "";
+    if (account.user && !account.saved.has(key)) fly(clicked);
     void toggle(key);
   }
 });
