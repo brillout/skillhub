@@ -162,7 +162,7 @@ export function tldrHtml(tldr: Tldr, what: string, skew: number): string {
   const commit = /\/tree\/([0-9a-f]{40})/.exec(tldr.permalink)?.[1] ?? "";
   return `
     <section class="tldr" aria-labelledby="tldr">
-      <h2 id="tldr">TLDR</h2>
+      <h2 id="tldr">TL;DR</h2>
       ${tldr.text
         .split(/\n\s*\n/)
         .map((p) => `<p>${esc(p)}</p>`)

@@ -871,7 +871,7 @@ const badgeHtml = (text: string) => `<span class="badge">${esc(text)}</span>`;
 /** Under the agent's box: what Find with your agent copies, and its size. */
 export function askLabel(st: State): string {
   const which = filtersOn(st) ? "these" : "all";
-  return `Copies a prompt to your clipboard that includes the TLDR of ${which} ${scopeCountHtml(st)} below — ${tokensHtml(promptTokens(st))}.`;
+  return `Copies a prompt to your clipboard that includes the TL;DR of ${which} ${scopeCountHtml(st)} below — ${tokensHtml(promptTokens(st))}.`;
 }
 
 /**

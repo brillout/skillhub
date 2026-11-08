@@ -138,7 +138,7 @@ export default function Page(): string {
       <h2>Agent review</h2>
       <p>When SkillHub's agent reviews a skill, it adds:</p>
       <ul>
-        <li><strong>A TLDR:</strong> what the skill does, what you end up with, when to use it and how it differs from a close neighbour.</li>
+        <li><strong>A TL;DR:</strong> what the skill does, what you end up with, when to use it and how it differs from a close neighbour.</li>
         <li><strong>Tags:</strong> what area it's for, how it works, what it needs and what it can change on its own. The <a href="${href("tags/")}">Tags</a> page explains each one.</li>
         <li><strong>A note</strong> when there's something to know before installing, such as an account it needs, what it sends to a third party, or a safety check it switches off.</li>
         <li><strong>A bundle</strong> when it's meant to be used with other skills of its repo: see <a href="#bundles">Bundles</a>.</li>
@@ -154,6 +154,6 @@ export default function Page(): string {
       </ul>
 
       <h2>Up-to-date</h2>
-      <p>SkillHub follows each listed skill's SKILL.md in its repo. A skill's page says when its SKILL.md has changed since its TLDR was written.</p>
+      <p>SkillHub follows each listed skill's SKILL.md in its repo. A skill's page says when its SKILL.md has changed since its TL;DR was written.</p>
     </div>`;
 }
