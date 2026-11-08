@@ -44,6 +44,7 @@ import {
   type ClientSkill as Skill,
   type SearchWords,
 } from "./client-data.ts";
+import { brandHtml } from "./brand.ts";
 import { account, bookmarkSvg, loginHref, saveButton, saveKey, savedCount } from "./saves.ts";
 
 /** A row of the skills list: a skill, or a bundle with its skills inside. */
@@ -1021,6 +1022,7 @@ export function listView(st: State): string {
   return `
     <div class="skills-view">
       <aside id="filters" aria-label="Settings and filters">
+        ${brandHtml()}
         ${savedSwitchHtml(st)}
         <div id="settings">${settingsHtml(st)}</div>
         <div id="ranges">${rangesHtml(st)}</div>
