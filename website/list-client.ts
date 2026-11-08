@@ -10,6 +10,7 @@ import {
   rangeLabel,
   parse,
   askPrompt,
+  countHtml,
   tokensHtml,
   fullRanges,
   patched,
@@ -171,6 +172,7 @@ function render() {
   const scrolledPast = toTop && results.getBoundingClientRect().top < 0;
   toTop = false;
   results.innerHTML = resultsHtml(state, FIRST);
+  (document.getElementById("count") as HTMLElement).innerHTML = countHtml(state);
   if (scrolledPast) results.scrollIntoView({ block: "start" });
   if (focus) (document.querySelector(focus) as HTMLElement | null)?.focus({ preventScroll: true });
   const st = state;
