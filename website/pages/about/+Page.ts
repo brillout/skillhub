@@ -126,7 +126,7 @@ export default function Page(): string {
   return `
     <div class="page about">
       <h1>How skills get here</h1>
-      <p class="lede">SkillHub lists <strong>${n(review.listed)} agent skills</strong>, out of the ${n(review.reviewed)} it reviewed: first on their installs and stars, then with an agent review of whether people looking for skills would find them useful.</p>
+      <p class="lede">SkillHub lists <span class="badge">${n(review.listed)}</span> agent skills, selected from a review of the <span class="badge">${n(review.reviewed)}</span> most downloaded skills at <a href="https://skills.sh/">skills.sh</a>.</p>
       <div class="breakdown-box">
         <table class="breakdown">
           <tbody>${rows.map(row).join("")}</tbody>
