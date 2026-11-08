@@ -11,6 +11,7 @@ import {
   parse,
   askPrompt,
   countHtml,
+  isListed,
   tokensHtml,
   fullRanges,
   patched,
@@ -34,6 +35,12 @@ import {
 } from "./list.ts";
 import { href } from "./format.ts";
 import { ACCOUNT_EVENT, type AccountChange } from "./account-client.ts";
+import { account, savedCount } from "./saves.ts";
+
+// The Saved switch counts only what's still listed, as the list does; account-client.ts may have
+// counted before this script ran.
+account.listed = isListed;
+for (const n of document.querySelectorAll("[data-saved-count]")) n.textContent = savedCount();
 
 const app = document.getElementById("app") as HTMLElement;
 const q = document.getElementById("q") as HTMLInputElement;

@@ -814,8 +814,28 @@ const shownOf = (st: State) => {
 /** The list's heading: how many agent skills (or bundles) it shows. */
 export function countHtml(st: State): string {
   const n = shownOf(st);
-  return `${n.toLocaleString("en")} ${st.show === "bundles" ? "" : "agent "}${unitOf(st)}${n === 1 ? "" : "s"}`;
+  return `${n.toLocaleString("en")} ${st.show === "bundles" ? "" : "agent "}${unitOf(st)}${n === 1 ? "" : "s"}${savedBundlesHtml(st, true)}`;
 }
+
+/**
+ * What you saved is counted as you saved it: a saved bundle is one more entry, not its skills,
+ * which the skills' count leaves out unless you saved them too. So, with Saved on and the list
+ * showing skills and bundles, the counts add " and 1 bundle", and they add up to the Saved
+ * switch's. `search`: whether to count only those the search finds.
+ */
+function savedBundlesHtml(st: State, search: boolean, badge = (s: string) => s): string {
+  if (!st.saved || st.show !== "all") return "";
+  const rest = search ? st : { ...st, q: "" };
+  const n = data.bundles.filter((b) => bundlePasses(b, rest)).length;
+  return n ? ` and ${badge(n.toLocaleString("en"))} bundle${n === 1 ? "" : "s"}` : "";
+}
+
+/** Every key a Save button can save: what the Saved switch counts (see `account.listed`). */
+const listedKeys = new Set([
+  ...data.skills.map((s) => saveKey("skill", s.id)),
+  ...data.bundles.map((b) => saveKey("bundle", b.id)),
+]);
+export const isListed = (key: string) => listedKeys.has(key);
 
 /** The search's scope, for one state at a time: how many skills (or bundles) the filters leave. */
 let lastScope: { st: State; n: number } | undefined;
@@ -834,7 +854,7 @@ const scopeOf = (st: State) => {
 /** How many skills (or bundles) the filters leave, as the lines under the boxes say it: the number highlighted. */
 function scopeCountHtml(st: State): string {
   const n = scopeOf(st);
-  return `${badgeHtml(n.toLocaleString("en"))} ${unitOf(st)}${n === 1 ? "" : "s"}`;
+  return `${badgeHtml(n.toLocaleString("en"))} ${unitOf(st)}${n === 1 ? "" : "s"}${savedBundlesHtml(st, false, badgeHtml)}`;
 }
 
 /** Under the search box: what it does, and how many skills (or bundles) it looks through. */

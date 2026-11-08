@@ -14,6 +14,11 @@ export interface Account {
   user: { login: string; avatar: string } | null;
   /** Keys, as `saveKey` makes them. */
   saved: Set<string>;
+  /**
+   * Whether a key is still on the list, as the skills list's script tells, which has the data: a
+   * saved skill can leave it, such as when its SKILL.md is gone. Elsewhere, every key counts.
+   */
+  listed?: (key: string) => boolean;
 }
 export const account: Account = { user: null, saved: new Set() };
 
@@ -30,9 +35,15 @@ const BOOKMARK = `<path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 
 /** The bookmark, alone: for the skills list's Saved switch. */
 export const bookmarkSvg = `<svg viewBox="0 0 20 20" aria-hidden="true">${BOOKMARK}</svg>`;
 
-/** How many skills and bundles you saved, for the Saved switch: none shown when logged out or for none. */
-export const savedCount = () =>
-  account.user && account.saved.size ? String(account.saved.size) : "";
+/**
+ * How many skills and bundles you saved that are still listed, for the Saved switch, so that it
+ * says as many as the list shows: none shown when logged out or for none.
+ */
+export function savedCount(): string {
+  const { listed } = account;
+  const n = listed ? [...account.saved].filter(listed).length : account.saved.size;
+  return account.user && n ? String(n) : "";
+}
 
 /** The bookmark, outlined and filled: style.css shows the one for the button's state. */
 const ICON = `<span class="save-icon" aria-hidden="true"><svg viewBox="0 0 20 20">${BOOKMARK}</svg><svg class="filled" viewBox="0 0 20 20">${BOOKMARK}</svg></span>`;
