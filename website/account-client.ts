@@ -1,15 +1,16 @@
 /**
- * Every page's login and saves, in the browser: the header's Log in, or Saved and Log out, and the
- * Save buttons. The Worker's /api/me says who's logged in and what they saved. Its last answer is
- * kept in localStorage, so that a page shows it at once, before the API answers.
+ * Every page's login and saves, in the browser: the header's Log in, or Log out, the Save buttons,
+ * and the count on the skills list's Saved switch. The Worker's /api/me says who's logged in and
+ * what they saved. Its last answer is kept in localStorage, so that a page shows it at once, before
+ * the API answers.
  *
- * The buttons and the header's links stay hidden until the API has answered once, in this browser:
- * where it doesn't run, such as `vike dev` alone, they'd only lead to errors. See [data-account] in
- * style.css.
+ * The buttons, the switch and the header's links stay hidden until the API has answered once, in
+ * this browser: where it doesn't run, such as `vike dev` alone, they'd only lead to errors. See
+ * [data-account] in style.css.
  */
 
 import { esc, href } from "./format.ts";
-import { account, loginHref, saveLabel, type Account } from "./saves.ts";
+import { account, loginHref, saveLabel, savedCount, type Account } from "./saves.ts";
 
 /**
  * Fired on `document` when `account` changes: its `detail` is "load" when the API told who's
@@ -48,7 +49,7 @@ function paint() {
   const links = document.getElementById("account");
   if (links)
     links.innerHTML = account.user
-      ? `<a href="${href()}?saved">Saved</a><span class="me"><img class="avatar" src="${esc(account.user.avatar)}" alt="" width="20" height="20" title="Logged in as ${esc(account.user.login)}" /><button type="button" class="logout" data-logout>Log out</button></span>`
+      ? `<span class="me"><img class="avatar" src="${esc(account.user.avatar)}" alt="" width="20" height="20" title="Logged in as ${esc(account.user.login)}" /><button type="button" class="logout" data-logout>Log out</button></span>`
       : `<a href="${href("api/auth/login")}" data-login>Log in</a>`;
   for (const button of document.querySelectorAll<HTMLElement>("[data-save]")) {
     const on = account.saved.has(button.dataset.save ?? "");
@@ -57,6 +58,7 @@ function paint() {
     const word = button.querySelector(".save-word");
     if (word) word.textContent = saveLabel(on);
   }
+  for (const n of document.querySelectorAll("[data-saved-count]")) n.textContent = savedCount();
 }
 
 const post = (path: string, body: unknown) =>

@@ -89,6 +89,10 @@ function focusSelector(): string | null {
   return el.id ? `#${CSS.escape(el.id)}` : null;
 }
 
+/** The Saved switch isn't re-rendered, so that it can slide: it follows the state instead. */
+const savedSwitch = document.getElementById("saved-switch") as HTMLElement;
+const syncSaved = () => savedSwitch.setAttribute("aria-checked", String(state.saved));
+
 /** The sliders aren't re-rendered, so that one can be dragged while the list updates; they follow the state instead. */
 function syncRanges() {
   for (const p of Object.keys(PROPS) as Prop[]) {
@@ -163,6 +167,7 @@ function render() {
   const focus = focusSelector();
   if (q.value !== state.q) q.value = state.q;
   syncRanges();
+  syncSaved();
   (document.getElementById("settings") as HTMLElement).innerHTML = settingsHtml(state);
   syncFiltersToggle();
   renderFacets();
@@ -272,7 +277,11 @@ app.addEventListener("click", (event) => {
   else if (d.action === "focus-search") q.focus();
   else if (d.action === "focus-need") need.focus();
   else if (d.action === "order") go({ asc: !state.asc });
-  else if (d.action === "stack") {
+  else if (d.action === "saved") {
+    // It slides at once; the list follows after the next paint.
+    savedSwitch.setAttribute("aria-checked", String(!state.saved));
+    go({ saved: !state.saved });
+  } else if (d.action === "stack") {
     stackExpanded = !stackExpanded;
     renderSoon();
   } else if (d.action === "filters") {

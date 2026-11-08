@@ -27,6 +27,13 @@ export function loginHref(save?: string): string {
 }
 
 const BOOKMARK = `<path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" />`;
+/** The bookmark, alone: for the skills list's Saved switch. */
+export const bookmarkSvg = `<svg viewBox="0 0 20 20" aria-hidden="true">${BOOKMARK}</svg>`;
+
+/** How many skills and bundles you saved, for the Saved switch: none shown when logged out or for none. */
+export const savedCount = () =>
+  account.user && account.saved.size ? String(account.saved.size) : "";
+
 /** The bookmark, outlined and filled: style.css shows the one for the button's state. */
 const ICON = `<span class="save-icon" aria-hidden="true"><svg viewBox="0 0 20 20">${BOOKMARK}</svg><svg class="filled" viewBox="0 0 20 20">${BOOKMARK}</svg></span>`;
 

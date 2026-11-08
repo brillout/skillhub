@@ -44,7 +44,7 @@ import {
   type ClientSkill as Skill,
   type SearchWords,
 } from "./client-data.ts";
-import { account, loginHref, saveButton, saveKey } from "./saves.ts";
+import { account, bookmarkSvg, loginHref, saveButton, saveKey, savedCount } from "./saves.ts";
 
 /** A row of the skills list: a skill, or a bundle with its skills inside. */
 type Entry = Skill | Bundle;
@@ -1006,6 +1006,13 @@ export function settingsHtml(st: State): string {
 }
 
 /**
+ * Atop the sidebar: a switch that shows only what you saved. list-client.ts keeps it in step with
+ * the state rather than re-rendering it, so that it slides; account-client.ts keeps its count.
+ */
+const savedSwitchHtml = (st: State) =>
+  `<button type="button" id="saved-switch" class="saved-switch" role="switch" aria-checked="${st.saved}" data-action="saved" title="Show only what you saved">${bookmarkSvg}<span>Saved</span><span class="n" data-saved-count>${savedCount()}</span><span class="switch" aria-hidden="true"></span></button>`;
+
+/**
  * The skills list's page, under the site's header. The left sidebar holds every setting: presets,
  * sort, sliders and tags. The right side holds what the page is for: the two ways to search, and
  * the list.
@@ -1014,6 +1021,7 @@ export function listView(st: State): string {
   return `
     <div class="skills-view">
       <aside id="filters" aria-label="Settings and filters">
+        ${savedSwitchHtml(st)}
         <div id="settings">${settingsHtml(st)}</div>
         <div id="ranges">${rangesHtml(st)}</div>
         <div class="tag-search">

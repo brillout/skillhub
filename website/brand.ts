@@ -14,7 +14,7 @@ export function siteHeadHtml(current: string): string {
     ([to, label]) =>
       `<a href="${href(to)}"${to === current ? ` aria-current="page"` : ""}>${label}</a>`,
   ).join("");
-  // #account is Log in, or Saved and Log out: account-client.ts fills it in.
+  // #account is Log in, or your avatar and Log out: account-client.ts fills it in.
   return `
     <div class="site-head">
       <a class="brand" href="${href()}">
