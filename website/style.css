@@ -233,37 +233,20 @@ code {
 }
 
 /*
- * Small controls take the pointer further out than they show, to be easier to hit: the icon-only
- * Save buttons to 40px (44px on touch screens), and the dense toggles to half the gap around them,
- * so that no two take the same spot.
+ * The dense toggles take the pointer further out than they show, to be easier to hit: to half the
+ * gap around them, so that no two take the same spot.
  */
-.save.icon-only,
 .tags > .tag,
 .chip,
 .scope-chip {
   position: relative;
 }
 
-.save.icon-only::after,
 .tags > .tag::after,
 .chip::after,
 .scope-chip::after {
   content: "";
   position: absolute;
-}
-
-.save.icon-only::after {
-  --hit: 40px;
-  top: calc(50% - var(--hit) / 2);
-  left: calc(50% - var(--hit) / 2);
-  width: var(--hit);
-  height: var(--hit);
-}
-
-@media (pointer: coarse) {
-  .save.icon-only::after {
-    --hit: 44px;
-  }
 }
 
 /* Their gap is 6px. */
@@ -2343,16 +2326,21 @@ html:not([data-account]) .account {
   color: var(--garnet-text);
 }
 
-/* In the list's rows: the icon alone, filled once saved. */
-.save.icon-only {
-  padding: 5px;
-  background: none;
-  box-shadow: none;
+/* A row's name and where it's from, which wrap, with its Save button top right, beside them. */
+.row-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
 }
 
-.skill-head .save {
-  align-self: center;
-  margin-left: auto;
+.row-head .skill-head {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Centered on the name's line, 27px tall, without making it taller. */
+.row-head .save {
+  margin: -3px 0;
 }
 
 .title-row {

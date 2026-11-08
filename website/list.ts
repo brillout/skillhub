@@ -668,6 +668,7 @@ function skillRow(s: Skill, st: State): string {
   return `
     <li class="skill${caution ? " caution" : ""}">
       <div class="skill-body">
+      <div class="row-head">
       <div class="skill-head">
         <h3><a class="skill-name" href="${skillHref(s.id)}">${esc(s.name)}</a></h3>
         <span class="skill-source">${esc(repoKey(s))}</span>${
@@ -675,7 +676,8 @@ function skillRow(s: Skill, st: State): string {
             ? `<span class="skill-source">${ownEntry(s) ? "Part of" : "Only works as part of"} <a href="${bundleHref(bundle.id)}">${esc(bundle.agentReview.name)}</a></span>`
             : ""
         }
-        ${saveButton(saveKey("skill", s.id), s.name, true)}
+      </div>
+      ${saveButton(saveKey("skill", s.id), s.name)}
       </div>
       ${s.agentReview.tldr?.glance.length ? glanceHtml(s.agentReview.tldr.glance, 2) : `<p class="skill-desc">${esc(s.agentReview.description)}</p>`}
       <div class="tags">${tags.map((t) => tagChip(t, null, st.tags.includes(t))).join("")}</div>
@@ -695,11 +697,13 @@ function bundleRow(b: Bundle, st: State): string {
   return `
     <li class="skill bundle">
       <div class="skill-body">
+      <div class="row-head">
       <div class="skill-head">
         <h3><a class="skill-name" href="${bundleHref(b.id)}">${esc(b.agentReview.name)}</a></h3>
         <span class="kind">Bundle of ${plural(b.agentReview.skills.length, "skill")}</span>
         <span class="skill-source">${esc(repoKey(b))}</span>
-        ${saveButton(saveKey("bundle", b.id), b.agentReview.name, true)}
+      </div>
+      ${saveButton(saveKey("bundle", b.id), b.agentReview.name)}
       </div>
       ${b.agentReview.tldr?.glance.length ? glanceHtml(b.agentReview.tldr.glance, 2) : `<p class="skill-desc">${esc(b.agentReview.description)}</p>`}
       <p class="members">${members.join(", ")}</p>
