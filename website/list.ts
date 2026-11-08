@@ -831,7 +831,7 @@ const shownOf = (st: State) => {
 /** The list's heading: how many skills (or bundles) it shows, and a link to how they get here. */
 export function countHtml(st: State): string {
   const n = shownOf(st);
-  return `${n.toLocaleString("en")} <a href="${href("about/")}">curated ${unitOf(st)}${n === 1 ? "" : "s"}</a>`;
+  return `${n.toLocaleString("en")} <a href="${href("about/")}">curated</a> ${unitOf(st)}${n === 1 ? "" : "s"}`;
 }
 
 /** The search's scope, for one state at a time: how many skills (or bundles) the filters leave. */
@@ -1031,6 +1031,7 @@ export function listView(st: State): string {
         <div id="facets">${facetsHtml(st, false)}</div>
       </aside>
       <div class="list-main">
+        <h1 id="count" class="list-head" aria-live="polite">${countHtml(st)}</h1>
         <div class="finder">
           <p id="scope" class="scope">${scopeHtml(st)}</p>
           <div class="search-field" data-action="focus-search">
@@ -1047,7 +1048,6 @@ export function listView(st: State): string {
           <p id="search-note" class="search-note">${searchNote(st)}</p>
           <p id="ask-label" class="ask-label" aria-live="polite">${askLabel(st)}</p>
         </div>
-        <h1 id="count" class="list-head" aria-live="polite">${countHtml(st)}</h1>
         <section id="results" aria-label="Skills">${resultsHtml(st)}</section>
       </div>
     </div>`;

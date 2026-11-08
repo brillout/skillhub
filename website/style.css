@@ -263,9 +263,10 @@ code {
 /* ------------------------------------------------------------- header */
 
 /*
- * The site's header, on every page: its name in the middle of the screen, its links on the right.
- * It has no edge or background of its own: it's the top of the page. Its three columns keep the
- * name centered, the first one empty.
+ * The site's header, on every page: its name, large, in the middle of the page's body, its links
+ * on the right. It has no edge or background of its own: it's the top of the page. Its three
+ * columns keep the name centered, the first one empty; where the links need more room than their
+ * column, the name gives way rather than the links wrapping.
  */
 .site-head {
   display: grid;
@@ -274,42 +275,44 @@ code {
   gap: 16px;
   max-width: 1360px;
   margin: 0 auto;
-  /* On the skills list, the name's line is centered on the sidebar's first row of presets. */
-  padding: 26px 32px 0;
+  /* On the skills list, the name's line is centered on the sidebar's first row, Saved. */
+  padding: 19px 32px 0;
 }
 
 /*
  * On the skills list, it lies over the top of the list's column (see .list-main's padding), so
- * that the sidebar runs the page's full height. Only the name and the links take the pointer,
- * so the sidebar's top stays usable under the header's empty part.
+ * that its name is centered over the list and the sidebar runs the page's full height. 1360px
+ * and 300px are .skills-view's width and its sidebar's.
  */
 body:has(.skills-view) #page-head {
   position: absolute;
-  inset: 0 0 auto;
-  pointer-events: none;
-}
-
-body:has(.skills-view) #page-head :is(.brand, .site-links) {
-  pointer-events: auto;
+  top: 0;
+  right: max(0px, (100% - 1360px) / 2);
+  left: calc(max(0px, (100% - 1360px) / 2) + 300px);
 }
 
 .brand {
   display: flex;
   grid-column: 2;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   color: var(--ink);
-  font-size: 21px;
+  font-size: 36px;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
   text-decoration: none;
   white-space: nowrap;
+}
+
+.brand img {
+  width: 48px;
+  height: 48px;
 }
 
 .site-links {
   display: flex;
   grid-column: 3;
-  flex-wrap: wrap;
   justify-content: flex-end;
   justify-self: end;
   gap: 0 16px;
@@ -548,7 +551,7 @@ body:has(.skills-view) {
 /* Its top leaves room for the header, which lies over it. */
 .list-main {
   min-width: 0;
-  padding: 96px 32px 80px;
+  padding: 92px 32px 80px;
 }
 
 /*
@@ -1009,11 +1012,12 @@ body:has(.skills-view) {
   min-width: 0;
 }
 
-/* The list's heading: how many skills it shows, the filters and the search included. Its link
-   says how they get here. */
+/* The list's heading, centered over the search and the agent's box: how many skills the list
+   shows, the filters and the search included. Its link, on "curated", says how they get here. */
 .list-head {
-  margin: 0 0 12px;
+  margin: 0 0 20px;
   font-size: 24px;
+  text-align: center;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.01em;
@@ -2075,7 +2079,18 @@ body:has(.skills-view) {
     position: static;
   }
 
+  .brand {
+    gap: 10px;
+    font-size: 28px;
+  }
+
+  .brand img {
+    width: 40px;
+    height: 40px;
+  }
+
   .site-links {
+    flex-wrap: wrap;
     justify-content: center;
   }
 

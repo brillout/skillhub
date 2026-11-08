@@ -18,7 +18,7 @@ export function siteHeadHtml(current: string): string {
   return `
     <div class="site-head">
       <a class="brand" href="${href()}">
-        <img src="${href("gem.svg")}" alt="" width="28" height="28" />
+        <img src="${href("gem.svg")}" alt="" width="48" height="48" />
         <span>SkillHub</span>
       </a>
       <nav class="site-links" aria-label="Site">${links}<a href="${GITHUB}">GitHub</a><span id="account" class="account"><a href="${href("api/auth/login")}" data-login>Log in</a></span></nav>
