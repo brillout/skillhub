@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>defi-protocol-templates · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re building a staking platform, an automated market maker, token governance or flash loans on an Ethereum-style chain. You get: Solidity contracts to start from: staking with per-second rewards, a two-token AMM with a 0.3% swap fee, a voting token with a proposal contract, and a flash loan provider. Built on: OpenZeppelin&#039;s ERC-20 interface, ReentrancyGuard, Ownable and ERC20Votes. Unlike: solidity-security from the same repo, which covers attacks and audit checks rather than protocol code." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=wshobson%2Fagents">wshobson/agents</a></p>
+      <div class="title-row"><h1>defi-protocol-templates</h1><button type="button" class="save" data-save="skill:wshobson/agents/plugins/blockchain-web3/skills/defi-protocol-templates" aria-pressed="false" aria-label="Save defi-protocol-templates" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re building a staking platform, an automated market maker, token governance or flash loans on an Ethereum-style chain</dd></div><div><dt>You get</dt><dd>Solidity contracts to start from: staking with per-second rewards, a two-token AMM with a 0.3% swap fee, a voting token with a proposal contract, and a flash loan provider</dd></div><div><dt>Built on</dt><dd>OpenZeppelin&#39;s ERC-20 interface, ReentrancyGuard, Ownable and ERC20Votes</dd></div><div><dt>Unlike</dt><dd>solidity-security from the same repo, which covers attacks and audit checks rather than protocol code</dd></div></dl></section>
+      
+      <p class="note">Its contracts are written against OpenZeppelin 4.x, such as the security/ReentrancyGuard.sol import and Ownable without an owner argument, so they need changes to compile with OpenZeppelin 5.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Code templates with almost no prose. The staking contract uses the reward-per-token pattern: rewards accrue per second in proportion to each staker&#39;s share, with stake, withdraw, claim and exit functions guarded against reentrancy. The AMM holds two tokens, mints liquidity shares (the square root of the two deposits multiplied for the first provider, proportional after that), burns them on withdrawal and prices swaps on the constant-product curve after a 0.3% fee. A reference file adds a governance token built on ERC20Votes with a minimal Governor contract of its own: holders above a threshold propose, votes are weighted by voting power at the proposal&#39;s start block, and a proposal passes with more votes for than against, though the action it executes is left for you to write. It also has a flash loan provider that lends tokens, calls the borrower&#39;s executeOperation and reverts unless the loan plus a 0.09% fee comes back, with an example receiver.</p>
+      <p class="muted">Summarizes <a href="https://github.com/wshobson/agents/tree/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/blockchain-web3/skills/defi-protocol-templates">the skill at 4bde316</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">wshobson/</span><wbr><span class="word">agents</span> <span class="word">--skill</span> <span class="word">defi-protocol-templates</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/wshobson/agents --skill defi-protocol-templates">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/wshobson/agents/defi-protocol-templates">skills.sh page</a> · <a href="https://github.com/wshobson/agents/tree/HEAD/plugins/blockchain-web3/skills/defi-protocol-templates">Source on GitHub</a> · <a href="/?repo=wshobson%2Fagents">All skills from wshobson/agents</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>10,800 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>42,292 <span class="muted">wshobson/agents</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">158</div>
+      <div class="stat-delta">-5% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 167; week to Sep 27: 179; week to Oct 4: 211; week to Oct 11: 263; week to Oct 18: 206; week to Oct 25: 178; week to Nov 1: 178; week to Nov 8: 158. Use the left and right arrow keys to read each week."
+        data-values="167,179,211,263,206,178,178,158" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,22.1 38.6,20.1 71.1,14.7 103.7,6.0 136.3,15.5 168.9,20.2 201.4,20.2 234.0,23.6" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="23.6" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>167</td></tr><tr><td>Sep 27</td><td>179</td></tr><tr><td>Oct 4</td><td>211</td></tr><tr><td>Oct 11</td><td>263</td></tr><tr><td>Oct 18</td><td>206</td></tr><tr><td>Oct 25</td><td>178</td></tr><tr><td>Nov 1</td><td>178</td></tr><tr><td>Nov 8</td><td>158</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/?tag=category%3Aengineering">category:<wbr>engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/?tag=type%3Aguidelines">type:<wbr>guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="web3" data-facet="topic" href="/?tag=web3">web3</a><a class="tag" data-tag="finance" data-facet="topic" href="/?tag=finance">finance</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:solidity" data-facet="stack" href="/?tag=stack%3Asolidity">stack:<wbr>solidity</a><a class="tag" data-tag="stack:openzeppelin" data-facet="stack" href="/?tag=stack%3Aopenzeppelin">stack:<wbr>openzeppelin</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/wshobson/agents/blob/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/blockchain-web3/skills/defi-protocol-templates/SKILL.md">wshobson/agents at 4bde316</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: defi-protocol-templates
+description: Implement DeFi protocols with production-ready templates for staking, AMMs, governance, and flash loans. Use when building decentralized finance applications or smart contract protocols.</code></pre></details>
+        <div class="markdown"><h3>DeFi Protocol Templates</h3>
+<p>Production-ready templates for common DeFi protocols including staking, AMMs, governance, and flash loans.</p>
+<h4>When to Use This Skill</h4>
+<ul>
+<li>Building staking platforms with reward distribution</li>
+<li>Implementing AMM (Automated Market Maker) protocols</li>
+<li>Creating governance token systems</li>
+<li>Integrating flash loan functionality</li>
+</ul>
+<h4>Staking Contract</h4>
+<pre><code class="language-solidity">// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import &quot;@openzeppelin/contracts/token/ERC20/IERC20.sol&quot;;
+import &quot;@openzeppelin/contracts/security/ReentrancyGuard.sol&quot;;
+import &quot;@openzeppelin/contracts/access/Ownable.sol&quot;;
+
+contract StakingRewards is ReentrancyGuard, Ownable {
+    IERC20 public stakingToken;
+    IERC20 public rewardsToken;
+
+    uint256 public rewardRate = 100; // Rewards per second
+    uint256 public lastUpdateTime;
+    uint256 public rewardPerTokenStored;
+
+    mapping(address =&gt; uint256) public userRewardPerTokenPaid;
+    mapping(address =&gt; uint256) public rewards;
+    mapping(address =&gt; uint256) public balances;
+
+    uint256 private _totalSupply;
+
+    event Staked(address indexed user, uint256 amount);
+    event Withdrawn(address indexed user, uint256 amount);
+    event RewardPaid(address indexed user, uint256 reward);
+
+    constructor(address _stakingToken, address _rewardsToken) {
+        stakingToken = IERC20(_stakingToken);
+        rewardsToken = IERC20(_rewardsToken);
+    }
+
+    modifier updateReward(address account) {
+        rewardPerTokenStored = rewardPerToken();
+        lastUpdateTime = block.timestamp;
+
+        if (account != address(0)) {
+            rewards[account] = earned(account);
+            userRewardPerTokenPaid[account] = rewardPerTokenStored;
+        }
+        _;
+    }
+
+    function rewardPerToken() public view returns (uint256) {
+        if (_totalSupply == 0) {
+            return rewardPerTokenStored;
+        }
+        return rewardPerTokenStored +
+            ((block.timestamp - lastUpdateTime) * rewardRate * 1e18) / _totalSupply;
+    }
+
+    function earned(address account) public view returns (uint256) {
+        return (balances[account] *
+            (rewardPerToken() - userRewardPerTokenPaid[account])) / 1e18 +
+            rewards[account];
+    }
+
+    function stake(uint256 amount) external nonReentrant updateReward(msg.sender) {
+        require(amount &gt; 0, &quot;Cannot stake 0&quot;);
+        _totalSupply += amount;
+        balances[msg.sender] += amount;
+        stakingToken.transferFrom(msg.sender, address(this), amount);
+        emit Staked(msg.sender, amount);
+    }
+
+    function withdraw(uint256 amount) public nonReentrant updateReward(msg.sender) {
+        require(amount &gt; 0, &quot;Cannot withdraw 0&quot;);
+        _totalSupply -= amount;
+        balances[msg.sender] -= amount;
+        stakingToken.transfer(msg.sender, amount);
+        emit Withdrawn(msg.sender, amount);
+    }
+
+    function getReward() public nonReentrant updateReward(msg.sender) {
+        uint256 reward = rewards[msg.sender];
+        if (reward &gt; 0) {
+            rewards[msg.sender] = 0;
+            rewardsToken.transfer(msg.sender, reward);
+            emit RewardPaid(msg.sender, reward);
+        }
+    }
+
+    function exit() external {
+        withdraw(balances[msg.sender]);
+        getReward();
+    }
+}
+</code></pre>
+<h4>AMM (Automated Market Maker)</h4>
+<pre><code class="language-solidity">// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import &quot;@openzeppelin/contracts/token/ERC20/IERC20.sol&quot;;
+
+contract SimpleAMM {
+    IERC20 public token0;
+    IERC20 public token1;
+
+    uint256 public reserve0;
+    uint256 public reserve1;
+
+    uint256 public totalSupply;
+    mapping(address =&gt; uint256) public balanceOf;
+
+    event Mint(address indexed to, uint256 amount);
+    event Burn(address indexed from, uint256 amount);
+    event Swap(address indexed trader, uint256 amount0In, uint256 amount1In, uint256 amount0Out, uint256 amount1Out);
+
+    constructor(address _token0, address _token1) {
+        token0 = IERC20(_token0);
+        token1 = IERC20(_token1);
+    }
+
+    function addLiquidity(uint256 amount0, uint256 amount1) external returns (uint256 shares) {
+        token0.transferFrom(msg.sender, address(this), amount0);
+        token1.transferFrom(msg.sender, address(this), amount1);
+
+        if (totalSupply == 0) {
+            shares = sqrt(amount0 * amount1);
+        } else {
+            shares = min(
+                (amount0 * totalSupply) / reserve0,
+                (amount1 * totalSupply) / reserve1
+            );
+        }
+
+        require(shares &gt; 0, &quot;Shares = 0&quot;);
+        _mint(msg.sender, shares);
+        _update(
+            token0.balanceOf(address(this)),
+            token1.balanceOf(address(this))
+        );
+
+        emit Mint(msg.sender, shares);
+    }
+
+    function removeLiquidity(uint256 shares) external returns (uint256 amount0, uint256 amount1) {
+        uint256 bal0 = token0.balanceOf(address(this));
+        uint256 bal1 = token1.balanceOf(address(this));
+
+        amount0 = (shares * bal0) / totalSupply;
+        amount1 = (shares * bal1) / totalSupply;
+
+        require(amount0 &gt; 0 &amp;&amp; amount1 &gt; 0, &quot;Amount0 or amount1 = 0&quot;);
+
+        _burn(msg.sender, shares);
+        _update(bal0 - amount0, bal1 - amount1);
+
+        token0.transfer(msg.sender, amount0);
+        token1.transfer(msg.sender, amount1);
+
+        emit Burn(msg.sender, shares);
+    }
+
+    function swap(address tokenIn, uint256 amountIn) external returns (uint256 amountOut) {
+        require(tokenIn == address(token0) || tokenIn == address(token1), &quot;Invalid token&quot;);
+
+        bool isToken0 = tokenIn == address(token0);
+        (IERC20 tokenIn_, IERC20 tokenOut, uint256 resIn, uint256 resOut) = isToken0
+            ? (token0, token1, reserve0, reserve1)
+            : (token1, token0, reserve1, reserve0);
+
+        tokenIn_.transferFrom(msg.sender, address(this), amountIn);
+
+        // 0.3% fee
+        uint256 amountInWithFee = (amountIn * 997) / 1000;
+        amountOut = (resOut * amountInWithFee) / (resIn + amountInWithFee);
+
+        tokenOut.transfer(msg.sender, amountOut);
+
+        _update(
+            token0.balanceOf(address(this)),
+            token1.balanceOf(address(this))
+        );
+
+        emit Swap(msg.sender, isToken0 ? amountIn : 0, isToken0 ? 0 : amountIn, isToken0 ? 0 : amountOut, isToken0 ? amountOut : 0);
+    }
+
+    function _mint(address to, uint256 amount) private {
+        balanceOf[to] += amount;
+        totalSupply += amount;
+    }
+
+    function _burn(address from, uint256 amount) private {
+        balanceOf[from] -= amount;
+        totalSupply -= amount;
+    }
+
+    function _update(uint256 res0, uint256 res1) private {
+        reserve0 = res0;
+        reserve1 = res1;
+    }
+
+    function sqrt(uint256 y) private pure returns (uint256 z) {
+        if (y &gt; 3) {
+            z = y;
+            uint256 x = y / 2 + 1;
+            while (x &lt; z) {
+                z = x;
+                x = (y / x + x) / 2;
+            }
+        } else if (y != 0) {
+            z = 1;
+        }
+    }
+
+    function min(uint256 x, uint256 y) private pure returns (uint256) {
+        return x &lt;= y ? x : y;
+    }
+}
+</code></pre>
+<h4>Additional patterns and templates</h4>
+<p>More detailed templates and worked examples live in <code>references/details.md</code>. Read that file for the full pattern library.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

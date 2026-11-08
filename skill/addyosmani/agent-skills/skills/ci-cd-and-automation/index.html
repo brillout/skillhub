@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ci-cd-and-automation · SkillHub</title>
+    <meta name="description" content="Use it when: you set up or change a build and deploy pipeline, add automated checks, or a CI failure needs fixing. It does: lays out a pipeline where every pull request passes lint, type check, unit tests, build, integration tests, optional end-to-end tests, an audit and a bundle-size check. You get: GitHub Actions workflows for CI, a Postgres integration job, Playwright tests, preview deploys and a rollback, plus a Dependabot config. Rule: no gate gets skipped: a failing lint rule is fixed, not disabled, and a failing test means fixing the code, not skipping the test. Also covers: feeding CI errors back to the agent, feature flags, staged rollouts, secrets per environment, branch protection and speeding up slow pipelines." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=addyosmani%2Fagent-skills">addyosmani/agent-skills</a> <span aria-hidden="true">/</span> <a href="/bundle/addyosmani/agent-skills/">Addy&#39;s Agent Skills</a></p>
+      <div class="title-row"><h1>ci-cd-and-automation</h1><button type="button" class="save" data-save="skill:addyosmani/agent-skills/skills/ci-cd-and-automation" aria-pressed="false" aria-label="Save ci-cd-and-automation" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you set up or change a build and deploy pipeline, add automated checks, or a CI failure needs fixing</dd></div><div><dt>It does</dt><dd>lays out a pipeline where every pull request passes lint, type check, unit tests, build, integration tests, optional end-to-end tests, an audit and a bundle-size check</dd></div><div><dt>You get</dt><dd>GitHub Actions workflows for CI, a Postgres integration job, Playwright tests, preview deploys and a rollback, plus a Dependabot config</dd></div><div><dt>Rule</dt><dd>no gate gets skipped: a failing lint rule is fixed, not disabled, and a failing test means fixing the code, not skipping the test</dd></div><div><dt>Also covers</dt><dd>feeding CI errors back to the agent, feature flags, staged rollouts, secrets per environment, branch protection and speeding up slow pipelines</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 22 of 25 in the <a href="/bundle/addyosmani/agent-skills/">Addy&#39;s Agent Skills</a> bundle · Before it: <a href="/skill/addyosmani/agent-skills/skills/git-workflow-and-versioning/">git-workflow-and-versioning</a> · After it: <a href="/skill/addyosmani/agent-skills/skills/documentation-and-adrs/">documentation-and-adrs</a></p>
+    
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>CI is framed as the enforcement mechanism for every other skill, built on two ideas: shift left, catching problems as early in the pipeline as possible, and faster is safer, since small, frequent releases are easier to debug. Every change passes the same gates before review: lint, type check, unit tests, build, integration tests, optional end-to-end tests, a security audit and a bundle-size check, and none can be skipped. The examples are GitHub Actions: a basic quality job on Node, an integration job with a Postgres service and Prisma migrations, a Playwright job that uploads its report on failure, a Vercel preview deploy per pull request, and a manual rollback workflow that passes its input through an environment variable to avoid shell injection. When CI fails, the error goes back to the agent to fix and verify locally before pushing again. It also covers feature flags with a cleanup date, staged rollouts with a monitoring window, keeping production secrets out of CI, Dependabot, a Build Cop who keeps the build green, required reviews and status checks, and, for pipelines over ten minutes, caching, parallel jobs, path filters and sharded tests.</p>
+      <p class="muted">Summarizes <a href="https://github.com/addyosmani/agent-skills/tree/301b02b12bff98e4688e6984af6556802322bbde/skills/ci-cd-and-automation">the skill at 301b02b</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">addyosmani/</span><wbr><span class="word">agent-skills</span> <span class="word">--skill</span> <span class="word">ci-cd-and-automation</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/addyosmani/agent-skills --skill ci-cd-and-automation">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/addyosmani/agent-skills/ci-cd-and-automation">skills.sh page</a> · <a href="https://github.com/addyosmani/agent-skills/tree/HEAD/skills/ci-cd-and-automation">Source on GitHub</a> · <a href="/?repo=addyosmani%2Fagent-skills">All skills from addyosmani/agent-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>66,335 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>113,924 <span class="muted">addyosmani/agent-skills</span></dd></div><div><dt>First seen</dt><dd>Feb 16, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">4.7K</div>
+      <div class="stat-delta">+65% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 2,845; week to Sep 27: 3,898; week to Oct 4: 3,586; week to Oct 11: 3,798; week to Oct 18: 4,857; week to Oct 25: 5,480; week to Nov 1: 5,147; week to Nov 8: 4,705. Use the left and right arrow keys to read each week."
+        data-values="2845,3898,3586,3798,4857,5480,5147,4705" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,27.2 38.6,18.7 71.1,21.2 103.7,19.5 136.3,11.0 168.9,6.0 201.4,8.7 234.0,12.2" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="12.2" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>2,845</td></tr><tr><td>Sep 27</td><td>3,898</td></tr><tr><td>Oct 4</td><td>3,586</td></tr><tr><td>Oct 11</td><td>3,798</td></tr><tr><td>Oct 18</td><td>4,857</td></tr><tr><td>Oct 25</td><td>5,480</td></tr><tr><td>Nov 1</td><td>5,147</td></tr><tr><td>Nov 8</td><td>4,705</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/?tag=category%3Aengineering">category:<wbr>engineering</a><a class="tag" data-tag="category:cloud" data-facet="category" title="Deploy, provision, observe and debug cloud apps." href="/?tag=category%3Acloud">category:<wbr>cloud</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Deploy, provision, observe and debug cloud apps.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/?tag=type%3Aguidelines">type:<wbr>guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="ci" data-facet="topic" href="/?tag=ci">ci</a><a class="tag" data-tag="deployment" data-facet="topic" href="/?tag=deployment">deployment</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:github" data-facet="stack" href="/?tag=stack%3Agithub">stack:<wbr>github</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/addyosmani/agent-skills/blob/301b02b12bff98e4688e6984af6556802322bbde/skills/ci-cd-and-automation/SKILL.md">addyosmani/agent-skills at 301b02b</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: ci-cd-and-automation
+description: Automates CI/CD pipeline setup. Use when setting up or modifying build and deployment pipelines. Use when you need to automate quality gates, configure test runners in CI, or establish deployment strategies.</code></pre></details>
+        <div class="markdown"><h3>CI/CD and Automation</h3>
+<h4>Overview</h4>
+<p>Automate quality gates so that no change reaches production without passing tests, lint, type checking, and build. CI/CD is the enforcement mechanism for every other skill — it catches what humans and agents miss, and it does so consistently on every single change.</p>
+<p><strong>Shift Left:</strong> Catch problems as early in the pipeline as possible. A bug caught in linting costs minutes; the same bug caught in production costs hours. Move checks upstream — static analysis before tests, tests before staging, staging before production.</p>
+<p><strong>Faster is Safer:</strong> Smaller batches and more frequent releases reduce risk, not increase it. A deployment with 3 changes is easier to debug than one with 30. Frequent releases build confidence in the release process itself.</p>
+<h4>When to Use</h4>
+<ul>
+<li>Setting up a new project's CI pipeline</li>
+<li>Adding or modifying automated checks</li>
+<li>Configuring deployment pipelines</li>
+<li>When a change should trigger automated verification</li>
+<li>Debugging CI failures</li>
+</ul>
+<h4>The Quality Gate Pipeline</h4>
+<p>Every change goes through these gates before merge:</p>
+<pre><code>Pull Request Opened
+    │
+    ▼
+┌─────────────────┐
+│   LINT CHECK     │  eslint, prettier
+│   ↓ pass         │
+│   TYPE CHECK     │  tsc --noEmit
+│   ↓ pass         │
+│   UNIT TESTS     │  jest/vitest
+│   ↓ pass         │
+│   BUILD          │  npm run build
+│   ↓ pass         │
+│   INTEGRATION    │  API/DB tests
+│   ↓ pass         │
+│   E2E (optional) │  Playwright/Cypress
+│   ↓ pass         │
+│   SECURITY AUDIT │  npm audit
+│   ↓ pass         │
+│   BUNDLE SIZE    │  bundlesize check
+└─────────────────┘
+    │
+    ▼
+  Ready for review
+</code></pre>
+<p><strong>No gate can be skipped.</strong> If lint fails, fix lint — don't disable the rule. If a test fails, fix the code — don't skip the test.</p>
+<h4>GitHub Actions Configuration</h4>
+<h5>Basic CI Pipeline</h5>
+<pre><code class="language-yaml"># .github/workflows/ci.yml
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Test
+        run: npm test -- --coverage
+
+      - name: Build
+        run: npm run build
+
+      - name: Security audit
+        run: npm audit --audit-level=high
+</code></pre>
+<h5>With Database Integration Tests</h5>
+<pre><code class="language-yaml">  integration:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: testdb
+          POSTGRES_USER: ci_user
+          POSTGRES_PASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+        ports:
+          - 5432:5432
+        options: &gt;-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci
+      - name: Run migrations
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://ci_user:${{ secrets.CI_DB_PASSWORD }}@localhost:5432/testdb
+      - name: Integration tests
+        run: npm run test:integration
+        env:
+          DATABASE_URL: postgresql://ci_user:${{ secrets.CI_DB_PASSWORD }}@localhost:5432/testdb
+</code></pre>
+<blockquote>
+<p><strong>Note:</strong> Even for CI-only test databases, use GitHub Secrets for credentials rather than hardcoding values. This builds good habits and prevents accidental reuse of test credentials in other contexts.</p>
+</blockquote>
+<h5>E2E Tests</h5>
+<pre><code class="language-yaml">  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci
+      - name: Install Playwright
+        run: npx playwright install --with-deps chromium
+      - name: Build
+        run: npm run build
+      - name: Run E2E tests
+        run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+</code></pre>
+<h4>Feeding CI Failures Back to Agents</h4>
+<p>The power of CI with AI agents is the feedback loop. When CI fails:</p>
+<pre><code>CI fails
+    │
+    ▼
+Copy the failure output
+    │
+    ▼
+Feed it to the agent:
+&quot;The CI pipeline failed with this error:
+[paste specific error]
+Fix the issue and verify locally before pushing again.&quot;
+    │
+    ▼
+Agent fixes → pushes → CI runs again
+</code></pre>
+<p><strong>Key patterns:</strong></p>
+<pre><code>Lint failure → Agent runs `npm run lint -- --fix` and commits
+Type error  → Agent reads the error location and fixes the type
+Test failure → Agent follows debugging-and-error-recovery skill
+Build error → Agent checks config and dependencies
+</code></pre>
+<h4>Deployment Strategies</h4>
+<h5>Preview Deployments</h5>
+<p>Every PR gets a preview deployment for manual testing:</p>
+<pre><code class="language-yaml"># Deploy preview on PR (Vercel/Netlify/etc.)
+deploy-preview:
+  runs-on: ubuntu-latest
+  if: github.event_name == 'pull_request'
+  steps:
+    - uses: actions/checkout@v4
+    - name: Deploy preview
+      run: npx vercel --token=${{ secrets.VERCEL_TOKEN }}
+</code></pre>
+<h5>Feature Flags</h5>
+<p>Feature flags decouple deployment from release. Deploy incomplete or risky features behind flags so you can:</p>
+<ul>
+<li><strong>Ship code without enabling it.</strong> Merge to main early, enable when ready.</li>
+<li><strong>Roll back without redeploying.</strong> Disable the flag instead of reverting code.</li>
+<li><strong>Canary new features.</strong> Enable for 1% of users, then 10%, then 100%.</li>
+<li><strong>Run A/B tests.</strong> Compare behavior with and without the feature.</li>
+</ul>
+<pre><code class="language-typescript">// Simple feature flag pattern
+if (featureFlags.isEnabled('new-checkout-flow', { userId })) {
+  return renderNewCheckout();
+}
+return renderLegacyCheckout();
+</code></pre>
+<p><strong>Flag lifecycle:</strong> Create → Enable for testing → Canary → Full rollout → Remove the flag and dead code. Flags that live forever become technical debt — set a cleanup date when you create them.</p>
+<h5>Staged Rollouts</h5>
+<pre><code>PR merged to main
+    │
+    ▼
+  Staging deployment (auto)
+    │ Manual verification
+    ▼
+  Production deployment (manual trigger or auto after staging)
+    │
+    ▼
+  Monitor for errors (15-minute window)
+    │
+    ├── Errors detected → Rollback
+    └── Clean → Done
+</code></pre>
+<h5>Rollback Plan</h5>
+<p>Every deployment should be reversible:</p>
+<pre><code class="language-yaml"># Manual rollback workflow
+name: Rollback
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to rollback to'
+        required: true
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Rollback deployment
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          # Deploy the specified previous version. Pass the input through env,
+          # never interpolate it into the script (shell injection).
+          npx vercel rollback &quot;$VERSION&quot;
+</code></pre>
+<h4>Environment Management</h4>
+<pre><code>.env.example       → Committed (template for developers)
+.env                → NOT committed (local development)
+.env.test           → Committed (test environment, no real secrets)
+CI secrets          → Stored in GitHub Secrets / vault
+Production secrets  → Stored in deployment platform / vault
+</code></pre>
+<p>CI should never have production secrets. Use separate secrets for CI testing.</p>
+<h4>Automation Beyond CI</h4>
+<h5>Dependabot / Renovate</h5>
+<pre><code class="language-yaml"># .github/dependabot.yml
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+</code></pre>
+<h5>Build Cop Role</h5>
+<p>Designate someone responsible for keeping CI green. When the build breaks, the Build Cop's job is to fix or revert — not the person whose change caused the break. This prevents broken builds from accumulating while everyone assumes someone else will fix it.</p>
+<h5>PR Checks</h5>
+<ul>
+<li><strong>Required reviews:</strong> At least 1 approval before merge</li>
+<li><strong>Required status checks:</strong> CI must pass before merge</li>
+<li><strong>Branch protection:</strong> No force-pushes to main</li>
+<li><strong>Auto-merge:</strong> If all checks pass and approved, merge automatically</li>
+</ul>
+<h4>CI Optimization</h4>
+<p>When the pipeline exceeds 10 minutes, apply these strategies in order of impact:</p>
+<pre><code>Slow CI pipeline?
+├── Cache dependencies
+│   └── Use the setup-node cache option (or actions/cache) for the package manager cache, not node_modules
+├── Run jobs in parallel
+│   └── Split lint, typecheck, test, build into separate parallel jobs
+├── Only run what changed
+│   └── Use path filters to skip unrelated jobs (e.g., skip e2e for docs-only PRs)
+├── Use matrix builds
+│   └── Shard test suites across multiple runners
+├── Optimize the test suite
+│   └── Remove slow tests from the critical path, run them on a schedule instead
+└── Use larger runners
+    └── GitHub-hosted larger runners or self-hosted for CPU-heavy builds
+</code></pre>
+<p><strong>Example: caching and parallelism</strong></p>
+<pre><code class="language-yaml">jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: 'npm' }
+      - run: npm ci
+      - run: npm run lint
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: 'npm' }
+      - run: npm ci
+      - run: npx tsc --noEmit
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: 'npm' }
+      - run: npm ci
+      - run: npm test -- --coverage
+</code></pre>
+<h4>Common Rationalizations</h4>
+<table>
+<thead>
+<tr>
+<th>Rationalization</th>
+<th>Reality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;CI is too slow&quot;</td>
+<td>Optimize the pipeline (see CI Optimization below), don't skip it. A 5-minute pipeline prevents hours of debugging.</td>
+</tr>
+<tr>
+<td>&quot;This change is trivial, skip CI&quot;</td>
+<td>Trivial changes break builds. CI is fast for trivial changes anyway.</td>
+</tr>
+<tr>
+<td>&quot;The test is flaky, just re-run&quot;</td>
+<td>Flaky tests mask real bugs and waste everyone's time. Fix the flakiness.</td>
+</tr>
+<tr>
+<td>&quot;We'll add CI later&quot;</td>
+<td>Projects without CI accumulate broken states. Set it up on day one.</td>
+</tr>
+<tr>
+<td>&quot;Manual testing is enough&quot;</td>
+<td>Manual testing doesn't scale and isn't repeatable. Automate what you can.</td>
+</tr>
+</tbody>
+</table>
+<h4>Red Flags</h4>
+<ul>
+<li>No CI pipeline in the project</li>
+<li>CI failures ignored or silenced</li>
+<li>Tests disabled in CI to make the pipeline pass</li>
+<li>Production deploys without staging verification</li>
+<li>No rollback mechanism</li>
+<li>Secrets stored in code or CI config files (not secrets manager)</li>
+<li>Long CI times with no optimization effort</li>
+</ul>
+<h4>Verification</h4>
+<p>After setting up or modifying CI:</p>
+<ul>
+<li>[ ] All quality gates are present (lint, types, tests, build, audit)</li>
+<li>[ ] Pipeline runs on every PR and push to main</li>
+<li>[ ] Failures block merge (branch protection configured)</li>
+<li>[ ] CI results feed back into the development loop</li>
+<li>[ ] Secrets are stored in the secrets manager, not in code</li>
+<li>[ ] Deployment has a rollback mechanism</li>
+<li>[ ] Pipeline runs in under 10 minutes for the test suite</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

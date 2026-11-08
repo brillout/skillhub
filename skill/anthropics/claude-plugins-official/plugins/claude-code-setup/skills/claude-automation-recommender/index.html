@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>claude-automation-recommender · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re setting up Claude Code on a project, or want to know which of its automation features would pay off there. It does: inspects the project&#039;s manifests, dependencies, folders and existing .claude config, then picks the top one or two automations of each type. You get: a report with a codebase profile and, per category, each recommendation with why it fits and where it goes, such as .claude/settings.json. Read-only: it creates and changes no files; you build the recommendations yourself or ask the agent separately." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=anthropics%2Fclaude-plugins-official">anthropics/claude-plugins-official</a></p>
+      <div class="title-row"><h1>claude-automation-recommender</h1><button type="button" class="save" data-save="skill:anthropics/claude-plugins-official/plugins/claude-code-setup/skills/claude-automation-recommender" aria-pressed="false" aria-label="Save claude-automation-recommender" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re setting up Claude Code on a project, or want to know which of its automation features would pay off there</dd></div><div><dt>It does</dt><dd>inspects the project&#39;s manifests, dependencies, folders and existing .claude config, then picks the top one or two automations of each type</dd></div><div><dt>You get</dt><dd>a report with a codebase profile and, per category, each recommendation with why it fits and where it goes, such as .claude/settings.json</dd></div><div><dt>Read-only</dt><dd>it creates and changes no files; you build the recommendations yourself or ask the agent separately</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>From Anthropic&#39;s claude-code-setup plugin. It looks at what the project is built with: package.json, pyproject.toml and similar files, frameworks and libraries such as React, Prisma, Supabase or Stripe, test and CI setup, issue-tracker references, and any existing .claude folder or CLAUDE.md. It maps those signals to Claude Code&#39;s five extension types. MCP servers connect outside tools, for example context7 for live library docs, Playwright for browser testing or the GitHub MCP server for issues and PRs. Skills package repeatable tasks, such as a create-migration or release-notes skill, with a note on whether you, Claude or both should invoke each. Hooks run on tool events, like auto-formatting after an edit or blocking edits to .env and lock files. Subagents are specialized reviewers, such as a security reviewer or test writer. Plugins bundle skills to install. It recommends one or two per category, three to five if you ask about one type, skips categories that don&#39;t apply, and uses web search to go beyond its reference lists. The report ends by offering more options or help implementing them.</p>
+      <p class="muted">Summarizes <a href="https://github.com/anthropics/claude-plugins-official/tree/c07c748f1c680734a813eefd909bc073f8a9103f/plugins/claude-code-setup/skills/claude-automation-recommender">the skill at c07c748</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">anthropics/</span><wbr><span class="word">claude-plugins-official</span> <span class="word">--skill</span> <span class="word">claude-automation-recommender</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/anthropics/claude-plugins-official --skill claude-automation-recommender">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/anthropics/claude-plugins-official/claude-automation-recommender">skills.sh page</a> · <a href="https://github.com/anthropics/claude-plugins-official/tree/HEAD/plugins/claude-code-setup/skills/claude-automation-recommender">Source on GitHub</a> · <a href="/?repo=anthropics%2Fclaude-plugins-official">All skills from anthropics/claude-plugins-official</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>10,500 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>46,381 <span class="muted">anthropics/claude-plugins-official</span></dd></div><div><dt>First seen</dt><dd>Jan 21, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">741</div>
+      <div class="stat-delta">+219% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 232; week to Sep 27: 215; week to Oct 4: 138; week to Oct 11: 112; week to Oct 18: 203; week to Oct 25: 418; week to Nov 1: 598; week to Nov 8: 741. Use the left and right arrow keys to read each week."
+        data-values="232,215,138,112,203,418,598,741" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,36.2 38.6,37.2 71.1,41.8 103.7,43.3 136.3,37.9 168.9,25.2 201.4,14.5 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>232</td></tr><tr><td>Sep 27</td><td>215</td></tr><tr><td>Oct 4</td><td>138</td></tr><tr><td>Oct 11</td><td>112</td></tr><tr><td>Oct 18</td><td>203</td></tr><tr><td>Oct 25</td><td>418</td></tr><tr><td>Nov 1</td><td>598</td></tr><tr><td>Nov 8</td><td>741</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/?tag=category%3Aagents">category:<wbr>agents</a><a class="tag" data-tag="category:skill-tools" data-facet="category" title="Find, write, vet and route to other skills." href="/?tag=category%3Askill-tools">category:<wbr>skill-tools</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Find, write, vet and route to other skills.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="agent-workflows" data-facet="topic" href="/?tag=agent-workflows">agent-workflows</a><a class="tag" data-tag="skill-discovery" data-facet="topic" href="/?tag=skill-discovery">skill-discovery</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:claude" data-facet="stack" href="/?tag=stack%3Aclaude">stack:<wbr>claude</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/anthropics/claude-plugins-official/blob/c07c748f1c680734a813eefd909bc073f8a9103f/plugins/claude-code-setup/skills/claude-automation-recommender/SKILL.md">anthropics/claude-plugins-official at c07c748</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: claude-automation-recommender
+description: Analyze a codebase and recommend Claude Code automations (hooks, subagents, skills, plugins, MCP servers). Use when user asks for automation recommendations, wants to optimize their Claude Code setup, mentions improving Claude Code workflows, asks how to first set up Claude Code for a project, or wants to know what Claude Code features they should use.
+tools: Read, Glob, Grep, Bash</code></pre></details>
+        <div class="markdown"><h3>Claude Automation Recommender</h3>
+<p>Analyze codebase patterns to recommend tailored Claude Code automations across all extensibility options.</p>
+<p><strong>This skill is read-only.</strong> It analyzes the codebase and outputs recommendations. It does NOT create or modify any files. Users implement the recommendations themselves or ask Claude separately to help build them.</p>
+<h4>Output Guidelines</h4>
+<ul>
+<li><strong>Recommend 1-2 of each type</strong>: Don't overwhelm - surface the top 1-2 most valuable automations per category</li>
+<li><strong>If user asks for a specific type</strong>: Focus only on that type and provide more options (3-5 recommendations)</li>
+<li><strong>Go beyond the reference lists</strong>: The reference files contain common patterns, but use web search to find recommendations specific to the codebase's tools, frameworks, and libraries</li>
+<li><strong>Tell users they can ask for more</strong>: End by noting they can request more recommendations for any specific category</li>
+</ul>
+<h4>Automation Types Overview</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hooks</strong></td>
+<td>Automatic actions on tool events (format on save, lint, block edits)</td>
+</tr>
+<tr>
+<td><strong>Subagents</strong></td>
+<td>Specialized reviewers/analyzers that run in parallel</td>
+</tr>
+<tr>
+<td><strong>Skills</strong></td>
+<td>Packaged expertise, workflows, and repeatable tasks (invoked by Claude or user via <code>/skill-name</code>)</td>
+</tr>
+<tr>
+<td><strong>Plugins</strong></td>
+<td>Collections of skills that can be installed</td>
+</tr>
+<tr>
+<td><strong>MCP Servers</strong></td>
+<td>External tool integrations (databases, APIs, browsers, docs)</td>
+</tr>
+</tbody>
+</table>
+<h4>Workflow</h4>
+<h5>Phase 1: Codebase Analysis</h5>
+<p>Gather project context:</p>
+<pre><code class="language-bash"># Detect project type and tools
+ls -la package.json pyproject.toml Cargo.toml go.mod pom.xml 2&gt;/dev/null
+cat package.json 2&gt;/dev/null | head -50
+
+# Check dependencies for MCP server recommendations
+cat package.json 2&gt;/dev/null | grep -E '&quot;(react|vue|angular|next|express|fastapi|django|prisma|supabase|convex|stripe)&quot;'
+
+# Check for existing Claude Code config
+ls -la .claude/ CLAUDE.md 2&gt;/dev/null
+
+# Analyze project structure
+ls -la src/ app/ lib/ tests/ components/ pages/ api/ 2&gt;/dev/null
+</code></pre>
+<p><strong>Key Indicators to Capture:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>What to Look For</th>
+<th>Informs Recommendations For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Language/Framework</td>
+<td>package.json, pyproject.toml, import patterns</td>
+<td>Hooks, MCP servers</td>
+</tr>
+<tr>
+<td>Frontend stack</td>
+<td>React, Vue, Angular, Next.js</td>
+<td>Playwright MCP, frontend skills</td>
+</tr>
+<tr>
+<td>Backend stack</td>
+<td>Express, FastAPI, Django</td>
+<td>API documentation tools</td>
+</tr>
+<tr>
+<td>Database</td>
+<td>Prisma, Supabase, Convex, raw SQL</td>
+<td>Database / backend MCP servers</td>
+</tr>
+<tr>
+<td>External APIs</td>
+<td>Stripe, OpenAI, AWS SDKs</td>
+<td>context7 MCP for docs</td>
+</tr>
+<tr>
+<td>Testing</td>
+<td>Jest, pytest, Playwright configs</td>
+<td>Testing hooks, subagents</td>
+</tr>
+<tr>
+<td>CI/CD</td>
+<td>GitHub Actions, CircleCI</td>
+<td>GitHub MCP server</td>
+</tr>
+<tr>
+<td>Issue tracking</td>
+<td>Linear, Jira references</td>
+<td>Issue tracker MCP</td>
+</tr>
+<tr>
+<td>Docs patterns</td>
+<td>OpenAPI, JSDoc, docstrings</td>
+<td>Documentation skills</td>
+</tr>
+</tbody>
+</table>
+<h5>Phase 2: Generate Recommendations</h5>
+<p>Based on analysis, generate recommendations across all categories:</p>
+<h6>A. MCP Server Recommendations</h6>
+<p>See <a href="https://github.com/anthropics/claude-plugins-official/blob/c07c748f1c680734a813eefd909bc073f8a9103f/plugins/claude-code-setup/skills/claude-automation-recommender/references/mcp-servers.md">references/mcp-servers.md</a> for detailed patterns.</p>
+<table>
+<thead>
+<tr>
+<th>Codebase Signal</th>
+<th>Recommended MCP Server</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Uses popular libraries (React, Express, etc.)</td>
+<td><strong>context7</strong> - Live documentation lookup</td>
+</tr>
+<tr>
+<td>Frontend with UI testing needs</td>
+<td><strong>Playwright</strong> - Browser automation/testing</td>
+</tr>
+<tr>
+<td>Uses Supabase</td>
+<td><strong>Supabase MCP</strong> - Direct database operations</td>
+</tr>
+<tr>
+<td>Uses Convex</td>
+<td><strong>Convex MCP</strong> - Live deployment introspection, run queries/mutations, manage env vars and logs</td>
+</tr>
+<tr>
+<td>PostgreSQL/MySQL database</td>
+<td><strong>Database MCP</strong> - Query and schema tools</td>
+</tr>
+<tr>
+<td>GitHub repository</td>
+<td><strong>GitHub MCP</strong> - Issues, PRs, actions</td>
+</tr>
+<tr>
+<td>Uses Linear for issues</td>
+<td><strong>Linear MCP</strong> - Issue management</td>
+</tr>
+<tr>
+<td>AWS infrastructure</td>
+<td><strong>AWS MCP</strong> - Cloud resource management</td>
+</tr>
+<tr>
+<td>Slack workspace</td>
+<td><strong>Slack MCP</strong> - Team notifications</td>
+</tr>
+<tr>
+<td>Memory/context persistence</td>
+<td><strong>Memory MCP</strong> - Cross-session memory</td>
+</tr>
+<tr>
+<td>Sentry error tracking</td>
+<td><strong>Sentry MCP</strong> - Error investigation</td>
+</tr>
+<tr>
+<td>Docker containers</td>
+<td><strong>Docker MCP</strong> - Container management</td>
+</tr>
+</tbody>
+</table>
+<h6>B. Skills Recommendations</h6>
+<p>See <a href="https://github.com/anthropics/claude-plugins-official/blob/c07c748f1c680734a813eefd909bc073f8a9103f/plugins/claude-code-setup/skills/claude-automation-recommender/references/skills-reference.md">references/skills-reference.md</a> for details.</p>
+<p>Create skills in <code>.claude/skills/&lt;name&gt;/SKILL.md</code>. Some are also available via plugins:</p>
+<table>
+<thead>
+<tr>
+<th>Codebase Signal</th>
+<th>Skill</th>
+<th>Plugin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Building plugins</td>
+<td>skill-development</td>
+<td>plugin-dev</td>
+</tr>
+<tr>
+<td>Git commits</td>
+<td>commit</td>
+<td>commit-commands</td>
+</tr>
+<tr>
+<td>React/Vue/Angular</td>
+<td>frontend-design</td>
+<td>frontend-design</td>
+</tr>
+<tr>
+<td>Automation rules</td>
+<td>writing-rules</td>
+<td>hookify</td>
+</tr>
+<tr>
+<td>Feature planning</td>
+<td>feature-dev</td>
+<td>feature-dev</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Custom skills to create</strong> (with templates, scripts, examples):</p>
+<table>
+<thead>
+<tr>
+<th>Codebase Signal</th>
+<th>Skill to Create</th>
+<th>Invocation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>API routes</td>
+<td><strong>api-doc</strong> (with OpenAPI template)</td>
+<td>Both</td>
+</tr>
+<tr>
+<td>Database project</td>
+<td><strong>create-migration</strong> (with validation script)</td>
+<td>User-only</td>
+</tr>
+<tr>
+<td>Test suite</td>
+<td><strong>gen-test</strong> (with example tests)</td>
+<td>User-only</td>
+</tr>
+<tr>
+<td>Component library</td>
+<td><strong>new-component</strong> (with templates)</td>
+<td>User-only</td>
+</tr>
+<tr>
+<td>PR workflow</td>
+<td><strong>pr-check</strong> (with checklist)</td>
+<td>User-only</td>
+</tr>
+<tr>
+<td>Releases</td>
+<td><strong>release-notes</strong> (with git context)</td>
+<td>User-only</td>
+</tr>
+<tr>
+<td>Code style</td>
+<td><strong>project-conventions</strong></td>
+<td>Claude-only</td>
+</tr>
+<tr>
+<td>Onboarding</td>
+<td><strong>setup-dev</strong> (with prereq script)</td>
+<td>User-only</td>
+</tr>
+</tbody>
+</table>
+<h6>C. Hooks Recommendations</h6>
+<p>See <a href="https://github.com/anthropics/claude-plugins-official/blob/c07c748f1c680734a813eefd909bc073f8a9103f/plugins/claude-code-setup/skills/claude-automation-recommender/references/hooks-patterns.md">references/hooks-patterns.md</a> for configurations.</p>
+<table>
+<thead>
+<tr>
+<th>Codebase Signal</th>
+<th>Recommended Hook</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Prettier configured</td>
+<td>PostToolUse: auto-format on edit</td>
+</tr>
+<tr>
+<td>ESLint/Ruff configured</td>
+<td>PostToolUse: auto-lint on edit</td>
+</tr>
+<tr>
+<td>TypeScript project</td>
+<td>PostToolUse: type-check on edit</td>
+</tr>
+<tr>
+<td>Tests directory exists</td>
+<td>PostToolUse: run related tests</td>
+</tr>
+<tr>
+<td><code>.env</code> files present</td>
+<td>PreToolUse: block <code>.env</code> edits</td>
+</tr>
+<tr>
+<td>Lock files present</td>
+<td>PreToolUse: block lock file edits</td>
+</tr>
+<tr>
+<td>Security-sensitive code</td>
+<td>PreToolUse: require confirmation</td>
+</tr>
+</tbody>
+</table>
+<h6>D. Subagent Recommendations</h6>
+<p>See <a href="https://github.com/anthropics/claude-plugins-official/blob/c07c748f1c680734a813eefd909bc073f8a9103f/plugins/claude-code-setup/skills/claude-automation-recommender/references/subagent-templates.md">references/subagent-templates.md</a> for templates.</p>
+<table>
+<thead>
+<tr>
+<th>Codebase Signal</th>
+<th>Recommended Subagent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Large codebase (&gt;500 files)</td>
+<td><strong>code-reviewer</strong> - Parallel code review</td>
+</tr>
+<tr>
+<td>Auth/payments code</td>
+<td><strong>security-reviewer</strong> - Security audits</td>
+</tr>
+<tr>
+<td>API project</td>
+<td><strong>api-documenter</strong> - OpenAPI generation</td>
+</tr>
+<tr>
+<td>Performance critical</td>
+<td><strong>performance-analyzer</strong> - Bottleneck detection</td>
+</tr>
+<tr>
+<td>Frontend heavy</td>
+<td><strong>ui-reviewer</strong> - Accessibility review</td>
+</tr>
+<tr>
+<td>Needs more tests</td>
+<td><strong>test-writer</strong> - Test generation</td>
+</tr>
+</tbody>
+</table>
+<h6>E. Plugin Recommendations</h6>
+<p>See <a href="https://github.com/anthropics/claude-plugins-official/blob/c07c748f1c680734a813eefd909bc073f8a9103f/plugins/claude-code-setup/skills/claude-automation-recommender/references/plugins-reference.md">references/plugins-reference.md</a> for available plugins.</p>
+<table>
+<thead>
+<tr>
+<th>Codebase Signal</th>
+<th>Recommended Plugin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>General productivity</td>
+<td><strong>anthropic-agent-skills</strong> - Core skills bundle</td>
+</tr>
+<tr>
+<td>Document workflows</td>
+<td>Install docx, xlsx, pdf skills</td>
+</tr>
+<tr>
+<td>Frontend development</td>
+<td><strong>frontend-design</strong> plugin</td>
+</tr>
+<tr>
+<td>Building AI tools</td>
+<td><strong>mcp-builder</strong> for MCP development</td>
+</tr>
+</tbody>
+</table>
+<h5>Phase 3: Output Recommendations Report</h5>
+<p>Format recommendations clearly. <strong>Only include 1-2 recommendations per category</strong> - the most valuable ones for this specific codebase. Skip categories that aren't relevant.</p>
+<pre><code class="language-markdown">## Claude Code Automation Recommendations
+
+I've analyzed your codebase and identified the top automations for each category. Here are my top 1-2 recommendations per type:
+
+### Codebase Profile
+- **Type**: [detected language/runtime]
+- **Framework**: [detected framework]
+- **Key Libraries**: [relevant libraries detected]
+
+---
+
+### 🔌 MCP Servers
+
+#### context7
+**Why**: [specific reason based on detected libraries]
+**Install**: `claude mcp add context7`
+
+---
+
+### 🎯 Skills
+
+#### [skill name]
+**Why**: [specific reason]
+**Create**: `.claude/skills/[name]/SKILL.md`
+**Invocation**: User-only / Both / Claude-only
+**Also available in**: [plugin-name] plugin (if applicable)
+```yaml
+---
+name: [skill-name]
+description: [what it does]
+disable-model-invocation: true  # for user-only
+---
+</code></pre>
+<hr>
+<h5>⚡ Hooks</h5>
+<h6>[hook name]</h6>
+<p><strong>Why</strong>: [specific reason based on detected config]
+<strong>Where</strong>: <code>.claude/settings.json</code></p>
+<hr>
+<h5>🤖 Subagents</h5>
+<h6>[agent name]</h6>
+<p><strong>Why</strong>: [specific reason based on codebase patterns]
+<strong>Where</strong>: <code>.claude/agents/[name].md</code></p>
+<hr>
+<p><strong>Want more?</strong> Ask for additional recommendations for any specific category (e.g., &quot;show me more MCP server options&quot; or &quot;what other hooks would help?&quot;).</p>
+<p><strong>Want help implementing any of these?</strong> Just ask and I can help you set up any of the recommendations above.</p>
+<pre><code>
+## Decision Framework
+
+### When to Recommend MCP Servers
+- External service integration needed (databases, APIs)
+- Documentation lookup for libraries/SDKs
+- Browser automation or testing
+- Team tool integration (GitHub, Linear, Slack)
+- Cloud infrastructure management
+
+### When to Recommend Skills
+
+- Document generation (docx, xlsx, pptx, pdf — also in plugins)
+- Frequently repeated prompts or workflows
+- Project-specific tasks with arguments
+- Applying templates or scripts to tasks (skills can bundle supporting files)
+- Quick actions invoked with `/skill-name`
+- Workflows that should run in isolation (`context: fork`)
+
+**Invocation control:**
+- `disable-model-invocation: true` — User-only (for side effects: deploy, commit, send)
+- `user-invocable: false` — Claude-only (for background knowledge)
+- Default (omit both) — Both can invoke
+
+### When to Recommend Hooks
+- Repetitive post-edit actions (formatting, linting)
+- Protection rules (block sensitive file edits)
+- Validation checks (tests, type checks)
+
+### When to Recommend Subagents
+- Specialized expertise needed (security, performance)
+- Parallel review workflows
+- Background quality checks
+
+### When to Recommend Plugins
+- Need multiple related skills
+- Want pre-packaged automation bundles
+- Team-wide standardization
+
+---
+
+## Configuration Tips
+
+### MCP Server Setup
+
+**Team sharing**: Check `.mcp.json` into repo so entire team gets same MCP servers
+
+**Debugging**: Use `--mcp-debug` flag to identify configuration issues
+
+**Prerequisites to recommend:**
+- GitHub CLI (`gh`) - enables native GitHub operations
+- Puppeteer/Playwright CLI - for browser MCP servers
+
+### Headless Mode (for CI/Automation)
+
+Recommend headless Claude for automated pipelines:
+
+```bash
+# Pre-commit hook example
+claude -p &quot;fix lint errors in src/&quot; --allowedTools Edit,Write
+
+# CI pipeline with structured output
+claude -p &quot;&lt;prompt&gt;&quot; --output-format stream-json | your_command
+</code></pre>
+<h5>Permissions for Hooks</h5>
+<p>Configure allowed tools in <code>.claude/settings.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;permissions&quot;: {
+    &quot;allow&quot;: [&quot;Edit&quot;, &quot;Write&quot;, &quot;Bash(npm test:*)&quot;, &quot;Bash(git commit:*)&quot;]
+  }
+}
+</code></pre>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

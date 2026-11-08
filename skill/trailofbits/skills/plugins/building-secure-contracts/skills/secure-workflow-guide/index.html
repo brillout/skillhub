@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>secure-workflow-guide · SkillHub</title>
+    <meta name="description" content="Use it when: you want to secure a smart contract end to end, on every check-in or before deployment, rather than hunt one bug. It does: runs Slither&#039;s detectors and the upgradeability and ERC checks that apply, draws three security diagrams, helps write security properties, then reviews what tools miss. You get: a security report with findings and fixes, diagrams, documented properties, manual-review findings and a prioritized action plan with a step checklist. Needs: Slither installed, plus Echidna or Manticore for the fuzzing or symbolic-execution setup." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=trailofbits%2Fskills">trailofbits/skills</a></p>
+      <div class="title-row"><h1>secure-workflow-guide</h1><button type="button" class="save" data-save="skill:trailofbits/skills/plugins/building-secure-contracts/skills/secure-workflow-guide" aria-pressed="false" aria-label="Save secure-workflow-guide" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want to secure a smart contract end to end, on every check-in or before deployment, rather than hunt one bug</dd></div><div><dt>It does</dt><dd>runs Slither&#39;s detectors and the upgradeability and ERC checks that apply, draws three security diagrams, helps write security properties, then reviews what tools miss</dd></div><div><dt>You get</dt><dd>a security report with findings and fixes, diagrams, documented properties, manual-review findings and a prioritized action plan with a step checklist</dd></div><div><dt>Needs</dt><dd>Slither installed, plus Echidna or Manticore for the fuzzing or symbolic-execution setup</dd></div></dl></section>
+      
+      <p class="note">Needs Slither installed; the property-testing step sets up Echidna or Manticore.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Trail of Bits&#39; secure development workflow for smart contracts, from its building-secure-contracts plugin. Step one runs Slither&#39;s 70+ detectors and triages the findings. Step two runs only the special checks that apply: slither-check-upgradeability for upgradeable contracts, slither-check-erc for token standards, slither-prop for ERC20 properties, and a pointer to the token-integration-analyzer skill. Step three generates an inheritance graph, a function summary showing visibility and access control, and a map of who can write each state variable. Step four, which it calls the most important, documents security properties such as invariants, access rules and arithmetic limits, and sets up Echidna fuzzing, Manticore symbolic execution or custom Slither checks. Step five searches the code for what tools miss: on-chain secrets, front-running and MEV, weak randomness and signature issues, and oracle or flash-loan risks. It refuses shortcuts such as marking a step not applicable without searching the code first.</p>
+      <p class="muted">Summarizes <a href="https://github.com/trailofbits/skills/tree/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/building-secure-contracts/skills/secure-workflow-guide">the skill at e4dd0bb</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">trailofbits/</span><wbr><span class="word">skills</span> <span class="word">--skill</span> <span class="word">secure-workflow-guide</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/trailofbits/skills --skill secure-workflow-guide">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/trailofbits/skills/secure-workflow-guide">skills.sh page</a> · <a href="https://github.com/trailofbits/skills/tree/HEAD/plugins/building-secure-contracts/skills/secure-workflow-guide">Source on GitHub</a> · <a href="/?repo=trailofbits%2Fskills">All skills from trailofbits/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>7,700 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>8,064 <span class="muted">trailofbits/skills</span></dd></div><div><dt>First seen</dt><dd>Jan 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">185</div>
+      <div class="stat-delta">+28% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 145; week to Sep 27: 139; week to Oct 4: 110; week to Oct 11: 121; week to Oct 18: 140; week to Oct 25: 151; week to Nov 1: 179; week to Nov 8: 185. Use the left and right arrow keys to read each week."
+        data-values="145,139,110,121,140,151,179,185" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,15.5 38.6,16.9 71.1,23.8 103.7,21.2 136.3,16.7 168.9,14.1 201.4,7.4 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>145</td></tr><tr><td>Sep 27</td><td>139</td></tr><tr><td>Oct 4</td><td>110</td></tr><tr><td>Oct 11</td><td>121</td></tr><tr><td>Oct 18</td><td>140</td></tr><tr><td>Oct 25</td><td>151</td></tr><tr><td>Nov 1</td><td>179</td></tr><tr><td>Nov 8</td><td>185</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/?tag=category%3Asecurity">category:<wbr>security</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/?tag=needs%3Acli">needs:<wbr>cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/?tag=security">security</a><a class="tag" data-tag="web3" data-facet="topic" href="/?tag=web3">web3</a><a class="tag" data-tag="testing" data-facet="topic" href="/?tag=testing">testing</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:solidity" data-facet="stack" href="/?tag=stack%3Asolidity">stack:<wbr>solidity</a><a class="tag" data-tag="stack:slither" data-facet="stack" href="/?tag=stack%3Aslither">stack:<wbr>slither</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/building-secure-contracts/skills/secure-workflow-guide/SKILL.md">trailofbits/skills at e4dd0bb</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: secure-workflow-guide
+description: Guides through Trail of Bits&#39; 5-step secure development workflow. Runs Slither scans, checks special features (upgradeability/ERC conformance/token integration), generates visual security diagrams, helps document security properties for fuzzing/verification, and reviews manual security areas. Use when securing a smart contract end to end rather than hunting one bug, checking a project on every check-in or before deployment, triaging a Slither report, or asking where to start on smart contract security.</code></pre></details>
+        <div class="markdown"><h3>Secure Workflow Guide</h3>
+<h4>Purpose</h4>
+<p>Guides through Trail of Bits' secure development workflow - a 5-step process to enhance smart contract security throughout development.</p>
+<p><strong>Use this</strong>: On every check-in, before deployment, or when you want a security review</p>
+<hr>
+<h4>The 5-Step Workflow</h4>
+<p>Covers a security workflow including:</p>
+<h5>Step 1: Check for Known Security Issues</h5>
+<p>Run Slither with 70+ built-in detectors to find common vulnerabilities:</p>
+<ul>
+<li>Parse findings by severity</li>
+<li>Explain each issue with file references</li>
+<li>Recommend fixes</li>
+<li>Help triage false positives</li>
+</ul>
+<p><strong>Goal</strong>: Clean Slither report or documented triages</p>
+<h5>Step 2: Check Special Features</h5>
+<p>Detect and validate applicable features:</p>
+<ul>
+<li><strong>Upgradeability</strong>: slither-check-upgradeability (17 upgrade risks)</li>
+<li><strong>ERC conformance</strong>: slither-check-erc (6 common specs)</li>
+<li><strong>Token integration</strong>: Recommend token-integration-analyzer skill</li>
+<li><strong>Security properties</strong>: slither-prop for ERC20</li>
+</ul>
+<p><strong>Note</strong>: Only runs checks that apply to your codebase</p>
+<h5>Step 3: Visual Security Inspection</h5>
+<p>Generate 3 security diagrams:</p>
+<ul>
+<li><strong>Inheritance graph</strong>: Identify shadowing and C3 linearization issues</li>
+<li><strong>Function summary</strong>: Show visibility and access controls</li>
+<li><strong>Variables and authorization</strong>: Map who can write to state variables</li>
+</ul>
+<p>Review each diagram for security concerns</p>
+<h5>Step 4: Document Security Properties</h5>
+<p>Help document critical security properties:</p>
+<ul>
+<li>State machine transitions and invariants</li>
+<li>Access control requirements</li>
+<li>Arithmetic constraints and precision</li>
+<li>External interaction safety</li>
+<li>Standards conformance</li>
+</ul>
+<p>Then set up testing:</p>
+<ul>
+<li><strong>Echidna</strong>: Property-based fuzzing with invariants</li>
+<li><strong>Manticore</strong>: Formal verification with symbolic execution</li>
+<li><strong>Custom Slither checks</strong>: Project-specific business logic</li>
+</ul>
+<p><strong>Note</strong>: Most important activity for security</p>
+<h5>Step 5: Manual Review Areas</h5>
+<p>Analyze areas automated tools miss:</p>
+<ul>
+<li><strong>Privacy</strong>: On-chain secrets, commit-reveal needs</li>
+<li><strong>Front-running</strong>: Slippage protection, ordering risks, MEV</li>
+<li><strong>Cryptography</strong>: Weak randomness, signature issues, hash collisions</li>
+<li><strong>DeFi interactions</strong>: Oracle manipulation, flash loans, protocol assumptions</li>
+</ul>
+<p>Search codebase for these patterns and flag risks</p>
+<p>For detailed instructions, commands, and explanations for each step, see <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/building-secure-contracts/skills/secure-workflow-guide/resources/WORKFLOW_STEPS.md">WORKFLOW_STEPS.md</a>.</p>
+<hr>
+<h4>How I Work</h4>
+<p>When invoked, I will:</p>
+<ol>
+<li><strong>Explore your codebase</strong> to understand structure</li>
+<li><strong>Run Step 1</strong>: Slither security scan</li>
+<li><strong>Detect and run Step 2</strong>: Special feature checks (only what applies)</li>
+<li><strong>Generate Step 3</strong>: Visual security diagrams</li>
+<li><strong>Guide Step 4</strong>: Security property documentation</li>
+<li><strong>Analyze Step 5</strong>: Manual review areas</li>
+<li><strong>Provide action plan</strong>: Prioritized fixes and next steps</li>
+</ol>
+<p>Adapts based on:</p>
+<ul>
+<li>What tools you have installed</li>
+<li>What's applicable to your project</li>
+<li>Where you are in development</li>
+</ul>
+<hr>
+<h4>Rationalizations (Do Not Skip)</h4>
+<table>
+<thead>
+<tr>
+<th>Rationalization</th>
+<th>Why It's Wrong</th>
+<th>Required Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;Slither not available, I'll check manually&quot;</td>
+<td>Manual checking misses 70+ detector patterns</td>
+<td>Install and run Slither, or document why it's blocked</td>
+</tr>
+<tr>
+<td>&quot;Can't generate diagrams, I'll describe the architecture&quot;</td>
+<td>Descriptions aren't visual - diagrams reveal patterns text misses</td>
+<td>Execute slither --print commands, generate actual visual outputs</td>
+</tr>
+<tr>
+<td>&quot;No upgrades detected, skip upgradeability checks&quot;</td>
+<td>Proxies and upgrades are often implicit or planned</td>
+<td>Verify with codebase search before skipping Step 2 checks</td>
+</tr>
+<tr>
+<td>&quot;Not a token, skip ERC checks&quot;</td>
+<td>Tokens can be integrated without obvious ERC inheritance</td>
+<td>Check for token interactions, transfers, balances before skipping</td>
+</tr>
+<tr>
+<td>&quot;Can't set up Echidna now, suggesting it for later&quot;</td>
+<td>Property-based testing is Step 4, not optional</td>
+<td>Document properties now, set up fuzzing infrastructure</td>
+</tr>
+<tr>
+<td>&quot;No DeFi interactions, skip oracle/flash loan checks&quot;</td>
+<td>DeFi patterns appear in unexpected places (price feeds, external calls)</td>
+<td>Complete Step 5 manual review, search codebase for patterns</td>
+</tr>
+<tr>
+<td>&quot;This step doesn't apply to my project&quot;</td>
+<td>&quot;Not applicable&quot; without verification = missed vulnerabilities</td>
+<td>Verify with explicit codebase search before declaring N/A</td>
+</tr>
+<tr>
+<td>&quot;I'll provide generic security advice instead of running workflow&quot;</td>
+<td>Generic advice isn't actionable, workflow finds specific issues</td>
+<td>Execute all 5 steps, generate project-specific findings with file:line references</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4>Example Output</h4>
+<p>When I complete the workflow, you'll get a comprehensive security report covering:</p>
+<ul>
+<li><strong>Step 1</strong>: Slither findings with severity, file references, and fix recommendations</li>
+<li><strong>Step 2</strong>: Special feature validation results (upgradeability, ERC conformance, etc.)</li>
+<li><strong>Step 3</strong>: Visual diagrams analyzing inheritance, functions, and state variable authorization</li>
+<li><strong>Step 4</strong>: Documented security properties and testing setup (Echidna/Manticore)</li>
+<li><strong>Step 5</strong>: Manual review findings (privacy, front-running, cryptography, DeFi risks)</li>
+<li><strong>Action plan</strong>: Critical/high/medium priority tasks with effort estimates</li>
+<li><strong>Workflow checklist</strong>: Progress on all 5 steps</li>
+</ul>
+<p>For a complete example workflow report, see <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/building-secure-contracts/skills/secure-workflow-guide/resources/EXAMPLE_REPORT.md">EXAMPLE_REPORT.md</a>.</p>
+<hr>
+<h4>What You'll Get</h4>
+<p><strong>Security Report</strong>:</p>
+<ul>
+<li>Slither findings with severity and fixes</li>
+<li>Special feature validation results</li>
+<li>Visual diagrams (PNG/PDF)</li>
+<li>Manual review findings</li>
+</ul>
+<p><strong>Action Plan</strong>:</p>
+<ul>
+<li>[ ] Critical issues to fix immediately</li>
+<li>[ ] Security properties to document</li>
+<li>[ ] Testing to set up (Echidna/Manticore)</li>
+<li>[ ] Manual areas to review</li>
+</ul>
+<p><strong>Workflow Checklist</strong>:</p>
+<ul>
+<li>[ ] Clean Slither report</li>
+<li>[ ] Special features validated</li>
+<li>[ ] Visual inspection complete</li>
+<li>[ ] Properties documented</li>
+<li>[ ] Manual review done</li>
+</ul>
+<hr>
+<h4>Getting Help</h4>
+<p><strong>Trail of Bits Resources</strong>:</p>
+<ul>
+<li>Office Hours: Every Tuesday (<a href="https://meetings.hubspot.com/trailofbits/office-hours">schedule</a>)</li>
+<li>Empire Hacking Slack: #crytic and #ethereum channels</li>
+</ul>
+<p><strong>Other Security</strong>:</p>
+<ul>
+<li>Remember: Security is about more than smart contracts</li>
+<li>Off-chain security (owner keys, infrastructure) equally critical</li>
+</ul>
+<hr>
+<h4>Ready to Start</h4>
+<p>Let me know when you're ready and I'll run through the workflow with your codebase!</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

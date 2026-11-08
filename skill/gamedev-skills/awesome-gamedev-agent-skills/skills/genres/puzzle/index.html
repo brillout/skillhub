@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>puzzle · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re making a board the player changes with moves and that resolves by rules: match-3, sokoban, sliding or logic-grid puzzles. It does: sets out the board model, move validation, resolution loop, undo, scoring and level progression, with engine-neutral pseudocode. Its rule: the board is the single source of truth and the view only draws it; input stays locked until the board is stable. Leaves to others: tile rendering, level pacing and juice, to the repo&#039;s engine tilemap, level-design and game-feel skills." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=gamedev-skills%2Fawesome-gamedev-agent-skills">gamedev-skills/awesome-gamedev-agent-skills</a> <span aria-hidden="true">/</span> <a href="/bundle/gamedev-skills/awesome-gamedev-agent-skills/">Gamedev Agent Skills</a></p>
+      <div class="title-row"><h1>puzzle</h1><button type="button" class="save" data-save="skill:gamedev-skills/awesome-gamedev-agent-skills/skills/genres/puzzle" aria-pressed="false" aria-label="Save puzzle" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re making a board the player changes with moves and that resolves by rules: match-3, sokoban, sliding or logic-grid puzzles</dd></div><div><dt>It does</dt><dd>sets out the board model, move validation, resolution loop, undo, scoring and level progression, with engine-neutral pseudocode</dd></div><div><dt>Its rule</dt><dd>the board is the single source of truth and the view only draws it; input stays locked until the board is stable</dd></div><div><dt>Leaves to others</dt><dd>tile rendering, level pacing and juice, to the repo&#39;s engine tilemap, level-design and game-feel skills</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 25 of 27 in the <a href="/bundle/gamedev-skills/awesome-gamedev-agent-skills/">Gamedev Agent Skills</a> bundle · Before it: <a href="/skill/gamedev-skills/awesome-gamedev-agent-skills/skills/genres/survival-crafting/">survival-crafting</a> · After it: <a href="/skill/gamedev-skills/awesome-gamedev-agent-skills/skills/workflows/game-jam/">game-jam</a></p>
+    
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A genre playbook from a game-development collection. The fun of a puzzle is the planning, so the engine&#39;s job is to resolve each move deterministically and show it clearly. Patterns cover match detection on a grid; a resolve loop that clears, drops and refills pieces and scores each step of a chain until nothing changes; and undo by snapshot, or by storing commands that can be inverted on large boards. Undo must restore everything, random state included, or players learn to reroll refills by undoing. Pitfalls include resolving only once and missing cascades, unseeded refills, generated boards with no solution (a sliding puzzle filled by a random shuffle is unsolvable half the time), match-3 boards left with no valid move, and difficulty spikes from introducing several mechanics at once. A table of knobs covers grid shape, move or time limits, cascade scoring, undo depth and deadlock handling.</p>
+      <p class="muted">Summarizes <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/tree/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/genres/puzzle">the skill at 19d93f9</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">gamedev-skills/</span><wbr><span class="word">awesome-gamedev-agent-skills</span> <span class="word">--skill</span> <span class="word">puzzle</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/gamedev-skills/awesome-gamedev-agent-skills --skill puzzle">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/gamedev-skills/awesome-gamedev-agent-skills/puzzle">skills.sh page</a> · <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/tree/HEAD/skills/genres/puzzle">Source on GitHub</a> · <a href="/?repo=gamedev-skills%2Fawesome-gamedev-agent-skills">All skills from gamedev-skills/awesome-gamedev-agent-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>9,100 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>7,647 <span class="muted">gamedev-skills/awesome-gamedev-agent-skills</span></dd></div><div><dt>First seen</dt><dd>Jun 27, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">1.8K</div>
+      <div class="stat-delta">+424% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 339; week to Sep 27: 314; week to Oct 4: 371; week to Oct 11: 386; week to Oct 18: 440; week to Oct 25: 633; week to Nov 1: 1,405; week to Nov 8: 1,778. Use the left and right arrow keys to read each week."
+        data-values="339,314,371,386,440,633,1405,1778" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,41.6 38.6,42.2 71.1,40.8 103.7,40.4 136.3,39.1 168.9,34.3 201.4,15.2 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>339</td></tr><tr><td>Sep 27</td><td>314</td></tr><tr><td>Oct 4</td><td>371</td></tr><tr><td>Oct 11</td><td>386</td></tr><tr><td>Oct 18</td><td>440</td></tr><tr><td>Oct 25</td><td>633</td></tr><tr><td>Nov 1</td><td>1,405</td></tr><tr><td>Nov 8</td><td>1,778</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:design" data-facet="category" title="Taste for interfaces that don&#39;t look generated: direction, motion and accessibility." href="/?tag=category%3Adesign">category:<wbr>design</a><a class="tag" data-tag="category:games" data-facet="category" title="Make games: design, genres, game feel and game-jam workflows, whatever the engine." href="/?tag=category%3Agames">category:<wbr>games</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Taste for interfaces that don&#39;t look generated: direction, motion and accessibility.</p><p class="tag-meaning">Make games: design, genres, game feel and game-jam workflows, whatever the engine.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/?tag=type%3Aguidelines">type:<wbr>guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="design" data-facet="topic" href="/?tag=design">design</a><a class="tag" data-tag="architecture" data-facet="topic" href="/?tag=architecture">architecture</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/genres/puzzle/SKILL.md">gamedev-skills/awesome-gamedev-agent-skills at 19d93f9</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: puzzle
+description: &#62;
+  Build a puzzle game: grid/board state, move input, rule-based resolution (match-3 cascades, sokoban
+  pushes, tile logic), scoring, and undo. Use for a match-3, sokoban, or grid-logic puzzle.</code></pre></details>
+        <div class="markdown"><h3>Puzzle</h3>
+<p>A playbook for grid/board puzzle games — the board model, move input, rule resolution
+(matching, pushing, logic), scoring, undo, and level progression. This is a <strong>compositional</strong>
+skill: it models board state and rules and presents them through a tilemap/UI. It does not
+re-teach tilemaps; it defines the resolution loop and the correctness rules (clean state,
+deterministic resolution, undo) that keep a puzzle fair and bug-free.</p>
+<h4>When to use</h4>
+<ul>
+<li>Use when the game is a <strong>discrete board</strong> the player changes with moves, and the board
+<strong>resolves by rules</strong>: match-3/tile-matching, sokoban/block-pusher, sliding puzzle, logic grid.</li>
+<li>Use when designing match/cascade resolution, undo, level progression, or solvability.</li>
+</ul>
+<p><strong>When <em>not</em> to use:</strong> real-time grid action with permadeath → <code>roguelike</code>. Card zones/turns →
+<code>card-game</code>. Physics-based &quot;puzzle platformer&quot; → <code>platformer</code> + <code>physics-tuning</code>. For the tile
+rendering, use <code>godot-tilemap</code> / <code>unity-tilemap-2d</code>.</p>
+<h4>Core loop</h4>
+<p><strong>Read the board → plan a move → make the move → the board resolves by its rules (match, push,
+fall, fill, cascade) → see progress toward the objective → repeat until solved/failed.</strong> The
+fun is the <em>planning</em>; the engine's job is to resolve each move <strong>deterministically</strong> and
+present it clearly.</p>
+<h4>Must-have systems</h4>
+<ol>
+<li><strong>Board model</strong> — a grid of cells holding pieces; the single source of truth (logic, not visuals).</li>
+<li><strong>Move input</strong> — swap, push, drag, rotate, or place; validate legality before applying.</li>
+<li><strong>Rule resolution</strong> — detect and apply the genre's rule (matches, pushes, logic) until stable.</li>
+<li><strong>Cascades/chains</strong> — when resolution changes the board, re-resolve until no more changes.</li>
+<li><strong>Objectives + scoring</strong> — win/lose conditions (score, clear all, reach goal); move/time limits.</li>
+<li><strong>Undo</strong> — revert the last move (and its resolution) exactly; essential for thinky puzzles.</li>
+<li><strong>Level progression + (often) generation</strong> — hand-authored or generated <strong>solvable</strong> boards.</li>
+<li><strong>Feedback (&quot;juice&quot;)</strong> — clear, satisfying animation/sound for matches, falls, and chains.</li>
+</ol>
+<h4>Design knobs</h4>
+<table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Effect</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Grid size / shape</td>
+<td>complexity</td>
+<td>Square is standard; hex/irregular change feel.</td>
+</tr>
+<tr>
+<td>Match/push rule</td>
+<td>genre identity</td>
+<td>3-in-a-row, shapes, push-into-goal, etc.</td>
+</tr>
+<tr>
+<td>Cascade scoring</td>
+<td>reward depth</td>
+<td>Bigger chains = exponential payoff.</td>
+</tr>
+<tr>
+<td>Move / time limit</td>
+<td>pressure</td>
+<td>Move-limited = puzzly; time = arcade.</td>
+</tr>
+<tr>
+<td>Difficulty curve</td>
+<td>learning</td>
+<td>Introduce one mechanic at a time.</td>
+</tr>
+<tr>
+<td>Undo depth</td>
+<td>forgiveness</td>
+<td>Single-step vs. full history.</td>
+</tr>
+<tr>
+<td>Solvability guarantee</td>
+<td>fairness</td>
+<td>Generated boards must be solvable.</td>
+</tr>
+<tr>
+<td>Deadlock handling</td>
+<td>no dead ends</td>
+<td>Detect no-moves; shuffle or end (refs).</td>
+</tr>
+</tbody>
+</table>
+<h4>Patterns</h4>
+<h5>1. Board model + match detection (logic separate from visuals)</h5>
+<pre><code class="language-python"># Pseudocode. The board is the truth; rendering reads from it. (0,0) top-left, y grows down.
+board = [[piece_or_empty for _ in range(W)] for _ in range(H)]
+
+def find_matches(board):
+    matched = set()
+    for y in range(H):                       # horizontal runs of &gt;= 3 equal pieces
+        run = 1
+        for x in range(1, W):
+            if board[y][x] and board[y][x] == board[y][x-1]: run += 1
+            else:
+                if run &gt;= 3: matched |= {(y, k) for k in range(x-run, x)}
+                run = 1
+        if run &gt;= 3: matched |= {(y, k) for k in range(W-run, W)}
+    # ... repeat the same scan vertically (columns) ...
+    return matched
+</code></pre>
+<h5>2. Resolve → collapse → refill → cascade (repeat to stability)</h5>
+<pre><code class="language-python"># Pseudocode. One player move can trigger a chain; loop until the board stops changing.
+def resolve(board):
+    chain = 0
+    while True:
+        matches = find_matches(board)
+        if not matches: break                 # stable: resolution complete
+        chain += 1
+        score += score_for(matches, chain)    # later chain steps score more (see refs)
+        clear(board, matches)                  # remove matched pieces
+        apply_gravity(board)                   # pieces fall into the gaps
+        refill(board, rng)                      # spawn new pieces at the top (seeded RNG)
+    return chain
+</code></pre>
+<h5>3. Undo via state snapshot or command</h5>
+<pre><code class="language-python"># Pseudocode. Snapshot before each move; undo restores it exactly (board + score + counters + RNG).
+def make_move(move):
+    history.append(snapshot(board, score, moves_left, rng.state))   # push BEFORE applying
+    apply(move); resolve(board); moves_left -= 1
+
+def undo():
+    if history:
+        board, score, moves_left, rng.state = history.pop()   # exact revert, including refills
+</code></pre>
+<p>For large boards prefer the <strong>command</strong> pattern (store the move + enough to invert it) over full
+snapshots to save memory; snapshots are simplest and fine for small boards.</p>
+<h4>Pitfalls / failure modes</h4>
+<ul>
+<li><strong>Mixing logic and visuals</strong> → animations desync from state and cause bugs. The board model is
+the single source of truth; the view only renders it.</li>
+<li><strong>Resolving only once</strong> → cascades/chains are missed. Loop resolution until the board is stable
+(Pattern 2).</li>
+<li><strong>Undo that doesn't restore everything</strong> → score/move-count/random-state drift. Snapshot <em>all</em>
+state, or make the move fully invertible. If undo skips the RNG state, redoing the same move
+refills different pieces and players learn to &quot;reroll&quot; by undoing.</li>
+<li><strong>Unseeded refill RNG</strong> → can't reproduce a level / no deterministic undo or daily puzzle. Seed it.</li>
+<li><strong>Generated boards that aren't solvable</strong> → unfair dead ends. Generate-and-verify, or generate
+from a known solution backward (refs). A sliding-tile puzzle filled by a random shuffle is
+unsolvable half the time; check the parity rule in refs §7.</li>
+<li><strong>No deadlock detection</strong> (match-3) → board with no valid moves softlocks. Detect &quot;no moves&quot;
+and shuffle or end the level (refs).</li>
+<li><strong>Difficulty spikes</strong> → too many mechanics at once. Teach one mechanic per level before combining.</li>
+<li><strong>Resolution mid-animation accepts input</strong> → double-moves/corruption. Lock input until the
+board is stable.</li>
+</ul>
+<h4>Composition (build it from these skills)</h4>
+<ul>
+<li><strong>Board rendering:</strong> <code>godot-tilemap</code> / <code>unity-tilemap-2d</code> for the grid; <code>godot-ui-control</code> for HUD, score, and menus.</li>
+<li><strong>Levels:</strong> <code>level-design</code> for hand-authored puzzles and difficulty pacing; <code>procedural-gen</code> for solvable generated boards.</li>
+<li><strong>Persistence:</strong> <code>save-systems</code> for level progress, high scores, and seeded daily puzzles.</li>
+<li><strong>Juice:</strong> <code>game-feel</code> for match/cascade pop, screen shake, and chain feedback; the engine animation/<code>Tween</code> skill for swaps/falls/clears; <code>audio-design</code> for match and chain cues.</li>
+<li><strong>Scripting:</strong> <code>godot-gdscript</code> / <code>unity-csharp-scripting</code> for the resolution loop and rules.</li>
+</ul>
+<h4>References</h4>
+<ul>
+<li>For match-3 detection/gravity/refill/cascade detail, deadlock detection and reshuffles,
+sokoban/rule-based puzzles, undo strategies, solvable generation, and scoring, read
+<code>references/board-and-resolution.md</code>.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

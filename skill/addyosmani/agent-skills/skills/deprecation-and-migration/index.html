@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>deprecation-and-migration · SkillHub</title>
+    <meta name="description" content="Use it when: you replace or sunset a system, API, library or feature, or rename or drop a database column in production. It does: asks whether the old system still earns its keep, builds and documents the replacement, migrates each consumer, then removes the old code once usage is zero. For schemas: expand and contract: add the new column, write to both, backfill in batches, switch reads, and drop the old column in a later deploy. Also covers: advisory versus forced deprecation, the strangler, adapter and feature-flag migration patterns, and zombie code nobody owns." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=addyosmani%2Fagent-skills">addyosmani/agent-skills</a> <span aria-hidden="true">/</span> <a href="/bundle/addyosmani/agent-skills/">Addy&#39;s Agent Skills</a></p>
+      <div class="title-row"><h1>deprecation-and-migration</h1><button type="button" class="save" data-save="skill:addyosmani/agent-skills/skills/deprecation-and-migration" aria-pressed="false" aria-label="Save deprecation-and-migration" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you replace or sunset a system, API, library or feature, or rename or drop a database column in production</dd></div><div><dt>It does</dt><dd>asks whether the old system still earns its keep, builds and documents the replacement, migrates each consumer, then removes the old code once usage is zero</dd></div><div><dt>For schemas</dt><dd>expand and contract: add the new column, write to both, backfill in batches, switch reads, and drop the old column in a later deploy</dd></div><div><dt>Also covers</dt><dd>advisory versus forced deprecation, the strangler, adapter and feature-flag migration patterns, and zombie code nobody owns</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 24 of 25 in the <a href="/bundle/addyosmani/agent-skills/">Addy&#39;s Agent Skills</a> bundle · Before it: <a href="/skill/addyosmani/agent-skills/skills/documentation-and-adrs/">documentation-and-adrs</a> · After it: <a href="/skill/addyosmani/agent-skills/skills/shipping-and-launch/">shipping-and-launch</a></p>
+    
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>It starts from the view that code is a liability: every line costs upkeep, and with enough users every behavior gets depended on, so removal needs active migration, not just an announcement. Five questions decide whether to deprecate: does it still provide unique value, who depends on it, does a replacement exist, what will migrating cost each consumer, and what does keeping it cost? Deprecation defaults to advisory, with warnings and docs; a hard deadline is for security risks or unsustainable upkeep, and needs migration tooling. The process is to build a replacement proven in production, publish a deprecation notice with a migration guide, migrate consumers one at a time, verifying each, and remove the old code, tests, docs and config only once metrics show zero use. If you own what&#39;s being deprecated, migrating its users is your job. Patterns include running old and new side by side while shifting traffic (the strangler pattern), an adapter that keeps the old interface over the new code, and per-user feature flags. Database changes use expand and contract across separate deploys, each with a tested down migration. Zombie code, depended on but unowned, gets an owner or a removal plan.</p>
+      <p class="muted">Summarizes <a href="https://github.com/addyosmani/agent-skills/tree/301b02b12bff98e4688e6984af6556802322bbde/skills/deprecation-and-migration">the skill at 301b02b</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">addyosmani/</span><wbr><span class="word">agent-skills</span> <span class="word">--skill</span> <span class="word">deprecation-and-migration</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/addyosmani/agent-skills --skill deprecation-and-migration">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/addyosmani/agent-skills/deprecation-and-migration">skills.sh page</a> · <a href="https://github.com/addyosmani/agent-skills/tree/HEAD/skills/deprecation-and-migration">Source on GitHub</a> · <a href="/?repo=addyosmani%2Fagent-skills">All skills from addyosmani/agent-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>65,400 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>113,924 <span class="muted">addyosmani/agent-skills</span></dd></div><div><dt>First seen</dt><dd>Mar 30, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">4.6K</div>
+      <div class="stat-delta">+58% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 2,917; week to Sep 27: 3,892; week to Oct 4: 3,588; week to Oct 11: 3,781; week to Oct 18: 4,824; week to Oct 25: 5,459; week to Nov 1: 5,119; week to Nov 8: 4,611. Use the left and right arrow keys to read each week."
+        data-values="2917,3892,3588,3781,4824,5459,5119,4611" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,26.5 38.6,18.6 71.1,21.1 103.7,19.5 136.3,11.1 168.9,6.0 201.4,8.7 234.0,12.8" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="12.8" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>2,917</td></tr><tr><td>Sep 27</td><td>3,892</td></tr><tr><td>Oct 4</td><td>3,588</td></tr><tr><td>Oct 11</td><td>3,781</td></tr><tr><td>Oct 18</td><td>4,824</td></tr><tr><td>Oct 25</td><td>5,459</td></tr><tr><td>Nov 1</td><td>5,119</td></tr><tr><td>Nov 8</td><td>4,611</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/?tag=category%3Aengineering">category:<wbr>engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="migration" data-facet="topic" href="/?tag=migration">migration</a><a class="tag" data-tag="databases" data-facet="topic" href="/?tag=databases">databases</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/addyosmani/agent-skills/blob/301b02b12bff98e4688e6984af6556802322bbde/skills/deprecation-and-migration/SKILL.md">addyosmani/agent-skills at 301b02b</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: deprecation-and-migration
+description: Manages deprecation and migration. Use when removing old systems, APIs, or features. Use when migrating users from one implementation to another. Use when migrating a database schema in production, such as renaming or dropping a column without downtime (expand/contract). Use when deciding whether to maintain or sunset existing code.</code></pre></details>
+        <div class="markdown"><h3>Deprecation and Migration</h3>
+<h4>Overview</h4>
+<p>Code is a liability, not an asset. Every line of code has ongoing maintenance cost — bugs to fix, dependencies to update, security patches to apply, and new engineers to onboard. Deprecation is the discipline of removing code that no longer earns its keep, and migration is the process of moving users safely from the old to the new.</p>
+<p>Most engineering organizations are good at building things. Few are good at removing them. This skill addresses that gap.</p>
+<h4>When to Use</h4>
+<ul>
+<li>Replacing an old system, API, or library with a new one</li>
+<li>Sunsetting a feature that's no longer needed</li>
+<li>Consolidating duplicate implementations</li>
+<li>Removing dead code that nobody owns but everybody depends on</li>
+<li>Planning the lifecycle of a new system (deprecation planning starts at design time)</li>
+<li>Deciding whether to maintain a legacy system or invest in migration</li>
+</ul>
+<h4>Core Principles</h4>
+<h5>Code Is a Liability</h5>
+<p>Every line of code has ongoing cost: it needs tests, documentation, security patches, dependency updates, and mental overhead for anyone working nearby. The value of code is the functionality it provides, not the code itself. When the same functionality can be provided with less code, less complexity, or better abstractions — the old code should go.</p>
+<h5>Hyrum's Law Makes Removal Hard</h5>
+<p>With enough users, every observable behavior becomes depended on — including bugs, timing quirks, and undocumented side effects. This is why deprecation requires active migration, not just announcement. Users can't &quot;just switch&quot; when they depend on behaviors the replacement doesn't replicate.</p>
+<h5>Deprecation Planning Starts at Design Time</h5>
+<p>When building something new, ask: &quot;How would we remove this in 3 years?&quot; Systems designed with clean interfaces, feature flags, and minimal surface area are easier to deprecate than systems that leak implementation details everywhere.</p>
+<h4>The Deprecation Decision</h4>
+<p>Before deprecating anything, answer these questions:</p>
+<pre><code>1. Does this system still provide unique value?
+   → If yes, maintain it. If no, proceed.
+
+2. How many users/consumers depend on it?
+   → Quantify the migration scope.
+
+3. Does a replacement exist?
+   → If no, build the replacement first. Don't deprecate without an alternative.
+
+4. What's the migration cost for each consumer?
+   → If trivially automated, do it. If manual and high-effort, weigh against maintenance cost.
+
+5. What's the ongoing maintenance cost of NOT deprecating?
+   → Security risk, engineer time, opportunity cost of complexity.
+</code></pre>
+<h4>Compulsory vs Advisory Deprecation</h4>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>When to Use</th>
+<th>Mechanism</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Advisory</strong></td>
+<td>Migration is optional, old system is stable</td>
+<td>Warnings, documentation, nudges. Users migrate on their own timeline.</td>
+</tr>
+<tr>
+<td><strong>Compulsory</strong></td>
+<td>Old system has security issues, blocks progress, or maintenance cost is unsustainable</td>
+<td>Hard deadline. Old system will be removed by date X. Provide migration tooling.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Default to advisory.</strong> Use compulsory only when the maintenance cost or risk justifies forcing migration. Compulsory deprecation requires providing migration tooling, documentation, and support — you can't just announce a deadline.</p>
+<h4>The Migration Process</h4>
+<h5>Step 1: Build the Replacement</h5>
+<p>Don't deprecate without a working alternative. The replacement must:</p>
+<ul>
+<li>Cover all critical use cases of the old system</li>
+<li>Have documentation and migration guides</li>
+<li>Be proven in production (not just &quot;theoretically better&quot;)</li>
+</ul>
+<h5>Step 2: Announce and Document</h5>
+<pre><code class="language-markdown">## Deprecation Notice: OldService
+
+**Status:** Deprecated as of 2025-03-01
+**Replacement:** NewService (see migration guide below)
+**Removal date:** Advisory — no hard deadline yet
+**Reason:** OldService requires manual scaling and lacks observability.
+            NewService handles both automatically.
+
+### Migration Guide
+1. Replace `import { client } from 'old-service'` with `import { client } from 'new-service'`
+2. Update configuration (see examples below)
+3. Run the migration verification script: `npx migrate-check`
+</code></pre>
+<h5>Step 3: Migrate Incrementally</h5>
+<p>Migrate consumers one at a time, not all at once. For each consumer:</p>
+<pre><code>1. Identify all touchpoints with the deprecated system
+2. Update to use the replacement
+3. Verify behavior matches (tests, integration checks)
+4. Remove references to the old system
+5. Confirm no regressions
+</code></pre>
+<p><strong>The Churn Rule:</strong> If you own the infrastructure being deprecated, you are responsible for migrating your users — or providing backward-compatible updates that require no migration. Don't announce deprecation and leave users to figure it out.</p>
+<h5>Step 4: Remove the Old System</h5>
+<p>Only after all consumers have migrated:</p>
+<pre><code>1. Verify zero active usage (metrics, logs, dependency analysis)
+2. Remove the code
+3. Remove associated tests, documentation, and configuration
+4. Remove the deprecation notices
+5. Celebrate — removing code is an achievement
+</code></pre>
+<h4>Migration Patterns</h4>
+<h5>Strangler Pattern</h5>
+<p>Run old and new systems in parallel. Route traffic incrementally from old to new. When the old system handles 0% of traffic, remove it.</p>
+<pre><code>Phase 1: New system handles 0%, old handles 100%
+Phase 2: New system handles 10% (canary)
+Phase 3: New system handles 50%
+Phase 4: New system handles 100%, old system idle
+Phase 5: Remove old system
+</code></pre>
+<h5>Adapter Pattern</h5>
+<p>Create an adapter that translates calls from the old interface to the new implementation. Consumers keep using the old interface while you migrate the backend.</p>
+<pre><code class="language-typescript">// Adapter: old interface, new implementation
+class LegacyTaskService implements OldTaskAPI {
+  constructor(private newService: NewTaskService) {}
+
+  // Old method signature, delegates to new implementation
+  getTask(id: number): OldTask {
+    const task = this.newService.findById(String(id));
+    return this.toOldFormat(task);
+  }
+
+  // Translate the new shape back into what old consumers expect
+  private toOldFormat(task: Task): OldTask {
+    return { id: Number(task.id), title: task.title, done: task.status === 'done' };
+  }
+}
+</code></pre>
+<h5>Feature Flag Migration</h5>
+<p>Use feature flags to switch consumers from old to new system one at a time:</p>
+<pre><code class="language-typescript">function getTaskService(userId: string): TaskService {
+  if (featureFlags.isEnabled('new-task-service', { userId })) {
+    return new NewTaskService();
+  }
+  return new OldTaskService();
+}
+</code></pre>
+<h5>Database Schema Migrations (Expand/Contract)</h5>
+<p>A schema change is the riskiest migration because the data is the one thing you cannot roll back by reverting a deploy. The failure mode is coupling the schema change to the code change: rename a column in the same release that starts using the new name, and during the rollout window — when old and new code run at once — one of them is querying a column that doesn't exist. The fix is to <strong>never change a column in place</strong>. Migrate in additive phases so old and new code are both valid at every step.</p>
+<pre><code>EXPAND ──────────────→ MIGRATE ──────────────→ CONTRACT
+add the new column,    backfill existing rows,  once no code reads the
+nullable, alongside    dual-write old+new from  old column, drop it in
+the old one            the app                  a later, separate deploy
+</code></pre>
+<p><strong>Worked example — renaming <code>name</code> to <code>full_name</code>:</strong></p>
+<ol>
+<li><strong>Expand.</strong> Add <code>full_name</code> as nullable. Deploy. (Old code ignores it; nothing breaks.)</li>
+<li><strong>Dual-write.</strong> App writes both <code>name</code> and <code>full_name</code> on every insert/update. Deploy.</li>
+<li><strong>Backfill.</strong> Copy <code>name → full_name</code> for existing rows, in batches, so you don't lock the table.</li>
+<li><strong>Switch reads.</strong> Point the app at <code>full_name</code>, keep writing both. Deploy and bake.</li>
+<li><strong>Contract.</strong> Stop writing <code>name</code>, then — in a <em>separate, later</em> deploy — drop the column.</li>
+</ol>
+<p>Each step is independently deployable and reversible: if step 4 misbehaves, roll the code back and <code>full_name</code> is still being populated. Treat each phase as a thin vertical slice — see the <code>incremental-implementation</code> skill.</p>
+<p><strong>Rules:</strong></p>
+<ul>
+<li><strong>Additive first, destructive last and alone.</strong> Adds (new nullable column, new table, new index) are safe in any deploy; drops and renames get their own deploy <em>after</em> no code references the old shape.</li>
+<li><strong>Every migration has a tested down path.</strong> A migration you can't reverse is a deploy you can't roll back. Write and run the <code>down</code> before merging.</li>
+<li><strong>Backfill in batches, off the hot path.</strong> A single <code>UPDATE</code> over millions of rows locks the table; chunk it and throttle.</li>
+<li><strong>Build large indexes without blocking writes</strong> (e.g. Postgres <code>CREATE INDEX CONCURRENTLY</code>).</li>
+<li><strong>Decouple from code by feature flag</strong> when the cutover is risky, exactly as in the Feature Flag Migration pattern above.</li>
+</ul>
+<h4>Zombie Code</h4>
+<p>Zombie code is code that nobody owns but everybody depends on. It's not actively maintained, has no clear owner, and accumulates security vulnerabilities and compatibility issues. Signs:</p>
+<ul>
+<li>No commits in 6+ months but active consumers exist</li>
+<li>No assigned maintainer or team</li>
+<li>Failing tests that nobody fixes</li>
+<li>Dependencies with known vulnerabilities that nobody updates</li>
+<li>Documentation that references systems that no longer exist</li>
+</ul>
+<p><strong>Response:</strong> Either assign an owner and maintain it properly, or deprecate it with a concrete migration plan. Zombie code cannot stay in limbo — it either gets investment or removal.</p>
+<h4>Common Rationalizations</h4>
+<table>
+<thead>
+<tr>
+<th>Rationalization</th>
+<th>Reality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;It still works, why remove it?&quot;</td>
+<td>Working code that nobody maintains accumulates security debt and complexity. Maintenance cost grows silently.</td>
+</tr>
+<tr>
+<td>&quot;Someone might need it later&quot;</td>
+<td>If it's needed later, it can be rebuilt. Keeping unused code &quot;just in case&quot; costs more than rebuilding.</td>
+</tr>
+<tr>
+<td>&quot;The migration is too expensive&quot;</td>
+<td>Compare migration cost to ongoing maintenance cost over 2-3 years. Migration is usually cheaper long-term.</td>
+</tr>
+<tr>
+<td>&quot;We'll deprecate it after we finish the new system&quot;</td>
+<td>Deprecation planning starts at design time. By the time the new system is done, you'll have new priorities. Plan now.</td>
+</tr>
+<tr>
+<td>&quot;Users will migrate on their own&quot;</td>
+<td>They won't. Provide tooling, documentation, and incentives — or do the migration yourself (the Churn Rule).</td>
+</tr>
+<tr>
+<td>&quot;We can maintain both systems indefinitely&quot;</td>
+<td>Two systems doing the same thing is double the maintenance, testing, documentation, and onboarding cost.</td>
+</tr>
+<tr>
+<td>&quot;Just rename the column, it's one line&quot;</td>
+<td>During the rollout, old and new code run together — one will query a column that no longer exists. Expand/contract, never rename in place.</td>
+</tr>
+<tr>
+<td>&quot;I'll add the column and drop the old one in the same migration&quot;</td>
+<td>That couples a safe add to a destructive drop. Drops get their own deploy, after no code references the old shape.</td>
+</tr>
+<tr>
+<td>&quot;We'll write the rollback if we need it&quot;</td>
+<td>A migration with no down path is a deploy you can't reverse. Write and run the <code>down</code> before merging.</td>
+</tr>
+</tbody>
+</table>
+<h4>Red Flags</h4>
+<ul>
+<li>Deprecated systems with no replacement available</li>
+<li>Deprecation announcements with no migration tooling or documentation</li>
+<li>&quot;Soft&quot; deprecation that's been advisory for years with no progress</li>
+<li>Zombie code with no owner and active consumers</li>
+<li>New features added to a deprecated system (invest in the replacement instead)</li>
+<li>Deprecation without measuring current usage</li>
+<li>Removing code without verifying zero active consumers</li>
+<li>A schema change and the code that depends on it shipped in the same deploy</li>
+<li>A column renamed or dropped in place rather than via expand/contract</li>
+<li>A migration merged with no tested down path, or a backfill that locks the table</li>
+</ul>
+<h4>Verification</h4>
+<p>After completing a deprecation:</p>
+<ul>
+<li>[ ] Replacement is production-proven and covers all critical use cases</li>
+<li>[ ] Migration guide exists with concrete steps and examples</li>
+<li>[ ] All active consumers have been migrated (verified by metrics/logs)</li>
+<li>[ ] Old code, tests, documentation, and configuration are fully removed</li>
+<li>[ ] No references to the deprecated system remain in the codebase</li>
+<li>[ ] Deprecation notices are removed (they served their purpose)</li>
+</ul>
+<p>After a database schema migration:</p>
+<ul>
+<li>[ ] The change ships in additive phases (expand → backfill → contract), not a single in-place edit</li>
+<li>[ ] Old and new code are both valid against the schema at every deploy step</li>
+<li>[ ] Each migration has a tested down path; backfills run in throttled batches</li>
+<li>[ ] Destructive steps (drop/rename) ship in their own deploy after no code references the old shape</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

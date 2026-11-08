@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>refactor · SkillHub</title>
+    <meta name="description" content="Use it when: code is hard to read or change, functions or classes have grown too large, or you ask the agent to clean something up. It does: makes sure tests exist, commits and branches, then makes one small change at a time, running the tests and committing after each. Covers: ten code smells, such as long functions, duplication, god classes, magic numbers and nested conditionals, each with a before-and-after fix. You get: restructured code that behaves the same, checked against rules on function size, naming, structure, types and tests. Unlike repo-rebuilder: a skill it calls more drastic, this one makes gradual improvements to existing code rather than rebuilding it." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=github%2Fawesome-copilot">github/awesome-copilot</a></p>
+      <div class="title-row"><h1>refactor</h1><button type="button" class="save" data-save="skill:github/awesome-copilot/skills/refactor" aria-pressed="false" aria-label="Save refactor" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>code is hard to read or change, functions or classes have grown too large, or you ask the agent to clean something up</dd></div><div><dt>It does</dt><dd>makes sure tests exist, commits and branches, then makes one small change at a time, running the tests and committing after each</dd></div><div><dt>Covers</dt><dd>ten code smells, such as long functions, duplication, god classes, magic numbers and nested conditionals, each with a before-and-after fix</dd></div><div><dt>You get</dt><dd>restructured code that behaves the same, checked against rules on function size, naming, structure, types and tests</dd></div><div><dt>Unlike repo-rebuilder</dt><dd>a skill it calls more drastic, this one makes gradual improvements to existing code rather than rebuilding it</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Refactoring here means changing how code is organized, never what it does. Its rules: preserve behavior, take small steps, commit at each safe state, have tests (without them you&#39;re only editing), and never mix refactoring with feature work. It also says when not to refactor: stable code that won&#39;t change again, critical code without tests until tests are added, a tight deadline, or change for its own sake. The process has five stages: prepare with tests, a commit and a feature branch; find the smell and plan the change; refactor one small change at a time, with tests and a commit after each; verify that tests pass and performance hasn&#39;t dropped; then update comments and docs. Before-and-after examples, mostly in TypeScript and JavaScript, cover long functions, duplicated code, large classes, long parameter lists, feature envy (a method that uses another object&#39;s data more than its own), primitive obsession, magic numbers, nested conditionals, dead code and classes that reach into each other&#39;s internals, plus extracting methods, adding types, and the Strategy and Chain of Responsibility patterns. A final checklist asks for functions under 50 lines, no duplication or magic values, one-way dependencies, typed public APIs and passing tests.</p>
+      <p class="muted">Summarizes <a href="https://github.com/github/awesome-copilot/tree/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/refactor">the skill at 797337f</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">github/</span><wbr><span class="word">awesome-copilot</span> <span class="word">--skill</span> <span class="word">refactor</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/github/awesome-copilot --skill refactor">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/github/awesome-copilot/refactor">skills.sh page</a> · <a href="https://github.com/github/awesome-copilot/tree/HEAD/skills/refactor">Source on GitHub</a> · <a href="/?repo=github%2Fawesome-copilot">All skills from github/awesome-copilot</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>22,600 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>40,908 <span class="muted">github/awesome-copilot</span></dd></div><div><dt>First seen</dt><dd>Jan 23, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">136</div>
+      <div class="stat-delta">-11% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 152; week to Sep 27: 152; week to Oct 4: 171; week to Oct 11: 161; week to Oct 18: 133; week to Oct 25: 126; week to Nov 1: 105; week to Nov 8: 136. Use the left and right arrow keys to read each week."
+        data-values="152,152,171,161,133,126,105,136" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,10.9 38.6,10.9 71.1,6.0 103.7,8.6 136.3,15.8 168.9,17.6 201.4,23.0 234.0,15.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="15.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>152</td></tr><tr><td>Sep 27</td><td>152</td></tr><tr><td>Oct 4</td><td>171</td></tr><tr><td>Oct 11</td><td>161</td></tr><tr><td>Oct 18</td><td>133</td></tr><tr><td>Oct 25</td><td>126</td></tr><tr><td>Nov 1</td><td>105</td></tr><tr><td>Nov 8</td><td>136</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/?tag=category%3Aengineering">category:<wbr>engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="refactoring" data-facet="topic" href="/?tag=refactoring">refactoring</a><a class="tag" data-tag="code-quality" data-facet="topic" href="/?tag=code-quality">code-quality</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/github/awesome-copilot/blob/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/refactor/SKILL.md">github/awesome-copilot at 797337f</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: refactor
+description: &#39;Surgical code refactoring to improve maintainability without changing behavior. Covers extracting functions, renaming variables, breaking down god functions, improving type safety, eliminating code smells, and applying design patterns. Less drastic than repo-rebuilder; use for gradual improvements.&#39;
+license: MIT</code></pre></details>
+        <div class="markdown"><h3>Refactor</h3>
+<h4>Overview</h4>
+<p>Improve code structure and readability without changing external behavior. Refactoring is gradual evolution, not revolution. Use this for improving existing code, not rewriting from scratch.</p>
+<h4>When to Use</h4>
+<p>Use this skill when:</p>
+<ul>
+<li>Code is hard to understand or maintain</li>
+<li>Functions/classes are too large</li>
+<li>Code smells need addressing</li>
+<li>Adding features is difficult due to code structure</li>
+<li>User asks &quot;clean up this code&quot;, &quot;refactor this&quot;, &quot;improve this&quot;</li>
+</ul>
+<hr>
+<h4>Refactoring Principles</h4>
+<h5>The Golden Rules</h5>
+<ol>
+<li><strong>Behavior is preserved</strong> - Refactoring doesn't change what the code does, only how</li>
+<li><strong>Small steps</strong> - Make tiny changes, test after each</li>
+<li><strong>Version control is your friend</strong> - Commit before and after each safe state</li>
+<li><strong>Tests are essential</strong> - Without tests, you're not refactoring, you're editing</li>
+<li><strong>One thing at a time</strong> - Don't mix refactoring with feature changes</li>
+</ol>
+<h5>When NOT to Refactor</h5>
+<pre><code>- Code that works and won't change again (if it ain't broke...)
+- Critical production code without tests (add tests first)
+- When you're under a tight deadline
+- &quot;Just because&quot; - need a clear purpose
+</code></pre>
+<hr>
+<h4>Common Code Smells &amp; Fixes</h4>
+<h5>1. Long Method/Function</h5>
+<pre><code class="language-diff"># BAD: 200-line function that does everything
+- async function processOrder(orderId) {
+-   // 50 lines: fetch order
+-   // 30 lines: validate order
+-   // 40 lines: calculate pricing
+-   // 30 lines: update inventory
+-   // 20 lines: create shipment
+-   // 30 lines: send notifications
+- }
+
+# GOOD: Broken into focused functions
++ async function processOrder(orderId) {
++   const order = await fetchOrder(orderId);
++   validateOrder(order);
++   const pricing = calculatePricing(order);
++   await updateInventory(order);
++   const shipment = await createShipment(order);
++   await sendNotifications(order, pricing, shipment);
++   return { order, pricing, shipment };
++ }
+</code></pre>
+<h5>2. Duplicated Code</h5>
+<pre><code class="language-diff"># BAD: Same logic in multiple places
+- function calculateUserDiscount(user) {
+-   if (user.membership === 'gold') return user.total * 0.2;
+-   if (user.membership === 'silver') return user.total * 0.1;
+-   return 0;
+- }
+-
+- function calculateOrderDiscount(order) {
+-   if (order.user.membership === 'gold') return order.total * 0.2;
+-   if (order.user.membership === 'silver') return order.total * 0.1;
+-   return 0;
+- }
+
+# GOOD: Extract common logic
++ function getMembershipDiscountRate(membership) {
++   const rates = { gold: 0.2, silver: 0.1 };
++   return rates[membership] || 0;
++ }
++
++ function calculateUserDiscount(user) {
++   return user.total * getMembershipDiscountRate(user.membership);
++ }
++
++ function calculateOrderDiscount(order) {
++   return order.total * getMembershipDiscountRate(order.user.membership);
++ }
+</code></pre>
+<h5>3. Large Class/Module</h5>
+<pre><code class="language-diff"># BAD: God object that knows too much
+- class UserManager {
+-   createUser() { /* ... */ }
+-   updateUser() { /* ... */ }
+-   deleteUser() { /* ... */ }
+-   sendEmail() { /* ... */ }
+-   generateReport() { /* ... */ }
+-   handlePayment() { /* ... */ }
+-   validateAddress() { /* ... */ }
+-   // 50 more methods...
+- }
+
+# GOOD: Single responsibility per class
++ class UserService {
++   create(data) { /* ... */ }
++   update(id, data) { /* ... */ }
++   delete(id) { /* ... */ }
++ }
++
++ class EmailService {
++   send(to, subject, body) { /* ... */ }
++ }
++
++ class ReportService {
++   generate(type, params) { /* ... */ }
++ }
++
++ class PaymentService {
++   process(amount, method) { /* ... */ }
++ }
+</code></pre>
+<h5>4. Long Parameter List</h5>
+<pre><code class="language-diff"># BAD: Too many parameters
+- function createUser(email, password, name, age, address, city, country, phone) {
+-   /* ... */
+- }
+
+# GOOD: Group related parameters
++ interface UserData {
++   email: string;
++   password: string;
++   name: string;
++   age?: number;
++   address?: Address;
++   phone?: string;
++ }
++
++ function createUser(data: UserData) {
++   /* ... */
++ }
+
+# EVEN BETTER: Use builder pattern for complex construction
++ const user = UserBuilder
++   .email('test@example.com')
++   .password('secure123')
++   .name('Test User')
++   .address(address)
++   .build();
+</code></pre>
+<h5>5. Feature Envy</h5>
+<pre><code class="language-diff"># BAD: Method that uses another object's data more than its own
+- class Order {
+-   calculateDiscount(user) {
+-     if (user.membershipLevel === 'gold') {
++       return this.total * 0.2;
++     }
++     if (user.accountAge &gt; 365) {
++       return this.total * 0.1;
++     }
++     return 0;
++   }
++ }
+
+# GOOD: Move logic to the object that owns the data
++ class User {
++   getDiscountRate(orderTotal) {
++     if (this.membershipLevel === 'gold') return 0.2;
++     if (this.accountAge &gt; 365) return 0.1;
++     return 0;
++   }
++ }
++
++ class Order {
++   calculateDiscount(user) {
++     return this.total * user.getDiscountRate(this.total);
++   }
++ }
+</code></pre>
+<h5>6. Primitive Obsession</h5>
+<pre><code class="language-diff"># BAD: Using primitives for domain concepts
+- function sendEmail(to, subject, body) { /* ... */ }
+- sendEmail('user@example.com', 'Hello', '...');
+
+- function createPhone(country, number) {
+-   return `${country}-${number}`;
+- }
+
+# GOOD: Use domain types
++ class Email {
++   private constructor(public readonly value: string) {
++     if (!Email.isValid(value)) throw new Error('Invalid email');
++   }
++   static create(value: string) { return new Email(value); }
++   static isValid(email: string) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
++ }
++
++ class PhoneNumber {
++   constructor(
++     public readonly country: string,
++     public readonly number: string
++   ) {
++     if (!PhoneNumber.isValid(country, number)) throw new Error('Invalid phone');
++   }
++   toString() { return `${this.country}-${this.number}`; }
++   static isValid(country: string, number: string) { /* ... */ }
++ }
++
++ // Usage
++ const email = Email.create('user@example.com');
++ const phone = new PhoneNumber('1', '555-1234');
+</code></pre>
+<h5>7. Magic Numbers/Strings</h5>
+<pre><code class="language-diff"># BAD: Unexplained values
+- if (user.status === 2) { /* ... */ }
+- const discount = total * 0.15;
+- setTimeout(callback, 86400000);
+
+# GOOD: Named constants
++ const UserStatus = {
++   ACTIVE: 1,
++   INACTIVE: 2,
++   SUSPENDED: 3
++ } as const;
++
++ const DISCOUNT_RATES = {
++   STANDARD: 0.1,
++   PREMIUM: 0.15,
++   VIP: 0.2
++ } as const;
++
++ const ONE_DAY_MS = 24 * 60 * 60 * 1000;
++
++ if (user.status === UserStatus.INACTIVE) { /* ... */ }
++ const discount = total * DISCOUNT_RATES.PREMIUM;
++ setTimeout(callback, ONE_DAY_MS);
+</code></pre>
+<h5>8. Nested Conditionals</h5>
+<pre><code class="language-diff"># BAD: Arrow code
+- function process(order) {
+-   if (order) {
+-     if (order.user) {
+-       if (order.user.isActive) {
+-         if (order.total &gt; 0) {
+-           return processOrder(order);
++         } else {
++           return { error: 'Invalid total' };
++         }
++       } else {
++         return { error: 'User inactive' };
++       }
++     } else {
++       return { error: 'No user' };
++     }
++   } else {
++     return { error: 'No order' };
++   }
++ }
+
+# GOOD: Guard clauses / early returns
++ function process(order) {
++   if (!order) return { error: 'No order' };
++   if (!order.user) return { error: 'No user' };
++   if (!order.user.isActive) return { error: 'User inactive' };
++   if (order.total &lt;= 0) return { error: 'Invalid total' };
++   return processOrder(order);
++ }
+
+# EVEN BETTER: Using Result type
++ function process(order): Result&lt;ProcessedOrder, Error&gt; {
++   return Result.combine([
++     validateOrderExists(order),
++     validateUserExists(order),
++     validateUserActive(order.user),
++     validateOrderTotal(order)
++   ]).flatMap(() =&gt; processOrder(order));
++ }
+</code></pre>
+<h5>9. Dead Code</h5>
+<pre><code class="language-diff"># BAD: Unused code lingers
+- function oldImplementation() { /* ... */ }
+- const DEPRECATED_VALUE = 5;
+- import { unusedThing } from './somewhere';
+- // Commented out code
+- // function oldCode() { /* ... */ }
+
+# GOOD: Remove it
++ // Delete unused functions, imports, and commented code
++ // If you need it again, git history has it
+</code></pre>
+<h5>10. Inappropriate Intimacy</h5>
+<pre><code class="language-diff"># BAD: One class reaches deep into another
+- class OrderProcessor {
+-   process(order) {
+-     order.user.profile.address.street;  // Too intimate
+-     order.repository.connection.config;  // Breaking encapsulation
++   }
++ }
+
+# GOOD: Ask, don't tell
++ class OrderProcessor {
++   process(order) {
++     order.getShippingAddress();  // Order knows how to get it
++     order.save();  // Order knows how to save itself
++   }
++ }
+</code></pre>
+<hr>
+<h4>Extract Method Refactoring</h4>
+<h5>Before and After</h5>
+<pre><code class="language-diff"># Before: One long function
+- function printReport(users) {
+-   console.log('USER REPORT');
+-   console.log('============');
+-   console.log('');
+-   console.log(`Total users: ${users.length}`);
+-   console.log('');
+-   console.log('ACTIVE USERS');
+-   console.log('------------');
+-   const active = users.filter(u =&gt; u.isActive);
+-   active.forEach(u =&gt; {
+-     console.log(`- ${u.name} (${u.email})`);
+-   });
+-   console.log('');
+-   console.log(`Active: ${active.length}`);
+-   console.log('');
+-   console.log('INACTIVE USERS');
+-   console.log('--------------');
+-   const inactive = users.filter(u =&gt; !u.isActive);
+-   inactive.forEach(u =&gt; {
+-     console.log(`- ${u.name} (${u.email})`);
+-   });
+-   console.log('');
+-   console.log(`Inactive: ${inactive.length}`);
+- }
+
+# After: Extracted methods
++ function printReport(users) {
++   printHeader('USER REPORT');
++   console.log(`Total users: ${users.length}\n`);
++   printUserSection('ACTIVE USERS', users.filter(u =&gt; u.isActive));
++   printUserSection('INACTIVE USERS', users.filter(u =&gt; !u.isActive));
++ }
++
++ function printHeader(title) {
++   const line = '='.repeat(title.length);
++   console.log(title);
++   console.log(line);
++   console.log('');
++ }
++
++ function printUserSection(title, users) {
++   console.log(title);
++   console.log('-'.repeat(title.length));
++   users.forEach(u =&gt; console.log(`- ${u.name} (${u.email})`));
++   console.log('');
++   console.log(`${title.split(' ')[0]}: ${users.length}`);
++   console.log('');
++ }
+</code></pre>
+<hr>
+<h4>Introducing Type Safety</h4>
+<h5>From Untyped to Typed</h5>
+<pre><code class="language-diff"># Before: No types
+- function calculateDiscount(user, total, membership, date) {
+-   if (membership === 'gold' &amp;&amp; date.getDay() === 5) {
+-     return total * 0.25;
+-   }
+-   if (membership === 'gold') return total * 0.2;
+-   return total * 0.1;
+- }
+
+# After: Full type safety
++ type Membership = 'bronze' | 'silver' | 'gold';
++
++ interface User {
++   id: string;
++   name: string;
++   membership: Membership;
++ }
++
++ interface DiscountResult {
++   original: number;
++   discount: number;
++   final: number;
++   rate: number;
++ }
++
++ function calculateDiscount(
++   user: User,
++   total: number,
++   date: Date = new Date()
++ ): DiscountResult {
++   if (total &lt; 0) throw new Error('Total cannot be negative');
++
++   let rate = 0.1; // Default bronze
++
++   if (user.membership === 'gold' &amp;&amp; date.getDay() === 5) {
++     rate = 0.25; // Friday bonus for gold
++   } else if (user.membership === 'gold') {
++     rate = 0.2;
++   } else if (user.membership === 'silver') {
++     rate = 0.15;
++   }
++
++   const discount = total * rate;
++
++   return {
++     original: total,
++     discount,
++     final: total - discount,
++     rate
++   };
++ }
+</code></pre>
+<hr>
+<h4>Design Patterns for Refactoring</h4>
+<h5>Strategy Pattern</h5>
+<pre><code class="language-diff"># Before: Conditional logic
+- function calculateShipping(order, method) {
+-   if (method === 'standard') {
+-     return order.total &gt; 50 ? 0 : 5.99;
+-   } else if (method === 'express') {
+-     return order.total &gt; 100 ? 9.99 : 14.99;
++   } else if (method === 'overnight') {
++     return 29.99;
++   }
++ }
+
+# After: Strategy pattern
++ interface ShippingStrategy {
++   calculate(order: Order): number;
++ }
++
++ class StandardShipping implements ShippingStrategy {
++   calculate(order: Order) {
++     return order.total &gt; 50 ? 0 : 5.99;
++   }
++ }
++
++ class ExpressShipping implements ShippingStrategy {
++   calculate(order: Order) {
++     return order.total &gt; 100 ? 9.99 : 14.99;
++   }
++ }
++
++ class OvernightShipping implements ShippingStrategy {
++   calculate(order: Order) {
++     return 29.99;
++   }
++ }
++
++ function calculateShipping(order: Order, strategy: ShippingStrategy) {
++   return strategy.calculate(order);
++ }
+</code></pre>
+<h5>Chain of Responsibility</h5>
+<pre><code class="language-diff"># Before: Nested validation
+- function validate(user) {
+-   const errors = [];
+-   if (!user.email) errors.push('Email required');
++   else if (!isValidEmail(user.email)) errors.push('Invalid email');
++   if (!user.name) errors.push('Name required');
++   if (user.age &lt; 18) errors.push('Must be 18+');
++   if (user.country === 'blocked') errors.push('Country not supported');
++   return errors;
++ }
+
+# After: Chain of responsibility
++ abstract class Validator {
++   abstract validate(user: User): string | null;
++   setNext(validator: Validator): Validator {
++     this.next = validator;
++     return validator;
++   }
++   validate(user: User): string | null {
++     const error = this.doValidate(user);
++     if (error) return error;
++     return this.next?.validate(user) ?? null;
++   }
++ }
++
++ class EmailRequiredValidator extends Validator {
++   doValidate(user: User) {
++     return !user.email ? 'Email required' : null;
++   }
++ }
++
++ class EmailFormatValidator extends Validator {
++   doValidate(user: User) {
++     return user.email &amp;&amp; !isValidEmail(user.email) ? 'Invalid email' : null;
++   }
++ }
++
++ // Build the chain
++ const validator = new EmailRequiredValidator()
++   .setNext(new EmailFormatValidator())
++   .setNext(new NameRequiredValidator())
++   .setNext(new AgeValidator())
++   .setNext(new CountryValidator());
+</code></pre>
+<hr>
+<h4>Refactoring Steps</h4>
+<h5>Safe Refactoring Process</h5>
+<pre><code>1. PREPARE
+   - Ensure tests exist (write them if missing)
+   - Commit current state
+   - Create feature branch
+
+2. IDENTIFY
+   - Find the code smell to address
+   - Understand what the code does
+   - Plan the refactoring
+
+3. REFACTOR (small steps)
+   - Make one small change
+   - Run tests
+   - Commit if tests pass
+   - Repeat
+
+4. VERIFY
+   - All tests pass
+   - Manual testing if needed
+   - Performance unchanged or improved
+
+5. CLEAN UP
+   - Update comments
+   - Update documentation
+   - Final commit
+</code></pre>
+<hr>
+<h4>Refactoring Checklist</h4>
+<h5>Code Quality</h5>
+<ul>
+<li>[ ] Functions are small (&lt; 50 lines)</li>
+<li>[ ] Functions do one thing</li>
+<li>[ ] No duplicated code</li>
+<li>[ ] Descriptive names (variables, functions, classes)</li>
+<li>[ ] No magic numbers/strings</li>
+<li>[ ] Dead code removed</li>
+</ul>
+<h5>Structure</h5>
+<ul>
+<li>[ ] Related code is together</li>
+<li>[ ] Clear module boundaries</li>
+<li>[ ] Dependencies flow in one direction</li>
+<li>[ ] No circular dependencies</li>
+</ul>
+<h5>Type Safety</h5>
+<ul>
+<li>[ ] Types defined for all public APIs</li>
+<li>[ ] No <code>any</code> types without justification</li>
+<li>[ ] Nullable types explicitly marked</li>
+</ul>
+<h5>Testing</h5>
+<ul>
+<li>[ ] Refactored code is tested</li>
+<li>[ ] Tests cover edge cases</li>
+<li>[ ] All tests pass</li>
+</ul>
+<hr>
+<h4>Common Refactoring Operations</h4>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Extract Method</td>
+<td>Turn code fragment into method</td>
+</tr>
+<tr>
+<td>Extract Class</td>
+<td>Move behavior to new class</td>
+</tr>
+<tr>
+<td>Extract Interface</td>
+<td>Create interface from implementation</td>
+</tr>
+<tr>
+<td>Inline Method</td>
+<td>Move method body back to caller</td>
+</tr>
+<tr>
+<td>Inline Class</td>
+<td>Move class behavior to caller</td>
+</tr>
+<tr>
+<td>Pull Up Method</td>
+<td>Move method to superclass</td>
+</tr>
+<tr>
+<td>Push Down Method</td>
+<td>Move method to subclass</td>
+</tr>
+<tr>
+<td>Rename Method/Variable</td>
+<td>Improve clarity</td>
+</tr>
+<tr>
+<td>Introduce Parameter Object</td>
+<td>Group related parameters</td>
+</tr>
+<tr>
+<td>Replace Conditional with Polymorphism</td>
+<td>Use polymorphism instead of switch/if</td>
+</tr>
+<tr>
+<td>Replace Magic Number with Constant</td>
+<td>Named constants</td>
+</tr>
+<tr>
+<td>Decompose Conditional</td>
+<td>Break complex conditions</td>
+</tr>
+<tr>
+<td>Consolidate Conditional</td>
+<td>Combine duplicate conditions</td>
+</tr>
+<tr>
+<td>Replace Nested Conditional with Guard Clauses</td>
+<td>Early returns</td>
+</tr>
+<tr>
+<td>Introduce Null Object</td>
+<td>Eliminate null checks</td>
+</tr>
+<tr>
+<td>Replace Type Code with Class/Enum</td>
+<td>Strong typing</td>
+</tr>
+<tr>
+<td>Replace Inheritance with Delegation</td>
+<td>Composition over inheritance</td>
+</tr>
+</tbody>
+</table>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>remotion · SkillHub</title>
+    <meta name="description" content="Use it when: you have app screens designed in Google Stitch, Google&#039;s AI UI design tool, and want a video that walks through them. It does: downloads each screen&#039;s screenshot from Stitch, sets up a Remotion project (video made from React code), builds slides with zooms, transitions and text overlays, and renders it. You get: an MP4 file, a Remotion project in video/, and a screens.json listing each screen&#039;s title, description and seconds on screen, for later edits. Needs: the Stitch MCP server and a Stitch project, Node.js and npm, and the Remotion MCP server or CLI. Can also add: pulsing hotspots on features, narration timed to the screens, and callouts pulled from each screen&#039;s HTML text." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=google-labs-code%2Fstitch-skills">google-labs-code/stitch-skills</a></p>
+      <div class="title-row"><h1>remotion</h1><button type="button" class="save" data-save="skill:google-labs-code/stitch-skills/plugins/stitch-build/skills/remotion" aria-pressed="false" aria-label="Save remotion" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you have app screens designed in Google Stitch, Google&#39;s AI UI design tool, and want a video that walks through them</dd></div><div><dt>It does</dt><dd>downloads each screen&#39;s screenshot from Stitch, sets up a Remotion project (video made from React code), builds slides with zooms, transitions and text overlays, and renders it</dd></div><div><dt>You get</dt><dd>an MP4 file, a Remotion project in video/, and a screens.json listing each screen&#39;s title, description and seconds on screen, for later edits</dd></div><div><dt>Needs</dt><dd>the Stitch MCP server and a Stitch project, Node.js and npm, and the Remotion MCP server or CLI</dd></div><div><dt>Can also add</dt><dd>pulsing hotspots on features, narration timed to the screens, and callouts pulled from each screen&#39;s HTML text</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>It finds your Stitch project and lists its screens, downloads each screenshot into assets/screens in walkthrough order, and records each screen&#39;s title, description, size and duration (3 to 5 seconds by default) in screens.json. It then reuses an existing Remotion project or creates one in video/, writes a slide component that zooms and fades each screen in, and a composition that sequences the slides with fade or slide transitions, titles, descriptions and a progress indicator. It opens Remotion Studio to preview and adjust timing, then renders the final file with the Remotion CLI or MCP server. It suggests three patterns: a simple slideshow, a feature highlight that zooms into parts of a screen, and a user flow with numbered steps. For deeper Remotion technique it points to Remotion&#39;s own skills.</p>
+      <p class="muted">Summarizes <a href="https://github.com/google-labs-code/stitch-skills/tree/0337446dadde6f8c94210444e2aa9d546126480f/plugins/stitch-build/skills/remotion">the skill at 0337446</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">google-labs-code/</span><wbr><span class="word">stitch-skills</span> <span class="word">--skill</span> <span class="word">remotion</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/google-labs-code/stitch-skills --skill remotion">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/google-labs-code/stitch-skills/remotion">skills.sh page</a> · <a href="https://github.com/google-labs-code/stitch-skills/tree/HEAD/plugins/stitch-build/skills/remotion">Source on GitHub</a> · <a href="/?repo=google-labs-code%2Fstitch-skills">All skills from google-labs-code/stitch-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>42,100 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>8,693 <span class="muted">google-labs-code/stitch-skills</span></dd></div><div><dt>First seen</dt><dd>Feb 3, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">406</div>
+      <div class="stat-delta">-8% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 440; week to Sep 27: 423; week to Oct 4: 411; week to Oct 11: 394; week to Oct 18: 436; week to Oct 25: 384; week to Nov 1: 428; week to Nov 8: 406. Use the left and right arrow keys to read each week."
+        data-values="440,423,411,394,436,384,428,406" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,7.7 71.1,8.9 103.7,10.6 136.3,6.4 168.9,11.6 201.4,7.2 234.0,9.4" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="9.4" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>440</td></tr><tr><td>Sep 27</td><td>423</td></tr><tr><td>Oct 4</td><td>411</td></tr><tr><td>Oct 11</td><td>394</td></tr><tr><td>Oct 18</td><td>436</td></tr><tr><td>Oct 25</td><td>384</td></tr><tr><td>Nov 1</td><td>428</td></tr><tr><td>Nov 8</td><td>406</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:media" data-facet="category" title="Generate and edit video, images and audio." href="/?tag=category%3Amedia">category:<wbr>media</a></div>
+          <p class="tag-meaning">Generate and edit video, images and audio.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:mcp" data-facet="needs" title="Needs an MCP server connected." href="/?tag=needs%3Amcp">needs:<wbr>mcp</a><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/?tag=needs%3Acli">needs:<wbr>cli</a><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/?tag=needs%3Aaccount">needs:<wbr>account</a></div>
+          <p class="tag-meaning">Needs an MCP server connected.</p><p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="video" data-facet="topic" href="/?tag=video">video</a><a class="tag" data-tag="animation" data-facet="topic" href="/?tag=animation">animation</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:stitch" data-facet="stack" href="/?tag=stack%3Astitch">stack:<wbr>stitch</a><a class="tag" data-tag="stack:remotion" data-facet="stack" href="/?tag=stack%3Aremotion">stack:<wbr>remotion</a><a class="tag" data-tag="stack:react" data-facet="stack" href="/?tag=stack%3Areact">stack:<wbr>react</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/google-labs-code/stitch-skills/blob/0337446dadde6f8c94210444e2aa9d546126480f/plugins/stitch-build/skills/remotion/SKILL.md">google-labs-code/stitch-skills at 0337446</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: remotion
+description: Generate walkthrough videos from Stitch projects using Remotion with smooth transitions, zooming, and text overlays
+allowed-tools:
+  - &#34;stitch*:*&#34;
+  - &#34;remotion*:*&#34;
+  - &#34;Bash&#34;
+  - &#34;Read&#34;
+  - &#34;Write&#34;
+  - &#34;web_fetch&#34;</code></pre></details>
+        <div class="markdown"><h3>Stitch to Remotion Walkthrough Videos</h3>
+<p>You are a video production specialist focused on creating engaging walkthrough videos from app designs. You combine Stitch's screen retrieval capabilities with Remotion's programmatic video generation to produce smooth, professional presentations.</p>
+<h4>Overview</h4>
+<p>This skill enables you to create walkthrough videos that showcase app screens with professional transitions, zoom effects, and contextual text overlays. The workflow retrieves screens from Stitch projects and orchestrates them into a Remotion video composition.</p>
+<h4>Prerequisites</h4>
+<p><strong>Required:</strong></p>
+<ul>
+<li>Access to the Stitch MCP Server</li>
+<li>Access to the Remotion MCP Server (or Remotion CLI)</li>
+<li>Node.js and npm installed</li>
+<li>A Stitch project with designed screens</li>
+</ul>
+<p><strong>Recommended:</strong></p>
+<ul>
+<li>Familiarity with Remotion's video capabilities</li>
+<li>Understanding of React components (Remotion uses React)</li>
+</ul>
+<h4>Retrieval and Networking</h4>
+<h5>Step 1: Discover Available MCP Servers</h5>
+<p>Run <code>list_tools</code> to identify available MCP servers and their prefixes:</p>
+<ul>
+<li><strong>Stitch MCP</strong>: Look for <code>stitch:</code> or <code>mcp_stitch:</code> prefix</li>
+<li><strong>Remotion MCP</strong>: Look for <code>remotion:</code> or <code>mcp_remotion:</code> prefix</li>
+</ul>
+<h5>Step 2: Retrieve Stitch Project Information</h5>
+<ol>
+<li>
+<p><strong>Project lookup</strong> (if Project ID is not provided):</p>
+<ul>
+<li>Call <code>[stitch_prefix]:list_projects</code> with <code>filter: &quot;view=owned&quot;</code></li>
+<li>Identify target project by title (e.g., &quot;Calculator App&quot;)</li>
+<li>Extract Project ID from <code>name</code> field (e.g., <code>projects/13534454087919359824</code>)</li>
+</ul>
+</li>
+<li>
+<p><strong>Screen retrieval</strong>:</p>
+<ul>
+<li>Call <code>[stitch_prefix]:list_screens</code> with the project ID (numeric only)</li>
+<li>Review screen titles to identify all screens for the walkthrough</li>
+<li>Extract Screen IDs from each screen's <code>name</code> field</li>
+</ul>
+</li>
+<li>
+<p><strong>Screen metadata fetch</strong>:
+For each screen:</p>
+<ul>
+<li>Call <code>[stitch_prefix]:get_screen</code> with <code>projectId</code> and <code>screenId</code></li>
+<li>Retrieve:
+<ul>
+<li><code>screenshot.downloadUrl</code> — Visual asset for the video</li>
+<li><code>htmlCode.downloadUrl</code> — Optional: for extracting text/content</li>
+<li><code>width</code>, <code>height</code> — Screen dimensions for proper scaling</li>
+<li>Screen title and description for text overlays</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Asset download</strong>:</p>
+<ul>
+<li>Use <code>web_fetch</code> or <code>Bash</code> with <code>curl</code> to download screenshots</li>
+<li>Save to a staging directory: <code>assets/screens/{screen-name}.png</code></li>
+<li>Organize assets in order of the intended walkthrough flow</li>
+</ul>
+</li>
+</ol>
+<h5>Step 3: Set Up Remotion Project</h5>
+<ol>
+<li>
+<p><strong>Check for existing Remotion project</strong>:</p>
+<ul>
+<li>Look for <code>remotion.config.ts</code> or <code>package.json</code> with Remotion dependencies</li>
+<li>If exists, use the existing project structure</li>
+</ul>
+</li>
+<li>
+<p><strong>Create new Remotion project</strong> (if needed):</p>
+<pre><code class="language-bash">npm create video@latest -- --blank
+</code></pre>
+<ul>
+<li>Choose TypeScript template</li>
+<li>Set up in a dedicated <code>video/</code> directory</li>
+</ul>
+</li>
+<li>
+<p><strong>Install dependencies</strong>:</p>
+<pre><code class="language-bash">cd video
+npm install @remotion/transitions @remotion/animated-emoji
+</code></pre>
+</li>
+</ol>
+<h4>Video Composition Strategy</h4>
+<h5>Architecture</h5>
+<p>Create a modular Remotion composition with these components:</p>
+<ol>
+<li>
+<p><strong><code>ScreenSlide.tsx</code></strong> — Individual screen display component</p>
+<ul>
+<li>Props: <code>imageSrc</code>, <code>title</code>, <code>description</code>, <code>width</code>, <code>height</code></li>
+<li>Features: Zoom-in animation, fade transitions</li>
+<li>Duration: Configurable (default 3-5 seconds per screen)</li>
+</ul>
+</li>
+<li>
+<p><strong><code>WalkthroughComposition.tsx</code></strong> — Main video composition</p>
+<ul>
+<li>Sequences multiple <code>ScreenSlide</code> components</li>
+<li>Handles transitions between screens</li>
+<li>Adds text overlays and annotations</li>
+</ul>
+</li>
+<li>
+<p><strong><code>config.ts</code></strong> — Video configuration</p>
+<ul>
+<li>Frame rate (default: 30 fps)</li>
+<li>Video dimensions (match Stitch screen dimensions or scale appropriately)</li>
+<li>Total duration calculation</li>
+</ul>
+</li>
+</ol>
+<h5>Transition Effects</h5>
+<p>Use Remotion's <code>@remotion/transitions</code> for professional effects:</p>
+<ul>
+<li>
+<p><strong>Fade</strong>: Smooth cross-fade between screens</p>
+<pre><code class="language-tsx">import {fade} from '@remotion/transitions/fade';
+</code></pre>
+</li>
+<li>
+<p><strong>Slide</strong>: Directional slide transitions</p>
+<pre><code class="language-tsx">import {slide} from '@remotion/transitions/slide';
+</code></pre>
+</li>
+<li>
+<p><strong>Zoom</strong>: Zoom in/out effects for emphasis</p>
+<ul>
+<li>Use <code>spring()</code> animation for smooth zoom</li>
+<li>Apply to important UI elements</li>
+</ul>
+</li>
+</ul>
+<h5>Text Overlays</h5>
+<p>Add contextual information using Remotion's text rendering:</p>
+<ol>
+<li><strong>Screen titles</strong>: Display at the top or bottom of each frame</li>
+<li><strong>Feature callouts</strong>: Highlight specific UI elements with animated pointers</li>
+<li><strong>Descriptions</strong>: Fade in descriptive text for each screen</li>
+<li><strong>Progress indicator</strong>: Show current screen position in walkthrough</li>
+</ol>
+<h4>Execution Steps</h4>
+<h5>Step 1: Gather Screen Assets</h5>
+<ol>
+<li>Identify target Stitch project</li>
+<li>List all screens in the project</li>
+<li>Download screenshots for each screen</li>
+<li>Organize in order of walkthrough flow</li>
+<li>Create a manifest file (<code>screens.json</code>):</li>
+</ol>
+<pre><code class="language-json">{
+  &quot;projectName&quot;: &quot;Calculator App&quot;,
+  &quot;screens&quot;: [
+    {
+      &quot;id&quot;: &quot;1&quot;,
+      &quot;title&quot;: &quot;Home Screen&quot;,
+      &quot;description&quot;: &quot;Main calculator interface with number pad&quot;,
+      &quot;imagePath&quot;: &quot;assets/screens/home.png&quot;,
+      &quot;width&quot;: 1200,
+      &quot;height&quot;: 800,
+      &quot;duration&quot;: 4
+    },
+    {
+      &quot;id&quot;: &quot;2&quot;,
+      &quot;title&quot;: &quot;History View&quot;,
+      &quot;description&quot;: &quot;View of previous calculations&quot;,
+      &quot;imagePath&quot;: &quot;assets/screens/history.png&quot;,
+      &quot;width&quot;: 1200,
+      &quot;height&quot;: 800,
+      &quot;duration&quot;: 3
+    }
+  ]
+}
+</code></pre>
+<h5>Step 2: Generate Remotion Components</h5>
+<p>Create the video components following Remotion best practices:</p>
+<ol>
+<li>
+<p><strong>Create <code>ScreenSlide.tsx</code></strong>:</p>
+<ul>
+<li>Use <code>useCurrentFrame()</code> and <code>spring()</code> for animations</li>
+<li>Implement zoom and fade effects</li>
+<li>Add text overlays with proper timing</li>
+</ul>
+</li>
+<li>
+<p><strong>Create <code>WalkthroughComposition.tsx</code></strong>:</p>
+<ul>
+<li>Import screen manifest</li>
+<li>Sequence screens with <code>&lt;Sequence&gt;</code> components</li>
+<li>Apply transitions between screens</li>
+<li>Calculate proper timing and offsets</li>
+</ul>
+</li>
+<li>
+<p><strong>Update <code>remotion.config.ts</code></strong>:</p>
+<ul>
+<li>Set composition ID</li>
+<li>Configure video dimensions</li>
+<li>Set frame rate and duration</li>
+</ul>
+</li>
+</ol>
+<p><strong>Reference Resources:</strong></p>
+<ul>
+<li>Use <code>resources/screen-slide-template.tsx</code> as starting point</li>
+<li>Follow <code>resources/composition-checklist.md</code> for completeness</li>
+<li>Review examples in <code>examples/</code> directory</li>
+</ul>
+<h5>Step 3: Preview and Refine</h5>
+<ol>
+<li>
+<p><strong>Start Remotion Studio</strong>:</p>
+<pre><code class="language-bash">npm run dev
+</code></pre>
+<ul>
+<li>Opens browser-based preview</li>
+<li>Allows real-time editing and refinement</li>
+</ul>
+</li>
+<li>
+<p><strong>Adjust timing</strong>:</p>
+<ul>
+<li>Ensure each screen has appropriate display duration</li>
+<li>Verify transitions are smooth</li>
+<li>Check text overlay timing</li>
+</ul>
+</li>
+<li>
+<p><strong>Fine-tune animations</strong>:</p>
+<ul>
+<li>Adjust spring configurations for zoom effects</li>
+<li>Modify easing functions for transitions</li>
+<li>Ensure text is readable at all times</li>
+</ul>
+</li>
+</ol>
+<h5>Step 4: Render Video</h5>
+<ol>
+<li>
+<p><strong>Render using Remotion CLI</strong>:</p>
+<pre><code class="language-bash">npx remotion render WalkthroughComposition output.mp4
+</code></pre>
+</li>
+<li>
+<p><strong>Alternative: Use Remotion MCP</strong> (if available):</p>
+<ul>
+<li>Call <code>[remotion_prefix]:render</code> with composition details</li>
+<li>Specify output format (MP4, WebM, etc.)</li>
+</ul>
+</li>
+<li>
+<p><strong>Optimization options</strong>:</p>
+<ul>
+<li>Set quality level (<code>--quality</code>)</li>
+<li>Configure codec (<code>--codec h264</code> or <code>h265</code>)</li>
+<li>Enable parallel rendering (<code>--concurrency</code>)</li>
+</ul>
+</li>
+</ol>
+<h4>Advanced Features</h4>
+<h5>Interactive Hotspots</h5>
+<p>Highlight clickable elements or important features:</p>
+<pre><code class="language-tsx">import {interpolate, useCurrentFrame} from 'remotion';
+
+const Hotspot = ({x, y, label}) =&gt; {
+  const frame = useCurrentFrame();
+  const scale = spring({
+    frame,
+    fps: 30,
+    config: {damping: 10, stiffness: 100}
+  });
+  
+  return (
+    &lt;div style={{
+      position: 'absolute',
+      left: x,
+      top: y,
+      transform: `scale(${scale})`
+    }}&gt;
+      &lt;div className=&quot;pulse-ring&quot; /&gt;
+      &lt;span&gt;{label}&lt;/span&gt;
+    &lt;/div&gt;
+  );
+};
+</code></pre>
+<h5>Voiceover Integration</h5>
+<p>Add narration to the walkthrough:</p>
+<ol>
+<li>Generate voiceover script from screen descriptions</li>
+<li>Use text-to-speech or record audio</li>
+<li>Import audio into Remotion with <code>&lt;Audio&gt;</code> component</li>
+<li>Sync screen timing with voiceover pacing</li>
+</ol>
+<h5>Dynamic Text Extraction</h5>
+<p>Extract text from Stitch HTML code for automatic annotations:</p>
+<ol>
+<li>Download <code>htmlCode.downloadUrl</code> for each screen</li>
+<li>Parse HTML to extract key text elements (headings, buttons, labels)</li>
+<li>Generate automatic callouts for important UI elements</li>
+<li>Add to composition as timed text overlays</li>
+</ol>
+<h4>File Structure</h4>
+<pre><code>project/
+├── video/                      # Remotion project directory
+│   ├── src/
+│   │   ├── WalkthroughComposition.tsx
+│   │   ├── ScreenSlide.tsx
+│   │   ├── components/
+│   │   │   ├── Hotspot.tsx
+│   │   │   └── TextOverlay.tsx
+│   │   └── Root.tsx
+│   ├── public/
+│   │   └── assets/
+│   │       └── screens/        # Downloaded Stitch screenshots
+│   │           ├── home.png
+│   │           └── history.png
+│   ├── remotion.config.ts
+│   └── package.json
+├── screens.json                # Screen manifest
+└── output.mp4                  # Rendered video
+</code></pre>
+<h4>Integration with Remotion Skills</h4>
+<p>Remotion maintains its own Agent Skills that define best practices. Review these for advanced techniques:</p>
+<ul>
+<li><strong>Repository</strong>: <a href="https://github.com/remotion-dev/remotion/tree/main/packages/skills">https://github.com/remotion-dev/remotion/tree/main/packages/skills</a></li>
+<li><strong>Installation</strong>: <code>npx skills add remotion-dev/skills</code></li>
+</ul>
+<p>Key Remotion skills to leverage:</p>
+<ul>
+<li>Animation timing and easing</li>
+<li>Composition architecture patterns</li>
+<li>Performance optimization</li>
+<li>Audio synchronization</li>
+</ul>
+<h4>Common Patterns</h4>
+<h5>Pattern 1: Simple Slide Show</h5>
+<p>Basic walkthrough with fade transitions:</p>
+<ul>
+<li>3-5 seconds per screen</li>
+<li>Cross-fade transitions</li>
+<li>Bottom text overlay with screen title</li>
+<li>Progress bar at top</li>
+</ul>
+<h5>Pattern 2: Feature Highlight</h5>
+<p>Focus on specific UI elements:</p>
+<ul>
+<li>Zoom into specific regions</li>
+<li>Animated circles/arrows pointing to features</li>
+<li>Slow-motion emphasis on key interactions</li>
+<li>Side-by-side before/after comparisons</li>
+</ul>
+<h5>Pattern 3: User Flow</h5>
+<p>Show step-by-step user journey:</p>
+<ul>
+<li>Sequential screen flow with directional slides</li>
+<li>Numbered steps overlay</li>
+<li>Highlight user actions (clicks, taps)</li>
+<li>Connect screens with animated paths</li>
+</ul>
+<h4>Troubleshooting</h4>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Blurry screenshots</strong></td>
+<td>Ensure downloaded images are at full resolution; check <code>screenshot.downloadUrl</code> quality settings</td>
+</tr>
+<tr>
+<td><strong>Misaligned text</strong></td>
+<td>Verify screen dimensions match composition size; adjust text positioning based on actual screen size</td>
+</tr>
+<tr>
+<td><strong>Choppy animations</strong></td>
+<td>Increase frame rate to 60fps; use proper spring configurations with appropriate damping</td>
+</tr>
+<tr>
+<td><strong>Remotion build fails</strong></td>
+<td>Check Node version compatibility; ensure all dependencies are installed; review Remotion docs</td>
+</tr>
+<tr>
+<td><strong>Timing feels off</strong></td>
+<td>Adjust duration per screen in manifest; preview in Remotion Studio; test with actual users</td>
+</tr>
+</tbody>
+</table>
+<h4>Best Practices</h4>
+<ol>
+<li><strong>Maintain aspect ratio</strong>: Use actual Stitch screen dimensions or scale proportionally</li>
+<li><strong>Consistent timing</strong>: Keep screen display duration consistent unless emphasizing specific screens</li>
+<li><strong>Readable text</strong>: Ensure sufficient contrast; use appropriate font sizes; avoid cluttered overlays</li>
+<li><strong>Smooth transitions</strong>: Use spring animations for natural motion; avoid jarring cuts</li>
+<li><strong>Preview thoroughly</strong>: Always preview in Remotion Studio before final render</li>
+<li><strong>Optimize assets</strong>: Compress images appropriately; use efficient formats (PNG for UI, JPG for photos)</li>
+</ol>
+<h4>Example Usage</h4>
+<p><strong>User prompt:</strong></p>
+<pre><code>Look up the screens in my Stitch project &quot;Calculator App&quot; and build a remotion video 
+that shows a walkthrough of the screens.
+</code></pre>
+<p><strong>Agent workflow:</strong></p>
+<ol>
+<li>List Stitch projects → Find &quot;Calculator App&quot; → Extract project ID</li>
+<li>List screens in project → Identify all screens (Home, History, Settings)</li>
+<li>Download screenshots for each screen → Save to <code>assets/screens/</code></li>
+<li>Create <code>screens.json</code> manifest with screen metadata</li>
+<li>Generate Remotion components (<code>ScreenSlide.tsx</code>, <code>WalkthroughComposition.tsx</code>)</li>
+<li>Preview in Remotion Studio → Refine timing and transitions</li>
+<li>Render final video → <code>calculator-walkthrough.mp4</code></li>
+<li>Report completion with video preview link</li>
+</ol>
+<h4>Tips for Success</h4>
+<ul>
+<li><strong>Start simple</strong>: Begin with basic fade transitions before adding complex animations</li>
+<li><strong>Follow Remotion patterns</strong>: Leverage Remotion's official skills and documentation</li>
+<li><strong>Use manifest files</strong>: Keep screen data organized in JSON for easy updates</li>
+<li><strong>Preview frequently</strong>: Use Remotion Studio to catch issues early</li>
+<li><strong>Consider accessibility</strong>: Add captions; ensure text is readable; use clear visuals</li>
+<li><strong>Optimize for platform</strong>: Match video dimensions to target platform (YouTube, social media, etc.)</li>
+</ul>
+<h4>References</h4>
+<ul>
+<li><strong>Stitch Documentation</strong>: <a href="https://stitch.withgoogle.com/docs/">https://stitch.withgoogle.com/docs/</a></li>
+<li><strong>Remotion Documentation</strong>: <a href="https://www.remotion.dev/docs/">https://www.remotion.dev/docs/</a></li>
+<li><strong>Remotion Skills</strong>: <a href="https://www.remotion.dev/docs/ai/skills">https://www.remotion.dev/docs/ai/skills</a></li>
+<li><strong>Remotion MCP</strong>: <a href="https://www.remotion.dev/docs/ai/mcp">https://www.remotion.dev/docs/ai/mcp</a></li>
+<li><strong>Remotion Transitions</strong>: <a href="https://www.remotion.dev/docs/transitions">https://www.remotion.dev/docs/transitions</a></li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

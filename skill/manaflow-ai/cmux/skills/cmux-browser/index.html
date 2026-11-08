@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>cmux-browser · SkillHub</title>
+    <meta name="description" content="Use it when: you work in cmux and want the agent to open, read or operate a website in a browser pane beside your terminal. It does: runs cmux browser commands to open a page, wait for it, snapshot its elements, click, fill, and read its text or HTML. Leaves alone: your focus: it finds browser panes from cmux&#039;s tree and targets each by its handle, never by what&#039;s on screen. Needs: the cmux macOS app and its CLI. Can&#039;t do: tracing, network mocking or raw input, which need Chrome&#039;s DevTools protocol; geolocation and offline mode work. Unlike agent-browser: it drives cmux&#039;s WebKit browser rather than Chrome; a reference maps its commands to agent-browser&#039;s." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=manaflow-ai%2Fcmux">manaflow-ai/cmux</a></p>
+      <div class="title-row"><h1>cmux-browser</h1><button type="button" class="save" data-save="skill:manaflow-ai/cmux/skills/cmux-browser" aria-pressed="false" aria-label="Save cmux-browser" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you work in cmux and want the agent to open, read or operate a website in a browser pane beside your terminal</dd></div><div><dt>It does</dt><dd>runs cmux browser commands to open a page, wait for it, snapshot its elements, click, fill, and read its text or HTML</dd></div><div><dt>Leaves alone</dt><dd>your focus: it finds browser panes from cmux&#39;s tree and targets each by its handle, never by what&#39;s on screen</dd></div><div><dt>Needs</dt><dd>the cmux macOS app and its CLI</dd></div><div><dt>Can&#39;t do</dt><dd>tracing, network mocking or raw input, which need Chrome&#39;s DevTools protocol; geolocation and offline mode work</dd></div><div><dt>Unlike agent-browser</dt><dd>it drives cmux&#39;s WebKit browser rather than Chrome; a reference maps its commands to agent-browser&#39;s</dd></div></dl></section>
+      
+      <p class="note">Works only inside cmux, a macOS terminal app: it drives cmux&#39;s built-in WebKit browser, not Chrome.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>cmux is a macOS terminal for coding agents with a browser you can split next to your terminals. This skill is cmux&#39;s guide to automating that browser. The agent first checks cmux browser --help, then keeps two kinds of command apart: open, open-split and new create a browser surface, while commands that act on an existing surface name its handle, preferably with --surface, and never guess from focus. To find a page you already have open, it filters cmux tree --all --json for browser surfaces, or matches a URL or title without printing it. The usual loop opens a page with --focus false, keeps the returned surface ref, waits for the page to load, takes an interactive snapshot that labels elements e1, e2 and so on, fills and clicks by those labels, and snapshots again after each navigation because the labels go stale. It can also set an exact viewport and list a surface&#39;s downloads. When a page rejects the snapshot script, it falls back to reading the page&#39;s text or HTML. References cover logins and saved state, several surfaces at once and proxies, and three template scripts cover form filling, an authenticated session and capturing screenshots.</p>
+      <p class="muted">Summarizes <a href="https://github.com/manaflow-ai/cmux/tree/be5e24339c6eabb8e929a7029c4e6f834e257c97/skills/cmux-browser">the skill at be5e243</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">manaflow-ai/</span><wbr><span class="word">cmux</span> <span class="word">--skill</span> <span class="word">cmux-browser</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/manaflow-ai/cmux --skill cmux-browser">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/manaflow-ai/cmux/cmux-browser">skills.sh page</a> · <a href="https://github.com/manaflow-ai/cmux/tree/HEAD/skills/cmux-browser">Source on GitHub</a> · <a href="/?repo=manaflow-ai%2Fcmux">All skills from manaflow-ai/cmux</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>9,000 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>28,741 <span class="muted">manaflow-ai/cmux</span></dd></div><div><dt>First seen</dt><dd>Feb 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">124</div>
+      <div class="stat-delta">-58% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 292; week to Sep 27: 306; week to Oct 4: 254; week to Oct 11: 249; week to Oct 18: 192; week to Oct 25: 174; week to Nov 1: 150; week to Nov 8: 124. Use the left and right arrow keys to read each week."
+        data-values="292,306,254,249,192,174,150,124" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,8.0 38.6,6.0 71.1,13.5 103.7,14.2 136.3,22.4 168.9,25.0 201.4,28.4 234.0,32.2" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="32.2" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>292</td></tr><tr><td>Sep 27</td><td>306</td></tr><tr><td>Oct 4</td><td>254</td></tr><tr><td>Oct 11</td><td>249</td></tr><tr><td>Oct 18</td><td>192</td></tr><tr><td>Oct 25</td><td>174</td></tr><tr><td>Nov 1</td><td>150</td></tr><tr><td>Nov 8</td><td>124</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:browser" data-facet="category" title="Drive browsers, scrape pages and search the web." href="/?tag=category%3Abrowser">category:<wbr>browser</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Drive browsers, scrape pages and search the web.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/?tag=type%3Atool">type:<wbr>tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:remote" data-facet="effect" title="Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service." href="/?tag=effect%3Aremote">effect:<wbr>remote</a></div>
+          <p class="tag-meaning">Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/?tag=needs%3Acli">needs:<wbr>cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="browser-automation" data-facet="topic" href="/?tag=browser-automation">browser-automation</a><a class="tag" data-tag="scraping" data-facet="topic" href="/?tag=scraping">scraping</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:cmux" data-facet="stack" href="/?tag=stack%3Acmux">stack:<wbr>cmux</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/manaflow-ai/cmux/blob/be5e24339c6eabb8e929a7029c4e6f834e257c97/skills/cmux-browser/SKILL.md">manaflow-ai/cmux at be5e243</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: cmux-browser
+description: &#34;End-user browser automation with cmux. Use when you need to open sites, inspect or interact with browser surfaces, wait for page state, and extract data without stealing focus.&#34;</code></pre></details>
+        <div class="markdown"><h3>Browser Automation with cmux</h3>
+<h4>Read the CLI contract first</h4>
+<p>Check the binary that will actually run before giving an exact command:</p>
+<pre><code class="language-bash">cmux browser --help
+cmux --version
+</code></pre>
+<p>There are two deliberately different command shapes:</p>
+<ul>
+<li><strong>Create a browser surface</strong> with <code>open</code>, <code>open-split</code>, or <code>new</code>. These commands may be workspace-scoped and do not need a surface handle.</li>
+<li><strong>Use an existing surface</strong> with every surface-bound navigation, inspection, interaction, tab, state, or diagnostic command. Pass the handle explicitly with <code>--surface &lt;handle&gt;</code> or as the first positional token.</li>
+</ul>
+<p>Prefer the flag form in scripts because it makes the target unmissable:</p>
+<pre><code class="language-bash">SURFACE=&quot;surface:7&quot; # use a ref returned by discovery; do not guess an index
+cmux browser --surface &quot;$SURFACE&quot; get url
+cmux browser --surface &quot;$SURFACE&quot; get-url       # accepted alias
+cmux browser --surface &quot;$SURFACE&quot; snapshot --interactive
+cmux browser --surface &quot;$SURFACE&quot; snapshot -i   # accepted alias
+cmux browser --surface &quot;$SURFACE&quot; url            # accepted alias
+cmux browser --surface &quot;$SURFACE&quot; tab list
+cmux browser --surface &quot;$SURFACE&quot; click e1 --snapshot-after
+</code></pre>
+<p>The positional form is equivalent (<code>cmux browser &quot;$SURFACE&quot; get url</code>). <code>url</code> and
+<code>get-url</code> are accepted URL aliases, and the short interactive snapshot flag is
+accepted when a surface is already present; use <code>get url</code> and
+<code>snapshot --interactive</code> in new documentation so the target and operation are
+clear. Surface-bound operations have no unscoped form. The current CLI's
+explicitly global browser verbs (<code>open</code>, <code>open-split</code>, <code>new</code>, <code>identify</code>,
+<code>import</code>, <code>profile</code>, <code>profiles</code>, <code>react-grab</code>, <code>reactgrab</code>, <code>devtools</code>,
+<code>dev-tools</code>, <code>focus-mode</code>, <code>design-mode</code>, <code>zoom</code>, and <code>history</code>) may omit the
+handle and use caller/workspace routing; do not infer a target from visible
+focus for any other verb.</p>
+<h4>Find an existing browser surface without changing focus</h4>
+<p><code>identify</code>, <code>tree</code>, and list commands are read-only and do not select a
+workspace, pane, or browser. Do not infer that the visually focused surface is
+the one the user wants.</p>
+<p>First inspect the caller context (useful for the default workspace):</p>
+<pre><code class="language-bash">cmux identify --json
+</code></pre>
+<p>To discover browser surfaces in the caller or another workspace/window, use the
+all-window tree. It includes parent refs, so a browser in a different workspace
+can be targeted directly without selecting that workspace:</p>
+<pre><code class="language-bash">cmux tree --all --json \
+  | jq -r '
+      .windows[]? as $window
+      | $window.workspaces[]? as $workspace
+      | $workspace.panes[]? as $pane
+      | $pane.surfaces[]?
+      | select(.type == &quot;browser&quot;)
+      | [$window.ref, $workspace.ref, $pane.ref, .ref]
+      | @tsv'
+</code></pre>
+<p>The filtered output is <code>window</code>, <code>workspace</code>, <code>pane</code>, and <code>surface</code> refs. Keep
+the <code>surface</code> ref, then target it explicitly:</p>
+<pre><code class="language-bash">SURFACE=&quot;surface:N&quot; # copied from the filtered tree output
+cmux browser --surface &quot;$SURFACE&quot; get url
+cmux browser --surface &quot;$SURFACE&quot; snapshot --interactive
+</code></pre>
+<p>If the user gives a URL or title instead of a workspace/pane, match that
+metadata locally and emit only the unique surface ref. This never prints the
+matched URL or title:</p>
+<pre><code class="language-bash">MATCH_FIELD=&quot;url&quot; # use &quot;title&quot; when matching a page title
+MATCH_VALUE=&quot;${BROWSER_URL_OR_TITLE:?set BROWSER_URL_OR_TITLE without logging it}&quot;
+SURFACE=&quot;$(
+  cmux tree --all --json |
+    jq -r --arg field &quot;$MATCH_FIELD&quot; --arg value &quot;$MATCH_VALUE&quot; '
+      [
+        .windows[]? as $window
+        | $window.workspaces[]? as $workspace
+        | $workspace.panes[]? as $pane
+        | $pane.surfaces[]?
+        | select(.type == &quot;browser&quot;)
+        | select((if $field == &quot;url&quot; then (.url // &quot;&quot;) else (.title // &quot;&quot;) end) == $value)
+        | .ref
+      ] as $matches
+      | if ($matches | length) == 1 then $matches[0]
+        elif ($matches | length) == 0 then error(&quot;no matching browser surface&quot;)
+        else error(&quot;multiple matches; use workspace/pane context&quot;)
+        end'
+)&quot;
+if [[ -z &quot;$SURFACE&quot; ]]; then
+  printf '%s\n' 'no uniquely matching browser surface; provide workspace/pane context' &gt;&amp;2
+  exit 1
+fi
+cmux browser --surface &quot;$SURFACE&quot; get url
+</code></pre>
+<p>For one known workspace, <code>cmux --json list-pane-surfaces --workspace &lt;workspace&gt;</code> is a smaller read-only query. Raw tree/list payloads can contain
+page URLs and titles; filter or redact them before logging or pasting them.
+Never use a focus/select command merely to discover a surface.</p>
+<h4>Core workflow</h4>
+<p>Open (or create) a surface without stealing focus, capture the returned ref,
+then use that ref for every existing-surface operation:</p>
+<pre><code class="language-bash">OPEN_JSON=&quot;$(cmux --json browser open https://example.com --focus false)&quot;
+SURFACE=&quot;$(printf '%s' &quot;$OPEN_JSON&quot; | jq -r '.surface_ref // .surface_id // empty')&quot;
+[ -n &quot;$SURFACE&quot; ] || { printf '%s\n' 'browser open did not return a surface ref' &gt;&amp;2; exit 1; }
+cmux browser --surface &quot;$SURFACE&quot; get url
+cmux browser --surface &quot;$SURFACE&quot; wait --load-state complete --timeout-ms 15000
+cmux browser --surface &quot;$SURFACE&quot; snapshot --interactive
+cmux browser --surface &quot;$SURFACE&quot; fill e1 &quot;hello&quot;
+cmux browser --surface &quot;$SURFACE&quot; click e2 --snapshot-after
+cmux browser --surface &quot;$SURFACE&quot; snapshot --interactive
+</code></pre>
+<p>After a browser download finishes, inspect the same surface's bounded history
+without opening the file or consuming a waiter:</p>
+<pre><code class="language-bash">cmux browser --surface &quot;$SURFACE&quot; download list
+cmux browser --surface &quot;$SURFACE&quot; download list --limit 5 --json
+</code></pre>
+<p>The JSON records expose the stable <code>download_id</code>, filename, actual saved path
+when known, status (<code>downloading</code>, <code>saved</code>, or <code>failed</code>), byte count when
+known, and whether a known path still exists. Listing is newest first and
+repeatable; it remains scoped to the requested surface. Use <code>download wait</code> to
+keep the existing event-wait workflow.</p>
+<p>The <code>open</code> response contains the new surface ref; in a script, extract it from
+the JSON response instead of printing the full response. If <code>get url</code> is empty
+or <code>about:blank</code>, navigate first instead of waiting on load state. Re-snapshot
+after navigation, modal open/close, or any major DOM change because refs go
+stale.</p>
+<h4>Wait</h4>
+<pre><code class="language-bash">cmux browser --surface &quot;$SURFACE&quot; wait --selector &quot;#ready&quot; --timeout-ms 10000
+cmux browser --surface &quot;$SURFACE&quot; wait --text &quot;Success&quot; --timeout-ms 10000
+cmux browser --surface &quot;$SURFACE&quot; wait --url-contains &quot;/dashboard&quot; --timeout-ms 10000
+cmux browser --surface &quot;$SURFACE&quot; wait --load-state complete --timeout-ms 15000
+cmux browser --surface &quot;$SURFACE&quot; wait --function &quot;document.readyState === 'complete'&quot; --timeout-ms 10000
+</code></pre>
+<h4>Viewport sizing (WKWebView)</h4>
+<p><code>cmux browser --surface &quot;$SURFACE&quot; viewport &lt;width&gt; &lt;height&gt;</code> sets an exact
+logical viewport from 1 to 4096 CSS pixels. The page is aspect-fitted inside
+its existing pane, so pane layout and focus stay unchanged, and screenshots use
+the requested logical dimensions. <code>viewport reset</code> returns to native pane
+sizing.</p>
+<p>Close or detach the browser inspector first: its inspector-managed split layout
+cannot be combined with viewport emulation, and opening or redocking an
+attached inspector resets emulation to native sizing. Large viewport and
+page-zoom combinations are bounded; the command returns structured
+<code>maximum_page_zoom</code> details and leaves the viewport unchanged when the
+combination exceeds WKWebView render limits.</p>
+<h4>Limits (WKWebView)</h4>
+<p>Trace/screencast recording, network route interception/mocking, and low-level
+raw input injection return <code>not_supported</code>; they depend on Chrome/CDP-only APIs.
+Use <code>click</code>, <code>fill</code>, <code>press</code>, <code>scroll</code>, <code>wait</code>, and <code>snapshot</code> instead.
+<code>geolocation &lt;lat&gt; &lt;lon&gt;</code> and <code>offline true|false</code> work: pages get the given
+position without a permission prompt, and offline mode blocks http(s) and
+ws(s) loads and reports <code>navigator.onLine === false</code>.</p>
+<h4>Troubleshooting <code>js_error</code></h4>
+<p>Some complex pages reject the JavaScript behind <code>snapshot --interactive</code> and
+<code>eval</code>. Recover by checking whether the page actually navigated, then fall
+back to raw text or HTML:</p>
+<pre><code class="language-bash">cmux browser --surface &quot;$SURFACE&quot; get url
+cmux browser --surface &quot;$SURFACE&quot; get text body
+cmux browser --surface &quot;$SURFACE&quot; get html body
+</code></pre>
+<p>If it still fails, navigate to a simpler intermediate page and retry from
+there. If the CLI and this skill disagree, refresh help (<code>cmux browser --help</code>) and refresh the installed skill before continuing; do not invent an
+implicit target.</p>
+<h4>Skill distribution and refresh</h4>
+<p>The repository copies are the source of truth: <code>.claude/skills/cmux-browser</code>
+and <code>.agents/skills/cmux-browser</code> point at <code>skills/cmux-browser</code>. Do not edit a
+mirror by hand. The supported Vercel installer (pinned here to the reviewed
+<code>skills</code> 1.5.23 release) refreshes both global Claude Code and Codex discovery
+roots and copies the complete skill (including references and templates):</p>
+<pre><code class="language-bash"># From this checkout while developing the skill:
+npx --yes skills@1.5.23 add . --global --yes --skill cmux-browser --agent claude-code codex --copy
+
+# From the published repository after the change is merged:
+npx --yes skills@1.5.23 add manaflow-ai/cmux --global --yes --skill cmux-browser --agent claude-code codex --copy
+</code></pre>
+<p>Restart an agent session after a refresh if it cached the previous document.
+The repository's <code>skills.sh</code> remains available for a Codex-only destination;
+pass its <code>--dest</code> explicitly when that is the installation path:</p>
+<pre><code class="language-bash">./skills.sh --dest &quot;$HOME/.codex/skills&quot; --skill cmux-browser
+</code></pre>
+<p>Never commit home-directory skill copies, credentials, cookies, or saved browser
+state.</p>
+<h4>Deep-dive references</h4>
+<table>
+<thead>
+<tr>
+<th>Reference</th>
+<th>When to Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/manaflow-ai/cmux/blob/be5e24339c6eabb8e929a7029c4e6f834e257c97/skills/cmux-browser/references/surface-discovery.md">references/surface-discovery.md</a></td>
+<td>Find and target an existing browser surface without focus changes</td>
+</tr>
+<tr>
+<td><a href="https://github.com/manaflow-ai/cmux/blob/be5e24339c6eabb8e929a7029c4e6f834e257c97/skills/cmux-browser/references/commands.md">references/commands.md</a></td>
+<td>Full command mapping, aliases, <code>agent-browser</code> equivalents, viewport error codes</td>
+</tr>
+<tr>
+<td><a href="https://github.com/manaflow-ai/cmux/blob/be5e24339c6eabb8e929a7029c4e6f834e257c97/skills/cmux-browser/references/snapshot-refs.md">references/snapshot-refs.md</a></td>
+<td>Ref lifecycle and stale-ref troubleshooting</td>
+</tr>
+<tr>
+<td><a href="https://github.com/manaflow-ai/cmux/blob/be5e24339c6eabb8e929a7029c4e6f834e257c97/skills/cmux-browser/references/authentication.md">references/authentication.md</a></td>
+<td>Login/OAuth/2FA patterns and state save/load</td>
+</tr>
+<tr>
+<td><a href="https://github.com/manaflow-ai/cmux/blob/be5e24339c6eabb8e929a7029c4e6f834e257c97/skills/cmux-browser/references/session-management.md">references/session-management.md</a></td>
+<td>Multi-surface isolation and state persistence</td>
+</tr>
+<tr>
+<td><a href="https://github.com/manaflow-ai/cmux/blob/be5e24339c6eabb8e929a7029c4e6f834e257c97/skills/cmux-browser/references/video-recording.md">references/video-recording.md</a></td>
+<td>Recording status and practical alternatives</td>
+</tr>
+<tr>
+<td><a href="https://github.com/manaflow-ai/cmux/blob/be5e24339c6eabb8e929a7029c4e6f834e257c97/skills/cmux-browser/references/proxy-support.md">references/proxy-support.md</a></td>
+<td>Proxy behavior in WKWebView and workarounds</td>
+</tr>
+</tbody>
+</table>
+<h4>Ready-to-use templates</h4>
+<table>
+<thead>
+<tr>
+<th>Template</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/manaflow-ai/cmux/blob/be5e24339c6eabb8e929a7029c4e6f834e257c97/skills/cmux-browser/templates/form-automation.sh">templates/form-automation.sh</a></td>
+<td>Snapshot/ref form fill loop (requires an explicit surface)</td>
+</tr>
+<tr>
+<td><a href="https://github.com/manaflow-ai/cmux/blob/be5e24339c6eabb8e929a7029c4e6f834e257c97/skills/cmux-browser/templates/authenticated-session.sh">templates/authenticated-session.sh</a></td>
+<td>Login once, save/load state (requires an explicit surface)</td>
+</tr>
+<tr>
+<td><a href="https://github.com/manaflow-ai/cmux/blob/be5e24339c6eabb8e929a7029c4e6f834e257c97/skills/cmux-browser/templates/capture-workflow.sh">templates/capture-workflow.sh</a></td>
+<td>Navigate and capture snapshots/screenshots (requires an explicit surface)</td>
+</tr>
+</tbody>
+</table>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

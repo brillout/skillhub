@@ -1,0 +1,789 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>agent-payment-x402 · SkillHub</title>
+    <meta name="description" content="Use it when: an agent has to pay for an API, a service or another agent itself, or your API should charge agents per call. It does: picks agentwallet-sdk, OKX&#039;s Agent Payments Protocol or the upstream x402 packages by chain and side, then wires spending controls that fail closed. You get: client code that refuses payments off its allowed networks, tokens, recipients or budget, and seller middleware that runs each paid request once. Also called: x402: a server answers HTTP 402 Payment Required, and the agent&#039;s payment tool checks the price, signs and retries." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <div class="title-row"><h1>agent-payment-x402</h1><button type="button" class="save" data-save="skill:affaan-m/ecc/skills/agent-payment-x402" aria-pressed="false" aria-label="Save agent-payment-x402" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>an agent has to pay for an API, a service or another agent itself, or your API should charge agents per call</dd></div><div><dt>It does</dt><dd>picks agentwallet-sdk, OKX&#39;s Agent Payments Protocol or the upstream x402 packages by chain and side, then wires spending controls that fail closed</dd></div><div><dt>You get</dt><dd>client code that refuses payments off its allowed networks, tokens, recipients or budget, and seller middleware that runs each paid request once</dd></div><div><dt>Also called</dt><dd>x402: a server answers HTTP 402 Payment Required, and the agent&#39;s payment tool checks the price, signs and retries</dd></div></dl></section>
+      
+      <p class="note">The code it writes signs real crypto payments with private keys you supply; it advises testing on Base Sepolia or Solana devnet first.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A guide to agent payments over x402, the protocol that turns an HTTP 402 Payment Required reply into a payment an agent can negotiate, sign and retry with. A decision table picks the path: agentwallet-sdk as an MCP payment server for Base, OKX&#39;s Agent Payments Protocol skill for X Layer, or the upstream x402 fetch and axios wrappers for Solana and other networks, plus seller middleware for TypeScript, Python, Go, Rust and Java. Spending policy is set by the orchestrator before delegation, never by the agent: per-task and per-session budgets, allowlisted recipients and rate limits, with keys kept in the orchestrator&#39;s environment. Its long TypeScript example checks network, token, recipient and amount against the server&#39;s actual challenge before signing, allows only approved origins and no redirects, reserves the session budget before each call and asks you once to approve the caps. For sellers it covers creating the Solana token account payments go to, and a Redis claim that stops one signed payment from running a handler several times. It advises pinned versions and testnets first, and discloses that its facilitator section was written by someone at PayAI.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/agent-payment-x402">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">affaan-m/</span><wbr><span class="word">ecc</span> <span class="word">--skill</span> <span class="word">agent-payment-x402</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill agent-payment-x402">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/agent-payment-x402">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/agent-payment-x402">Source on GitHub</a> · <a href="/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,300 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>299,252 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">479</div>
+      <div class="stat-delta">+69% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 284; week to Sep 27: 261; week to Oct 4: 158; week to Oct 11: 137; week to Oct 18: 232; week to Oct 25: 414; week to Nov 1: 406; week to Nov 8: 479. Use the left and right arrow keys to read each week."
+        data-values="284,261,158,137,232,414,406,479" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.9 38.6,26.0 71.1,35.5 103.7,37.4 136.3,28.7 168.9,12.0 201.4,12.7 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>284</td></tr><tr><td>Sep 27</td><td>261</td></tr><tr><td>Oct 4</td><td>158</td></tr><tr><td>Oct 11</td><td>137</td></tr><tr><td>Oct 18</td><td>232</td></tr><tr><td>Oct 25</td><td>414</td></tr><tr><td>Nov 1</td><td>406</td></tr><tr><td>Nov 8</td><td>479</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/?tag=category%3Aagents">category:<wbr>agents</a><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/?tag=category%3Asecurity">category:<wbr>security</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/?tag=type%3Aguidelines">type:<wbr>guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="payments" data-facet="topic" href="/?tag=payments">payments</a><a class="tag" data-tag="web3" data-facet="topic" href="/?tag=web3">web3</a><a class="tag" data-tag="agent-development" data-facet="topic" href="/?tag=agent-development">agent-development</a><a class="tag" data-tag="guardrails" data-facet="topic" href="/?tag=guardrails">guardrails</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:x402" data-facet="stack" href="/?tag=stack%3Ax402">stack:<wbr>x402</a><a class="tag" data-tag="stack:solana" data-facet="stack" href="/?tag=stack%3Asolana">stack:<wbr>solana</a><a class="tag" data-tag="stack:okx" data-facet="stack" href="/?tag=stack%3Aokx">stack:<wbr>okx</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/agent-payment-x402/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: agent-payment-x402
+description: Add x402 payment execution to AI agents with per-task budgets, spending controls, and non-custodial wallets. Supports Base through agentwallet-sdk, X Layer through OKX Payments / OKX Agent Payments Protocol, and Solana plus multi-network EVM through the upstream x402 packages with facilitator-based settlement. Use when an agent must pay for something itself and needs per-task budgets, spending controls, and a non-custodial wallet.
+metadata:
+  origin: community</code></pre></details>
+        <div class="markdown"><h3>Agent Payment Execution (x402)</h3>
+<p>Enable AI agents to make policy-gated payments with built-in spending controls. Uses the x402 HTTP payment protocol and MCP tools so agents can pay for external services, APIs, or other agents without custodial risk.</p>
+<h4>When to Use</h4>
+<p>Use when: your agent needs to pay for an API call, purchase a service, settle with another agent, enforce per-task spending limits, or manage a non-custodial wallet. Pairs naturally with cost-aware-llm-pipeline and security-review skills.</p>
+<h4>Decision Tree</h4>
+<p>Choose the integration path based on whether your agent is buying access to a paid API or charging others for one:</p>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Recommended path</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Agent pays a 402-gated API on Base or another agentwallet-supported chain</td>
+<td>Use <code>agentwallet-sdk</code> as an MCP payment server with strict spending policy</td>
+</tr>
+<tr>
+<td>Agent pays a 402-gated API on X Layer</td>
+<td>Use OKX Agent Payments Protocol from <code>okx/onchainos-skills</code>; <code>okx-x402-payment</code> is a deprecated legacy alias</td>
+</tr>
+<tr>
+<td>Agent pays a 402-gated API on Solana or another x402 v2 network</td>
+<td>Wrap the agent's HTTP client with the upstream <code>@x402/fetch</code> or <code>@x402/axios</code> package and register the EVM/SVM schemes; the resource server's facilitator verifies and settles</td>
+</tr>
+<tr>
+<td>API charges agents on Solana or multiple networks (TypeScript, Python, or Go)</td>
+<td>Use the upstream x402 middleware from <code>x402-foundation/x402</code> — <code>@x402/express</code>, <code>@x402/hono</code>, <code>@x402/next</code>, or <code>@x402/fastify</code> for TypeScript, <code>x402</code> for Python, <code>github.com/x402-foundation/x402/go/v2</code> for Go</td>
+</tr>
+<tr>
+<td>TypeScript API charges agents</td>
+<td>Use OKX Payments TypeScript seller SDK docs for Express, Hono, Fastify, or Next.js</td>
+</tr>
+<tr>
+<td>Go API charges agents</td>
+<td>Use OKX Payments Go seller SDK docs for Gin, Echo, or <code>net/http</code></td>
+</tr>
+<tr>
+<td>Rust API charges agents</td>
+<td>Use OKX Payments Rust seller SDK docs for Axum</td>
+</tr>
+<tr>
+<td>Java API charges agents</td>
+<td>Use OKX Payments Java seller SDK docs for Spring Boot 2/3, Java EE, or Jakarta</td>
+</tr>
+<tr>
+<td>Python API charges agents</td>
+<td>Check the current OKX Payments repository before implementation; a Python seller guide may not be available</td>
+</tr>
+</tbody>
+</table>
+<h4>Supported Networks</h4>
+<ul>
+<li><code>agentwallet-sdk</code>: use the package docs to confirm current network coverage before production. Base Sepolia is the safest development default; Base mainnet is the production path called out by the original skill.</li>
+<li>OKX Payments / X Layer: current seller docs target X Layer (<code>eip155:196</code>) and USDT0 settlement. Fetch current SDK docs before generating production code because payment packages and facilitator behavior can change quickly.</li>
+<li>Upstream x402 packages: multi-network by design — one route can advertise Base and Solana simultaneously and let the buyer pick. The packages default to the <code>x402.org</code> facilitator, which is testnet-only (Base Sepolia <code>eip155:84532</code>, Solana devnet <code>solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1</code>, plus Stellar, Aptos, Hedera, and XRPL testnets) and is not intended for mainnet routes. For mainnet (<code>solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp</code> for Solana), either self-facilitate, run your own facilitator, or pick a hosted one from the upstream facilitator list — see the facilitator comparison under Option C. Confirm live coverage at the facilitator's <code>/supported</code> endpoint before production rather than hardcoding it here.</li>
+</ul>
+<h4>How It Works</h4>
+<h5>x402 Protocol</h5>
+<p>x402 extends HTTP 402 (Payment Required) into a machine-negotiable flow. When a server returns <code>402</code>, the agent's payment tool negotiates price, checks budget, signs a transaction, and retries only inside the policy and confirmation boundary set by the orchestrator.</p>
+<h5>Spending Controls</h5>
+<p>Every payment tool call enforces a <code>SpendingPolicy</code>:</p>
+<ul>
+<li><strong>Per-task budget</strong> — max spend for a single agent action</li>
+<li><strong>Per-session budget</strong> — cumulative limit across an entire session</li>
+<li><strong>Allowlisted recipients</strong> — restrict which addresses/services the agent can pay</li>
+<li><strong>Rate limits</strong> — max transactions per minute/hour</li>
+</ul>
+<h5>Non-Custodial Wallets</h5>
+<p>Agents hold their own keys via ERC-4337 smart accounts. The orchestrator sets policy before delegation; the agent can only spend within bounds. No pooled funds, no custodial risk.</p>
+<h4>MCP Integration</h4>
+<p>The payment layer exposes standard MCP tools that slot into any Claude Code or agent harness setup.</p>
+<blockquote>
+<p><strong>Security note</strong>: Always pin the package version. This tool manages private keys — unpinned <code>npx</code> installs introduce supply-chain risk.</p>
+</blockquote>
+<h5>Option A: agentwallet-sdk (Base / multi-chain)</h5>
+<pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;agentpay&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;agentwallet-sdk@6.0.0&quot;]
+    }
+  }
+}
+</code></pre>
+<h5>Available Tools (agent-callable)</h5>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>get_balance</code></td>
+<td>Check agent wallet balance</td>
+</tr>
+<tr>
+<td><code>send_payment</code></td>
+<td>Send payment to address or ENS</td>
+</tr>
+<tr>
+<td><code>check_spending</code></td>
+<td>Query remaining budget</td>
+</tr>
+<tr>
+<td><code>list_transactions</code></td>
+<td>Audit trail of all payments</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Note</strong>: Spending policy is set by the <strong>orchestrator</strong> before delegating to the agent — not by the agent itself. This prevents agents from escalating their own spending limits. Configure policy via <code>set_policy</code> in your orchestration layer or pre-task hook, never as an agent-callable tool.</p>
+</blockquote>
+<h5>Option B: OKX Agent Payments Protocol (X Layer)</h5>
+<p>Use this path for X Layer x402, Multi-Party Payment (MPP), session payment, charge, and A2A charge flows.</p>
+<p>For buyer-side agent flows:</p>
+<ol>
+<li>Install or reference the current <code>okx/onchainos-skills</code> repository.</li>
+<li>Use <code>skills/okx-agent-payments-protocol/SKILL.md</code> as the dispatcher.</li>
+<li>Treat <code>skills/okx-x402-payment/SKILL.md</code> as a deprecated compatibility alias, not as the canonical skill.</li>
+<li>Require explicit user confirmation before wallet status checks or payment actions. Do not hide payment execution behind a generic tool call.</li>
+</ol>
+<p>For seller-side API flows, fetch the latest language-specific guide before generating code:</p>
+<table>
+<thead>
+<tr>
+<th>Runtime</th>
+<th>Current guide</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TypeScript</td>
+<td><code>https://raw.githubusercontent.com/okx/payments/main/typescript/SELLER.md</code></td>
+</tr>
+<tr>
+<td>Go</td>
+<td><code>https://raw.githubusercontent.com/okx/payments/main/go/x402/SELLER.md</code></td>
+</tr>
+<tr>
+<td>Rust</td>
+<td><code>https://raw.githubusercontent.com/okx/payments/main/rust/x402/SELLER.md</code></td>
+</tr>
+<tr>
+<td>Java</td>
+<td><code>https://raw.githubusercontent.com/okx/payments/main/java/SELLER.md</code></td>
+</tr>
+</tbody>
+</table>
+<p>Do not copy examples from older docs without checking the current OKX repository. Current OKX guidance uses <code>okx-agent-payments-protocol</code> as the dispatcher, and Java seller docs are now available.</p>
+<h5>Option C: Upstream x402 packages (Solana + Base/EVM)</h5>
+<p>Use this path when the agent pays — or your API charges — on Solana, Base, or another network the upstream protocol implementation supports. The canonical x402 monorepo at <a href="https://github.com/x402-foundation/x402"><code>x402-foundation/x402</code></a> is actively maintained and publishes the client and middleware packages directly. Unlike Options A and B this is not a separate MCP server — you wrap the agent's own HTTP client, and a facilitator chosen by the resource server verifies and settles.</p>
+<p>For buyer-side agent flows:</p>
+<ol>
+<li>
+<p>Start from the maintained examples in <a href="https://github.com/x402-foundation/x402/tree/main/examples/typescript/clients"><code>examples/typescript/clients</code></a> (fetch, axios, MCP) rather than copying snippets from older docs.</p>
+</li>
+<li>
+<p>Require explicit user confirmation before signing or submitting the first paid request, exactly as Option B requires for OKX flows. Do not hide payment execution behind a generic tool call.</p>
+</li>
+<li>
+<p>Pin package versions (for example <code>@x402/fetch@2.22.0</code>); all upstream packages version in lockstep.</p>
+</li>
+<li>
+<p>Enforce your budget with a <code>PaymentPolicy</code> registered on the client, so the check runs against the server's actual challenge on every call. A budget compared against a number you passed in yourself proves nothing — the amount, asset, and network all come from the server, so all three must be validated before a signature exists.</p>
+</li>
+<li>
+<p>Configure an exact resource-origin allowlist separately from recipient and budget policy. All payment-enabled fetches below refuse redirects. Session approval names the approved origins, networks, assets, recipients, and human-unit spending caps; concurrent calls share one decision. Keep this client and its policy private to the orchestrator.</p>
+</li>
+</ol>
+<pre><code class="language-typescript">import { x402Client, wrapFetchWithPayment } from &quot;@x402/fetch&quot;;
+import { ExactEvmScheme } from &quot;@x402/evm/exact/client&quot;;
+import { ExactSvmScheme } from &quot;@x402/svm/exact/client&quot;;
+import { privateKeyToAccount } from &quot;viem/accounts&quot;;
+import { createKeyPairSignerFromBytes } from &quot;@solana/kit&quot;;
+import { base58 } from &quot;@scure/base&quot;;
+
+// Signer keys belong to the ORCHESTRATOR's env — never hardcoded, never agent-writable.
+const evmKey = process.env.EVM_PRIVATE_KEY as `0x${string}`;
+const svmKey = process.env.SVM_PRIVATE_KEY;
+if (!evmKey || !svmKey) {
+  throw new Error(&quot;Signer keys are not set — refusing to start payment client&quot;);
+}
+
+// One client, both network families: the buyer pays whichever chain the 402 offers.
+const client = new x402Client();
+client.register(&quot;eip155:*&quot;, new ExactEvmScheme(privateKeyToAccount(evmKey)));
+client.register(&quot;solana:*&quot;, new ExactSvmScheme(await createKeyPairSignerFromBytes(base58.decode(svmKey))));
+
+// A PaymentPolicy filters the SERVER's payment requirements before any
+// signature is created. Returning an empty array means &quot;nothing here is
+// acceptable&quot; and the client refuses to pay rather than falling back.
+const ALLOWED_NETWORKS = new Set([
+  &quot;solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp&quot;,      // Solana mainnet
+  &quot;eip155:8453&quot;,                                   // Base
+]);
+const MAX_AMOUNT = 10_000n;      // atomic units, 6-decimal USDC: 0.01 USDC per call
+const SESSION_CAP = 50_000n;     // 0.05 USDC across the whole session
+
+// EVM addresses are case-insensitive, so compare them lowercased. Solana
+// addresses are base58 and ARE case-sensitive — never lowercase those, or a
+// different account could slip through.
+const normalizeAddress = (a: string) =&gt; (a.startsWith(&quot;0x&quot;) ? a.toLowerCase() : a);
+const ALLOWED_ASSETS = new Set(
+  [
+    &quot;EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&quot;,  // USDC, Solana mainnet
+    &quot;0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913&quot;,    // USDC, Base
+  ].map(normalizeAddress),
+);
+// Who you are willing to pay. Without this, any 402 an agent happens to hit
+// can name its own recipient.
+const ALLOWED_PAY_TO = new Set(
+  [&quot;7pr7NCaQRz5PEhPy7BAeB3Z72TVkiShhjRyVCN5DA6yC&quot;].map(normalizeAddress),
+);
+
+client.registerPolicy((_x402Version, requirements) =&gt;
+  requirements.filter(r =&gt; {
+    if (!ALLOWED_NETWORKS.has(r.network)) return false;                   // wrong chain
+    if (!ALLOWED_ASSETS.has(normalizeAddress(r.asset))) return false;     // wrong token
+    if (!ALLOWED_PAY_TO.has(normalizeAddress(r.payTo))) return false;     // wrong recipient
+    try {
+      const amount = BigInt(r.amount);
+      return amount &gt;= 0n &amp;&amp; amount &lt;= MAX_AMOUNT;                        // over budget / negative
+    } catch {
+      return false;                                                       // unparseable amount
+    }
+  }),
+);
+
+// The policy sees one challenge at a time, so it cannot enforce a session
+// total or ask a human anything. Keep the payment-enabled client private and
+// route every paid call through the payOnce boundary below.
+
+// Supply this from your harness — a real prompt, never a stub that returns true.
+declare function confirmWithUser(prompt: string): Promise&lt;boolean&gt;;
+
+// Resource authorization is independent of recipient and budget policy.
+// The ORCHESTRATOR supplies exact approved HTTPS origins before delegation;
+// never populate this set from a server challenge or agent-controlled input.
+const ALLOWED_ORIGINS = new Set([&quot;https://api.example.com&quot;]);
+function requireAllowedOrigin(url: string): void {
+  const parsed = new URL(url);
+  if (!ALLOWED_ORIGINS.has(parsed.origin) || parsed.username || parsed.password) {
+    throw new Error(&quot;Resource origin is not authorized&quot;);
+  }
+}
+
+// Both approved assets above are 6-decimal USDC. Update this trusted formatting
+// policy along with the asset allowlist if you support other assets/decimals.
+const USDC_SCALE = 1_000_000n;
+const humanUSDC = (amount: bigint) =&gt;
+  `${amount / USDC_SCALE}.${(amount % USDC_SCALE).toString().padStart(6, &quot;0&quot;).replace(/0+$/, &quot;&quot;) || &quot;0&quot;} USDC`;
+
+let sessionSpent = 0n;
+let sessionApproval: Promise&lt;boolean&gt; | undefined;
+
+async function payOnce(url: string, init?: RequestInit): Promise&lt;Response&gt; {
+  requireAllowedOrigin(url); // Before reservation, prompt, fetch, or signature.
+  // Reserve the worst case the policy allows. Settlement responses do not
+  // carry an amount, so counting MAX_AMOUNT per call is a deliberate
+  // over-estimate — it can stop early, never late. Reserve before any await,
+  // so concurrent calls cannot all pass the check.
+  if (sessionSpent + MAX_AMOUNT &gt; SESSION_CAP) {
+    throw new Error(&quot;Session budget exhausted — blocked&quot;);
+  }
+  sessionSpent += MAX_AMOUNT;
+  // Release the reservation only when no signed payment left this process:
+  // a declined or failed prompt, a challenge the policy rejected, or a free
+  // response. Once a signed request is sent it may settle, so keep it counted.
+  let signedRequestSent = false;
+  const trackingFetch: typeof fetch = async (input, reqInit) =&gt; {
+    // Override caller options on BOTH the challenge and signed retry. Native
+    // fetch refuses redirects, so an unauthorized host cannot return a 402
+    // or receive a payment header via an automatic redirect.
+    const req = new Request(input, { ...reqInit, redirect: &quot;error&quot; });
+    requireAllowedOrigin(req.url);
+    if (req.headers.has(&quot;PAYMENT-SIGNATURE&quot;) || req.headers.has(&quot;X-PAYMENT&quot;)) {
+      signedRequestSent = true;
+    }
+    const response = await fetch(req);
+    // Also fail closed for adapters that expose a redirect response instead.
+    if (response.redirected || (response.status &gt;= 300 &amp;&amp; response.status &lt; 400)) {
+      throw new Error(&quot;Paid request redirects are blocked&quot;);
+    }
+    return response;
+  };
+  try {
+    // Install one promise before awaiting the prompt. Concurrent calls share
+    // the same decision, including a decline or failure; never auto-reprompt.
+    sessionApproval ??= Promise.resolve().then(() =&gt; confirmWithUser(
+      `Allow paid requests to origins: ${[...ALLOWED_ORIGINS].join(&quot;, &quot;)}? ` +
+      `Networks: ${[...ALLOWED_NETWORKS].join(&quot;, &quot;)}. ` +
+      `Assets: ${[...ALLOWED_ASSETS].join(&quot;, &quot;)} (6-decimal USDC). ` +
+      `Recipients (payTo): ${[...ALLOWED_PAY_TO].join(&quot;, &quot;)}. ` +
+      `Per-call cap: ${humanUSDC(MAX_AMOUNT)}; session cap: ${humanUSDC(SESSION_CAP)}.`,
+    ));
+    if (!await sessionApproval) {
+      throw new Error(&quot;User declined: no payment attempted&quot;);
+    }
+    return await wrapFetchWithPayment(trackingFetch, client)(url, init);
+  } finally {
+    if (!signedRequestSent) sessionSpent -= MAX_AMOUNT;
+  }
+}
+
+const res = await payOnce(&quot;https://api.example.com/data&quot;, { method: &quot;GET&quot; });
+</code></pre>
+<p>With the policy registered, an over-budget amount, an unexpected token, or an unregistered chain all fail closed — <code>createPaymentPayload</code> throws instead of signing, because every candidate was filtered out. Devnet USDC is <code>4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU</code>; add it to <code>ALLOWED_ASSETS</code> only for development. Test the policy adversarially — feed it a challenge demanding <code>5000000</code> atomic units, one quoting a different mint, and one on a chain you never registered, and assert that none of them produce a signature. In the exact-SVM scheme the facilitator is the transaction fee payer, so the buyer wallet holds USDC only — no SOL for gas.</p>
+<p><strong>Facilitator choice.</strong> A facilitator verifies and settles on the resource server's behalf, so this is the resource server's decision, not the buyer's. In rough order of least to most trust delegated:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>When it fits</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/x402-foundation/x402/tree/main/examples/typescript/servers/self-facilitation">Self-facilitate in-process</a></td>
+<td>You want no third party in the settlement path and can hold keys and RPC access yourself</td>
+</tr>
+<tr>
+<td>Run your own facilitator</td>
+<td>You want that same control but shared across several services</td>
+</tr>
+<tr>
+<td><a href="https://x402.org/facilitator"><code>x402.org</code> facilitator</a></td>
+<td>Development and testnets — it is the package default, requires no setup, and upstream documents it as not intended for mainnet routes</td>
+</tr>
+<tr>
+<td>A hosted production facilitator</td>
+<td>You want mainnet coverage without operating infrastructure</td>
+</tr>
+</tbody>
+</table>
+<p>For the hosted option, choose from the <a href="https://docs.x402.org/dev-tools/facilitators">facilitator list</a> in the upstream docs rather than a name copied from here — it is maintained, it is not exhaustive, and coverage changes. As of writing it includes Coinbase's CDP (KYT/OFAC screening on every transaction), PayAI, Corbits, Dexter, Solvador, and others; several cover Solana mainnet alongside EVM. Whichever you pick, confirm live coverage at its <code>/supported</code> endpoint before production and re-check when you add a network.</p>
+<blockquote>
+<p><strong>Disclosure</strong>: this section was contributed by someone who works on PayAI, one of the listed facilitators. It is included as one option among several, and the self-hosted and upstream-default paths above are deliberately listed first.</p>
+</blockquote>
+<p><strong>Seller side (API charges agents).</strong> Use the upstream middleware; one route can advertise Base and Solana simultaneously (see <a href="https://github.com/x402-foundation/x402/tree/main/examples/typescript/servers"><code>examples/typescript/servers</code></a> for runnable versions):</p>
+<table>
+<thead>
+<tr>
+<th>Runtime</th>
+<th>Package</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Express / Hono / Next.js / Fastify</td>
+<td><code>@x402/express@2.22.0</code>, <code>@x402/hono@2.22.0</code>, <code>@x402/next@2.22.0</code>, <code>@x402/fastify@2.22.0</code></td>
+</tr>
+<tr>
+<td>Python (FastAPI, Flask)</td>
+<td><code>x402</code> on PyPI</td>
+</tr>
+<tr>
+<td>Go (Gin, Echo, <code>net/http</code>)</td>
+<td><code>github.com/x402-foundation/x402/go/v2</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Solana sellers: the <code>payTo</code> address needs its canonical token account first.</strong> The exact-SVM client derives the <em>associated token account</em> (ATA) for <code>payTo</code> with <code>findAssociatedTokenPda</code> and transfers there; it never creates it. If that exact account is missing, settlement fails at simulation and the 402 comes back with <code>transaction_simulation_failed</code>, which reads like a client bug rather than a missing recipient account. Check the derived address itself — scanning the owner's token accounts is not equivalent, because a non-canonical auxiliary account for the same mint would pass while the ATA the client targets is still absent:</p>
+<pre><code class="language-typescript">import { findAssociatedTokenPda, TOKEN_PROGRAM_ADDRESS } from &quot;@solana-program/token&quot;;
+
+const [ata] = await findAssociatedTokenPda({
+  mint: &quot;EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&quot;,   // USDC mainnet
+  owner: payToAddress,
+  tokenProgram: TOKEN_PROGRAM_ADDRESS,                     // TOKEN_2022_PROGRAM_ADDRESS for Token-2022 mints
+});
+</code></pre>
+<p>Then confirm that exact address exists — <code>value: null</code> means it does not, and settlement to it will fail:</p>
+<pre><code class="language-bash">curl -s https://api.mainnet-beta.solana.com -X POST -H 'Content-Type: application/json' \
+  -d '{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:1,&quot;method&quot;:&quot;getAccountInfo&quot;,
+       &quot;params&quot;:[&quot;&lt;DERIVED_ATA&gt;&quot;,{&quot;encoding&quot;:&quot;base64&quot;}]}' \
+  | jq '.result.value != null'
+</code></pre>
+<p>To provision it (whoever creates it pays the small rent, not the payer):</p>
+<ul>
+<li>In code, add <code>getCreateAssociatedTokenIdempotentInstruction</code> from <code>@solana-program/token</code> to your onboarding flow — the idempotent variant is safe to re-run and is the only option that is deterministic.</li>
+<li><code>spl-token create-account &lt;MINT&gt; --owner &lt;PAYTO_ADDRESS&gt;</code> with the spl-token CLI.</li>
+<li>A transfer of that token to <code>payTo</code> also works, but only when the sender includes the create instruction — wallets and <code>spl-token transfer --fund-recipient</code> do; a bare <code>transferChecked</code> to a missing ATA fails the same way settlement does.</li>
+</ul>
+<p>This bites hardest when payouts go to freshly provisioned or custodial wallets, which often have no ATA for the asset yet.</p>
+<p><strong>Sellers: run the route once per payment authorization.</strong> The middleware verifies the payment, runs your handler, then settles. Verification does not consume the authorization (settlement does), so one signed payment sent several times at once passes verify every time and runs your handler every time. The facilitator settles only one copy, and the others get a 402 without the response, so nobody receives free output. But every side effect in the handler (an LLM call, a queued job, an on-chain transaction) happens once per copy. On a production seller (Python <code>x402</code> 2.9.0, FastAPI), one authorization sent three times concurrently produced three handler runs and one settlement. A paid-call counter inside the handler overstates revenue the same way; count after settlement instead. The wider verify-to-settle race is discussed in <a href="https://github.com/x402-foundation/x402/issues/1169">x402#1169</a>.</p>
+<p>Claim each authorization once, after the facilitator has verified it and before the handler runs. The resource server's <code>onAfterVerify</code> hook runs at exactly that point, and an <code>abort</code> from it becomes a 402 without running the handler:</p>
+<pre><code class="language-typescript">import { createHash } from &quot;node:crypto&quot;;
+import express from &quot;express&quot;;
+import { paymentMiddleware, x402ResourceServer } from &quot;@x402/express&quot;;
+import { HTTPFacilitatorClient } from &quot;@x402/core/server&quot;;
+import { ExactEvmScheme } from &quot;@x402/evm/exact/server&quot;;
+import { getBase64Encoder, getTransactionDecoder } from &quot;@solana/kit&quot;;
+import { createClient } from &quot;redis&quot;;
+
+// Use a shared, durable, non-evicting claim store. Atomic insertion alone
+// does not preserve claims after a store reset or eviction; test that operational
+// contract separately before claiming durable replay protection.
+// The claim store must never be what takes the seller down. With the offline
+// queue disabled, a command sent while disconnected fails at once; the queue
+// cap does the same when the store is connected but not replying; the error
+// listener stops a client error from crashing the process; and the connection
+// is made in the background, so startup never waits on it.
+const redis = createClient({
+  url: process.env.REDIS_URL,
+  disableOfflineQueue: true,
+  commandsQueueMaxLength: 1_000,
+  socket: { connectTimeout: 2_000 },
+});
+redis.on(&quot;error&quot;, (err) =&gt; console.warn(`replay store: ${err.message}`));
+redis.connect().catch(() =&gt; {});
+
+const CLAIM_MIN_S = 900;          // longer than maxTimeoutSeconds plus your slowest handler run
+const CLAIM_MAX_S = 366 * 86_400; // ceiling for a signer-chosen expiry
+const CLAIM_TIMEOUT_MS = 250;     // a slow store must not stall paid requests
+// When the store is unavailable: refuse before the handler runs (true), or run
+// it without duplicate protection (false). Fail open only if the handler is
+// idempotent or has its own side-effect boundary.
+const FAIL_CLOSED = true;
+
+// Identifies a verified authorization, however its JSON is encoded, and keeps
+// the claim until the authorization can no longer settle: the signer picks
+// that expiry, and verification does not cap it at maxTimeoutSeconds.
+function claimOf(
+  paymentPayload: { payload: Record&lt;string, any&gt; },
+  requirements: { network: string; asset: string },
+): { key: string; until: number } | undefined {
+  const now = Math.floor(Date.now() / 1000);
+  const keep = (expiry: unknown) =&gt; {
+    // Reject authorizations beyond our retention contract; never shorten a
+    // live authorization's claim lifetime and silently reopen its replay window.
+    const validUntil = BigInt(String(expiry));
+    if (validUntil &lt; 0n || validUntil + 60n &gt; BigInt(now + CLAIM_MAX_S)) {
+      throw new Error(&quot;Authorization expiry exceeds the replay retention horizon&quot;);
+    }
+    return Math.max(now + CLAIM_MIN_S, Number(validUntil + 60n));
+  };
+  const p = paymentPayload.payload;
+  if (p.authorization?.nonce) {
+    // EVM exact, EIP-3009: each token contract accepts a (from, nonce) once.
+    const { from, nonce, validBefore } = p.authorization;
+    const asset = requirements.asset.toLowerCase();
+    return {
+      key: `x402:${requirements.network}:${asset}:${from.toLowerCase()}:${nonce.toLowerCase()}`,
+      until: keep(validBefore),
+    };
+  }
+  if (p.permit2Authorization?.nonce !== undefined) {
+    // EVM exact, Permit2: uint256 nonces per owner, across tokens. The signed
+    // value is BigInt(nonce), so &quot;1&quot;, &quot;01&quot; and &quot;0x1&quot; are one authorization.
+    const { from, nonce, deadline } = p.permit2Authorization;
+    return {
+      key: `x402:${requirements.network}:permit2:${from.toLowerCase()}:${BigInt(nonce)}`,
+      until: keep(deadline),
+    };
+  }
+  if (typeof p.transaction === &quot;string&quot;) {
+    // SVM exact: hash the message the payer signed, not the whole transaction.
+    // The fee payer's signature slot is outside the payer's signature.
+    const tx = getTransactionDecoder().decode(getBase64Encoder().encode(p.transaction));
+    const digest = createHash(&quot;sha256&quot;).update(new Uint8Array(tx.messageBytes)).digest(&quot;hex&quot;);
+    return { key: `x402:${requirements.network}:${digest}`, until: now + CLAIM_MIN_S };
+  }
+  return undefined;
+}
+
+function withTimeout&lt;T&gt;(promise: Promise&lt;T&gt;, ms: number): Promise&lt;T&gt; {
+  return Promise.race([
+    promise,
+    new Promise&lt;T&gt;((_, reject) =&gt; setTimeout(reject, ms, new Error(&quot;timeout&quot;)).unref()),
+  ]);
+}
+
+const resourceServer = new x402ResourceServer(
+  new HTTPFacilitatorClient({ url: process.env.FACILITATOR_URL }),
+)
+  .register(&quot;eip155:8453&quot;, new ExactEvmScheme())
+  .onAfterVerify(async ({ paymentPayload, requirements, result }) =&gt; {
+    if (!result.isValid) return; // an invalid payment never takes a claim
+    let claim: ReturnType&lt;typeof claimOf&gt;;
+    let set: Promise&lt;string | null&gt; | undefined;
+    try {
+      claim = claimOf(paymentPayload, requirements);
+      if (!claim) {
+        return { abort: true, reason: &quot;claim_unsupported&quot;, message: &quot;Authorization cannot be guarded.&quot; };
+      }
+      // NX is atomic: of two simultaneous copies exactly one wins.
+      set = redis.set(claim.key, &quot;1&quot;, {
+        condition: &quot;NX&quot;,
+        expiration: { type: &quot;EXAT&quot;, value: claim.until },
+      });
+      if ((await withTimeout(set, CLAIM_TIMEOUT_MS)) === &quot;OK&quot;) return;
+      return {
+        abort: true,
+        reason: &quot;payment_replayed&quot;,
+        message: &quot;This payment authorization was already presented.&quot;,
+      };
+    } catch {
+      // Return, don't throw: the resource server logs and skips a hook that
+      // throws, which would run the handler unguarded.
+      if (FAIL_CLOSED) {
+        // A write that timed out can still land. This request is refused and
+        // the handler never runs, so release a late claim, or the retry
+        // would be refused as a replay of work that never happened.
+        set?.then((reply) =&gt; (reply === &quot;OK&quot; &amp;&amp; claim ? redis.del(claim.key) : 0)).catch(() =&gt; {});
+        return { abort: true, reason: &quot;claim_unavailable&quot;, message: &quot;Retry shortly.&quot; };
+      }
+    }
+  });
+
+const app = express();
+app.use(express.json());
+app.use(
+  paymentMiddleware(
+    {
+      &quot;POST /report&quot;: {
+        accepts: [{ scheme: &quot;exact&quot;, price: &quot;$0.01&quot;, network: &quot;eip155:8453&quot;, payTo: process.env.PAY_TO! }],
+      },
+    },
+    resourceServer,
+  ),
+);
+app.post(&quot;/report&quot;, async (req, res, next) =&gt; {
+  try {
+    res.json(await buildReport(req.body));
+  } catch (error) {
+    // Keep the claim: a failed handler may already have performed side effects.
+    next(error);
+  }
+});
+</code></pre>
+<p>Any store with an atomic conditional insert works: DynamoDB <code>PutItem</code> with <code>attribute_not_exists</code>, or a unique index in Postgres. Two things the guard does not decide for you. If the store is down, <code>FAIL_CLOSED</code> keeps the once-per-authorization guarantee at the cost of availability; failing open keeps the route up but lets every copy run the handler until the store recovers, so use it only for idempotent handlers. And <code>payment_replayed</code> means the authorization was presented before, not that the first attempt failed: if the client lost the first response, the work may have run and the payment may have settled, so it should reconcile the original request before signing a new authorization. This closes duplicate copies of one authorization only. A payer who invalidates the payment between verify and settle (for example by moving the funds) still gets one handler run; for expensive routes, hold funds before doing the work.</p>
+<p><strong>Discovery.</strong> Facilitators that implement the x402 bazaar extension expose a <code>/discovery/resources</code> endpoint — query the CDP catalog at <code>https://api.cdp.coinbase.com/platform/v2/x402/discovery/resources</code> and the PayAI catalog at <code>https://facilitator.payai.network/discovery/resources</code>. For Solana-payable services there is also <a href="https://pay.sh">pay.sh</a>, the Solana Foundation's curated catalog.</p>
+<h4>Examples</h4>
+<h5>Budget enforcement in an MCP client</h5>
+<p>When building an orchestrator that calls the agentpay MCP server, enforce budgets before dispatching paid tool calls.</p>
+<blockquote>
+<p><strong>Prerequisites</strong>: Install the package before adding the MCP config — <code>npx</code> without <code>-y</code> will prompt for confirmation in non-interactive environments, causing the server to hang: <code>npm install -g agentwallet-sdk@6.0.0</code></p>
+</blockquote>
+<pre><code class="language-typescript">import { Client } from &quot;@modelcontextprotocol/sdk/client/index.js&quot;;
+import { StdioClientTransport } from &quot;@modelcontextprotocol/sdk/client/stdio.js&quot;;
+
+async function main() {
+  // 1. Validate credentials before constructing the transport.
+  //    A missing key must fail immediately — never let the subprocess start without auth.
+  const walletKey = process.env.WALLET_PRIVATE_KEY;
+  if (!walletKey) {
+    throw new Error(&quot;WALLET_PRIVATE_KEY is not set — refusing to start payment server&quot;);
+  }
+
+  // Connect to the agentpay MCP server via stdio transport.
+  // Whitelist only the env vars the server needs — never forward all of process.env
+  // to a third-party subprocess that manages private keys.
+  const transport = new StdioClientTransport({
+    command: &quot;npx&quot;,
+    args: [&quot;agentwallet-sdk@6.0.0&quot;],
+    env: {
+      PATH: process.env.PATH ?? &quot;&quot;,
+      NODE_ENV: process.env.NODE_ENV ?? &quot;production&quot;,
+      WALLET_PRIVATE_KEY: walletKey,
+    },
+  });
+  const agentpay = new Client({ name: &quot;orchestrator&quot;, version: &quot;1.0.0&quot; });
+  await agentpay.connect(transport);
+
+  // 2. Set spending policy before delegating to the agent.
+  //    Always verify success — a silent failure means no controls are active.
+  const policyResult = await agentpay.callTool({
+    name: &quot;set_policy&quot;,
+    arguments: {
+      per_task_budget: 0.50,
+      per_session_budget: 5.00,
+      allowlisted_recipients: [&quot;api.example.com&quot;],
+    },
+  });
+  if (policyResult.isError) {
+    throw new Error(
+      `Failed to set spending policy — do not delegate: ${JSON.stringify(policyResult.content)}`
+    );
+  }
+
+  // 3. Use preToolCheck before any paid action
+  await preToolCheck(agentpay, 0.01);
+}
+
+// Pre-tool hook: fail-closed budget enforcement with four distinct error paths.
+async function preToolCheck(agentpay: Client, apiCost: number): Promise&lt;void&gt; {
+  // Path 1: Reject invalid input (NaN/Infinity bypass the &lt; comparison)
+  if (!Number.isFinite(apiCost) || apiCost &lt; 0) {
+    throw new Error(`Invalid apiCost: ${apiCost} — action blocked`);
+  }
+
+  // Path 2: Transport/connectivity failure
+  let result;
+  try {
+    result = await agentpay.callTool({ name: &quot;check_spending&quot; });
+  } catch (err) {
+    throw new Error(`Payment service unreachable — action blocked: ${err}`);
+  }
+
+  // Path 3: Tool returned an error (e.g., auth failure, wallet not initialised)
+  if (result.isError) {
+    throw new Error(
+      `check_spending failed — action blocked: ${JSON.stringify(result.content)}`
+    );
+  }
+
+  // Path 4: Parse and validate the response shape
+  let remaining: number;
+  try {
+    const parsed = JSON.parse(
+      (result.content as Array&lt;{ text: string }&gt;)[0].text
+    );
+    if (!Number.isFinite(parsed?.remaining)) {
+      throw new TypeError(&quot;missing or non-finite 'remaining' field&quot;);
+    }
+    remaining = parsed.remaining;
+  } catch (err) {
+    throw new Error(
+      `check_spending returned unexpected format — action blocked: ${err}`
+    );
+  }
+
+  // Path 5: Budget exceeded
+  if (remaining &lt; apiCost) {
+    throw new Error(
+      `Budget exceeded: need $${apiCost} but only $${remaining} remaining`
+    );
+  }
+}
+
+main().catch((err) =&gt; {
+  console.error(err);
+  process.exitCode = 1;
+});
+</code></pre>
+<h4>Best Practices</h4>
+<ul>
+<li><strong>Set budgets before delegation</strong>: When spawning sub-agents, attach a SpendingPolicy via your orchestration layer. Never give an agent unlimited spend.</li>
+<li><strong>Pin your dependencies</strong>: Always specify an exact version in your MCP config (e.g., <code>agentwallet-sdk@6.0.0</code>). Verify package integrity before deploying to production.</li>
+<li><strong>Audit trails</strong>: Use <code>list_transactions</code> in post-task hooks to log what was spent and why.</li>
+<li><strong>Fail closed</strong>: If the payment tool is unreachable, block the paid action — don't fall back to unmetered access.</li>
+<li><strong>Pair with security-review</strong>: Payment tools are high-privilege. Apply the same scrutiny as shell access.</li>
+<li><strong>Test with testnets first</strong>: Use Base Sepolia for development; switch to Base mainnet for production. On Solana, develop against Solana devnet (<code>solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1</code>) and the free x402.org facilitator before moving to a production facilitator on mainnet.</li>
+<li><strong>On Solana, fund USDC not SOL</strong>: The exact-SVM scheme makes the facilitator the transaction fee payer, so a SOL-less wallet still pays. Verify each challenge's <code>asset</code> against the expected USDC mint (mainnet <code>EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v</code>, devnet <code>4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU</code>) before signing — a wrapped client that pays any asset is a hole in your budget.</li>
+</ul>
+<h4>Production Reference</h4>
+<ul>
+<li><strong>npm</strong>: <a href="https://www.npmjs.com/package/agentwallet-sdk"><code>agentwallet-sdk</code></a></li>
+<li><strong>Merged into NVIDIA NeMo Agent Toolkit</strong>: <a href="https://github.com/NVIDIA/NeMo-Agent-Toolkit-Examples/pull/17">PR #17</a> — x402 payment tool for NVIDIA's agent examples</li>
+<li><strong>Protocol spec</strong>: <a href="https://x402.org">x402.org</a></li>
+<li><strong>OKX Payments SDKs</strong>: <a href="https://github.com/okx/payments"><code>okx/payments</code></a> — TypeScript, Go, Rust, and Java seller integrations for X Layer x402</li>
+<li><strong>OKX Agent Payments Protocol skill</strong>: <a href="https://github.com/okx/onchainos-skills/tree/main/skills/okx-agent-payments-protocol"><code>okx/onchainos-skills</code></a></li>
+<li><strong>OKX Payments overview</strong>: <a href="https://web3.okx.com/onchainos/dev-docs/payments/overview">web3.okx.com/onchainos/dev-docs/payments/overview</a></li>
+<li><strong>Upstream x402 monorepo</strong>: <a href="https://github.com/x402-foundation/x402"><code>x402-foundation/x402</code></a> — TypeScript, Python, and Go implementations plus maintained client and server examples</li>
+<li><strong>x402 docs</strong>: <a href="https://docs.x402.org">docs.x402.org</a>; production facilitator list at <a href="https://docs.x402.org/dev-tools/facilitators">docs.x402.org/dev-tools/facilitators</a></li>
+<li><strong><code>@x402</code> packages</strong>: <a href="https://www.npmjs.com/org/x402">npmjs.com/org/x402</a> — <code>@x402/fetch</code>, <code>@x402/axios</code>, <code>@x402/express</code>, <code>@x402/hono</code>, <code>@x402/next</code>, <code>@x402/fastify</code>, <code>@x402/evm</code>, <code>@x402/svm</code></li>
+<li><strong>Facilitators</strong>: <a href="https://github.com/x402-foundation/x402/tree/main/examples/typescript/servers/self-facilitation">self-facilitation example</a> (no third party), <a href="https://x402.org/facilitator">x402.org facilitator</a> (testnet default), and the maintained <a href="https://docs.x402.org/dev-tools/facilitators">production list</a></li>
+<li><strong>Discovery</strong>: CDP and PayAI bazaars at <code>/discovery/resources</code>; <a href="https://pay.sh">pay.sh</a> for Solana-payable services</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

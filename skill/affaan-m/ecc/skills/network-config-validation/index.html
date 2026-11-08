@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>network-config-validation · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re about to paste a Cisco IOS-style config into a router or switch, or let automation push a generated one. It does: checks destructive commands, management exposure, duplicate IPs and overlapping subnets, undefined ACLs or route-maps, then hygiene such as NTP and logging. You get: findings from Python checks you can reuse as a pre-flight gate that fails closed on dangerous commands and credentials. Not: a device parser: a network engineer still approves intent, syntax and rollback." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <div class="title-row"><h1>network-config-validation</h1><button type="button" class="save" data-save="skill:affaan-m/ecc/skills/network-config-validation" aria-pressed="false" aria-label="Save network-config-validation" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re about to paste a Cisco IOS-style config into a router or switch, or let automation push a generated one</dd></div><div><dt>It does</dt><dd>checks destructive commands, management exposure, duplicate IPs and overlapping subnets, undefined ACLs or route-maps, then hygiene such as NTP and logging</dd></div><div><dt>You get</dt><dd>findings from Python checks you can reuse as a pre-flight gate that fails closed on dangerous commands and credentials</dd></div><div><dt>Not</dt><dd>a device parser: a network engineer still approves intent, syntax and rollback</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A pre-flight review from ECC for network configuration, built on layered evidence rather than a full parser. The agent checks in a fixed order. Destructive commands: reload, erase, format, removing a routing process or an interface, aaa new-model and crypto key changes. Management exposure: VTY lines that allow Telnet or lack an inbound access-class or exec-timeout, read block by block so checks don&#39;t spill across sections. Addressing: duplicate interface IPs and overlapping subnets, with Python&#39;s ipaddress module. References: ACLs, route-maps and prefix-lists that are used but never defined. Hygiene: default or SNMPv2 communities, SSH version 1, enable password instead of enable secret, and missing NTP, timestamps, logging or banners. Most checks come as Python code. Before a change window it runs on the exact snippet and the full candidate config, and confirms rollback and out-of-band access. Before Netmiko, NAPALM or Ansible pushes a config, it blocks on dangerous commands and credentials and only warns about hygiene gaps outside the change.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/network-config-validation">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">affaan-m/</span><wbr><span class="word">ecc</span> <span class="word">--skill</span> <span class="word">network-config-validation</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill network-config-validation">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/network-config-validation">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/network-config-validation">Source on GitHub</a> · <a href="/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,300 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>299,252 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">473</div>
+      <div class="stat-delta">+66% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 285; week to Sep 27: 255; week to Oct 4: 159; week to Oct 11: 139; week to Oct 18: 233; week to Oct 25: 409; week to Nov 1: 404; week to Nov 8: 473. Use the left and right arrow keys to read each week."
+        data-values="285,255,159,139,233,409,404,473" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.5 38.6,26.3 71.1,35.2 103.7,37.1 136.3,28.3 168.9,12.0 201.4,12.4 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>285</td></tr><tr><td>Sep 27</td><td>255</td></tr><tr><td>Oct 4</td><td>159</td></tr><tr><td>Oct 11</td><td>139</td></tr><tr><td>Oct 18</td><td>233</td></tr><tr><td>Oct 25</td><td>409</td></tr><tr><td>Nov 1</td><td>404</td></tr><tr><td>Nov 8</td><td>473</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/?tag=category%3Adebugging">category:<wbr>debugging</a><a class="tag" data-tag="category:networking" data-facet="category" title="Computer networks: home labs, VLANs, VPNs, DNS, routing and network diagnostics." href="/?tag=category%3Anetworking">category:<wbr>networking</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Computer networks: home labs, VLANs, VPNs, DNS, routing and network diagnostics.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="infrastructure" data-facet="topic" href="/?tag=infrastructure">infrastructure</a><a class="tag" data-tag="security" data-facet="topic" href="/?tag=security">security</a><a class="tag" data-tag="verification" data-facet="topic" href="/?tag=verification">verification</a><a class="tag" data-tag="code-review" data-facet="topic" href="/?tag=code-review">code-review</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:cisco-ios" data-facet="stack" href="/?tag=stack%3Acisco-ios">stack:<wbr>cisco-ios</a><a class="tag" data-tag="stack:python" data-facet="stack" href="/?tag=stack%3Apython">stack:<wbr>python</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/network-config-validation/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: network-config-validation
+description: Pre-deployment checks for router and switch configuration, including dangerous commands, duplicate addresses, subnet overlaps, stale references, management-plane risk, and IOS-style security hygiene. Use when reviewing a router or switch configuration before deployment.
+metadata:
+  origin: community</code></pre></details>
+        <div class="markdown"><h3>Network Config Validation</h3>
+<p>Use this skill to review network configuration before a change window or before
+an automation run touches production devices.</p>
+<h4>When to Use</h4>
+<ul>
+<li>Reviewing Cisco IOS or IOS-XE style snippets before deployment.</li>
+<li>Auditing generated config from scripts or templates.</li>
+<li>Looking for dangerous commands, duplicate IP addresses, or subnet overlaps.</li>
+<li>Checking whether ACLs, route-maps, prefix-lists, or line policies are referenced
+but not defined.</li>
+<li>Building lightweight pre-flight scripts for network automation.</li>
+</ul>
+<h4>How It Works</h4>
+<p>Treat config validation as layered evidence, not as a complete parser. Regex
+checks are useful for pre-flight warnings, but final approval still needs a
+network engineer to review intent, platform syntax, and rollback steps.</p>
+<p>Validate in this order:</p>
+<ol>
+<li>Destructive commands.</li>
+<li>Credential and management-plane exposure.</li>
+<li>Duplicate addresses and overlapping subnets.</li>
+<li>Stale references to ACLs, route-maps, prefix-lists, and interfaces.</li>
+<li>Operational hygiene such as NTP, timestamps, remote logging, and banners.</li>
+</ol>
+<h4>Dangerous Command Detection</h4>
+<pre><code class="language-python">import re
+
+DANGEROUS_PATTERNS: list[tuple[re.Pattern[str], str]] = [
+    (re.compile(r&quot;\breload\b&quot;, re.I), &quot;reload causes downtime&quot;),
+    (re.compile(r&quot;\berase\s+(startup|nvram|flash)&quot;, re.I), &quot;erases persistent storage&quot;),
+    (re.compile(r&quot;\bformat\b&quot;, re.I), &quot;formats a device filesystem&quot;),
+    (re.compile(r&quot;\bno\s+router\s+(bgp|ospf|eigrp)\b&quot;, re.I), &quot;removes a routing process&quot;),
+    (re.compile(r&quot;\bno\s+interface\s+\S+&quot;, re.I), &quot;removes interface configuration&quot;),
+    (re.compile(r&quot;\baaa\s+new-model\b&quot;, re.I), &quot;changes authentication behavior&quot;),
+    (re.compile(r&quot;\bcrypto\s+key\s+(zeroize|generate)\b&quot;, re.I), &quot;changes device SSH keys&quot;),
+]
+
+def find_dangerous_commands(lines: list[str]) -&gt; list[dict[str, str | int]]:
+    findings = []
+    for line_number, line in enumerate(lines, start=1):
+        stripped = line.strip()
+        for pattern, reason in DANGEROUS_PATTERNS:
+            if pattern.search(stripped):
+                findings.append({
+                    &quot;line&quot;: line_number,
+                    &quot;command&quot;: stripped,
+                    &quot;reason&quot;: reason,
+                })
+    return findings
+</code></pre>
+<h4>Duplicate IPs And Subnet Overlaps</h4>
+<pre><code class="language-python">import ipaddress
+import re
+from collections import Counter
+
+IP_ADDRESS_RE = re.compile(
+    r&quot;^\s*ip address\s+&quot;
+    r&quot;(?P&lt;ip&gt;\d{1,3}(?:\.\d{1,3}){3})\s+&quot;
+    r&quot;(?P&lt;mask&gt;\d{1,3}(?:\.\d{1,3}){3})\b&quot;,
+    re.I | re.M,
+)
+
+def extract_interfaces(config: str) -&gt; list[dict[str, str]]:
+    results = []
+    current = None
+    for line in config.splitlines():
+        if line.startswith(&quot;interface &quot;):
+            current = line.split(maxsplit=1)[1]
+            continue
+        match = IP_ADDRESS_RE.match(line)
+        if current and match:
+            ip = match.group(&quot;ip&quot;)
+            mask = match.group(&quot;mask&quot;)
+            network = ipaddress.ip_interface(f&quot;{ip}/{mask}&quot;).network
+            results.append({&quot;interface&quot;: current, &quot;ip&quot;: ip, &quot;network&quot;: str(network)})
+    return results
+
+def find_duplicate_ips(config: str) -&gt; list[str]:
+    ips = [entry[&quot;ip&quot;] for entry in extract_interfaces(config)]
+    counts = Counter(ips)
+    return sorted(ip for ip, count in counts.items() if count &gt; 1)
+
+def find_subnet_overlaps(config: str) -&gt; list[tuple[str, str]]:
+    networks = [ipaddress.ip_network(entry[&quot;network&quot;]) for entry in extract_interfaces(config)]
+    overlaps = []
+    for index, left in enumerate(networks):
+        for right in networks[index + 1:]:
+            if left.overlaps(right):
+                overlaps.append((str(left), str(right)))
+    return overlaps
+</code></pre>
+<h4>Management-Plane Checks</h4>
+<p>Parse VTY blocks by section so access-class checks do not spill across unrelated
+lines.</p>
+<pre><code class="language-python">import re
+
+def iter_blocks(config: str, starts_with: str) -&gt; list[str]:
+    blocks = []
+    current: list[str] = []
+    for line in config.splitlines():
+        if line.startswith(starts_with):
+            if current:
+                blocks.append(&quot;\n&quot;.join(current))
+            current = [line]
+            continue
+        if current:
+            if line and not line.startswith(&quot; &quot;):
+                blocks.append(&quot;\n&quot;.join(current))
+                current = []
+            else:
+                current.append(line)
+    if current:
+        blocks.append(&quot;\n&quot;.join(current))
+    return blocks
+
+def check_vty_blocks(config: str) -&gt; list[str]:
+    issues = []
+    for block in iter_blocks(config, &quot;line vty&quot;):
+        if re.search(r&quot;transport\s+input\s+.*telnet&quot;, block, re.I):
+            issues.append(&quot;VTY allows Telnet; require SSH only.&quot;)
+        if not re.search(r&quot;\baccess-class\s+\S+\s+in\b&quot;, block, re.I):
+            issues.append(&quot;VTY block has no inbound access-class source restriction.&quot;)
+        if not re.search(r&quot;\bexec-timeout\s+\d+\s+\d+\b&quot;, block, re.I):
+            issues.append(&quot;VTY block has no explicit exec-timeout.&quot;)
+    return issues
+</code></pre>
+<h4>Security Hygiene Checks</h4>
+<pre><code class="language-python">SECURITY_PATTERNS = [
+    (re.compile(r&quot;\bsnmp-server community\s+(public|private)\b&quot;, re.I),
+     &quot;default SNMP community configured&quot;),
+    (re.compile(r&quot;\bsnmp-server community\s+\S+&quot;, re.I),
+     &quot;SNMPv2 community string configured; prefer SNMPv3 authPriv&quot;),
+    (re.compile(r&quot;\bip ssh version 1\b&quot;, re.I),
+     &quot;SSH version 1 enabled&quot;),
+    (re.compile(r&quot;\benable password\b&quot;, re.I),
+     &quot;enable password is present; use enable secret&quot;),
+    (re.compile(r&quot;\busername\s+\S+\s+password\b&quot;, re.I),
+     &quot;local username uses password instead of secret&quot;),
+]
+
+BEST_PRACTICE_PATTERNS = [
+    (re.compile(r&quot;\bntp server\b&quot;, re.I), &quot;NTP server&quot;),
+    (re.compile(r&quot;\bservice timestamps\b&quot;, re.I), &quot;log timestamps&quot;),
+    (re.compile(r&quot;\blogging\s+\S+&quot;, re.I), &quot;logging destination or buffer&quot;),
+    (re.compile(r&quot;\bsnmp-server group\s+\S+\s+v3\s+priv\b&quot;, re.I), &quot;SNMPv3 authPriv group&quot;),
+    (re.compile(r&quot;\bbanner\s+(login|motd)\b&quot;, re.I), &quot;login banner&quot;),
+]
+
+def check_security(config: str) -&gt; list[str]:
+    return [message for pattern, message in SECURITY_PATTERNS if pattern.search(config)]
+
+def check_missing_hygiene(config: str) -&gt; list[str]:
+    return [
+        f&quot;Missing {description}&quot;
+        for pattern, description in BEST_PRACTICE_PATTERNS
+        if not pattern.search(config)
+    ]
+</code></pre>
+<h4>Examples</h4>
+<h5>Change-Window Preflight</h5>
+<ol>
+<li>Run dangerous-command checks on the exact snippet to be pasted.</li>
+<li>Run duplicate IP and subnet overlap checks against the full candidate config.</li>
+<li>Confirm every referenced ACL, route-map, and prefix-list exists.</li>
+<li>Confirm rollback commands and out-of-band access before any management-plane
+change.</li>
+</ol>
+<h5>Automation Preflight</h5>
+<p>Use validation as a blocking gate before Netmiko, NAPALM, Ansible, or vendor API
+automation pushes a generated config. Fail closed on dangerous commands and
+credentials. Warn on best-practice gaps that are outside the change scope.</p>
+<h4>Anti-Patterns</h4>
+<ul>
+<li>Treating regex validation as a device parser.</li>
+<li>Applying generated config without a dry-run diff.</li>
+<li>Recommending SNMPv2 community strings as a monitoring requirement.</li>
+<li>Checking VTY blocks with regex that can accidentally span unrelated sections.</li>
+<li>Testing firewall behavior by disabling ACLs instead of reading counters/logs.</li>
+</ul>
+<h4>See Also</h4>
+<ul>
+<li>Agent: <code>network-config-reviewer</code></li>
+<li>Agent: <code>network-troubleshooter</code></li>
+<li>Skill: <code>network-interface-health</code></li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

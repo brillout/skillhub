@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>folder-structure-blueprint-generator · SkillHub</title>
+    <meta name="description" content="Use it when: you want a codebase&#039;s layout conventions written down, so people and agents put new files where they belong. It does: detects the project type and whether it&#039;s a monorepo, uses microservices or has a frontend, then documents directories, file placement, naming, entry points, build output and extension. You get: Project_Folders_Structure_Blueprint.md, with a folder tree drawn as ASCII, nested lists or a table, ending with a note on keeping it current. Detects: .NET, Java, React, Angular, Python, Node.js and Flutter projects from their solution, build and package files. Unlike: project-workflow-analysis-blueprint-generator, from the same repo, which follows how a request moves through the code; this maps where the code lives." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=github%2Fawesome-copilot">github/awesome-copilot</a></p>
+      <div class="title-row"><h1>folder-structure-blueprint-generator</h1><button type="button" class="save" data-save="skill:github/awesome-copilot/skills/folder-structure-blueprint-generator" aria-pressed="false" aria-label="Save folder-structure-blueprint-generator" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want a codebase&#39;s layout conventions written down, so people and agents put new files where they belong</dd></div><div><dt>It does</dt><dd>detects the project type and whether it&#39;s a monorepo, uses microservices or has a frontend, then documents directories, file placement, naming, entry points, build output and extension</dd></div><div><dt>You get</dt><dd>Project_Folders_Structure_Blueprint.md, with a folder tree drawn as ASCII, nested lists or a table, ending with a note on keeping it current</dd></div><div><dt>Detects</dt><dd>.NET, Java, React, Angular, Python, Node.js and Flutter projects from their solution, build and package files</dd></div><div><dt>Unlike</dt><dd>project-workflow-analysis-blueprint-generator, from the same repo, which follows how a request moves through the code; this maps where the code lives</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A prompt template. Configuration variables at the top choose the project type or auto-detection, whether it&#39;s a monorepo, uses microservices or has a frontend, how to draw the tree and how many levels deep, and whether to include file counts, generated folders such as node_modules, file placement patterns and templates. Auto-detection looks for .sln and .csproj files, pom.xml or build.gradle, package.json with files such as angular.json or next.config.js, requirements.txt or pyproject.toml, and pubspec.yaml. The blueprint covers the organizing principle (by feature, layer or domain), the directory tree, what each significant directory holds, where configuration, models, business logic, interfaces, tests and docs go, naming conventions for files, folders and namespaces, entry points and where to add features or tests, build and output layout, patterns specific to .NET, Java and Node.js, how the structure scales, optional templates for a new feature, component, service or test, and the tools or checks that enforce the structure.</p>
+      <p class="muted">Summarizes <a href="https://github.com/github/awesome-copilot/tree/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/folder-structure-blueprint-generator">the skill at 797337f</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">github/</span><wbr><span class="word">awesome-copilot</span> <span class="word">--skill</span> <span class="word">folder-structure-blueprint-generator</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/github/awesome-copilot --skill folder-structure-blueprint-generator">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/github/awesome-copilot/folder-structure-blueprint-generator">skills.sh page</a> · <a href="https://github.com/github/awesome-copilot/tree/HEAD/skills/folder-structure-blueprint-generator">Source on GitHub</a> · <a href="/?repo=github%2Fawesome-copilot">All skills from github/awesome-copilot</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>9,500 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>40,908 <span class="muted">github/awesome-copilot</span></dd></div><div><dt>First seen</dt><dd>Feb 25, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">15</div>
+      <div class="stat-delta">-17% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 18; week to Sep 27: 28; week to Oct 4: 28; week to Oct 11: 17; week to Oct 18: 18; week to Oct 25: 12; week to Nov 1: 19; week to Nov 8: 15. Use the left and right arrow keys to read each week."
+        data-values="18,28,28,17,18,12,19,15" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,21.7 38.6,6.0 71.1,6.0 103.7,23.3 136.3,21.7 168.9,31.1 201.4,20.1 234.0,26.4" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="26.4" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>18</td></tr><tr><td>Sep 27</td><td>28</td></tr><tr><td>Oct 4</td><td>28</td></tr><tr><td>Oct 11</td><td>17</td></tr><tr><td>Oct 18</td><td>18</td></tr><tr><td>Oct 25</td><td>12</td></tr><tr><td>Nov 1</td><td>19</td></tr><tr><td>Nov 8</td><td>15</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:writing" data-facet="category" title="Articles, docs, internal comms, research write-ups and prose that doesn&#39;t read as generated." href="/?tag=category%3Awriting">category:<wbr>writing</a></div>
+          <p class="tag-meaning">Articles, docs, internal comms, research write-ups and prose that doesn&#39;t read as generated.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:command" data-facet="type" title="A one-shot action you invoke by name, such as turning the conversation into a PRD." href="/?tag=type%3Acommand">type:<wbr>command</a></div>
+          <p class="tag-meaning">A one-shot action you invoke by name, such as turning the conversation into a PRD.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="docs-writing" data-facet="topic" href="/?tag=docs-writing">docs-writing</a><a class="tag" data-tag="architecture" data-facet="topic" href="/?tag=architecture">architecture</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/github/awesome-copilot/blob/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/folder-structure-blueprint-generator/SKILL.md">github/awesome-copilot at 797337f</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: folder-structure-blueprint-generator
+description: &#39;Comprehensive technology-agnostic prompt for analyzing and documenting project folder structures. Auto-detects project types (.NET, Java, React, Angular, Python, Node.js, Flutter), generates detailed blueprints with visualization options, naming conventions, file placement patterns, and extension templates for maintaining consistent code organization across diverse technology stacks.&#39;</code></pre></details>
+        <div class="markdown"><h3>Project Folder Structure Blueprint Generator</h3>
+<h4>Configuration Variables</h4>
+<p>${PROJECT_TYPE=&quot;Auto-detect|.NET|Java|React|Angular|Python|Node.js|Flutter|Other&quot;}
+&lt;!-- Select primary technology --&gt;</p>
+<p>${INCLUDES_MICROSERVICES=&quot;Auto-detect|true|false&quot;}
+&lt;!-- Is this a microservices architecture? --&gt;</p>
+<p>${INCLUDES_FRONTEND=&quot;Auto-detect|true|false&quot;}
+&lt;!-- Does project include frontend components? --&gt;</p>
+<p>${IS_MONOREPO=&quot;Auto-detect|true|false&quot;}
+&lt;!-- Is this a monorepo with multiple projects? --&gt;</p>
+<p>${VISUALIZATION_STYLE=&quot;ASCII|Markdown List|Table&quot;}
+&lt;!-- How to visualize the structure --&gt;</p>
+<p>${DEPTH_LEVEL=1-5}
+&lt;!-- How many levels of folders to document in detail --&gt;</p>
+<p>${INCLUDE_FILE_COUNTS=true|false}
+&lt;!-- Include file count statistics --&gt;</p>
+<p>${INCLUDE_GENERATED_FOLDERS=true|false}
+&lt;!-- Include auto-generated folders --&gt;</p>
+<p>${INCLUDE_FILE_PATTERNS=true|false}
+&lt;!-- Document file naming/location patterns --&gt;</p>
+<p>${INCLUDE_TEMPLATES=true|false}
+&lt;!-- Include file/folder templates for new features --&gt;</p>
+<h4>Generated Prompt</h4>
+<p>&quot;Analyze the project's folder structure and create a comprehensive 'Project_Folders_Structure_Blueprint.md' document that serves as a definitive guide for maintaining consistent code organization. Use the following approach:</p>
+<h5>Initial Auto-detection Phase</h5>
+<p>${PROJECT_TYPE == &quot;Auto-detect&quot; ?
+&quot;Begin by scanning the folder structure for key files that identify the project type:</p>
+<ul>
+<li>Look for solution/project files (.sln, .csproj, .fsproj, .vbproj) to identify .NET projects</li>
+<li>Check for build files (pom.xml, build.gradle, settings.gradle) for Java projects</li>
+<li>Identify package.json with dependencies for JavaScript/TypeScript projects</li>
+<li>Look for specific framework files (angular.json, react-scripts entries, next.config.js)</li>
+<li>Check for Python project identifiers (requirements.txt, setup.py, pyproject.toml)</li>
+<li>Examine mobile app identifiers (pubspec.yaml, android/ios folders)</li>
+<li>Note all technology signatures found and their versions&quot; :
+&quot;Focus analysis on ${PROJECT_TYPE} project structure&quot;}</li>
+</ul>
+<p>${IS_MONOREPO == &quot;Auto-detect&quot; ?
+&quot;Determine if this is a monorepo by looking for:</p>
+<ul>
+<li>Multiple distinct projects with their own configuration files</li>
+<li>Workspace configuration files (lerna.json, nx.json, turborepo.json, etc.)</li>
+<li>Cross-project references and shared dependency patterns</li>
+<li>Root-level orchestration scripts and configuration&quot; : &quot;&quot;}</li>
+</ul>
+<p>${INCLUDES_MICROSERVICES == &quot;Auto-detect&quot; ?
+&quot;Check for microservices architecture indicators:</p>
+<ul>
+<li>Multiple service directories with similar/repeated structures</li>
+<li>Service-specific Dockerfiles or deployment configurations</li>
+<li>Inter-service communication patterns (APIs, message brokers)</li>
+<li>Service registry or discovery configuration</li>
+<li>API gateway configuration files</li>
+<li>Shared libraries or utilities across services&quot; : &quot;&quot;}</li>
+</ul>
+<p>${INCLUDES_FRONTEND == &quot;Auto-detect&quot; ?
+&quot;Identify frontend components by looking for:</p>
+<ul>
+<li>Web asset directories (wwwroot, public, dist, static)</li>
+<li>UI framework files (components, modules, pages)</li>
+<li>Frontend build configuration (webpack, vite, rollup, etc.)</li>
+<li>Style sheet organization (CSS, SCSS, styled-components)</li>
+<li>Static asset organization (images, fonts, icons)&quot; : &quot;&quot;}</li>
+</ul>
+<h5>1. Structural Overview</h5>
+<p>Provide a high-level overview of the ${PROJECT_TYPE == &quot;Auto-detect&quot; ? &quot;detected project type(s)&quot; : PROJECT_TYPE} project's organization principles and folder structure:</p>
+<ul>
+<li>Document the overall architectural approach reflected in the folder structure</li>
+<li>Identify the main organizational principles (by feature, by layer, by domain, etc.)</li>
+<li>Note any structural patterns that repeat throughout the codebase</li>
+<li>Document the rationale behind the structure where it can be inferred</li>
+</ul>
+<p>${IS_MONOREPO == &quot;Auto-detect&quot; ?
+&quot;If detected as a monorepo, explain how the monorepo is organized and the relationship between projects.&quot; :
+IS_MONOREPO ? &quot;Explain how the monorepo is organized and the relationship between projects.&quot; : &quot;&quot;}</p>
+<p>${INCLUDES_MICROSERVICES == &quot;Auto-detect&quot; ?
+&quot;If microservices are detected, describe how they are structured and organized.&quot; :
+INCLUDES_MICROSERVICES ? &quot;Describe how the microservices are structured and organized.&quot; : &quot;&quot;}</p>
+<h5>2. Directory Visualization</h5>
+<p>${VISUALIZATION_STYLE == &quot;ASCII&quot; ?
+&quot;Create an ASCII tree representation of the folder hierarchy to depth level ${DEPTH_LEVEL}.&quot; : &quot;&quot;}</p>
+<p>${VISUALIZATION_STYLE == &quot;Markdown List&quot; ?
+&quot;Use nested markdown lists to represent the folder hierarchy to depth level ${DEPTH_LEVEL}.&quot; : &quot;&quot;}</p>
+<p>${VISUALIZATION_STYLE == &quot;Table&quot; ?
+&quot;Create a table with columns for Path, Purpose, Content Types, and Conventions.&quot; : &quot;&quot;}</p>
+<p>${INCLUDE_GENERATED_FOLDERS ?
+&quot;Include all folders including generated ones.&quot; :
+&quot;Exclude auto-generated folders like bin/, obj/, node_modules/, etc.&quot;}</p>
+<h5>3. Key Directory Analysis</h5>
+<p>Document each significant directory's purpose, contents, and patterns:</p>
+<p>${PROJECT_TYPE == &quot;Auto-detect&quot; ?
+&quot;For each detected technology, analyze directory structures based on observed usage patterns:&quot; : &quot;&quot;}</p>
+<p>${(PROJECT_TYPE == &quot;.NET&quot; || PROJECT_TYPE == &quot;Auto-detect&quot;) ?
+&quot;#### .NET Project Structure (if detected)</p>
+<ul>
+<li>
+<p><strong>Solution Organization</strong>:</p>
+<ul>
+<li>How projects are grouped and related</li>
+<li>Solution folder organization patterns</li>
+<li>Multi-targeting project patterns</li>
+</ul>
+</li>
+<li>
+<p><strong>Project Organization</strong>:</p>
+<ul>
+<li>Internal folder structure patterns</li>
+<li>Source code organization approach</li>
+<li>Resource organization</li>
+<li>Project dependencies and references</li>
+</ul>
+</li>
+<li>
+<p><strong>Domain/Feature Organization</strong>:</p>
+<ul>
+<li>How business domains or features are separated</li>
+<li>Domain boundary enforcement patterns</li>
+</ul>
+</li>
+<li>
+<p><strong>Layer Organization</strong>:</p>
+<ul>
+<li>Separation of concerns (Controllers, Services, Repositories, etc.)</li>
+<li>Layer interaction and dependency patterns</li>
+</ul>
+</li>
+<li>
+<p><strong>Configuration Management</strong>:</p>
+<ul>
+<li>Configuration file locations and purposes</li>
+<li>Environment-specific configurations</li>
+<li>Secret management approach</li>
+</ul>
+</li>
+<li>
+<p><strong>Test Project Organization</strong>:</p>
+<ul>
+<li>Test project structure and naming</li>
+<li>Test categories and organization</li>
+<li>Test data and mock locations&quot; : &quot;&quot;}</li>
+</ul>
+</li>
+</ul>
+<p>${(PROJECT_TYPE == &quot;React&quot; || PROJECT_TYPE == &quot;Angular&quot; || PROJECT_TYPE == &quot;Auto-detect&quot;) ?
+&quot;#### UI Project Structure (if detected)</p>
+<ul>
+<li>
+<p><strong>Component Organization</strong>:</p>
+<ul>
+<li>Component folder structure patterns</li>
+<li>Grouping strategies (by feature, type, etc.)</li>
+<li>Shared vs. feature-specific components</li>
+</ul>
+</li>
+<li>
+<p><strong>State Management</strong>:</p>
+<ul>
+<li>State-related file organization</li>
+<li>Store structure for global state</li>
+<li>Local state management patterns</li>
+</ul>
+</li>
+<li>
+<p><strong>Routing Organization</strong>:</p>
+<ul>
+<li>Route definition locations</li>
+<li>Page/view component organization</li>
+<li>Route parameter handling</li>
+</ul>
+</li>
+<li>
+<p><strong>API Integration</strong>:</p>
+<ul>
+<li>API client organization</li>
+<li>Service layer structure</li>
+<li>Data fetching patterns</li>
+</ul>
+</li>
+<li>
+<p><strong>Asset Management</strong>:</p>
+<ul>
+<li>Static resource organization</li>
+<li>Image/media file structure</li>
+<li>Font and icon organization</li>
+</ul>
+</li>
+<li>
+<p><strong>Style Organization</strong>:</p>
+<ul>
+<li>CSS/SCSS file structure</li>
+<li>Theme organization</li>
+<li>Style module patterns&quot; : &quot;&quot;}</li>
+</ul>
+</li>
+</ul>
+<h5>4. File Placement Patterns</h5>
+<p>${INCLUDE_FILE_PATTERNS ?
+&quot;Document the patterns that determine where different types of files should be placed:</p>
+<ul>
+<li>
+<p><strong>Configuration Files</strong>:</p>
+<ul>
+<li>Locations for different types of configuration</li>
+<li>Environment-specific configuration patterns</li>
+</ul>
+</li>
+<li>
+<p><strong>Model/Entity Definitions</strong>:</p>
+<ul>
+<li>Where domain models are defined</li>
+<li>Data transfer object (DTO) locations</li>
+<li>Schema definition locations</li>
+</ul>
+</li>
+<li>
+<p><strong>Business Logic</strong>:</p>
+<ul>
+<li>Service implementation locations</li>
+<li>Business rule organization</li>
+<li>Utility and helper function placement</li>
+</ul>
+</li>
+<li>
+<p><strong>Interface Definitions</strong>:</p>
+<ul>
+<li>Where interfaces and abstractions are defined</li>
+<li>How interfaces are grouped and organized</li>
+</ul>
+</li>
+<li>
+<p><strong>Test Files</strong>:</p>
+<ul>
+<li>Unit test location patterns</li>
+<li>Integration test placement</li>
+<li>Test utility and mock locations</li>
+</ul>
+</li>
+<li>
+<p><strong>Documentation Files</strong>:</p>
+<ul>
+<li>API documentation placement</li>
+<li>Internal documentation organization</li>
+<li>README file distribution&quot; :
+&quot;Document where key file types are located in the project.&quot;}</li>
+</ul>
+</li>
+</ul>
+<h5>5. Naming and Organization Conventions</h5>
+<p>Document the naming and organizational conventions observed across the project:</p>
+<ul>
+<li>
+<p><strong>File Naming Patterns</strong>:</p>
+<ul>
+<li>Case conventions (PascalCase, camelCase, kebab-case)</li>
+<li>Prefix and suffix patterns</li>
+<li>Type indicators in filenames</li>
+</ul>
+</li>
+<li>
+<p><strong>Folder Naming Patterns</strong>:</p>
+<ul>
+<li>Naming conventions for different folder types</li>
+<li>Hierarchical naming patterns</li>
+<li>Grouping and categorization conventions</li>
+</ul>
+</li>
+<li>
+<p><strong>Namespace/Module Patterns</strong>:</p>
+<ul>
+<li>How namespaces/modules map to folder structure</li>
+<li>Import/using statement organization</li>
+<li>Internal vs. public API separation</li>
+</ul>
+</li>
+<li>
+<p><strong>Organizational Patterns</strong>:</p>
+<ul>
+<li>Code co-location strategies</li>
+<li>Feature encapsulation approaches</li>
+<li>Cross-cutting concern organization</li>
+</ul>
+</li>
+</ul>
+<h5>6. Navigation and Development Workflow</h5>
+<p>Provide guidance for navigating and working with the codebase structure:</p>
+<ul>
+<li>
+<p><strong>Entry Points</strong>:</p>
+<ul>
+<li>Main application entry points</li>
+<li>Key configuration starting points</li>
+<li>Initial files for understanding the project</li>
+</ul>
+</li>
+<li>
+<p><strong>Common Development Tasks</strong>:</p>
+<ul>
+<li>Where to add new features</li>
+<li>How to extend existing functionality</li>
+<li>Where to place new tests</li>
+<li>Configuration modification locations</li>
+</ul>
+</li>
+<li>
+<p><strong>Dependency Patterns</strong>:</p>
+<ul>
+<li>How dependencies flow between folders</li>
+<li>Import/reference patterns</li>
+<li>Dependency injection registration locations</li>
+</ul>
+</li>
+</ul>
+<p>${INCLUDE_FILE_COUNTS ?
+&quot;- <strong>Content Statistics</strong>:</p>
+<ul>
+<li>Files per directory analysis</li>
+<li>Code distribution metrics</li>
+<li>Complexity concentration areas&quot; : &quot;&quot;}</li>
+</ul>
+<h5>7. Build and Output Organization</h5>
+<p>Document the build process and output organization:</p>
+<ul>
+<li>
+<p><strong>Build Configuration</strong>:</p>
+<ul>
+<li>Build script locations and purposes</li>
+<li>Build pipeline organization</li>
+<li>Build task definitions</li>
+</ul>
+</li>
+<li>
+<p><strong>Output Structure</strong>:</p>
+<ul>
+<li>Compiled/built output locations</li>
+<li>Output organization patterns</li>
+<li>Distribution package structure</li>
+</ul>
+</li>
+<li>
+<p><strong>Environment-Specific Builds</strong>:</p>
+<ul>
+<li>Development vs. production differences</li>
+<li>Environment configuration strategies</li>
+<li>Build variant organization</li>
+</ul>
+</li>
+</ul>
+<h5>8. Technology-Specific Organization</h5>
+<p>${(PROJECT_TYPE == &quot;.NET&quot; || PROJECT_TYPE == &quot;Auto-detect&quot;) ?
+&quot;#### .NET-Specific Structure Patterns (if detected)</p>
+<ul>
+<li>
+<p><strong>Project File Organization</strong>:</p>
+<ul>
+<li>Project file structure and patterns</li>
+<li>Target framework configuration</li>
+<li>Property group organization</li>
+<li>Item group patterns</li>
+</ul>
+</li>
+<li>
+<p><strong>Assembly Organization</strong>:</p>
+<ul>
+<li>Assembly naming patterns</li>
+<li>Multi-assembly architecture</li>
+<li>Assembly reference patterns</li>
+</ul>
+</li>
+<li>
+<p><strong>Resource Organization</strong>:</p>
+<ul>
+<li>Embedded resource patterns</li>
+<li>Localization file structure</li>
+<li>Static web asset organization</li>
+</ul>
+</li>
+<li>
+<p><strong>Package Management</strong>:</p>
+<ul>
+<li>NuGet configuration locations</li>
+<li>Package reference organization</li>
+<li>Package version management&quot; : &quot;&quot;}</li>
+</ul>
+</li>
+</ul>
+<p>${(PROJECT_TYPE == &quot;Java&quot; || PROJECT_TYPE == &quot;Auto-detect&quot;) ?
+&quot;#### Java-Specific Structure Patterns (if detected)</p>
+<ul>
+<li>
+<p><strong>Package Hierarchy</strong>:</p>
+<ul>
+<li>Package naming and nesting conventions</li>
+<li>Domain vs. technical packages</li>
+<li>Visibility and access patterns</li>
+</ul>
+</li>
+<li>
+<p><strong>Build Tool Organization</strong>:</p>
+<ul>
+<li>Maven/Gradle structure patterns</li>
+<li>Module organization</li>
+<li>Plugin configuration patterns</li>
+</ul>
+</li>
+<li>
+<p><strong>Resource Organization</strong>:</p>
+<ul>
+<li>Resource folder structures</li>
+<li>Environment-specific resources</li>
+<li>Properties file organization&quot; : &quot;&quot;}</li>
+</ul>
+</li>
+</ul>
+<p>${(PROJECT_TYPE == &quot;Node.js&quot; || PROJECT_TYPE == &quot;Auto-detect&quot;) ?
+&quot;#### Node.js-Specific Structure Patterns (if detected)</p>
+<ul>
+<li>
+<p><strong>Module Organization</strong>:</p>
+<ul>
+<li>CommonJS vs. ESM organization</li>
+<li>Internal module patterns</li>
+<li>Third-party dependency management</li>
+</ul>
+</li>
+<li>
+<p><strong>Script Organization</strong>:</p>
+<ul>
+<li>npm/yarn script definition patterns</li>
+<li>Utility script locations</li>
+<li>Development tool scripts</li>
+</ul>
+</li>
+<li>
+<p><strong>Configuration Management</strong>:</p>
+<ul>
+<li>Configuration file locations</li>
+<li>Environment variable management</li>
+<li>Secret management approaches&quot; : &quot;&quot;}</li>
+</ul>
+</li>
+</ul>
+<h5>9. Extension and Evolution</h5>
+<p>Document how the project structure is designed to be extended:</p>
+<ul>
+<li>
+<p><strong>Extension Points</strong>:</p>
+<ul>
+<li>How to add new modules/features while maintaining conventions</li>
+<li>Plugin/extension folder patterns</li>
+<li>Customization directory structures</li>
+</ul>
+</li>
+<li>
+<p><strong>Scalability Patterns</strong>:</p>
+<ul>
+<li>How the structure scales for larger features</li>
+<li>Approach for breaking down large modules</li>
+<li>Code splitting strategies</li>
+</ul>
+</li>
+<li>
+<p><strong>Refactoring Patterns</strong>:</p>
+<ul>
+<li>Common refactoring approaches observed</li>
+<li>How structural changes are managed</li>
+<li>Incremental reorganization patterns</li>
+</ul>
+</li>
+</ul>
+<p>${INCLUDE_TEMPLATES ?
+&quot;### 10. Structure Templates</p>
+<p>Provide templates for creating new components that follow project conventions:</p>
+<ul>
+<li>
+<p><strong>New Feature Template</strong>:</p>
+<ul>
+<li>Folder structure for adding a complete feature</li>
+<li>Required file types and their locations</li>
+<li>Naming patterns to follow</li>
+</ul>
+</li>
+<li>
+<p><strong>New Component Template</strong>:</p>
+<ul>
+<li>Directory structure for a typical component</li>
+<li>Essential files to include</li>
+<li>Integration points with existing structure</li>
+</ul>
+</li>
+<li>
+<p><strong>New Service Template</strong>:</p>
+<ul>
+<li>Structure for adding a new service</li>
+<li>Interface and implementation placement</li>
+<li>Configuration and registration patterns</li>
+</ul>
+</li>
+<li>
+<p><strong>New Test Structure</strong>:</p>
+<ul>
+<li>Folder structure for test projects/files</li>
+<li>Test file organization templates</li>
+<li>Test resource organization&quot; : &quot;&quot;}</li>
+</ul>
+</li>
+</ul>
+<h5>${INCLUDE_TEMPLATES ? &quot;11&quot; : &quot;10&quot;}. Structure Enforcement</h5>
+<p>Document how the project structure is maintained and enforced:</p>
+<ul>
+<li>
+<p><strong>Structure Validation</strong>:</p>
+<ul>
+<li>Tools/scripts that enforce structure</li>
+<li>Build checks for structural compliance</li>
+<li>Linting rules related to structure</li>
+</ul>
+</li>
+<li>
+<p><strong>Documentation Practices</strong>:</p>
+<ul>
+<li>How structural changes are documented</li>
+<li>Where architectural decisions are recorded</li>
+<li>Structure evolution history</li>
+</ul>
+</li>
+</ul>
+<p>Include a section at the end about maintaining this blueprint and when it was last updated.
+&quot;</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

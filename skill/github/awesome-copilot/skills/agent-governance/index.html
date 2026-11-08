@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>agent-governance · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re building an agent that calls tools, such as APIs, databases or shell commands, and need limits on what it may do. It does: gives six Python patterns: policies, intent checks, a governing decorator for tools, trust scores, audit trails and framework wiring. You get: code to adapt: a policy object or YAML file, a @govern decorator, a decaying trust score and an append-only audit log. Works with: PydanticAI, CrewAI and the OpenAI Agents SDK, with an example for each. Unlike: output guardrails, which check after generation, its intent check runs on the request before any tool executes." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=github%2Fawesome-copilot">github/awesome-copilot</a></p>
+      <div class="title-row"><h1>agent-governance</h1><button type="button" class="save" data-save="skill:github/awesome-copilot/skills/agent-governance" aria-pressed="false" aria-label="Save agent-governance" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re building an agent that calls tools, such as APIs, databases or shell commands, and need limits on what it may do</dd></div><div><dt>It does</dt><dd>gives six Python patterns: policies, intent checks, a governing decorator for tools, trust scores, audit trails and framework wiring</dd></div><div><dt>You get</dt><dd>code to adapt: a policy object or YAML file, a @govern decorator, a decaying trust score and an append-only audit log</dd></div><div><dt>Works with</dt><dd>PydanticAI, CrewAI and the OpenAI Agents SDK, with an example for each</dd></div><div><dt>Unlike</dt><dd>output guardrails, which check after generation, its intent check runs on the request before any tool executes</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Reference patterns for putting a governance layer between an agent and its tools. A policy lists allowed and blocked tools, regex patterns to block, a cap on calls per request and tools that need human approval; policies can live in YAML and combine so the most restrictive rule wins. Intent classification scores a prompt against weighted regex signals for data exfiltration, privilege escalation, destructive commands and prompt injection before the agent acts. A decorator wraps each tool function to apply the policy and log every call. Trust scores rise with successes, fall faster with failures and decay over time, so delegated agents can be gated on them. The audit trail is append-only and exports to JSON Lines. A table matches four governance levels, from audit-only to locked-down allowlists, to risk, and a checklist covers setup, implementation and tests. It points to Microsoft&#39;s Agent Governance Toolkit and the OWASP Top 10 for LLM applications for more.</p>
+      <p class="muted">Summarizes <a href="https://github.com/github/awesome-copilot/tree/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/agent-governance">the skill at 797337f</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">github/</span><wbr><span class="word">awesome-copilot</span> <span class="word">--skill</span> <span class="word">agent-governance</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/github/awesome-copilot --skill agent-governance">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/github/awesome-copilot/agent-governance">skills.sh page</a> · <a href="https://github.com/github/awesome-copilot/tree/HEAD/skills/agent-governance">Source on GitHub</a> · <a href="/?repo=github%2Fawesome-copilot">All skills from github/awesome-copilot</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>9,700 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>40,908 <span class="muted">github/awesome-copilot</span></dd></div><div><dt>First seen</dt><dd>Feb 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">23</div>
+      <div class="stat-delta">+5% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 22; week to Sep 27: 32; week to Oct 4: 26; week to Oct 11: 28; week to Oct 18: 17; week to Oct 25: 12; week to Nov 1: 9; week to Nov 8: 23. Use the left and right arrow keys to read each week."
+        data-values="22,32,26,28,17,12,9,23" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,19.8 38.6,6.0 71.1,14.3 103.7,11.5 136.3,26.6 168.9,33.5 201.4,37.6 234.0,18.4" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="18.4" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>22</td></tr><tr><td>Sep 27</td><td>32</td></tr><tr><td>Oct 4</td><td>26</td></tr><tr><td>Oct 11</td><td>28</td></tr><tr><td>Oct 18</td><td>17</td></tr><tr><td>Oct 25</td><td>12</td></tr><tr><td>Nov 1</td><td>9</td></tr><tr><td>Nov 8</td><td>23</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/?tag=category%3Aagents">category:<wbr>agents</a><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/?tag=category%3Asecurity">category:<wbr>security</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/?tag=type%3Aguidelines">type:<wbr>guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="guardrails" data-facet="topic" href="/?tag=guardrails">guardrails</a><a class="tag" data-tag="agent-development" data-facet="topic" href="/?tag=agent-development">agent-development</a><a class="tag" data-tag="security" data-facet="topic" href="/?tag=security">security</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:python" data-facet="stack" href="/?tag=stack%3Apython">stack:<wbr>python</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/github/awesome-copilot/blob/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/agent-governance/SKILL.md">github/awesome-copilot at 797337f</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: agent-governance
+description: |
+  Patterns and techniques for adding governance, safety, and trust controls to AI agent systems. Use this skill when:
+  - Building AI agents that call external tools (APIs, databases, file systems)
+  - Implementing policy-based access controls for agent tool usage
+  - Adding semantic intent classification to detect dangerous prompts
+  - Creating trust scoring systems for multi-agent workflows
+  - Building audit trails for agent actions and decisions
+  - Enforcing rate limits, content filters, or tool restrictions on agents
+  - Working with any agent framework (PydanticAI, CrewAI, OpenAI Agents, LangChain, AutoGen)</code></pre></details>
+        <div class="markdown"><h3>Agent Governance Patterns</h3>
+<p>Patterns for adding safety, trust, and policy enforcement to AI agent systems.</p>
+<h4>Overview</h4>
+<p>Governance patterns ensure AI agents operate within defined boundaries — controlling which tools they can call, what content they can process, how much they can do, and maintaining accountability through audit trails.</p>
+<pre><code>User Request → Intent Classification → Policy Check → Tool Execution → Audit Log
+                     ↓                      ↓               ↓
+              Threat Detection         Allow/Deny      Trust Update
+</code></pre>
+<h4>When to Use</h4>
+<ul>
+<li><strong>Agents with tool access</strong>: Any agent that calls external tools (APIs, databases, shell commands)</li>
+<li><strong>Multi-agent systems</strong>: Agents delegating to other agents need trust boundaries</li>
+<li><strong>Production deployments</strong>: Compliance, audit, and safety requirements</li>
+<li><strong>Sensitive operations</strong>: Financial transactions, data access, infrastructure management</li>
+</ul>
+<hr>
+<h4>Pattern 1: Governance Policy</h4>
+<p>Define what an agent is allowed to do as a composable, serializable policy object.</p>
+<pre><code class="language-python">from dataclasses import dataclass, field
+from enum import Enum
+from typing import Optional
+import re
+
+class PolicyAction(Enum):
+    ALLOW = &quot;allow&quot;
+    DENY = &quot;deny&quot;
+    REVIEW = &quot;review&quot;  # flag for human review
+
+@dataclass
+class GovernancePolicy:
+    &quot;&quot;&quot;Declarative policy controlling agent behavior.&quot;&quot;&quot;
+    name: str
+    allowed_tools: list[str] = field(default_factory=list)       # allowlist
+    blocked_tools: list[str] = field(default_factory=list)       # blocklist
+    blocked_patterns: list[str] = field(default_factory=list)    # content filters
+    max_calls_per_request: int = 100                             # rate limit
+    require_human_approval: list[str] = field(default_factory=list)  # tools needing approval
+
+    def check_tool(self, tool_name: str) -&gt; PolicyAction:
+        &quot;&quot;&quot;Check if a tool is allowed by this policy.&quot;&quot;&quot;
+        if tool_name in self.blocked_tools:
+            return PolicyAction.DENY
+        if tool_name in self.require_human_approval:
+            return PolicyAction.REVIEW
+        if self.allowed_tools and tool_name not in self.allowed_tools:
+            return PolicyAction.DENY
+        return PolicyAction.ALLOW
+
+    def check_content(self, content: str) -&gt; Optional[str]:
+        &quot;&quot;&quot;Check content against blocked patterns. Returns matched pattern or None.&quot;&quot;&quot;
+        for pattern in self.blocked_patterns:
+            if re.search(pattern, content, re.IGNORECASE):
+                return pattern
+        return None
+</code></pre>
+<h5>Policy Composition</h5>
+<p>Combine multiple policies (e.g., org-wide + team + agent-specific):</p>
+<pre><code class="language-python">def compose_policies(*policies: GovernancePolicy) -&gt; GovernancePolicy:
+    &quot;&quot;&quot;Merge policies with most-restrictive-wins semantics.&quot;&quot;&quot;
+    combined = GovernancePolicy(name=&quot;composed&quot;)
+
+    for policy in policies:
+        combined.blocked_tools.extend(policy.blocked_tools)
+        combined.blocked_patterns.extend(policy.blocked_patterns)
+        combined.require_human_approval.extend(policy.require_human_approval)
+        combined.max_calls_per_request = min(
+            combined.max_calls_per_request,
+            policy.max_calls_per_request
+        )
+        if policy.allowed_tools:
+            if combined.allowed_tools:
+                combined.allowed_tools = [
+                    t for t in combined.allowed_tools if t in policy.allowed_tools
+                ]
+            else:
+                combined.allowed_tools = list(policy.allowed_tools)
+
+    return combined
+
+
+# Usage: layer policies from broad to specific
+org_policy = GovernancePolicy(
+    name=&quot;org-wide&quot;,
+    blocked_tools=[&quot;shell_exec&quot;, &quot;delete_database&quot;],
+    blocked_patterns=[r&quot;(?i)(api[_-]?key|secret|password)\s*[:=]&quot;],
+    max_calls_per_request=50
+)
+team_policy = GovernancePolicy(
+    name=&quot;data-team&quot;,
+    allowed_tools=[&quot;query_db&quot;, &quot;read_file&quot;, &quot;write_report&quot;],
+    require_human_approval=[&quot;write_report&quot;]
+)
+agent_policy = compose_policies(org_policy, team_policy)
+</code></pre>
+<h5>Policy as YAML</h5>
+<p>Store policies as configuration, not code:</p>
+<pre><code class="language-yaml"># governance-policy.yaml
+name: production-agent
+allowed_tools:
+  - search_documents
+  - query_database
+  - send_email
+blocked_tools:
+  - shell_exec
+  - delete_record
+blocked_patterns:
+  - &quot;(?i)(api[_-]?key|secret|password)\\s*[:=]&quot;
+  - &quot;(?i)(drop|truncate|delete from)\\s+\\w+&quot;
+max_calls_per_request: 25
+require_human_approval:
+  - send_email
+</code></pre>
+<pre><code class="language-python">import yaml
+
+def load_policy(path: str) -&gt; GovernancePolicy:
+    with open(path) as f:
+        data = yaml.safe_load(f)
+    return GovernancePolicy(**data)
+</code></pre>
+<hr>
+<h4>Pattern 2: Semantic Intent Classification</h4>
+<p>Detect dangerous intent in prompts before they reach the agent, using pattern-based signals.</p>
+<pre><code class="language-python">from dataclasses import dataclass
+
+@dataclass
+class IntentSignal:
+    category: str       # e.g., &quot;data_exfiltration&quot;, &quot;privilege_escalation&quot;
+    confidence: float   # 0.0 to 1.0
+    evidence: str       # what triggered the detection
+
+# Weighted signal patterns for threat detection
+THREAT_SIGNALS = [
+    # Data exfiltration
+    (r&quot;(?i)send\s+(all|every|entire)\s+\w+\s+to\s+&quot;, &quot;data_exfiltration&quot;, 0.8),
+    (r&quot;(?i)export\s+.*\s+to\s+(external|outside|third.?party)&quot;, &quot;data_exfiltration&quot;, 0.9),
+    (r&quot;(?i)curl\s+.*\s+-d\s+&quot;, &quot;data_exfiltration&quot;, 0.7),
+
+    # Privilege escalation
+    (r&quot;(?i)(sudo|as\s+root|admin\s+access)&quot;, &quot;privilege_escalation&quot;, 0.8),
+    (r&quot;(?i)chmod\s+777&quot;, &quot;privilege_escalation&quot;, 0.9),
+
+    # System modification
+    (r&quot;(?i)(rm\s+-rf|del\s+/[sq]|format\s+c:)&quot;, &quot;system_destruction&quot;, 0.95),
+    (r&quot;(?i)(drop\s+database|truncate\s+table)&quot;, &quot;system_destruction&quot;, 0.9),
+
+    # Prompt injection
+    (r&quot;(?i)ignore\s+(previous|above|all)\s+(instructions?|rules?)&quot;, &quot;prompt_injection&quot;, 0.9),
+    (r&quot;(?i)you\s+are\s+now\s+(a|an)\s+&quot;, &quot;prompt_injection&quot;, 0.7),
+]
+
+def classify_intent(content: str) -&gt; list[IntentSignal]:
+    &quot;&quot;&quot;Classify content for threat signals.&quot;&quot;&quot;
+    signals = []
+    for pattern, category, weight in THREAT_SIGNALS:
+        match = re.search(pattern, content)
+        if match:
+            signals.append(IntentSignal(
+                category=category,
+                confidence=weight,
+                evidence=match.group()
+            ))
+    return signals
+
+def is_safe(content: str, threshold: float = 0.7) -&gt; bool:
+    &quot;&quot;&quot;Quick check: is the content safe above the given threshold?&quot;&quot;&quot;
+    signals = classify_intent(content)
+    return not any(s.confidence &gt;= threshold for s in signals)
+</code></pre>
+<p><strong>Key insight</strong>: Intent classification happens <em>before</em> tool execution, acting as a pre-flight safety check. This is fundamentally different from output guardrails which only check <em>after</em> generation.</p>
+<hr>
+<h4>Pattern 3: Tool-Level Governance Decorator</h4>
+<p>Wrap individual tool functions with governance checks:</p>
+<pre><code class="language-python">import functools
+import time
+from collections import defaultdict
+
+_call_counters: dict[str, int] = defaultdict(int)
+
+def govern(policy: GovernancePolicy, audit_trail=None):
+    &quot;&quot;&quot;Decorator that enforces governance policy on a tool function.&quot;&quot;&quot;
+    def decorator(func):
+        @functools.wraps(func)
+        async def wrapper(*args, **kwargs):
+            tool_name = func.__name__
+
+            # 1. Check tool allowlist/blocklist
+            action = policy.check_tool(tool_name)
+            if action == PolicyAction.DENY:
+                raise PermissionError(f&quot;Policy '{policy.name}' blocks tool '{tool_name}'&quot;)
+            if action == PolicyAction.REVIEW:
+                raise PermissionError(f&quot;Tool '{tool_name}' requires human approval&quot;)
+
+            # 2. Check rate limit
+            _call_counters[policy.name] += 1
+            if _call_counters[policy.name] &gt; policy.max_calls_per_request:
+                raise PermissionError(f&quot;Rate limit exceeded: {policy.max_calls_per_request} calls&quot;)
+
+            # 3. Check content in arguments
+            for arg in list(args) + list(kwargs.values()):
+                if isinstance(arg, str):
+                    matched = policy.check_content(arg)
+                    if matched:
+                        raise PermissionError(f&quot;Blocked pattern detected: {matched}&quot;)
+
+            # 4. Execute and audit
+            start = time.monotonic()
+            try:
+                result = await func(*args, **kwargs)
+                if audit_trail is not None:
+                    audit_trail.append({
+                        &quot;tool&quot;: tool_name,
+                        &quot;action&quot;: &quot;allowed&quot;,
+                        &quot;duration_ms&quot;: (time.monotonic() - start) * 1000,
+                        &quot;timestamp&quot;: time.time()
+                    })
+                return result
+            except Exception as e:
+                if audit_trail is not None:
+                    audit_trail.append({
+                        &quot;tool&quot;: tool_name,
+                        &quot;action&quot;: &quot;error&quot;,
+                        &quot;error&quot;: str(e),
+                        &quot;timestamp&quot;: time.time()
+                    })
+                raise
+
+        return wrapper
+    return decorator
+
+
+# Usage with any agent framework
+audit_log = []
+policy = GovernancePolicy(
+    name=&quot;search-agent&quot;,
+    allowed_tools=[&quot;search&quot;, &quot;summarize&quot;],
+    blocked_patterns=[r&quot;(?i)password&quot;],
+    max_calls_per_request=10
+)
+
+@govern(policy, audit_trail=audit_log)
+async def search(query: str) -&gt; str:
+    &quot;&quot;&quot;Search documents — governed by policy.&quot;&quot;&quot;
+    return f&quot;Results for: {query}&quot;
+
+# Passes: search(&quot;latest quarterly report&quot;)
+# Blocked: search(&quot;show me the admin password&quot;)
+</code></pre>
+<hr>
+<h4>Pattern 4: Trust Scoring</h4>
+<p>Track agent reliability over time with decay-based trust scores:</p>
+<pre><code class="language-python">from dataclasses import dataclass, field
+import math
+import time
+
+@dataclass
+class TrustScore:
+    &quot;&quot;&quot;Trust score with temporal decay.&quot;&quot;&quot;
+    score: float = 0.5          # 0.0 (untrusted) to 1.0 (fully trusted)
+    successes: int = 0
+    failures: int = 0
+    last_updated: float = field(default_factory=time.time)
+
+    def record_success(self, reward: float = 0.05):
+        self.successes += 1
+        self.score = min(1.0, self.score + reward * (1 - self.score))
+        self.last_updated = time.time()
+
+    def record_failure(self, penalty: float = 0.15):
+        self.failures += 1
+        self.score = max(0.0, self.score - penalty * self.score)
+        self.last_updated = time.time()
+
+    def current(self, decay_rate: float = 0.001) -&gt; float:
+        &quot;&quot;&quot;Get score with temporal decay — trust erodes without activity.&quot;&quot;&quot;
+        elapsed = time.time() - self.last_updated
+        decay = math.exp(-decay_rate * elapsed)
+        return self.score * decay
+
+    @property
+    def reliability(self) -&gt; float:
+        total = self.successes + self.failures
+        return self.successes / total if total &gt; 0 else 0.0
+
+
+# Usage in multi-agent systems
+trust = TrustScore()
+
+# Agent completes tasks successfully
+trust.record_success()  # 0.525
+trust.record_success()  # 0.549
+
+# Agent makes an error
+trust.record_failure()  # 0.467
+
+# Gate sensitive operations on trust
+if trust.current() &gt;= 0.7:
+    # Allow autonomous operation
+    pass
+elif trust.current() &gt;= 0.4:
+    # Allow with human oversight
+    pass
+else:
+    # Deny or require explicit approval
+    pass
+</code></pre>
+<p><strong>Multi-agent trust</strong>: In systems where agents delegate to other agents, each agent maintains trust scores for its delegates:</p>
+<pre><code class="language-python">class AgentTrustRegistry:
+    def __init__(self):
+        self.scores: dict[str, TrustScore] = {}
+
+    def get_trust(self, agent_id: str) -&gt; TrustScore:
+        if agent_id not in self.scores:
+            self.scores[agent_id] = TrustScore()
+        return self.scores[agent_id]
+
+    def most_trusted(self, agents: list[str]) -&gt; str:
+        return max(agents, key=lambda a: self.get_trust(a).current())
+
+    def meets_threshold(self, agent_id: str, threshold: float) -&gt; bool:
+        return self.get_trust(agent_id).current() &gt;= threshold
+</code></pre>
+<hr>
+<h4>Pattern 5: Audit Trail</h4>
+<p>Append-only audit log for all agent actions — critical for compliance and debugging:</p>
+<pre><code class="language-python">from dataclasses import dataclass, field
+import json
+import time
+
+@dataclass
+class AuditEntry:
+    timestamp: float
+    agent_id: str
+    tool_name: str
+    action: str           # &quot;allowed&quot;, &quot;denied&quot;, &quot;error&quot;
+    policy_name: str
+    details: dict = field(default_factory=dict)
+
+class AuditTrail:
+    &quot;&quot;&quot;Append-only audit trail for agent governance events.&quot;&quot;&quot;
+    def __init__(self):
+        self._entries: list[AuditEntry] = []
+
+    def log(self, agent_id: str, tool_name: str, action: str,
+            policy_name: str, **details):
+        self._entries.append(AuditEntry(
+            timestamp=time.time(),
+            agent_id=agent_id,
+            tool_name=tool_name,
+            action=action,
+            policy_name=policy_name,
+            details=details
+        ))
+
+    def denied(self) -&gt; list[AuditEntry]:
+        &quot;&quot;&quot;Get all denied actions — useful for security review.&quot;&quot;&quot;
+        return [e for e in self._entries if e.action == &quot;denied&quot;]
+
+    def by_agent(self, agent_id: str) -&gt; list[AuditEntry]:
+        return [e for e in self._entries if e.agent_id == agent_id]
+
+    def export_jsonl(self, path: str):
+        &quot;&quot;&quot;Export as JSON Lines for log aggregation systems.&quot;&quot;&quot;
+        with open(path, &quot;w&quot;) as f:
+            for entry in self._entries:
+                f.write(json.dumps({
+                    &quot;timestamp&quot;: entry.timestamp,
+                    &quot;agent_id&quot;: entry.agent_id,
+                    &quot;tool&quot;: entry.tool_name,
+                    &quot;action&quot;: entry.action,
+                    &quot;policy&quot;: entry.policy_name,
+                    **entry.details
+                }) + &quot;\n&quot;)
+</code></pre>
+<hr>
+<h4>Pattern 6: Framework Integration</h4>
+<h5>PydanticAI</h5>
+<pre><code class="language-python">from pydantic_ai import Agent
+
+policy = GovernancePolicy(
+    name=&quot;support-bot&quot;,
+    allowed_tools=[&quot;search_docs&quot;, &quot;create_ticket&quot;],
+    blocked_patterns=[r&quot;(?i)(ssn|social\s+security|credit\s+card)&quot;],
+    max_calls_per_request=20
+)
+
+agent = Agent(&quot;openai:gpt-4o&quot;, system_prompt=&quot;You are a support assistant.&quot;)
+
+@agent.tool
+@govern(policy)
+async def search_docs(ctx, query: str) -&gt; str:
+    &quot;&quot;&quot;Search knowledge base — governed.&quot;&quot;&quot;
+    return await kb.search(query)
+
+@agent.tool
+@govern(policy)
+async def create_ticket(ctx, title: str, body: str) -&gt; str:
+    &quot;&quot;&quot;Create support ticket — governed.&quot;&quot;&quot;
+    return await tickets.create(title=title, body=body)
+</code></pre>
+<h5>CrewAI</h5>
+<pre><code class="language-python">from crewai import Agent, Task, Crew
+
+policy = GovernancePolicy(
+    name=&quot;research-crew&quot;,
+    allowed_tools=[&quot;search&quot;, &quot;analyze&quot;],
+    max_calls_per_request=30
+)
+
+# Apply governance at the crew level
+def governed_crew_run(crew: Crew, policy: GovernancePolicy):
+    &quot;&quot;&quot;Wrap crew execution with governance checks.&quot;&quot;&quot;
+    audit = AuditTrail()
+    for agent in crew.agents:
+        for tool in agent.tools:
+            original = tool.func
+            tool.func = govern(policy, audit_trail=audit)(original)
+    result = crew.kickoff()
+    return result, audit
+</code></pre>
+<h5>OpenAI Agents SDK</h5>
+<pre><code class="language-python">from agents import Agent, function_tool
+
+policy = GovernancePolicy(
+    name=&quot;coding-agent&quot;,
+    allowed_tools=[&quot;read_file&quot;, &quot;write_file&quot;, &quot;run_tests&quot;],
+    blocked_tools=[&quot;shell_exec&quot;],
+    max_calls_per_request=50
+)
+
+@function_tool
+@govern(policy)
+async def read_file(path: str) -&gt; str:
+    &quot;&quot;&quot;Read file contents — governed.&quot;&quot;&quot;
+    import os
+    safe_path = os.path.realpath(path)
+    if not safe_path.startswith(os.path.realpath(&quot;.&quot;)):
+        raise ValueError(&quot;Path traversal blocked by governance&quot;)
+    with open(safe_path) as f:
+        return f.read()
+</code></pre>
+<hr>
+<h4>Governance Levels</h4>
+<p>Match governance strictness to risk level:</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Controls</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Open</strong></td>
+<td>Audit only, no restrictions</td>
+<td>Internal dev/testing</td>
+</tr>
+<tr>
+<td><strong>Standard</strong></td>
+<td>Tool allowlist + content filters</td>
+<td>General production agents</td>
+</tr>
+<tr>
+<td><strong>Strict</strong></td>
+<td>All controls + human approval for sensitive ops</td>
+<td>Financial, healthcare, legal</td>
+</tr>
+<tr>
+<td><strong>Locked</strong></td>
+<td>Allowlist only, no dynamic tools, full audit</td>
+<td>Compliance-critical systems</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4>Best Practices</h4>
+<table>
+<thead>
+<tr>
+<th>Practice</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Policy as configuration</strong></td>
+<td>Store policies in YAML/JSON, not hardcoded — enables change without deploys</td>
+</tr>
+<tr>
+<td><strong>Most-restrictive-wins</strong></td>
+<td>When composing policies, deny always overrides allow</td>
+</tr>
+<tr>
+<td><strong>Pre-flight intent check</strong></td>
+<td>Classify intent <em>before</em> tool execution, not after</td>
+</tr>
+<tr>
+<td><strong>Trust decay</strong></td>
+<td>Trust scores should decay over time — require ongoing good behavior</td>
+</tr>
+<tr>
+<td><strong>Append-only audit</strong></td>
+<td>Never modify or delete audit entries — immutability enables compliance</td>
+</tr>
+<tr>
+<td><strong>Fail closed</strong></td>
+<td>If governance check errors, deny the action rather than allowing it</td>
+</tr>
+<tr>
+<td><strong>Separate policy from logic</strong></td>
+<td>Governance enforcement should be independent of agent business logic</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4>Quick Start Checklist</h4>
+<pre><code class="language-markdown">## Agent Governance Implementation Checklist
+
+### Setup
+- [ ] Define governance policy (allowed tools, blocked patterns, rate limits)
+- [ ] Choose governance level (open/standard/strict/locked)
+- [ ] Set up audit trail storage
+
+### Implementation
+- [ ] Add @govern decorator to all tool functions
+- [ ] Add intent classification to user input processing
+- [ ] Implement trust scoring for multi-agent interactions
+- [ ] Wire up audit trail export
+
+### Validation
+- [ ] Test that blocked tools are properly denied
+- [ ] Test that content filters catch sensitive patterns
+- [ ] Test rate limiting behavior
+- [ ] Verify audit trail captures all events
+- [ ] Test policy composition (most-restrictive-wins)
+</code></pre>
+<hr>
+<h4>Related Resources</h4>
+<ul>
+<li><a href="https://github.com/microsoft/agent-governance-toolkit">Agent Governance Toolkit</a> — Full governance framework</li>
+<li><a href="https://github.com/microsoft/agent-governance-toolkit/tree/main/packages/agentmesh-integrations">AgentMesh Integrations</a> — Framework-specific packages</li>
+<li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">OWASP Top 10 for LLM Applications</a></li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

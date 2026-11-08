@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>api-and-interface-design · SkillHub</title>
+    <meta name="description" content="Use it when: you design REST or GraphQL endpoints, module boundaries, component props or any interface other code depends on. It does: applies rules such as Hyrum&#039;s Law: once enough people use an API, every behavior it shows, documented or not, is something to keep. Covers: contracts before code, one error shape, validation where outside data enters, optional new fields, naming, pagination and PATCH. Goes deep on: idempotency keys for safe retries: derived from the intent, claimed atomically through a unique constraint, kept as long as any retry path." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=addyosmani%2Fagent-skills">addyosmani/agent-skills</a> <span aria-hidden="true">/</span> <a href="/bundle/addyosmani/agent-skills/">Addy&#39;s Agent Skills</a></p>
+      <div class="title-row"><h1>api-and-interface-design</h1><button type="button" class="save" data-save="skill:addyosmani/agent-skills/skills/api-and-interface-design" aria-pressed="false" aria-label="Save api-and-interface-design" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you design REST or GraphQL endpoints, module boundaries, component props or any interface other code depends on</dd></div><div><dt>It does</dt><dd>applies rules such as Hyrum&#39;s Law: once enough people use an API, every behavior it shows, documented or not, is something to keep</dd></div><div><dt>Covers</dt><dd>contracts before code, one error shape, validation where outside data enters, optional new fields, naming, pagination and PATCH</dd></div><div><dt>Goes deep on</dt><dd>idempotency keys for safe retries: derived from the intent, claimed atomically through a unique constraint, kept as long as any retry path</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 11 of 25 in the <a href="/bundle/addyosmani/agent-skills/">Addy&#39;s Agent Skills</a> bundle · Before it: <a href="/skill/addyosmani/agent-skills/skills/frontend-ui-engineering/">frontend-ui-engineering</a> · After it: <a href="/skill/addyosmani/agent-skills/skills/observability-and-instrumentation/">observability-and-instrumentation</a></p>
+    
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Rules the agent follows when it shapes an interface. Two principles frame them: Hyrum&#39;s Law, so it is deliberate about every observable behavior and plans for deprecation from the start, and the One-Version Rule: extend an interface rather than make consumers choose between versions. The interface is written as a typed contract before the implementation. Errors share one shape and a fixed mapping to HTTP status codes. Input is validated where it enters, at route handlers, forms, environment loading and third-party responses, which count as untrusted, and trusted inside after that. New fields are optional additions; existing ones never change type or disappear. Naming follows fixed conventions (plural nouns in URLs, camelCase fields, is or has for booleans), list endpoints paginate, and updates use PATCH. A long section on idempotency keys makes retries of a payment safe: the key comes from the client or the original event, a unique constraint picks the winner instead of a check-then-act race, a reused key with a different body fails, an in-flight duplicate gets a deliberate 409, wait or 202, and keys outlive the longest retry path. TypeScript patterns include discriminated unions, separate input and output types, and branded ID types.</p>
+      <p class="muted">Summarizes <a href="https://github.com/addyosmani/agent-skills/tree/301b02b12bff98e4688e6984af6556802322bbde/skills/api-and-interface-design">the skill at 301b02b</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">addyosmani/</span><wbr><span class="word">agent-skills</span> <span class="word">--skill</span> <span class="word">api-and-interface-design</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/addyosmani/agent-skills --skill api-and-interface-design">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/addyosmani/agent-skills/api-and-interface-design">skills.sh page</a> · <a href="https://github.com/addyosmani/agent-skills/tree/HEAD/skills/api-and-interface-design">Source on GitHub</a> · <a href="/?repo=addyosmani%2Fagent-skills">All skills from addyosmani/agent-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>71,430 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>113,924 <span class="muted">addyosmani/agent-skills</span></dd></div><div><dt>First seen</dt><dd>Feb 16, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">5.1K</div>
+      <div class="stat-delta">+64% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 3,087; week to Sep 27: 4,092; week to Oct 4: 3,920; week to Oct 11: 4,210; week to Oct 18: 5,449; week to Oct 25: 5,961; week to Nov 1: 5,676; week to Nov 8: 5,075. Use the left and right arrow keys to read each week."
+        data-values="3087,4092,3920,4210,5449,5961,5676,5075" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,27.2 38.6,19.8 71.1,21.1 103.7,18.9 136.3,9.8 168.9,6.0 201.4,8.1 234.0,12.5" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="12.5" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>3,087</td></tr><tr><td>Sep 27</td><td>4,092</td></tr><tr><td>Oct 4</td><td>3,920</td></tr><tr><td>Oct 11</td><td>4,210</td></tr><tr><td>Oct 18</td><td>5,449</td></tr><tr><td>Oct 25</td><td>5,961</td></tr><tr><td>Nov 1</td><td>5,676</td></tr><tr><td>Nov 8</td><td>5,075</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/?tag=category%3Aengineering">category:<wbr>engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/?tag=type%3Aguidelines">type:<wbr>guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="architecture" data-facet="topic" href="/?tag=architecture">architecture</a><a class="tag" data-tag="backend" data-facet="topic" href="/?tag=backend">backend</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:typescript" data-facet="stack" href="/?tag=stack%3Atypescript">stack:<wbr>typescript</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/addyosmani/agent-skills/blob/301b02b12bff98e4688e6984af6556802322bbde/skills/api-and-interface-design/SKILL.md">addyosmani/agent-skills at 301b02b</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: api-and-interface-design
+description: Guides stable API and interface design. Use when designing APIs, module boundaries, or any public interface. Use when creating REST or GraphQL endpoints, defining type contracts between modules, or establishing boundaries between frontend and backend.</code></pre></details>
+        <div class="markdown"><h3>API and Interface Design</h3>
+<h4>Overview</h4>
+<p>Design stable, well-documented interfaces that are hard to misuse. Good interfaces make the right thing easy and the wrong thing hard. This applies to REST APIs, GraphQL schemas, module boundaries, component props, and any surface where one piece of code talks to another.</p>
+<h4>When to Use</h4>
+<ul>
+<li>Designing new API endpoints</li>
+<li>Defining module boundaries or contracts between teams</li>
+<li>Creating component prop interfaces</li>
+<li>Establishing database schema that informs API shape</li>
+<li>Changing existing public interfaces</li>
+</ul>
+<h4>Core Principles</h4>
+<h5>Hyrum's Law</h5>
+<blockquote>
+<p>With a sufficient number of users of an API, all observable behaviors of your system will be depended on by somebody, regardless of what you promise in the contract.</p>
+</blockquote>
+<p>This means: every public behavior — including undocumented quirks, error message text, timing, and ordering — becomes a de facto contract once users depend on it. Design implications:</p>
+<ul>
+<li><strong>Be intentional about what you expose.</strong> Every observable behavior is a potential commitment.</li>
+<li><strong>Don't leak implementation details.</strong> If users can observe it, they will depend on it.</li>
+<li><strong>Plan for deprecation at design time.</strong> See <code>deprecation-and-migration</code> for how to safely remove things users depend on.</li>
+<li><strong>Tests are not enough.</strong> Even with perfect contract tests, Hyrum's Law means &quot;safe&quot; changes can break real users who depend on undocumented behavior.</li>
+</ul>
+<h5>The One-Version Rule</h5>
+<p>Avoid forcing consumers to choose between multiple versions of the same dependency or API. Diamond dependency problems arise when different consumers need different versions of the same thing. Design for a world where only one version exists at a time — extend rather than fork.</p>
+<h5>1. Contract First</h5>
+<p>Define the interface before implementing it. The contract is the spec — implementation follows.</p>
+<pre><code class="language-typescript">// Define the contract first
+interface TaskAPI {
+  // Creates a task and returns the created task with server-generated fields
+  createTask(input: CreateTaskInput): Promise&lt;Task&gt;;
+
+  // Returns paginated tasks matching filters
+  listTasks(params: ListTasksParams): Promise&lt;PaginatedResult&lt;Task&gt;&gt;;
+
+  // Returns a single task or throws NotFoundError
+  getTask(id: string): Promise&lt;Task&gt;;
+
+  // Partial update — only provided fields change
+  updateTask(id: string, input: UpdateTaskInput): Promise&lt;Task&gt;;
+
+  // Idempotent delete — succeeds even if already deleted
+  deleteTask(id: string): Promise&lt;void&gt;;
+}
+</code></pre>
+<h5>2. Consistent Error Semantics</h5>
+<p>Pick one error strategy and use it everywhere:</p>
+<pre><code class="language-typescript">// REST: HTTP status codes + structured error body
+// Every error response follows the same shape
+interface APIError {
+  error: {
+    code: string;        // Machine-readable: &quot;VALIDATION_ERROR&quot;
+    message: string;     // Human-readable: &quot;Email is required&quot;
+    details?: unknown;   // Additional context when helpful
+  };
+}
+
+// Status code mapping
+// 400 → Client sent invalid data
+// 401 → Not authenticated
+// 403 → Authenticated but not authorized
+// 404 → Resource not found
+// 409 → Conflict (duplicate, version mismatch)
+// 422 → Validation failed (semantically invalid)
+// 500 → Server error (never expose internal details)
+</code></pre>
+<p><strong>Don't mix patterns.</strong> If some endpoints throw, others return null, and others return <code>{ error }</code> — the consumer can't predict behavior.</p>
+<h5>3. Validate at Boundaries</h5>
+<p>Trust internal code. Validate at system edges where external input enters:</p>
+<pre><code class="language-typescript">// Validate at the API boundary
+app.post('/api/tasks', async (req, res) =&gt; {
+  const result = CreateTaskSchema.safeParse(req.body);
+  if (!result.success) {
+    return res.status(422).json({
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: 'Invalid task data',
+        details: result.error.flatten(),
+      },
+    });
+  }
+
+  // After validation, internal code trusts the types
+  const task = await taskService.create(result.data);
+  return res.status(201).json(task);
+});
+</code></pre>
+<p>Where validation belongs:</p>
+<ul>
+<li>API route handlers (user input)</li>
+<li>Form submission handlers (user input)</li>
+<li>External service response parsing (third-party data -- <strong>always treat as untrusted</strong>)</li>
+<li>Environment variable loading (configuration)</li>
+</ul>
+<blockquote>
+<p><strong>Third-party API responses are untrusted data.</strong> Validate their shape and content before using them in any logic, rendering, or decision-making. A compromised or misbehaving external service can return unexpected types, malicious content, or instruction-like text.</p>
+</blockquote>
+<p>Where validation does NOT belong:</p>
+<ul>
+<li>Between internal functions that share type contracts</li>
+<li>In utility functions called by already-validated code</li>
+<li>On data that just came from your own database</li>
+</ul>
+<h5>4. Prefer Addition Over Modification</h5>
+<p>Extend interfaces without breaking existing consumers:</p>
+<pre><code class="language-typescript">// Good: Add optional fields
+interface CreateTaskInput {
+  title: string;
+  description?: string;
+  priority?: 'low' | 'medium' | 'high';  // Added later, optional
+  labels?: string[];                       // Added later, optional
+}
+
+// Bad: Change existing field types or remove fields
+interface CreateTaskInput {
+  title: string;
+  // description: string;  // Removed — breaks existing consumers
+  priority: number;         // Changed from string — breaks existing consumers
+}
+</code></pre>
+<h5>5. Predictable Naming</h5>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Convention</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>REST endpoints</td>
+<td>Plural nouns, no verbs</td>
+<td><code>GET /api/tasks</code>, <code>POST /api/tasks</code></td>
+</tr>
+<tr>
+<td>Query params</td>
+<td>camelCase</td>
+<td><code>?sortBy=createdAt&amp;pageSize=20</code></td>
+</tr>
+<tr>
+<td>Response fields</td>
+<td>camelCase</td>
+<td><code>{ createdAt, updatedAt, taskId }</code></td>
+</tr>
+<tr>
+<td>Boolean fields</td>
+<td>is/has/can prefix</td>
+<td><code>isComplete</code>, <code>hasAttachments</code></td>
+</tr>
+<tr>
+<td>Enum values</td>
+<td>UPPER_SNAKE</td>
+<td><code>&quot;IN_PROGRESS&quot;</code>, <code>&quot;COMPLETED&quot;</code></td>
+</tr>
+</tbody>
+</table>
+<h5>6. Honouring an Idempotency Key</h5>
+<p>Accepting an <code>Idempotency-Key</code> is the contract. Honouring it is the implementation, and it is where the money is lost — a key the server accepts but handles carelessly is worse than no key at all, because the client now believes retrying is safe.</p>
+<p><strong>Derive the key from the intent, not the attempt.</strong> The key must be stable across retries of one intent and different across distinct intents:</p>
+<pre><code class="language-typescript">crypto.randomUUID()                    // ✗ new key per attempt — every retry is a new charge
+`${userId}:${amount}`                  // ✗ two legitimate $50 charges collapse into one
+`${orderId}:${Date.now()}`             // ✗ a timestamp is randomUUID() wearing a hat
+
+req.headers['idempotency-key']         // ✓ client generates once, reuses on retry
+`charge:v1:${orderId}`                 // ✓ derived from an immutable identifier
+</code></pre>
+<p>The key comes from the client or the initiating event — never from the layer doing the retrying.</p>
+<p><strong>Claim atomically. A check followed by an act is a race:</strong></p>
+<pre><code class="language-typescript">// ✗ TOCTOU: two concurrent retries both read &quot;not seen&quot;, both charge
+if (!(await db.exists(key))) {
+  await chargeCard(amount);
+  await db.insert(key);
+}
+
+// ✓ let the unique constraint pick the winner
+try {
+  await db.insert({ key, state: 'in_progress', requestHash });
+} catch (e) {
+  if (isUniqueViolation(e)) return replayOrReject(key);
+  throw e;
+}
+const result = await chargeCard(amount);
+await db.update({ key, state: 'succeeded', response: result });
+</code></pre>
+<p>The unique constraint <em>is</em> the mechanism. A store that cannot enforce uniqueness in one operation cannot back this.</p>
+<p><strong>Guard the payload.</strong> Same key with a different body is a client bug, and must fail loudly rather than serving the first response to a second request:</p>
+<pre><code class="language-typescript">if (existing.requestHash !== hash(req.body)) {
+  return res.status(422).json({
+    error: { code: 'IDEMPOTENCY_KEY_REUSED', message: 'Idempotency key reused with a different payload' },
+  });
+}
+</code></pre>
+<p><strong>Decide what an in-flight duplicate gets.</strong> The first request is still running when the second arrives — the common case under retry storms:</p>
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Response</th>
+<th>Use when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reject</td>
+<td><code>409 Conflict</code></td>
+<td>Client can retry later; simplest and safest</td>
+</tr>
+<tr>
+<td>Wait</td>
+<td>Block for the result, bounded</td>
+<td>Caller needs it synchronously</td>
+</tr>
+<tr>
+<td>Return pending</td>
+<td><code>202</code> + status URL</td>
+<td>Long-running effects</td>
+</tr>
+</tbody>
+</table>
+<p>Never let the second caller through because the first &quot;seems stuck&quot;. A stalled attempt whose fate is unknown is exactly when duplicating costs most.</p>
+<p><strong>Every call has three outcomes, not two: success, failure, and <em>unknown</em>.</strong> A timeout tells you nothing about whether the effect applied. Record the intent <em>before</em> calling out, so a crash between the call and the response leaves evidence something must resolve later — rather than a silently retried charge.</p>
+<p><strong>Set retention from the longest retry chain</strong>, not from disk cost. Keys must outlive every path that can re-deliver the same intent, including a dead-letter queue replayed a week later and any provider dispute window. A 24-hour key TTL behind a 7-day DLQ is a duplicate waiting to happen.</p>
+<h4>REST API Patterns</h4>
+<h5>Resource Design</h5>
+<pre><code>GET    /api/tasks              → List tasks (with query params for filtering)
+POST   /api/tasks              → Create a task
+GET    /api/tasks/:id          → Get a single task
+PATCH  /api/tasks/:id          → Update a task (partial)
+DELETE /api/tasks/:id          → Delete a task
+
+GET    /api/tasks/:id/comments → List comments for a task (sub-resource)
+POST   /api/tasks/:id/comments → Add a comment to a task
+</code></pre>
+<h5>Pagination</h5>
+<p>Paginate list endpoints:</p>
+<pre><code class="language-typescript">// Request
+GET /api/tasks?page=1&amp;pageSize=20&amp;sortBy=createdAt&amp;sortOrder=desc
+
+// Response
+{
+  &quot;data&quot;: [...],
+  &quot;pagination&quot;: {
+    &quot;page&quot;: 1,
+    &quot;pageSize&quot;: 20,
+    &quot;totalItems&quot;: 142,
+    &quot;totalPages&quot;: 8
+  }
+}
+</code></pre>
+<h5>Filtering</h5>
+<p>Use query parameters for filters:</p>
+<pre><code>GET /api/tasks?status=in_progress&amp;assignee=user123&amp;createdAfter=2025-01-01
+</code></pre>
+<h5>Partial Updates (PATCH)</h5>
+<p>Accept partial objects — only update what's provided:</p>
+<pre><code class="language-typescript">// Only title changes, everything else preserved
+PATCH /api/tasks/123
+{ &quot;title&quot;: &quot;Updated title&quot; }
+</code></pre>
+<h4>TypeScript Interface Patterns</h4>
+<h5>Use Discriminated Unions for Variants</h5>
+<pre><code class="language-typescript">// Good: Each variant is explicit
+type TaskStatus =
+  | { type: 'pending' }
+  | { type: 'in_progress'; assignee: string; startedAt: Date }
+  | { type: 'completed'; completedAt: Date; completedBy: string }
+  | { type: 'cancelled'; reason: string; cancelledAt: Date };
+
+// Consumer gets type narrowing
+function getStatusLabel(status: TaskStatus): string {
+  switch (status.type) {
+    case 'pending': return 'Pending';
+    case 'in_progress': return `In progress (${status.assignee})`;
+    case 'completed': return `Done on ${status.completedAt}`;
+    case 'cancelled': return `Cancelled: ${status.reason}`;
+  }
+}
+</code></pre>
+<h5>Input/Output Separation</h5>
+<pre><code class="language-typescript">// Input: what the caller provides
+interface CreateTaskInput {
+  title: string;
+  description?: string;
+}
+
+// Output: what the system returns (includes server-generated fields)
+interface Task {
+  id: string;
+  title: string;
+  description: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  createdBy: string;
+}
+</code></pre>
+<h5>Use Branded Types for IDs</h5>
+<pre><code class="language-typescript">type TaskId = string &amp; { readonly __brand: 'TaskId' };
+type UserId = string &amp; { readonly __brand: 'UserId' };
+
+// Prevents accidentally passing a UserId where a TaskId is expected
+function getTask(id: TaskId): Promise&lt;Task&gt; { ... }
+</code></pre>
+<h4>Common Rationalizations</h4>
+<table>
+<thead>
+<tr>
+<th>Rationalization</th>
+<th>Reality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;We'll document the API later&quot;</td>
+<td>The types ARE the documentation. Define them first.</td>
+</tr>
+<tr>
+<td>&quot;We don't need pagination for now&quot;</td>
+<td>You will the moment someone has 100+ items. Add it from the start.</td>
+</tr>
+<tr>
+<td>&quot;PATCH is complicated, let's just use PUT&quot;</td>
+<td>PUT requires the full object every time. PATCH is what clients actually want.</td>
+</tr>
+<tr>
+<td>&quot;We'll version the API when we need to&quot;</td>
+<td>Breaking changes without versioning break consumers. Design for extension from the start.</td>
+</tr>
+<tr>
+<td>&quot;Nobody uses that undocumented behavior&quot;</td>
+<td>Hyrum's Law: if it's observable, somebody depends on it. Treat every public behavior as a commitment.</td>
+</tr>
+<tr>
+<td>&quot;We can just maintain two versions&quot;</td>
+<td>Multiple versions multiply maintenance cost and create diamond dependency problems. Prefer the One-Version Rule.</td>
+</tr>
+<tr>
+<td>&quot;Internal APIs don't need contracts&quot;</td>
+<td>Internal consumers are still consumers. Contracts prevent coupling and enable parallel work.</td>
+</tr>
+<tr>
+<td>&quot;Accepting the Idempotency-Key header is enough&quot;</td>
+<td>The header is the contract; storing the key against the result is the implementation. A key you accept but don't honour tells the client retrying is safe when it isn't.</td>
+</tr>
+<tr>
+<td>&quot;Our queue guarantees exactly-once delivery&quot;</td>
+<td>No queue does across a consumer crash — the broker's ack and your side effect are not in one transaction. Design for at-least-once with idempotent processing.</td>
+</tr>
+<tr>
+<td>&quot;Duplicate requests are rare&quot;</td>
+<td>They're <em>correlated</em>. Retries spike exactly when a dependency is degraded — the moment duplicates are most likely and most expensive.</td>
+</tr>
+</tbody>
+</table>
+<h4>Red Flags</h4>
+<ul>
+<li>Endpoints that return different shapes depending on conditions</li>
+<li>Inconsistent error formats across endpoints</li>
+<li>Validation scattered throughout internal code instead of at boundaries</li>
+<li>Breaking changes to existing fields (type changes, removals)</li>
+<li>List endpoints without pagination</li>
+<li>Verbs in REST URLs (<code>/api/createTask</code>, <code>/api/getUsers</code>)</li>
+<li>Third-party API responses used without validation or sanitization</li>
+<li>A <code>SELECT</code> for an idempotency key followed by an <code>INSERT</code> — that's a race, not a guard</li>
+<li>An idempotency key derived from a UUID, timestamp, or anything else regenerated per attempt</li>
+<li>The same key accepted with a different request body, silently returning the first response</li>
+<li>A key retention window shorter than the longest path that can re-deliver the request</li>
+</ul>
+<h4>Verification</h4>
+<p>After designing an API:</p>
+<ul>
+<li>[ ] Every endpoint has typed input and output schemas</li>
+<li>[ ] Error responses follow a single consistent format</li>
+<li>[ ] Validation happens at system boundaries only</li>
+<li>[ ] List endpoints support pagination</li>
+<li>[ ] New fields are additive and optional (backward compatible)</li>
+<li>[ ] Naming follows consistent conventions across all endpoints</li>
+<li>[ ] API documentation or types are committed alongside the implementation</li>
+<li>[ ] State-changing endpoints either honour an idempotency key or are documented as unsafe to retry</li>
+<li>[ ] The key is claimed in one atomic operation, guarded by a unique constraint</li>
+<li>[ ] A reused key with a different payload fails loudly rather than replaying the wrong response</li>
+<li>[ ] The in-flight-duplicate response is a deliberate choice (409, wait, or 202) rather than whatever falls out</li>
+<li>[ ] Key retention outlives the longest retry path, including dead-letter replay</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

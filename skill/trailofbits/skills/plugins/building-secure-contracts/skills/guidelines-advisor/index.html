@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>guidelines-advisor · SkillHub</title>
+    <meta name="description" content="Use it when: you want to know whether a smart contract project follows development best practices, or need advice on its design, upgrades or tests. It does: explores the code, drafts a plain-English system description and diagrams, reviews architecture and implementation across 11 areas, and asks about design choices. You get: system documentation, an architecture and implementation review with file and line references, and recommendations ranked Critical to Low. Works on: mainly Solidity, using Slither for diagrams and upgradeability checks when available; it adapts to Rust, Cairo and other platforms." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=trailofbits%2Fskills">trailofbits/skills</a></p>
+      <div class="title-row"><h1>guidelines-advisor</h1><button type="button" class="save" data-save="skill:trailofbits/skills/plugins/building-secure-contracts/skills/guidelines-advisor" aria-pressed="false" aria-label="Save guidelines-advisor" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want to know whether a smart contract project follows development best practices, or need advice on its design, upgrades or tests</dd></div><div><dt>It does</dt><dd>explores the code, drafts a plain-English system description and diagrams, reviews architecture and implementation across 11 areas, and asks about design choices</dd></div><div><dt>You get</dt><dd>system documentation, an architecture and implementation review with file and line references, and recommendations ranked Critical to Low</dd></div><div><dt>Works on</dt><dd>mainly Solidity, using Slither for diagrams and upgradeability checks when available; it adapts to Rust, Cairo and other platforms</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Trail of Bits&#39; Building Secure Contracts development guidelines, applied to your codebase. The 11 areas are documentation and specifications, including NatSpec; what runs on-chain versus off-chain; upgradeability, weighing migration against upgrades; delegatecall proxies, such as storage layout, initialization and function shadowing; function composition; inheritance; events; common pitfalls such as reentrancy, overflow and access control; dependencies, including copied code; testing and verification, from coverage to fuzzing and formal verification; and platform guidance such as compiler version and inline assembly. A section that seems not to apply, such as upgradeability in a project without proxies, is skipped only after searching the code, since upgradeability can hide in ownable patterns or delegatecall. It rejects generic best-practice advice in favour of project-specific findings with file and line references, and ends with a prioritized roadmap. Detailed criteria, deliverable templates and an example report live in separate resource files.</p>
+      <p class="muted">Summarizes <a href="https://github.com/trailofbits/skills/tree/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/building-secure-contracts/skills/guidelines-advisor">the skill at e4dd0bb</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">trailofbits/</span><wbr><span class="word">skills</span> <span class="word">--skill</span> <span class="word">guidelines-advisor</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/trailofbits/skills --skill guidelines-advisor">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/trailofbits/skills/guidelines-advisor">skills.sh page</a> · <a href="https://github.com/trailofbits/skills/tree/HEAD/plugins/building-secure-contracts/skills/guidelines-advisor">Source on GitHub</a> · <a href="/?repo=trailofbits%2Fskills">All skills from trailofbits/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,800 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>8,064 <span class="muted">trailofbits/skills</span></dd></div><div><dt>First seen</dt><dd>Jan 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">169</div>
+      <div class="stat-delta">+22% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 139; week to Sep 27: 122; week to Oct 4: 107; week to Oct 11: 96; week to Oct 18: 124; week to Oct 25: 127; week to Nov 1: 153; week to Nov 8: 169. Use the left and right arrow keys to read each week."
+        data-values="139,122,107,96,124,127,153,169" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,13.8 38.6,18.2 71.1,22.1 103.7,25.0 136.3,17.7 168.9,16.9 201.4,10.2 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>139</td></tr><tr><td>Sep 27</td><td>122</td></tr><tr><td>Oct 4</td><td>107</td></tr><tr><td>Oct 11</td><td>96</td></tr><tr><td>Oct 18</td><td>124</td></tr><tr><td>Oct 25</td><td>127</td></tr><tr><td>Nov 1</td><td>153</td></tr><tr><td>Nov 8</td><td>169</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/?tag=category%3Asecurity">category:<wbr>security</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/?tag=security">security</a><a class="tag" data-tag="web3" data-facet="topic" href="/?tag=web3">web3</a><a class="tag" data-tag="architecture" data-facet="topic" href="/?tag=architecture">architecture</a><a class="tag" data-tag="code-review" data-facet="topic" href="/?tag=code-review">code-review</a><a class="tag" data-tag="code-quality" data-facet="topic" href="/?tag=code-quality">code-quality</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:solidity" data-facet="stack" href="/?tag=stack%3Asolidity">stack:<wbr>solidity</a><a class="tag" data-tag="stack:slither" data-facet="stack" href="/?tag=stack%3Aslither">stack:<wbr>slither</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/building-secure-contracts/skills/guidelines-advisor/SKILL.md">trailofbits/skills at e4dd0bb</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: guidelines-advisor
+description: Smart contract development advisor based on Trail of Bits&#39; best practices. Analyzes codebase to generate documentation/specifications, review architecture, check upgradeability patterns, assess implementation quality, identify pitfalls, review dependencies, and evaluate testing. Use when asking whether a smart contract project follows development best practices, reviewing on-chain/off-chain split, upgradeability, or delegatecall proxy patterns against guidelines, or seeking recommendations on contract design, inheritance, events, documentation, dependencies, or test strategy.</code></pre></details>
+        <div class="markdown"><h3>Guidelines Advisor</h3>
+<h4>Purpose</h4>
+<p>Systematically analyzes the codebase and provides guidance based on Trail of Bits' development guidelines:</p>
+<ol>
+<li><strong>Generate documentation and specifications</strong> (plain English descriptions, architectural diagrams, code documentation)</li>
+<li><strong>Optimize on-chain/off-chain architecture</strong> (only if applicable)</li>
+<li><strong>Review upgradeability patterns</strong> (if your project has upgrades)</li>
+<li><strong>Check delegatecall/proxy implementations</strong> (if present)</li>
+<li><strong>Assess implementation quality</strong> (functions, inheritance, events)</li>
+<li><strong>Identify common pitfalls</strong></li>
+<li><strong>Review dependencies</strong></li>
+<li><strong>Evaluate test suite and suggest improvements</strong></li>
+</ol>
+<p><strong>Framework</strong>: Building Secure Contracts - Development Guidelines</p>
+<hr>
+<h4>How This Works</h4>
+<h5>Phase 1: Discovery &amp; Context</h5>
+<p>Explores the codebase to understand:</p>
+<ul>
+<li>Project structure and platform</li>
+<li>Contract/module files and their purposes</li>
+<li>Existing documentation</li>
+<li>Architecture patterns (proxies, upgrades, etc.)</li>
+<li>Testing setup</li>
+<li>Dependencies</li>
+</ul>
+<h5>Phase 2: Documentation Generation</h5>
+<p>Helps create:</p>
+<ul>
+<li>Plain English system description</li>
+<li>Architectural diagrams (using Slither printers for Solidity)</li>
+<li>Code documentation recommendations (NatSpec for Solidity)</li>
+</ul>
+<h5>Phase 3: Architecture Analysis</h5>
+<p>Analyzes:</p>
+<ul>
+<li>On-chain vs off-chain component distribution (if applicable)</li>
+<li>Upgradeability approach (if applicable)</li>
+<li>Delegatecall proxy patterns (if present)</li>
+</ul>
+<h5>Phase 4: Implementation Review</h5>
+<p>Assesses:</p>
+<ul>
+<li>Function composition and clarity</li>
+<li>Inheritance structure</li>
+<li>Event logging practices</li>
+<li>Common pitfalls presence</li>
+<li>Dependencies quality</li>
+<li>Testing coverage and techniques</li>
+</ul>
+<h5>Phase 5: Recommendations</h5>
+<p>Provides:</p>
+<ul>
+<li>Prioritized improvement suggestions</li>
+<li>Best practice guidance</li>
+<li>Actionable next steps</li>
+</ul>
+<hr>
+<h4>Assessment Areas</h4>
+<p>I analyze 11 comprehensive areas covering all aspects of smart contract development. For detailed criteria, best practices, and specific checks, see <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/building-secure-contracts/skills/guidelines-advisor/resources/ASSESSMENT_AREAS.md">ASSESSMENT_AREAS.md</a>.</p>
+<h5>Quick Reference:</h5>
+<ol>
+<li>
+<p><strong>Documentation &amp; Specifications</strong></p>
+<ul>
+<li>Plain English system descriptions</li>
+<li>Architectural diagrams</li>
+<li>NatSpec completeness (Solidity)</li>
+<li>Documentation gaps identification</li>
+</ul>
+</li>
+<li>
+<p><strong>On-Chain vs Off-Chain Computation</strong></p>
+<ul>
+<li>Complexity analysis</li>
+<li>Gas optimization opportunities</li>
+<li>Verification vs computation patterns</li>
+</ul>
+</li>
+<li>
+<p><strong>Upgradeability</strong></p>
+<ul>
+<li>Migration vs upgradeability trade-offs</li>
+<li>Data separation patterns</li>
+<li>Upgrade procedure documentation</li>
+</ul>
+</li>
+<li>
+<p><strong>Delegatecall Proxy Pattern</strong></p>
+<ul>
+<li>Storage layout consistency</li>
+<li>Initialization patterns</li>
+<li>Function shadowing risks</li>
+<li>Slither upgradeability checks</li>
+</ul>
+</li>
+<li>
+<p><strong>Function Composition</strong></p>
+<ul>
+<li>Function size and clarity</li>
+<li>Logical grouping</li>
+<li>Modularity assessment</li>
+</ul>
+</li>
+<li>
+<p><strong>Inheritance</strong></p>
+<ul>
+<li>Hierarchy depth/width</li>
+<li>Diamond problem risks</li>
+<li>Inheritance visualization</li>
+</ul>
+</li>
+<li>
+<p><strong>Events</strong></p>
+<ul>
+<li>Critical operation coverage</li>
+<li>Event naming consistency</li>
+<li>Indexed parameters</li>
+</ul>
+</li>
+<li>
+<p><strong>Common Pitfalls</strong></p>
+<ul>
+<li>Reentrancy patterns</li>
+<li>Integer overflow/underflow</li>
+<li>Access control issues</li>
+<li>Platform-specific vulnerabilities</li>
+</ul>
+</li>
+<li>
+<p><strong>Dependencies</strong></p>
+<ul>
+<li>Library quality assessment</li>
+<li>Version management</li>
+<li>Dependency manager usage</li>
+<li>Copied code detection</li>
+</ul>
+</li>
+<li>
+<p><strong>Testing &amp; Verification</strong></p>
+<ul>
+<li>Coverage analysis</li>
+<li>Fuzzing techniques</li>
+<li>Formal verification</li>
+<li>CI/CD integration</li>
+</ul>
+</li>
+<li>
+<p><strong>Platform-Specific Guidance</strong></p>
+<ul>
+<li>Solidity version recommendations</li>
+<li>Compiler warning checks</li>
+<li>Inline assembly warnings</li>
+<li>Platform-specific tools</li>
+</ul>
+</li>
+</ol>
+<p>For complete details on each area including what I'll check, analyze, and recommend, see <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/building-secure-contracts/skills/guidelines-advisor/resources/ASSESSMENT_AREAS.md">ASSESSMENT_AREAS.md</a>.</p>
+<hr>
+<h4>Example Output</h4>
+<p>When the analysis is complete, you'll receive comprehensive guidance covering:</p>
+<ul>
+<li>System documentation with plain English descriptions</li>
+<li>Architectural diagrams and documentation gaps</li>
+<li>Architecture analysis (on-chain/off-chain, upgradeability, proxies)</li>
+<li>Implementation review (functions, inheritance, events, pitfalls)</li>
+<li>Dependencies and testing evaluation</li>
+<li>Prioritized recommendations (CRITICAL, HIGH, MEDIUM, LOW)</li>
+<li>Overall assessment and path to production</li>
+</ul>
+<p>For a complete example analysis report, see <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/building-secure-contracts/skills/guidelines-advisor/resources/EXAMPLE_REPORT.md">EXAMPLE_REPORT.md</a>.</p>
+<hr>
+<h4>Deliverables</h4>
+<p>I provide four comprehensive deliverable categories:</p>
+<h5>1. System Documentation</h5>
+<ul>
+<li>Plain English descriptions</li>
+<li>Architectural diagrams</li>
+<li>Documentation gaps analysis</li>
+</ul>
+<h5>2. Architecture Analysis</h5>
+<ul>
+<li>On-chain/off-chain assessment</li>
+<li>Upgradeability review</li>
+<li>Proxy pattern security review</li>
+</ul>
+<h5>3. Implementation Review</h5>
+<ul>
+<li>Function composition analysis</li>
+<li>Inheritance assessment</li>
+<li>Events coverage</li>
+<li>Pitfall identification</li>
+<li>Dependencies evaluation</li>
+<li>Testing analysis</li>
+</ul>
+<h5>4. Prioritized Recommendations</h5>
+<ul>
+<li>CRITICAL (address immediately)</li>
+<li>HIGH (address before deployment)</li>
+<li>MEDIUM (address for production quality)</li>
+<li>LOW (nice to have)</li>
+</ul>
+<p>For detailed templates and examples of each deliverable, see <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/building-secure-contracts/skills/guidelines-advisor/resources/DELIVERABLES.md">DELIVERABLES.md</a>.</p>
+<hr>
+<h4>Assessment Process</h4>
+<p>When invoked, I will:</p>
+<ol>
+<li>
+<p><strong>Explore the codebase</strong></p>
+<ul>
+<li>Identify all contract/module files</li>
+<li>Find existing documentation</li>
+<li>Locate test files</li>
+<li>Check for proxies/upgrades</li>
+<li>Identify dependencies</li>
+</ul>
+</li>
+<li>
+<p><strong>Generate documentation</strong></p>
+<ul>
+<li>Create plain English system description</li>
+<li>Generate architectural diagrams (if tools available)</li>
+<li>Identify documentation gaps</li>
+</ul>
+</li>
+<li>
+<p><strong>Analyze architecture</strong></p>
+<ul>
+<li>Assess on-chain/off-chain distribution (if applicable)</li>
+<li>Review upgradeability approach (if applicable)</li>
+<li>Audit proxy patterns (if present)</li>
+</ul>
+</li>
+<li>
+<p><strong>Review implementation</strong></p>
+<ul>
+<li>Analyze functions, inheritance, events</li>
+<li>Check for common pitfalls</li>
+<li>Assess dependencies</li>
+<li>Evaluate testing</li>
+</ul>
+</li>
+<li>
+<p><strong>Provide recommendations</strong></p>
+<ul>
+<li>Present findings with file references</li>
+<li>Ask clarifying questions about design decisions</li>
+<li>Suggest prioritized improvements</li>
+<li>Offer actionable next steps</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h4>Rationalizations (Do Not Skip)</h4>
+<table>
+<thead>
+<tr>
+<th>Rationalization</th>
+<th>Why It's Wrong</th>
+<th>Required Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;System is simple, description covers everything&quot;</td>
+<td>Plain English descriptions miss security-critical details</td>
+<td>Complete all 5 phases: documentation, architecture, implementation, dependencies, recommendations</td>
+</tr>
+<tr>
+<td>&quot;No upgrades detected, skip upgradeability section&quot;</td>
+<td>Upgradeability can be implicit (ownable patterns, delegatecall)</td>
+<td>Search for proxy patterns, delegatecall, storage collisions before declaring N/A</td>
+</tr>
+<tr>
+<td>&quot;Not applicable&quot; without verification</td>
+<td>Premature scope reduction misses vulnerabilities</td>
+<td>Verify with explicit codebase search before skipping any guideline section</td>
+</tr>
+<tr>
+<td>&quot;Architecture is straightforward, no analysis needed&quot;</td>
+<td>Obvious architectures have subtle trust boundaries</td>
+<td>Analyze on-chain/off-chain distribution, access control flow, external dependencies</td>
+</tr>
+<tr>
+<td>&quot;Common pitfalls don't apply to this codebase&quot;</td>
+<td>Every codebase has common pitfalls</td>
+<td>Systematically check all guideline pitfalls with grep/code search</td>
+</tr>
+<tr>
+<td>&quot;Tests exist, testing guideline is satisfied&quot;</td>
+<td>Test existence ≠ test quality</td>
+<td>Check coverage, property-based tests, integration tests, failure cases</td>
+</tr>
+<tr>
+<td>&quot;I can provide generic best practices&quot;</td>
+<td>Generic advice isn't actionable</td>
+<td>Provide project-specific findings with file:line references</td>
+</tr>
+<tr>
+<td>&quot;User knows what to improve from findings&quot;</td>
+<td>Findings without prioritization = no action plan</td>
+<td>Generate prioritized improvement roadmap with specific next steps</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4>Notes</h4>
+<ul>
+<li>I'll only analyze relevant sections (won't hallucinate about upgrades if not present)</li>
+<li>I'll adapt to your platform (Solidity, Rust, Cairo, etc.)</li>
+<li>I'll use available tools (Slither, etc.) but work without them if unavailable</li>
+<li>I'll provide file references and line numbers for all findings</li>
+<li>I'll ask questions about design decisions I can't infer from code</li>
+</ul>
+<hr>
+<h4>Ready to Begin</h4>
+<p><strong>What I'll need</strong>:</p>
+<ul>
+<li>Access to your codebase</li>
+<li>Context about your project goals</li>
+<li>Any existing documentation or specifications</li>
+<li>Information about deployment plans</li>
+</ul>
+<p>Let's analyze your codebase and improve it using Trail of Bits' best practices!</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

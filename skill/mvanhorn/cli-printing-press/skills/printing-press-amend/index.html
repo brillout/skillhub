@@ -1,0 +1,911 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>printing-press-amend · SkillHub</title>
+    <meta name="description" content="Use it when: a published Printing Press CLI fell short while you used it, or you want its commands renamed, added or fixed. It does: mines the Claude Code session transcript for friction or parses your typed asks, then plans, edits, validates and documents the fix. You get: an open pull request on mvanhorn/printing-press-library with a patch record, plus a plan and a list of deferred findings in your manuscripts. Asks first: to confirm the transcript, the scope (bugs, bugs and features, all, or your pick) and the PR draft before anything is pushed. Unlike: printing-press-polish, which improves a CLI before it&#039;s published; amend changes one already in the public library. Needs: the cli-printing-press binary 4.0.0 or newer, Go and the GitHub CLI." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=mvanhorn%2Fcli-printing-press">mvanhorn/cli-printing-press</a> <span aria-hidden="true">/</span> <a href="/bundle/mvanhorn/cli-printing-press/">CLI Printing Press</a></p>
+      <div class="title-row"><h1>printing-press-amend</h1><button type="button" class="save" data-save="skill:mvanhorn/cli-printing-press/skills/printing-press-amend" aria-pressed="false" aria-label="Save printing-press-amend" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>a published Printing Press CLI fell short while you used it, or you want its commands renamed, added or fixed</dd></div><div><dt>It does</dt><dd>mines the Claude Code session transcript for friction or parses your typed asks, then plans, edits, validates and documents the fix</dd></div><div><dt>You get</dt><dd>an open pull request on mvanhorn/printing-press-library with a patch record, plus a plan and a list of deferred findings in your manuscripts</dd></div><div><dt>Asks first</dt><dd>to confirm the transcript, the scope (bugs, bugs and features, all, or your pick) and the PR draft before anything is pushed</dd></div><div><dt>Unlike</dt><dd>printing-press-polish, which improves a CLI before it&#39;s published; amend changes one already in the public library</dd></div><div><dt>Needs</dt><dd>the cli-printing-press binary 4.0.0 or newer, Go and the GitHub CLI</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 6 of 9 in the <a href="/bundle/mvanhorn/cli-printing-press/">CLI Printing Press</a> bundle · Before it: <a href="/skill/mvanhorn/cli-printing-press/skills/printing-press-publish/">printing-press-publish</a> · After it: <a href="/skill/mvanhorn/cli-printing-press/skills/printing-press-import/">printing-press-import</a></p>
+    <p class="note">Only works inside its bundle: Changes only CLIs already in the public Printing Press library, and scrubs credentials with the patterns in printing-press-retro&#39;s secret-scrubbing reference. Install <a href="/bundle/mvanhorn/cli-printing-press/">CLI Printing Press</a> instead.</p>
+      <p class="note">Opens a public pull request on mvanhorn/printing-press-library and may open an issue on mvanhorn/cli-printing-press. Needs the cli-printing-press binary 4.0.0 or newer, Go and the GitHub CLI signed in; dogfood mode reads Claude Code&#39;s session transcript.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Amend changes a CLI that&#39;s already in the public Printing Press library. In dogfood mode it confirms which session transcript to read, pulls out friction such as failed commands, hand-rolled API calls and missing flags, and classes each as a bug or a missing feature; in direct mode it turns asks like &#34;rename X&#34; or &#34;add these feeds&#34; into the same list, and on request sniffs the CLI&#39;s source site for new endpoints. It offers to skip findings that open or recently merged library PRs cover, and stops if the CLI binary you used is older than the published one. You pick the scope; deferred items are saved for a later run. It then edits the CLI in a managed clone of the library, records a patch file and runs publish validate up to three times, holding the work if it fails. User-facing changes must ship with README and SKILL.md updates. It asks whether a fix that belongs in the generator should wait for a retro, and a temporary patch gets a reused or new issue on mvanhorn/cli-printing-press. It scrubs credentials and stop-listed names, asks about other proper nouns, shows you the draft, then pushes and opens the PR.</p>
+      <p class="muted">Summarizes <a href="https://github.com/mvanhorn/cli-printing-press/tree/94ce80e35cbc516cbab1b80f54d96ca419958ca0/skills/printing-press-amend">the skill at 94ce80e</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">mvanhorn/</span><wbr><span class="word">cli-printing-press</span> <span class="word">--skill</span> <span class="word">printing-press-amend</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/mvanhorn/cli-printing-press --skill printing-press-amend">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/mvanhorn/cli-printing-press/printing-press-amend">skills.sh page</a> · <a href="https://github.com/mvanhorn/cli-printing-press/tree/HEAD/skills/printing-press-amend">Source on GitHub</a> · <a href="/?repo=mvanhorn%2Fcli-printing-press">All skills from mvanhorn/cli-printing-press</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,600 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>4,932 <span class="muted">mvanhorn/cli-printing-press</span></dd></div><div><dt>First seen</dt><dd>May 16, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">102</div>
+      <div class="stat-delta">-14% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 119; week to Sep 27: 108; week to Oct 4: 79; week to Oct 11: 102; week to Oct 18: 111; week to Oct 25: 121; week to Nov 1: 122; week to Nov 8: 102. Use the left and right arrow keys to read each week."
+        data-values="119,108,79,102,111,121,122,102" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,7.1 38.6,11.0 71.1,21.5 103.7,13.2 136.3,10.0 168.9,6.4 201.4,6.0 234.0,13.2" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="13.2" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>119</td></tr><tr><td>Sep 27</td><td>108</td></tr><tr><td>Oct 4</td><td>79</td></tr><tr><td>Oct 11</td><td>102</td></tr><tr><td>Oct 18</td><td>111</td></tr><tr><td>Oct 25</td><td>121</td></tr><tr><td>Nov 1</td><td>122</td></tr><tr><td>Nov 8</td><td>102</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/?tag=category%3Aengineering">category:<wbr>engineering</a><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/?tag=category%3Adebugging">category:<wbr>debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:remote" data-facet="effect" title="Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service." href="/?tag=effect%3Aremote">effect:<wbr>remote</a></div>
+          <p class="tag-meaning">Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/?tag=needs%3Acli">needs:<wbr>cli</a><a class="tag" data-tag="needs:issue-tracker" data-facet="needs" title="Reads or writes an issue tracker, GitHub Issues by default." href="/?tag=needs%3Aissue-tracker">needs:<wbr>issue-tracker</a><a class="tag" data-tag="needs:claude-code" data-facet="needs" title="Uses Claude Code features such as hooks or background agents." href="/?tag=needs%3Aclaude-code">needs:<wbr>claude-code</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">Reads or writes an issue tracker, GitHub Issues by default.</p><p class="tag-meaning">Uses Claude Code features such as hooks or background agents.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="debugging" data-facet="topic" href="/?tag=debugging">debugging</a><a class="tag" data-tag="implementation" data-facet="topic" href="/?tag=implementation">implementation</a><a class="tag" data-tag="git" data-facet="topic" href="/?tag=git">git</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:github" data-facet="stack" href="/?tag=stack%3Agithub">stack:<wbr>github</a><a class="tag" data-tag="stack:go" data-facet="stack" href="/?tag=stack%3Ago">stack:<wbr>go</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/mvanhorn/cli-printing-press/blob/94ce80e35cbc516cbab1b80f54d96ca419958ca0/skills/printing-press-amend/SKILL.md">mvanhorn/cli-printing-press at 94ce80e</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: printing-press-amend
+description: &#62;
+  Amend a published CLI from one of two input sources: (1) dogfood mode mines
+  the active Claude Code session transcript for friction (missing flags, hand-
+  rolled API payloads, silent-null returns); (2) direct-input mode accepts
+  user-supplied asks (rename a command, add commands or feeds, fix a named bug,
+  optionally sniff the source site for new endpoints). Confirms scope with the
+  user, plans + executes the fix autonomously, scrubs PII, and opens a PR
+  against mvanhorn/printing-press-library. Two user-in-loop checkpoints: scope
+  after capture, PR draft before open.
+  Trigger phrases: &#34;amend the CLI&#34;, &#34;submit a patch&#34;, &#34;fix what I just
+  dogfooded&#34;, &#34;open a PR for this CLI&#34;, &#34;patch this CLI&#34;, &#34;add features to my
+  CLI&#34;, &#34;rename this command&#34;, &#34;add these feeds to &#60;cli&#62;&#34;, &#34;sniff for new APIs
+  in &#60;cli&#62;&#34;, &#34;amend with these ideas&#34;, &#34;use printing-press-amend&#34;,
+  &#34;run printing-press-amend&#34;.
+version: 0.2.0
+min-binary-version: &#34;4.0.0&#34;
+context: fork
+user-invocable: true
+allowed-tools:
+  - Bash
+  - Read
+  - Write
+  - Edit
+  - Glob
+  - Grep
+  - AskUserQuestion</code></pre></details>
+        <div class="markdown"><h3>/printing-press-amend</h3>
+<p>Turn a dogfood session into a PR for a printed CLI in the public library.</p>
+<pre><code class="language-bash">/printing-press-amend                 # auto-detect target CLI from session
+/printing-press-amend superhuman      # explicit short name
+/printing-press-amend superhuman-pp-cli
+/printing-press-amend &quot;$PRESS_LIBRARY/superhuman&quot;
+</code></pre>
+<p>This skill lives in this repo (the machine) and acts on a printed CLI in the public library. It is sibling to <code>/printing-press-publish</code> (adds a new CLI), <code>/printing-press-polish</code> (improves a CLI pre-publish), and <code>/printing-press-retro</code> (reflects on the machine itself). None of those cover post-publish CLI amendments driven by real-session friction.</p>
+<p>The artifact this skill produces is semantically a &quot;patch&quot; (in the git/PR sense), tracked by the public library's <code>.printing-press-patches/</code> directory (one file per patch). Inline <code>// PATCH(...)</code> source comments are optional navigation aids when they make a customized site easier to grep. The slash-skill name is <code>amend</code> to disambiguate from the existing <code>cli-printing-press patch</code> binary subcommand (which AST-injects pre-defined features — different mechanism, different intent).</p>
+<h4>Setup</h4>
+<p>Before doing anything else:</p>
+<p>&lt;!-- PRESS_SETUP_CONTRACT_START --&gt;</p>
+<pre><code class="language-bash"># min-binary-version: 4.0.0
+
+# Derive scope first — needed for local build detection
+_scope_dir=&quot;$(git rev-parse --show-toplevel 2&gt;/dev/null || echo &quot;$PWD&quot;)&quot;
+_scope_dir=&quot;$(cd &quot;$_scope_dir&quot; &amp;&amp; pwd -P)&quot;
+
+# Prefer local build when running from inside the printing-press repo.
+_press_repo=false
+if [ -x &quot;$_scope_dir/cli-printing-press&quot; ] &amp;&amp; [ -d &quot;$_scope_dir/cmd/cli-printing-press&quot; ]; then
+  _press_repo=true
+  export PATH=&quot;$_scope_dir:$PATH&quot;
+  echo &quot;Using local build: $_scope_dir/cli-printing-press&quot;
+elif ! command -v cli-printing-press &gt;/dev/null 2&gt;&amp;1; then
+  if [ -x &quot;$HOME/go/bin/cli-printing-press&quot; ]; then
+    echo &quot;cli-printing-press found at ~/go/bin/cli-printing-press but not on PATH.&quot;
+    echo &quot;Add GOPATH/bin to your PATH:  export PATH=\&quot;\$HOME/go/bin:\$PATH\&quot;&quot;
+  else
+    echo &quot;cli-printing-press binary not found.&quot;
+    echo &quot;Install with:  go install github.com/mvanhorn/cli-printing-press/v4/cmd/cli-printing-press@latest&quot;
+  fi
+  return 1 2&gt;/dev/null || exit 1
+fi
+
+# Resolve and emit the absolute path the agent must use for every later
+# `cli-printing-press` invocation. `export PATH` above only affects this one
+# Bash tool call; subsequent calls open a fresh shell and resolve bare
+# `cli-printing-press` against the user's default PATH, where a stale global
+# can silently shadow the local build. The agent captures this marker and
+# substitutes the absolute path into every later invocation.
+if [ &quot;$_press_repo&quot; = &quot;true&quot; ]; then
+  PRINTING_PRESS_BIN=&quot;$_scope_dir/cli-printing-press&quot;
+else
+  PRINTING_PRESS_BIN=&quot;$(command -v cli-printing-press 2&gt;/dev/null || true)&quot;
+fi
+if ! command -v go &gt;/dev/null 2&gt;&amp;1; then
+  echo &quot;&quot;
+  echo &quot;[setup-error] Go toolchain not found.&quot;
+  echo &quot;&quot;
+  echo &quot;This Printing Press flow runs Go-based build or validation commands.&quot;
+  echo &quot;Install Go 1.26.10 or newer from https://go.dev/dl/, then verify with:&quot;
+  echo &quot;  go version&quot;
+  echo &quot;Then re-run this skill.&quot;
+  echo &quot;&quot;
+  return 1 2&gt;/dev/null || exit 1
+fi
+echo &quot;PRINTING_PRESS_BIN=$PRINTING_PRESS_BIN&quot;
+
+_pp_semver_lt() {
+  if [ -z &quot;${PP_SEMVER_A:-}&quot; ] || [ -z &quot;${PP_SEMVER_B:-}&quot; ]; then
+    echo &quot;[setup-error] semver comparison inputs are missing.&quot; &gt;&amp;2
+    return 2
+  fi
+  awk -v a=&quot;${PP_SEMVER_A:-}&quot; -v b=&quot;${PP_SEMVER_B:-}&quot; 'BEGIN {
+    split(a, x, &quot;.&quot;); split(b, y, &quot;.&quot;)
+    for (i = 1; i &lt;= 3; i++) {
+      if ((x[i] + 0) &lt; (y[i] + 0)) exit 0
+      if ((x[i] + 0) &gt; (y[i] + 0)) exit 1
+    }
+    exit 1
+  }'
+}
+
+_pp_go_version_norm() {
+  printf '%s\n' &quot;${PP_GO_VERSION_INPUT:-}&quot; | sed -nE 's/.*go([0-9]+)\.([0-9]+)(\.([0-9]+))?.*/\1.\2.\4/p' | sed -E 's/\.$/.0/'
+}
+
+_pp_check_go_currency() {
+  _pp_go_installed=&quot;$(PP_GO_VERSION_INPUT=&quot;$(go env GOVERSION 2&gt;/dev/null)&quot; _pp_go_version_norm)&quot;
+  _pp_go_required=&quot;$(PP_GO_VERSION_INPUT=&quot;$(go version &quot;$PRINTING_PRESS_BIN&quot; 2&gt;/dev/null)&quot; _pp_go_version_norm)&quot;
+  PP_SEMVER_A=&quot;$_pp_go_installed&quot;
+  PP_SEMVER_B=&quot;$_pp_go_required&quot;
+  if [ -z &quot;$_pp_go_installed&quot; ] || [ -z &quot;$_pp_go_required&quot; ] || ! _pp_semver_lt; then
+    return 0
+  fi
+
+  echo &quot;&quot;
+  if [ &quot;${GOTOOLCHAIN:-auto}&quot; = &quot;local&quot; ]; then
+    echo &quot;[setup-error] Go $_pp_go_required or newer is required by this cli-printing-press binary (installed: $_pp_go_installed).&quot;
+    echo &quot;GOTOOLCHAIN=local disables automatic toolchain downloads, so later Go quality gates would fail.&quot;
+    echo &quot;Install Go $_pp_go_required or newer from https://go.dev/dl/, or unset GOTOOLCHAIN.&quot;
+    echo &quot;&quot;
+    return 1
+  fi
+
+  echo &quot;[go-toolchain-old] Go $_pp_go_required or newer is required by this cli-printing-press binary (installed: $_pp_go_installed).&quot;
+  echo &quot;PRESS_GO_INSTALLED=$_pp_go_installed&quot;
+  echo &quot;PRESS_GO_REQUIRED=$_pp_go_required&quot;
+  echo &quot;Default GOTOOLCHAIN behavior may download the required toolchain during Go commands.&quot;
+  echo &quot;&quot;
+  return 0
+}
+_pp_check_go_currency || { return 1 2&gt;/dev/null || exit 1; }
+
+PRESS_BASE=&quot;$(basename &quot;$_scope_dir&quot; | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9_-]/-/g; s/^-+//; s/-+$//')&quot;
+if [ -z &quot;$PRESS_BASE&quot; ]; then
+  PRESS_BASE=&quot;workspace&quot;
+fi
+
+PRESS_SCOPE=&quot;$PRESS_BASE-$(printf '%s' &quot;$_scope_dir&quot; | shasum -a 256 | cut -c1-8)&quot;
+PRESS_HOME=&quot;${PRINTING_PRESS_HOME:-$HOME/printing-press}&quot;
+PRESS_RUNSTATE=&quot;$PRESS_HOME/.runstate/$PRESS_SCOPE&quot;
+PRESS_LIBRARY=&quot;$PRESS_HOME/library&quot;
+PRESS_MANUSCRIPTS=&quot;$PRESS_HOME/manuscripts&quot;
+PRESS_CURRENT=&quot;$PRESS_RUNSTATE/current&quot;
+
+_pp_check_disk_space() {
+  _pp_disk_warn_kb=&quot;${PRINTING_PRESS_DISK_WARN_KB:-3145728}&quot;
+  _pp_disk_fail_kb=&quot;${PRINTING_PRESS_DISK_FAIL_KB:-524288}&quot;
+  case &quot;$_pp_disk_warn_kb$_pp_disk_fail_kb&quot; in
+    &quot;&quot;|*[!0-9]*) return 0 ;;
+  esac
+
+  _pp_disk_path=&quot;$PRESS_HOME&quot;
+  while [ ! -e &quot;$_pp_disk_path&quot; ] &amp;&amp; [ &quot;$_pp_disk_path&quot; != &quot;/&quot; ]; do
+    _pp_disk_path=&quot;$(dirname &quot;$_pp_disk_path&quot;)&quot;
+  done
+
+  _pp_disk_avail_kb=&quot;$(df -Pk &quot;$_pp_disk_path&quot; 2&gt;/dev/null | awk 'BEGIN {
+    if ((getline header) &lt;= 0 || (getline record) &lt;= 0) exit
+    field_count = split(record, fields)
+    if (field_count &gt;= 4) print fields[4]
+  }')&quot;
+  case &quot;$_pp_disk_avail_kb&quot; in
+    &quot;&quot;|*[!0-9]*) return 0 ;;
+  esac
+
+  if [ &quot;$_pp_disk_avail_kb&quot; -lt &quot;$_pp_disk_fail_kb&quot; ]; then
+    echo &quot;&quot;
+    echo &quot;[setup-error] Critically low disk space on the Printing Press workspace volume.&quot;
+    echo &quot;PRESS_DISK_PATH=$_pp_disk_path&quot;
+    echo &quot;PRESS_DISK_AVAIL_KB=$_pp_disk_avail_kb&quot;
+    echo &quot;PRESS_DISK_FAIL_KB=$_pp_disk_fail_kb&quot;
+    echo &quot;Free disk space or set PRINTING_PRESS_HOME to a volume with more room, then re-run this skill.&quot;
+    echo &quot;&quot;
+    return 1
+  fi
+
+  if [ &quot;$_pp_disk_avail_kb&quot; -lt &quot;$_pp_disk_warn_kb&quot; ]; then
+    echo &quot;&quot;
+    echo &quot;[low-disk] Printing Press workspace volume is low on free space.&quot;
+    echo &quot;PRESS_DISK_PATH=$_pp_disk_path&quot;
+    echo &quot;PRESS_DISK_AVAIL_KB=$_pp_disk_avail_kb&quot;
+    echo &quot;PRESS_DISK_WARN_KB=$_pp_disk_warn_kb&quot;
+    echo &quot;This flow may need several GiB for generated files, Go build cache, module downloads, or repository clones.&quot;
+    echo &quot;&quot;
+  fi
+}
+_pp_check_disk_space || { return 1 2&gt;/dev/null || exit 1; }
+
+mkdir -p &quot;$PRESS_RUNSTATE&quot; &quot;$PRESS_LIBRARY&quot; &quot;$PRESS_MANUSCRIPTS&quot; &quot;$PRESS_CURRENT&quot;
+
+# --- Currency-floor check (standalone, fail-open) ---
+# Hard-stop on binaries below the published supported floor so amend does not
+# regenerate CLIs with since-fixed bugs. Repo checkouts build from source and
+# are exempt. The floor is clamped to &lt;= latest so a bad value cannot brick
+# every install. Fetched fresh each run rather than reusing the printing-press
+# preflight's TTL cache: amend is low-frequency, so the bounded curl + go-list
+# cost is not worth its own cache here.
+if [ &quot;$_press_repo&quot; != &quot;true&quot; ] &amp;&amp; command -v curl &gt;/dev/null 2&gt;&amp;1; then
+  _semver_lt() {
+    if [ -z &quot;${PP_SEMVER_A:-}&quot; ] || [ -z &quot;${PP_SEMVER_B:-}&quot; ]; then
+      echo &quot;[setup-error] semver comparison inputs are missing.&quot; &gt;&amp;2
+      return 2
+    fi
+    awk -v a=&quot;${PP_SEMVER_A:-}&quot; -v b=&quot;${PP_SEMVER_B:-}&quot; 'BEGIN {
+      split(a, x, &quot;.&quot;); split(b, y, &quot;.&quot;)
+      for (i = 1; i &lt;= 3; i++) {
+        if ((x[i] + 0) &lt; (y[i] + 0)) exit 0
+        if ((x[i] + 0) &gt; (y[i] + 0)) exit 1
+      }
+      exit 1
+    }'
+  }
+  _floor_installed=$(&quot;$PRINTING_PRESS_BIN&quot; version --json 2&gt;/dev/null | sed -nE 's/.*&quot;version&quot;[[:space:]]*:[[:space:]]*&quot;([^&quot;]+)&quot;.*/\1/p')
+  _floor_doc=$(curl -fsSL --max-time 5 \
+    https://raw.githubusercontent.com/mvanhorn/cli-printing-press/main/supported-versions.txt 2&gt;/dev/null || true)
+  _floor_min=$(printf '%s\n' &quot;$_floor_doc&quot; | sed -nE 's/^min_supported=//p' | head -n 1)
+  _floor_reason=$(printf '%s\n' &quot;$_floor_doc&quot; | sed -nE 's/^reason=//p' | head -n 1)
+  _floor_latest=&quot;&quot;
+  if command -v go &gt;/dev/null 2&gt;&amp;1; then
+    _floor_latest=$(go list -m -json github.com/mvanhorn/cli-printing-press/v4@latest 2&gt;/dev/null | sed -nE 's/^[[:space:]]*&quot;Version&quot;:[[:space:]]*&quot;v?([^&quot;]+)&quot;.*/\1/p' | head -n 1)
+  fi
+  if [ -n &quot;$_floor_min&quot; ] &amp;&amp; [ -n &quot;$_floor_installed&quot; ] &amp;&amp; [ -n &quot;$_floor_latest&quot; ] &amp;&amp;
+     PP_SEMVER_A=&quot;$_floor_installed&quot; PP_SEMVER_B=&quot;$_floor_min&quot; _semver_lt &amp;&amp;
+     ! PP_SEMVER_A=&quot;$_floor_latest&quot; PP_SEMVER_B=&quot;$_floor_min&quot; _semver_lt; then
+    echo &quot;&quot;
+    echo &quot;[upgrade-required] printing-press v$_floor_min is the minimum supported version (you have v$_floor_installed)&quot;
+    echo &quot;PRESS_REQUIRED_MIN=$_floor_min&quot;
+    echo &quot;PRESS_REQUIRED_INSTALLED=$_floor_installed&quot;
+    echo &quot;PRESS_REQUIRED_REASON=$_floor_reason&quot;
+    echo &quot;&quot;
+  fi
+fi
+</code></pre>
+<p>&lt;!-- PRESS_SETUP_CONTRACT_END --&gt;</p>
+<p>After running the setup contract, capture the <code>PRINTING_PRESS_BIN=&lt;abs-path&gt;</code> line from stdout. <strong>Every subsequent <code>cli-printing-press ...</code> invocation in this skill must use that absolute path</strong> (substitute the value, not the literal <code>$PRINTING_PRESS_BIN</code> token) — <code>export PATH</code> above only affects the single Bash tool call it runs in, so later calls open a fresh shell where bare <code>cli-printing-press</code> resolves against the user's default <code>PATH</code> and a stale global can shadow the local build.</p>
+<p>If setup emitted <code>[go-toolchain-old]</code> or <code>[low-disk]</code>, surface the advisory to the user and continue unless setup also emitted <code>[setup-error]</code>. <code>[go-toolchain-old]</code> means later Go commands may download the required toolchain or fail when downloads are blocked; <code>[low-disk]</code> means this run may need several GiB for generated files, Go build cache, module downloads, or repository clones.</p>
+<p>After capturing the binary path, check binary version compatibility. Read the <code>min-binary-version</code> field from this skill's YAML frontmatter. Run <code>&lt;PRINTING_PRESS_BIN&gt; version --json</code> and parse the version from the output. Compare it to <code>min-binary-version</code> using semver rules. If the installed binary is older than the minimum, stop immediately and tell the user: &quot;cli-printing-press binary vX.Y.Z is older than the minimum required vA.B.C. Run <code>go install github.com/mvanhorn/cli-printing-press/v4/cmd/cli-printing-press@latest</code> to update.&quot;</p>
+<p>If the setup contract emitted an <code>[upgrade-required]</code> block, the installed binary is below the published <strong>currency floor</strong> (<code>PRESS_REQUIRED_MIN</code>) — older releases regenerate CLIs with since-fixed bugs (<code>PRESS_REQUIRED_REASON</code>). This is a hard gate distinct from <code>min-binary-version</code>: do not amend or regenerate on that binary. Offer a one-click upgrade via <code>AskUserQuestion</code> — <strong>Yes — upgrade now</strong> (run <code>go install github.com/mvanhorn/cli-printing-press/v4/cmd/cli-printing-press@latest</code>, re-capture <code>PRINTING_PRESS_BIN</code>, then continue) or <strong>Cancel</strong> (stop the run). There is no skip-and-continue; below the floor the only paths are upgrade or abort. If the upgrade command fails, surface it and stop.</p>
+<h4>Phase 0 — Input Mode Detection</h4>
+<p>This skill accepts two input sources for the finding list it later patches: a Claude Code session transcript (dogfood mode, current behavior) and user-supplied asks in the slash-command prompt (direct-input mode, added in v0.2). The two modes diverge only in Phase 1; Phase 2 onward is mode-agnostic and consumes a typed finding list with identical shape regardless of source.</p>
+<p>Decide the mode before Phase 1 runs.</p>
+<h5>Detection rubric</h5>
+<p>Read the slash-command prompt body and the immediate invocation turn from the conversation context. Classify into one of four branches:</p>
+<ul>
+<li>
+<p><strong><code>MODE=direct</code></strong> — the prompt contains a concrete CLI name AND at least one direct-input signal:</p>
+<ul>
+<li>Action verbs targeting the CLI: <code>rename</code>, <code>add</code>, <code>remove</code>, <code>fix</code>, <code>sniff</code>, <code>discover</code></li>
+<li>Explicit URLs the user wants added (e.g., <code>https://example.com/feed/x</code>)</li>
+<li>An enumerated list of feeds, commands, endpoints, or features</li>
+<li>Phrasing like &quot;these ideas&quot;, &quot;these features&quot;, &quot;with the following&quot;</li>
+</ul>
+</li>
+<li>
+<p><strong><code>MODE=dogfood</code></strong> — the prompt is empty, OR names a CLI without any asks (&quot;amend the superhuman CLI&quot;), OR explicitly references the session (&quot;what I just dogfooded&quot;, &quot;this session's friction&quot;, &quot;from my session today&quot;)</p>
+</li>
+<li>
+<p><strong><code>MODE=both</code></strong> — the prompt clearly references both: a session AND specific asks (&quot;I dogfooded this session and also want to add feature X&quot;, &quot;in addition to the friction I hit, please add command Y&quot;)</p>
+</li>
+<li>
+<p><strong>Ambiguous</strong> — only one signal is present (CLI named with no verbs, or verbs with no target CLI, or asks worded so they could be friction reports OR new asks). Ask the user via <code>AskUserQuestion</code>:</p>
+<blockquote>
+<p>&quot;Two ways to source findings for this amend. Which fits?</p>
+<ol>
+<li>Mine the current session transcript (dogfood mode)</li>
+<li>Use the asks I just typed (direct-input mode)</li>
+<li>Both — combine transcript friction with my asks&quot;</li>
+</ol>
+</blockquote>
+</li>
+</ul>
+<p>Default when no slash-command prompt is present at all: <code>MODE=dogfood</code>. This preserves the canonical UX — <code>/printing-press-amend</code> with nothing after still works exactly as it did in v0.1.</p>
+<h5>Persist the mode</h5>
+<p>Write the resolved mode to <code>$PRESS_RUNSTATE/current/mode.txt</code> so later phases (and a resumed run) can read it:</p>
+<pre><code class="language-bash">echo &quot;$MODE&quot; &gt; &quot;$PRESS_RUNSTATE/current/mode.txt&quot;
+</code></pre>
+<h5>Output</h5>
+<p>Phase 0 emits one line to Phase 1:</p>
+<pre><code class="language-yaml">mode: &lt;dogfood|direct|both&gt;
+</code></pre>
+<p>Phase 1 branches on this value — dogfood findings flow through <code>### 1a</code>, direct-input findings flow through <code>### 1b</code>, and combined runs execute both sub-sections in sequence. Phase 2 onward ignores the mode entirely — the finding list is the contract.</p>
+<h4>Phase 1 — Capture</h4>
+<p>This phase produces a typed finding list. The list shape is identical across modes: each finding carries <code>id</code>, <code>kind</code>, <code>category</code>, <code>classification</code> (bug or feature), <code>evidence</code>, <code>target_cli</code>, <code>rationale</code>, and <code>provenance</code> (<code>transcript</code> for dogfood, <code>user-ask</code> for direct, <code>sniff</code> for sniff-derived). Phase 2 consumes the list verbatim.</p>
+<p>When <code>MODE=dogfood</code>, run only <code>### 1a</code>. When <code>MODE=direct</code>, run only <code>### 1b</code>. When <code>MODE=both</code>, run <code>### 1a</code> first, then <code>### 1b</code>, and merge the two finding lists with non-colliding IDs (1b continues numbering where 1a left off).</p>
+<h5>1a. Dogfood mode (MODE=dogfood)</h5>
+<p>Read <code>references/transcript-parsing.md</code> for the full procedure. Summary of what this sub-section does:</p>
+<ol>
+<li>
+<p><strong>Resolve the active session transcript file</strong> — derive <code>&lt;project-dir-slug&gt;</code> from the current working directory, list <code>~/.claude/projects/&lt;slug&gt;/*.jsonl</code> by mtime, pick the most-recently-modified. ALWAYS confirm the resolved path with the user via <code>AskUserQuestion</code> before reading — wrong-file selection ingests friction from the wrong session.</p>
+</li>
+<li>
+<p><strong>Walk the transcript and extract friction signals</strong> — non-zero exit codes, error messages, hand-rolled API payloads (e.g. direct <code>curl</code> POSTs that should be a CLI command), retry-after-failure patterns, agent commentary like &quot;X doesn't exist&quot; / &quot;X returns 400&quot;, missing-flag references, silent-null returns, auth confusion. Each signal carries timestamp + category + verbatim evidence + the <code>&lt;slug&gt;-pp-cli</code> it references.</p>
+</li>
+<li>
+<p><strong>Classify each signal as bug or feature</strong> with a one-line rationale. Bug = CLI behavior is wrong; feature = CLI behavior is missing. The classification is the agent's best read; the user confirms or overrides at the U4 scope checkpoint.</p>
+</li>
+<li>
+<p><strong>Auto-detect target CLI</strong> — count occurrences of each <code>&lt;slug&gt;-pp-cli</code> in the signals, propose the most-touched CLI as the default. Confirm with <code>AskUserQuestion</code> (single CLI: simple yes/no; multiple close: pick from list). When the user passed an explicit <code>&lt;cli-name-or-path&gt;</code> argument, skip auto-detect.</p>
+</li>
+<li>
+<p><strong>Resolve target paths and publish status</strong> — accept short name, full name, or absolute path (per R4). Normalize the input to the bare CLI slug, then resolve publish status by looking up that slug in the public library (<code>~/printing-press-library/library/*/&lt;slug&gt;</code> when a local clone exists, otherwise the same path via <code>gh api</code>). Do not infer publish status from the local working copy's git remotes, and do not treat a missing <code>$PRESS_LIBRARY/&lt;slug&gt;</code> working copy as unpublished. If the slug is found in the public library, record <code>target_category</code>, <code>published_status: published</code>, and route the run through the managed-clone upstream PR path. Only use <code>published_status: local-only</code> when the slug is absent from the public library. The category is needed by U7's PR open phase and is captured here so it doesn't have to be re-derived.</p>
+</li>
+</ol>
+<p>Each finding emitted by 1a carries <code>provenance: transcript</code>. Output flows into Phase 2 as the structured finding list documented in <code>references/transcript-parsing.md</code>.</p>
+<h5>1b. Direct-input mode (MODE=direct)</h5>
+<p>Read <code>references/direct-input-parsing.md</code> for the full procedure (introduced in v0.2). Summary of what this sub-section does:</p>
+<ol>
+<li>
+<p><strong>Read the slash-command prompt body</strong> plus the immediate agent-message turn that fired the skill — these carry the user's verbatim asks (e.g., &quot;rename Digg 1000 to Digg, add these four feeds: ..., sniff for new endpoints&quot;). There is no transcript to confirm; skip the U1 transcript-path modal that 1a runs.</p>
+</li>
+<li>
+<p><strong>Resolve the target CLI</strong> — same name-resolution rules as 1a step 4-5 (per R4), but the CLI is normally already named in the prompt itself. Extract via regex (<code>&lt;slug&gt;-pp-cli</code> or &quot;the &lt;slug&gt; CLI&quot;); if absent, ask the user.</p>
+</li>
+<li>
+<p><strong>Parse the asks into structured findings</strong> using the rubric in <code>references/direct-input-parsing.md</code>. Each ask maps to one finding with a typed <code>kind</code> field:</p>
+<ul>
+<li><code>rename</code> — &quot;rename X to Y&quot; / &quot;call it X instead of Y&quot; → <code>classification: feature</code></li>
+<li><code>add-command</code> — &quot;add command X&quot; / &quot;add subcommand X&quot; → <code>classification: feature</code></li>
+<li><code>add-feed</code> — &quot;add feed &lt;url&gt;&quot; / enumerated URLs the user wants added (one finding per URL) → <code>classification: feature</code></li>
+<li><code>add-endpoint</code> — &quot;add endpoint &lt;url&gt;&quot; / explicit API path → <code>classification: feature</code></li>
+<li><code>fix-bug</code> — &quot;fix X&quot; / &quot;X is broken&quot; / &quot;X returns null&quot; → <code>classification: bug</code></li>
+<li><code>sniff</code> — &quot;sniff for new APIs&quot; / &quot;find new endpoints&quot; / &quot;discover more&quot; → routes to the sniff subroutine in <code>### 1b.i</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Each finding records the user's verbatim phrasing</strong> in <code>evidence</code> so the U4 scope confirmation modal shows the user what they actually wrote.</p>
+</li>
+<li>
+<p><strong>Edge cases</strong> — multi-CLI asks split into two separate runs (out of scope for v0.2; ask the user to pick one). Ambiguous verbs (<code>update X</code> without specifics) trigger an <code>AskUserQuestion</code> clarification rather than a guess.</p>
+</li>
+</ol>
+<p>Each finding emitted by 1b carries <code>provenance: user-ask</code> (or <code>provenance: sniff</code> for findings produced by the sniff subroutine). Output flows into Phase 2 as the same structured finding list shape used by 1a.</p>
+<h5>1b.i. Sniff-finding subroutine</h5>
+<p>Triggered when the parsing rubric tags any 1b ask as <code>kind: sniff</code> (phrases like &quot;sniff for new APIs&quot;, &quot;find new endpoints&quot;, &quot;discover more endpoints in &lt;site&gt;&quot;). Sniff is opt-in per run — never invoked unless the user named it. Skip this subroutine entirely when no sniff finding is present.</p>
+<p><strong>Step 1 — Resolve the target source URL.</strong> Read the target CLI's published manifest at <code>~/printing-press-library/library/&lt;category&gt;/&lt;slug&gt;/.printing-press.json</code> and extract <code>source_url</code> (or <code>spec_url</code> as fallback). Category was resolved in 1b step 2.</p>
+<p>If neither field is set, ask the user inline:</p>
+<blockquote>
+<p>&quot;Sniff needs a target URL — paste the source site you want sniffed, or skip the sniff finding for this run?&quot;</p>
+</blockquote>
+<p>If the user skips, drop the sniff finding from the active list and continue with the other 1b findings. If the user pastes a URL, use it for steps 2-3.</p>
+<p><strong>Step 2 — Run crowd-sniff first (fast, no browser).</strong> Replace <code>&lt;PRINTING_PRESS_BIN&gt;</code> with the absolute path captured at setup:</p>
+<pre><code class="language-bash">&lt;PRINTING_PRESS_BIN&gt; crowd-sniff --site &quot;$SOURCE_URL&quot; --json &gt; /tmp/amend-sniff-crowd.json
+crowd_exit=$?
+</code></pre>
+<p><code>crowd-sniff</code> queries npm SDKs and GitHub code search to discover candidate endpoints — no browser required. Typical runtime is under a minute.</p>
+<p><strong>Step 3 — Optional browser-sniff (only when the user opted in deeper).</strong> When the user's ask explicitly named browser-based discovery (&quot;sniff with browser&quot;, &quot;do a deep sniff&quot;) AND a captured HAR is already available, run:</p>
+<pre><code class="language-bash">&lt;PRINTING_PRESS_BIN&gt; browser-sniff --har &quot;$HAR_PATH&quot; --json &gt; /tmp/amend-sniff-browser.json
+browser_exit=$?
+</code></pre>
+<p>This skill does not orchestrate HAR capture itself in v0.2 — capture is user-driven (the user opens the source site in Chrome, exports the HAR, and points the skill at it) or the deep sniff is skipped with a note. v0.3 may extend the skill to drive capture via the claude-in-chrome MCP; out of scope for v0.2.</p>
+<p><strong>Step 4 — Convert discoveries to findings.</strong> For each candidate endpoint in the sniff output, append one finding to the 1b finding list:</p>
+<ul>
+<li><code>id: F&lt;n&gt;</code> (next available number after the parsed asks)</li>
+<li><code>kind: add-endpoint</code></li>
+<li><code>classification: feature</code></li>
+<li><code>evidence: &quot;discovered via crowd-sniff: &lt;endpoint-path&gt;&quot;</code> (or <code>browser-sniff</code> when applicable)</li>
+<li><code>target_cli: &lt;slug&gt;-pp-cli</code></li>
+<li><code>rationale: &lt;one-line summary from sniff output if available, otherwise &quot;sniff candidate, user to confirm&quot;&gt;</code></li>
+<li><code>provenance: sniff</code></li>
+</ul>
+<p>Tier these as Tier 3 (polish/architecture) at Phase 3 by default — the user reviews and can promote individual entries to Tier 2 if they're high-priority.</p>
+<p><strong>Step 5 — Degraded paths.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Condition</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.printing-press.json</code> lacks <code>source_url</code> AND user skips when asked</td>
+<td>Drop sniff finding; continue with other 1b findings; log &quot;sniff skipped — no source URL&quot;.</td>
+</tr>
+<tr>
+<td><code>crowd-sniff</code> exits non-zero</td>
+<td>Log the error; skip sniff findings; continue with other 1b findings. Do NOT abort the amend run.</td>
+</tr>
+<tr>
+<td><code>crowd-sniff</code> returns zero candidate endpoints</td>
+<td>Emit one entry to the deferred-findings list (&quot;sniff ran, no new endpoints discovered&quot;) rather than adding nothing — gives the user a record.</td>
+</tr>
+<tr>
+<td>Browser-sniff requested but no HAR available</td>
+<td>Log; fall back to crowd-sniff results only.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Step 6 — Surface provenance to the user.</strong> At the Phase 3 scope-confirmation modal, sniff-derived findings are visually grouped under a <code>(sniff)</code> provenance tag so the user can decide whether to keep them as a group, e.g.:</p>
+<pre><code>Tier 3 — Polish / architecture (5)
+  F8  add-endpoint /v1/feeds/stars (sniff)
+  F9  add-endpoint /v1/feeds/new (sniff)
+  F10 add-endpoint /v1/feeds/activity (sniff)
+  ...
+</code></pre>
+<h4>Phase 2 — Pre-Checkpoint Guards</h4>
+<p>Two guards run before the user sees the scope menu. Either can suppress findings or abort the run.</p>
+<h5>2a. PR cross-reference (suppress duplicate proposals)</h5>
+<p>For each finding from Phase 1, search open + recently-merged PRs in <code>mvanhorn/printing-press-library</code> for matches. The duplicate-detection criteria (in priority order): (1) the target CLI's directory path overlaps the PR's changed-file list, (2) keywords from the finding's category + rationale match the PR title or body.</p>
+<pre><code class="language-bash"># Replace &lt;PRINTING_PRESS_BIN&gt; use with the absolute path captured at setup.
+# This phase uses gh, not the press binary.
+
+# Open PRs touching this CLI
+gh pr list --repo mvanhorn/printing-press-library \
+  --search &quot;in:title,body &lt;slug&gt;&quot; --state open --limit 20 \
+  --json number,title,state,headRefName,files
+
+# Recently merged PRs (last 90 days) touching this CLI.
+# Compute &quot;90 days ago&quot; portably — `date -v-90d` is BSD/macOS only, `date -d`
+# is GNU/Linux only. Try GNU first, fall back to BSD, then to python3. If
+# every form fails, abort with an explicit error rather than letting the
+# dedup guard silently drop out with an empty `merged:&gt;` qualifier.
+ninety_days_ago=$(date -u -d '90 days ago' +%Y-%m-%d 2&gt;/dev/null \
+  || date -u -v-90d +%Y-%m-%d 2&gt;/dev/null \
+  || python3 -c 'import datetime; print((datetime.datetime.now(datetime.UTC).date() - datetime.timedelta(days=90)).isoformat())' 2&gt;/dev/null)
+if [ -z &quot;$ninety_days_ago&quot; ]; then
+  echo &quot;ERROR: cannot compute 90-days-ago date — no GNU date, BSD date, or python3 available.&quot;
+  exit 1
+fi
+
+gh pr list --repo mvanhorn/printing-press-library \
+  --search &quot;in:title,body &lt;slug&gt; merged:&gt;$ninety_days_ago&quot; \
+  --state merged --limit 20 \
+  --json number,title,state,mergedAt,headRefName,files
+</code></pre>
+<p>For each finding with a possible-duplicate match, present inline:</p>
+<blockquote>
+<p>&quot;Finding <code>F&lt;n&gt;</code> (<code>&lt;category&gt;</code>) may already be addressed by PR #&lt;num&gt; — <code>&lt;title&gt;</code> (&lt;state&gt;, &lt;date&gt;). Skip this finding?&quot;</p>
+</blockquote>
+<p>User options: skip (drops to deferred), keep, or &quot;show me PR #&lt;num&gt;&quot; (opens <code>gh pr view &lt;num&gt; --repo mvanhorn/printing-press-library --web</code>). The default for clearly-merged matches is &quot;skip&quot;; for open PRs, default is &quot;keep&quot; (the user may want to add to the in-flight PR rather than open a new one).</p>
+<p>This guard catches the canonical failure mode from the 2026-05-15 dogfood: proposing auto-refresh for a Printing Press CLI when a similar PR had already shipped on a sibling CLI a few hours earlier. The cost of a false skip is low (the user can re-add via custom selection at U4); the cost of a false-negative duplicate is a rejected PR + reviewer time.</p>
+<h5>2b. Stale-binary check (abort if the dogfooded binary lags published)</h5>
+<p>Read the public library's <code>.printing-press.json</code> for the target CLI to find the published version. Compare to what the local printed CLI binary reports.</p>
+<pre><code class="language-bash"># Read published version (managed clone if available, else gh api)
+if [ -f &quot;$HOME/printing-press-library/library/&lt;category&gt;/&lt;slug&gt;/.printing-press.json&quot; ]; then
+  published=$(jq -r '.version // empty' &quot;$HOME/printing-press-library/library/&lt;category&gt;/&lt;slug&gt;/.printing-press.json&quot;)
+else
+  published=$(gh api repos/mvanhorn/printing-press-library/contents/library/&lt;category&gt;/&lt;slug&gt;/.printing-press.json \
+    --jq '.content' | base64 -d | jq -r '.version // empty')
+fi
+
+# Read local binary version (if installed; the user dogfooded with this binary)
+local_ver=$(&lt;slug&gt;-pp-cli version --json 2&gt;/dev/null | jq -r '.version // empty' || echo &quot;&quot;)
+</code></pre>
+<p>If <code>local_ver</code> is older than <code>published</code> (semver comparison), abort cleanly:</p>
+<blockquote>
+<p>&quot;The <code>&lt;slug&gt;-pp-cli</code> binary you dogfooded is v<code>&lt;local_ver&gt;</code>, but the published library version is v<code>&lt;published&gt;</code>. The friction you hit may already be fixed in the published version. Run:</p>
+<pre><code>go install github.com/mvanhorn/&lt;slug&gt;-pp-cli@latest
+</code></pre>
+<p>...then re-run <code>/printing-press-amend</code> after re-dogfooding. Aborting this run.&quot;</p>
+</blockquote>
+<p>Edge cases: if <code>.printing-press.json</code> is missing or has no <code>version</code> field, skip the stale check with a note. If the CLI is local-only (not yet published), skip the check.</p>
+<h5>Output</h5>
+<p>Phase 2 emits the (possibly trimmed) finding list to Phase 3:</p>
+<pre><code class="language-yaml">findings_kept:
+  - &lt;finding from Phase 1&gt;
+findings_suppressed:
+  - id: F3
+    reason: &quot;Duplicate of PR #571 (merged 2026-05-13)&quot;
+target_binary_check: { local: &quot;1.0.0&quot;, published: &quot;1.0.0&quot;, status: &quot;current&quot; }
+published_status: published
+</code></pre>
+<h4>Phase 3 — Scope Confirmation Checkpoint (User-in-Loop #1)</h4>
+<p>This is the first of two user checkpoints. Everything until now has been read-only discovery; this checkpoint commits scope.</p>
+<h5>Tier the surviving findings</h5>
+<p>Group findings into three tiers:</p>
+<ul>
+<li><strong>Tier 1 — Bugs</strong> — every finding with <code>classification: bug</code>. CLI behavior is wrong; fixes restore correctness.</li>
+<li><strong>Tier 2 — Missing features that solve immediate session pain</strong> — <code>classification: feature</code> findings tied to a hand-rolled workaround the user actually built during the session (i.e. the user clearly needed it now, not theoretically).</li>
+<li><strong>Tier 3 — Polish / architecture</strong> — remaining <code>classification: feature</code> findings that are nice-to-have or architectural improvements without an immediate workaround in the session.</li>
+</ul>
+<p>Display the tiered list inline before the question:</p>
+<pre><code>Friction found for &lt;slug&gt;-pp-cli (12 signals, 2 suppressed as duplicates):
+
+Tier 1 — Bugs (4)
+  F1  drafts list returns 400 silently
+  F4  messages query returns data: null
+  F7  refresh-token expiry not surfaced in errors
+  F11 ai --query returns code 500
+
+Tier 2 — Missing features that solve session pain (4)
+  F2  no `drafts new` command (user hand-rolled writeMessage payload)
+  F5  no `--type sent` for threads list (user worked around with messages query)
+  F8  no `--remind-in &lt;duration&gt;` flag for send (user manually re-flagged drafts)
+  F10 no `bootstrap` to local SQLite (user did 50+ thread API calls)
+
+Tier 3 — Polish / architecture (2)
+  F12 `auth status` doesn't link to `auth login` when refresh expired
+  F13 doctor doesn't surface stale-binary warning vs. published version
+</code></pre>
+<h5>Pick scope via AskUserQuestion</h5>
+<pre><code>Which scope should this patch cover?
+  1. Bugs only (Tier 1) — 4 findings
+  2. Bugs + immediate features (Tier 1 + Tier 2) — 8 findings
+  3. All tiers (Tier 1 + Tier 2 + Tier 3) — 10 findings
+  4. Custom selection — pick individual findings
+</code></pre>
+<p>The <code>AskUserQuestion</code> options must be self-contained (each label must convey what it does without relying on description text — some harnesses hide the description).</p>
+<p>For the <strong>custom selection</strong> path: present a multi-select with each finding's id + category + one-line rationale; confirm the user-checked subset before proceeding.</p>
+<h5>Persist the excluded findings</h5>
+<p>For every finding NOT in the confirmed scope, append to a deferred-list markdown file at:</p>
+<pre><code>$PRESS_MANUSCRIPTS/&lt;api-slug&gt;/&lt;run-id&gt;/proofs/&lt;timestamp&gt;-amend-&lt;cli-name&gt;-deferred.md
+</code></pre>
+<p>The <code>&lt;run-id&gt;</code> is a fresh timestamped id for this amend run (e.g. <code>amend-2026-05-15T1432</code>). Format the deferred file as a YAML preamble + a finding-per-section markdown body so a future <code>/printing-press-amend</code> run on the same CLI can re-surface the items.</p>
+<pre><code class="language-yaml">---
+date: 2026-05-15
+target_cli: superhuman-pp-cli
+amend_run_id: amend-2026-05-15T1432
+deferred_count: 2
+---
+</code></pre>
+<p>Then one section per deferred finding with: id, category, classification, rationale, evidence, reason-deferred (e.g. &quot;user picked Tier 1 only&quot;), and <code>still_relevant: unknown</code>.</p>
+<p>On a subsequent <code>/printing-press-amend</code> run, Phase 3 should look in <code>$PRESS_MANUSCRIPTS/&lt;api-slug&gt;/</code> for the most-recent <code>*-deferred.md</code> and offer the user the option to include any items still relevant in this run's scope. (Implementation note: this re-surfacing logic ships in v0.1; do not silently re-add — always present and confirm.)</p>
+<h5>Edge case: nothing to do</h5>
+<p>If Phase 2 suppressed every finding (everything was a duplicate), Phase 3 reports cleanly and exits without opening the menu:</p>
+<blockquote>
+<p>&quot;All findings from this session were addressed by existing PRs. No novel patches found.&quot;</p>
+</blockquote>
+<h5>Output</h5>
+<p>Phase 3 emits to Phase 4:</p>
+<pre><code class="language-yaml">published_status: published
+scope_tier: bugs+features            # or bugs|all|custom
+findings_active: [...]               # the user-confirmed subset
+findings_deferred_path: &lt;path&gt;       # where the deferred file landed
+</code></pre>
+<h4>Phase 4 — Plan + Execute + Validate (Autonomous)</h4>
+<p>This phase runs unattended between checkpoints 1 and 2. The user does not see fix-by-fix details; they review the final diff at the Phase 6 PR-draft checkpoint.</p>
+<h5>Step 1 — Set up the managed clone</h5>
+<p>Per the Pre-Implementation Decision in the plan: this skill operates DIRECTLY on the managed clone of <code>mvanhorn/printing-press-library</code> rather than on <code>$PRESS_LIBRARY/&lt;slug&gt;/</code>. The managed clone is at:</p>
+<pre><code>$PRESS_HOME/.publish-repo-$PRESS_SCOPE
+</code></pre>
+<p>This is the same clone <code>/printing-press-publish</code> uses (Step 5 of that skill). Reuse it:</p>
+<pre><code class="language-bash">PUBLISH_REPO_DIR=&quot;$PRESS_HOME/.publish-repo-$PRESS_SCOPE&quot;
+PUBLISH_CONFIG=&quot;$PRESS_HOME/.publish-config-$PRESS_SCOPE.json&quot;
+
+if [ ! -d &quot;$PUBLISH_REPO_DIR/.git&quot; ]; then
+  # First-time setup: see references/library-pr-plumbing.md for the full
+  # detection (push-vs-fork access via gh api .../permissions.push,
+  # SSH-vs-HTTPS protocol detection, scoped-clone cleanup loop).
+  echo &quot;Managed clone not present — bootstrapping...&quot;
+  # ... (see library-pr-plumbing.md)
+else
+  # Refresh from upstream. -f on checkout discards any local edits left behind
+  # by a prior run that aborted between Phase 4's edits and Phase 7's commit —
+  # without -f, those uncommitted changes block the checkout and the subsequent
+  # reset --hard never runs.
+  cd &quot;$PUBLISH_REPO_DIR&quot;
+  git fetch upstream main
+  git checkout -f main
+  git reset --hard upstream/main
+fi
+</code></pre>
+<p>The CLI's directory inside the managed clone is <code>$PUBLISH_REPO_DIR/library/&lt;category&gt;/&lt;slug&gt;/</code>. The category was resolved in Phase 1 (or look it up with <code>find &quot;$PUBLISH_REPO_DIR/library&quot; -maxdepth 2 -name &quot;&lt;slug&gt;&quot; -type d</code>).</p>
+<pre><code class="language-bash">CLI_DIR=&quot;$PUBLISH_REPO_DIR/library/&lt;category&gt;/&lt;slug&gt;&quot;
+</code></pre>
+<p>All edits in this phase happen INSIDE <code>$CLI_DIR</code>. Never touch <code>$PRESS_LIBRARY/&lt;slug&gt;/</code> — that's a different working copy and editing it would not flow to the PR.</p>
+<h5>Step 2 — Write the per-run plan doc</h5>
+<p>Before editing code, materialize a plan markdown at:</p>
+<pre><code>$PRESS_MANUSCRIPTS/&lt;slug&gt;/&lt;run-id&gt;/proofs/&lt;timestamp&gt;-amend-&lt;cli-name&gt;.md
+</code></pre>
+<p>Mirror to <code>/tmp/printing-press/amend/</code> for quick reference. The plan doc carries:</p>
+<ul>
+<li>Frontmatter: <code>date</code>, <code>target_cli</code>, <code>amend_run_id</code>, <code>scope_tier</code>, <code>findings_count</code></li>
+<li>One section per active finding: id, category, classification, rationale, target files (<code>$CLI_DIR/...</code> paths), expected behavior change, test scenarios for this finding</li>
+<li>Risks and dependencies between findings (if any)</li>
+</ul>
+<p>The plan is decision-shape, not execution-shape — implementer-time sequencing happens during Step 3.</p>
+<h5>Step 3 — Execute the plan (with the patch contract)</h5>
+<p>For each finding in dependency order:</p>
+<ol>
+<li>
+<p>Edit the target files under <code>$CLI_DIR/</code>. Honor AGENTS.md anti-reimplementation rules (no hand-rolled response builders; novel commands must call the real endpoint or read from the local store via <code>// pp:client-call</code> / <code>// pp:novel-static-reference</code> opt-outs only when truly justified).</p>
+</li>
+<li>
+<p>Optional: add a <code>// PATCH(&lt;short reason&gt;)</code> source comment at changed sites when it helps future agents find the customization quickly. Format examples:</p>
+<pre><code class="language-go">// PATCH(amend-2026-05-15: surface refresh-token expiry to user) — was silently retrying
+func (c *Client) Refresh(ctx context.Context) error {
+    ...
+}
+</code></pre>
+</li>
+<li>
+<p>Create one patch file <code>$CLI_DIR/.printing-press-patches/&lt;id&gt;.json</code> (filename = the patch <code>id</code>). Each file is a single self-contained patch object — one file per patch, so concurrent amend PRs on the same CLI never conflict on patch metadata:</p>
+<pre><code class="language-json">{
+  &quot;schema_version&quot;: 2,
+  &quot;id&quot;: &quot;&lt;api-slug&gt;-refresh-token-expiry&quot;,
+  &quot;applied_at&quot;: &quot;&lt;YYYY-MM-DD&gt;&quot;,
+  &quot;base_run_id&quot;: &quot;&lt;copy from .printing-press.json&gt;&quot;,
+  &quot;base_printing_press_version&quot;: &quot;&lt;copy from .printing-press.json&gt;&quot;,
+  &quot;summary&quot;: &quot;fix(superhuman): surface refresh-token expiry; add drafts new + --type sent&quot;,
+  &quot;reason&quot;: &quot;The generated CLI hid an expired refresh token and omitted a workflow flag needed by the live API.&quot;,
+  &quot;files&quot;: [
+    &quot;internal/auth/refresh.go&quot;,
+    &quot;internal/cli/drafts.go&quot;,
+    &quot;internal/cli/threads.go&quot;
+  ],
+  &quot;call_sites&quot;: [&quot;printRefreshTokenExpiry(&quot;],
+  &quot;validated_outcome&quot;: &quot;publish validate passed; focused drafts and refresh-token checks pass&quot;,
+  &quot;findings_addressed&quot;: [&quot;F1&quot;, &quot;F2&quot;, &quot;F5&quot;, &quot;F7&quot;]
+}
+</code></pre>
+<p>If the CLI still ships the legacy single-array <code>.printing-press-patches.json</code> (older print, not yet normalized), still write your entry as a new <code>.printing-press-patches/&lt;id&gt;.json</code> file — the public library's normalize-patches workflow merges the two post-merge. Do not append to the legacy array.</p>
+<p>If you add <code>// PATCH(...)</code> comments, you may also include a <code>patch_count</code>
+field for reviewer convenience. Do not add <code>patch_count</code> when no source
+comments were added.</p>
+<p>For a temporary patch with a future supersession path, include the upstream handoff fields in that same patch entry:</p>
+<pre><code class="language-json">{
+  &quot;deferred_to_upstream&quot;: [
+    {
+      &quot;feature&quot;: &quot;Generator or upstream API capability this printed-CLI patch should eventually supersede&quot;,
+      &quot;reason&quot;: &quot;Why the local patch is intentionally temporary or API-specific.&quot;
+    }
+  ],
+  &quot;upstream_issue&quot;: &quot;https://github.com/mvanhorn/cli-printing-press/issues/&lt;n&gt;&quot;
+}
+</code></pre>
+<p>The <code>.printing-press-patches/&lt;id&gt;.json</code> patch file is mandatory for code-level customizations. Inline <code>// PATCH(...)</code> source comments are optional navigation aids; the public library verifier no longer enforces a marker/comment pairing. See <code>~/printing-press-library/AGENTS.md</code> for the authoritative spec. When a customization's load-bearing call can vanish while the file still exists, declare it in <code>call_sites</code> or <code>markers</code> (or <code>marker</code>) and keep those needles in <code>files[]</code> so regen and <code>publish validate</code> fail closed if it disappears. <code>files[]</code> is required for every needle; leftover matches outside those files do not count.</p>
+<p>Use <code>deferred_to_upstream</code> only when the patch intentionally leaves a future supersession path: a public API endpoint is missing today, the command relies on an unofficial host or alternate auth source, a live response shape drifted from generator assumptions, or the fix would become unnecessary once the Printing Press learns the pattern. In those cases, search <code>mvanhorn/cli-printing-press</code> issues first; reuse a matching issue or open one before the library PR, then set <code>upstream_issue</code> to that URL. Do not leave a machine-level or API-publication dependency only in the PR body.</p>
+</li>
+<li>
+<p><strong>Machine-vs-printed-CLI judgment</strong> (per AGENTS.md): when a finding's fix would generalize to every printed CLI (e.g. &quot;the generator should emit <code>--type sent</code> for any threads list command&quot;), surface as a borderline case:</p>
+<blockquote>
+<p>&quot;Finding F5 (<code>--type sent</code> missing) looks like a machine-level fix — the generator template <code>internal/generator/templates/threads.go.tmpl</code> should emit it for every CLI with this endpoint shape, not just <code>&lt;slug&gt;-pp-cli</code>. Defer to a <code>/printing-press-retro</code> follow-up, or proceed CLI-specific?&quot;</p>
+</blockquote>
+<p>When deferred, drop into the deferred-list with classification <code>machine-level</code>. When kept because the printed CLI needs a narrow fix now, and the patch still carries a future supersession path, create or reuse the upstream Printing Press issue before opening the library PR, add the issue URL to the patch's <code>.printing-press-patches/&lt;id&gt;.json</code>, and add a <code>deferred_to_upstream</code> item naming the machine-level or upstream-API condition that should supersede the local patch.</p>
+</li>
+</ol>
+<h5>Step 4 — Validate</h5>
+<p>After all edits land, run the consolidated validator (replace <code>&lt;PRINTING_PRESS_BIN&gt;</code> with the absolute path captured at setup):</p>
+<pre><code class="language-bash">&lt;PRINTING_PRESS_BIN&gt; publish validate --dir &quot;$CLI_DIR&quot; --json &gt; /tmp/amend-validate.json
+exit_code=$?
+</code></pre>
+<p><code>publish validate</code> runs manifest, phase5, govulncheck (scoped to this CLI's module), <code>go vet</code>, <code>go build</code>, <code>--help</code>, <code>--version</code>. Exit 0 = clean.</p>
+<h5>Step 5 — Retry on failure (up to 3 iterations)</h5>
+<p>If <code>publish validate</code> reports failures, parse the error categories from the JSON, attempt targeted fixes, re-run validate. Maximum 3 iterations total. After iteration 3:</p>
+<pre><code class="language-bash"># Save the in-progress plan + diff to a holding location
+HELD_PATH=&quot;$PRESS_MANUSCRIPTS/&lt;slug&gt;/&lt;run-id&gt;/proofs/&lt;timestamp&gt;-amend-&lt;cli-name&gt;-INCOMPLETE.md&quot;
+git -C &quot;$PUBLISH_REPO_DIR&quot; diff &gt; &quot;${HELD_PATH%.md}.diff&quot;
+cp &quot;$PLAN_PATH&quot; &quot;$HELD_PATH&quot;
+</code></pre>
+<p>Surface the final error log to the user, do NOT auto-open the PR, exit. The user can resume by re-invoking the skill (Phase 1 detects the held plan and offers to resume).</p>
+<h5>Step 6 — Check the patch manifest</h5>
+<p>This amend run must have recorded at least one patch — a <code>&lt;id&gt;.json</code> under
+<code>.printing-press-patches/</code> (the directory layout), or, only for a CLI not yet
+normalized, a non-empty <code>patches[]</code> in the legacy <code>.printing-press-patches.json</code>.</p>
+<pre><code class="language-bash">dir_count=0
+if [ -d &quot;$CLI_DIR/.printing-press-patches&quot; ]; then
+  dir_count=$(find &quot;$CLI_DIR/.printing-press-patches&quot; -maxdepth 1 -name '*.json' ! -name '_meta.json' | wc -l | tr -d ' ')
+fi
+legacy_count=0
+if [ -f &quot;$CLI_DIR/.printing-press-patches.json&quot; ]; then
+  legacy_count=$(jq '(.patches // []) | length' &quot;$CLI_DIR/.printing-press-patches.json&quot;)
+fi
+if [ &quot;$dir_count&quot; -eq 0 ] &amp;&amp; [ &quot;$legacy_count&quot; -eq 0 ]; then
+  echo &quot;ERROR: this amend run must record at least one patch under .printing-press-patches/ (or the legacy .printing-press-patches.json).&quot;
+  exit 1
+fi
+</code></pre>
+<p>Missing or empty patch manifest → fix locally before continuing.</p>
+<h5>Step 6 — Documentation update checkpoint</h5>
+<p>Before Phase 4 can emit a pass, inspect the confirmed findings and final diff
+for every new, renamed, or changed user-facing command, flag, workflow, runtime
+mode, or MCP-visible action. Each such change must ship documentation in the
+same public-library PR:</p>
+<ul>
+<li>Add or update a cookbook recipe in both <code>SKILL.md</code> and <code>README.md</code>.</li>
+<li>Add or update the matching Unique Features / Unique Capabilities entry so the
+generated docs and agent-facing summary name the changed workflow.</li>
+<li>Keep examples honest: commands, flags, positional args, and output snippets
+must match the code that now exists in <code>$CLI_DIR</code>.</li>
+<li>Run <code>python3 .github/scripts/verify-skill/verify_skill.py --dir &quot;$CLI_DIR&quot;</code>
+from the public-library checkout when that path exists; otherwise run the
+packaged verifier equivalent available in the checkout and record the command.</li>
+</ul>
+<p>If any required doc edit or verifier result is missing, stop with a blocking
+checklist. The blocking checklist names the command and the missing
+README/SKILL/Unique Features piece. Do not move to the PR-draft checkpoint until
+the checklist is empty. If the amend only fixes internals with no user-facing
+behavior change, record <code>documentation_checkpoint: no-user-facing-doc-change</code>
+in the Phase 4 output.</p>
+<h5>Output</h5>
+<p>Phase 4 emits to Phase 5:</p>
+<pre><code class="language-yaml">plan_doc_path: &lt;path&gt;
+managed_clone_dir: &lt;path&gt;
+cli_dir_in_clone: &lt;path&gt;
+findings_addressed: [...]
+build_status: PASS|FAIL
+test_status: PASS|FAIL
+dogfood_status: PASS|FAIL|N/A    # PASS|FAIL when MODE=dogfood (or &quot;both&quot;); always N/A when MODE=direct
+validate_iterations: &lt;n&gt;
+patch_entry_count: &lt;n&gt;
+documentation_checkpoint: PASS|no-user-facing-doc-change
+</code></pre>
+<p><strong><code>dogfood_status</code> per mode.</strong> When <code>MODE=dogfood</code>, the value reflects the result of the dogfood validation step that consumed the transcript-derived findings (PASS if the run produced a clean fix, FAIL if it surfaced a regression). When <code>MODE=direct</code>, there is no transcript to dogfood against — set <code>dogfood_status=N/A</code>. When <code>MODE=both</code>, dogfood validation still runs against the transcript half of the findings; set PASS/FAIL accordingly. This default must be set at the latest by the end of Phase 4 so Phase 7's PR body and Phase 8's RESULT block never emit an empty value.</p>
+<h4>Phase 5 — PII Scrub</h4>
+<p>Read <code>references/pii-scrubbing.md</code> for the full procedure. Summary:</p>
+<p>The scrub has three layers, each operating on temp staging copies (NOT on the user's session transcript or the in-progress source code):</p>
+<ol>
+<li><strong>Credentials</strong> — reuse the regex patterns from <code>skills/printing-press-retro/references/secret-scrubbing.md</code> (Stripe, GitHub PATs, bearer tokens, AWS keys, etc.) plus amend-specific additions for <code>Authorization</code>/<code>Cookie</code>/<code>X-API-Key</code> headers in hand-rolled API payloads quoted from the session transcript.</li>
+<li><strong>Entities</strong> — companies, people, emails matched against the user-maintained stop-list at <code>~/.printing-press/amend-config.yaml</code>. Replace with shape-preserving tokens (<code>&lt;company-1&gt;</code>, <code>&lt;person-1&gt;</code>, <code>&lt;email-1&gt;</code>) that maintain identity across the artifact set so reviewers can still parse intent.</li>
+<li><strong>First-mention defense</strong> — walk each artifact for capitalized phrases that look like proper nouns and were NOT in the stop-list. Surface to the user inline before the Phase 6 PR-draft display: &quot;Found <code>Esper Labs</code> (3x in plan doc, 1x in PR body) — add to stop-list and scrub, or accept?&quot;</li>
+</ol>
+<p>Targets, in priority order: PR title/body draft, per-run plan doc, deferred-findings list, any test fixtures or example outputs newly added to <code>$CLI_DIR</code>. For each target, copy to <code>&lt;path&gt;.pre-pii-scrub</code> BEFORE scrubbing so the user can audit what was changed.</p>
+<p><strong>Defense-in-depth</strong>: walk every <code>*.go</code> file in <code>$CLI_DIR</code> for stop-list matches. If any match is found, treat as BLOCKING — pause and require user resolution before Phase 6. The agent should never have introduced PII into Go source; this check exists to catch agent error.</p>
+<p><strong>Stop-list creation</strong>: if <code>~/.printing-press/amend-config.yaml</code> doesn't exist, the skill creates a default with a starter list and a comment explaining the format. File-mode validation (warn on world-writable, abort on alien-owned).</p>
+<p>The scrub report is written to <code>$PRESS_MANUSCRIPTS/&lt;slug&gt;/&lt;run-id&gt;/scrub-report.json</code> (NOT committed; for the user's audit). The user-facing summary at the end of the phase: &quot;X tokens replaced across Y artifacts.&quot;</p>
+<h4>Phase 6 — PR Draft Review Checkpoint (User-in-Loop #2)</h4>
+<p>This is the second and final user checkpoint. Everything that follows is unattended (push + PR-open + labels + RESULT block). Show the user EVERYTHING that's about to ship before any <code>gh</code> command fires.
+Include the documentation checkpoint result from Phase 4 in this review so undocumented user-facing changes cannot slip into the PR.</p>
+<h5>Assemble the draft</h5>
+<p>Compose the PR title, body, labels, and diff summary in memory. Title format follows the public library convention:</p>
+<ul>
+<li><code>fix(&lt;api-slug&gt;): &lt;one-line summary&gt;</code> when the scope is bugs-only</li>
+<li><code>feat(&lt;api-slug&gt;): &lt;one-line summary&gt;</code> when the scope includes features</li>
+<li><code>feat(&lt;api-slug&gt;): &lt;one-line summary&gt;</code> when mixed (feature wins because it's the bigger contract change)</li>
+</ul>
+<p>The <code>&lt;one-line summary&gt;</code> is composed from the most important 1-3 findings (e.g. <code>surface refresh-token expiry; add drafts new + --type sent</code>).</p>
+<p>PR body sections (per origin R27):</p>
+<ol>
+<li><strong>Summary</strong> — 1-3 sentences naming the user pain and the shape of the fix</li>
+<li><strong>Findings</strong> — table with ID, category, type (bug/feature), rationale</li>
+<li><strong>Changes</strong> — output of <code>git diff --stat upstream/main..HEAD</code></li>
+<li><strong>Verification</strong> — build/test/dogfood/validate status from Phase 4, plus the
+documentation checkpoint result</li>
+<li><strong>Evidence</strong> — full GitHub URLs to the per-run plan doc and the <code>.printing-press-patches/</code> directory at the PR's HEAD SHA (captured AFTER push so links don't 404)</li>
+<li><strong>Closes #N</strong> footer when an issue match was found in Step 6 of <code>library-pr-plumbing.md</code></li>
+</ol>
+<p>Labels: propose <code>comp:&lt;api-slug&gt;</code> always; <code>priority:P1</code> for bugs-only scope, <code>priority:P2</code> for bugs+features, <code>priority:P3</code> for all-tiers. Before applying labels to the upstream library PR, query the target repository with <code>gh label list --repo mvanhorn/printing-press-library --json name --jq '.[].name'</code> and apply only labels that exist there. If a proposed label is absent, skip it and note the skip in the PR body or final run log; do not let a missing per-CLI or priority label fail the amend flow.</p>
+<h5>Display before gh fires</h5>
+<p>Show the user the title, body, label list, and <code>git diff --stat</code>. If Phase 5 surfaced unrecognized capitalized phrases that the user accepted as legitimate, RE-DISPLAY those inline now with the sentence each appears in:</p>
+<blockquote>
+<p>&quot;Reminder: PR body references <code>&lt;phrase&gt;</code> (you accepted as legitimate during Phase 5). Confirm before opening.&quot;</p>
+</blockquote>
+<h5>AskUserQuestion: open / edit / hold / abort</h5>
+<pre><code>PR draft ready. What now?
+  1. Open PR as drafted (recommended)
+  2. Edit then open — drop into an interactive review of title/body
+  3. Hold — save plan + diff for later resume; nothing pushed
+  4. Abort — discard everything, no record kept
+</code></pre>
+<p>For <strong>edit then open</strong>: present the title and body as separate editable blocks, accept the user's revisions, re-display the full draft, confirm before proceeding.</p>
+<p>For <strong>hold</strong>: save the plan + diff to <code>$PRESS_MANUSCRIPTS/&lt;slug&gt;/&lt;run-id&gt;/proofs/&lt;timestamp&gt;-amend-&lt;cli-name&gt;-HELD.md</code> and <code>${path%.md}.diff</code>. Emit a RESULT block with <code>status: held</code> and the resume path. A future <code>/printing-press-amend</code> run can detect held files and offer to resume.</p>
+<p>For <strong>abort</strong>: emit a brief confirmation. Plan doc from U5 stays (with <code>status: aborted</code> written into the frontmatter) so the user has a record of what was found, but nothing else is preserved. Managed clone is reset on next run.</p>
+<h4>Phase 7 — PR Open (Autonomous)</h4>
+<p>If the user picked open or edit-then-open, run <code>references/library-pr-plumbing.md</code> Steps 5-7:</p>
+<ol>
+<li><strong>Step 5</strong> — <code>git add &quot;$CLI_DIR&quot;</code> + commit with conventional message + the findings list</li>
+<li><strong>Step 6</strong> — search for an existing issue matching the findings; link or open new; self-assign best-effort</li>
+<li><strong>Step 7</strong> — push the branch (push-vs-fork access mode determined in Step 1), <code>gh pr create</code> with <code>--body-file</code>, capture HEAD_SHA, apply labels</li>
+</ol>
+<p>The fork/access detection, branch collision handling, and managed-clone refresh patterns are documented in detail in <code>references/library-pr-plumbing.md</code>. Do NOT inline those patterns here — the reference is the authoritative source.</p>
+<p>After the PR opens, surface the URL + Greptile note in the user-facing summary:</p>
+<blockquote>
+<p>&quot;PR open: &lt;url&gt;</p>
+<p>Greptile will review within ~2 minutes. Check inline comments:</p>
+<pre><code>gh api repos/mvanhorn/printing-press-library/pulls/&lt;N&gt;/comments
+</code></pre>
+<p>P0/P1 findings are worth addressing before requesting human review.&quot;</p>
+</blockquote>
+<h4>Phase 8 — Output</h4>
+<p>Emit the structured <code>---PATCH-RESULT---</code> block on completion. Format:</p>
+<pre><code>---PATCH-RESULT---
+pr_url: &lt;url&gt;
+pr_number: &lt;n&gt;
+branch_name: &lt;name&gt;
+api_slug: &lt;slug&gt;
+scope_tier: &lt;bugs|bugs+features|all|custom&gt;
+files_changed:
+- &lt;file&gt;
+build_status: &lt;PASS|FAIL&gt;
+test_status: &lt;PASS|FAIL&gt;
+dogfood_status: &lt;PASS|FAIL|N/A&gt;
+pii_scrub_summary: &lt;N tokens replaced across M artifacts&gt;
+findings_addressed:
+- &lt;one-line-summary&gt;
+findings_deferred:
+- &lt;one-line-summary&gt;
+deferred_list_path: &lt;path&gt;
+plan_doc_path: &lt;path&gt;
+---END-PATCH-RESULT---
+</code></pre>
+<h4>Verification of this skill itself</h4>
+<p>The static lint pass for this SKILL.md runs via:</p>
+<pre><code class="language-bash">&lt;PRINTING_PRESS_BIN&gt; verify-internal-skill --dir skills/printing-press-amend
+</code></pre>
+<p>(See <code>internal/cli/verify_internal_skill.go</code> and the matching test file. The setup-contract parity check runs as a Go test in <code>internal/pipeline/contracts_test.go</code> — <code>TestSkillSetupBlocksMatchWorkspaceContract</code>.)</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

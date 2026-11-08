@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>system-design · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re designing a service for scale, estimating capacity, or preparing for a system design interview. It does: scopes requirements, estimates traffic and storage, chooses load balancers, caches, queues and database scaling, then goes deep on the riskiest parts. You get: a design checked against eight questions, with a score out of 10 and a fix for each failure. Unlike clean-architecture: the same repo&#039;s skill for layers inside one codebase, it designs the servers, caches, queues and databases around the code." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=wondelai%2Fskills">wondelai/skills</a></p>
+      <div class="title-row"><h1>system-design</h1><button type="button" class="save" data-save="skill:wondelai/skills/system-design" aria-pressed="false" aria-label="Save system-design" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re designing a service for scale, estimating capacity, or preparing for a system design interview</dd></div><div><dt>It does</dt><dd>scopes requirements, estimates traffic and storage, chooses load balancers, caches, queues and database scaling, then goes deep on the riskiest parts</dd></div><div><dt>You get</dt><dd>a design checked against eight questions, with a score out of 10 and a fix for each failure</dd></div><div><dt>Unlike clean-architecture</dt><dd>the same repo&#39;s skill for layers inside one codebase, it designs the servers, caches, queues and databases around the code</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Based on Alex Xu&#39;s System Design Interview. Its rule is requirements before solutions, in four steps: agree on scope and scale (daily users, queries per second, storage), sketch a high-level design with APIs and data flow, go deep on the two or three hardest components, then name the tradeoffs and bottlenecks. Estimates use powers of two, standard latency numbers and simple formulas, such as daily users times actions divided by 86,400 seconds, rounded to an order of magnitude. Its building blocks are DNS, CDNs, layer 4 and layer 7 load balancers, cache layers and strategies, message queues and consistent hashing, each added only once its bottleneck appears. Databases scale up first, then add read replicas, then shard by hash, range or directory. It carries a library of known designs: URL shortener, rate limiter, news feed, chat, autocomplete, web crawler and unique ID generator. Operations count as design too: health checks, metrics, logs and traces, rolling, blue-green and canary deploys, recovery targets and autoscaling. Eight diagnostic questions, such as whether every component is redundant, set the score.</p>
+      <p class="muted">Summarizes <a href="https://github.com/wondelai/skills/tree/d8d5d75f83da9f16d8aad5bab5f5b341a4770a30/system-design">the skill at d8d5d75</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">wondelai/</span><wbr><span class="word">skills</span> <span class="word">--skill</span> <span class="word">system-design</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/wondelai/skills --skill system-design">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/wondelai/skills/system-design">skills.sh page</a> · <a href="https://github.com/wondelai/skills/tree/HEAD/system-design">Source on GitHub</a> · <a href="/?repo=wondelai%2Fskills">All skills from wondelai/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>6,500 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>2,629 <span class="muted">wondelai/skills</span></dd></div><div><dt>First seen</dt><dd>Feb 23, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">183</div>
+      <div class="stat-delta">-4% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 190; week to Sep 27: 191; week to Oct 4: 186; week to Oct 11: 164; week to Oct 18: 171; week to Oct 25: 301; week to Nov 1: 234; week to Nov 8: 183. Use the left and right arrow keys to read each week."
+        data-values="190,191,186,164,171,301,234,183" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,22.2 38.6,22.1 71.1,22.8 103.7,26.0 136.3,25.0 168.9,6.0 201.4,15.8 234.0,23.2" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="23.2" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>190</td></tr><tr><td>Sep 27</td><td>191</td></tr><tr><td>Oct 4</td><td>186</td></tr><tr><td>Oct 11</td><td>164</td></tr><tr><td>Oct 18</td><td>171</td></tr><tr><td>Oct 25</td><td>301</td></tr><tr><td>Nov 1</td><td>234</td></tr><tr><td>Nov 8</td><td>183</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/?tag=category%3Aengineering">category:<wbr>engineering</a><a class="tag" data-tag="category:planning" data-facet="category" title="Make the agent question you and write the plan down before it writes code." href="/?tag=category%3Aplanning">category:<wbr>planning</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Make the agent question you and write the plan down before it writes code.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="architecture" data-facet="topic" href="/?tag=architecture">architecture</a><a class="tag" data-tag="backend" data-facet="topic" href="/?tag=backend">backend</a><a class="tag" data-tag="infrastructure" data-facet="topic" href="/?tag=infrastructure">infrastructure</a><a class="tag" data-tag="databases" data-facet="topic" href="/?tag=databases">databases</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/wondelai/skills/blob/d8d5d75f83da9f16d8aad5bab5f5b341a4770a30/system-design/SKILL.md">wondelai/skills at d8d5d75</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: system-design
+description: &#39;Design scalable distributed systems using structured approaches for load balancing, caching, database scaling, and message queues. Use when the user mentions &#34;system design&#34;, &#34;scale this&#34;, &#34;high availability&#34;, &#34;rate limiter&#34;, &#34;design a URL shortener&#34;, &#34;design Twitter&#34;, &#34;design Uber&#34;, &#34;design a news feed&#34;, &#34;system design interview&#34;, &#34;capacity planning&#34;, or &#34;distributed architecture&#34;. Also trigger when estimating infrastructure requirements, choosing between microservices and monoliths, or designing for millions of concurrent users. Covers common system designs (TinyURL, feeds, chat) and back-of-the-envelope estimation. For data fundamentals, see ddia-systems. For resilience, see release-it.&#39;
+license: MIT
+metadata:
+  author: wondelai
+  version: &#34;1.4.1&#34;</code></pre></details>
+        <div class="markdown"><h3>System Design Framework</h3>
+<p>A structured approach to designing large-scale distributed systems. Apply these principles when architecting new services, reviewing designs, estimating capacity, or preparing for system design discussions.</p>
+<h4>Core Principle</h4>
+<p><strong>Start with requirements, not solutions.</strong> Jumping to architecture before understanding constraints produces over- or under-engineered systems. Scalable systems are assembled from well-understood building blocks (load balancers, caches, queues, databases, CDNs) — the skill lies in choosing the right blocks, sizing them with estimates, and owning the tradeoffs each choice introduces.</p>
+<h4>Scoring</h4>
+<p><strong>Goal: 10/10.</strong> Score a design by how many of the eight Quick Diagnostic rows it satisfies — <code>score = round(passed / 8 × 10)</code>: 9-10 = all/nearly all rows pass — explicit requirements, real estimates, redundancy, a stated DB-scaling and caching strategy, async via queues, monitoring, and a deployment plan, with tradeoffs named; 5-6 = the design works but skips estimation, redundancy, or operations; &lt;=3 = architecture proposed before requirements or estimates exist. Always state the current score, name the failing diagnostic rows, and give the specific fix for each.</p>
+<h4>The System Design Framework</h4>
+<p>Six areas for building reliable, scalable distributed systems:</p>
+<h5>1. The Four-Step Process</h5>
+<p><strong>Core concept:</strong> Every design follows four stages: (1) understand the problem and establish scope, (2) propose a high-level design and get buy-in, (3) dive deep into critical components, (4) wrap up with tradeoffs and future improvements.</p>
+<p><strong>Why it works:</strong> Without structure, designs either stay too abstract or get lost in premature detail. The four steps invest time proportionally — broad strokes first, depth where it matters.</p>
+<p><strong>Key insights:</strong></p>
+<ul>
+<li>Step 1 (~5-10 min): clarifying questions, functional and non-functional requirements, agreed scale (DAU, QPS, storage)</li>
+<li>Step 2 (~15-20 min): high-level diagram with APIs, services, data stores, data flow arrows</li>
+<li>Step 3 (~15-20 min): design the 2-3 hardest or most critical components in detail</li>
+<li>Step 4 (~5 min): tradeoffs, bottlenecks, future improvements</li>
+<li>Never skip Step 1 — ambiguous scope wastes all downstream effort; get explicit agreement on assumptions</li>
+</ul>
+<p><strong>Code applications:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Context</th>
+<th>Pattern</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>New service kickoff</strong></td>
+<td>One-page design doc covering all four steps before coding</td>
+<td>Requirements, API contract, data model, capacity estimate, then implementation</td>
+</tr>
+<tr>
+<td><strong>Architecture review</strong></td>
+<td>Walk reviewers through the steps sequentially</td>
+<td>Scope, diagram, deep-dive on riskiest component, open questions</td>
+</tr>
+<tr>
+<td><strong>Incident postmortem</strong></td>
+<td>Trace the failure through the four-step lens</td>
+<td>Which requirement was missed? Which block failed? What tradeoff bit us?</td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="https://github.com/wondelai/skills/blob/d8d5d75f83da9f16d8aad5bab5f5b341a4770a30/system-design/references/four-step-process.md">references/four-step-process.md</a> when running a design end-to-end — per-stage time allocation, example clarifying questions, and tips for each of the four steps.</p>
+<h5>2. Back-of-the-Envelope Estimation</h5>
+<p><strong>Core concept:</strong> Use powers of two, latency numbers, and simple arithmetic to estimate QPS, storage, bandwidth, and server count before committing to an architecture.</p>
+<p><strong>Why it works:</strong> Estimation prevents over-provisioning (wasted money) and under-provisioning (outages under load). A 2-minute calculation can save weeks of rework.</p>
+<p><strong>Key insights:</strong></p>
+<ul>
+<li>Powers of two: 2^10 ≈ 1 thousand, 2^20 ≈ 1 million, 2^30 ≈ 1 billion, 2^40 ≈ 1 trillion</li>
+<li>Latency: memory read ~100 ns, SSD read ~100 us, disk seek ~10 ms, same-datacenter round trip ~0.5 ms, cross-continent ~150 ms</li>
+<li>Availability nines: 99.9% = 8.77 hours downtime/year; 99.99% = 52.6 minutes/year</li>
+<li>QPS: DAU x actions-per-day / 86,400 seconds; peak is typically 2-5x average</li>
+<li>Storage: records-per-day x record-size x retention</li>
+<li>Round aggressively — the goal is order of magnitude, not precision</li>
+</ul>
+<p><strong>Code applications:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Context</th>
+<th>Pattern</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Capacity planning</strong></td>
+<td>Estimate QPS, multiply by growth factor</td>
+<td>100M DAU x 5 actions / 86400 = ~5,800 QPS avg, ~30K peak</td>
+</tr>
+<tr>
+<td><strong>Storage budgeting</strong></td>
+<td>Per-record size x volume x retention</td>
+<td>500M tweets/day x 300 bytes x 365 days = ~55 TB/year</td>
+</tr>
+<tr>
+<td><strong>SLA definition</strong></td>
+<td>Convert nines to allowed downtime</td>
+<td>Four nines = ~52 minutes downtime per year</td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="https://github.com/wondelai/skills/blob/d8d5d75f83da9f16d8aad5bab5f5b341a4770a30/system-design/references/estimation-numbers.md">references/estimation-numbers.md</a> when sizing a system — full latency table, availability-nines table, and worked QPS/storage/bandwidth calculations.</p>
+<h5>3. Building Blocks</h5>
+<p><strong>Core concept:</strong> Scalable systems are assembled from a standard toolkit: DNS, CDN, load balancers, reverse proxies, application servers, caches, message queues, and consistent hashing.</p>
+<p><strong>Why it works:</strong> Each block trades one cost for another (a cache trades freshness for read speed; a queue trades latency for decoupling), so introduce a block only once its specific bottleneck appears — adding all of them up front just multiplies failure modes.</p>
+<p><strong>Key insights:</strong></p>
+<ul>
+<li>Load balancers: L4 (transport layer — fast, simple) vs L7 (application layer — content-aware routing)</li>
+<li>Cache layers: client, CDN, web server, application (Redis/Memcached), database query cache</li>
+<li>Cache strategies: cache-aside (app manages), read-through, write-through (synchronous), write-behind (asynchronous)</li>
+<li>Message queues (Kafka, RabbitMQ, SQS): decouple producers from consumers, absorb spikes, enable async processing</li>
+<li>Consistent hashing: distributes keys across nodes with minimal redistribution when nodes change</li>
+</ul>
+<p><strong>Code applications:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Context</th>
+<th>Pattern</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Read-heavy workload</strong></td>
+<td>Cache-aside Redis in front of database</td>
+<td>Cache user profiles with TTL; invalidate on write</td>
+</tr>
+<tr>
+<td><strong>Traffic spikes</strong></td>
+<td>Message queue between API and workers</td>
+<td>Enqueue image-resize jobs; workers pull at their own pace</td>
+</tr>
+<tr>
+<td><strong>Global users</strong></td>
+<td>CDN for static assets</td>
+<td>Serve JS/CSS/images from edge; origin serves only API</td>
+</tr>
+<tr>
+<td><strong>Uneven load</strong></td>
+<td>Consistent hashing for shard assignment</td>
+<td>Adding a node moves only ~1/n keys</td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="https://github.com/wondelai/skills/blob/d8d5d75f83da9f16d8aad5bab5f5b341a4770a30/system-design/references/building-blocks.md">references/building-blocks.md</a> when choosing components — how each of DNS, CDN, load balancers, caching strategies, message queues, and consistent hashing works and when to introduce it.</p>
+<h5>4. Database Design and Scaling</h5>
+<p><strong>Core concept:</strong> Choose SQL vs NoSQL based on data shape and access patterns; scale vertically first, then horizontally (replication and sharding) when vertical limits are reached.</p>
+<p><strong>Why it works:</strong> The database is usually the first bottleneck. Understanding replication, sharding, and denormalization tradeoffs delays expensive re-architectures and makes growth deliberate.</p>
+<p><strong>Key insights:</strong></p>
+<ul>
+<li>Vertical scaling is simpler but has a ceiling; horizontal is harder but nearly unlimited</li>
+<li>Replication: leader-follower (one writer, many readers) for read-heavy; multi-leader for multi-region writes</li>
+<li>Sharding: hash-based (even distribution, hard range queries), range-based (easy ranges, hotspot risk), directory-based (flexible, extra lookup)</li>
+<li>SQL for ACID transactions, joins, defined schema; NoSQL for flexible schema, horizontal scale, very high write throughput</li>
+<li>Denormalization trades storage and write complexity for read speed — use when reads dominate and data changes rarely</li>
+<li>Celebrity/hotspot problem: one hot shard needs secondary partitioning or a cache layer</li>
+</ul>
+<p><strong>Code applications:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Context</th>
+<th>Pattern</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Read-heavy API</strong></td>
+<td>Leader-follower with read replicas</td>
+<td>Reads to replicas, writes to leader; accept slight lag</td>
+</tr>
+<tr>
+<td><strong>User data at scale</strong></td>
+<td>Hash-based sharding on user_id</td>
+<td>hash(user_id) % num_shards; even, independent shards</td>
+</tr>
+<tr>
+<td><strong>Analytics dashboard</strong></td>
+<td>Denormalized materialized views</td>
+<td>Pre-join and aggregate nightly; serve from materialized table</td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="https://github.com/wondelai/skills/blob/d8d5d75f83da9f16d8aad5bab5f5b341a4770a30/system-design/references/database-scaling.md">references/database-scaling.md</a> when the database is the bottleneck — replication topologies, the three sharding strategies compared, denormalization tradeoffs, and a SQL-vs-NoSQL selection guide.</p>
+<h5>5. Common System Designs</h5>
+<p><strong>Core concept:</strong> Most systems are variations of a small set of well-known designs: URL shortener, rate limiter, notification system, news feed, chat, search autocomplete, web crawler, unique ID generator.</p>
+<p><strong>Why it works:</strong> A mental library of known designs lets you recognize which pattern a new problem resembles and adapt it, rather than inventing from scratch.</p>
+<p><strong>Key insights:</strong></p>
+<ul>
+<li>URL shortener: base62 encoding, key-value store, 301 vs 302 redirect tradeoff (caching vs analytics)</li>
+<li>Rate limiter: token bucket or sliding window at the gateway; return 429 with Retry-After</li>
+<li>News feed: fanout-on-write (push at post time) vs fanout-on-read (pull at read time); hybrid for celebrities</li>
+<li>Chat: WebSocket for real-time bidirectional messages, queue for delivery guarantees, heartbeat presence service</li>
+<li>Autocomplete: trie of top-k frequent queries; precompute and cache popular prefixes</li>
+<li>Web crawler: BFS with URL frontier, politeness (robots.txt, per-domain rate limit), dedup via content hash</li>
+<li>Unique IDs: UUID (simple, no coordination) vs Snowflake (64-bit, time-sortable, datacenter-aware)</li>
+</ul>
+<p><strong>Code applications:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Context</th>
+<th>Pattern</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Short link service</strong></td>
+<td>Base62-encode auto-increment ID or hash</td>
+<td><code>https://short.ly/a1B2c3</code> maps to a key-value row</td>
+</tr>
+<tr>
+<td><strong>API protection</strong></td>
+<td>Token bucket at gateway</td>
+<td>100 tokens/min per key; steady refill; reject with 429</td>
+</tr>
+<tr>
+<td><strong>Social feed</strong></td>
+<td>Hybrid fanout</td>
+<td>Precompute feeds for &lt;10K-follower accounts; merge celebrity posts at read time</td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="https://github.com/wondelai/skills/blob/d8d5d75f83da9f16d8aad5bab5f5b341a4770a30/system-design/references/common-designs.md">references/common-designs.md</a> when a problem resembles a known design — full walkthroughs of URL shortener, rate limiter, news feed, chat, autocomplete, web crawler, and unique ID generator.</p>
+<h5>6. Reliability and Operations</h5>
+<p><strong>Core concept:</strong> A system is only as good as its ability to stay up, recover, and be observed. Health checks, monitoring, logging, and deployment strategies are first-class design concerns, not afterthoughts.</p>
+<p><strong>Why it works:</strong> Production systems fail in ways diagrams never predict. Operational readiness — metrics, alerts, rollback plans, redundancy — determines whether a failure is a blip or an outage.</p>
+<p><strong>Key insights:</strong></p>
+<ul>
+<li>Health checks: liveness (is the process alive?) and readiness (can it serve traffic?) — Kubernetes uses both</li>
+<li>Three pillars of observability: metrics (Prometheus, Datadog), logging (ELK, CloudWatch), tracing (Jaeger, Zipkin)</li>
+<li>Deployments: rolling (gradual), blue-green (instant switch between identical environments), canary (small percentage first)</li>
+<li>Disaster recovery: RPO (acceptable data loss) and RTO (acceptable recovery time) drive backup and failover strategy</li>
+<li>Multi-datacenter: active-passive (failover) or active-active (requires data sync and conflict resolution)</li>
+<li>Autoscaling: scale on CPU, memory, queue depth, or custom metrics; always set min and max counts</li>
+</ul>
+<p><strong>Code applications:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Context</th>
+<th>Pattern</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Zero-downtime deploy</strong></td>
+<td>Blue-green with health check gates</td>
+<td>Switch to green after checks pass; keep blue as instant rollback</td>
+</tr>
+<tr>
+<td><strong>Gradual rollout</strong></td>
+<td>Canary with metric comparison</td>
+<td>5% traffic to new version; compare errors and latency; promote or rollback</td>
+</tr>
+<tr>
+<td><strong>Data safety</strong></td>
+<td>Define RPO/RTO, implement accordingly</td>
+<td>RPO 1 hour = hourly backups; RTO 5 min = automated failover</td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="https://github.com/wondelai/skills/blob/d8d5d75f83da9f16d8aad5bab5f5b341a4770a30/system-design/references/reliability-operations.md">references/reliability-operations.md</a> when hardening for production — health-check patterns, the observability pillars, deployment strategies, disaster-recovery (RPO/RTO), and autoscaling.</p>
+<h4>Common Mistakes</h4>
+<table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Why It Fails</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Architecture before requirements</strong></td>
+<td>Solves the wrong problem, misses constraints</td>
+<td>Spend the first 5-10 minutes on scope: features, scale, SLA</td>
+</tr>
+<tr>
+<td><strong>No estimation</strong></td>
+<td>Provisioning off by orders of magnitude</td>
+<td>Estimate QPS, storage, bandwidth before choosing components</td>
+</tr>
+<tr>
+<td><strong>Single point of failure</strong></td>
+<td>One component takes down the system</td>
+<td>Redundancy at every layer: multi-server, multi-AZ, multi-region</td>
+</tr>
+<tr>
+<td><strong>Premature sharding</strong></td>
+<td>Huge operational complexity before it's needed</td>
+<td>Vertical first, read replicas, cache aggressively, shard last</td>
+</tr>
+<tr>
+<td><strong>Caching without invalidation</strong></td>
+<td>Stale data causes bugs and confusion</td>
+<td>Define TTL; cache-aside with explicit invalidation on writes</td>
+</tr>
+<tr>
+<td><strong>Synchronous calls everywhere</strong></td>
+<td>One slow service cascades latency to all callers</td>
+<td>Queues for non-latency-critical paths; timeouts on sync calls</td>
+</tr>
+<tr>
+<td><strong>Ignoring hotspots</strong></td>
+<td>One shard or key hammered, others idle</td>
+<td>Detect hot keys; add secondary partitioning or local caches</td>
+</tr>
+<tr>
+<td><strong>No monitoring or alerting</strong></td>
+<td>Users find failures before you do</td>
+<td>Instrument metrics, logs, and traces from day one</td>
+</tr>
+</tbody>
+</table>
+<h4>Quick Diagnostic</h4>
+<table>
+<thead>
+<tr>
+<th>Question</th>
+<th>If No</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Are functional and non-functional requirements listed?</td>
+<td>Design rests on assumptions</td>
+<td>Write down features, DAU, QPS, storage, latency and availability SLAs</td>
+</tr>
+<tr>
+<td>Is there a QPS and storage estimate?</td>
+<td>Capacity is a guess</td>
+<td>DAU x actions / 86400 for QPS; records x size x retention for storage</td>
+</tr>
+<tr>
+<td>Is every component redundant?</td>
+<td>Single points of failure</td>
+<td>Add replicas, failover, or multi-AZ per component</td>
+</tr>
+<tr>
+<td>Is the database scaling strategy defined?</td>
+<td>You hit a wall under growth</td>
+<td>Vertical first, then read replicas, then sharding with a clear shard key</td>
+</tr>
+<tr>
+<td>Is there a cache for read-heavy paths?</td>
+<td>Database takes unnecessary load</td>
+<td>Redis/Memcached cache-aside with defined TTL</td>
+</tr>
+<tr>
+<td>Are async paths using queues?</td>
+<td>Tight coupling, cascading failures</td>
+<td>Decouple with Kafka/SQS for jobs, notifications, analytics</td>
+</tr>
+<tr>
+<td>Is there a monitoring and alerting plan?</td>
+<td>Blind to production failures</td>
+<td>Define metrics, log aggregation, tracing, alert thresholds</td>
+</tr>
+<tr>
+<td>Is the deployment strategy defined?</td>
+<td>Risky all-at-once releases</td>
+<td>Rolling, blue-green, or canary with automated rollback</td>
+</tr>
+</tbody>
+</table>
+<h4>Further Reading</h4>
+<p>For the complete guides with detailed diagrams and walkthroughs:</p>
+<ul>
+<li><a href="https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF?tag=wondelai00-20"><em>&quot;System Design Interview -- An Insider's Guide&quot;</em></a> by Alex Xu (Volume 1)</li>
+<li><a href="https://www.amazon.com/System-Design-Interview-Insiders-Guide/dp/1736049119?tag=wondelai00-20"><em>&quot;System Design Interview -- An Insider's Guide: Volume 2&quot;</em></a> by Alex Xu (Volume 2)</li>
+<li><a href="https://www.amazon.com/Designing-Data-Intensive-Applications-Reliable-Maintainable/dp/1449373321?tag=wondelai00-20"><em>&quot;Designing Data-Intensive Applications&quot;</em></a> by Martin Kleppmann (data systems fundamentals)</li>
+<li><a href="https://bytebytego.com/">ByteByteGo</a> -- Alex Xu's platform with visual system design explanations</li>
+</ul>
+<h4>About the Author</h4>
+<p><strong>Alex Xu</strong> is a software engineer who previously worked at Twitter, Apple, and Oracle, and the creator of ByteByteGo. His two-volume <em>System Design Interview</em> series, with over 500,000 copies sold, turned system design into a learnable, repeatable skill through structured thinking, estimation, and clear communication.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

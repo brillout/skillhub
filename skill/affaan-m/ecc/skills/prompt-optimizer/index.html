@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>prompt-optimizer · SkillHub</title>
+    <meta name="description" content="Use it when: you have a draft prompt for Claude Code and want it sharper, or don&#039;t know how to ask ECC for a task. It does: detects your stack, classifies the task&#039;s intent and scope, finds missing context and matches ECC commands, skills and agents. You get: a diagnosis, recommended components and model, a full and a quick optimized prompt, and the reason for each change. Never: runs the task: it writes no code or files, and tells you to make a normal request if you want execution. Works with: ECC: its prompts call commands such as /plan, /tdd, /code-review and /verify." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <div class="title-row"><h1>prompt-optimizer</h1><button type="button" class="save" data-save="skill:affaan-m/ecc/skills/prompt-optimizer" aria-pressed="false" aria-label="Save prompt-optimizer" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you have a draft prompt for Claude Code and want it sharper, or don&#39;t know how to ask ECC for a task</dd></div><div><dt>It does</dt><dd>detects your stack, classifies the task&#39;s intent and scope, finds missing context and matches ECC commands, skills and agents</dd></div><div><dt>You get</dt><dd>a diagnosis, recommended components and model, a full and a quick optimized prompt, and the reason for each change</dd></div><div><dt>Never</dt><dd>runs the task: it writes no code or files, and tells you to make a normal request if you want execution</dd></div><div><dt>Works with</dt><dd>ECC: its prompts call commands such as /plan, /tdd, /code-review and /verify</dd></div></dl></section>
+      
+      <p class="note">Its recommendations and rewritten prompts call ECC&#39;s commands, skills and agents, such as /plan, /tdd and /verify, which need ECC installed.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A prompt-rewriting skill contributed to ECC, and advisory only. It first reads CLAUDE.md and the project files to detect the stack, from package.json and go.mod to Cargo.toml and CMakeLists.txt. It classifies the request as a new feature, bug fix, refactor, research, testing, review, docs, infrastructure or design, and sizes it from trivial to epic, multi-session work. It then maps intent and stack to ECC components, such as tdd-workflow and the code-reviewer agent for a feature, or search-first for research. It checks the prompt for eleven kinds of missing context, from acceptance criteria and security needs to scope boundaries, and asks up to three questions when three or more are missing. Larger tasks start with /plan, and epic ones with the blueprint skill, split into one prompt per phase. The answer has five sections: a diagnosis, ECC components with a recommended Sonnet or Opus model, a full prompt with acceptance criteria and what not to do, a short version, and a rationale table. It replies in the language you wrote in.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/prompt-optimizer">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">affaan-m/</span><wbr><span class="word">ecc</span> <span class="word">--skill</span> <span class="word">prompt-optimizer</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill prompt-optimizer">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/prompt-optimizer">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/prompt-optimizer">Source on GitHub</a> · <a href="/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>6,200 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>299,252 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">525</div>
+      <div class="stat-delta">+55% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 339; week to Sep 27: 302; week to Oct 4: 202; week to Oct 11: 231; week to Oct 18: 274; week to Oct 25: 467; week to Nov 1: 450; week to Nov 8: 525. Use the left and right arrow keys to read each week."
+        data-values="339,302,202,231,274,467,450,525" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,21.6 38.6,24.7 71.1,33.1 103.7,30.6 136.3,27.0 168.9,10.9 201.4,12.3 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>339</td></tr><tr><td>Sep 27</td><td>302</td></tr><tr><td>Oct 4</td><td>202</td></tr><tr><td>Oct 11</td><td>231</td></tr><tr><td>Oct 18</td><td>274</td></tr><tr><td>Oct 25</td><td>467</td></tr><tr><td>Nov 1</td><td>450</td></tr><tr><td>Nov 8</td><td>525</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:planning" data-facet="category" title="Make the agent question you and write the plan down before it writes code." href="/?tag=category%3Aplanning">category:<wbr>planning</a><a class="tag" data-tag="category:skill-tools" data-facet="category" title="Find, write, vet and route to other skills." href="/?tag=category%3Askill-tools">category:<wbr>skill-tools</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Make the agent question you and write the plan down before it writes code.</p><p class="tag-meaning">Find, write, vet and route to other skills.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="requirements" data-facet="topic" href="/?tag=requirements">requirements</a><a class="tag" data-tag="agent-workflows" data-facet="topic" href="/?tag=agent-workflows">agent-workflows</a><a class="tag" data-tag="skill-discovery" data-facet="topic" href="/?tag=skill-discovery">skill-discovery</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/prompt-optimizer/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: prompt-optimizer
+description: Analyze draft prompts, detect intent and missing context, match ECC commands, skills, and agents, and output a ready-to-paste optimized prompt with diagnosis and rationale — advisory only, never executes the task. Use when the user says &#39;optimize prompt&#39;, &#39;improve my prompt&#39;, &#39;rewrite this prompt&#39;, &#39;help me prompt&#39;, 优化prompt, 改进prompt, 怎么写prompt, or 帮我优化这个指令; not for requests to optimize code or performance.
+metadata:
+  origin: community
+  author: YannJY02
+  version: &#34;1.0.0&#34;</code></pre></details>
+        <div class="markdown"><h3>Prompt Optimizer</h3>
+<p>Analyze a draft prompt, critique it, match it to ECC ecosystem components,
+and output a complete optimized prompt the user can paste and run.</p>
+<h4>When to Use</h4>
+<ul>
+<li>User says &quot;optimize this prompt&quot;, &quot;improve my prompt&quot;, &quot;rewrite this prompt&quot;</li>
+<li>User says &quot;help me write a better prompt for...&quot;</li>
+<li>User says &quot;what's the best way to ask Claude Code to...&quot;</li>
+<li>User says &quot;优化prompt&quot;, &quot;改进prompt&quot;, &quot;怎么写prompt&quot;, &quot;帮我优化这个指令&quot;</li>
+<li>User pastes a draft prompt and asks for feedback or enhancement</li>
+<li>User says &quot;I don't know how to prompt for this&quot;</li>
+<li>User says &quot;how should I use ECC for...&quot;</li>
+<li>User explicitly invokes <code>/prompt-optimize</code></li>
+</ul>
+<h5>Do Not Use When</h5>
+<ul>
+<li>User wants the task done directly (just execute it)</li>
+<li>User says &quot;优化代码&quot;, &quot;优化性能&quot;, &quot;optimize this code&quot;, &quot;optimize performance&quot; — these are refactoring tasks, not prompt optimization</li>
+<li>User is asking about ECC configuration (use <code>configure-ecc</code> instead)</li>
+<li>User wants a skill inventory (use <code>skill-stocktake</code> instead)</li>
+<li>User says &quot;just do it&quot; or &quot;直接做&quot;</li>
+</ul>
+<h4>How It Works</h4>
+<p><strong>Advisory only — do not execute the user's task.</strong></p>
+<p>Do NOT write code, create files, run commands, or take any implementation
+action. Your ONLY output is an analysis plus an optimized prompt.</p>
+<p>If the user says &quot;just do it&quot;, &quot;直接做&quot;, or &quot;don't optimize, just execute&quot;,
+do not switch into implementation mode inside this skill. Tell the user this
+skill only produces optimized prompts, and instruct them to make a normal
+task request if they want execution instead.</p>
+<p>Run this 6-phase pipeline sequentially. Present results using the Output Format below.</p>
+<h5>Analysis Pipeline</h5>
+<h5>Phase 0: Project Detection</h5>
+<p>Before analyzing the prompt, detect the current project context:</p>
+<ol>
+<li>Check if a <code>CLAUDE.md</code> exists in the working directory — read it for project conventions</li>
+<li>Detect tech stack from project files:
+<ul>
+<li><code>package.json</code> → Node.js / TypeScript / React / Next.js</li>
+<li><code>go.mod</code> → Go</li>
+<li><code>pyproject.toml</code> / <code>requirements.txt</code> → Python</li>
+<li><code>Cargo.toml</code> → Rust</li>
+<li><code>build.gradle</code> / <code>pom.xml</code> → Java / Kotlin (then check for <code>quarkus</code> in build file → Quarkus, or <code>spring-boot</code> → Spring Boot)</li>
+<li><code>Package.swift</code> → Swift</li>
+<li><code>Gemfile</code> → Ruby</li>
+<li><code>composer.json</code> → PHP</li>
+<li><code>*.csproj</code> / <code>*.sln</code> → .NET</li>
+<li><code>Makefile</code> / <code>CMakeLists.txt</code> → C / C++</li>
+<li><code>cpanfile</code> / <code>Makefile.PL</code> → Perl</li>
+</ul>
+</li>
+<li>Note detected tech stack for use in Phase 3 and Phase 4</li>
+</ol>
+<p>If no project files are found (e.g., the prompt is abstract or for a new project),
+skip detection and flag &quot;tech stack unknown&quot; in Phase 4.</p>
+<h5>Phase 1: Intent Detection</h5>
+<p>Classify the user's task into one or more categories:</p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Signal Words</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>New Feature</td>
+<td>build, create, add, implement, 创建, 实现, 添加</td>
+<td>&quot;Build a login page&quot;</td>
+</tr>
+<tr>
+<td>Bug Fix</td>
+<td>fix, broken, not working, error, 修复, 报错</td>
+<td>&quot;Fix the auth flow&quot;</td>
+</tr>
+<tr>
+<td>Refactor</td>
+<td>refactor, clean up, restructure, 重构, 整理</td>
+<td>&quot;Refactor the API layer&quot;</td>
+</tr>
+<tr>
+<td>Research</td>
+<td>how to, what is, explore, investigate, 怎么, 如何</td>
+<td>&quot;How to add SSO&quot;</td>
+</tr>
+<tr>
+<td>Testing</td>
+<td>test, coverage, verify, 测试, 覆盖率</td>
+<td>&quot;Add tests for the cart&quot;</td>
+</tr>
+<tr>
+<td>Review</td>
+<td>review, audit, check, 审查, 检查</td>
+<td>&quot;Review my PR&quot;</td>
+</tr>
+<tr>
+<td>Documentation</td>
+<td>document, update docs, 文档</td>
+<td>&quot;Update the API docs&quot;</td>
+</tr>
+<tr>
+<td>Infrastructure</td>
+<td>deploy, CI, docker, database, 部署, 数据库</td>
+<td>&quot;Set up CI/CD pipeline&quot;</td>
+</tr>
+<tr>
+<td>Design</td>
+<td>design, architecture, plan, 设计, 架构</td>
+<td>&quot;Design the data model&quot;</td>
+</tr>
+</tbody>
+</table>
+<h5>Phase 2: Scope Assessment</h5>
+<p>If Phase 0 detected a project, use codebase size as a signal. Otherwise, estimate
+from the prompt description alone and mark the estimate as uncertain.</p>
+<table>
+<thead>
+<tr>
+<th>Scope</th>
+<th>Heuristic</th>
+<th>Orchestration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TRIVIAL</td>
+<td>Single file, &lt; 50 lines</td>
+<td>Direct execution</td>
+</tr>
+<tr>
+<td>LOW</td>
+<td>Single component or module</td>
+<td>Single command or skill</td>
+</tr>
+<tr>
+<td>MEDIUM</td>
+<td>Multiple components, same domain</td>
+<td>Command chain + /verify</td>
+</tr>
+<tr>
+<td>HIGH</td>
+<td>Cross-domain, 5+ files</td>
+<td>/plan first, then phased execution</td>
+</tr>
+<tr>
+<td>EPIC</td>
+<td>Multi-session, multi-PR, architectural shift</td>
+<td>Use blueprint skill for multi-session plan</td>
+</tr>
+</tbody>
+</table>
+<h5>Phase 3: ECC Component Matching</h5>
+<p>Map intent + scope + tech stack (from Phase 0) to specific ECC components.</p>
+<h6>By Intent Type</h6>
+<table>
+<thead>
+<tr>
+<th>Intent</th>
+<th>Commands</th>
+<th>Skills</th>
+<th>Agents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>New Feature</td>
+<td>/plan, /tdd, /code-review, /verify</td>
+<td>tdd-workflow, verification-loop</td>
+<td>planner, tdd-guide, code-reviewer</td>
+</tr>
+<tr>
+<td>Bug Fix</td>
+<td>/tdd, /build-fix, /verify</td>
+<td>tdd-workflow</td>
+<td>tdd-guide, build-error-resolver</td>
+</tr>
+<tr>
+<td>Refactor</td>
+<td>/refactor-clean, /code-review, /verify</td>
+<td>verification-loop</td>
+<td>refactor-cleaner, code-reviewer</td>
+</tr>
+<tr>
+<td>Research</td>
+<td>/plan</td>
+<td>search-first, iterative-retrieval</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Testing</td>
+<td>/tdd, /e2e, /test-coverage</td>
+<td>tdd-workflow, e2e-testing</td>
+<td>tdd-guide, e2e-runner</td>
+</tr>
+<tr>
+<td>Review</td>
+<td>/code-review</td>
+<td>security-review</td>
+<td>code-reviewer, security-reviewer</td>
+</tr>
+<tr>
+<td>Documentation</td>
+<td>/update-docs, /update-codemaps</td>
+<td>—</td>
+<td>doc-updater</td>
+</tr>
+<tr>
+<td>Infrastructure</td>
+<td>/plan, /verify</td>
+<td>docker-patterns, deployment-patterns, database-migrations</td>
+<td>architect</td>
+</tr>
+<tr>
+<td>Design (MEDIUM-HIGH)</td>
+<td>/plan</td>
+<td>—</td>
+<td>planner, architect</td>
+</tr>
+<tr>
+<td>Design (EPIC)</td>
+<td>—</td>
+<td>blueprint (invoke as skill)</td>
+<td>planner, architect</td>
+</tr>
+</tbody>
+</table>
+<h6>By Tech Stack</h6>
+<table>
+<thead>
+<tr>
+<th>Tech Stack</th>
+<th>Skills to Add</th>
+<th>Agent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python / Django</td>
+<td>django-patterns, django-tdd, django-security, django-verification, python-patterns, python-testing</td>
+<td>python-reviewer</td>
+</tr>
+<tr>
+<td>Go</td>
+<td>golang-patterns, golang-testing</td>
+<td>go-reviewer, go-build-resolver</td>
+</tr>
+<tr>
+<td>Spring Boot / Java</td>
+<td>springboot-patterns, springboot-tdd, springboot-security, springboot-verification, java-coding-standards, jpa-patterns</td>
+<td>java-reviewer</td>
+</tr>
+<tr>
+<td>Quarkus / Java</td>
+<td>quarkus-patterns, quarkus-tdd, quarkus-security, quarkus-verification, java-coding-standards, jpa-patterns</td>
+<td>java-reviewer</td>
+</tr>
+<tr>
+<td>Kotlin / Android</td>
+<td>kotlin-coroutines-flows, compose-multiplatform-patterns, android-clean-architecture</td>
+<td>kotlin-reviewer</td>
+</tr>
+<tr>
+<td>TypeScript / React</td>
+<td>frontend-patterns, backend-patterns, coding-standards</td>
+<td>code-reviewer</td>
+</tr>
+<tr>
+<td>Swift / iOS</td>
+<td>swiftui-patterns, swift-concurrency-6-2, swift-actor-persistence, swift-protocol-di-testing</td>
+<td>code-reviewer</td>
+</tr>
+<tr>
+<td>PostgreSQL</td>
+<td>postgres-patterns, database-migrations</td>
+<td>database-reviewer</td>
+</tr>
+<tr>
+<td>Perl</td>
+<td>perl-patterns, perl-testing, perl-security</td>
+<td>code-reviewer</td>
+</tr>
+<tr>
+<td>C++</td>
+<td>cpp-coding-standards, cpp-testing</td>
+<td>code-reviewer</td>
+</tr>
+<tr>
+<td>Other / Unlisted</td>
+<td>coding-standards (universal)</td>
+<td>code-reviewer</td>
+</tr>
+</tbody>
+</table>
+<h5>Phase 4: Missing Context Detection</h5>
+<p>Scan the prompt for missing critical information. Check each item and mark
+whether Phase 0 auto-detected it or the user must supply it:</p>
+<ul>
+<li>[ ] <strong>Tech stack</strong> — Detected in Phase 0, or must user specify?</li>
+<li>[ ] <strong>Target scope</strong> — Files, directories, or modules mentioned?</li>
+<li>[ ] <strong>Acceptance criteria</strong> — How to know the task is done?</li>
+<li>[ ] <strong>Error handling</strong> — Edge cases and failure modes addressed?</li>
+<li>[ ] <strong>Security requirements</strong> — Auth, input validation, secrets?</li>
+<li>[ ] <strong>Testing expectations</strong> — Unit, integration, E2E?</li>
+<li>[ ] <strong>Performance constraints</strong> — Load, latency, resource limits?</li>
+<li>[ ] <strong>UI/UX requirements</strong> — Design specs, responsive, a11y? (if frontend)</li>
+<li>[ ] <strong>Database changes</strong> — Schema, migrations, indexes? (if data layer)</li>
+<li>[ ] <strong>Existing patterns</strong> — Reference files or conventions to follow?</li>
+<li>[ ] <strong>Scope boundaries</strong> — What NOT to do?</li>
+</ul>
+<p><strong>If 3+ critical items are missing</strong>, ask the user up to 3 clarification
+questions before generating the optimized prompt. Then incorporate the
+answers into the optimized prompt.</p>
+<h5>Phase 5: Workflow &amp; Model Recommendation</h5>
+<p>Determine where this prompt sits in the development lifecycle:</p>
+<pre><code>Research → Plan → Implement (TDD) → Review → Verify → Commit
+</code></pre>
+<p>For MEDIUM+ tasks, always start with /plan. For EPIC tasks, use blueprint skill.</p>
+<p><strong>Model recommendation</strong> (include in output):</p>
+<table>
+<thead>
+<tr>
+<th>Scope</th>
+<th>Recommended Model</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TRIVIAL-LOW</td>
+<td>Sonnet 5</td>
+<td>Fast, cost-efficient for simple tasks</td>
+</tr>
+<tr>
+<td>MEDIUM</td>
+<td>Sonnet 5</td>
+<td>Best coding model for standard work</td>
+</tr>
+<tr>
+<td>HIGH</td>
+<td>Sonnet 5 (main) + Opus 5 (planning)</td>
+<td>Opus for architecture, Sonnet for implementation</td>
+</tr>
+<tr>
+<td>EPIC</td>
+<td>Opus 5 (blueprint) + Sonnet 5 (execution)</td>
+<td>Deep reasoning for multi-session planning</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Multi-prompt splitting</strong> (for HIGH/EPIC scope):</p>
+<p>For tasks that exceed a single session, split into sequential prompts:</p>
+<ul>
+<li>Prompt 1: Research + Plan (use search-first skill, then /plan)</li>
+<li>Prompt 2-N: Implement one phase per prompt (each ends with /verify)</li>
+<li>Final Prompt: Integration test + /code-review across all phases</li>
+<li>Use /save-session and /resume-session to preserve context between sessions</li>
+</ul>
+<hr>
+<h4>Output Format</h4>
+<p>Present your analysis in this exact structure. Respond in the same language
+as the user's input.</p>
+<h5>Section 1: Prompt Diagnosis</h5>
+<p><strong>Strengths:</strong> List what the original prompt does well.</p>
+<p><strong>Issues:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Impact</th>
+<th>Suggested Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(problem)</td>
+<td>(consequence)</td>
+<td>(how to fix)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Needs Clarification:</strong> Numbered list of questions the user should answer.
+If Phase 0 auto-detected the answer, state it instead of asking.</p>
+<h5>Section 2: Recommended ECC Components</h5>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Component</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Command</td>
+<td>/plan</td>
+<td>Plan architecture before coding</td>
+</tr>
+<tr>
+<td>Skill</td>
+<td>tdd-workflow</td>
+<td>TDD methodology guidance</td>
+</tr>
+<tr>
+<td>Agent</td>
+<td>code-reviewer</td>
+<td>Post-implementation review</td>
+</tr>
+<tr>
+<td>Model</td>
+<td>Sonnet 5</td>
+<td>Recommended for this scope</td>
+</tr>
+</tbody>
+</table>
+<h5>Section 3: Optimized Prompt — Full Version</h5>
+<p>Present the complete optimized prompt inside a single fenced code block.
+The prompt must be self-contained and ready to copy-paste. Include:</p>
+<ul>
+<li>Clear task description with context</li>
+<li>Tech stack (detected or specified)</li>
+<li>/command invocations at the right workflow stages</li>
+<li>Acceptance criteria</li>
+<li>Verification steps</li>
+<li>Scope boundaries (what NOT to do)</li>
+</ul>
+<p>For items that reference blueprint, write: &quot;Use the blueprint skill to...&quot;
+(not <code>/blueprint</code>, since blueprint is a skill, not a command).</p>
+<h5>Section 4: Optimized Prompt — Quick Version</h5>
+<p>A compact version for experienced ECC users. Vary by intent type:</p>
+<table>
+<thead>
+<tr>
+<th>Intent</th>
+<th>Quick Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>New Feature</td>
+<td><code>/plan [feature]. /tdd to implement. /code-review. /verify.</code></td>
+</tr>
+<tr>
+<td>Bug Fix</td>
+<td><code>/tdd — write failing test for [bug]. Fix to green. /verify.</code></td>
+</tr>
+<tr>
+<td>Refactor</td>
+<td><code>/refactor-clean [scope]. /code-review. /verify.</code></td>
+</tr>
+<tr>
+<td>Research</td>
+<td><code>Use search-first skill for [topic]. /plan based on findings.</code></td>
+</tr>
+<tr>
+<td>Testing</td>
+<td><code>/tdd [module]. /e2e for critical flows. /test-coverage.</code></td>
+</tr>
+<tr>
+<td>Review</td>
+<td><code>/code-review. Then use security-reviewer agent.</code></td>
+</tr>
+<tr>
+<td>Docs</td>
+<td><code>/update-docs. /update-codemaps.</code></td>
+</tr>
+<tr>
+<td>EPIC</td>
+<td><code>Use blueprint skill for &quot;[objective]&quot;. Execute phases with /verify gates.</code></td>
+</tr>
+</tbody>
+</table>
+<h5>Section 5: Enhancement Rationale</h5>
+<table>
+<thead>
+<tr>
+<th>Enhancement</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(what was added)</td>
+<td>(why it matters)</td>
+</tr>
+</tbody>
+</table>
+<h5>Footer</h5>
+<blockquote>
+<p>Not what you need? Tell me what to adjust, or make a normal task request
+if you want execution instead of prompt optimization.</p>
+</blockquote>
+<hr>
+<h4>Examples</h4>
+<h5>Trigger Examples</h5>
+<ul>
+<li>&quot;Optimize this prompt for ECC&quot;</li>
+<li>&quot;Rewrite this prompt so Claude Code uses the right commands&quot;</li>
+<li>&quot;帮我优化这个指令&quot;</li>
+<li>&quot;How should I prompt ECC for this task?&quot;</li>
+</ul>
+<h5>Example 1: Vague Chinese Prompt (Project Detected)</h5>
+<p><strong>User input:</strong></p>
+<pre><code>帮我写一个用户登录页面
+</code></pre>
+<p><strong>Phase 0 detects:</strong> <code>package.json</code> with Next.js 15, TypeScript, Tailwind CSS</p>
+<p><strong>Optimized Prompt (Full):</strong></p>
+<pre><code>使用项目现有技术栈（Next.js 15 + TypeScript + Tailwind CSS）实现用户登录页面。
+
+技术要求：
+- 沿用项目现有的组件结构和路由约定
+- 表单验证使用项目中已有的验证方案（检查是否已用 Zod/Yup/其他）
+- 认证方式：沿用项目现有认证方案（如无，默认 JWT）
+- 包含：邮箱/密码登录表单、表单验证、错误提示、加载状态、响应式布局
+
+工作流：
+1. /plan 先规划组件结构和认证流程，参考现有页面的模式
+2. /tdd 测试先行：编写登录表单的单元测试和认证流程的集成测试
+3. 实现登录页面和认证逻辑
+4. /code-review 审查实现
+5. /verify 验证所有测试通过且页面正常渲染
+
+安全要求：
+- 密码不明文传输
+- 防止暴力破解（rate limiting）
+- XSS 防护
+- CSRF token
+
+验收标准：
+- 所有测试通过，覆盖率 80%+
+- 页面在移动端和桌面端正常渲染
+- 登录成功跳转到 dashboard，失败显示错误信息
+
+不要做：
+- 不要实现注册页面
+- 不要实现忘记密码功能
+- 不要修改现有的路由结构
+</code></pre>
+<h5>Example 2: Moderate English Prompt</h5>
+<p><strong>User input:</strong></p>
+<pre><code>Add a REST API endpoint for user profile updates with validation
+</code></pre>
+<p><strong>Phase 0 detects:</strong> <code>go.mod</code> with Go 1.22, Chi router</p>
+<p><strong>Optimized Prompt (Full):</strong></p>
+<pre><code>Add a REST API endpoint for user profile updates (PATCH /api/users/:id).
+
+Tech stack: Go 1.22 + Chi router (detected from project)
+
+Requirements:
+- PATCH /api/users/:id — partial update of user profile
+- Input validation for fields: name, email, avatar_url, bio
+- Auth: require valid token, users can only update own profile
+- Return 200 with updated user on success
+- Return 400 with validation errors on invalid input
+- Return 401/403 for auth failures
+- Follow existing API patterns in the codebase
+
+Workflow:
+1. /plan the endpoint structure, middleware chain, and validation logic
+2. /tdd — write table-driven tests for success, validation failure, auth failure, not-found
+3. Implement following existing handler patterns
+4. /go-review
+5. /verify — run full test suite, confirm no regressions
+
+Do not:
+- Modify existing endpoints
+- Change the database schema (use existing user table)
+- Add new dependencies without checking existing ones first (use search-first skill)
+</code></pre>
+<h5>Example 3: EPIC Project</h5>
+<p><strong>User input:</strong></p>
+<pre><code>Migrate our monolith to microservices
+</code></pre>
+<p><strong>Optimized Prompt (Full):</strong></p>
+<pre><code>Use the blueprint skill to plan: &quot;Migrate monolith to microservices architecture&quot;
+
+Before executing, answer these questions in the blueprint:
+1. Which domain boundaries exist in the current monolith?
+2. Which service should be extracted first (lowest coupling)?
+3. Communication pattern: REST APIs, gRPC, or event-driven (Kafka/RabbitMQ)?
+4. Database strategy: shared DB initially or database-per-service from start?
+5. Deployment target: Kubernetes, Docker Compose, or serverless?
+
+The blueprint should produce phases like:
+- Phase 1: Identify service boundaries and create domain map
+- Phase 2: Set up infrastructure (API gateway, service mesh, CI/CD per service)
+- Phase 3: Extract first service (strangler fig pattern)
+- Phase 4: Verify with integration tests, then extract next service
+- Phase N: Decommission monolith
+
+Each phase = 1 PR, with /verify gates between phases.
+Use /save-session between phases. Use /resume-session to continue.
+Use git worktrees for parallel service extraction when dependencies allow.
+
+Recommended: Opus 5 for blueprint planning, Sonnet 5 for phase execution.
+</code></pre>
+<hr>
+<h4>Related Components</h4>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>When to Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>configure-ecc</code></td>
+<td>User hasn't set up ECC yet</td>
+</tr>
+<tr>
+<td><code>skill-stocktake</code></td>
+<td>Audit which components are installed (use instead of hardcoded catalog)</td>
+</tr>
+<tr>
+<td><code>search-first</code></td>
+<td>Research phase in optimized prompts</td>
+</tr>
+<tr>
+<td><code>blueprint</code></td>
+<td>EPIC-scope optimized prompts (invoke as skill, not command)</td>
+</tr>
+<tr>
+<td><code>strategic-compact</code></td>
+<td>Long session context management</td>
+</tr>
+<tr>
+<td><code>cost-aware-llm-pipeline</code></td>
+<td>Token optimization recommendations</td>
+</tr>
+</tbody>
+</table>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

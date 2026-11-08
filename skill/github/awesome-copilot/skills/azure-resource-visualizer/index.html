@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>azure-resource-visualizer · SkillHub</title>
+    <meta name="description" content="Use it when: you want to see how the resources in one of your Azure resource groups fit together. It does: lists your resource groups for you to pick, unless you named one, queries every resource&#039;s settings, network, identity and dependencies, and maps their connections. You get: [resource-group]-architecture.md with a summary, a resource inventory table, the Mermaid diagram and notes on connections and issues. Reads only: it never modifies or deletes Azure resources. Needs: the Azure MCP server or the az CLI, signed in to your subscription." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=github%2Fawesome-copilot">github/awesome-copilot</a></p>
+      <div class="title-row"><h1>azure-resource-visualizer</h1><button type="button" class="save" data-save="skill:github/awesome-copilot/skills/azure-resource-visualizer" aria-pressed="false" aria-label="Save azure-resource-visualizer" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want to see how the resources in one of your Azure resource groups fit together</dd></div><div><dt>It does</dt><dd>lists your resource groups for you to pick, unless you named one, queries every resource&#39;s settings, network, identity and dependencies, and maps their connections</dd></div><div><dt>You get</dt><dd>[resource-group]-architecture.md with a summary, a resource inventory table, the Mermaid diagram and notes on connections and issues</dd></div><div><dt>Reads only</dt><dd>it never modifies or deletes Azure resources</dd></div><div><dt>Needs</dt><dd>the Azure MCP server or the az CLI, signed in to your subscription</dd></div></dl></section>
+      
+      <p class="note">Needs access to your Azure subscription through the Azure MCP server or the az CLI; it only reads resources, never changes them.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>If you didn&#39;t name a resource group, the agent lists the available ones with their locations and waits for your choice. It queries every resource in the group with Azure MCP tools or az, noting type, SKU or tier, region, key settings, networking and managed identities, then maps relationships: VNet peering, subnets and NSG rules, private endpoints, data flows such as an app calling a database or a function using storage, identities reaching Key Vault, and settings that point to other resources. The Mermaid diagram groups resources into subgraphs by layer, such as network, compute, data and security, puts SKUs and address ranges in node labels, and labels every connection, with distinct arrows for optional and critical paths. The Markdown file follows a bundled template and goes in the workspace root, or docs/ if it exists. Groups of over 50 resources may be split into several diagrams by layer, and dependencies on other resource groups are noted.</p>
+      <p class="muted">Summarizes <a href="https://github.com/github/awesome-copilot/tree/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/azure-resource-visualizer">the skill at 797337f</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">github/</span><wbr><span class="word">awesome-copilot</span> <span class="word">--skill</span> <span class="word">azure-resource-visualizer</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/github/awesome-copilot --skill azure-resource-visualizer">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/github/awesome-copilot/azure-resource-visualizer">skills.sh page</a> · <a href="https://github.com/github/awesome-copilot/tree/HEAD/skills/azure-resource-visualizer">Source on GitHub</a> · <a href="/?repo=github%2Fawesome-copilot">All skills from github/awesome-copilot</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>8,900 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>40,908 <span class="muted">github/awesome-copilot</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">1</div>
+      <div class="stat-delta">-87% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 8; week to Sep 27: 9; week to Oct 4: 15; week to Oct 11: 13; week to Oct 18: 6; week to Oct 25: 5; week to Nov 1: 2; week to Nov 8: 1. Use the left and right arrow keys to read each week."
+        data-values="8,9,15,13,6,5,2,1" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,26.5 38.6,23.6 71.1,6.0 103.7,11.9 136.3,32.4 168.9,35.3 201.4,44.1 234.0,47.1" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="47.1" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>8</td></tr><tr><td>Sep 27</td><td>9</td></tr><tr><td>Oct 4</td><td>15</td></tr><tr><td>Oct 11</td><td>13</td></tr><tr><td>Oct 18</td><td>6</td></tr><tr><td>Oct 25</td><td>5</td></tr><tr><td>Nov 1</td><td>2</td></tr><tr><td>Nov 8</td><td>1</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:cloud" data-facet="category" title="Deploy, provision, observe and debug cloud apps." href="/?tag=category%3Acloud">category:<wbr>cloud</a><a class="tag" data-tag="category:science" data-facet="category" title="Research reproduction, financial data, charts and diagrams." href="/?tag=category%3Ascience">category:<wbr>science</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Deploy, provision, observe and debug cloud apps.</p><p class="tag-meaning">Research reproduction, financial data, charts and diagrams.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/?tag=needs%3Aaccount">needs:<wbr>account</a><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/?tag=needs%3Acli">needs:<wbr>cli</a></div>
+          <p class="tag-meaning">An account, API key or paid plan with an outside service.</p><p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="diagrams" data-facet="topic" href="/?tag=diagrams">diagrams</a><a class="tag" data-tag="architecture" data-facet="topic" href="/?tag=architecture">architecture</a><a class="tag" data-tag="infrastructure" data-facet="topic" href="/?tag=infrastructure">infrastructure</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:azure" data-facet="stack" href="/?tag=stack%3Aazure">stack:<wbr>azure</a><a class="tag" data-tag="stack:mermaid" data-facet="stack" href="/?tag=stack%3Amermaid">stack:<wbr>mermaid</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/github/awesome-copilot/blob/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/azure-resource-visualizer/SKILL.md">github/awesome-copilot at 797337f</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: azure-resource-visualizer
+description: Analyze Azure resource groups and generate detailed Mermaid architecture diagrams showing the relationships between individual resources. Use this skill when the user asks for a diagram of their Azure resources or help in understanding how the resources relate to each other.
+license: Complete terms in LICENSE.txt
+metadata:
+  author: Tom Meschter (tom.meschter@microsoft.com)</code></pre></details>
+        <div class="markdown"><h3>Azure Resource Visualizer - Architecture Diagram Generator</h3>
+<p>A user may ask for help understanding how individual resources fit together, or to create a diagram showing their relationships. Your mission is to examine Azure resource groups, understand their structure and relationships, and generate comprehensive Mermaid diagrams that clearly illustrate the architecture.</p>
+<h4>Core Responsibilities</h4>
+<ol>
+<li><strong>Resource Group Discovery</strong>: List available resource groups when not specified</li>
+<li><strong>Deep Resource Analysis</strong>: Examine all resources, their configurations, and interdependencies</li>
+<li><strong>Relationship Mapping</strong>: Identify and document all connections between resources</li>
+<li><strong>Diagram Generation</strong>: Create detailed, accurate Mermaid diagrams</li>
+<li><strong>Documentation Creation</strong>: Produce clear markdown files with embedded diagrams</li>
+</ol>
+<h4>Workflow Process</h4>
+<h5>Step 1: Resource Group Selection</h5>
+<p>If the user hasn't specified a resource group:</p>
+<ol>
+<li>Use your tools to query available resource groups. If you do not have a tool for this, use <code>az</code>.</li>
+<li>Present a numbered list of resource groups with their locations</li>
+<li>Ask the user to select one by number or name</li>
+<li>Wait for user response before proceeding</li>
+</ol>
+<p>If a resource group is specified, validate it exists and proceed.</p>
+<h5>Step 2: Resource Discovery &amp; Analysis</h5>
+<p>Once you have the resource group:</p>
+<ol>
+<li>
+<p><strong>Query all resources</strong> in the resource group using Azure MCP tools or <code>az</code>.</p>
+</li>
+<li>
+<p><strong>Analyze each resource</strong> type and capture:</p>
+<ul>
+<li>Resource name and type</li>
+<li>SKU/tier information</li>
+<li>Location/region</li>
+<li>Key configuration properties</li>
+<li>Network settings (VNets, subnets, private endpoints)</li>
+<li>Identity and access (Managed Identity, RBAC)</li>
+<li>Dependencies and connections</li>
+</ul>
+</li>
+<li>
+<p><strong>Map relationships</strong> by identifying:</p>
+<ul>
+<li><strong>Network connections</strong>: VNet peering, subnet assignments, NSG rules, private endpoints</li>
+<li><strong>Data flow</strong>: Apps → Databases, Functions → Storage, API Management → Backends</li>
+<li><strong>Identity</strong>: Managed identities connecting to resources</li>
+<li><strong>Configuration</strong>: App Settings pointing to Key Vaults, connection strings</li>
+<li><strong>Dependencies</strong>: Parent-child relationships, required resources</li>
+</ul>
+</li>
+</ol>
+<h5>Step 3: Diagram Construction</h5>
+<p>Create a <strong>detailed Mermaid diagram</strong> using the <code>graph TB</code> (top-to-bottom) or <code>graph LR</code> (left-to-right) format:</p>
+<p><strong>Diagram Structure Guidelines:</strong></p>
+<pre><code class="language-mermaid">graph TB
+    %% Use subgraphs to group related resources
+    subgraph &quot;Resource Group: [name]&quot;
+        subgraph &quot;Network Layer&quot;
+            VNET[Virtual Network&lt;br/&gt;10.0.0.0/16]
+            SUBNET1[Subnet: web&lt;br/&gt;10.0.1.0/24]
+            SUBNET2[Subnet: data&lt;br/&gt;10.0.2.0/24]
+            NSG[Network Security Group]
+        end
+        
+        subgraph &quot;Compute Layer&quot;
+            APP[App Service&lt;br/&gt;Plan: P1v2]
+            FUNC[Function App&lt;br/&gt;Runtime: .NET 8]
+        end
+        
+        subgraph &quot;Data Layer&quot;
+            SQL[Azure SQL Database&lt;br/&gt;DTU: S1]
+            STORAGE[Storage Account&lt;br/&gt;Type: Standard LRS]
+        end
+        
+        subgraph &quot;Security &amp; Identity&quot;
+            KV[Key Vault]
+            MI[Managed Identity]
+        end
+    end
+    
+    %% Define relationships with descriptive labels
+    APP --&gt;|&quot;HTTPS requests&quot;| FUNC
+    FUNC --&gt;|&quot;SQL connection&quot;| SQL
+    FUNC --&gt;|&quot;Blob/Queue access&quot;| STORAGE
+    APP --&gt;|&quot;Uses identity&quot;| MI
+    MI --&gt;|&quot;Access secrets&quot;| KV
+    VNET --&gt; SUBNET1
+    VNET --&gt; SUBNET2
+    SUBNET1 --&gt; APP
+    SUBNET2 --&gt; SQL
+    NSG --&gt;|&quot;Rules applied to&quot;| SUBNET1
+</code></pre>
+<p><strong>Key Diagram Requirements:</strong></p>
+<ul>
+<li><strong>Group by layer or purpose</strong>: Network, Compute, Data, Security, Monitoring</li>
+<li><strong>Include details</strong>: SKUs, tiers, important settings in node labels (use <code>&lt;br/&gt;</code> for line breaks)</li>
+<li><strong>Label all connections</strong>: Describe what flows between resources (data, identity, network)</li>
+<li><strong>Use meaningful node IDs</strong>: Abbreviations that make sense (APP, FUNC, SQL, KV)</li>
+<li><strong>Visual hierarchy</strong>: Subgraphs for logical grouping</li>
+<li><strong>Connection types</strong>:
+<ul>
+<li><code>--&gt;</code> for data flow or dependencies</li>
+<li><code>-.-&gt;</code> for optional/conditional connections</li>
+<li><code>==&gt;</code> for critical/primary paths</li>
+</ul>
+</li>
+</ul>
+<p><strong>Resource Type Examples:</strong></p>
+<ul>
+<li>App Service: Include plan tier (B1, S1, P1v2)</li>
+<li>Functions: Include runtime (.NET, Python, Node)</li>
+<li>Databases: Include tier (Basic, Standard, Premium)</li>
+<li>Storage: Include redundancy (LRS, GRS, ZRS)</li>
+<li>VNets: Include address space</li>
+<li>Subnets: Include address range</li>
+</ul>
+<h5>Step 4: File Creation</h5>
+<p>Use <a href="https://github.com/github/awesome-copilot/blob/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/azure-resource-visualizer/assets/template-architecture.md">template-architecture.md</a> as a template and create a markdown file named <code>[resource-group-name]-architecture.md</code> with:</p>
+<ol>
+<li><strong>Header</strong>: Resource group name, subscription, region</li>
+<li><strong>Summary</strong>: Brief overview of the architecture (2-3 paragraphs)</li>
+<li><strong>Resource Inventory</strong>: Table listing all resources with types and key properties</li>
+<li><strong>Architecture Diagram</strong>: The complete Mermaid diagram</li>
+<li><strong>Relationship Details</strong>: Explanation of key connections and data flows</li>
+<li><strong>Notes</strong>: Any important observations, potential issues, or recommendations</li>
+</ol>
+<h4>Operating Guidelines</h4>
+<h5>Quality Standards</h5>
+<ul>
+<li><strong>Accuracy</strong>: Verify all resource details before including in diagram</li>
+<li><strong>Completeness</strong>: Don't omit resources; include everything in the resource group</li>
+<li><strong>Clarity</strong>: Use clear, descriptive labels and logical grouping</li>
+<li><strong>Detail Level</strong>: Include configuration details that matter for architecture understanding</li>
+<li><strong>Relationships</strong>: Show ALL significant connections, not just obvious ones</li>
+</ul>
+<h5>Tool Usage Patterns</h5>
+<ol>
+<li>
+<p><strong>Azure MCP Search</strong>:</p>
+<ul>
+<li>Use <code>intent=&quot;list resource groups&quot;</code> to discover resource groups</li>
+<li>Use <code>intent=&quot;list resources in group&quot;</code> with group name to get all resources</li>
+<li>Use <code>intent=&quot;get resource details&quot;</code> for individual resource analysis</li>
+<li>Use <code>command</code> parameter when you need specific Azure operations</li>
+</ul>
+</li>
+<li>
+<p><strong>File Creation</strong>:</p>
+<ul>
+<li>Always create in workspace root or a <code>docs/</code> folder if it exists</li>
+<li>Use clear, descriptive filenames: <code>[rg-name]-architecture.md</code></li>
+<li>Ensure Mermaid syntax is valid (test syntax mentally before output)</li>
+</ul>
+</li>
+<li>
+<p><strong>Terminal (when needed)</strong>:</p>
+<ul>
+<li>Use Azure CLI for complex queries not available via MCP</li>
+<li>Example: <code>az resource list --resource-group &lt;name&gt; --output json</code></li>
+<li>Example: <code>az network vnet show --resource-group &lt;name&gt; --name &lt;vnet-name&gt;</code></li>
+</ul>
+</li>
+</ol>
+<h5>Constraints &amp; Boundaries</h5>
+<p><strong>Always Do:</strong></p>
+<ul>
+<li>✅ List resource groups if not specified</li>
+<li>✅ Wait for user selection before proceeding</li>
+<li>✅ Analyze ALL resources in the group</li>
+<li>✅ Create detailed, accurate diagrams</li>
+<li>✅ Include configuration details in node labels</li>
+<li>✅ Group resources logically with subgraphs</li>
+<li>✅ Label all connections descriptively</li>
+<li>✅ Create a complete markdown file with diagram</li>
+</ul>
+<p><strong>Never Do:</strong></p>
+<ul>
+<li>❌ Skip resources because they seem unimportant</li>
+<li>❌ Make assumptions about resource relationships without verification</li>
+<li>❌ Create incomplete or placeholder diagrams</li>
+<li>❌ Omit configuration details that affect architecture</li>
+<li>❌ Proceed without confirming resource group selection</li>
+<li>❌ Generate invalid Mermaid syntax</li>
+<li>❌ Modify or delete Azure resources (read-only analysis)</li>
+</ul>
+<h5>Edge Cases &amp; Error Handling</h5>
+<ul>
+<li><strong>No resources found</strong>: Inform user and verify resource group name</li>
+<li><strong>Permission issues</strong>: Explain what's missing and suggest checking RBAC</li>
+<li><strong>Complex architectures (50+ resources)</strong>: Consider creating multiple diagrams by layer</li>
+<li><strong>Cross-resource-group dependencies</strong>: Note external dependencies in diagram notes</li>
+<li><strong>Resources without clear relationships</strong>: Group in &quot;Other Resources&quot; section</li>
+</ul>
+<h4>Output Format Specifications</h4>
+<h5>Mermaid Diagram Syntax</h5>
+<ul>
+<li>Use <code>graph TB</code> (top-to-bottom) for vertical layouts</li>
+<li>Use <code>graph LR</code> (left-to-right) for horizontal layouts (better for wide architectures)</li>
+<li>Subgraph syntax: <code>subgraph &quot;Descriptive Name&quot;</code></li>
+<li>Node syntax: <code>ID[&quot;Display Name&lt;br/&gt;Details&quot;]</code></li>
+<li>Connection syntax: <code>SOURCE --&gt;|&quot;Label&quot;| TARGET</code></li>
+</ul>
+<h5>Markdown Structure</h5>
+<ul>
+<li>Use H1 for main title</li>
+<li>Use H2 for major sections</li>
+<li>Use H3 for subsections</li>
+<li>Use tables for resource inventories</li>
+<li>Use bullet lists for notes and recommendations</li>
+<li>Use code blocks with <code>mermaid</code> language tag for diagrams</li>
+</ul>
+<h4>Example Interaction</h4>
+<p><strong>User</strong>: &quot;Analyze my production resource group&quot;</p>
+<p><strong>Agent</strong>:</p>
+<ol>
+<li>Lists all resource groups in subscription</li>
+<li>Asks user to select: &quot;Which resource group? 1) rg-prod-app, 2) rg-dev-app, 3) rg-shared&quot;</li>
+<li>User selects: &quot;1&quot;</li>
+<li>Queries all resources in rg-prod-app</li>
+<li>Analyzes: App Service, Function App, SQL Database, Storage Account, Key Vault, VNet, NSG</li>
+<li>Identifies relationships: App → Function, Function → SQL, Function → Storage, All → Key Vault</li>
+<li>Creates detailed Mermaid diagram with subgraphs</li>
+<li>Generates <code>rg-prod-app-architecture.md</code> with complete documentation</li>
+<li>Displays: &quot;Created architecture diagram in rg-prod-app-architecture.md. Found 7 resources with 8 key relationships.&quot;</li>
+</ol>
+<h4>Success Criteria</h4>
+<p>A successful analysis includes:</p>
+<ul>
+<li>✅ Valid resource group identified</li>
+<li>✅ All resources discovered and analyzed</li>
+<li>✅ All significant relationships mapped</li>
+<li>✅ Detailed Mermaid diagram with proper grouping</li>
+<li>✅ Complete markdown file created</li>
+<li>✅ Clear, actionable documentation</li>
+<li>✅ Valid Mermaid syntax that renders correctly</li>
+<li>✅ Professional, architect-level output</li>
+</ul>
+<p>Your goal is to provide clarity and insight into Azure architectures, making complex resource relationships easy to understand through excellent visualization.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>data-pipeline · SkillHub</title>
+    <meta name="description" content="Use it when: you need to move data between apps, databases and a warehouse or spreadsheet on a schedule, such as daily sales into BigQuery. It does: plans each stage: extract from databases, APIs, files or SaaS apps; clean, map, aggregate and enrich; load to warehouses, databases, storage, sheets or webhooks. You get: a pipeline spec with schedule, retries, extract settings, a JavaScript transform, destinations, quality checks and alert channels, like its daily Shopify-and-Stripe sales example. Also covers: cron schedules, dependencies, retries with exponential backoff, alerts on failures, row-count anomalies and stale data, and schema, null-rate and business-rule checks. Doesn&#039;t: run anything: it says it&#039;s based on n8n templates, but its workflows are YAML outlines and the data-mcp tools in its frontmatter are never called." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=claude-office-skills%2Fskills">claude-office-skills/skills</a></p>
+      <div class="title-row"><h1>data-pipeline</h1><button type="button" class="save" data-save="skill:claude-office-skills/skills/data-pipeline" aria-pressed="false" aria-label="Save data-pipeline" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you need to move data between apps, databases and a warehouse or spreadsheet on a schedule, such as daily sales into BigQuery</dd></div><div><dt>It does</dt><dd>plans each stage: extract from databases, APIs, files or SaaS apps; clean, map, aggregate and enrich; load to warehouses, databases, storage, sheets or webhooks</dd></div><div><dt>You get</dt><dd>a pipeline spec with schedule, retries, extract settings, a JavaScript transform, destinations, quality checks and alert channels, like its daily Shopify-and-Stripe sales example</dd></div><div><dt>Also covers</dt><dd>cron schedules, dependencies, retries with exponential backoff, alerts on failures, row-count anomalies and stale data, and schema, null-rate and business-rule checks</dd></div><div><dt>Doesn&#39;t</dt><dd>run anything: it says it&#39;s based on n8n templates, but its workflows are YAML outlines and the data-mcp tools in its frontmatter are never called</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>From Claude Office Skills. You describe the data you have and where it should end up, and the agent designs the pipeline from its patterns. Sources include PostgreSQL, MySQL and MongoDB, REST and GraphQL APIs, CSV, Excel and JSON files, and Salesforce, HubSpot, Stripe and Shopify; destinations include BigQuery, Snowflake, Redshift, Postgres, MySQL, S3, Google Cloud Storage, Google Sheets, Airtable and webhooks. Transformations are listed by kind (cleaning, mapping, aggregation, enrichment, filtering), with JavaScript functions that normalize records and total them by date and category. Its monitoring tracks rows processed, run time, errors and freshness, and posts failures to Slack or PagerDuty. Quality checks validate required fields, types and allowed values, keep null and duplicate rates low, test business rules such as totals matching line items, and flag row counts more than two standard deviations from the mean.</p>
+      <p class="muted">Summarizes <a href="https://github.com/claude-office-skills/skills/tree/9c4c7d5cd2813a8936bf2c9fdb174ea883b85a11/data-pipeline">the skill at 9c4c7d5</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">claude-office-skills/</span><wbr><span class="word">skills</span> <span class="word">--skill</span> <span class="word">data-pipeline</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/claude-office-skills/skills --skill data-pipeline">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/claude-office-skills/skills/data-pipeline">skills.sh page</a> · <a href="https://github.com/claude-office-skills/skills/tree/HEAD/data-pipeline">Source on GitHub</a> · <a href="/?repo=claude-office-skills%2Fskills">All skills from claude-office-skills/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,000 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>569 <span class="muted">claude-office-skills/skills</span></dd></div><div><dt>First seen</dt><dd>Mar 5, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">63</div>
+      <div class="stat-delta">+21% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 52; week to Sep 27: 83; week to Oct 4: 58; week to Oct 11: 59; week to Oct 18: 99; week to Oct 25: 224; week to Nov 1: 176; week to Nov 8: 63. Use the left and right arrow keys to read each week."
+        data-values="52,83,58,59,99,224,176,63" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,39.8 38.6,33.7 71.1,38.6 103.7,38.4 136.3,30.6 168.9,6.0 201.4,15.4 234.0,37.6" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="37.6" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>52</td></tr><tr><td>Sep 27</td><td>83</td></tr><tr><td>Oct 4</td><td>58</td></tr><tr><td>Oct 11</td><td>59</td></tr><tr><td>Oct 18</td><td>99</td></tr><tr><td>Oct 25</td><td>224</td></tr><tr><td>Nov 1</td><td>176</td></tr><tr><td>Nov 8</td><td>63</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:science" data-facet="category" title="Research reproduction, financial data, charts and diagrams." href="/?tag=category%3Ascience">category:<wbr>science</a></div>
+          <p class="tag-meaning">Research reproduction, financial data, charts and diagrams.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/?tag=type%3Aguidelines">type:<wbr>guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="databases" data-facet="topic" href="/?tag=databases">databases</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:n8n" data-facet="stack" href="/?tag=stack%3An8n">stack:<wbr>n8n</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/claude-office-skills/skills/blob/9c4c7d5cd2813a8936bf2c9fdb174ea883b85a11/data-pipeline/SKILL.md">claude-office-skills/skills at 9c4c7d5</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: data-pipeline
+description: &#34;Data pipeline and ETL automation - extract, transform, load workflows for data integration and analytics&#34;
+version: &#34;1.0.0&#34;
+author: claude-office-skills
+license: MIT
+
+category: data
+tags:
+  - etl
+  - data-pipeline
+  - integration
+  - analytics
+  - automation
+department: Data Engineering
+
+models:
+  recommended:
+    - claude-sonnet-4
+
+mcp:
+  server: data-mcp
+  tools:
+    - database_query
+    - api_fetch
+    - spreadsheet_write
+    - file_transform
+
+capabilities:
+  - data_extraction
+  - transformation
+  - loading
+  - scheduling
+  - monitoring
+
+languages:
+  - en
+  - zh
+
+related_skills:
+  - sheets-automation
+  - data-analysis
+  - airtable-automation</code></pre></details>
+        <div class="markdown"><h3>Data Pipeline</h3>
+<p>Build data pipelines and ETL workflows for data integration, transformation, and analytics automation. Based on n8n's data workflow templates.</p>
+<h4>Overview</h4>
+<p>This skill covers:</p>
+<ul>
+<li>Data extraction from multiple sources</li>
+<li>Transformation and cleaning</li>
+<li>Loading to destinations</li>
+<li>Scheduling and monitoring</li>
+<li>Error handling and alerts</li>
+</ul>
+<hr>
+<h4>ETL Patterns</h4>
+<h5>Basic ETL Flow</h5>
+<pre><code>┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   EXTRACT   │───▶│  TRANSFORM  │───▶│    LOAD     │
+│             │    │             │    │             │
+│ • APIs      │    │ • Clean     │    │ • Database  │
+│ • Databases │    │ • Map       │    │ • Warehouse │
+│ • Files     │    │ • Aggregate │    │ • Files     │
+│ • Webhooks  │    │ • Enrich    │    │ • APIs      │
+└─────────────┘    └─────────────┘    └─────────────┘
+</code></pre>
+<h5>n8n ETL Workflow</h5>
+<pre><code class="language-yaml">workflow: &quot;Daily Sales ETL&quot;
+schedule: &quot;2am daily&quot;
+
+nodes:
+  # EXTRACT
+  - name: &quot;Extract from Shopify&quot;
+    type: shopify
+    action: get_orders
+    filter: created_at &gt;= yesterday
+    
+  - name: &quot;Extract from Stripe&quot;
+    type: stripe
+    action: get_payments
+    filter: created &gt;= yesterday
+    
+  # TRANSFORM
+  - name: &quot;Merge Data&quot;
+    type: merge
+    mode: combine_by_key
+    key: order_id
+    
+  - name: &quot;Transform&quot;
+    type: code
+    code: |
+      return items.map(item =&gt; ({
+        date: item.created_at.split('T')[0],
+        order_id: item.id,
+        customer_email: item.email,
+        total: parseFloat(item.total_price),
+        currency: item.currency,
+        items: item.line_items.length,
+        source: item.source_name,
+        payment_status: item.payment.status
+      }));
+      
+  # LOAD
+  - name: &quot;Load to BigQuery&quot;
+    type: google_bigquery
+    action: insert_rows
+    table: sales_daily
+    
+  - name: &quot;Update Google Sheets&quot;
+    type: google_sheets
+    action: append_rows
+    spreadsheet: &quot;Daily Sales Report&quot;
+</code></pre>
+<hr>
+<h4>Data Sources</h4>
+<h5>Common Extractors</h5>
+<pre><code class="language-yaml">extractors:
+  databases:
+    - postgresql:
+        connection: connection_string
+        query: &quot;SELECT * FROM orders WHERE date &gt;= $1&quot;
+        
+    - mysql:
+        connection: connection_string
+        query: custom_sql
+        
+    - mongodb:
+        connection: connection_string
+        collection: orders
+        filter: {date: {$gte: yesterday}}
+        
+  apis:
+    - rest_api:
+        url: &quot;https://api.example.com/data&quot;
+        method: GET
+        headers: {Authorization: &quot;Bearer {token}&quot;}
+        pagination: handle_automatically
+        
+    - graphql:
+        url: &quot;https://api.example.com/graphql&quot;
+        query: graphql_query
+        
+  files:
+    - csv:
+        source: sftp/s3/google_drive
+        delimiter: &quot;,&quot;
+        encoding: utf-8
+        
+    - excel:
+        source: file_path
+        sheet: &quot;Sheet1&quot;
+        
+    - json:
+        source: api/file
+        path: &quot;data.items&quot;
+        
+  saas:
+    - salesforce: get_objects
+    - hubspot: get_contacts/deals
+    - stripe: get_charges
+    - shopify: get_orders
+</code></pre>
+<hr>
+<h4>Transformations</h4>
+<h5>Common Transformations</h5>
+<pre><code class="language-yaml">transformations:
+  cleaning:
+    - remove_nulls: drop_or_fill
+    - trim_whitespace: all_string_fields
+    - deduplicate: by_key
+    - validate: against_schema
+    
+  mapping:
+    - rename_fields: {old_name: new_name}
+    - convert_types: {date_string: date}
+    - map_values: {status_code: status_name}
+    
+  aggregation:
+    - group_by: [date, category]
+    - sum: [revenue, quantity]
+    - count: orders
+    - average: order_value
+    
+  enrichment:
+    - lookup: from_reference_table
+    - geocode: from_address
+    - calculate: derived_fields
+    
+  filtering:
+    - where: condition
+    - limit: n_rows
+    - sample: percentage
+</code></pre>
+<h5>Code Transform Examples</h5>
+<pre><code class="language-javascript">// Clean and normalize data
+function transform(items) {
+  return items.map(item =&gt; ({
+    // Clean strings
+    name: item.name?.trim().toLowerCase(),
+    
+    // Parse dates
+    date: new Date(item.created_at).toISOString().split('T')[0],
+    
+    // Convert types
+    amount: parseFloat(item.amount) || 0,
+    
+    // Map values
+    status: statusMap[item.status_code] || 'unknown',
+    
+    // Calculate fields
+    total: item.quantity * item.unit_price,
+    
+    // Filter nested
+    tags: item.tags?.filter(t =&gt; t.active).map(t =&gt; t.name),
+    
+    // Default values
+    source: item.source || 'direct'
+  }));
+}
+
+// Aggregate data
+function aggregate(items) {
+  const grouped = {};
+  
+  items.forEach(item =&gt; {
+    const key = `${item.date}_${item.category}`;
+    if (!grouped[key]) {
+      grouped[key] = {
+        date: item.date,
+        category: item.category,
+        total_revenue: 0,
+        order_count: 0
+      };
+    }
+    grouped[key].total_revenue += item.amount;
+    grouped[key].order_count += 1;
+  });
+  
+  return Object.values(grouped);
+}
+</code></pre>
+<hr>
+<h4>Data Destinations</h4>
+<h5>Common Loaders</h5>
+<pre><code class="language-yaml">loaders:
+  data_warehouses:
+    - bigquery:
+        project: project_id
+        dataset: analytics
+        table: sales
+        write_mode: append/truncate
+        
+    - snowflake:
+        account: account_id
+        warehouse: compute_wh
+        database: analytics
+        schema: public
+        
+    - redshift:
+        cluster: cluster_id
+        database: analytics
+        
+  databases:
+    - postgresql:
+        upsert: on_conflict_update
+        
+    - mysql:
+        batch_insert: 1000_rows
+        
+  files:
+    - s3:
+        bucket: data-lake
+        path: /processed/{date}/
+        format: parquet
+        
+    - google_cloud_storage:
+        bucket: data-bucket
+        
+  spreadsheets:
+    - google_sheets:
+        mode: append/overwrite
+        
+    - airtable:
+        base: base_id
+        table: table_name
+        
+  apis:
+    - webhook:
+        url: destination_url
+        batch_size: 100
+</code></pre>
+<hr>
+<h4>Scheduling &amp; Monitoring</h4>
+<h5>Pipeline Scheduling</h5>
+<pre><code class="language-yaml">scheduling:
+  patterns:
+    hourly:
+      cron: &quot;0 * * * *&quot;
+      use_for: real_time_dashboards
+      
+    daily:
+      cron: &quot;0 2 * * *&quot;
+      use_for: daily_reports
+      
+    weekly:
+      cron: &quot;0 3 * * 1&quot;
+      use_for: weekly_summaries
+      
+    on_demand:
+      trigger: webhook/manual
+      use_for: ad_hoc_analysis
+      
+  dependencies:
+    - pipeline_a: must_complete_before pipeline_b
+    - wait_for: all_extracts_complete
+    
+  retries:
+    max_attempts: 3
+    delay: exponential_backoff
+    alert_on: final_failure
+</code></pre>
+<h5>Monitoring &amp; Alerts</h5>
+<pre><code class="language-yaml">monitoring:
+  metrics:
+    - rows_processed
+    - execution_time
+    - error_count
+    - data_freshness
+    
+  alerts:
+    pipeline_failed:
+      channels: [slack, pagerduty]
+      template: |
+        🚨 *Pipeline Failed*
+        
+        Pipeline: {pipeline_name}
+        Stage: {failed_stage}
+        Error: {error_message}
+        
+        [View Logs]({logs_url})
+        
+    data_quality:
+      trigger: anomaly_detected
+      conditions:
+        - row_count: differs_by &gt; 50%
+        - null_rate: exceeds_threshold
+        - schema: changed_unexpectedly
+        
+    stale_data:
+      trigger: last_update &gt; threshold
+      threshold: 2_hours
+</code></pre>
+<hr>
+<h4>Data Quality</h4>
+<h5>Quality Checks</h5>
+<pre><code class="language-yaml">data_quality:
+  schema_validation:
+    - required_fields: [id, date, amount]
+    - field_types:
+        id: integer
+        date: date
+        amount: number
+    - allowed_values:
+        status: [active, pending, closed]
+        
+  statistical_checks:
+    - null_rate: &lt; 5%
+    - duplicate_rate: &lt; 1%
+    - value_range:
+        amount: [0, 1000000]
+        
+  business_rules:
+    - total_equals_sum_of_line_items
+    - dates_are_not_in_future
+    - email_format_valid
+    
+  trend_analysis:
+    - row_count: within_2_std_of_mean
+    - total_value: within_expected_range
+</code></pre>
+<hr>
+<h4>Output Example</h4>
+<p><strong>Request</strong>: &quot;Create a daily sales data pipeline&quot;</p>
+<p><strong>Output</strong>:</p>
+<pre><code class="language-markdown"># Daily Sales Data Pipeline
+
+## Pipeline Overview
+
+</code></pre>
+<p>Shopify + Stripe → Transform → BigQuery + Sheets</p>
+<pre><code>
+## Schedule
+- Runs: 2am daily
+- Timezone: UTC
+- Retry: 3 attempts
+
+## Extract
+
+### Shopify Orders
+```yaml
+source: shopify
+filter: created_at &gt;= yesterday
+fields: [id, email, total_price, line_items, created_at]
+</code></pre>
+<h5>Stripe Payments</h5>
+<pre><code class="language-yaml">source: stripe
+filter: created &gt;= yesterday
+fields: [id, amount, status, metadata.order_id]
+</code></pre>
+<h4>Transform</h4>
+<pre><code class="language-javascript">// Join and clean data
+{
+  date: order.created_at.split('T')[0],
+  order_id: order.id,
+  customer: order.email,
+  revenue: parseFloat(order.total_price),
+  items: order.line_items.length,
+  payment_status: payment.status
+}
+</code></pre>
+<h4>Load</h4>
+<h5>BigQuery</h5>
+<ul>
+<li>Table: <code>analytics.sales_daily</code></li>
+<li>Mode: Append</li>
+</ul>
+<h5>Google Sheets</h5>
+<ul>
+<li>Sheet: &quot;Daily Sales Dashboard&quot;</li>
+<li>Tab: &quot;Raw Data&quot;</li>
+</ul>
+<h4>Quality Checks</h4>
+<ul>
+<li>[ ] Row count &gt; 0</li>
+<li>[ ] No null order_ids</li>
+<li>[ ] Revenue sum matches Stripe</li>
+</ul>
+<h4>Alerts</h4>
+<ul>
+<li>Slack: #data-alerts</li>
+<li>On failure: @data-team</li>
+</ul>
+<pre><code>
+---
+
+*Data Pipeline Skill - Part of Claude Office Skills*
+</code></pre>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>api-design · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re designing new REST endpoints or reviewing an existing API contract. It does: sets rules for URLs, methods, status codes, response and error shapes, pagination, filtering, sorting, auth, rate limits and versioning. You get: endpoints that follow those rules, checked against a 12-item checklist before shipping. Examples in: TypeScript with Next.js and Zod, Python with Django REST Framework, and Go with net/http. Unlike: wshobson&#039;s api-design-principles, which also covers GraphQL; this one is REST only." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <div class="title-row"><h1>api-design</h1><button type="button" class="save" data-save="skill:affaan-m/ecc/skills/api-design" aria-pressed="false" aria-label="Save api-design" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re designing new REST endpoints or reviewing an existing API contract</dd></div><div><dt>It does</dt><dd>sets rules for URLs, methods, status codes, response and error shapes, pagination, filtering, sorting, auth, rate limits and versioning</dd></div><div><dt>You get</dt><dd>endpoints that follow those rules, checked against a 12-item checklist before shipping</dd></div><div><dt>Examples in</dt><dd>TypeScript with Next.js and Zod, Python with Django REST Framework, and Go with net/http</dd></div><div><dt>Unlike</dt><dd>wshobson&#39;s api-design-principles, which also covers GraphQL; this one is REST only</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A REST reference from ECC. URLs are plural, lowercase, kebab-case nouns, with sub-resources for ownership and verbs only for actions such as cancel or login. A table says which methods are safe and idempotent, a reference says when to use each status code, and it warns against 200 for everything, 500 for validation errors and 200 for created resources. Responses wrap data in an envelope with meta and links; errors carry a code, a message and field-level details. It compares offset and cursor pagination and says when to use which, and sets query conventions: bracket operators for filters, a minus prefix for descending sorts, a q parameter for search and sparse fieldsets. It covers bearer tokens and API keys, ownership and role checks, rate-limit headers and tiers, and URL or header versioning, with a deprecation timeline that uses a Sunset header and a list of changes that do and don&#39;t need a new version.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/api-design">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">affaan-m/</span><wbr><span class="word">ecc</span> <span class="word">--skill</span> <span class="word">api-design</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill api-design">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/api-design">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/api-design">Source on GitHub</a> · <a href="/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>6,500 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>299,252 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">539</div>
+      <div class="stat-delta">+59% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 340; week to Sep 27: 320; week to Oct 4: 208; week to Oct 11: 217; week to Oct 18: 298; week to Oct 25: 474; week to Nov 1: 478; week to Nov 8: 539. Use the left and right arrow keys to read each week."
+        data-values="340,320,208,217,298,474,478,539" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,22.2 38.6,23.9 71.1,33.0 103.7,32.3 136.3,25.7 168.9,11.3 201.4,11.0 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>340</td></tr><tr><td>Sep 27</td><td>320</td></tr><tr><td>Oct 4</td><td>208</td></tr><tr><td>Oct 11</td><td>217</td></tr><tr><td>Oct 18</td><td>298</td></tr><tr><td>Oct 25</td><td>474</td></tr><tr><td>Nov 1</td><td>478</td></tr><tr><td>Nov 8</td><td>539</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/?tag=category%3Aengineering">category:<wbr>engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/?tag=type%3Aguidelines">type:<wbr>guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="backend" data-facet="topic" href="/?tag=backend">backend</a><a class="tag" data-tag="architecture" data-facet="topic" href="/?tag=architecture">architecture</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/api-design/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: api-design
+description: REST API design patterns including resource naming, status codes, pagination, filtering, error responses, versioning, and rate limiting for production APIs. Use when designing or reviewing REST endpoints, resource names, status codes, pagination, or versioning.
+metadata:
+  origin: ECC</code></pre></details>
+        <div class="markdown"><h3>API Design Patterns</h3>
+<p>Conventions and best practices for designing consistent, developer-friendly REST APIs.</p>
+<h4>When to Activate</h4>
+<ul>
+<li>Designing new API endpoints</li>
+<li>Reviewing existing API contracts</li>
+<li>Adding pagination, filtering, or sorting</li>
+<li>Implementing error handling for APIs</li>
+<li>Planning API versioning strategy</li>
+<li>Building public or partner-facing APIs</li>
+</ul>
+<h4>Resource Design</h4>
+<h5>URL Structure</h5>
+<pre><code># Resources are nouns, plural, lowercase, kebab-case
+GET    /api/v1/users
+GET    /api/v1/users/:id
+POST   /api/v1/users
+PUT    /api/v1/users/:id
+PATCH  /api/v1/users/:id
+DELETE /api/v1/users/:id
+
+# Sub-resources for relationships
+GET    /api/v1/users/:id/orders
+POST   /api/v1/users/:id/orders
+
+# Actions that don't map to CRUD (use verbs sparingly)
+POST   /api/v1/orders/:id/cancel
+POST   /api/v1/auth/login
+POST   /api/v1/auth/refresh
+</code></pre>
+<h5>Naming Rules</h5>
+<pre><code># GOOD
+/api/v1/team-members          # kebab-case for multi-word resources
+/api/v1/orders?status=active  # query params for filtering
+/api/v1/users/123/orders      # nested resources for ownership
+
+# BAD
+/api/v1/getUsers              # verb in URL
+/api/v1/user                  # singular (use plural)
+/api/v1/team_members          # snake_case in URLs
+/api/v1/users/123/getOrders   # verb in nested resource
+</code></pre>
+<h4>HTTP Methods and Status Codes</h4>
+<h5>Method Semantics</h5>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Idempotent</th>
+<th>Safe</th>
+<th>Use For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Retrieve resources</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>No</td>
+<td>No</td>
+<td>Create resources, trigger actions</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>Yes</td>
+<td>No</td>
+<td>Full replacement of a resource</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td>No*</td>
+<td>No</td>
+<td>Partial update of a resource</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>Yes</td>
+<td>No</td>
+<td>Remove a resource</td>
+</tr>
+</tbody>
+</table>
+<p>*PATCH can be made idempotent with proper implementation</p>
+<h5>Status Code Reference</h5>
+<pre><code># Success
+200 OK                    — GET, PUT, PATCH (with response body)
+201 Created               — POST (include Location header)
+204 No Content            — DELETE, PUT (no response body)
+
+# Client Errors
+400 Bad Request           — Validation failure, malformed JSON
+401 Unauthorized          — Missing or invalid authentication
+403 Forbidden             — Authenticated but not authorized
+404 Not Found             — Resource doesn't exist
+409 Conflict              — Duplicate entry, state conflict
+422 Unprocessable Entity  — Semantically invalid (valid JSON, bad data)
+429 Too Many Requests     — Rate limit exceeded
+
+# Server Errors
+500 Internal Server Error — Unexpected failure (never expose details)
+502 Bad Gateway           — Upstream service failed
+503 Service Unavailable   — Temporary overload, include Retry-After
+</code></pre>
+<h5>Common Mistakes</h5>
+<pre><code># BAD: 200 for everything
+{ &quot;status&quot;: 200, &quot;success&quot;: false, &quot;error&quot;: &quot;Not found&quot; }
+
+# GOOD: Use HTTP status codes semantically
+HTTP/1.1 404 Not Found
+{ &quot;error&quot;: { &quot;code&quot;: &quot;not_found&quot;, &quot;message&quot;: &quot;User not found&quot; } }
+
+# BAD: 500 for validation errors
+# GOOD: 400 or 422 with field-level details
+
+# BAD: 200 for created resources
+# GOOD: 201 with Location header
+HTTP/1.1 201 Created
+Location: /api/v1/users/abc-123
+</code></pre>
+<h4>Response Format</h4>
+<h5>Success Response</h5>
+<pre><code class="language-json">{
+  &quot;data&quot;: {
+    &quot;id&quot;: &quot;abc-123&quot;,
+    &quot;email&quot;: &quot;alice@example.com&quot;,
+    &quot;name&quot;: &quot;Alice&quot;,
+    &quot;created_at&quot;: &quot;2025-01-15T10:30:00Z&quot;
+  }
+}
+</code></pre>
+<h5>Collection Response (with Pagination)</h5>
+<pre><code class="language-json">{
+  &quot;data&quot;: [
+    { &quot;id&quot;: &quot;abc-123&quot;, &quot;name&quot;: &quot;Alice&quot; },
+    { &quot;id&quot;: &quot;def-456&quot;, &quot;name&quot;: &quot;Bob&quot; }
+  ],
+  &quot;meta&quot;: {
+    &quot;total&quot;: 142,
+    &quot;page&quot;: 1,
+    &quot;per_page&quot;: 20,
+    &quot;total_pages&quot;: 8
+  },
+  &quot;links&quot;: {
+    &quot;self&quot;: &quot;/api/v1/users?page=1&amp;per_page=20&quot;,
+    &quot;next&quot;: &quot;/api/v1/users?page=2&amp;per_page=20&quot;,
+    &quot;last&quot;: &quot;/api/v1/users?page=8&amp;per_page=20&quot;
+  }
+}
+</code></pre>
+<h5>Error Response</h5>
+<pre><code class="language-json">{
+  &quot;error&quot;: {
+    &quot;code&quot;: &quot;validation_error&quot;,
+    &quot;message&quot;: &quot;Request validation failed&quot;,
+    &quot;details&quot;: [
+      {
+        &quot;field&quot;: &quot;email&quot;,
+        &quot;message&quot;: &quot;Must be a valid email address&quot;,
+        &quot;code&quot;: &quot;invalid_format&quot;
+      },
+      {
+        &quot;field&quot;: &quot;age&quot;,
+        &quot;message&quot;: &quot;Must be between 0 and 150&quot;,
+        &quot;code&quot;: &quot;out_of_range&quot;
+      }
+    ]
+  }
+}
+</code></pre>
+<h5>Response Envelope Variants</h5>
+<pre><code class="language-typescript">// Option A: Envelope with data wrapper (recommended for public APIs)
+interface ApiResponse&lt;T&gt; {
+  data: T;
+  meta?: PaginationMeta;
+  links?: PaginationLinks;
+}
+
+interface ApiError {
+  error: {
+    code: string;
+    message: string;
+    details?: FieldError[];
+  };
+}
+
+// Option B: Flat response (simpler, common for internal APIs)
+// Success: just return the resource directly
+// Error: return error object
+// Distinguish by HTTP status code
+</code></pre>
+<h4>Pagination</h4>
+<h5>Offset-Based (Simple)</h5>
+<pre><code>GET /api/v1/users?page=2&amp;per_page=20
+
+# Implementation
+SELECT * FROM users
+ORDER BY created_at DESC
+LIMIT 20 OFFSET 20;
+</code></pre>
+<p><strong>Pros:</strong> Easy to implement, supports &quot;jump to page N&quot;
+<strong>Cons:</strong> Slow on large offsets (OFFSET 100000), inconsistent with concurrent inserts</p>
+<h5>Cursor-Based (Scalable)</h5>
+<pre><code>GET /api/v1/users?cursor=eyJpZCI6MTIzfQ&amp;limit=20
+
+# Implementation
+SELECT * FROM users
+WHERE id &gt; :cursor_id
+ORDER BY id ASC
+LIMIT 21;  -- fetch one extra to determine has_next
+</code></pre>
+<pre><code class="language-json">{
+  &quot;data&quot;: [...],
+  &quot;meta&quot;: {
+    &quot;has_next&quot;: true,
+    &quot;next_cursor&quot;: &quot;eyJpZCI6MTQzfQ&quot;
+  }
+}
+</code></pre>
+<p><strong>Pros:</strong> Consistent performance regardless of position, stable with concurrent inserts
+<strong>Cons:</strong> Cannot jump to arbitrary page, cursor is opaque</p>
+<h5>When to Use Which</h5>
+<table>
+<thead>
+<tr>
+<th>Use Case</th>
+<th>Pagination Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Admin dashboards, small datasets (&lt;10K)</td>
+<td>Offset</td>
+</tr>
+<tr>
+<td>Infinite scroll, feeds, large datasets</td>
+<td>Cursor</td>
+</tr>
+<tr>
+<td>Public APIs</td>
+<td>Cursor (default) with offset (optional)</td>
+</tr>
+<tr>
+<td>Search results</td>
+<td>Offset (users expect page numbers)</td>
+</tr>
+</tbody>
+</table>
+<h4>Filtering, Sorting, and Search</h4>
+<h5>Filtering</h5>
+<pre><code># Simple equality
+GET /api/v1/orders?status=active&amp;customer_id=abc-123
+
+# Comparison operators (use bracket notation)
+GET /api/v1/products?price[gte]=10&amp;price[lte]=100
+GET /api/v1/orders?created_at[after]=2025-01-01
+
+# Multiple values (comma-separated)
+GET /api/v1/products?category=electronics,clothing
+
+# Nested fields (dot notation)
+GET /api/v1/orders?customer.country=US
+</code></pre>
+<h5>Sorting</h5>
+<pre><code># Single field (prefix - for descending)
+GET /api/v1/products?sort=-created_at
+
+# Multiple fields (comma-separated)
+GET /api/v1/products?sort=-featured,price,-created_at
+</code></pre>
+<h5>Full-Text Search</h5>
+<pre><code># Search query parameter
+GET /api/v1/products?q=wireless+headphones
+
+# Field-specific search
+GET /api/v1/users?email=alice
+</code></pre>
+<h5>Sparse Fieldsets</h5>
+<pre><code># Return only specified fields (reduces payload)
+GET /api/v1/users?fields=id,name,email
+GET /api/v1/orders?fields=id,total,status&amp;include=customer.name
+</code></pre>
+<h4>Authentication and Authorization</h4>
+<h5>Token-Based Auth</h5>
+<pre><code># Bearer token in Authorization header
+GET /api/v1/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
+
+# API key (for server-to-server)
+GET /api/v1/data
+X-API-Key: sk_live_...
+</code></pre>
+<h5>Authorization Patterns</h5>
+<pre><code class="language-typescript">// Resource-level: check ownership
+app.get(&quot;/api/v1/orders/:id&quot;, async (req, res) =&gt; {
+  const order = await Order.findById(req.params.id);
+  if (!order) return res.status(404).json({ error: { code: &quot;not_found&quot; } });
+  if (order.userId !== req.user.id) return res.status(403).json({ error: { code: &quot;forbidden&quot; } });
+  return res.json({ data: order });
+});
+
+// Role-based: check permissions
+app.delete(&quot;/api/v1/users/:id&quot;, requireRole(&quot;admin&quot;), async (req, res) =&gt; {
+  await User.delete(req.params.id);
+  return res.status(204).send();
+});
+</code></pre>
+<h4>Rate Limiting</h4>
+<h5>Headers</h5>
+<pre><code>HTTP/1.1 200 OK
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 95
+X-RateLimit-Reset: 1640000000
+
+# When exceeded
+HTTP/1.1 429 Too Many Requests
+Retry-After: 60
+{
+  &quot;error&quot;: {
+    &quot;code&quot;: &quot;rate_limit_exceeded&quot;,
+    &quot;message&quot;: &quot;Rate limit exceeded. Try again in 60 seconds.&quot;
+  }
+}
+</code></pre>
+<h5>Rate Limit Tiers</h5>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Limit</th>
+<th>Window</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Anonymous</td>
+<td>30/min</td>
+<td>Per IP</td>
+<td>Public endpoints</td>
+</tr>
+<tr>
+<td>Authenticated</td>
+<td>100/min</td>
+<td>Per user</td>
+<td>Standard API access</td>
+</tr>
+<tr>
+<td>Premium</td>
+<td>1000/min</td>
+<td>Per API key</td>
+<td>Paid API plans</td>
+</tr>
+<tr>
+<td>Internal</td>
+<td>10000/min</td>
+<td>Per service</td>
+<td>Service-to-service</td>
+</tr>
+</tbody>
+</table>
+<h4>Versioning</h4>
+<h5>URL Path Versioning (Recommended)</h5>
+<pre><code>/api/v1/users
+/api/v2/users
+</code></pre>
+<p><strong>Pros:</strong> Explicit, easy to route, cacheable
+<strong>Cons:</strong> URL changes between versions</p>
+<h5>Header Versioning</h5>
+<pre><code>GET /api/users
+Accept: application/vnd.myapp.v2+json
+</code></pre>
+<p><strong>Pros:</strong> Clean URLs
+<strong>Cons:</strong> Harder to test, easy to forget</p>
+<h5>Versioning Strategy</h5>
+<pre><code>1. Start with /api/v1/ — don't version until you need to
+2. Maintain at most 2 active versions (current + previous)
+3. Deprecation timeline:
+   - Announce deprecation (6 months notice for public APIs)
+   - Add Sunset header: Sunset: Sat, 01 Jan 2026 00:00:00 GMT
+   - Return 410 Gone after sunset date
+4. Non-breaking changes don't need a new version:
+   - Adding new fields to responses
+   - Adding new optional query parameters
+   - Adding new endpoints
+5. Breaking changes require a new version:
+   - Removing or renaming fields
+   - Changing field types
+   - Changing URL structure
+   - Changing authentication method
+</code></pre>
+<h4>Implementation Patterns</h4>
+<h5>TypeScript (Next.js API Route)</h5>
+<pre><code class="language-typescript">import { z } from &quot;zod&quot;;
+import { NextRequest, NextResponse } from &quot;next/server&quot;;
+
+const createUserSchema = z.object({
+  email: z.string().email(),
+  name: z.string().min(1).max(100),
+});
+
+export async function POST(req: NextRequest) {
+  const body = await req.json();
+  const parsed = createUserSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json({
+      error: {
+        code: &quot;validation_error&quot;,
+        message: &quot;Request validation failed&quot;,
+        details: parsed.error.issues.map(i =&gt; ({
+          field: i.path.join(&quot;.&quot;),
+          message: i.message,
+          code: i.code,
+        })),
+      },
+    }, { status: 422 });
+  }
+
+  const user = await createUser(parsed.data);
+
+  return NextResponse.json(
+    { data: user },
+    {
+      status: 201,
+      headers: { Location: `/api/v1/users/${user.id}` },
+    },
+  );
+}
+</code></pre>
+<h5>Python (Django REST Framework)</h5>
+<pre><code class="language-python">from rest_framework import serializers, viewsets, status
+from rest_framework.response import Response
+
+class CreateUserSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    name = serializers.CharField(max_length=100)
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [&quot;id&quot;, &quot;email&quot;, &quot;name&quot;, &quot;created_at&quot;]
+
+class UserViewSet(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.action == &quot;create&quot;:
+            return CreateUserSerializer
+        return UserSerializer
+
+    def create(self, request):
+        serializer = CreateUserSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = UserService.create(**serializer.validated_data)
+        return Response(
+            {&quot;data&quot;: UserSerializer(user).data},
+            status=status.HTTP_201_CREATED,
+            headers={&quot;Location&quot;: f&quot;/api/v1/users/{user.id}&quot;},
+        )
+</code></pre>
+<h5>Go (net/http)</h5>
+<pre><code class="language-go">func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
+    var req CreateUserRequest
+    if err := json.NewDecoder(r.Body).Decode(&amp;req); err != nil {
+        writeError(w, http.StatusBadRequest, &quot;invalid_json&quot;, &quot;Invalid request body&quot;)
+        return
+    }
+
+    if err := req.Validate(); err != nil {
+        writeError(w, http.StatusUnprocessableEntity, &quot;validation_error&quot;, err.Error())
+        return
+    }
+
+    user, err := h.service.Create(r.Context(), req)
+    if err != nil {
+        switch {
+        case errors.Is(err, domain.ErrEmailTaken):
+            writeError(w, http.StatusConflict, &quot;email_taken&quot;, &quot;Email already registered&quot;)
+        default:
+            writeError(w, http.StatusInternalServerError, &quot;internal_error&quot;, &quot;Internal error&quot;)
+        }
+        return
+    }
+
+    w.Header().Set(&quot;Location&quot;, fmt.Sprintf(&quot;/api/v1/users/%s&quot;, user.ID))
+    writeJSON(w, http.StatusCreated, map[string]any{&quot;data&quot;: user})
+}
+</code></pre>
+<h4>API Design Checklist</h4>
+<p>Before shipping a new endpoint:</p>
+<ul>
+<li>[ ] Resource URL follows naming conventions (plural, kebab-case, no verbs)</li>
+<li>[ ] Correct HTTP method used (GET for reads, POST for creates, etc.)</li>
+<li>[ ] Appropriate status codes returned (not 200 for everything)</li>
+<li>[ ] Input validated with schema (Zod, Pydantic, Bean Validation)</li>
+<li>[ ] Error responses follow standard format with codes and messages</li>
+<li>[ ] Pagination implemented for list endpoints (cursor or offset)</li>
+<li>[ ] Authentication required (or explicitly marked as public)</li>
+<li>[ ] Authorization checked (user can only access their own resources)</li>
+<li>[ ] Rate limiting configured</li>
+<li>[ ] Response does not leak internal details (stack traces, SQL errors)</li>
+<li>[ ] Consistent naming with existing endpoints (camelCase vs snake_case)</li>
+<li>[ ] Documented (OpenAPI/Swagger spec updated)</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

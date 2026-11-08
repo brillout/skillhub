@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>save-systems · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re adding save and load, slots or autosave, or old saves break after a patch. It does: saves data rather than engine objects, stamps a schema version, writes to a temporary file then renames it, migrates old saves step by step, and autosaves to its own slot. You get: save code that survives a crash mid-write, loads saves from earlier versions, and falls back to a backup when a file won&#039;t parse. Checked by: saving, quitting, relaunching and loading, then loading a save from the previous version. Leaves to others: Roblox cloud saves, to roblox-datastores, and the data model itself, to the engine resource skills." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=gamedev-skills%2Fawesome-gamedev-agent-skills">gamedev-skills/awesome-gamedev-agent-skills</a> <span aria-hidden="true">/</span> <a href="/bundle/gamedev-skills/awesome-gamedev-agent-skills/">Gamedev Agent Skills</a></p>
+      <div class="title-row"><h1>save-systems</h1><button type="button" class="save" data-save="skill:gamedev-skills/awesome-gamedev-agent-skills/skills/disciplines/save-systems" aria-pressed="false" aria-label="Save save-systems" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re adding save and load, slots or autosave, or old saves break after a patch</dd></div><div><dt>It does</dt><dd>saves data rather than engine objects, stamps a schema version, writes to a temporary file then renames it, migrates old saves step by step, and autosaves to its own slot</dd></div><div><dt>You get</dt><dd>save code that survives a crash mid-write, loads saves from earlier versions, and falls back to a backup when a file won&#39;t parse</dd></div><div><dt>Checked by</dt><dd>saving, quitting, relaunching and loading, then loading a save from the previous version</dd></div><div><dt>Leaves to others</dt><dd>Roblox cloud saves, to roblox-datastores, and the data model itself, to the engine resource skills</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 7 of 27 in the <a href="/bundle/gamedev-skills/awesome-gamedev-agent-skills/">Gamedev Agent Skills</a> bundle · Before it: <a href="/skill/gamedev-skills/awesome-gamedev-agent-skills/skills/disciplines/dialogue-systems/">dialogue-systems</a> · After it: <a href="/skill/gamedev-skills/awesome-gamedev-agent-skills/skills/disciplines/audio-design/">audio-design</a></p>
+    
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A discipline skill from a game-development collection. Its premise: writing bytes is easy; the hard parts are choosing what to save, writing it so a crash can&#39;t corrupt it, and reading old saves after you ship a patch. It saves plain data, such as health, position, seed and flags, and rebuilds objects on load instead of serializing live nodes. Every save carries a version number; loading reads it, runs one migration function per version up to the current one, validates the result, and refuses saves from a newer build. Writes go to a temporary file renamed over the real one, keeping the last good save as a .bak, and it says where that falls short: on Windows, and on power loss, since nothing calls fsync. Autosave runs on safe boundaries such as checkpoints, at most once a minute, into its own file. Pitfalls include Godot&#39;s JSON turning every number into a float, locale-dependent decimals, save files that run scripts when loaded, and trusting client saves in multiplayer. Examples are GDScript and Python, starting with JSON.</p>
+      <p class="muted">Summarizes <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/tree/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/save-systems">the skill at 19d93f9</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">gamedev-skills/</span><wbr><span class="word">awesome-gamedev-agent-skills</span> <span class="word">--skill</span> <span class="word">save-systems</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/gamedev-skills/awesome-gamedev-agent-skills --skill save-systems">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/gamedev-skills/awesome-gamedev-agent-skills/save-systems">skills.sh page</a> · <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/tree/HEAD/skills/disciplines/save-systems">Source on GitHub</a> · <a href="/?repo=gamedev-skills%2Fawesome-gamedev-agent-skills">All skills from gamedev-skills/awesome-gamedev-agent-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>10,800 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>7,647 <span class="muted">gamedev-skills/awesome-gamedev-agent-skills</span></dd></div><div><dt>First seen</dt><dd>Jun 27, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">2K</div>
+      <div class="stat-delta">+428% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 382; week to Sep 27: 390; week to Oct 4: 438; week to Oct 11: 451; week to Oct 18: 558; week to Oct 25: 770; week to Nov 1: 1,660; week to Nov 8: 2,017. Use the left and right arrow keys to read each week."
+        data-values="382,390,438,451,558,770,1660,2017" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,41.7 38.6,41.5 71.1,40.4 103.7,40.2 136.3,37.8 168.9,33.2 201.4,13.8 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>382</td></tr><tr><td>Sep 27</td><td>390</td></tr><tr><td>Oct 4</td><td>438</td></tr><tr><td>Oct 11</td><td>451</td></tr><tr><td>Oct 18</td><td>558</td></tr><tr><td>Oct 25</td><td>770</td></tr><tr><td>Nov 1</td><td>1,660</td></tr><tr><td>Nov 8</td><td>2,017</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/?tag=category%3Aengineering">category:<wbr>engineering</a><a class="tag" data-tag="category:games" data-facet="category" title="Make games: design, genres, game feel and game-jam workflows, whatever the engine." href="/?tag=category%3Agames">category:<wbr>games</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Make games: design, genres, game feel and game-jam workflows, whatever the engine.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="architecture" data-facet="topic" href="/?tag=architecture">architecture</a><a class="tag" data-tag="migration" data-facet="topic" href="/?tag=migration">migration</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/save-systems/SKILL.md">gamedev-skills/awesome-gamedev-agent-skills at 19d93f9</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: save-systems
+description: &#62;
+  Design save/load for game state — choosing what to serialize, file formats,
+  save slots, atomic crash-safe writes, schema versioning and migration, and
+  autosave. Engine-neutral. Use when the user mentions save system, save/load,
+  game state persistence, save slots, autosave, save file corruption, or
+  migrating old saves to a new version.</code></pre></details>
+        <div class="markdown"><h3>Save systems</h3>
+<p>A save file is a <strong>serialized snapshot of game state</strong> that survives restarts.
+The hard parts aren't writing bytes — they're choosing <em>what</em> to save, writing it
+so a crash mid-save can't corrupt it, and reading <em>old</em> saves after you ship a
+patch. Get those three right and the rest is plumbing.</p>
+<h4>When to use</h4>
+<ul>
+<li>Use to persist progress: player stats, inventory, world flags, settings,
+positions — across sessions and game updates.</li>
+<li>Use to design save slots, quicksave/autosave, and crash-safe writes.</li>
+<li>Use when old save files break after a content/code change (versioning &amp;
+migration).</li>
+</ul>
+<p><strong>When <em>not</em> to use:</strong> for Roblox cloud persistence specifics, use
+<code>roblox-datastores</code>. For the data model the save serializes (resources/SOs), use
+<code>godot-resources</code> / <code>unity-scriptableobjects</code>. For Godot's <code>FileAccess</code>/
+<code>ResourceSaver</code> and <code>user://</code> paths, defer to the Godot engine skill while
+applying the patterns here.</p>
+<h4>Core workflow</h4>
+<ol>
+<li><strong>Decide what state is authoritative.</strong> Save the <em>data</em> (hp, position, seed,
+unlocked flags), not engine objects or scene nodes. You will reconstruct
+objects from data on load — never serialize live node references.</li>
+<li><strong>Define a versioned schema.</strong> Every save embeds a <code>version</code> integer. This is
+the single most important field for a game you intend to patch.</li>
+<li><strong>Pick a format.</strong> JSON/text for readability and debuggability; a binary
+format for size/speed or mild tamper-resistance. Start with JSON.</li>
+<li><strong>Write atomically.</strong> Serialize to a temp file, flush, then rename over the
+real file. A crash leaves either the old save or the new one — never a
+half-written one.</li>
+<li><strong>Load defensively.</strong> Read version → migrate up to current → validate →
+instantiate. Keep a backup of the last good save and fall back on parse error.</li>
+<li><strong>Autosave on safe boundaries</strong> (level change, checkpoint), throttled, and to a
+separate slot so it can't clobber a manual save.</li>
+<li><strong>Verify</strong>: save, fully quit, relaunch, load — and confirm by inspection that
+state matches. Test loading a save from the previous version.</li>
+</ol>
+<h4>Patterns</h4>
+<h5>1. Serialize state as plain data (not engine objects)</h5>
+<pre><code class="language-gdscript"># Build a dictionary of pure data. Each savable object reports its own state.
+func capture_state() -&gt; Dictionary:
+    return {
+        &quot;version&quot;: SAVE_VERSION,                 # ALWAYS stamp the schema version
+        &quot;player&quot;: { &quot;hp&quot;: player.hp, &quot;pos&quot;: [player.position.x, player.position.y] },
+        &quot;inventory&quot;: player.inventory.to_array(),  # ids + counts, not Item nodes
+        &quot;flags&quot;: world.flags,                    # e.g. {&quot;met_guard&quot;: true}
+        &quot;seed&quot;: world.seed,                      # regenerate procedural content
+    }
+
+# On load, RECONSTRUCT objects from the data — do not expect live references back.
+func apply_state(data: Dictionary) -&gt; void:
+    player.hp = data[&quot;player&quot;][&quot;hp&quot;]
+    player.position = Vector2(data[&quot;player&quot;][&quot;pos&quot;][0], data[&quot;player&quot;][&quot;pos&quot;][1])
+    player.inventory.from_array(data[&quot;inventory&quot;])
+    world.flags = data[&quot;flags&quot;]
+</code></pre>
+<h5>2. Atomic, crash-safe write (temp + rename)</h5>
+<pre><code class="language-gdscript"># Godot 4.7. Write a temp file, keep the previous save as .bak, then rename.
+func save_atomic(path: String, data: Dictionary) -&gt; Error:
+    var tmp := path + &quot;.tmp&quot;
+    var f := FileAccess.open(tmp, FileAccess.WRITE)
+    if f == null:
+        return FileAccess.get_open_error()       # disk full, read-only, no permission...
+    if not f.store_string(JSON.stringify(data)):
+        return ERR_FILE_CANT_WRITE
+    f.close()                                    # flushes Godot's buffer to the OS
+    if FileAccess.file_exists(path):
+        DirAccess.rename_absolute(path, path + &quot;.bak&quot;)   # keep the last good save
+    return DirAccess.rename_absolute(tmp, path)
+
+func load_save(path: String) -&gt; Dictionary:      # empty = nothing loadable
+    for p in [path, path + &quot;.bak&quot;]:              # .bak covers a crash between renames
+        if FileAccess.file_exists(p):
+            var data = JSON.parse_string(FileAccess.get_file_as_string(p))
+            if data is Dictionary and data.has(&quot;version&quot;):
+                data[&quot;version&quot;] = int(data[&quot;version&quot;])   # JSON numbers load as float
+                return data
+    return {}
+# WRONG: opening `path` directly and writing in place — a crash mid-write leaves a
+# truncated, unloadable save and destroys the player's progress.
+</code></pre>
+<p>A crash now leaves the old save, the new one, or (between the two renames) only
+the <code>.bak</code> — which the loader tries next. Two limits to know: <code>rename()</code> replaces
+the target atomically on POSIX (same volume), but Godot's Windows <code>rename_absolute</code>
+deletes the target and then moves, so that platform relies on the <code>.bak</code> too; and
+neither <code>flush()</code> nor <code>close()</code> calls <code>fsync</code>, so a power cut right after a save
+can still lose the newest file. Check the returned <code>Error</code> and tell the player
+when a save fails instead of carrying on.</p>
+<h5>3. Versioned load with migration</h5>
+<pre><code class="language-python">SAVE_VERSION = 3
+
+def load_save(raw_bytes):
+    data = parse(raw_bytes)                  # JSON/binary -&gt; dict
+    v = int(data.get(&quot;version&quot;, 1))          # no field = the first shipped schema
+    if v &gt; SAVE_VERSION:
+        raise NewerSaveError(v)              # save is from a newer build; refuse
+    while v &lt; SAVE_VERSION:                   # apply migrations in order, v -&gt; v+1
+        data = MIGRATIONS[v](data)
+        v += 1
+        data[&quot;version&quot;] = v
+    validate(data)                            # check required keys / ranges
+    return data
+
+# Each migration is a pure function from one version's shape to the next.
+def migrate_1_to_2(d):
+    d[&quot;flags&quot;] = {k: True for k in d.pop(&quot;completed_quests&quot;, [])}  # list -&gt; set-map
+    return d
+def migrate_2_to_3(d):
+    d.setdefault(&quot;difficulty&quot;, &quot;normal&quot;)      # new field: old saves get the default
+    return d
+MIGRATIONS = {1: migrate_1_to_2, 2: migrate_2_to_3}
+</code></pre>
+<h5>4. Save slots + throttled autosave</h5>
+<pre><code class="language-gdscript">const SLOT_PATH := &quot;user://save_%d.json&quot;      # manual slots 0..N
+const AUTOSAVE_PATH := &quot;user://autosave.json&quot;  # separate file: never clobbers a slot
+var _autosave_cooldown := 0.0
+
+func autosave_if_due(dt: float) -&gt; void:
+    _autosave_cooldown -= dt
+    if _autosave_cooldown &lt;= 0.0:
+        save_atomic(AUTOSAVE_PATH, capture_state())
+        _autosave_cooldown = 60.0             # throttle: at most once a minute
+# Trigger an immediate autosave on checkpoints/level transitions, not mid-combat.
+</code></pre>
+<h4>Pitfalls</h4>
+<ul>
+<li><strong>Serializing engine objects/node paths</strong> ties saves to scene structure;
+renaming a node breaks every old save. Save data, rebuild objects on load.</li>
+<li><strong>No version field.</strong> The day you ship a patch, every existing save is a
+guessing game. Stamp <code>version</code> from version 1.</li>
+<li><strong>In-place writes</strong> corrupt saves on crash/power loss. Always temp-write then
+rename; keep a <code>.bak</code>.</li>
+<li><strong>Trusting the file blindly.</strong> Saves get truncated, hand-edited, or
+cloud-synced stale. Validate on load and fall back to backup on failure.</li>
+<li><strong>Floats and locale.</strong> Text serializers can drop precision or use comma
+decimal separators in some locales. Use a locale-invariant serializer.</li>
+<li><strong>Godot JSON turns every number into a float</strong>: <code>version</code> 3 loads as <code>3.0</code>,
+so <code>migrations.has(data[&quot;version&quot;])</code> is false and integers above 2^53 (64-bit
+IDs, big seeds) lose digits. Convert with <code>int()</code> on load, store IDs as
+strings, or wrap the state in <code>JSON.from_native()</code> / <code>JSON.to_native()</code>, which
+round-trip <code>int</code>, <code>Vector2</code> and other engine types exactly.</li>
+<li><strong>Loading objects from save files.</strong> Godot <code>str_to_var</code>/<code>get_var</code> with objects
+allowed, a <code>ConfigFile</code> that stores objects, or <code>ResourceLoader</code> on a <code>.tres</code>
+the player can swap will instantiate an object with a script attached, and that
+script runs during the load. Saves get shared online; keep them plain data.</li>
+<li><strong>Autosave clobbering manual saves</strong>, or firing mid-action and saving an
+inconsistent state. Use a dedicated autosave slot and save on safe boundaries.</li>
+<li><strong>Storing secrets or trusting client saves in multiplayer.</strong> A local save is
+player-controlled; never treat it as authoritative for online state. For cloud,
+handle the device's data limits and conflicts (<code>roblox-datastores</code>).</li>
+</ul>
+<h4>References</h4>
+<ul>
+<li><code>references/versioning-and-migration.md</code> — schema evolution strategies, the
+migration chain, backups/rollback, format trade-offs (JSON vs binary), a
+load-time validation checklist, and where saves live per engine plus Steam
+Cloud setup.</li>
+</ul>
+<h4>Related skills</h4>
+<ul>
+<li><code>roblox-datastores</code> — cloud persistence, request limits, session locking.</li>
+<li><code>godot-resources</code>, <code>unity-scriptableobjects</code> — the data model you serialize.</li>
+<li><code>procedural-gen</code> — store the seed to regenerate worlds instead of saving them.</li>
+<li><code>rpg</code>, <code>survival-crafting</code>, <code>visual-novel</code> — genres that compose this skill.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

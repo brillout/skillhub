@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>printing-press-import · SkillHub</title>
+    <meta name="description" content="Use it when: the public Printing Press library has a CLI you don&#039;t have locally, or your local copy is broken, lost or out of sync. It does: finds the CLI in the library&#039;s registry, fetches it with its manuscripts, reverts the module path publishing rewrote, and places it in your press library. You get: a local copy in the form the generator would produce, checked to build, plus a backup zip of anything it replaced. Asks first: before replacing a local copy; it stops when yours has newer work that isn&#039;t published. Needs: Go 1.26.10 or newer, jq and the GitHub CLI." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=mvanhorn%2Fcli-printing-press">mvanhorn/cli-printing-press</a> <span aria-hidden="true">/</span> <a href="/bundle/mvanhorn/cli-printing-press/">CLI Printing Press</a></p>
+      <div class="title-row"><h1>printing-press-import</h1><button type="button" class="save" data-save="skill:mvanhorn/cli-printing-press/skills/printing-press-import" aria-pressed="false" aria-label="Save printing-press-import" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>the public Printing Press library has a CLI you don&#39;t have locally, or your local copy is broken, lost or out of sync</dd></div><div><dt>It does</dt><dd>finds the CLI in the library&#39;s registry, fetches it with its manuscripts, reverts the module path publishing rewrote, and places it in your press library</dd></div><div><dt>You get</dt><dd>a local copy in the form the generator would produce, checked to build, plus a backup zip of anything it replaced</dd></div><div><dt>Asks first</dt><dd>before replacing a local copy; it stops when yours has newer work that isn&#39;t published</dd></div><div><dt>Needs</dt><dd>Go 1.26.10 or newer, jq and the GitHub CLI</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 7 of 9 in the <a href="/bundle/mvanhorn/cli-printing-press/">CLI Printing Press</a> bundle · Before it: <a href="/skill/mvanhorn/cli-printing-press/skills/printing-press-amend/">printing-press-amend</a> · After it: <a href="/skill/mvanhorn/cli-printing-press/skills/printing-press-reprint/">printing-press-reprint</a></p>
+    <p class="note">Only works inside its bundle: Fetches only CLIs the press printed and published, into the local press library that printing-press-polish, printing-press-publish and printing-press-reprint work on. Install <a href="/bundle/mvanhorn/cli-printing-press/">CLI Printing Press</a> instead.</p>
+      <p class="note">Needs Go 1.26.10 or newer, jq and the GitHub CLI signed in. Works only on CLIs in the public Printing Press library.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>CLI Printing Press keeps your working copies in a local press library and published CLIs in the public mvanhorn/printing-press-library. This skill brings one back from the public side. It matches your argument, an API slug, a brand name like cal.com, an old -pp-cli name or something close, against the public registry, and asks you to pick when several match. If you already have a copy, it compares the run IDs and generation dates of both: for the same run or a newer public copy it asks before replacing yours; when yours is newer it stops, since you likely want to publish it first. It then fetches the CLI from GitHub, or from a local clone with --from-clone, zips a backup of whatever it would replace, reverses the publish step&#39;s module path rewrites and moves the result into place. Last, it checks that go.mod uses the local module path, that no source still points at the public one and that go build passes, and reports the run ID, manuscripts, backup and build status. When you came to polish a published CLI, it points you to printing-press-polish next.</p>
+      <p class="muted">Summarizes <a href="https://github.com/mvanhorn/cli-printing-press/tree/94ce80e35cbc516cbab1b80f54d96ca419958ca0/skills/printing-press-import">the skill at 94ce80e</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">mvanhorn/</span><wbr><span class="word">cli-printing-press</span> <span class="word">--skill</span> <span class="word">printing-press-import</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/mvanhorn/cli-printing-press --skill printing-press-import">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/mvanhorn/cli-printing-press/printing-press-import">skills.sh page</a> · <a href="https://github.com/mvanhorn/cli-printing-press/tree/HEAD/skills/printing-press-import">Source on GitHub</a> · <a href="/?repo=mvanhorn%2Fcli-printing-press">All skills from mvanhorn/cli-printing-press</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>6,700 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>4,932 <span class="muted">mvanhorn/cli-printing-press</span></dd></div><div><dt>First seen</dt><dd>May 7, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">107</div>
+      <div class="stat-delta">-9% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 118; week to Sep 27: 101; week to Oct 4: 79; week to Oct 11: 108; week to Oct 18: 112; week to Oct 25: 130; week to Nov 1: 124; week to Nov 8: 107. Use the left and right arrow keys to read each week."
+        data-values="118,101,79,108,112,130,124,107" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,10.1 38.6,15.8 71.1,23.3 103.7,13.4 136.3,12.1 168.9,6.0 201.4,8.0 234.0,13.8" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="13.8" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>118</td></tr><tr><td>Sep 27</td><td>101</td></tr><tr><td>Oct 4</td><td>79</td></tr><tr><td>Oct 11</td><td>108</td></tr><tr><td>Oct 18</td><td>112</td></tr><tr><td>Oct 25</td><td>130</td></tr><tr><td>Nov 1</td><td>124</td></tr><tr><td>Nov 8</td><td>107</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/?tag=category%3Aengineering">category:<wbr>engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/?tag=needs%3Acli">needs:<wbr>cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="verification" data-facet="topic" href="/?tag=verification">verification</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:go" data-facet="stack" href="/?tag=stack%3Ago">stack:<wbr>go</a><a class="tag" data-tag="stack:github" data-facet="stack" href="/?tag=stack%3Agithub">stack:<wbr>github</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/mvanhorn/cli-printing-press/blob/94ce80e35cbc516cbab1b80f54d96ca419958ca0/skills/printing-press-import/SKILL.md">mvanhorn/cli-printing-press at 94ce80e</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: printing-press-import
+description: &#62;
+  Bring a published CLI from the public library into the internal library
+  so it&#39;s identical to a freshly-generated copy — module path reverted,
+  manuscripts placed alongside, ready for /printing-press-polish or
+  /printing-press-emboss. Use when the public library has a CLI you
+  don&#39;t have locally, or to recover from a broken/lost internal copy.
+  Trigger phrases: &#34;import the CLI&#34;, &#34;bring it into my library&#34;,
+  &#34;fetch from public library&#34;, &#34;I don&#39;t have it locally yet&#34;.
+allowed-tools:
+  - Bash
+  - Read
+  - Glob
+  - Grep
+  - AskUserQuestion
+created_by: user</code></pre></details>
+        <div class="markdown"><h3>/printing-press-import</h3>
+<p>Bring a published CLI from the public library
+(<a href="https://github.com/mvanhorn/printing-press-library"><code>mvanhorn/printing-press-library</code></a>)
+into the internal library at <code>$PRESS_LIBRARY/</code> so it matches
+the form the generator would produce. Manuscripts ride along.</p>
+<pre><code class="language-bash">/printing-press-import notion
+/printing-press-import cal.com
+/printing-press-import allrecipes --from-clone ~/Code/printing-press-library
+</code></pre>
+<p>The internal library is the working copy; the public library is the
+durable artifact. After import, the CLI is ready for polish, emboss, or
+re-publish — the publish step will re-apply the module path rewrites.</p>
+<h4>When to run</h4>
+<ul>
+<li>The public library has a CLI you don't have locally</li>
+<li>The internal copy is broken, lost, or out of sync</li>
+<li>You want a clean baseline before running polish on a published CLI</li>
+</ul>
+<p>If the user is asking to polish a CLI and mentions &quot;in/from the public
+library&quot; or &quot;from the repo&quot;, suggest running this skill first.</p>
+<h4>Setup</h4>
+<pre><code class="language-bash">PRESS_HOME=&quot;${PRINTING_PRESS_HOME:-$HOME/printing-press}&quot;
+PRESS_LIBRARY=&quot;$PRESS_HOME/library&quot;
+PRESS_MANUSCRIPTS=&quot;$PRESS_HOME/manuscripts&quot;
+SCRIPTS_DIR=&quot;$(dirname &quot;${BASH_SOURCE[0]:-.}&quot;)/references&quot;
+
+if ! command -v go &gt;/dev/null 2&gt;&amp;1; then
+  echo &quot;&quot;
+  echo &quot;[setup-error] Go toolchain not found.&quot;
+  echo &quot;&quot;
+  echo &quot;This Printing Press flow runs Go-based build or validation commands.&quot;
+  echo &quot;Install Go 1.26.10 or newer from https://go.dev/dl/, then verify with:&quot;
+  echo &quot;  go version&quot;
+  echo &quot;Then re-run this skill.&quot;
+  echo &quot;&quot;
+  return 1 2&gt;/dev/null || exit 1
+fi
+
+_pp_check_disk_space() {
+  _pp_disk_warn_kb=&quot;${PRINTING_PRESS_DISK_WARN_KB:-3145728}&quot;
+  _pp_disk_fail_kb=&quot;${PRINTING_PRESS_DISK_FAIL_KB:-524288}&quot;
+  case &quot;$_pp_disk_warn_kb$_pp_disk_fail_kb&quot; in
+    &quot;&quot;|*[!0-9]*) return 0 ;;
+  esac
+
+  _pp_disk_path=&quot;$PRESS_HOME&quot;
+  while [ ! -e &quot;$_pp_disk_path&quot; ] &amp;&amp; [ &quot;$_pp_disk_path&quot; != &quot;/&quot; ]; do
+    _pp_disk_path=&quot;$(dirname &quot;$_pp_disk_path&quot;)&quot;
+  done
+
+  _pp_disk_avail_kb=&quot;$(df -Pk &quot;$_pp_disk_path&quot; 2&gt;/dev/null | awk 'BEGIN {
+    if ((getline header) &lt;= 0 || (getline record) &lt;= 0) exit
+    field_count = split(record, fields)
+    if (field_count &gt;= 4) print fields[4]
+  }')&quot;
+  case &quot;$_pp_disk_avail_kb&quot; in
+    &quot;&quot;|*[!0-9]*) return 0 ;;
+  esac
+
+  if [ &quot;$_pp_disk_avail_kb&quot; -lt &quot;$_pp_disk_fail_kb&quot; ]; then
+    echo &quot;&quot;
+    echo &quot;[setup-error] Critically low disk space on the Printing Press workspace volume.&quot;
+    echo &quot;PRESS_DISK_PATH=$_pp_disk_path&quot;
+    echo &quot;PRESS_DISK_AVAIL_KB=$_pp_disk_avail_kb&quot;
+    echo &quot;PRESS_DISK_FAIL_KB=$_pp_disk_fail_kb&quot;
+    echo &quot;Free disk space or set PRINTING_PRESS_HOME to a volume with more room, then re-run this skill.&quot;
+    echo &quot;&quot;
+    return 1
+  fi
+
+  if [ &quot;$_pp_disk_avail_kb&quot; -lt &quot;$_pp_disk_warn_kb&quot; ]; then
+    echo &quot;&quot;
+    echo &quot;[low-disk] Printing Press workspace volume is low on free space.&quot;
+    echo &quot;PRESS_DISK_PATH=$_pp_disk_path&quot;
+    echo &quot;PRESS_DISK_AVAIL_KB=$_pp_disk_avail_kb&quot;
+    echo &quot;PRESS_DISK_WARN_KB=$_pp_disk_warn_kb&quot;
+    echo &quot;This flow may need several GiB for generated files, Go build cache, module downloads, or repository clones.&quot;
+    echo &quot;&quot;
+  fi
+}
+_pp_check_disk_space || { return 1 2&gt;/dev/null || exit 1; }
+</code></pre>
+<p>The four reference scripts live alongside this SKILL.md under
+<code>references/</code>:</p>
+<ul>
+<li><code>import-fetch.sh &lt;library-path&gt; &lt;staging&gt; [--clone &lt;path&gt;]</code></li>
+<li><code>import-backup.sh &lt;api-slug&gt;</code> (prints zip path on stdout)</li>
+<li><code>import-rewrite.sh &lt;staging&gt; &lt;api-slug&gt;</code></li>
+<li><code>import-place.sh &lt;staging&gt; &lt;api-slug&gt;</code></li>
+</ul>
+<p>If setup emitted <code>[low-disk]</code>, surface the advisory to the user and continue unless setup also emitted <code>[setup-error]</code>. <code>[low-disk]</code> means this run may need several GiB for repository clones, staged files, backups, Go build cache, or module downloads.</p>
+<h4>Phase 1 — Resolve the CLI</h4>
+<p>The argument can be anything natural: an API slug (<code>notion</code>), a brand
+name (<code>cal.com</code>), an old CLI name (<code>notion-pp-cli</code>), or close enough
+(<code>Allrecipes</code>). Resolve via the public library's <code>registry.json</code> —
+which carries <code>name</code>, <code>category</code>, <code>api</code>, <code>description</code>, and <code>path</code> for
+every entry, in one fetch.</p>
+<pre><code class="language-bash">REGISTRY=$(mktemp)
+gh api -H &quot;Accept: application/vnd.github.v3.raw&quot; \
+  repos/mvanhorn/printing-press-library/contents/registry.json \
+  &gt; &quot;$REGISTRY&quot;
+</code></pre>
+<p>Match in this order:</p>
+<ol>
+<li><strong>Exact <code>name</code> match</strong> — <code>jq --arg q &quot;$ARG&quot; '.entries[] | select(.name == $q)' &quot;$REGISTRY&quot;</code></li>
+<li><strong>Normalized exact</strong> — strip <code>-pp-cli</code> suffix, lowercase, dot→hyphen, then exact match</li>
+<li><strong>Substring on <code>name</code> or <code>description</code></strong> — case-insensitive contains</li>
+</ol>
+<pre><code class="language-bash"># Exact:
+jq --arg q &quot;$ARG&quot; '.entries[] | select(.name == $q)' &quot;$REGISTRY&quot;
+
+# Normalized exact (after $ARG2 = lowercase, dot→hyphen, suffix-stripped):
+jq --arg q &quot;$ARG2&quot; '.entries[] | select(.name == $q)' &quot;$REGISTRY&quot;
+
+# Fuzzy (substring on name or description):
+jq --arg q &quot;$ARG2&quot; '.entries[]
+  | select((.name | ascii_downcase | contains($q | ascii_downcase))
+        or (.description | ascii_downcase | contains($q | ascii_downcase)))
+' &quot;$REGISTRY&quot;
+</code></pre>
+<p>If you get one match: use it. If multiple: present at most 4 to the user
+via <code>AskUserQuestion</code> showing <code>name</code> + <code>description</code> per candidate. If
+zero: tell the user the public library doesn't have that CLI.</p>
+<p>The matched entry gives you everything you need:</p>
+<ul>
+<li><code>LIB_PATH</code> from <code>.path</code> (e.g., <code>library/productivity/cal-com</code>)</li>
+<li><code>API_SLUG</code> from <code>.name</code></li>
+<li><code>CATEGORY</code> from <code>.category</code></li>
+</ul>
+<p><strong>Don't slurp whole files</strong> when reasoning over candidates. The fields
+above are enough; if you genuinely need more, the per-CLI manifest is
+just <code>&lt;LIB_PATH&gt;/manifest.json</code> and the description there can be pulled
+the same way (<code>gh api -H &quot;Accept: ... raw&quot; .../manifest.json | jq -r '.description'</code>).</p>
+<h4>Phase 2 — Decide on overwrite</h4>
+<p>Check whether the internal library already has this CLI:</p>
+<pre><code class="language-bash">LIB_TARGET=&quot;$PRESS_LIBRARY/$API_SLUG&quot;
+MAN_TARGET=&quot;$PRESS_MANUSCRIPTS/$API_SLUG&quot;
+</code></pre>
+<p><strong>If neither exists:</strong> straightforward import — proceed to Phase 3.</p>
+<p><strong>If either exists:</strong> read provenance from both sides to decide whether
+to overwrite. Don't read whole <code>.printing-press.json</code> files — pull just
+the fields that matter:</p>
+<pre><code class="language-bash"># Internal provenance (if present):
+jq '{run_id, generated_at, printing_press_version, spec_checksum}' \
+  &quot;$LIB_TARGET/.printing-press.json&quot; 2&gt;/dev/null
+
+# Public provenance (one-shot via raw):
+gh api -H &quot;Accept: application/vnd.github.v3.raw&quot; \
+  repos/mvanhorn/printing-press-library/contents/$LIB_PATH/.printing-press.json \
+  | jq '{run_id, generated_at, printing_press_version, spec_checksum}'
+</code></pre>
+<p>Reason over the diff:</p>
+<ul>
+<li><strong>Same <code>run_id</code></strong> — public is the same generation as internal. Likely
+no-op; ask before clobbering. If the user wants to import anyway
+(e.g., to recover from a broken internal copy), proceed.</li>
+<li><strong>Public newer <code>generated_at</code></strong> — public has changes the internal
+doesn't. Importing is the safe move; ask the user to confirm.</li>
+<li><strong>Internal newer <code>generated_at</code></strong> — internal has work the public
+doesn't (in-progress polish, manual fixes). Importing would clobber
+that. Stop and surface this to the user — they likely want to publish
+the internal changes first.</li>
+<li><strong>Either side missing <code>.printing-press.json</code></strong> — older or hand-imported.
+Ask the user.</li>
+</ul>
+<p>When the user confirms overwrite, the backup step in Phase 3 captures
+the current internal state.</p>
+<h4>Phase 3 — Import</h4>
+<pre><code class="language-bash">STAGING=$(mktemp -d)
+
+# Fetch (remote unless --from-clone was passed)
+if [[ -n &quot;${CLONE_PATH:-}&quot; ]]; then
+  bash &quot;$SCRIPTS_DIR/import-fetch.sh&quot; &quot;$LIB_PATH&quot; &quot;$STAGING&quot; --clone &quot;$CLONE_PATH&quot;
+else
+  bash &quot;$SCRIPTS_DIR/import-fetch.sh&quot; &quot;$LIB_PATH&quot; &quot;$STAGING&quot;
+fi
+
+# Backup if anything is being clobbered. Prints zip path on stdout.
+if [[ -d &quot;$LIB_TARGET&quot; || -d &quot;$MAN_TARGET&quot; ]]; then
+  BACKUP_ZIP=$(bash &quot;$SCRIPTS_DIR/import-backup.sh&quot; &quot;$API_SLUG&quot;)
+  echo &quot;Backed up to: $BACKUP_ZIP&quot;
+fi
+
+# Reverse the publish-step module path rewrites.
+bash &quot;$SCRIPTS_DIR/import-rewrite.sh&quot; &quot;$STAGING&quot; &quot;$API_SLUG&quot;
+
+# Atomically move staging into place.
+bash &quot;$SCRIPTS_DIR/import-place.sh&quot; &quot;$STAGING&quot; &quot;$API_SLUG&quot;
+</code></pre>
+<h4>Phase 4 — Verify internal consistency</h4>
+<p>After the move, confirm the imported CLI builds and is structurally
+intact. Treat any failure as a real problem — don't paper over it.</p>
+<pre><code class="language-bash">cd &quot;$LIB_TARGET&quot;
+
+# Module path is local form
+grep -q &quot;^module ${API_SLUG}-pp-cli\$&quot; go.mod \
+  || { echo &quot;FAIL: go.mod still on public module path&quot;; exit 1; }
+
+# No public module path leaked into source
+if grep -rq &quot;github.com/mvanhorn/printing-press-library/library&quot; \
+   --include='*.go' --include='*.yaml' --include='*.yml' .; then
+  echo &quot;FAIL: source still references public module path&quot;
+  exit 1
+fi
+
+# Build
+go build ./... \
+  || { echo &quot;FAIL: go build&quot;; exit 1; }
+
+# Doctor (self-check)
+make doctor 2&gt;/dev/null \
+  || ./bin/${API_SLUG}-pp-cli doctor 2&gt;/dev/null \
+  || true   # best-effort; not all CLIs have doctor wired the same way
+</code></pre>
+<p>Report the import outcome:</p>
+<ul>
+<li>Source path (from registry: <code>&lt;category&gt;/&lt;api-slug&gt;</code>)</li>
+<li>Run ID (from <code>.printing-press.json</code>)</li>
+<li>Manuscripts run-ids placed (count + names)</li>
+<li>Backup zip path (if any)</li>
+<li>Build status</li>
+</ul>
+<h4>Polish-side hint</h4>
+<p>If the user's request to import was triggered by a polish ask (e.g.,
+they said &quot;polish notion in the public library&quot;), suggest:</p>
+<pre><code>Imported $API_SLUG. To polish: /printing-press-polish $API_SLUG
+</code></pre>
+<p>The polish skill operates on the internal library, so import-then-polish
+is the right flow when starting from a published CLI.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ast-grep · SkillHub</title>
+    <meta name="description" content="Use it when: text search can&#039;t express what you&#039;re looking for, such as async functions without a try-catch or console.log calls inside class methods. It does: writes a small example of the code to match, drafts an ast-grep pattern or YAML rule, tests it on the example, then searches the codebase. You get: the matches, as text or as JSON with file and line, and the rule that found them. Debugs: a rule that matches nothing by simplifying it, adding stopBy: end and dumping the syntax tree to check node kinds. Needs: the ast-grep CLI." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=ast-grep%2Fagent-skill">ast-grep/agent-skill</a></p>
+      <div class="title-row"><h1>ast-grep</h1><button type="button" class="save" data-save="skill:ast-grep/agent-skill/ast-grep/skills/ast-grep" aria-pressed="false" aria-label="Save ast-grep" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>text search can&#39;t express what you&#39;re looking for, such as async functions without a try-catch or console.log calls inside class methods</dd></div><div><dt>It does</dt><dd>writes a small example of the code to match, drafts an ast-grep pattern or YAML rule, tests it on the example, then searches the codebase</dd></div><div><dt>You get</dt><dd>the matches, as text or as JSON with file and line, and the rule that found them</dd></div><div><dt>Debugs</dt><dd>a rule that matches nothing by simplifying it, adding stopBy: end and dumping the syntax tree to check node kinds</dd></div><div><dt>Needs</dt><dd>the ast-grep CLI</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>ast-grep searches code by its syntax tree rather than its text, so it finds structures plain search can&#39;t, such as functions that await but have no try-catch. This skill has the agent translate your request into an ast-grep rule step by step. It asks about the pattern, language and edge cases when they&#39;re unclear, saves a small example of the code to match to a temporary file, and drafts a rule: a simple pattern first, then node kinds, relational rules such as has or inside, and all, any or not only as needed. It tests the rule on the example, inline or from a YAML file. When nothing matches, it simplifies the rule, adds stopBy: end to relational rules, and uses --debug-query to see how the code and the pattern were parsed. Only then does it search the codebase, with run for single-node patterns or scan for full rules, optionally as JSON that it can filter with jq. A reference file covers the full rule syntax, and ast-grep&#39;s online docs are the last resort.</p>
+      <p class="muted">Summarizes <a href="https://github.com/ast-grep/agent-skill/tree/0613dc7f82bbfb3b557380b54726b92f73358460/ast-grep/skills/ast-grep">the skill at 0613dc7</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">ast-grep/</span><wbr><span class="word">agent-skill</span> <span class="word">--skill</span> <span class="word">ast-grep</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/ast-grep/agent-skill --skill ast-grep">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/ast-grep/agent-skill/ast-grep">skills.sh page</a> · <a href="https://github.com/ast-grep/agent-skill/tree/HEAD/ast-grep/skills/ast-grep">Source on GitHub</a> · <a href="/?repo=ast-grep%2Fagent-skill">All skills from ast-grep/agent-skill</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>19,100 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>903 <span class="muted">ast-grep/agent-skill</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">465</div>
+      <div class="stat-delta">+20% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 389; week to Sep 27: 540; week to Oct 4: 384; week to Oct 11: 341; week to Oct 18: 433; week to Oct 25: 482; week to Nov 1: 570; week to Nov 8: 465. Use the left and right arrow keys to read each week."
+        data-values="389,540,384,341,433,482,570,465" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,20.0 38.6,8.3 71.1,20.4 103.7,23.7 136.3,16.6 168.9,12.8 201.4,6.0 234.0,14.1" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="14.1" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>389</td></tr><tr><td>Sep 27</td><td>540</td></tr><tr><td>Oct 4</td><td>384</td></tr><tr><td>Oct 11</td><td>341</td></tr><tr><td>Oct 18</td><td>433</td></tr><tr><td>Oct 25</td><td>482</td></tr><tr><td>Nov 1</td><td>570</td></tr><tr><td>Nov 8</td><td>465</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/?tag=category%3Aengineering">category:<wbr>engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/?tag=type%3Atool">type:<wbr>tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/?tag=needs%3Acli">needs:<wbr>cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="code-quality" data-facet="topic" href="/?tag=code-quality">code-quality</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:ast-grep" data-facet="stack" href="/?tag=stack%3Aast-grep">stack:<wbr>ast-grep</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/ast-grep/agent-skill/blob/0613dc7f82bbfb3b557380b54726b92f73358460/ast-grep/skills/ast-grep/SKILL.md">ast-grep/agent-skill at 0613dc7</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: ast-grep
+description: Guide for writing ast-grep rules to perform structural code search and analysis. Use when users need to search codebases using Abstract Syntax Tree (AST) patterns, find specific code structures, or perform complex code queries that go beyond simple text search. This skill should be used when users ask to search for code patterns, find specific language constructs, or locate code with particular structural characteristics.</code></pre></details>
+        <div class="markdown"><h3>ast-grep Code Search</h3>
+<h4>Overview</h4>
+<p>This skill helps translate natural language queries into ast-grep rules for structural code search. ast-grep uses Abstract Syntax Tree (AST) patterns to match code based on its structure rather than just text, enabling powerful and precise code search across large codebases.</p>
+<h4>When to Use This Skill</h4>
+<p>Use this skill when users:</p>
+<ul>
+<li>Need to search for code patterns using structural matching (e.g., &quot;find all async functions that don't have error handling&quot;)</li>
+<li>Want to locate specific language constructs (e.g., &quot;find all function calls with specific parameters&quot;)</li>
+<li>Request searches that require understanding code structure rather than just text</li>
+<li>Ask to search for code with particular AST characteristics</li>
+<li>Need to perform complex code queries that traditional text search cannot handle</li>
+</ul>
+<h4>General Workflow</h4>
+<p>Follow this process to help users write effective ast-grep rules:</p>
+<h5>Step 1: Understand the Query</h5>
+<p>Clearly understand what the user wants to find. Ask clarifying questions if needed:</p>
+<ul>
+<li>What specific code pattern or structure are they looking for?</li>
+<li>Which programming language?</li>
+<li>Are there specific edge cases or variations to consider?</li>
+<li>What should be included or excluded from matches?</li>
+</ul>
+<h5>Step 2: Create Example Code</h5>
+<p>Write a simple code snippet that represents what the user wants to match. Save this to a temporary file for testing.</p>
+<p><strong>Example:</strong>
+If searching for &quot;async functions that use await&quot;, create a test file:</p>
+<pre><code class="language-javascript">// test_example.js
+async function example() {
+  const result = await fetchData();
+  return result;
+}
+</code></pre>
+<h5>Step 3: Write the ast-grep Rule</h5>
+<p>Translate the pattern into an ast-grep rule. Start simple and add complexity as needed.</p>
+<p><strong>Key principles:</strong></p>
+<ul>
+<li>Always use <code>stopBy: end</code> for relational rules (<code>inside</code>, <code>has</code>) to ensure search goes to the end of the direction</li>
+<li>Use <code>pattern</code> for simple structures</li>
+<li>Use <code>kind</code> with <code>has</code>/<code>inside</code> for complex structures</li>
+<li>Break complex queries into smaller sub-rules using <code>all</code>, <code>any</code>, or <code>not</code></li>
+</ul>
+<p><strong>Example rule file (test_rule.yml):</strong></p>
+<pre><code class="language-yaml">id: async-with-await
+language: javascript
+rule:
+  kind: function_declaration
+  has:
+    pattern: await $EXPR
+    stopBy: end
+</code></pre>
+<p>See <code>references/rule_reference.md</code> for comprehensive rule documentation.</p>
+<h5>Step 4: Test the Rule</h5>
+<p>Use ast-grep CLI to verify the rule matches the example code. There are two main approaches:</p>
+<p><strong>Option A: Test with inline rules (for quick iterations)</strong></p>
+<pre><code class="language-bash">echo &quot;async function test() { await fetch(); }&quot; | ast-grep scan --inline-rules &quot;id: test
+language: javascript
+rule:
+  kind: function_declaration
+  has:
+    pattern: await \$EXPR
+    stopBy: end&quot; --stdin
+</code></pre>
+<p><strong>Option B: Test with rule files (recommended for complex rules)</strong></p>
+<pre><code class="language-bash">ast-grep scan --rule test_rule.yml test_example.js
+</code></pre>
+<p><strong>Debugging if no matches:</strong></p>
+<ol>
+<li>Simplify the rule (remove sub-rules)</li>
+<li>Add <code>stopBy: end</code> to relational rules if not present</li>
+<li>Use <code>--debug-query</code> to understand the AST structure (see below)</li>
+<li>Check if <code>kind</code> values are correct for the language</li>
+<li>For zero matches from <code>run --pattern</code> (not rules), see the &quot;Zero Matches?&quot; tip below</li>
+</ol>
+<h5>Step 5: Search the Codebase</h5>
+<p>Once the rule matches the example code correctly, search the actual codebase:</p>
+<p><strong>For simple pattern searches:</strong></p>
+<pre><code class="language-bash">ast-grep run --pattern 'console.log($ARG)' --lang javascript /path/to/project
+</code></pre>
+<p><strong>For complex rule-based searches:</strong></p>
+<pre><code class="language-bash">ast-grep scan --rule my_rule.yml /path/to/project
+</code></pre>
+<p><strong>For inline rules (without creating files):</strong></p>
+<pre><code class="language-bash">ast-grep scan --inline-rules &quot;id: my-rule
+language: javascript
+rule:
+  pattern: \$PATTERN&quot; /path/to/project
+</code></pre>
+<h4>ast-grep CLI Commands</h4>
+<h5>Inspect Code Structure (--debug-query)</h5>
+<p>Dump the AST structure to understand how code is parsed:</p>
+<pre><code class="language-bash">ast-grep run --pattern 'async function example() { await fetch(); }' \
+  --lang javascript \
+  --debug-query=cst
+</code></pre>
+<p><strong>Available formats:</strong></p>
+<ul>
+<li><code>cst</code>: Concrete Syntax Tree (shows all nodes including punctuation)</li>
+<li><code>ast</code>: Abstract Syntax Tree (shows only named nodes)</li>
+<li><code>pattern</code>: Shows how ast-grep interprets your pattern</li>
+</ul>
+<p><strong>Use this to:</strong></p>
+<ul>
+<li>Find the correct <code>kind</code> values for nodes</li>
+<li>Understand the structure of code you want to match</li>
+<li>Debug why patterns aren't matching</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-bash"># See the structure of your target code
+ast-grep run --pattern 'class User { constructor() {} }' \
+  --lang javascript \
+  --debug-query=cst
+
+# See how ast-grep interprets your pattern
+ast-grep run --pattern 'class $NAME { $$$BODY }' \
+  --lang javascript \
+  --debug-query=pattern
+</code></pre>
+<h5>Test Rules (scan with --stdin)</h5>
+<p>Test a rule against code snippet without creating files:</p>
+<pre><code class="language-bash">echo &quot;const x = await fetch();&quot; | ast-grep scan --inline-rules &quot;id: test
+language: javascript
+rule:
+  pattern: await \$EXPR&quot; --stdin
+</code></pre>
+<p><strong>Add --json for structured output:</strong></p>
+<pre><code class="language-bash">echo &quot;const x = await fetch();&quot; | ast-grep scan --inline-rules &quot;...&quot; --stdin --json
+</code></pre>
+<h5>Search with Patterns (run)</h5>
+<p>Simple pattern-based search for single AST node matches:</p>
+<pre><code class="language-bash"># Basic pattern search
+ast-grep run --pattern 'console.log($ARG)' --lang javascript .
+
+# Search specific files
+ast-grep run --pattern 'class $NAME' --lang python /path/to/project
+
+# JSON output for programmatic use
+ast-grep run --pattern 'function $NAME($$$)' --lang javascript --json .
+</code></pre>
+<p><strong>When to use:</strong></p>
+<ul>
+<li>Simple, single-node matches</li>
+<li>Quick searches without complex logic</li>
+<li>When you don't need relational rules (inside/has)</li>
+</ul>
+<h5>Reading <code>--json</code> Output</h5>
+<p><code>--json</code> prints a bare JSON <strong>array</strong> of matches (no <code>matches</code> wrapper). For pattern <code>foo($ARG, $$$REST)</code>:</p>
+<pre><code class="language-json">[{
+  &quot;text&quot;: &quot;foo(\&quot;value\&quot;, 1, 2)&quot;,
+  &quot;file&quot;: &quot;src/app.js&quot;,
+  &quot;range&quot;: { &quot;start&quot;: { &quot;line&quot;: 41, &quot;column&quot;: 10 }, &quot;end&quot;: { &quot;line&quot;: 41, &quot;column&quot;: 27 } },
+  &quot;metaVariables&quot;: {
+    &quot;single&quot;: { &quot;ARG&quot;: { &quot;text&quot;: &quot;\&quot;value\&quot;&quot; } },
+    &quot;multi&quot;: { &quot;REST&quot;: [ { &quot;text&quot;: &quot;1&quot; }, { &quot;text&quot;: &quot;2&quot; } ] }
+  }
+}]
+</code></pre>
+<p><code>scan --json</code> uses the same schema.</p>
+<p>(Each match also includes <code>lines</code> and <code>language</code>.) <code>range.start.line</code> is 0-based. Named metavariables (<code>$ARG</code>) land in <code>single</code>, list metavariables (<code>$$$REST</code>) in <code>multi</code> as a list (empty if nothing captured). Extract with jq:</p>
+<pre><code class="language-bash">ast-grep run --pattern 'foo($ARG)' --lang javascript --json . \
+  | jq -r '.[] | &quot;\(.file):\(.range.start.line + 1): \(.metaVariables.single.ARG.text)&quot;'
+</code></pre>
+<h5>Search with Rules (scan)</h5>
+<p>YAML rule-based search for complex structural queries:</p>
+<pre><code class="language-bash"># With rule file
+ast-grep scan --rule my_rule.yml /path/to/project
+
+# With inline rules
+ast-grep scan --inline-rules &quot;id: find-async
+language: javascript
+rule:
+  kind: function_declaration
+  has:
+    pattern: await \$EXPR
+    stopBy: end&quot; /path/to/project
+
+# JSON output
+ast-grep scan --rule my_rule.yml --json /path/to/project
+</code></pre>
+<p><strong>When to use:</strong></p>
+<ul>
+<li>Complex structural searches</li>
+<li>Relational rules (inside, has, precedes, follows)</li>
+<li>Composite logic (all, any, not)</li>
+<li>When you need the power of full YAML rules</li>
+</ul>
+<p><strong>Tip:</strong> For relational rules (inside/has), always add <code>stopBy: end</code> to ensure complete traversal.</p>
+<h4>Tips for Writing Effective Rules</h4>
+<h5>Always Use stopBy: end</h5>
+<p>For relational rules, always use <code>stopBy: end</code> unless there's a specific reason not to:</p>
+<pre><code class="language-yaml">has:
+  pattern: await $EXPR
+  stopBy: end
+</code></pre>
+<p>This ensures the search traverses the entire subtree rather than stopping at the first non-matching node.</p>
+<h5>Start Simple, Then Add Complexity</h5>
+<p>Begin with the simplest rule that could work:</p>
+<ol>
+<li>Try a <code>pattern</code> first</li>
+<li>If that doesn't work, try <code>kind</code> to match the node type</li>
+<li>Add relational rules (<code>has</code>, <code>inside</code>) as needed</li>
+<li>Combine with composite rules (<code>all</code>, <code>any</code>, <code>not</code>) for complex logic</li>
+</ol>
+<h5>Use the Right Rule Type</h5>
+<ul>
+<li><strong>Pattern</strong>: For simple, direct code matching (e.g., <code>console.log($ARG)</code>)</li>
+<li><strong>Kind + Relational</strong>: For complex structures (e.g., &quot;function containing await&quot;)</li>
+<li><strong>Composite</strong>: For logical combinations (e.g., &quot;function with await but not in try-catch&quot;)</li>
+</ul>
+<h5>Debug with AST Inspection</h5>
+<p>When rules don't match:</p>
+<ol>
+<li>Use <code>--debug-query=cst</code> to see the actual AST structure</li>
+<li>Check if metavariables are being detected correctly</li>
+<li>Verify the node <code>kind</code> matches what you expect</li>
+<li>Ensure relational rules are searching in the right direction</li>
+</ol>
+<h5>Zero Matches? Patterns Match Whole AST Nodes</h5>
+<p><code>run --pattern</code> matches complete AST nodes, not text substrings, so zero matches can mean &quot;code absent&quot; or &quot;pattern has the wrong node shape&quot;:</p>
+<ul>
+<li>Qualified paths are whole nodes: <code>env::var($ENV)</code> does NOT match <code>std::env::var(&quot;X&quot;)</code>. Try both bare and fully-qualified forms, or use <code>$$$</code> to absorb extra intermediate nodes.</li>
+<li>To tell them apart: test the pattern on a snippet known to contain the code, and inspect how ast-grep parsed it with <code>--debug-query=pattern</code> (works for <code>run</code>, not just <code>scan</code>/rules). For zero matches from rules instead, follow the Step 4 debugging checklist.</li>
+</ul>
+<h5>Escaping in Inline Rules</h5>
+<p>When using <code>--inline-rules</code>, escape metavariables in shell commands:</p>
+<ul>
+<li>Use <code>\$VAR</code> instead of <code>$VAR</code> (shell interprets <code>$</code> as variable)</li>
+<li>Or use single quotes: <code>'$VAR'</code> works in most shells</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-bash"># Correct: escaped $
+ast-grep scan --inline-rules &quot;rule: {pattern: 'console.log(\$ARG)'}&quot; .
+
+# Or use single quotes
+ast-grep scan --inline-rules 'rule: {pattern: &quot;console.log($ARG)&quot;}' .
+</code></pre>
+<h4>Common Use Cases</h4>
+<h5>Find Functions with Specific Content</h5>
+<p>Find async functions that use await:</p>
+<pre><code class="language-bash">ast-grep scan --inline-rules &quot;id: async-await
+language: javascript
+rule:
+  all:
+    - kind: function_declaration
+    - has:
+        pattern: await \$EXPR
+        stopBy: end&quot; /path/to/project
+</code></pre>
+<h5>Find Code Inside Specific Contexts</h5>
+<p>Find console.log inside class methods:</p>
+<pre><code class="language-bash">ast-grep scan --inline-rules &quot;id: console-in-class
+language: javascript
+rule:
+  pattern: console.log(\$\$\$)
+  inside:
+    kind: method_definition
+    stopBy: end&quot; /path/to/project
+</code></pre>
+<h5>Find Code Missing Expected Patterns</h5>
+<p>Find async functions without try-catch:</p>
+<pre><code class="language-bash">ast-grep scan --inline-rules &quot;id: async-no-trycatch
+language: javascript
+rule:
+  all:
+    - kind: function_declaration
+    - has:
+        pattern: await \$EXPR
+        stopBy: end
+    - not:
+        has:
+          pattern: try { \$\$\$ } catch (\$E) { \$\$\$ }
+          stopBy: end&quot; /path/to/project
+</code></pre>
+<h4>Resources</h4>
+<h5>references/</h5>
+<p>Contains detailed documentation for ast-grep rule syntax:</p>
+<ul>
+<li><code>rule_reference.md</code>: Comprehensive ast-grep rule documentation covering atomic rules, relational rules, composite rules, and metavariables</li>
+</ul>
+<p>Load these references when detailed rule syntax information is needed.</p>
+<h5>Online documentation</h5>
+<p>When a rule still fails after <code>--debug-query</code> and the rule reference, read
+the official docs:</p>
+<ul>
+<li><code>https://ast-grep.github.io/llms.txt</code> indexes every docs page; fetch the
+one page you need (each is linked as a <code>.md</code> file, such as
+<code>https://ast-grep.github.io/guide/rule-config/relational-rule.md</code>).</li>
+<li><code>https://ast-grep.github.io/llms-full.txt</code> holds all the docs in one
+file of about 850 KB. Download it and search it; never read it whole.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>agent-introspection-debugging · SkillHub</title>
+    <meta name="description" content="Use it when: an agent run loops, hits its tool-call limit, retries without progress, bloats its context or drifts from its task. It does: records the failure, matches it to a known pattern, takes the smallest reversible fix, and only then retries. You get: a self-debug report: failure, root cause, recovery action, result, token or time burn risk, and a preventive change to encode later. Unlike: a skill for debugging your code; this debugs the agent&#039;s own run, such as a loop, a retry storm or the wrong working directory." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <div class="title-row"><h1>agent-introspection-debugging</h1><button type="button" class="save" data-save="skill:affaan-m/ecc/skills/agent-introspection-debugging" aria-pressed="false" aria-label="Save agent-introspection-debugging" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>an agent run loops, hits its tool-call limit, retries without progress, bloats its context or drifts from its task</dd></div><div><dt>It does</dt><dd>records the failure, matches it to a known pattern, takes the smallest reversible fix, and only then retries</dd></div><div><dt>You get</dt><dd>a self-debug report: failure, root cause, recovery action, result, token or time burn risk, and a preventive change to encode later</dd></div><div><dt>Unlike</dt><dd>a skill for debugging your code; this debugs the agent&#39;s own run, such as a loop, a retry storm or the wrong working directory</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A four-phase loop the agent runs on itself before escalating to you. First it captures the failure precisely: the error, the last tool calls, the goal in progress, signs of context pressure, and assumptions about the working directory, branch and services. Then it matches the failure to a table of patterns, such as repeated identical commands pointing to a loop, ECONNREFUSED to a wrong port or a service that&#39;s down, 429s to a retry storm, a missing file after a write to the wrong directory or branch, and tests still failing after a fix to a wrong hypothesis. Recovery is the smallest action that tests the diagnosis: stop retrying and restate the hypothesis, trim low-signal context, re-check the real file and branch state, narrow to one failing command or test, or hand off to a human when the risk is high. It forbids claiming fixes it can&#39;t perform, like resetting agent state. It always ends with the failure pattern, hypothesis, action and evidence, never a bare &#34;I fixed it&#34;.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/agent-introspection-debugging">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">affaan-m/</span><wbr><span class="word">ecc</span> <span class="word">--skill</span> <span class="word">agent-introspection-debugging</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill agent-introspection-debugging">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/agent-introspection-debugging">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/agent-introspection-debugging">Source on GitHub</a> · <a href="/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,600 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>299,252 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">501</div>
+      <div class="stat-delta">+69% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 297; week to Sep 27: 267; week to Oct 4: 178; week to Oct 11: 147; week to Oct 18: 246; week to Oct 25: 429; week to Nov 1: 406; week to Nov 8: 501. Use the left and right arrow keys to read each week."
+        data-values="297,267,178,147,246,429,406,501" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.9 38.6,26.6 71.1,34.4 103.7,37.1 136.3,28.4 168.9,12.3 201.4,14.3 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>297</td></tr><tr><td>Sep 27</td><td>267</td></tr><tr><td>Oct 4</td><td>178</td></tr><tr><td>Oct 11</td><td>147</td></tr><tr><td>Oct 18</td><td>246</td></tr><tr><td>Oct 25</td><td>429</td></tr><tr><td>Nov 1</td><td>406</td></tr><tr><td>Nov 8</td><td>501</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/?tag=category%3Adebugging">category:<wbr>debugging</a><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/?tag=category%3Aagents">category:<wbr>agents</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="debugging" data-facet="topic" href="/?tag=debugging">debugging</a><a class="tag" data-tag="agent-workflows" data-facet="topic" href="/?tag=agent-workflows">agent-workflows</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/agent-introspection-debugging/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: agent-introspection-debugging
+description: Structured self-debugging workflow for AI agent failures using capture, diagnosis, contained recovery, and introspection reports. Use when an agent run fails and you need a reproducible diagnosis instead of a retry.
+metadata:
+  origin: ECC</code></pre></details>
+        <div class="markdown"><h3>Agent Introspection Debugging</h3>
+<p>Use this skill when an agent run is failing repeatedly, consuming tokens without progress, looping on the same tools, or drifting away from the intended task.</p>
+<p>This is a workflow skill, not a hidden runtime. It teaches the agent to debug itself systematically before escalating to a human.</p>
+<h4>When to Activate</h4>
+<ul>
+<li>Maximum tool call / loop-limit failures</li>
+<li>Repeated retries with no forward progress</li>
+<li>Context growth or prompt drift that starts degrading output quality</li>
+<li>File-system or environment state mismatch between expectation and reality</li>
+<li>Tool failures that are likely recoverable with diagnosis and a smaller corrective action</li>
+</ul>
+<h4>Scope Boundaries</h4>
+<p>Activate this skill for:</p>
+<ul>
+<li>capturing failure state before retrying blindly</li>
+<li>diagnosing common agent-specific failure patterns</li>
+<li>applying contained recovery actions</li>
+<li>producing a structured human-readable debug report</li>
+</ul>
+<p>Do not use this skill as the primary source for:</p>
+<ul>
+<li>feature verification after code changes; use <code>verification-loop</code></li>
+<li>framework-specific debugging when a narrower ECC skill already exists</li>
+<li>runtime promises the current harness cannot enforce automatically</li>
+</ul>
+<h4>Four-Phase Loop</h4>
+<h5>Phase 1: Failure Capture</h5>
+<p>Before trying to recover, record the failure precisely.</p>
+<p>Capture:</p>
+<ul>
+<li>error type, message, and stack trace when available</li>
+<li>last meaningful tool call sequence</li>
+<li>what the agent was trying to do</li>
+<li>current context pressure: repeated prompts, oversized pasted logs, duplicated plans, or runaway notes</li>
+<li>current environment assumptions: cwd, branch, relevant service state, expected files</li>
+</ul>
+<p>Minimum capture template:</p>
+<pre><code class="language-markdown">## Failure Capture
+- Session / task:
+- Goal in progress:
+- Error:
+- Last successful step:
+- Last failed tool / command:
+- Repeated pattern seen:
+- Environment assumptions to verify:
+</code></pre>
+<h5>Phase 2: Root-Cause Diagnosis</h5>
+<p>Match the failure to a known pattern before changing anything.</p>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Likely Cause</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Maximum tool calls / repeated same command</td>
+<td>loop or no-exit observer path</td>
+<td>inspect the last N tool calls for repetition</td>
+</tr>
+<tr>
+<td>Context overflow / degraded reasoning</td>
+<td>unbounded notes, repeated plans, oversized logs</td>
+<td>inspect recent context for duplication and low-signal bulk</td>
+</tr>
+<tr>
+<td><code>ECONNREFUSED</code> / timeout</td>
+<td>service unavailable or wrong port</td>
+<td>verify service health, URL, and port assumptions</td>
+</tr>
+<tr>
+<td><code>429</code> / quota exhaustion</td>
+<td>retry storm or missing backoff</td>
+<td>count repeated calls and inspect retry spacing</td>
+</tr>
+<tr>
+<td>file missing after write / stale diff</td>
+<td>race, wrong cwd, or branch drift</td>
+<td>re-check path, cwd, git status, and actual file existence</td>
+</tr>
+<tr>
+<td>tests still failing after “fix”</td>
+<td>wrong hypothesis</td>
+<td>isolate the exact failing test and re-derive the bug</td>
+</tr>
+</tbody>
+</table>
+<p>Diagnosis questions:</p>
+<ul>
+<li>is this a logic failure, state failure, environment failure, or policy failure?</li>
+<li>did the agent lose the real objective and start optimizing the wrong subtask?</li>
+<li>is the failure deterministic or transient?</li>
+<li>what is the smallest reversible action that would validate the diagnosis?</li>
+</ul>
+<h5>Phase 3: Contained Recovery</h5>
+<p>Recover with the smallest action that changes the diagnosis surface.</p>
+<p>Safe recovery actions:</p>
+<ul>
+<li>stop repeated retries and restate the hypothesis</li>
+<li>trim low-signal context and keep only the active goal, blockers, and evidence</li>
+<li>re-check the actual filesystem / branch / process state</li>
+<li>narrow the task to one failing command, one file, or one test</li>
+<li>switch from speculative reasoning to direct observation</li>
+<li>escalate to a human when the failure is high-risk or externally blocked</li>
+</ul>
+<p>Do not claim unsupported auto-healing actions like “reset agent state” or “update harness config” unless you are actually doing them through real tools in the current environment.</p>
+<p>Contained recovery checklist:</p>
+<pre><code class="language-markdown">## Recovery Action
+- Diagnosis chosen:
+- Smallest action taken:
+- Why this is safe:
+- What evidence would prove the fix worked:
+</code></pre>
+<h5>Phase 4: Introspection Report</h5>
+<p>End with a report that makes the recovery legible to the next agent or human.</p>
+<pre><code class="language-markdown">## Agent Self-Debug Report
+- Session / task:
+- Failure:
+- Root cause:
+- Recovery action:
+- Result: success | partial | blocked
+- Token / time burn risk:
+- Follow-up needed:
+- Preventive change to encode later:
+</code></pre>
+<h4>Recovery Heuristics</h4>
+<p>Prefer these interventions in order:</p>
+<ol>
+<li>Restate the real objective in one sentence.</li>
+<li>Verify the world state instead of trusting memory.</li>
+<li>Shrink the failing scope.</li>
+<li>Run one discriminating check.</li>
+<li>Only then retry.</li>
+</ol>
+<p>Bad pattern:</p>
+<ul>
+<li>retrying the same action three times with slightly different wording</li>
+</ul>
+<p>Good pattern:</p>
+<ul>
+<li>capture failure</li>
+<li>classify the pattern</li>
+<li>run one direct check</li>
+<li>change the plan only if the check supports it</li>
+</ul>
+<h4>Integration with ECC</h4>
+<ul>
+<li>Use <code>verification-loop</code> after recovery if code was changed.</li>
+<li>Use <code>continuous-learning-v2</code> when the failure pattern is worth turning into an instinct or later skill.</li>
+<li>Use <code>council</code> when the issue is not technical failure but decision ambiguity.</li>
+<li>Use <code>workspace-surface-audit</code> if the failure came from conflicting local state or repo drift.</li>
+</ul>
+<h4>Output Standard</h4>
+<p>When this skill is active, do not end with “I fixed it” alone.</p>
+<p>Always provide:</p>
+<ul>
+<li>the failure pattern</li>
+<li>the root-cause hypothesis</li>
+<li>the recovery action</li>
+<li>the evidence that the situation is now better or still blocked</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

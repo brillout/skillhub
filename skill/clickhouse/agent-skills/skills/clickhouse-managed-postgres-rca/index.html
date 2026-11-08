@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clickhouse-managed-postgres-rca · SkillHub</title>
+    <meta name="description" content="Use it when: a Postgres instance hosted on ClickHouse Cloud is slow, CPU-bound, low on throughput or thrashing its cache. It does: scrapes the instance&#039;s Prometheus metrics once, pulls per-query-pattern runtime, IO and call counts, and matches the signal to a known problem shape. You get: a write-up of symptom, evidence, hypothesis with any alternative cause it can&#039;t rule out, a short-term fix and long-term follow-ups. Doesn&#039;t: run DDL or cancel or terminate backends; you apply the fix. Can&#039;t see: query plans, per-table scan counters or vacuum and ANALYZE times, so it reasons from IO and timing. Needs: a ClickHouse Cloud API key and secret, plus the organization and service IDs." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=clickhouse%2Fagent-skills">clickhouse/agent-skills</a></p>
+      <div class="title-row"><h1>clickhouse-managed-postgres-rca</h1><button type="button" class="save" data-save="skill:clickhouse/agent-skills/skills/clickhouse-managed-postgres-rca" aria-pressed="false" aria-label="Save clickhouse-managed-postgres-rca" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>a Postgres instance hosted on ClickHouse Cloud is slow, CPU-bound, low on throughput or thrashing its cache</dd></div><div><dt>It does</dt><dd>scrapes the instance&#39;s Prometheus metrics once, pulls per-query-pattern runtime, IO and call counts, and matches the signal to a known problem shape</dd></div><div><dt>You get</dt><dd>a write-up of symptom, evidence, hypothesis with any alternative cause it can&#39;t rule out, a short-term fix and long-term follow-ups</dd></div><div><dt>Doesn&#39;t</dt><dd>run DDL or cancel or terminate backends; you apply the fix</dd></div><div><dt>Can&#39;t see</dt><dd>query plans, per-table scan counters or vacuum and ANALYZE times, so it reasons from IO and timing</dd></div><div><dt>Needs</dt><dd>a ClickHouse Cloud API key and secret, plus the organization and service IDs</dd></div></dl></section>
+      
+      <p class="note">Needs a ClickHouse Cloud API key and secret, plus the organization and service IDs of the Postgres instance.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>ClickHouse&#39;s own root-cause workflow for Postgres on ClickHouse Cloud, in six fixed steps. Because the two APIs it uses are in beta, it first fetches the OpenAPI spec and maps the field names it will cite instead of trusting memory. It scrapes the Prometheus endpoint once for current values: a cache hit ratio well below about 95%, or connections climbing toward the pool limit, is a signal on its own, and a second scrape for deadlock and rollback rates happens only when writes look congested. In parallel it pulls the Slow Query Patterns API, which totals calls, runtime, blocks and rows per normalized query. The combined signal is matched to one of three shapes, each with its own heuristic: a read-path full scan, an N+1 hot loop from the app, or write congestion. If nothing matches, it shows the top patterns and asks which workload you recognize rather than inventing a cause; if no pattern carries real duration, it stops and says what it looked at.</p>
+      <p class="muted">Summarizes <a href="https://github.com/clickhouse/agent-skills/tree/d3b2b5ba43a8b80c2d08858b68d53edc701b5ace/skills/clickhouse-managed-postgres-rca">the skill at d3b2b5b</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">clickhouse/</span><wbr><span class="word">agent-skills</span> <span class="word">--skill</span> <span class="word">clickhouse-managed-postgres-rca</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/clickhouse/agent-skills --skill clickhouse-managed-postgres-rca">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/clickhouse/agent-skills/clickhouse-managed-postgres-rca">skills.sh page</a> · <a href="https://github.com/clickhouse/agent-skills/tree/HEAD/skills/clickhouse-managed-postgres-rca">Source on GitHub</a> · <a href="/?repo=clickhouse%2Fagent-skills">All skills from clickhouse/agent-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>6,700 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>563 <span class="muted">clickhouse/agent-skills</span></dd></div><div><dt>First seen</dt><dd>Jun 8, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">53</div>
+      <div class="stat-delta">-57% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 124; week to Sep 27: 109; week to Oct 4: 97; week to Oct 11: 94; week to Oct 18: 76; week to Oct 25: 122; week to Nov 1: 81; week to Nov 8: 53. Use the left and right arrow keys to read each week."
+        data-values="124,109,97,94,76,122,81,53" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,11.3 71.1,15.6 103.7,16.6 136.3,23.0 168.9,6.7 201.4,21.3 234.0,31.2" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="31.2" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>124</td></tr><tr><td>Sep 27</td><td>109</td></tr><tr><td>Oct 4</td><td>97</td></tr><tr><td>Oct 11</td><td>94</td></tr><tr><td>Oct 18</td><td>76</td></tr><tr><td>Oct 25</td><td>122</td></tr><tr><td>Nov 1</td><td>81</td></tr><tr><td>Nov 8</td><td>53</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/?tag=category%3Adebugging">category:<wbr>debugging</a><a class="tag" data-tag="category:cloud" data-facet="category" title="Deploy, provision, observe and debug cloud apps." href="/?tag=category%3Acloud">category:<wbr>cloud</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Deploy, provision, observe and debug cloud apps.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/?tag=needs%3Aaccount">needs:<wbr>account</a></div>
+          <p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="databases" data-facet="topic" href="/?tag=databases">databases</a><a class="tag" data-tag="performance" data-facet="topic" href="/?tag=performance">performance</a><a class="tag" data-tag="debugging" data-facet="topic" href="/?tag=debugging">debugging</a><a class="tag" data-tag="observability" data-facet="topic" href="/?tag=observability">observability</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:clickhouse" data-facet="stack" href="/?tag=stack%3Aclickhouse">stack:<wbr>clickhouse</a><a class="tag" data-tag="stack:postgres" data-facet="stack" href="/?tag=stack%3Apostgres">stack:<wbr>postgres</a><a class="tag" data-tag="stack:prometheus" data-facet="stack" href="/?tag=stack%3Aprometheus">stack:<wbr>prometheus</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/clickhouse/agent-skills/blob/d3b2b5ba43a8b80c2d08858b68d53edc701b5ace/skills/clickhouse-managed-postgres-rca/SKILL.md">clickhouse/agent-skills at d3b2b5b</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: clickhouse-managed-postgres-rca
+description: MUST USE when investigating performance issues on a ClickHouse-managed Postgres instance. Provides an evidence-based RCA workflow that scrapes the Prometheus endpoint for system signal, pulls per-digest evidence from the Slow Query Patterns API, and recommends (does not apply) a fix.
+license: Apache-2.0
+metadata:
+  author: ClickHouse Inc
+  version: &#34;0.1.0&#34;</code></pre></details>
+        <div class="markdown"><h3>ClickHouse Managed Postgres RCA</h3>
+<h4>When to use</h4>
+<p>Trigger whenever a user reports slowness, high CPU, low
+throughput, cache thrash, or any unexplained pain on a
+ClickHouse-managed Postgres instance.</p>
+<h4>What you have access to</h4>
+<p>Two APIs on <code>https://api.clickhouse.cloud</code> (HTTP Basic auth
+using a ClickHouse Cloud API key/secret pair):</p>
+<ul>
+<li><strong>Prometheus metrics</strong> — operation <code>postgresInstancePrometheusGet</code>
+under the Prometheus tag. Returns Prometheus exposition format.
+System and workload metrics for one Postgres service.</li>
+<li><strong>Slow Query Patterns</strong> — operation <code>slowQueryPatternsGetList</code>
+under the Postgres tag. Returns per-digest latency, IO, and
+call statistics for normalized query patterns. <strong>Beta.</strong></li>
+</ul>
+<p>Both endpoints require an <code>organizationId</code> and a <code>serviceId</code> as
+path parameters. The user must supply both, plus the API
+key/secret pair.</p>
+<h4>What you do NOT have</h4>
+<ul>
+<li>Query plans / EXPLAIN output.</li>
+<li>Per-table scan-type counters (<code>seq_scan</code> / <code>idx_scan</code>).</li>
+<li>Autovacuum or last-ANALYZE timestamps.</li>
+</ul>
+<p>Reason from IO and timing signals, not from a plan tree.</p>
+<h4>Workflow</h4>
+<p>Six steps, in order. Do not skip ahead.</p>
+<p>Steps 2 and 3 only share auth — no data dependency between
+them. Run them in parallel (background curls, <code>&amp;</code> + <code>wait</code>) to
+cut wall time from sequential ~2s to ~1s.</p>
+<h5>1. Discover the live API shape</h5>
+<p>These endpoints are Beta — paths, params, and JSON field names
+can shift. Follow <code>rules/openapi-discovery.md</code> to:</p>
+<ol>
+<li>Fetch the OpenAPI spec from <code>https://api.clickhouse.cloud/v1</code>.</li>
+<li>Locate the two operations by <code>operationId</code>:
+<ul>
+<li><code>postgresInstancePrometheusGet</code> (Prometheus tag)</li>
+<li><code>slowQueryPatternsGetList</code> (Postgres tag)</li>
+</ul>
+</li>
+<li>Resolve their path templates, required query parameters,
+and (for the slow-query endpoint) the response schema.</li>
+<li>Build a session-scoped role map from the schema property
+descriptions: <code>{ semantic role → actual field name }</code>.</li>
+</ol>
+<p>Use the resolved names in every subsequent request and citation.
+Never hardcode field names from memory.</p>
+<h5>2. Scrape Prom once for system gauges</h5>
+<p>Follow <code>rules/prometheus-scrape.md</code>. <strong>One scrape, no wait.</strong>
+You're after gauges (current values) that don't need a delta:
+<code>CacheHitRatio</code>, <code>ActiveConnections</code>, <code>MemoryUsedPercent</code>,
+<code>FilesystemUsedPercent</code>.</p>
+<p>A <code>CacheHitRatio</code> well below ~95% on a workload that should
+fit in cache is a real signal on its own. Climbing
+<code>ActiveConnections</code> toward the pool ceiling is a real signal
+on its own. These don't need rate-of-change.</p>
+<p>A second scrape for counter deltas is <strong>opt-in</strong>, used only
+when Step 4 triage points at write-congestion (where deadlock
+and rollback <em>rates</em> matter and the Slow Query Patterns API
+can't substitute). For the read-path case (the most common
+RCA shape) the single scrape is enough.</p>
+<h5>3. Pull top slow query patterns</h5>
+<p>Request the slow query patterns. Follow
+<code>rules/slow-query-patterns-fields.md</code> for the fields that
+matter and how to read them. This is the primary diagnostic —
+it returns per-pattern accumulated totals (call count, runtime,
+blocks, rows) over the window you request, which is the
+&quot;rate-of-change&quot; data you'd otherwise derive from two Prom
+scrapes — but per query and without waiting.</p>
+<p>If no patterns return a meaningful <code>totalDurationUs</code>, the
+report may be overstated or the issue isn't query-shaped.
+Stop and tell the user what you looked at.</p>
+<h5>4. Triage: pick the right heuristic</h5>
+<p>Follow <code>rules/triage.md</code>. Match the combined Prom + slow-query
+signal to one of the heuristic shapes. Each shape points to a
+specific heuristic file:</p>
+<ul>
+<li><code>rules/heuristic-full-scan.md</code> — read-path full scan.</li>
+<li><code>rules/heuristic-hot-loop.md</code> — N+1 / hot loop from the app.</li>
+<li><code>rules/heuristic-write-congestion.md</code> — deadlocks, slow
+writes, high rollback rate.</li>
+</ul>
+<p>If the signal does not match any shape cleanly, do not invent
+a hypothesis. Surface the top patterns and ask the user which
+workload they recognize. New heuristics are welcome as PRs.</p>
+<h5>5. Reason, then recommend</h5>
+<p>Use the format in <code>rules/output-template.md</code>. Always include:
+symptom, evidence, hypothesis (noting any alternative cause
+you cannot rule out from this surface alone), short-term fix,
+and long-term follow-ups.</p>
+<h5>6. Do not apply the fix</h5>
+<p>Follow <code>rules/recommend-only.md</code>. Never run DDL. Never call
+<code>pg_cancel_backend</code> or <code>pg_terminate_backend</code>. Write the
+recommendation, explain why, and let the human apply it.</p>
+<h4>Full Compiled Document</h4>
+<p>For the complete guide with every rule expanded in a single
+context load: <code>AGENTS.md</code>.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

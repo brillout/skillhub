@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>homelab-network-setup · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re planning a home or lab network, outgrowing the ISP router, or fighting double NAT, flaky Wi-Fi or servers that change address. It does: separates gateway, switch and access point roles, compares gateway options and lays out an IP plan that&#039;s ready for VLANs later. You get: a subnet per device group, DHCP reservation and local DNS conventions, and a list of mistakes to avoid. Keep in mind: it advises and gives example plans; it doesn&#039;t configure any device." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <div class="title-row"><h1>homelab-network-setup</h1><button type="button" class="save" data-save="skill:affaan-m/ecc/skills/homelab-network-setup" aria-pressed="false" aria-label="Save homelab-network-setup" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re planning a home or lab network, outgrowing the ISP router, or fighting double NAT, flaky Wi-Fi or servers that change address</dd></div><div><dt>It does</dt><dd>separates gateway, switch and access point roles, compares gateway options and lays out an IP plan that&#39;s ready for VLANs later</dd></div><div><dt>You get</dt><dd>a subnet per device group, DHCP reservation and local DNS conventions, and a list of mistakes to avoid</dd></div><div><dt>Keep in mind</dt><dd>it advises and gives example plans; it doesn&#39;t configure any device</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A planning guide for home and small-lab networks that should grow without a rebuild. It starts by separating roles: the modem, a gateway that handles NAT, firewall, DHCP and DNS, a managed switch, access points for Wi-Fi only, then servers and clients. A table weighs gateway options, from the ISP router through UniFi, OPNsense or pfSense and MikroTik to a Linux router. The IP plan avoids 192.168.1.0/24, which clashes with hotels, offices and ISP routers once you use a VPN, and gives each group its own range (trusted clients, IoT, servers, guest, management) with the gateway on .1, infrastructure on .2 to .49 and the DHCP pool from .50. Local names go under home.arpa, the name reserved for home networks. Anything you SSH into, bookmark or monitor gets a DHCP reservation, and a Pi-hole gets its address before DHCP points clients at it. It favours wired access point backhaul, PoE switches, labelled cables and UPS power, and walks through a beginner upgrade and a VLAN-ready plan.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/homelab-network-setup">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">affaan-m/</span><wbr><span class="word">ecc</span> <span class="word">--skill</span> <span class="word">homelab-network-setup</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill homelab-network-setup">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/homelab-network-setup">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/homelab-network-setup">Source on GitHub</a> · <a href="/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,400 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>299,252 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">482</div>
+      <div class="stat-delta">+64% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 294; week to Sep 27: 268; week to Oct 4: 161; week to Oct 11: 150; week to Oct 18: 231; week to Oct 25: 411; week to Nov 1: 411; week to Nov 8: 482. Use the left and right arrow keys to read each week."
+        data-values="294,268,161,150,231,411,411,482" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.2 38.6,25.5 71.1,35.3 103.7,36.3 136.3,28.9 168.9,12.5 201.4,12.5 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>294</td></tr><tr><td>Sep 27</td><td>268</td></tr><tr><td>Oct 4</td><td>161</td></tr><tr><td>Oct 11</td><td>150</td></tr><tr><td>Oct 18</td><td>231</td></tr><tr><td>Oct 25</td><td>411</td></tr><tr><td>Nov 1</td><td>411</td></tr><tr><td>Nov 8</td><td>482</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:networking" data-facet="category" title="Computer networks: home labs, VLANs, VPNs, DNS, routing and network diagnostics." href="/?tag=category%3Anetworking">category:<wbr>networking</a></div>
+          <p class="tag-meaning">Computer networks: home labs, VLANs, VPNs, DNS, routing and network diagnostics.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/?tag=type%3Aguidelines">type:<wbr>guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="infrastructure" data-facet="topic" href="/?tag=infrastructure">infrastructure</a><a class="tag" data-tag="personal" data-facet="topic" href="/?tag=personal">personal</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/homelab-network-setup/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: homelab-network-setup
+description: Practical home and homelab network planning for gateways, switches, access points, IP ranges, DHCP reservations, DNS, cabling, and common beginner mistakes. Use when planning or fixing a home or homelab network — gateway, switch, AP, IP ranges, DHCP, DNS, or cabling.
+metadata:
+  origin: community</code></pre></details>
+        <div class="markdown"><h3>Homelab Network Setup</h3>
+<p>Use this skill to design a home or small-lab network that can grow without
+needing a full rebuild.</p>
+<h4>When to Use</h4>
+<ul>
+<li>Planning a new home network or redesigning an ISP-router-only setup.</li>
+<li>Choosing gateway, switch, and access point roles.</li>
+<li>Designing IP ranges, DHCP scopes, static reservations, and DNS.</li>
+<li>Preparing for future VLANs, Pi-hole, NAS, lab servers, or VPN access.</li>
+<li>Troubleshooting a new network that has double NAT, unstable Wi-Fi, or changing
+server addresses.</li>
+</ul>
+<h4>How It Works</h4>
+<p>Start by separating device roles:</p>
+<pre><code class="language-text">Internet
+  |
+Modem or ONT
+  |
+Gateway or router      NAT, firewall, DHCP, DNS, inter-VLAN routing
+  |
+Managed switch         wired clients, AP uplinks, optional VLAN trunks
+  |
+Access points          Wi-Fi only; ideally wired backhaul
+Servers and NAS        stable addresses, DNS names, monitoring
+Clients and IoT        DHCP pools, isolated later if VLANs are available
+</code></pre>
+<p>Pick a gateway that matches the operator, not just the feature checklist:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Best fit</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ISP router</td>
+<td>Basic internet only</td>
+<td>Limited control and often poor VLAN support</td>
+</tr>
+<tr>
+<td>UniFi gateway</td>
+<td>Managed home network</td>
+<td>Good UI, ecosystem lock-in</td>
+</tr>
+<tr>
+<td>OPNsense or pfSense</td>
+<td>Flexible homelab</td>
+<td>Strong VLAN, firewall, VPN, and DNS control</td>
+</tr>
+<tr>
+<td>MikroTik</td>
+<td>Advanced network users</td>
+<td>Powerful, but easy to misconfigure</td>
+</tr>
+<tr>
+<td>Linux router</td>
+<td>Tinkerers</td>
+<td>Document rollback before using as primary gateway</td>
+</tr>
+</tbody>
+</table>
+<h4>IP Plan</h4>
+<p>Avoid the most common default, <code>192.168.1.0/24</code>, when you expect to use VPNs.
+It often conflicts with hotels, offices, and ISP routers.</p>
+<pre><code class="language-text">Example small homelab plan:
+
+192.168.10.0/24  trusted clients
+192.168.20.0/24  IoT and media devices
+192.168.30.0/24  servers and NAS
+192.168.40.0/24  guest Wi-Fi
+192.168.99.0/24  network management
+
+Gateway convention: .1
+Infrastructure reservations: .2 through .49
+Dynamic DHCP pool: .50 through .240
+Spare room: .241 through .254
+</code></pre>
+<p>Use <code>home.arpa</code> for local names. It is reserved for home networks and avoids the
+leakage/conflict problems of ad hoc names like <code>home.lan</code>.</p>
+<pre><code class="language-text">nas.home.arpa
+pihole.home.arpa
+gateway.home.arpa
+switch-01.home.arpa
+</code></pre>
+<h4>DHCP And DNS</h4>
+<ul>
+<li>Use DHCP reservations for anything you SSH into, bookmark, monitor, or expose
+as a service.</li>
+<li>Hand out the gateway as DNS until a local resolver is intentionally deployed.</li>
+<li>If using Pi-hole or another DNS filter, give it a reservation first, then point
+DHCP DNS options at that address.</li>
+<li>Keep a small static/reserved range per subnet so replacements do not collide
+with dynamic leases.</li>
+</ul>
+<h4>Cabling And Wi-Fi</h4>
+<ul>
+<li>Prefer wired AP backhaul over mesh when you can run Ethernet.</li>
+<li>Use a PoE switch for APs and cameras if the budget allows it.</li>
+<li>Label both ends of each cable and keep a simple port map.</li>
+<li>Put the gateway, switch, DNS server, and NAS on UPS power if outages are common.</li>
+</ul>
+<h4>Examples</h4>
+<h5>Beginner Upgrade</h5>
+<p>Goal: Keep the ISP router but stabilize a small lab.</p>
+<ol>
+<li>Set DHCP reservations for NAS, Pi, and any SSH hosts.</li>
+<li>Move local names to <code>home.arpa</code>.</li>
+<li>Disable duplicate DHCP servers on secondary routers or APs.</li>
+<li>Wire the main AP instead of relying on wireless backhaul.</li>
+</ol>
+<h5>VLAN-Ready Plan</h5>
+<p>Goal: Prepare for future segmentation without enabling it immediately.</p>
+<ol>
+<li>Choose non-overlapping /24 ranges for trusted, IoT, servers, guest, and
+management.</li>
+<li>Reserve .1 for the gateway and .2-.49 for infrastructure on every subnet.</li>
+<li>Buy a gateway and switch that support VLANs and inter-VLAN firewall rules.</li>
+<li>Document which SSIDs and switch ports will eventually map to each network.</li>
+</ol>
+<h4>Anti-Patterns</h4>
+<ul>
+<li>Double NAT without a reason or documentation.</li>
+<li>Using <code>192.168.1.0/24</code> when VPN access is planned.</li>
+<li>Dynamic addresses for NAS, Pi-hole, Home Assistant, or other service hosts.</li>
+<li>Consumer routers repurposed as APs while their DHCP servers are still enabled.</li>
+<li>Flat networks with cameras, smart plugs, laptops, and servers all sharing the
+same trust boundary.</li>
+</ul>
+<h4>See Also</h4>
+<ul>
+<li>Skill: <code>network-interface-health</code></li>
+<li>Skill: <code>network-config-validation</code></li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

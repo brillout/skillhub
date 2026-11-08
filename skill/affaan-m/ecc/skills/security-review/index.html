@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>security-review · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re adding authentication, user input, secrets, API endpoints or payment features to a web app. It does: walks ten areas, from secrets and input validation to CSRF, rate limiting and dependencies, each with wrong and right code and checkboxes. You get: code written to the checklist, plus a 17-item pre-deployment checklist to clear before shipping. Unlike: getsentry&#039;s security-review, which hunts for exploitable bugs in existing code; this is a checklist applied while you build. Examples in: TypeScript with Next.js, Supabase, Zod, DOMPurify and express-rate-limit, plus a Solana wallet section." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <div class="title-row"><h1>security-review</h1><button type="button" class="save" data-save="skill:affaan-m/ecc/skills/security-review" aria-pressed="false" aria-label="Save security-review" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re adding authentication, user input, secrets, API endpoints or payment features to a web app</dd></div><div><dt>It does</dt><dd>walks ten areas, from secrets and input validation to CSRF, rate limiting and dependencies, each with wrong and right code and checkboxes</dd></div><div><dt>You get</dt><dd>code written to the checklist, plus a 17-item pre-deployment checklist to clear before shipping</dd></div><div><dt>Unlike</dt><dd>getsentry&#39;s security-review, which hunts for exploitable bugs in existing code; this is a checklist applied while you build</dd></div><div><dt>Examples in</dt><dd>TypeScript with Next.js, Supabase, Zod, DOMPurify and express-rate-limit, plus a Solana wallet section</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A checklist skill from ECC that comes into play when the agent touches security-sensitive code. Each of its ten sections pairs a FAIL and a PASS example with verification checkboxes: secrets in environment variables and out of git history; schema validation of every input and file upload; parameterized queries instead of string-built SQL; tokens in httpOnly cookies, authorization checks before sensitive operations and Supabase row level security; user HTML sanitized with DOMPurify and a strict Content Security Policy without unsafe-inline; CSRF tokens and SameSite cookies; rate limits, stricter on expensive endpoints; no passwords or card data in logs and no stack traces in error responses; Solana wallet-signature and transaction checks; and npm audit, committed lock files and Dependabot. It adds example tests for authentication, authorization, input validation and rate limiting, and a pre-deployment checklist that also covers HTTPS, security headers and CORS. It runs no scanner or tool of its own.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/security-review">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">affaan-m/</span><wbr><span class="word">ecc</span> <span class="word">--skill</span> <span class="word">security-review</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill security-review">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/security-review">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/security-review">Source on GitHub</a> · <a href="/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>7,400 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>299,252 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">740</div>
+      <div class="stat-delta">+95% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 380; week to Sep 27: 381; week to Oct 4: 271; week to Oct 11: 264; week to Oct 18: 332; week to Oct 25: 526; week to Nov 1: 540; week to Nov 8: 740. Use the left and right arrow keys to read each week."
+        data-values="380,381,271,264,332,526,540,740" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,27.4 38.6,27.3 71.1,33.9 103.7,34.3 136.3,30.3 168.9,18.7 201.4,17.9 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>380</td></tr><tr><td>Sep 27</td><td>381</td></tr><tr><td>Oct 4</td><td>271</td></tr><tr><td>Oct 11</td><td>264</td></tr><tr><td>Oct 18</td><td>332</td></tr><tr><td>Oct 25</td><td>526</td></tr><tr><td>Nov 1</td><td>540</td></tr><tr><td>Nov 8</td><td>740</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/?tag=category%3Asecurity">category:<wbr>security</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/?tag=type%3Aguidelines">type:<wbr>guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/?tag=security">security</a><a class="tag" data-tag="auth" data-facet="topic" href="/?tag=auth">auth</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:typescript" data-facet="stack" href="/?tag=stack%3Atypescript">stack:<wbr>typescript</a><a class="tag" data-tag="stack:nextjs" data-facet="stack" href="/?tag=stack%3Anextjs">stack:<wbr>nextjs</a><a class="tag" data-tag="stack:supabase" data-facet="stack" href="/?tag=stack%3Asupabase">stack:<wbr>supabase</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/security-review/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: security-review
+description: Use this skill when adding authentication, handling user input, working with secrets, creating API endpoints, or implementing payment/sensitive features. Provides comprehensive security checklist and patterns.
+metadata:
+  origin: ECC</code></pre></details>
+        <div class="markdown"><h3>Security Review Skill</h3>
+<p>This skill ensures all code follows security best practices and identifies potential vulnerabilities.</p>
+<h4>When to Activate</h4>
+<ul>
+<li>Implementing authentication or authorization</li>
+<li>Handling user input or file uploads</li>
+<li>Creating new API endpoints</li>
+<li>Working with secrets or credentials</li>
+<li>Implementing payment features</li>
+<li>Storing or transmitting sensitive data</li>
+<li>Integrating third-party APIs</li>
+</ul>
+<h4>Security Checklist</h4>
+<h5>1. Secrets Management</h5>
+<h6>FAIL: NEVER Do This</h6>
+<pre><code class="language-typescript">const apiKey = &quot;sk-proj-xxxxx&quot;  // Hardcoded secret
+const dbPassword = &quot;password123&quot; // In source code
+</code></pre>
+<h6>PASS: ALWAYS Do This</h6>
+<pre><code class="language-typescript">const apiKey = process.env.OPENAI_API_KEY
+const dbUrl = process.env.DATABASE_URL
+
+// Verify secrets exist
+if (!apiKey) {
+  throw new Error('OPENAI_API_KEY not configured')
+}
+</code></pre>
+<h6>Verification Steps</h6>
+<ul>
+<li>[ ] No hardcoded API keys, tokens, or passwords</li>
+<li>[ ] All secrets in environment variables</li>
+<li>[ ] <code>.env.local</code> in .gitignore</li>
+<li>[ ] No secrets in git history</li>
+<li>[ ] Production secrets in hosting platform (Vercel, Railway)</li>
+</ul>
+<h5>2. Input Validation</h5>
+<h6>Always Validate User Input</h6>
+<pre><code class="language-typescript">import { z } from 'zod'
+
+// Define validation schema
+const CreateUserSchema = z.object({
+  email: z.string().email(),
+  name: z.string().min(1).max(100),
+  age: z.number().int().min(0).max(150)
+})
+
+// Validate before processing
+export async function createUser(input: unknown) {
+  try {
+    const validated = CreateUserSchema.parse(input)
+    return await db.users.create(validated)
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return { success: false, errors: error.issues }
+    }
+    throw error
+  }
+}
+</code></pre>
+<h6>File Upload Validation</h6>
+<pre><code class="language-typescript">function validateFileUpload(file: File) {
+  // Size check (5MB max)
+  const maxSize = 5 * 1024 * 1024
+  if (file.size &gt; maxSize) {
+    throw new Error('File too large (max 5MB)')
+  }
+
+  // Type check
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif']
+  if (!allowedTypes.includes(file.type)) {
+    throw new Error('Invalid file type')
+  }
+
+  // Extension check
+  const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif']
+  const extension = file.name.toLowerCase().match(/\.[^.]+$/)?.[0]
+  if (!extension || !allowedExtensions.includes(extension)) {
+    throw new Error('Invalid file extension')
+  }
+
+  return true
+}
+</code></pre>
+<h6>Verification Steps</h6>
+<ul>
+<li>[ ] All user inputs validated with schemas</li>
+<li>[ ] File uploads restricted (size, type, extension)</li>
+<li>[ ] No direct use of user input in queries</li>
+<li>[ ] Whitelist validation (not blacklist)</li>
+<li>[ ] Error messages don't leak sensitive info</li>
+</ul>
+<h5>3. SQL Injection Prevention</h5>
+<h6>FAIL: NEVER Concatenate SQL</h6>
+<pre><code class="language-typescript">// DANGEROUS - SQL Injection vulnerability
+const query = `SELECT * FROM users WHERE email = '${userEmail}'`
+await db.query(query)
+</code></pre>
+<h6>PASS: ALWAYS Use Parameterized Queries</h6>
+<pre><code class="language-typescript">// Safe - parameterized query
+const { data } = await supabase
+  .from('users')
+  .select('*')
+  .eq('email', userEmail)
+
+// Or with raw SQL -- the value goes in the params array, never in the
+// string. Use your driver's placeholder syntax (Postgres numbers its
+// placeholders, MySQL uses &quot;?&quot;).
+await db.query(
+  'SELECT * FROM users WHERE email = ?',
+  [userEmail]
+)
+</code></pre>
+<p>&lt;!-- Do not write a literal dollar-sign-N placeholder anywhere in this file.
+Invoking this skill with arguments substitutes it away, and the example
+above then renders as concatenated SQL -- the exact anti-pattern this
+section warns against. Use &quot;?&quot; and name the Postgres form in prose. --&gt;</p>
+<h6>Verification Steps</h6>
+<ul>
+<li>[ ] All database queries use parameterized queries</li>
+<li>[ ] No string concatenation in SQL</li>
+<li>[ ] ORM/query builder used correctly</li>
+<li>[ ] Supabase queries properly sanitized</li>
+</ul>
+<h5>4. Authentication &amp; Authorization</h5>
+<h6>JWT Token Handling</h6>
+<pre><code class="language-typescript">// FAIL: WRONG: localStorage (vulnerable to XSS)
+localStorage.setItem('token', token)
+
+// PASS: CORRECT: httpOnly cookies
+res.setHeader('Set-Cookie',
+  `token=${token}; HttpOnly; Secure; SameSite=Strict; Max-Age=3600`)
+</code></pre>
+<h6>Authorization Checks</h6>
+<pre><code class="language-typescript">export async function deleteUser(userId: string, requesterId: string) {
+  // ALWAYS verify authorization first
+  const requester = await db.users.findUnique({
+    where: { id: requesterId }
+  })
+
+  if (requester.role !== 'admin') {
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 403 }
+    )
+  }
+
+  // Proceed with deletion
+  await db.users.delete({ where: { id: userId } })
+}
+</code></pre>
+<h6>Row Level Security (Supabase)</h6>
+<pre><code class="language-sql">-- Enable RLS on all tables
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+
+-- Users can only view their own data
+CREATE POLICY &quot;Users view own data&quot;
+  ON users FOR SELECT
+  USING (auth.uid() = id);
+
+-- Users can only update their own data
+CREATE POLICY &quot;Users update own data&quot;
+  ON users FOR UPDATE
+  USING (auth.uid() = id);
+</code></pre>
+<h6>Verification Steps</h6>
+<ul>
+<li>[ ] Tokens stored in httpOnly cookies (not localStorage)</li>
+<li>[ ] Authorization checks before sensitive operations</li>
+<li>[ ] Row Level Security enabled in Supabase</li>
+<li>[ ] Role-based access control implemented</li>
+<li>[ ] Session management secure</li>
+</ul>
+<h5>5. XSS Prevention</h5>
+<h6>Sanitize HTML</h6>
+<pre><code class="language-typescript">import DOMPurify from 'isomorphic-dompurify'
+
+// ALWAYS sanitize user-provided HTML
+function renderUserContent(html: string) {
+  const clean = DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'p'],
+    ALLOWED_ATTR: []
+  })
+  return &lt;div dangerouslySetInnerHTML={{ __html: clean }} /&gt;
+}
+</code></pre>
+<h6>Content Security Policy</h6>
+<p>Start strict and loosen only with a documented removal plan. Do not default to
+<code>'unsafe-inline'</code> or <code>'unsafe-eval'</code>; they neutralize much of CSP's protection
+and should be treated as temporary compatibility debt.</p>
+<pre><code class="language-typescript">// next.config.js
+const securityHeaders = [
+  {
+    key: 'Content-Security-Policy',
+    value: `
+      default-src 'self';
+      base-uri 'self';
+      object-src 'none';
+      frame-ancestors 'none';
+      script-src 'self';
+      style-src 'self';
+      img-src 'self' data: https:;
+      font-src 'self';
+      connect-src 'self' https://api.example.com;
+    `.replace(/\s{2,}/g, ' ').trim()
+  }
+]
+</code></pre>
+<h6>Verification Steps</h6>
+<ul>
+<li>[ ] User-provided HTML sanitized</li>
+<li>[ ] CSP headers configured</li>
+<li>[ ] No unvalidated dynamic content rendering</li>
+<li>[ ] React's built-in XSS protection used</li>
+</ul>
+<h5>6. CSRF Protection</h5>
+<h6>CSRF Tokens</h6>
+<pre><code class="language-typescript">import { csrf } from '@/lib/csrf'
+
+export async function POST(request: Request) {
+  const token = request.headers.get('X-CSRF-Token')
+
+  if (!csrf.verify(token)) {
+    return NextResponse.json(
+      { error: 'Invalid CSRF token' },
+      { status: 403 }
+    )
+  }
+
+  // Process request
+}
+</code></pre>
+<h6>SameSite Cookies</h6>
+<pre><code class="language-typescript">res.setHeader('Set-Cookie',
+  `session=${sessionId}; HttpOnly; Secure; SameSite=Strict`)
+</code></pre>
+<h6>Verification Steps</h6>
+<ul>
+<li>[ ] CSRF tokens on state-changing operations</li>
+<li>[ ] SameSite=Strict on all cookies</li>
+<li>[ ] Double-submit cookie pattern implemented</li>
+</ul>
+<h5>7. Rate Limiting</h5>
+<h6>API Rate Limiting</h6>
+<pre><code class="language-typescript">import rateLimit from 'express-rate-limit'
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // 100 requests per window
+  message: 'Too many requests'
+})
+
+// Apply to routes
+app.use('/api/', limiter)
+</code></pre>
+<h6>Expensive Operations</h6>
+<pre><code class="language-typescript">// Aggressive rate limiting for searches
+const searchLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 10, // 10 requests per minute
+  message: 'Too many search requests'
+})
+
+app.use('/api/search', searchLimiter)
+</code></pre>
+<h6>Verification Steps</h6>
+<ul>
+<li>[ ] Rate limiting on all API endpoints</li>
+<li>[ ] Stricter limits on expensive operations</li>
+<li>[ ] IP-based rate limiting</li>
+<li>[ ] User-based rate limiting (authenticated)</li>
+</ul>
+<h5>8. Sensitive Data Exposure</h5>
+<h6>Logging</h6>
+<pre><code class="language-typescript">// FAIL: WRONG: Logging sensitive data
+console.log('User login:', { email, password })
+console.log('Payment:', { cardNumber, cvv })
+
+// PASS: CORRECT: Redact sensitive data
+console.log('User login:', { email, userId })
+console.log('Payment:', { last4: card.last4, userId })
+</code></pre>
+<h6>Error Messages</h6>
+<pre><code class="language-typescript">// FAIL: WRONG: Exposing internal details
+catch (error) {
+  return NextResponse.json(
+    { error: error.message, stack: error.stack },
+    { status: 500 }
+  )
+}
+
+// PASS: CORRECT: Generic error messages
+catch (error) {
+  console.error('Internal error:', error)
+  return NextResponse.json(
+    { error: 'An error occurred. Please try again.' },
+    { status: 500 }
+  )
+}
+</code></pre>
+<h6>Verification Steps</h6>
+<ul>
+<li>[ ] No passwords, tokens, or secrets in logs</li>
+<li>[ ] Error messages generic for users</li>
+<li>[ ] Detailed errors only in server logs</li>
+<li>[ ] No stack traces exposed to users</li>
+</ul>
+<h5>9. Blockchain Security (Solana)</h5>
+<h6>Wallet Verification</h6>
+<pre><code class="language-typescript">import { verify } from '@solana/web3.js'
+
+async function verifyWalletOwnership(
+  publicKey: string,
+  signature: string,
+  message: string
+) {
+  try {
+    const isValid = verify(
+      Buffer.from(message),
+      Buffer.from(signature, 'base64'),
+      Buffer.from(publicKey, 'base64')
+    )
+    return isValid
+  } catch (error) {
+    return false
+  }
+}
+</code></pre>
+<h6>Transaction Verification</h6>
+<pre><code class="language-typescript">async function verifyTransaction(transaction: Transaction) {
+  // Verify recipient
+  if (transaction.to !== expectedRecipient) {
+    throw new Error('Invalid recipient')
+  }
+
+  // Verify amount
+  if (transaction.amount &gt; maxAmount) {
+    throw new Error('Amount exceeds limit')
+  }
+
+  // Verify user has sufficient balance
+  const balance = await getBalance(transaction.from)
+  if (balance &lt; transaction.amount) {
+    throw new Error('Insufficient balance')
+  }
+
+  return true
+}
+</code></pre>
+<h6>Verification Steps</h6>
+<ul>
+<li>[ ] Wallet signatures verified</li>
+<li>[ ] Transaction details validated</li>
+<li>[ ] Balance checks before transactions</li>
+<li>[ ] No blind transaction signing</li>
+</ul>
+<h5>10. Dependency Security</h5>
+<h6>Regular Updates</h6>
+<pre><code class="language-bash"># Check for vulnerabilities
+npm audit
+
+# Fix automatically fixable issues
+npm audit fix
+
+# Update dependencies
+npm update
+
+# Check for outdated packages
+npm outdated
+</code></pre>
+<h6>Lock Files</h6>
+<pre><code class="language-bash"># ALWAYS commit lock files
+git add package-lock.json
+
+# Use in CI/CD for reproducible builds
+npm ci  # Instead of npm install
+</code></pre>
+<h6>Verification Steps</h6>
+<ul>
+<li>[ ] Dependencies up to date</li>
+<li>[ ] No known vulnerabilities (npm audit clean)</li>
+<li>[ ] Lock files committed</li>
+<li>[ ] Dependabot enabled on GitHub</li>
+<li>[ ] Regular security updates</li>
+</ul>
+<h4>Security Testing</h4>
+<h5>Automated Security Tests</h5>
+<pre><code class="language-typescript">// Test authentication
+test('requires authentication', async () =&gt; {
+  const response = await fetch('/api/protected')
+  expect(response.status).toBe(401)
+})
+
+// Test authorization
+test('requires admin role', async () =&gt; {
+  const response = await fetch('/api/admin', {
+    headers: { Authorization: `Bearer ${userToken}` }
+  })
+  expect(response.status).toBe(403)
+})
+
+// Test input validation
+test('rejects invalid input', async () =&gt; {
+  const response = await fetch('/api/users', {
+    method: 'POST',
+    body: JSON.stringify({ email: 'not-an-email' })
+  })
+  expect(response.status).toBe(400)
+})
+
+// Test rate limiting
+test('enforces rate limits', async () =&gt; {
+  const requests = Array(101).fill(null).map(() =&gt;
+    fetch('/api/endpoint')
+  )
+
+  const responses = await Promise.all(requests)
+  const tooManyRequests = responses.filter(r =&gt; r.status === 429)
+
+  expect(tooManyRequests.length).toBeGreaterThan(0)
+})
+</code></pre>
+<h4>Pre-Deployment Security Checklist</h4>
+<p>Before ANY production deployment:</p>
+<ul>
+<li>[ ] <strong>Secrets</strong>: No hardcoded secrets, all in env vars</li>
+<li>[ ] <strong>Input Validation</strong>: All user inputs validated</li>
+<li>[ ] <strong>SQL Injection</strong>: All queries parameterized</li>
+<li>[ ] <strong>XSS</strong>: User content sanitized</li>
+<li>[ ] <strong>CSRF</strong>: Protection enabled</li>
+<li>[ ] <strong>Authentication</strong>: Proper token handling</li>
+<li>[ ] <strong>Authorization</strong>: Role checks in place</li>
+<li>[ ] <strong>Rate Limiting</strong>: Enabled on all endpoints</li>
+<li>[ ] <strong>HTTPS</strong>: Enforced in production</li>
+<li>[ ] <strong>Security Headers</strong>: CSP, X-Frame-Options configured</li>
+<li>[ ] <strong>Error Handling</strong>: No sensitive data in errors</li>
+<li>[ ] <strong>Logging</strong>: No sensitive data logged</li>
+<li>[ ] <strong>Dependencies</strong>: Up to date, no vulnerabilities</li>
+<li>[ ] <strong>Row Level Security</strong>: Enabled in Supabase</li>
+<li>[ ] <strong>CORS</strong>: Properly configured</li>
+<li>[ ] <strong>File Uploads</strong>: Validated (size, type)</li>
+<li>[ ] <strong>Wallet Signatures</strong>: Verified (if blockchain)</li>
+</ul>
+<h4>Resources</h4>
+<ul>
+<li><a href="https://owasp.org/www-project-top-ten/">OWASP Top 10</a></li>
+<li><a href="https://nextjs.org/docs/security">Next.js Security</a></li>
+<li><a href="https://supabase.com/docs/guides/auth">Supabase Security</a></li>
+<li><a href="https://portswigger.net/web-security">Web Security Academy</a></li>
+</ul>
+<hr>
+<p><strong>Remember</strong>: Security is not optional. One vulnerability can compromise the entire platform. When in doubt, err on the side of caution.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

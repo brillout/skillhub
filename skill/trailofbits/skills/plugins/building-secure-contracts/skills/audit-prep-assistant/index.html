@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>audit-prep-assistant · SkillHub</title>
+    <meta name="description" content="Use it when: an external security review starts in a week or two and you want your codebase ready for the auditors. It does: asks your goals and concerns, runs static analysis, measures coverage, finds dead code, checks scope and build steps, then drafts documentation. You get: an audit prep package: goals document, triaged static analysis, coverage report, scope list, tested build steps, a frozen commit, docs and a checklist. Unlike: audit-context-building, which is for auditors learning code they&#039;re about to review. Needs: your platform&#039;s analyzers, such as Slither, dylint or golangci-lint." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=trailofbits%2Fskills">trailofbits/skills</a></p>
+      <div class="title-row"><h1>audit-prep-assistant</h1><button type="button" class="save" data-save="skill:trailofbits/skills/plugins/building-secure-contracts/skills/audit-prep-assistant" aria-pressed="false" aria-label="Save audit-prep-assistant" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>an external security review starts in a week or two and you want your codebase ready for the auditors</dd></div><div><dt>It does</dt><dd>asks your goals and concerns, runs static analysis, measures coverage, finds dead code, checks scope and build steps, then drafts documentation</dd></div><div><dt>You get</dt><dd>an audit prep package: goals document, triaged static analysis, coverage report, scope list, tested build steps, a frozen commit, docs and a checklist</dd></div><div><dt>Unlike</dt><dd>audit-context-building, which is for auditors learning code they&#39;re about to review</dd></div><div><dt>Needs</dt><dd>your platform&#39;s analyzers, such as Slither, dylint or golangci-lint</dd></div></dl></section>
+      
+      <p class="note">Its cleanup step runs your platform&#39;s static analyzers, such as Slither for Solidity, dylint for Rust or golangci-lint for Go, so have them installed.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Trail of Bits&#39; pre-audit checklist, from its building-secure-contracts plugin, in four steps. First it helps write review goals: the security level you want, the areas that worry you and the worst case, documented for the assessment team. Second it clears easy issues: it runs static analysis, triages the findings and helps fix the simple ones while documenting accepted risks, measures test coverage and suggests tests for the gaps, and finds unused code and libraries. Third it makes the code accessible: a file list marking what&#39;s in and out of scope, build instructions tested on a fresh environment, a frozen commit on its own branch with locked dependencies, and copied or forked code marked so the review focuses on yours. Fourth it drafts documentation: flowcharts and sequence diagrams, user stories, on-chain and off-chain assumptions, actors and privileges, function invariants and parameter ranges, NatSpec for Solidity, and a glossary. It rejects shortcuts such as trusting an old static analysis run, &#34;coverage looks decent&#34; without measuring, or freezing the version at the last minute. A suggested timeline spreads the work over the two weeks before the audit.</p>
+      <p class="muted">Summarizes <a href="https://github.com/trailofbits/skills/tree/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/building-secure-contracts/skills/audit-prep-assistant">the skill at e4dd0bb</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">trailofbits/</span><wbr><span class="word">skills</span> <span class="word">--skill</span> <span class="word">audit-prep-assistant</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/trailofbits/skills --skill audit-prep-assistant">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/trailofbits/skills/audit-prep-assistant">skills.sh page</a> · <a href="https://github.com/trailofbits/skills/tree/HEAD/plugins/building-secure-contracts/skills/audit-prep-assistant">Source on GitHub</a> · <a href="/?repo=trailofbits%2Fskills">All skills from trailofbits/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>6,000 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>8,064 <span class="muted">trailofbits/skills</span></dd></div><div><dt>First seen</dt><dd>Jan 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">180</div>
+      <div class="stat-delta">+24% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 145; week to Sep 27: 136; week to Oct 4: 119; week to Oct 11: 106; week to Oct 18: 132; week to Oct 25: 142; week to Nov 1: 173; week to Nov 8: 180. Use the left and right arrow keys to read each week."
+        data-values="145,136,119,106,132,142,173,180" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,14.6 38.6,16.8 71.1,20.9 103.7,24.1 136.3,17.7 168.9,15.3 201.4,7.7 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>145</td></tr><tr><td>Sep 27</td><td>136</td></tr><tr><td>Oct 4</td><td>119</td></tr><tr><td>Oct 11</td><td>106</td></tr><tr><td>Oct 18</td><td>132</td></tr><tr><td>Oct 25</td><td>142</td></tr><tr><td>Nov 1</td><td>173</td></tr><tr><td>Nov 8</td><td>180</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/?tag=category%3Asecurity">category:<wbr>security</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/?tag=needs%3Acli">needs:<wbr>cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/?tag=security">security</a><a class="tag" data-tag="docs-writing" data-facet="topic" href="/?tag=docs-writing">docs-writing</a><a class="tag" data-tag="testing" data-facet="topic" href="/?tag=testing">testing</a><a class="tag" data-tag="code-quality" data-facet="topic" href="/?tag=code-quality">code-quality</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/building-secure-contracts/skills/audit-prep-assistant/SKILL.md">trailofbits/skills at e4dd0bb</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: audit-prep-assistant
+description: Prepares codebases for security review using Trail of Bits&#39; checklist. Helps set review goals, runs static analysis tools, increases test coverage, removes dead code, ensures accessibility, and generates documentation (flowcharts, user stories, inline comments). Use when preparing your own codebase to be audited by someone else, getting a repository review-ready before an external security review, deciding what to fix before auditors start, or asking what assessors need from a project. For understanding unfamiliar code you are about to audit, use audit-context-building instead.</code></pre></details>
+        <div class="markdown"><h3>Audit Prep Assistant</h3>
+<h4>Purpose</h4>
+<p>Helps prepare for a security review using Trail of Bits' checklist. A well-prepared codebase makes the review process smoother and more effective.</p>
+<p><strong>Use this</strong>: 1-2 weeks before your security audit</p>
+<hr>
+<h4>The Preparation Process</h4>
+<h5>Step 1: Set Review Goals</h5>
+<p>Helps define what you want from the review:</p>
+<p><strong>Key Questions</strong>:</p>
+<ul>
+<li>What's the overall security level you're aiming for?</li>
+<li>What areas concern you most?
+<ul>
+<li>Previous audit issues?</li>
+<li>Complex components?</li>
+<li>Fragile parts?</li>
+</ul>
+</li>
+<li>What's the worst-case scenario for your project?</li>
+</ul>
+<p>Documents goals to share with the assessment team.</p>
+<hr>
+<h5>Step 2: Resolve Easy Issues</h5>
+<p>Runs static analysis and helps fix low-hanging fruit:</p>
+<p><strong>Run Static Analysis</strong>:</p>
+<p>For Solidity:</p>
+<pre><code class="language-bash">slither . --exclude-dependencies
+</code></pre>
+<p>For Rust:</p>
+<pre><code class="language-bash">dylint --all
+</code></pre>
+<p>For Go:</p>
+<pre><code class="language-bash">golangci-lint run
+</code></pre>
+<p>For Go/Rust/C++:</p>
+<pre><code class="language-bash"># CodeQL and Semgrep checks
+</code></pre>
+<p>Then I'll:</p>
+<ul>
+<li>Triage all findings</li>
+<li>Help fix easy issues</li>
+<li>Document accepted risks</li>
+</ul>
+<p><strong>Increase Test Coverage</strong>:</p>
+<ul>
+<li>Analyze current coverage</li>
+<li>Identify untested code</li>
+<li>Suggest new tests</li>
+<li>Run full test suite</li>
+</ul>
+<p><strong>Remove Dead Code</strong>:</p>
+<ul>
+<li>Find unused functions/variables</li>
+<li>Identify unused libraries</li>
+<li>Locate stale features</li>
+<li>Suggest cleanup</li>
+</ul>
+<p><strong>Goal</strong>: Clean static analysis report, high test coverage, minimal dead code</p>
+<hr>
+<h5>Step 3: Ensure Code Accessibility</h5>
+<p>Helps make code clear and accessible:</p>
+<p><strong>Provide Detailed File List</strong>:</p>
+<ul>
+<li>List all files in scope</li>
+<li>Mark out-of-scope files</li>
+<li>Explain folder structure</li>
+<li>Document dependencies</li>
+</ul>
+<p><strong>Create Build Instructions</strong>:</p>
+<ul>
+<li>Write step-by-step setup guide</li>
+<li>Test on fresh environment</li>
+<li>Document dependencies and versions</li>
+<li>Verify build succeeds</li>
+</ul>
+<p><strong>Freeze Stable Version</strong>:</p>
+<ul>
+<li>Identify commit hash for review</li>
+<li>Create dedicated branch</li>
+<li>Tag release version</li>
+<li>Lock dependencies</li>
+</ul>
+<p><strong>Identify Boilerplate</strong>:</p>
+<ul>
+<li>Mark copied/forked code</li>
+<li>Highlight your modifications</li>
+<li>Document third-party code</li>
+<li>Focus review on your code</li>
+</ul>
+<hr>
+<h5>Step 4: Generate Documentation</h5>
+<p>Helps create documentation:</p>
+<p><strong>Flowcharts and Sequence Diagrams</strong>:</p>
+<ul>
+<li>Map primary workflows</li>
+<li>Show component relationships</li>
+<li>Visualize data flow</li>
+<li>Identify critical paths</li>
+</ul>
+<p><strong>User Stories</strong>:</p>
+<ul>
+<li>Define user roles</li>
+<li>Document use cases</li>
+<li>Explain interactions</li>
+<li>Clarify expectations</li>
+</ul>
+<p><strong>On-chain/Off-chain Assumptions</strong>:</p>
+<ul>
+<li>Data validation procedures</li>
+<li>Oracle information</li>
+<li>Bridge assumptions</li>
+<li>Trust boundaries</li>
+</ul>
+<p><strong>Actors and Privileges</strong>:</p>
+<ul>
+<li>List all actors</li>
+<li>Document roles</li>
+<li>Define privileges</li>
+<li>Map access controls</li>
+</ul>
+<p><strong>External Developer Docs</strong>:</p>
+<ul>
+<li>Link docs to code</li>
+<li>Keep synchronized</li>
+<li>Explain architecture</li>
+<li>Document APIs</li>
+</ul>
+<p><strong>Function Documentation</strong>:</p>
+<ul>
+<li>System and function invariants</li>
+<li>Parameter ranges (min/max values)</li>
+<li>Arithmetic formulas and precision loss</li>
+<li>Complex logic explanations</li>
+<li>NatSpec for Solidity</li>
+</ul>
+<p><strong>Glossary</strong>:</p>
+<ul>
+<li>Define domain terms</li>
+<li>Explain acronyms</li>
+<li>Consistent terminology</li>
+<li>Business logic concepts</li>
+</ul>
+<p><strong>Video Walkthroughs</strong> (optional):</p>
+<ul>
+<li>Complex workflows</li>
+<li>Areas of concern</li>
+<li>Architecture overview</li>
+</ul>
+<hr>
+<h4>How I Work</h4>
+<p>When invoked, I will:</p>
+<ol>
+<li><strong>Help set review goals</strong> - Ask about concerns and document them</li>
+<li><strong>Run static analysis</strong> - Execute appropriate tools for your platform</li>
+<li><strong>Analyze test coverage</strong> - Identify gaps and suggest improvements</li>
+<li><strong>Find dead code</strong> - Search for unused code and libraries</li>
+<li><strong>Review accessibility</strong> - Check build instructions and scope clarity</li>
+<li><strong>Generate documentation</strong> - Create flowcharts, user stories, glossaries</li>
+<li><strong>Create prep checklist</strong> - Track what's done and what's remaining</li>
+</ol>
+<p>Adapts based on:</p>
+<ul>
+<li>Your platform (Solidity, Rust, Go, etc.)</li>
+<li>Available tools</li>
+<li>Existing documentation</li>
+<li>Review timeline</li>
+</ul>
+<hr>
+<h4>Rationalizations (Do Not Skip)</h4>
+<table>
+<thead>
+<tr>
+<th>Rationalization</th>
+<th>Why It's Wrong</th>
+<th>Required Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;README covers setup, no need for detailed build instructions&quot;</td>
+<td>READMEs assume context auditors don't have</td>
+<td>Test build on fresh environment, document every dependency version</td>
+</tr>
+<tr>
+<td>&quot;Static analysis already ran, no need to run again&quot;</td>
+<td>Codebase changed since last run</td>
+<td>Execute static analysis tools, generate fresh report</td>
+</tr>
+<tr>
+<td>&quot;Test coverage looks decent&quot;</td>
+<td>&quot;Looks decent&quot; isn't measured coverage</td>
+<td>Run coverage tools, identify specific untested code paths</td>
+</tr>
+<tr>
+<td>&quot;Not much dead code to worry about&quot;</td>
+<td>Dead code hides during manual review</td>
+<td>Use automated detection tools to find unused functions/variables</td>
+</tr>
+<tr>
+<td>&quot;Architecture is straightforward, no diagrams needed&quot;</td>
+<td>Text descriptions miss visual patterns</td>
+<td>Generate actual flowcharts and sequence diagrams</td>
+</tr>
+<tr>
+<td>&quot;Can freeze version right before audit&quot;</td>
+<td>Last-minute freezing creates rushed handoff</td>
+<td>Identify and document commit hash now, create dedicated branch</td>
+</tr>
+<tr>
+<td>&quot;Terms are self-explanatory&quot;</td>
+<td>Domain knowledge isn't universal</td>
+<td>Create comprehensive glossary with all domain-specific terms</td>
+</tr>
+<tr>
+<td>&quot;I'll do this step later&quot;</td>
+<td>Steps build on each other - skipping creates gaps</td>
+<td>Complete all 4 steps sequentially, track progress with checklist</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4>Example Output</h4>
+<p>When I finish helping you prepare, you'll have concrete deliverables like:</p>
+<pre><code>=== AUDIT PREP PACKAGE ===
+
+Project: DeFi DEX Protocol
+Audit Date: March 15, 2024
+Preparation Status: Complete
+
+---
+
+## REVIEW GOALS DOCUMENT
+
+Security Objectives:
+- Verify economic security of liquidity pool swaps
+- Validate oracle manipulation resistance
+- Assess flash loan attack vectors
+
+Areas of Concern:
+1. Complex AMM pricing calculation (src/SwapRouter.sol:89-156)
+2. Multi-hop swap routing logic (src/Router.sol)
+3. Oracle price aggregation (src/PriceOracle.sol:45-78)
+
+Worst-Case Scenario:
+- Flash loan attack drains liquidity pools via oracle manipulation
+
+Questions for Auditors:
+- Can the AMM pricing model produce negative slippage under edge cases?
+- Is the slippage protection sufficient to prevent sandwich attacks?
+- How resilient is the system to temporary oracle failures?
+
+---
+
+## STATIC ANALYSIS REPORT
+
+Slither Scan Results:
+✓ High: 0 issues
+✓ Medium: 0 issues
+⚠ Low: 2 issues (triaged - documented in TRIAGE.md)
+ℹ Info: 5 issues (code style, acceptable)
+
+Tool: slither . --exclude-dependencies
+Date: March 1, 2024
+Status: CLEAN (all critical issues resolved)
+
+---
+
+## TEST COVERAGE REPORT
+
+Overall Coverage: 94%
+- Statements: 1,245 / 1,321 (94%)
+- Branches: 456 / 498 (92%)
+- Functions: 89 / 92 (97%)
+
+Uncovered Areas:
+- Emergency pause admin functions (tested manually)
+- Governance migration path (one-time use)
+
+Command: forge coverage
+Status: EXCELLENT
+
+---
+
+## CODE SCOPE
+
+In-Scope Files (8):
+✓ src/SwapRouter.sol (456 lines)
+✓ src/LiquidityPool.sol (234 lines)
+✓ src/PairFactory.sol (389 lines)
+✓ src/PriceOracle.sol (167 lines)
+✓ src/LiquidityManager.sol (298 lines)
+✓ src/Governance.sol (201 lines)
+✓ src/FlashLoan.sol (145 lines)
+✓ src/RewardsDistributor.sol (178 lines)
+
+Out-of-Scope:
+- lib/ (OpenZeppelin, external dependencies)
+- test/ (test contracts)
+- scripts/ (deployment scripts)
+
+Total In-Scope: 2,068 lines of Solidity
+
+---
+
+## BUILD INSTRUCTIONS
+
+Prerequisites:
+- Foundry 0.2.0+
+- Node.js 18+
+- Git
+
+Setup:
+```bash
+git clone https://github.com/project/repo.git
+cd repo
+git checkout audit-march-2024  # Frozen branch
+forge install
+forge build
+forge test
+</code></pre>
+<p>Verification:
+✓ Build succeeds without errors
+✓ All 127 tests pass
+✓ No warnings from compiler</p>
+<hr>
+<h4>DOCUMENTATION</h4>
+<p>Generated Artifacts:
+✓ ARCHITECTURE.md - System overview with diagrams
+✓ USER_STORIES.md - 12 user interaction flows
+✓ GLOSSARY.md - 34 domain terms defined
+✓ docs/diagrams/contract-interactions.png
+✓ docs/diagrams/swap-flow.png
+✓ docs/diagrams/state-machine.png</p>
+<p>NatSpec Coverage: 100% of public functions</p>
+<hr>
+<h4>DEPLOYMENT INFO</h4>
+<p>Network: Ethereum Mainnet
+Commit: abc123def456 (audit-march-2024 branch)
+Deployed Contracts:</p>
+<ul>
+<li>SwapRouter: 0x1234...</li>
+<li>PriceOracle: 0x5678...
+[... etc]</li>
+</ul>
+<hr>
+<p>PACKAGE READY FOR AUDIT ✓
+Next Step: Share with Trail of Bits assessment team</p>
+<pre><code>
+---
+
+## What You'll Get
+
+**Review Goals Document**:
+- Security objectives
+- Areas of concern
+- Worst-case scenarios
+- Questions for auditors
+
+**Clean Codebase**:
+- Triaged static analysis (or clean report)
+- High test coverage
+- No dead code
+- Clear scope
+
+**Accessibility Package**:
+- File list with scope
+- Build instructions
+- Frozen commit/branch
+- Boilerplate identified
+
+**Documentation Suite**:
+- Flowcharts and diagrams
+- User stories
+- Architecture docs
+- Actor/privilege map
+- Inline code comments
+- Glossary
+- Video walkthroughs (if created)
+
+**Audit Prep Checklist**:
+- [ ] Review goals documented
+- [ ] Static analysis clean/triaged
+- [ ] Test coverage &gt;80%
+- [ ] Dead code removed
+- [ ] Build instructions verified
+- [ ] Stable version frozen
+- [ ] Flowcharts created
+- [ ] User stories documented
+- [ ] Assumptions documented
+- [ ] Actors/privileges listed
+- [ ] Function docs complete
+- [ ] Glossary created
+
+---
+
+## Timeline
+
+**2 weeks before audit**:
+- Set review goals
+- Run static analysis
+- Start fixing issues
+
+**1 week before audit**:
+- Increase test coverage
+- Remove dead code
+- Freeze stable version
+- Start documentation
+
+**Few days before audit**:
+- Complete documentation
+- Verify build instructions
+- Create final checklist
+- Send package to auditors
+
+---
+
+## Ready to Prep
+
+Let me know when you're ready and I'll help you prepare for your security review!
+</code></pre>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

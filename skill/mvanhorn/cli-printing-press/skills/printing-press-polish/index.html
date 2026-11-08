@@ -1,0 +1,1246 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>printing-press-polish · SkillHub</title>
+    <meta name="description" content="Use it when: a CLI printed by printing-press needs to pass verification and be publish-ready, after a run or on any CLI in your press library. It does: runs dogfood, verify, workflow and skill checks, a scorecard, go vet and gosec, then fixes issues in priority order, security findings first. You get: a before-and-after table and a ship, ship-with-gaps or hold verdict, with a Known Gaps section in the README when gaps remain. Runs: on its own without asking before each fix, only inside the CLI&#039;s folder, at most three passes. Unlike: printing-press-retro, which files findings against the Printing Press itself; polish fixes the printed CLI. Publishing: when you run it directly, it offers a publish command for your next message, never publishing in the same turn." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=mvanhorn%2Fcli-printing-press">mvanhorn/cli-printing-press</a> <span aria-hidden="true">/</span> <a href="/bundle/mvanhorn/cli-printing-press/">CLI Printing Press</a></p>
+      <div class="title-row"><h1>printing-press-polish</h1><button type="button" class="save" data-save="skill:mvanhorn/cli-printing-press/skills/printing-press-polish" aria-pressed="false" aria-label="Save printing-press-polish" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>a CLI printed by printing-press needs to pass verification and be publish-ready, after a run or on any CLI in your press library</dd></div><div><dt>It does</dt><dd>runs dogfood, verify, workflow and skill checks, a scorecard, go vet and gosec, then fixes issues in priority order, security findings first</dd></div><div><dt>You get</dt><dd>a before-and-after table and a ship, ship-with-gaps or hold verdict, with a Known Gaps section in the README when gaps remain</dd></div><div><dt>Runs</dt><dd>on its own without asking before each fix, only inside the CLI&#39;s folder, at most three passes</dd></div><div><dt>Unlike</dt><dd>printing-press-retro, which files findings against the Printing Press itself; polish fixes the printed CLI</dd></div><div><dt>Publishing</dt><dd>when you run it directly, it offers a publish command for your next message, never publishing in the same turn</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 3 of 9 in the <a href="/bundle/mvanhorn/cli-printing-press/">CLI Printing Press</a> bundle · Before it: <a href="/skill/mvanhorn/cli-printing-press/skills/printing-press-output-review/">printing-press-output-review</a> · After it: <a href="/skill/mvanhorn/cli-printing-press/skills/printing-press-score/">printing-press-score</a></p>
+    <p class="note">Only works inside its bundle: Invokes printing-press-output-review during its checks, and works only on CLIs printing-press generated. Install <a href="/bundle/mvanhorn/cli-printing-press/">CLI Printing Press</a> instead.</p>
+      <p class="note">Works only on CLIs printed by printing-press, with its cli-printing-press binary and Go. It fixes without asking, only inside the CLI&#39;s folder.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>The quality pass of CLI Printing Press, which the printing-press skill runs on every generation and you can run yourself on a CLI in your library. It runs in a forked context, so its diagnostic noise stays out of the conversation that called it. First it compares your copy with any local clone of the public library and asks whether to sync when they differ. It builds the CLI, runs the press&#39;s dogfood, verify, workflow-verify, verify-skill and scorecard checks plus go vet and gosec, and asks the repo&#39;s printing-press-output-review skill for a plausibility review of the output. It then fixes issues in priority order: security static-analysis findings, verify failures, dead code, the CLI description and README, mismatches between the CLI and its SKILL.md, remaining dogfood issues, MCP tool quality and a customer-data check. It adds no features and doesn&#39;t touch the generator. A ship verdict needs at least 80% on verify and 75 on the scorecard with every hard gate clear; ship-with-gaps needs 65 and 65 and a Known Gaps section in the README. It is told never to add fake commands, tests or boilerplate just to raise a score.</p>
+      <p class="muted">Summarizes <a href="https://github.com/mvanhorn/cli-printing-press/tree/94ce80e35cbc516cbab1b80f54d96ca419958ca0/skills/printing-press-polish">the skill at 94ce80e</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">mvanhorn/</span><wbr><span class="word">cli-printing-press</span> <span class="word">--skill</span> <span class="word">printing-press-polish</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/mvanhorn/cli-printing-press --skill printing-press-polish">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/mvanhorn/cli-printing-press/printing-press-polish">skills.sh page</a> · <a href="https://github.com/mvanhorn/cli-printing-press/tree/HEAD/skills/printing-press-polish">Source on GitHub</a> · <a href="/?repo=mvanhorn%2Fcli-printing-press">All skills from mvanhorn/cli-printing-press</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>7,100 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>4,932 <span class="muted">mvanhorn/cli-printing-press</span></dd></div><div><dt>First seen</dt><dd>May 7, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">149</div>
+      <div class="stat-delta">-6% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 158; week to Sep 27: 145; week to Oct 4: 96; week to Oct 11: 111; week to Oct 18: 128; week to Oct 25: 129; week to Nov 1: 152; week to Nov 8: 149. Use the left and right arrow keys to read each week."
+        data-values="158,145,96,111,128,129,152,149" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,9.6 71.1,23.3 103.7,19.1 136.3,14.4 168.9,14.1 201.4,7.7 234.0,8.5" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="8.5" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>158</td></tr><tr><td>Sep 27</td><td>145</td></tr><tr><td>Oct 4</td><td>96</td></tr><tr><td>Oct 11</td><td>111</td></tr><tr><td>Oct 18</td><td>128</td></tr><tr><td>Oct 25</td><td>129</td></tr><tr><td>Nov 1</td><td>152</td></tr><tr><td>Nov 8</td><td>149</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/?tag=category%3Aengineering">category:<wbr>engineering</a><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/?tag=category%3Adebugging">category:<wbr>debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/?tag=needs%3Acli">needs:<wbr>cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="code-quality" data-facet="topic" href="/?tag=code-quality">code-quality</a><a class="tag" data-tag="verification" data-facet="topic" href="/?tag=verification">verification</a><a class="tag" data-tag="testing" data-facet="topic" href="/?tag=testing">testing</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:go" data-facet="stack" href="/?tag=stack%3Ago">stack:<wbr>go</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/mvanhorn/cli-printing-press/blob/94ce80e35cbc516cbab1b80f54d96ca419958ca0/skills/printing-press-polish/SKILL.md">mvanhorn/cli-printing-press at 94ce80e</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: printing-press-polish
+description: &#62;
+  Polish a generated CLI to pass verification and become publish-ready. Runs
+  diagnostics (dogfood, verify, scorecard, go vet, gosec), automatically fixes
+  all issues (verify failures, static-analysis findings, dead code,
+  descriptions, README, MCP tool quality), reports the before/after delta, and
+  offers to publish. Use after any /printing-press run, or on any CLI in
+  $PRESS_LIBRARY/. Trigger phrases: &#34;polish&#34;, &#34;improve the CLI&#34;, &#34;fix verify&#34;,
+  &#34;make it publish-ready&#34;, &#34;clean up the CLI&#34;, &#34;get this ready to ship&#34;.
+context: fork
+min-binary-version: &#34;4.0.0&#34;
+allowed-tools:
+  - Bash
+  - Read
+  - Glob
+  - Grep
+  - Write
+  - Edit
+  - AskUserQuestion
+created_by: user</code></pre></details>
+        <div class="markdown"><h3>/printing-press-polish</h3>
+<p>Polish a generated CLI so it passes verification and is ready to publish.</p>
+<p>The retro improves the Printing Press. Polish improves the generated CLI. This skill runs in a forked context (<code>context: fork</code>) so its diagnostic and fix loop doesn't pollute the caller — the diagnostic spam, fix iterations, and re-diagnose noise stay scoped to the polish session, and the caller receives a clean summary.</p>
+<pre><code class="language-bash">/printing-press-polish redfin
+/printing-press-polish redfin-pp-cli
+/printing-press-polish &quot;$PRESS_LIBRARY/redfin&quot;
+</code></pre>
+<h4>When to run</h4>
+<p>After any <code>/printing-press</code> generation, especially when:</p>
+<ul>
+<li>The shipcheck verdict is <code>ship-with-gaps</code></li>
+<li>The verify pass rate is below 80%</li>
+<li>The scorecard is below 85</li>
+<li>You want the CLI publish-ready in one pass</li>
+</ul>
+<p>Can also be run standalone on any CLI in <code>$PRESS_LIBRARY/</code>.</p>
+<h4>Setup</h4>
+<pre><code class="language-bash"># min-binary-version: 4.0.0
+
+PRESS_HOME=&quot;${PRINTING_PRESS_HOME:-$HOME/printing-press}&quot;
+PRESS_LIBRARY=&quot;$PRESS_HOME/library&quot;
+
+_pp_check_disk_space() {
+  _pp_disk_warn_kb=&quot;${PRINTING_PRESS_DISK_WARN_KB:-3145728}&quot;
+  _pp_disk_fail_kb=&quot;${PRINTING_PRESS_DISK_FAIL_KB:-524288}&quot;
+  case &quot;$_pp_disk_warn_kb$_pp_disk_fail_kb&quot; in
+    &quot;&quot;|*[!0-9]*) return 0 ;;
+  esac
+
+  _pp_disk_path=&quot;$PRESS_HOME&quot;
+  while [ ! -e &quot;$_pp_disk_path&quot; ] &amp;&amp; [ &quot;$_pp_disk_path&quot; != &quot;/&quot; ]; do
+    _pp_disk_path=&quot;$(dirname &quot;$_pp_disk_path&quot;)&quot;
+  done
+
+  _pp_disk_avail_kb=&quot;$(df -Pk &quot;$_pp_disk_path&quot; 2&gt;/dev/null | awk 'BEGIN {
+    if ((getline header) &lt;= 0 || (getline record) &lt;= 0) exit
+    field_count = split(record, fields)
+    if (field_count &gt;= 4) print fields[4]
+  }')&quot;
+  case &quot;$_pp_disk_avail_kb&quot; in
+    &quot;&quot;|*[!0-9]*) return 0 ;;
+  esac
+
+  if [ &quot;$_pp_disk_avail_kb&quot; -lt &quot;$_pp_disk_fail_kb&quot; ]; then
+    echo &quot;&quot;
+    echo &quot;[setup-error] Critically low disk space on the Printing Press workspace volume.&quot;
+    echo &quot;PRESS_DISK_PATH=$_pp_disk_path&quot;
+    echo &quot;PRESS_DISK_AVAIL_KB=$_pp_disk_avail_kb&quot;
+    echo &quot;PRESS_DISK_FAIL_KB=$_pp_disk_fail_kb&quot;
+    echo &quot;Free disk space or set PRINTING_PRESS_HOME to a volume with more room, then re-run this skill.&quot;
+    echo &quot;&quot;
+    return 1
+  fi
+
+  if [ &quot;$_pp_disk_avail_kb&quot; -lt &quot;$_pp_disk_warn_kb&quot; ]; then
+    echo &quot;&quot;
+    echo &quot;[low-disk] Printing Press workspace volume is low on free space.&quot;
+    echo &quot;PRESS_DISK_PATH=$_pp_disk_path&quot;
+    echo &quot;PRESS_DISK_AVAIL_KB=$_pp_disk_avail_kb&quot;
+    echo &quot;PRESS_DISK_WARN_KB=$_pp_disk_warn_kb&quot;
+    echo &quot;This flow may need several GiB for generated files, Go build cache, module downloads, or repository clones.&quot;
+    echo &quot;&quot;
+  fi
+}
+_pp_check_disk_space || { return 1 2&gt;/dev/null || exit 1; }
+
+# Mid-pipeline callers may pass printing_press_bin: &lt;abs-path&gt; in the args
+# bundle. Prefer it so forked polish runs keep using the parent skill's
+# preflight-selected binary instead of re-resolving through PATH.
+PRINTING_PRESS_BIN=&quot;${PRINTING_PRESS_BIN:-}&quot;
+if [ -z &quot;$PRINTING_PRESS_BIN&quot; ] &amp;&amp; [ -n &quot;${ARGUMENTS:-}&quot; ]; then
+  PRINTING_PRESS_BIN=&quot;$(printf '%s\n' &quot;$ARGUMENTS&quot; | sed -nE 's/^[[:space:]]*printing_press_bin:[[:space:]]*(.+)$/\1/p' | head -1)&quot;
+fi
+if [ -z &quot;$PRINTING_PRESS_BIN&quot; ]; then
+  PRINTING_PRESS_BIN=&quot;$(command -v cli-printing-press 2&gt;/dev/null || true)&quot;
+fi
+
+if [ -z &quot;$PRINTING_PRESS_BIN&quot; ]; then
+  echo &quot;cli-printing-press binary not found.&quot;
+  echo &quot;Install with:  go install github.com/mvanhorn/cli-printing-press/v4/cmd/cli-printing-press@latest&quot;
+  return 1 2&gt;/dev/null || exit 1
+fi
+if ! command -v go &gt;/dev/null 2&gt;&amp;1; then
+  echo &quot;&quot;
+  echo &quot;[setup-error] Go toolchain not found.&quot;
+  echo &quot;&quot;
+  echo &quot;This Printing Press flow runs Go-based build or validation commands.&quot;
+  echo &quot;Install Go 1.26.10 or newer from https://go.dev/dl/, then verify with:&quot;
+  echo &quot;  go version&quot;
+  echo &quot;Then re-run this skill.&quot;
+  echo &quot;&quot;
+  return 1 2&gt;/dev/null || exit 1
+fi
+echo &quot;PRINTING_PRESS_BIN=$PRINTING_PRESS_BIN&quot;
+
+_pp_semver_lt() {
+  if [ -z &quot;${PP_SEMVER_A:-}&quot; ] || [ -z &quot;${PP_SEMVER_B:-}&quot; ]; then
+    echo &quot;[setup-error] semver comparison inputs are missing.&quot; &gt;&amp;2
+    return 2
+  fi
+  awk -v a=&quot;${PP_SEMVER_A:-}&quot; -v b=&quot;${PP_SEMVER_B:-}&quot; 'BEGIN {
+    split(a, x, &quot;.&quot;); split(b, y, &quot;.&quot;)
+    for (i = 1; i &lt;= 3; i++) {
+      if ((x[i] + 0) &lt; (y[i] + 0)) exit 0
+      if ((x[i] + 0) &gt; (y[i] + 0)) exit 1
+    }
+    exit 1
+  }'
+}
+
+_pp_go_version_norm() {
+  printf '%s\n' &quot;${PP_GO_VERSION_INPUT:-}&quot; | sed -nE 's/.*go([0-9]+)\.([0-9]+)(\.([0-9]+))?.*/\1.\2.\4/p' | sed -E 's/\.$/.0/'
+}
+
+_pp_check_go_currency() {
+  _pp_go_installed=&quot;$(PP_GO_VERSION_INPUT=&quot;$(go env GOVERSION 2&gt;/dev/null)&quot; _pp_go_version_norm)&quot;
+  _pp_go_required=&quot;$(PP_GO_VERSION_INPUT=&quot;$(go version &quot;$PRINTING_PRESS_BIN&quot; 2&gt;/dev/null)&quot; _pp_go_version_norm)&quot;
+  PP_SEMVER_A=&quot;$_pp_go_installed&quot;
+  PP_SEMVER_B=&quot;$_pp_go_required&quot;
+  if [ -z &quot;$_pp_go_installed&quot; ] || [ -z &quot;$_pp_go_required&quot; ] || ! _pp_semver_lt; then
+    return 0
+  fi
+
+  echo &quot;&quot;
+  if [ &quot;${GOTOOLCHAIN:-auto}&quot; = &quot;local&quot; ]; then
+    echo &quot;[setup-error] Go $_pp_go_required or newer is required by this cli-printing-press binary (installed: $_pp_go_installed).&quot;
+    echo &quot;GOTOOLCHAIN=local disables automatic toolchain downloads, so later Go quality gates would fail.&quot;
+    echo &quot;Install Go $_pp_go_required or newer from https://go.dev/dl/, or unset GOTOOLCHAIN.&quot;
+    echo &quot;&quot;
+    return 1
+  fi
+
+  echo &quot;[go-toolchain-old] Go $_pp_go_required or newer is required by this cli-printing-press binary (installed: $_pp_go_installed).&quot;
+  echo &quot;PRESS_GO_INSTALLED=$_pp_go_installed&quot;
+  echo &quot;PRESS_GO_REQUIRED=$_pp_go_required&quot;
+  echo &quot;Default GOTOOLCHAIN behavior may download the required toolchain during Go commands.&quot;
+  echo &quot;&quot;
+  return 0
+}
+_pp_check_go_currency || { return 1 2&gt;/dev/null || exit 1; }
+</code></pre>
+<p>After setup, capture <code>PRINTING_PRESS_BIN=&lt;abs-path&gt;</code> and use that absolute path for every <code>cli-printing-press ...</code> invocation in this skill. If setup emitted <code>[go-toolchain-old]</code> or <code>[low-disk]</code>, surface the advisory to the user and continue unless setup also emitted <code>[setup-error]</code>. <code>[go-toolchain-old]</code> means later Go commands may download the required toolchain or fail when downloads are blocked; <code>[low-disk]</code> means this run may need several GiB for generated files, Go build cache, module downloads, or repository clones.</p>
+<p>Check binary version compatibility by reading the <code>min-binary-version</code> field from this skill's YAML frontmatter, running <code>&quot;$PRINTING_PRESS_BIN&quot; version --json</code>, and parsing the version from the output. Compare it to <code>min-binary-version</code> using semver rules. If the installed binary is older than the minimum, stop immediately and tell the user: &quot;cli-printing-press binary vX.Y.Z is older than the minimum required vA.B.C. Run <code>go install github.com/mvanhorn/cli-printing-press/v4/cmd/cli-printing-press@latest</code> to update.&quot;</p>
+<h5>Public-library hint</h5>
+<p>If the user's request includes phrasing like &quot;polish notion <strong>in the
+public library</strong>&quot;, &quot;polish <strong>from the public library</strong>&quot;, or &quot;polish the
+published cal-com&quot; — and the named CLI is <strong>not</strong> in
+<code>$PRESS_LIBRARY/&lt;slug&gt;/</code> — they're asking to polish a CLI that lives
+upstream but not locally. Polish runs against the internal library, so
+the right move is to import first.</p>
+<p>Suggest: <code>/printing-press-import &lt;slug&gt;</code> to bring it in, then re-run
+polish. Don't try to polish a CLI that isn't in the internal library.</p>
+<p>If the named CLI <strong>is</strong> already in <code>$PRESS_LIBRARY/&lt;slug&gt;/</code>, the
+&quot;public library&quot; phrasing is informational — just proceed with polish
+and let the divergence check (below) handle any drift.</p>
+<h5>Resolve CLI</h5>
+<p>The argument string can contain a <code>--standalone</code> flag plus one positional value
+(a slug, binary name, or path). In standalone slash-command mode, it may also
+contain a free-text scope after the optional positional value, such as
+<code>/printing-press-polish sculptok review the open PR comments and fix them</code>.
+That trailing natural-language text is the user's own trusted user scope. Carry
+it forward into the polish plan and result block; do not classify it as
+injection or tampering.</p>
+<p>It can also contain a Phase 3 gate bundle and a <code>printing_press_bin: &lt;abs-path&gt;</code> line on following lines when invoked by the main printing-press
+skill. The flag may appear before or after the positional value; it is the only
+flag this skill consumes from <code>args</code>. Strip it before path resolution.</p>
+<p>When <code>args</code> is multi-line, treat the first non-empty line as the positional
+value/scope line and parse the remaining lines as the optional Phase 3 gate
+bundle. Do not include the bundle text in path resolution.</p>
+<p>Parse caller modes differently:</p>
+<ul>
+<li><strong>Standalone slash command (<code>STANDALONE_MODE=true</code>).</strong> After stripping
+<code>--standalone</code>, try to resolve the first shell word as a slug, binary name, or
+path. If it resolves, use it as the positional value and store the remaining
+words as <code>USER_SCOPE</code>. If it does not resolve, treat the whole line as
+free-text scope; this branch asks which CLI to polish and retains that scope
+for the chosen CLI. If there is no trailing text after a resolved positional
+value, run the normal generic polish pass.</li>
+<li><strong>Mid-pipeline Skill-tool call.</strong> Keep the strict grammar: one path-like
+positional value on the first line plus the optional structured bundle on
+later lines. Unexpected free text in this machine-generated path is not a
+user scope and should still be rejected or clarified rather than folded into
+the run.</li>
+</ul>
+<p>The positional value can be:</p>
+<ul>
+<li>A short name: <code>redfin</code> (looks up <code>$PRESS_LIBRARY/redfin</code>)</li>
+<li>A full name: <code>redfin-pp-cli</code> (strips suffix, looks up <code>$PRESS_LIBRARY/redfin</code>)</li>
+<li>A path: <code>$PRESS_LIBRARY/redfin</code> (used directly)</li>
+</ul>
+<p>Resolution order for the positional value:</p>
+<ol>
+<li>If it is an absolute or <code>~</code>-prefixed path and exists, use it</li>
+<li>Try <code>$PRESS_LIBRARY/&lt;arg&gt;</code> (exact match — works for slug like <code>redfin</code>)</li>
+<li>If it has <code>-pp-cli</code> suffix, strip it and try <code>$PRESS_LIBRARY/&lt;slug&gt;</code> (e.g., <code>redfin-pp-cli</code> → <code>redfin</code>)</li>
+<li>Fuzzy search: <code>ls $PRESS_LIBRARY/ | grep -i &lt;arg&gt;</code> for close matches</li>
+</ol>
+<p><strong>Caller scenarios and the <code>--standalone</code> flag.</strong> Polish has two callers; they invoke it through different mechanisms, and the Publish Offer at the end of this skill fires only when <code>STANDALONE_MODE</code> is true. <strong>Determine <code>STANDALONE_MODE</code> from the caller mode and the flag, not from the resolved path.</strong></p>
+<ul>
+<li><strong>Standalone (user-invoked, <code>/printing-press-polish redfin</code>).</strong> Invoked via the slash command. Treat as <code>STANDALONE_MODE=true</code> unconditionally — the slash-command form is the publish-intent surface, even when the user omits the flag. The arg is a slug or binary name; resolution lands on <code>$PRESS_LIBRARY/&lt;slug&gt;/</code>. This is the published copy and the right target.</li>
+<li><strong>Mid-pipeline (main printing-press skill Phase 5.5, hold-path &quot;Polish to retry&quot;).</strong> Invoked via the Skill tool with <code>args: &quot;$CLI_WORK_DIR&quot;</code>. The arg is an absolute path to <code>~/printing-press/.runstate/.../runs/.../working/&lt;api&gt;-pp-cli/</code>; resolution must hit rule 1. <code>STANDALONE_MODE=false</code> by default — main SKILL owns the publish flow on this path, so polish defers. <strong>Do not paraphrase the arg to the slug</strong> — Phase 5.5 fires before the working CLI is promoted, so <code>$PRESS_LIBRARY/&lt;slug&gt;/</code> either doesn't exist or holds the <em>prior</em> run's stale CLI.</li>
+<li><strong>Skill-tool standalone override.</strong> A non-slash caller that genuinely wants polish to publish must opt in explicitly by including <code>--standalone</code> in <code>args</code> (e.g., <code>args: &quot;--standalone $PRESS_LIBRARY/redfin&quot;</code>). Without that token, polish never publishes from a Skill-tool invocation — even if the resolved path happens to live under <code>$PRESS_LIBRARY/</code>. The flag is the contract; the path is not.</li>
+</ul>
+<p>This caller-mode-driven gate replaces the older path-substring heuristic (<code>*.runstate/*</code>). The heuristic broke when the main SKILL's Phase 5.5/5.6 ordering inverted, or when polish was invoked from a non-<code>.runstate</code> scratch layout: polish would see a <code>$PRESS_LIBRARY/&lt;slug&gt;/</code> path, conclude &quot;standalone,&quot; and fire its Publish Offer (fork, global git config, public PR) inside a mid-pipeline run. The flag is unambiguous and the safer default is no-publish.</p>
+<h5>Phase 3 gate bundle</h5>
+<p>Mid-pipeline callers pass these fields after the CLI path in <code>args</code>:</p>
+<pre><code class="language-yaml">phase3_transcendence_rows_planned: &lt;planned&gt;
+phase3_transcendence_rows_built: &lt;built&gt;
+phase3_transcendence_rows_missing:
+  - &lt;manifest row name or command&gt;
+prior_sub60_reprint: &lt;true|false&gt;
+partial_transcendence_override: &lt;none or build-log note path&gt;
+</code></pre>
+<p>Parse the bundle before diagnostics and keep the values available for ship
+logic. Missing bundle fields mean &quot;no forced Phase 3 hold&quot;; they do not block
+standalone polish. If <code>prior_sub60_reprint: true</code>,
+<code>phase3_transcendence_rows_missing</code> contains any row, and
+<code>partial_transcendence_override</code> is empty or <code>none</code>, polish must emit
+<code>ship_recommendation: hold</code> even if the local diagnostics are otherwise clean.
+Add the missing rows to <code>remaining_issues</code> so the parent skill can show the
+specific gate that blocked promotion.</p>
+<p>The lock-status check in the next code block is the safety net for the mid-pipeline scenario: if a build lock is held for this CLI (under either name form), polish refuses to run. <code>cli-printing-press lock</code> normalizes slug ↔ binary-name internally, so the check works regardless of which form the basename produces.</p>
+<p>If no match or multiple matches, present via <code>AskUserQuestion</code>. Show at most 4
+matches sorted by modification time (most recent first) with human-friendly
+relative timestamps (e.g., &quot;generated 2 hours ago&quot;).</p>
+<pre><code class="language-bash">CLI_DIR=&quot;&lt;resolved path&gt;&quot;
+CLI_NAME=&quot;$(basename &quot;$CLI_DIR&quot;)&quot;
+STANDALONE_MODE=&quot;&lt;true|false&gt;&quot;  # true iff slash-command invocation or --standalone in args; default false for Skill-tool invocations
+
+# Check if there's an active build lock — polish edits would be overwritten
+# when the running build promotes to library.
+_lock_json=$(&quot;$PRINTING_PRESS_BIN&quot; lock status --cli &quot;$CLI_NAME&quot; --json 2&gt;/dev/null)
+if echo &quot;$_lock_json&quot; | grep -q '&quot;held&quot;.*true'; then
+  if echo &quot;$_lock_json&quot; | grep -q '&quot;stale&quot;.*true'; then
+    echo &quot;Warning: stale lock exists for $CLI_NAME (build may have crashed).&quot;
+    echo &quot;Proceeding with polish. Run '$PRINTING_PRESS_BIN lock release --cli $CLI_NAME' to clear.&quot;
+  else
+    echo &quot;An active build is in progress for $CLI_NAME.&quot;
+    echo &quot;Polish edits would be overwritten when the build promotes.&quot;
+    echo &quot;Wait for the build to finish, then run polish.&quot;
+    exit 1
+  fi
+fi
+
+# Verify it's a valid Go CLI
+if [ ! -f &quot;$CLI_DIR/go.mod&quot; ]; then
+  echo &quot;Not a valid CLI directory: $CLI_DIR&quot;
+  exit 1
+fi
+
+echo &quot;Polishing: $CLI_NAME&quot;
+echo &quot;Location: $CLI_DIR&quot;
+</code></pre>
+<h5>Find spec and research dir</h5>
+<pre><code class="language-bash">API_SLUG=&quot;${CLI_NAME%-pp-cli}&quot;
+SPEC_PATH=&quot;&quot;
+for f in &quot;$PRESS_HOME/manuscripts/$API_SLUG&quot;/*/research/*.yaml &quot;$PRESS_HOME/manuscripts/$API_SLUG&quot;/*/research/*.json &quot;$PRESS_HOME/manuscripts/$CLI_NAME&quot;/*/research/*.yaml &quot;$PRESS_HOME/manuscripts/$CLI_NAME&quot;/*/research/*.json; do
+  if [ -f &quot;$f&quot; ]; then
+    SPEC_PATH=&quot;$f&quot;
+    break
+  fi
+done
+
+# Build the spec flag once. Empty when no spec was found — diagnostic
+# commands accept a missing --spec and degrade gracefully.
+SPEC_FLAG=&quot;&quot;
+if [ -n &quot;$SPEC_PATH&quot; ]; then
+  SPEC_FLAG=&quot;--spec $SPEC_PATH&quot;
+fi
+
+# Locate the research dir. dogfood's --research-dir triggers
+# checkNovelFeatures, which writes novel_features_built back into
+# research.json AND syncs the verified list into .printing-press.json.
+# Without this flag, legacy CLIs whose manifest predates the
+# novel_features schema fail publish-validate's transcendence gate.
+#
+# Two layouts to handle, keyed on $CLI_DIR path structure (NOT on the
+# absence of a manuscripts entry — re-generating a previously-published
+# API leaves stale manuscript entries from prior runs that would point
+# scorecard at the wrong research.json):
+#  1. Mid-pipeline polish (invoked from the main printing-press flow
+#     before promote): $CLI_DIR is under $PRESS_RUNSTATE/.../runs/&lt;id&gt;/working/&lt;cli&gt;
+#     (i.e. the path contains `.runstate/`), and research.json lives at
+#     $PRESS_RUNSTATE/.../runs/&lt;id&gt;/research.json — $CLI_DIR's grandparent.
+#  2. Post-promote (standalone polish): research.json lives at
+#     manuscripts/&lt;api&gt;/&lt;run-id&gt;/research.json.
+RESEARCH_DIR=&quot;&quot;
+MANIFEST_RUN_ID=&quot;&quot;
+if [ -f &quot;$CLI_DIR/.printing-press.json&quot; ]; then
+  if command -v jq &gt;/dev/null 2&gt;&amp;1; then
+    MANIFEST_RUN_ID=&quot;$(jq -r '.run_id // empty' &quot;$CLI_DIR/.printing-press.json&quot; 2&gt;/dev/null || true)&quot;
+  fi
+  if [ -z &quot;$MANIFEST_RUN_ID&quot; ]; then
+    MANIFEST_RUN_ID=&quot;$(sed -nE 's/.*&quot;run_id&quot;[[:space:]]*:[[:space:]]*&quot;([^&quot;]+)&quot;.*/\1/p' &quot;$CLI_DIR/.printing-press.json&quot; | head -1)&quot;
+  fi
+fi
+case &quot;$CLI_DIR&quot; in
+  *.runstate/*)
+    _grandparent=&quot;$(dirname &quot;$(dirname &quot;$CLI_DIR&quot;)&quot;)&quot;
+    if [ -f &quot;$_grandparent/research.json&quot; ]; then
+      RESEARCH_DIR=&quot;$_grandparent&quot;
+    fi
+    ;;
+  *)
+    if [ -n &quot;$MANIFEST_RUN_ID&quot; ]; then
+      for base in &quot;$PRESS_HOME/manuscripts/$API_SLUG&quot; &quot;$PRESS_HOME/manuscripts/$CLI_NAME&quot;; do
+        if [ -f &quot;$base/$MANIFEST_RUN_ID/research.json&quot; ]; then
+          RESEARCH_DIR=&quot;$base/$MANIFEST_RUN_ID&quot;
+          break
+        fi
+      done
+    fi
+    # Match publish package's fallback: API slug first, then CLI name, each
+    # using the lexicographically latest run id when the manifest has none.
+    if [ -z &quot;$RESEARCH_DIR&quot; ]; then
+      for base in &quot;$PRESS_HOME/manuscripts/$API_SLUG&quot; &quot;$PRESS_HOME/manuscripts/$CLI_NAME&quot;; do
+        if [ -d &quot;$base&quot; ]; then
+          _latest=&quot;$(find &quot;$base&quot; -mindepth 2 -maxdepth 2 -name research.json -type f 2&gt;/dev/null | sort | tail -1)&quot;
+          if [ -n &quot;$_latest&quot; ]; then
+            RESEARCH_DIR=&quot;$(dirname &quot;$_latest&quot;)&quot;
+            break
+          fi
+        fi
+      done
+    fi
+    ;;
+esac
+
+# Use a bash array so the flag survives paths with spaces (e.g. when
+# $HOME or $PRESS_RUNSTATE resolves through a path containing spaces).
+RESEARCH_ARGS=()
+if [ -n &quot;$RESEARCH_DIR&quot; ]; then
+  RESEARCH_ARGS=(--research-dir &quot;$RESEARCH_DIR&quot;)
+fi
+
+# pii-audit runs against the CLI dir, but publish package later copies the
+# same run archive under .manuscripts/&lt;run-id&gt; before enforcing the PII gate.
+# Pass the run dir here so polish sees the narrative manuscript files with
+# the same relative paths publish will scan.
+PII_ARGS=()
+if [ -n &quot;$RESEARCH_DIR&quot; ]; then
+  PII_ARGS=(--manuscripts-dir &quot;$RESEARCH_DIR&quot;)
+fi
+</code></pre>
+<h5>Divergence check</h5>
+<p><strong>Stop and run this step before Phase 1. Do not skip it. Do not proceed to diagnostics until you have completed the check and resolved any divergence.</strong></p>
+<p>The internal copy at <code>$CLI_DIR</code> can drift from the public library (<code>mvanhorn/printing-press-library</code>) copy if anyone edited the public repo directly after this CLI was last published. Polishing a stale internal copy and re-publishing later silently overwrites those public-only fixes — a real failure mode that shipped CLIs hit.</p>
+<p><strong>You must:</strong></p>
+<ol>
+<li>
+<p><strong>Locate the public library clone.</strong> Honor <code>$PRINTING_PRESS_LIBRARY_PUBLIC</code> if set; otherwise scan the user's filesystem however fits this platform. Validate every candidate by checking the git remote points at <code>mvanhorn/printing-press-library</code> — other directories may share the name (forks, accidental name collisions). If multiple valid clones exist, prefer the most recently modified; ask the user to disambiguate only if still unclear.</p>
+</li>
+<li>
+<p><strong>Locate this CLI inside the clone.</strong> <code>find &lt;clone&gt;/library -type d -name &quot;&lt;api&gt;-pp-cli&quot;</code> or equivalent.</p>
+</li>
+<li>
+<p><strong>Run <code>diff -r &lt;public-cli-dir&gt; $CLI_DIR</code></strong> with these exclusions, all of which are expected to diverge after publish:</p>
+<ul>
+<li><code>.printing-press-tools-polish.json</code> (local ledger, not published)</li>
+<li><code>.printing-press-pii-polish.json</code> (local ledger, not published)</li>
+<li><code>go.mod</code> and <code>go.sum</code> — publish rewrites the module path from <code>&lt;api&gt;-pp-cli</code> to <code>github.com/mvanhorn/printing-press-library/library/&lt;category&gt;/&lt;api&gt;</code></li>
+<li>All <code>.go</code> files where the only difference is the rewritten import path (the publish step propagates the new module path through every internal import). When inspecting <code>.go</code> diffs, scan for substantive changes — anything beyond the module-path prefix swap is real divergence.</li>
+</ul>
+<p>Concretely: <code>diff -r --exclude=go.mod --exclude=go.sum --exclude=.printing-press-tools-polish.json --exclude=.printing-press-pii-polish.json &lt;public-cli-dir&gt; $CLI_DIR</code>.</p>
+<p>Don't pass <code>--exclude='&lt;api&gt;-pp-cli'</code> or <code>--exclude='&lt;api&gt;-pp-mcp'</code> — those names match both the root-level binary files <strong>and</strong> the <code>cmd/&lt;api&gt;-pp-cli/</code> and <code>cmd/&lt;api&gt;-pp-mcp/</code> source directories. Excluding by binary name silently skips the entire <code>cmd/</code> subtree, hiding real divergence in <code>main.go</code>. The &quot;Only in $CLI_DIR: &lt;api&gt;-pp-cli&quot; line for the built binary is one row of expected output, not noise worth filtering at the cost of completeness.</p>
+</li>
+<li>
+<p><strong>Surface the result</strong> before continuing.</p>
+</li>
+</ol>
+<p>Outcomes:</p>
+<ul>
+<li><strong>No clone found</strong> → user doesn't have public locally. State this explicitly (&quot;public library not found locally; proceeding on internal as canonical&quot;) and continue.</li>
+<li><strong>Clone found but doesn't contain this CLI</strong> → never published or under a different name. State this and continue.</li>
+<li><strong>Found and diff is empty</strong> → in sync. State this and continue.</li>
+<li><strong>Found and divergent</strong> → <strong>stop</strong>. Do not run Phase 1 diagnostics yet. List the divergent files for the user. Ask via AskUserQuestion: <strong>sync public→internal</strong>, or <strong>proceed without syncing</strong>. If the user picks sync, copy public's version of the divergent files into internal, then continue polish on the synced internal copy.</li>
+</ul>
+<p>Before showing the sync prompt, check whether internal has files modified after its <code>.printing-press.json</code> timestamp (the user has been polishing locally without publishing). If yes, hedge the prompt explicitly: syncing will overwrite their pending local work. Let them decide whether to keep their local edits or pull public's.</p>
+<p>After sync (or explicit skip), the rest of polish operates on <code>$CLI_DIR</code> as canonical. The eventual <code>/printing-press-publish</code> step pushes internal back to public; no second divergence check is needed there.</p>
+<p><strong>The check has run only when one of the four outcomes above is explicitly stated in your response.</strong> Silent omission counts as not having run it.</p>
+<h4>Phase 1: Baseline diagnostics</h4>
+<pre><code class="language-bash">cd &quot;$CLI_DIR&quot;
+
+# Build
+go build -o &quot;$CLI_NAME&quot; ./cmd/&quot;$CLI_NAME&quot; 2&gt;&amp;1
+
+# Diagnostics. SPEC_FLAG and RESEARCH_ARGS are set in the &quot;Find spec
+# and research dir&quot; step above. RESEARCH_ARGS enables dogfood to
+# verify novel features and sync them into .printing-press.json
+# (required for publish-validate's transcendence gate).
+&quot;$PRINTING_PRESS_BIN&quot; dogfood --dir &quot;$CLI_DIR&quot; $SPEC_FLAG &quot;${RESEARCH_ARGS[@]}&quot; 2&gt;&amp;1
+&quot;$PRINTING_PRESS_BIN&quot; verify --dir &quot;$CLI_DIR&quot; $SPEC_FLAG --json 2&gt;&amp;1
+&quot;$PRINTING_PRESS_BIN&quot; workflow-verify --dir &quot;$CLI_DIR&quot; --json &gt; /tmp/polish-workflow-verify.json 2&gt;&amp;1 || true
+&quot;$PRINTING_PRESS_BIN&quot; verify-skill --dir &quot;$CLI_DIR&quot; --json &gt; /tmp/polish-verify-skill.json 2&gt;&amp;1 || true
+# publish-validate is a publish-readiness gate, not a CLI-readiness gate.
+# Mid-pipeline polish runs before the main SKILL's promote step and before
+# the publish skill packages tools-manifest.json, so its prerequisites
+# (manifest.printer from git config github.user, packaged tools manifest,
+# phase5 acceptance proof relocated under $CLI_DIR/.manuscripts/&lt;run&gt;/proofs/)
+# are not yet satisfied. Running publish-validate here would cascade
+# parent-pipeline-owned failures into the polish ship_recommendation,
+# which the main SKILL's Phase 5.5 verdict-override then turns into a
+# CLI-level hold. Only run publish-validate when polish is the publish
+# entry point (slash-command invocation or explicit --standalone).
+if [ &quot;$STANDALONE_MODE&quot; = &quot;true&quot; ]; then
+  &quot;$PRINTING_PRESS_BIN&quot; publish validate --dir &quot;$CLI_DIR&quot; --json &gt; /tmp/polish-publish-validate.json 2&gt;&amp;1 || true
+fi
+# --live-check samples novel-feature outputs and populates
+# live_check.features[].warnings (Wave B entity detection) — required for
+# the &quot;Output entity warnings&quot; row below to have data to read.
+# RESEARCH_ARGS points scorecard at the run's research.json when the
+# CLI lives under $PRESS_RUNSTATE/runs/&lt;id&gt;/working/&lt;cli&gt; (mid-pipeline
+# polish). Without it, scorecard looks adjacent to the binary, doesn't
+# find research.json, and reports `unable: true`.
+# A bare scorecard and scorecard --write-manifest report the same total.
+# A verify summary already in .printing-press.json is included either way;
+# a Calibration line means that summary raised the total. --spec changes
+# the domain denominator, which human output prints beside the total —
+# compare runs that passed the same spec.
+&quot;$PRINTING_PRESS_BIN&quot; scorecard --dir &quot;$CLI_DIR&quot; $SPEC_FLAG &quot;${RESEARCH_ARGS[@]}&quot; --live-check --json &gt; /tmp/polish-scorecard.json 2&gt;&amp;1 || true
+&quot;$PRINTING_PRESS_BIN&quot; scorecard --dir &quot;$CLI_DIR&quot; $SPEC_FLAG 2&gt;&amp;1
+&quot;$PRINTING_PRESS_BIN&quot; tools-audit &quot;$CLI_DIR&quot; --json &gt; /tmp/polish-tools-audit-before.json 2&gt;&amp;1 || true
+&quot;$PRINTING_PRESS_BIN&quot; pii-audit &quot;$CLI_DIR&quot; &quot;${PII_ARGS[@]}&quot; --json &gt; /tmp/polish-pii-audit-before.json 2&gt;&amp;1 || true
+go vet ./... 2&gt;&amp;1
+# Released gosec bundles a golang.org/x/tools that cannot read newer Go export
+# data, so on a newer toolchain it silently skips packages. polish_gosec uses an
+# installed gosec only when it loads every package; otherwise it builds the
+# pinned gosec against a current x/tools in a private temp dir. Each block runs
+# in its own shell, so the after-fix scan repeats this definition verbatim.
+polish_gosec() {
+  local out=&quot;$*&quot; built
+  if command -v gosec &gt;/dev/null 2&gt;&amp;1; then
+    gosec -fmt=json -out=&quot;$out&quot; ./... 2&gt;&amp;1 || true
+    [ &quot;$(jq '(.&quot;Golang errors&quot; // {}) | length' &quot;$out&quot; 2&gt;/dev/null || echo 1)&quot; = 0 ] &amp;&amp; return 0
+    echo &quot;polish_gosec: installed gosec could not load every package; building the pinned fallback&quot; &gt;&amp;2
+  fi
+  built=$(mktemp -d) || return 1
+  if ! (cd &quot;$built&quot; &amp;&amp; export GOWORK=off &amp;&amp; go mod init polish-gosec &amp;&amp; go get github.com/securego/gosec/v2/cmd/gosec@v2.29.0 golang.org/x/tools@v0.52.0 &amp;&amp; go build -o gosec github.com/securego/gosec/v2/cmd/gosec) &gt;&quot;$built/build.log&quot; 2&gt;&amp;1; then
+    echo &quot;polish_gosec: could not build the gosec fallback:&quot; &gt;&amp;2
+    tail -n 20 &quot;$built/build.log&quot; &gt;&amp;2
+    rm -rf &quot;$built&quot;
+    return 1
+  fi
+  &quot;$built/gosec&quot; -fmt=json -out=&quot;$out&quot; ./... 2&gt;&amp;1 || true
+  rm -rf &quot;$built&quot;
+}
+polish_gosec /tmp/polish-gosec-before.json
+</code></pre>
+<p>verify-skill and workflow-verify run alongside dogfood/verify/scorecard so polish catches the same class of failures the public-library CI catches. <code>publish-validate</code> runs only when <code>STANDALONE_MODE=true</code> (slash-command or <code>--standalone</code> Skill-tool invocation). The publish-validate leg is a hard ship-gate <strong>for standalone polish</strong>: in that mode polish cannot recommend <code>ship</code> or <code>ship-with-gaps</code> while <code>&quot;$PRINTING_PRESS_BIN&quot; publish validate</code> reports <code>passed: false</code>. Mid-pipeline polish (<code>STANDALONE_MODE=false</code>) skips publish-validate entirely — its prerequisites (manifest.printer from <code>git config github.user</code>, packaged <code>tools-manifest.json</code>, phase5 acceptance proof relocated under <code>$CLI_DIR/.manuscripts/&lt;run&gt;/proofs/</code>) are parent-pipeline-owned and not yet satisfied at this point; the main SKILL's Phase 6 publish flow gates on publish-validate at the correct time. See &quot;Ship logic&quot; below for how this affects ship_recommendation.</p>
+<p><strong>Live matrix qualifier.</strong> After each <code>scorecard --live-check --json</code> run, read <code>/tmp/polish-scorecard.json</code> and record whether <code>live_check</code> actually exercised live samples. Treat it as <code>exercised</code> only when <code>live_check.unable</code> is false and at least one feature was evaluated (<code>passed + failed &gt; 0</code>, or equivalent feature statuses). Treat <code>live_check.unable: true</code>, no <code>live_check</code>, no evaluated features, or missing credentials/token as <code>not_exercised</code>. A clean mock dogfood/verify run is still useful, but it is <strong>not</strong> a live matrix pass.</p>
+<p><code>gosec</code> runs as the off-the-shelf security static-analysis leg for hand-written Go. Prefer an installed <code>gosec</code> binary when present; <code>polish_gosec</code> (defined verbatim in both the baseline and after-fix blocks) falls back to building the pinned <code>github.com/securego/gosec/v2/cmd/gosec@v2.29.0</code> against <code>golang.org/x/tools@v0.52.0</code> when no binary is installed or the installed one cannot load every package, so a clean machine on a current Go toolchain still gets a full, reproducible check without a separate setup step. Read <code>/tmp/polish-gosec-before.json</code> for the baseline finding count and issue details. If the command fails before writing JSON (including a fallback build failure, which <code>polish_gosec</code> reports on stderr with a non-zero return), or the JSON still has a non-empty <code>&quot;Golang errors&quot;</code> map (packages gosec could not type-check, so their findings are missing), treat the scan as a polish failure: add it to <code>remaining_issues</code>, set <code>ship_recommendation: hold</code>, and include the stderr or error summary so the next run can distinguish network/tooling failure from CLI defects. Prioritize findings in hand-authored files: whole files under <code>internal/cli/</code>, <code>internal/syncer/</code>, and <code>internal/store/</code> whose first 20 lines lack the <code>Generated by CLI Printing Press</code> header are polish-owned novel-feature code. Findings in generator-emitted files are Printing Press retro candidates unless they can be fixed durably by changing the spec and regenerating; do not hand-edit generated files just to silence gosec.</p>
+<p><strong>If Phase 1 baseline reveals the underlying CLI needs re-discovery</strong> — broken HTML/SSR extraction, sparse capture (fewer than 5 unique endpoints in the source manuscript), wrong endpoint shapes, missing GraphQL operation hashes, or any signal that the CLI was generated from incomplete capture — polish does not normally do browser capture itself. When re-discovery is required, use the capture backends the runtime already exposes (Claude chrome-MCP <code>mcp__claude-in-chrome__*</code> and computer-use <code>mcp__computer-use__*</code>) rather than inventing a new capture flow. Re-discovery from polish is rare but real.</p>
+<p>Parse findings into categories:</p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Source</th>
+<th>What to look for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Verify failures</td>
+<td>verify --json</td>
+<td>Commands with score &lt; 3</td>
+</tr>
+<tr>
+<td>SKILL static-check failures</td>
+<td>verify-skill --json</td>
+<td>Any <code>findings[]</code> with <code>severity=error</code> (flag-names, flag-commands, positional-args, unknown-command, canonical-sections). Hard ship-gate: ship cannot fire while these exist.</td>
+</tr>
+<tr>
+<td>Workflow gaps</td>
+<td>workflow-verify --json</td>
+<td>Verdict <code>workflow-fail</code>. Soft gate: surface in <code>remaining_issues</code> and downgrade to <code>hold</code> when the workflow is the CLI's primary value.</td>
+</tr>
+<tr>
+<td>Publish validation failures</td>
+<td>publish validate --json</td>
+<td><code>passed: false</code>. <strong>Standalone polish only</strong> (runs only when <code>STANDALONE_MODE=true</code>); skipped in mid-pipeline polish where publish prerequisites aren't yet satisfied. When it runs, it's a hard ship-gate: ship cannot fire while publish validate fails. If the only failing check is missing phase5 acceptance, report <code>phase5 acceptance required</code> with the next-step command: authenticate, then run <code>&quot;$PRINTING_PRESS_BIN&quot; dogfood --dir &quot;$CLI_DIR&quot; $SPEC_FLAG --live --level quick --write-acceptance &lt;proofs-dir&gt;/phase5-acceptance.json</code>. Use the proofs directory from the validate error when present.</td>
+</tr>
+<tr>
+<td>Security static-analysis failures</td>
+<td>gosec JSON</td>
+<td>Any <code>Issues[]</code> entry, especially G201/G202 SQL construction, G101 credential literals, or unsafe file/command execution. Hard ship-gate when the finding is in hand-authored novel-feature Go.</td>
+</tr>
+<tr>
+<td>Dead code</td>
+<td>dogfood</td>
+<td>Dead functions, dead flags</td>
+</tr>
+<tr>
+<td>Stale files</td>
+<td>dogfood</td>
+<td>Unregistered commands</td>
+</tr>
+<tr>
+<td>Description issues</td>
+<td>dogfood</td>
+<td>Boilerplate root Short</td>
+</tr>
+<tr>
+<td>README gaps</td>
+<td>scorecard</td>
+<td>README score &lt; 8</td>
+</tr>
+<tr>
+<td>Example gaps</td>
+<td>dogfood</td>
+<td>Commands missing examples</td>
+</tr>
+<tr>
+<td>Go vet issues</td>
+<td>go vet</td>
+<td>Any output</td>
+</tr>
+<tr>
+<td>Output entity warnings</td>
+<td>scorecard JSON</td>
+<td><code>live_check.features[].warnings</code> — raw HTML entities in human output</td>
+</tr>
+<tr>
+<td>Output plausibility</td>
+<td>Phase 4.85</td>
+<td>Findings from the agentic output review</td>
+</tr>
+<tr>
+<td>MCP tool quality</td>
+<td>tools-audit</td>
+<td>Empty Short, thin Short, missing read-only annotations, thin MCP descriptions</td>
+</tr>
+<tr>
+<td>Customer PII</td>
+<td>pii-audit</td>
+<td>Card last-4, email, phone, ZIP+4, postal-address, and account-identifier shapes in high-risk files (manuscripts, fixtures, README)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Environmental failures vs. CLI defects.</strong> Some Phase 1 outputs surface failures that aren't real CLI bugs and should not block ship:</p>
+<ul>
+<li><code>scorecard --live-check</code> reporting <code>SQLITE_BUSY</code>, network timeouts, <code>401</code> from a mock or expired token, or HTTP errors that depend on the test workspace's permissions/state — these are test-environment issues, not CLI defects.</li>
+<li><code>verify</code> mock-harness flakes on commands with binary output (e.g., <code>qr</code> returning a PNG that the substring matcher can't validate) or commands with optional positional args where dry-run output legitimately doesn't contain the verify probe string.</li>
+<li>Learn-loop commands: the dogfood/verify matrix now covers the default-on learn surface (<code>teach</code>, <code>recall</code>, <code>learnings</code>, <code>playbook</code>). <code>teach</code> and <code>teach-playbook</code> intentionally exit 2 when invoked bare, declared via <code>pp:typed-exit-codes</code>, so <code>verify</code> scores that as pass while <code>dogfood --live</code> records the <code>happy_path</code> and <code>json_fidelity</code> checks as skips with reason <code>declared non-zero exit 2</code>; neither is a defect and neither is a reason to &quot;fix&quot; the exit code. A skipped happy path does not count toward phase5 live coverage, so a novel feature that only ever exits non-zero on its happy path is reported hollow rather than covered. <code>learnings stats</code> on a fresh print legitimately reports zeros and empty sections; that is an empty local store, not a defect.</li>
+</ul>
+<p>Classify these as environmental in <code>skipped_findings</code> with the specific reason; do not spend Phase 2 cycles trying to &quot;fix&quot; them. The polish skill's ship logic already excludes live-check failures from gating, but the agent should still annotate them so reviewers can see they were considered and dismissed deliberately.</p>
+<h5>Phase 4.85 — Agentic output review (Wave B)</h5>
+<p>After the mechanical diagnostics above complete, invoke the <code>printing-press-output-review</code> sub-skill via the Skill tool. The sub-skill carries <code>context: fork</code> and owns the dispatch prompt, gate logic, and known blind spots — single source of truth shared with the main printing-press skill.</p>
+<pre><code>Skill(
+  skill: &quot;cli-printing-press:printing-press-output-review&quot;,
+  args: &quot;$CLI_DIR&quot;
+)
+</code></pre>
+<p>Parse the returned <code>---OUTPUT-REVIEW-RESULT---</code> block. <code>status: WARN</code> findings flow into the diagnostic categories above so Phase 2 fixes address both rule-based and plausibility issues. <code>status: SKIP</code> means the review did not run: record it as skipped, do not count it as a pass, and do not block on it.</p>
+<p>Wave B gating applies: all findings are warnings, never blockers. Fix if obvious and cheap; document with a short comment if deferred.</p>
+<p>Record baseline scores: scorecard total, verify pass rate, dogfood verdict, live matrix qualifier (<code>exercised</code> / <code>not_exercised</code>), go vet issue count, gosec finding count, output-review finding count.</p>
+<h4>Phase 2: Fix</h4>
+<p>Fix in priority order. After each priority level, update the lock heartbeat:</p>
+<pre><code class="language-bash">&quot;$PRINTING_PRESS_BIN&quot; lock update --cli &quot;$CLI_NAME&quot; --phase polish 2&gt;/dev/null
+</code></pre>
+<h5>Runtime variant default checklist</h5>
+<p>If a polish fix adds or changes a runtime mode, data-source option, auth tier, transport, or other user-visible default, document this short checklist before selecting the default:</p>
+<ul>
+<li><strong>User-visible default:</strong> which behavior users get without extra flags or config.</li>
+<li><strong>Compatibility risk:</strong> whether existing commands, scripts, MCP tools, or stored config change behavior.</li>
+<li><strong>Verification command:</strong> the exact command that proves the default and the non-default escape hatch both work.</li>
+</ul>
+<p>Keep the checklist in the polish notes or result block. Skip it for ordinary bug fixes that do not change runtime variants or defaults.</p>
+<h5>Cross-cutting API-call instrumentation</h5>
+<p>When polish builds a feature class that must observe every outbound API call,
+such as a quota ledger, request log, or audit trail, instrument the generated
+client middleware in <code>internal/client/client.go</code> instead of individual command
+handlers. Prefer a shared pre-dispatch hook when one exists; otherwise cover
+both <code>do()</code> and <code>doRead()</code>. The <code>do()</code> path handles standard endpoint mirrors,
+sync iterations, and novel features that use the generated client, while
+<code>doRead()</code> handles read-only operations that ride POST-like transports, such as
+GraphQL queries, JSON-RPC reads, and POST-based searches marked
+<code>mcp:read-only</code>.
+Per-command hooks under-count because they only see the commands polish touched.</p>
+<h5>Novel-feature data routing</h5>
+<p>When polish adds or fixes a novel command that reads API response data into the
+local store, route data through the generated typed schemas instead of writing
+raw response JSON directly into tables:</p>
+<ol>
+<li>Read <code>internal/types/&lt;resource&gt;.go</code> and <code>internal/store/&lt;resource&gt;.go</code> for the
+resource being cached. Use the typed insert/upsert helpers those files emit
+whenever they exist. If helpers are missing for a generated resource, create
+them before writing any persistence code.</li>
+<li>Check the response shape against the spec schema and a real sample response
+before deciding the insert mapping is correct.</li>
+<li>Decode the API response into the typed struct before persistence. Do not
+build <code>INSERT INTO ...</code> statements from untyped <code>map[string]any</code> or raw
+<code>json.RawMessage</code> values unless the table is a custom polish-owned table
+declared in hand-authored migrations; see the raw SQL exception below.</li>
+<li>Verify the target table from the resource type, not from whichever query the
+novel command happened to start with. A command that fetched <code>&lt;child&gt;</code>
+records must insert <code>&lt;child&gt;</code> rows, not parent rows or a convenient adjacent
+table.</li>
+<li>Normalize nested response identifiers before insert. If the API wraps the
+scalar id inside an object that also contains metadata, extract the scalar id
+field and store that value; never store the whole id object as a primary key
+or foreign-key reference.</li>
+</ol>
+<p>Raw <code>database/sql</code> writes are acceptable only for custom polish-owned tables
+declared in hand-authored migrations. In that case, keep the table schema
+explicit in <code>internal/store/</code>, document why the generated resource helper does
+not apply, and still decode nested identifiers to scalars before persistence.</p>
+<h5>Priority 0: MCP surface migration (legacy CLIs)</h5>
+<p>If Phase 1's <code>dogfood</code> reported <code>MCP Surface: FAIL</code> with a parity mismatch, the CLI was generated before the runtime cobratree walker existed and is still on the static <code>internal/mcp/tools.go</code> surface. The fix is mechanical:</p>
+<pre><code class="language-bash">&quot;$PRINTING_PRESS_BIN&quot; mcp-sync &quot;$CLI_DIR&quot;
+</code></pre>
+<p>That migrates the MCP surface to the runtime walker, regenerates <code>tools-manifest.json</code> and <code>internal/mcp/tools.go</code>, and applies any <code>mcp-descriptions.json</code> overrides. If it exits with <code>mcp-sync refused</code> and <code>reprint required</code>, stop this polish run and hand off to <code>/printing-press-reprint</code>; the target CLI's generated client is too old for the current MCP handler, so rewriting <code>tools.go</code> alone would break its build. Include in the handoff that the reprint flow must run its normal dogfood gate against the regenerated CLI and confirm <code>MCP Surface: PASS</code> before shipping. Do not rerun dogfood against the stale <code>$CLI_DIR</code>. After a successful <code>mcp-sync</code>, re-run <code>dogfood</code> here; the parity gate should flip to PASS. Running <code>mcp-sync</code> on a compatible CLI already using the runtime walker is a no-op refresh.</p>
+<p>Skip this priority on CLIs where dogfood's MCP gate is already passing.</p>
+<h5>Priority 1: Security static-analysis failures</h5>
+<p>For each gosec finding in <code>/tmp/polish-gosec-before.json</code>:</p>
+<ol>
+<li>Read the cited file and confirm whether it is hand-authored. A whole file
+under <code>internal/cli/</code>, <code>internal/syncer/</code>, or <code>internal/store/</code> whose first
+20 lines lack <code>Generated by CLI Printing Press</code> is polish-owned novel-feature
+code.</li>
+<li>If the finding is in hand-authored code, fix the root cause in source before
+working lower-priority polish items. Examples: replace SQL string assembly
+with parameterized queries, avoid shelling out with untrusted args, and move
+literals that look like credentials into config/env plumbing.</li>
+<li>If gosec flags generated code, do not hand-edit the generated file. Either
+fix the upstream spec and regenerate, or add a <code>skipped_findings</code> entry that
+names it as a generator retro candidate with the rule id and file path.</li>
+<li>If gosec reports a false positive, keep the suppression narrow and explain
+it. Prefer a local <code>// #nosec G### -- reason</code> only when the code is actually
+safe and the reason is durable; otherwise fix the code.</li>
+</ol>
+<p>Unresolved gosec findings in hand-authored novel-feature Go are hard blockers:
+they must appear in <code>remaining_issues</code>, force <code>ship_recommendation: hold</code>, and
+set <code>further_polish_recommended: yes</code> when the fix is plausibly mechanical.</p>
+<h5>Priority 2: Verify failures</h5>
+<p>For each command that fails verify dry-run or exec:</p>
+<ol>
+<li>Read the command file</li>
+<li>Find <code>Args: cobra.ExactArgs(N)</code> or similar constraint</li>
+<li>Remove the <code>Args:</code> field</li>
+<li>Add at the top of <code>RunE</code>:<pre><code class="language-go">if len(args) == 0 {
+    return cmd.Help()
+}
+</code></pre>
+</li>
+<li>For commands needing 2+ args, use <code>if len(args) &lt; 2</code></li>
+<li>Check for dry-run nil-data crashes and add guards:<pre><code class="language-go">if flags.dryRun {
+    return nil
+}
+</code></pre>
+</li>
+</ol>
+<h5>Priority 3: Dead code</h5>
+<ol>
+<li>For each dead function flagged by dogfood, grep all <code>.go</code> files to verify
+it's truly unused (not just its definition matching itself)</li>
+<li>If truly unused: remove the function</li>
+<li>If used by another helper: leave it (false positive)</li>
+<li>After removal, remove unused imports</li>
+<li>Delete stale files (promoted commands not registered in root.go)</li>
+</ol>
+<h5>Priority 4: CLI description and metadata</h5>
+<ol>
+<li>Read root command <code>Short</code> in <code>internal/cli/root.go</code></li>
+<li>If it contains boilerplate (&quot;Reverse-engineered...&quot;, raw API title), rewrite:
+Pattern: <code>&quot;&lt;Product&gt; CLI with &lt;capability-1&gt;, &lt;capability-2&gt;, and &lt;capability-3&gt;&quot;</code></li>
+<li>Check commands for missing <code>Example</code> fields. Add realistic examples with
+domain-specific values.</li>
+</ol>
+<h5>Priority 5: README</h5>
+<p><strong>Cardinal rule: run <code>&lt;cli&gt; &lt;cmd&gt; --help</code> for EVERY command you put in the
+README.</strong> Never guess flag names, argument formats, or valid values. If you
+write <code>--start-time</code> but the flag is <code>--start</code>, the README is wrong and
+users will get errors on their first try.</p>
+<h6>Source-of-truth files for rendered sections</h6>
+<p>Before editing README.md, SKILL.md, or <code>.printing-press.json</code>, identify whether
+the section is rendered from a source file. Dogfood and regeneration overwrite
+these rendered sections, so direct edits there are temporary and should be used
+only to inspect the current output.</p>
+<table>
+<thead>
+<tr>
+<th>Rendered section or field</th>
+<th>Source-of-truth file::field</th>
+<th>Polish workflow</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>README <code>## Unique Features</code></td>
+<td><code>research.json::novel_features_built[]</code></td>
+<td>Edit the underlying <code>research.json</code> feature description/example, then re-run dogfood with <code>--research-dir</code>.</td>
+</tr>
+<tr>
+<td>SKILL <code>## Unique Capabilities</code></td>
+<td><code>research.json::novel_features_built[]</code></td>
+<td>Edit the underlying <code>research.json</code> feature description/example, then re-run dogfood with <code>--research-dir</code>.</td>
+</tr>
+<tr>
+<td><code>internal/mcp/tools.go</code> <code>command_mirror_capabilities</code></td>
+<td><code>research.json::novel_features_built[]</code></td>
+<td>Dogfood reports a differing on-disk block and leaves it unmodified. Pass <code>--overwrite-command-mirror</code> only to replace it from <code>research.json</code>.</td>
+</tr>
+<tr>
+<td>README Quick Start</td>
+<td><code>research.json::narrative.quickstart[]</code></td>
+<td>Edit the command/comment in <code>research.json</code>, then regenerate or re-run the dogfood/rendering step.</td>
+</tr>
+<tr>
+<td>SKILL Recipes</td>
+<td><code>research.json::narrative.recipes[]</code></td>
+<td>Edit the recipe title, command, or explanation in <code>research.json</code>, then regenerate or re-run the dogfood/rendering step.</td>
+</tr>
+<tr>
+<td>README/SKILL Troubleshooting</td>
+<td><code>research.json::narrative.troubleshoots[]</code></td>
+<td>Edit the symptom/fix pair in <code>research.json</code>, then regenerate or re-run the dogfood/rendering step.</td>
+</tr>
+<tr>
+<td><code>.printing-press.json</code> <code>homepage</code></td>
+<td><code>research.json::homepage</code></td>
+<td>Fix it in <code>research.json</code>, then correct or remove <code>homepage</code> in the working CLI's <code>.printing-press.json</code> before regenerating: an existing manifest value wins over research on regenerate. A value already in the library manifest also wins on promote and publish, so correct a published homepage in the library copy too.</td>
+</tr>
+<tr>
+<td><code>.printing-press.json</code> <code>display_name</code>, <code>description</code>, <code>mcp_*</code></td>
+<td><code>WriteManifestForGenerate</code>; for description/display-name overrides, edit the spec (<code>info.title</code>, <code>info.x-display-name</code>, <code>info.description</code>)</td>
+<td>Edit the spec or rerun the manifest writer. Do not hand-edit generated manifest metadata unless you are doing temporary diagnosis.</td>
+</tr>
+</tbody>
+</table>
+<p>Recommended loop for these rendered sections: edit the source field, re-run
+dogfood with <code>--research-dir &quot;$RESEARCH_DIR&quot;</code> or regenerate the CLI as
+appropriate, then run a second pass to confirm the rendered README/SKILL text
+stays fixed. If you edit README.md or SKILL.md directly in one of these
+sections, expect the next dogfood resync or regeneration to clobber the change.</p>
+<p>To find the manuscript source:</p>
+<pre><code class="language-bash">PRESS_HOME=&quot;${PRINTING_PRESS_HOME:-$HOME/printing-press}&quot;
+API_SLUG=&quot;${CLI_NAME%-pp-cli}&quot;
+RESEARCH_JSON=&quot;&quot;
+for f in &quot;$PRESS_HOME/manuscripts/$CLI_NAME&quot;/*/research.json \
+         &quot;$PRESS_HOME/manuscripts/$API_SLUG&quot;/*/research.json; do
+  if [ -f &quot;$f&quot; ]; then RESEARCH_JSON=&quot;$f&quot;; break; fi
+done
+</code></pre>
+<p>If <code>RESEARCH_JSON</code> exists and a rendered section has bad prose, examples, or
+flag references, fix the corresponding field in that file first. For novel
+features, dogfood verifies <code>research.json::novel_features[]</code>, writes the
+surviving set to <code>research.json::novel_features_built[]</code>, and syncs README
+<code>## Unique Features</code>, SKILL <code>## Unique Capabilities</code>, <code>.printing-press.json</code>
+<code>novel_features</code>, and root help Highlights from that verified set. A
+differing <code>command_mirror_capabilities</code> block in <code>internal/mcp/tools.go</code> is
+left unmodified unless <code>--overwrite-command-mirror</code> is passed.</p>
+<h6>Required sections (must be present and correct)</h6>
+<ol>
+<li><strong>Title</strong>: &quot;# &lt;Product Name&gt; CLI&quot; — use the product's real name with
+correct casing/punctuation (e.g., &quot;Cal.com&quot; not &quot;Cal Com&quot;)</li>
+<li><strong>Subtitle</strong>: one sentence describing what the CLI does for the user,
+matching the root <code>Short</code> field. NOT a description of the API.</li>
+<li><strong>Install</strong>: correct install command. Use the printing-press-library
+repo URL, not a per-CLI repo that doesn't exist.</li>
+<li><strong>Authentication</strong>: how to set <code>&lt;API&gt;_API_KEY</code> env var, where to get
+a key (link to the provider's settings page), self-hosted URL override
+if supported. Read <code>config.go</code> to find all env vars.</li>
+<li><strong>Quick Start</strong>: 3-5 commands someone will actually run first. Pick
+commands that are both <strong>most useful</strong> (what you'd run daily) and
+<strong>show the CLI's value</strong> (why install this over curl). Usually:
+<code>doctor</code> → <code>sync</code> → transcendence command (<code>today</code>, <code>health</code>) →
+<code>search</code>. Avoid raw list commands — they dump data without
+demonstrating why the CLI exists.</li>
+<li><strong>Commands</strong>: categorized table. Group by domain function (Scheduling,
+Analytics, Account, Utilities), not by implementation structure.</li>
+<li><strong>Output Formats</strong>: show <code>--json</code>, <code>--select</code>, <code>--csv</code>, <code>--compact</code>,
+<code>--dry-run</code>, <code>--agent</code>. Use a real command, not a placeholder.</li>
+<li><strong>Agent Usage</strong>: agent-native properties and exit codes.</li>
+<li><strong>Cookbook</strong>: 8-15 recipes using <strong>verified flag names</strong> from <code>--help</code>.
+Show the CLI's unique capabilities: transcendence commands, filters,
+SQL queries, pipes. Include at least one mutation example.</li>
+<li><strong>Health Check</strong>: show actual <code>doctor</code> output, not a placeholder.</li>
+<li><strong>Configuration</strong>: list ALL env vars from config.go with descriptions.
+Include config file path.</li>
+<li><strong>Troubleshooting</strong>: common errors mapped to exit codes with fixes.</li>
+</ol>
+<h6>Optional sections (add at your discretion)</h6>
+<ul>
+<li><strong>Rate Limits</strong>: if the API has documented limits</li>
+<li><strong>Self-Hosting</strong>: if the CLI supports <code>--api-url</code> or <code>BASE_URL</code> override</li>
+<li><strong>Pagination</strong>: if the API has notable pagination behavior</li>
+<li><strong>Sources &amp; Inspiration</strong>: credits to community projects (generated by
+the machine, preserve if present)</li>
+</ul>
+<h5>Priority 5.5: SKILL static-check failures (verify-skill)</h5>
+<p>Read <code>/tmp/polish-verify-skill.json</code> for the full finding list. Each finding has a <code>check</code> (<code>flag-names</code>, <code>flag-commands</code>, <code>positional-args</code>, <code>unknown-command</code>, or <code>canonical-sections</code>), a <code>command</code> (the path the SKILL claimed), and a <code>detail</code> describing the mismatch. Common shapes and fixes:</p>
+<ul>
+<li><strong><code>flag-names</code></strong> — SKILL references <code>--foo</code> on a <code>&lt;cli&gt; ...</code> invocation but no command in <code>internal/cli/*.go</code> declares it. Either the example is wrong (fix the SKILL or remove the recipe) or the flag was deleted (decide if it should come back). <strong>Out of scope:</strong> flags on lines that invoke other tools (e.g. <code>npx -y @mvanhorn/printing-press install &lt;api&gt; --cli-only</code>, <code>gh pr create --base ...</code>, <code>go install ...</code>). The recipe-scoped flag-names check ignores those by design — never strip an external-tool flag to make verify-skill exit 0, and never replace the install instructions with a fabricated slash command. If the finding is firing on an external-tool flag anyway, that is a verify-skill bug, not a SKILL bug; report it instead of editing the SKILL.</li>
+<li><strong><code>flag-commands</code></strong> — <code>--foo is declared elsewhere but not on &lt;cmd&gt;</code>. The flag exists somewhere but not on the command the SKILL invoked it on. Two fixes:
+<ol>
+<li>If the flag is added via a shared helper like <code>addXxxFlags(cmd, ...)</code>, inline the <code>cmd.Flags().StringVar(...)</code> declaration directly in the affected command's source file. The verify-skill grep cannot follow function-call indirection.</li>
+<li>If the SKILL example is genuinely wrong, fix the example to use a flag the command does declare.</li>
+</ol>
+</li>
+<li><strong><code>positional-args</code></strong> — <code>got N positional args; Use: &quot;&lt;cmd&gt; &lt;arg&gt;&quot; expects M-M</code>. The SKILL recipe passed N positional args but the command's <code>Use:</code> declares M required. Two fixes:
+<ol>
+<li>If the command also accepts the value via a <code>--flag</code>, change <code>Use: &quot;cmd &lt;arg&gt;&quot;</code> to <code>Use: &quot;cmd [arg]&quot;</code> (square brackets = optional). Verify-skill correctly accepts <code>--flag</code>-only invocations against an optional positional.</li>
+<li>If the SKILL example is missing a required positional, fix the example.</li>
+</ol>
+</li>
+<li><strong><code>canonical-sections</code></strong> — <code>install section drift: hand-edit detected in a generator-owned section</code>. The <code>## Prerequisites: Install the CLI</code> block has been edited away from what the generator would emit for this CLI today. <strong>Do not hand-edit the install section.</strong> It's templated from <code>internal/generator/templates/skill.md.tmpl</code> parameterized on <code>(api_name, category, uses_browser_http_transport)</code>; any drift means an automation step or person modified text the machine owns. Resolve by regenerating the printed CLI (run <code>printing-press regen</code> against this directory, or for a published CLI, regenerate from the spec and re-publish). If the canonical text itself is wrong (e.g., a real change to the install instructions is needed), fix the template, not the printed CLI.</li>
+</ul>
+<p>When editing other parts of SKILL.md, Read the affected section first and Read it again after the Edit. <code>Edit</code> replaces a literal string; if the surrounding context has drifted, a single Edit can graft a second copy of a block onto the first instead of replacing it.</p>
+<p>After fixing, re-run <code>&quot;$PRINTING_PRESS_BIN&quot; verify-skill --dir &quot;$CLI_DIR&quot;</code> and confirm exit 0 before moving on.</p>
+<h5>Priority 6: Remaining dogfood issues</h5>
+<ul>
+<li>Path validity mismatches</li>
+<li>Auth protocol mismatches</li>
+<li>Example drift (examples referencing wrong commands)</li>
+<li>Data pipeline integrity issues</li>
+</ul>
+<h5>Priority 7: MCP tool quality</h5>
+<p><strong>Your goal now is to ensure every MCP tool exposed by this CLI carries agent-grade descriptions and correct read/write classifications.</strong> Tool descriptions and classifications are how agents discover and decide whether to call a tool — thin descriptions and missing annotations directly degrade agent UX, and Phase 1's mechanical gates (verify, dogfood) do NOT catch this class of issue.</p>
+<p>Stop and:</p>
+<ol>
+<li>Run <code>&quot;$PRINTING_PRESS_BIN&quot; tools-audit &quot;$CLI_DIR&quot; --json</code> to surface mechanical findings (empty Short, thin Short, missing <code>mcp:read-only</code> on read-shaped command names).</li>
+<li>You must read <code>references/tools-polish.md</code> and follow its instructions to address the findings AND run a judgment pass over every command — regardless of whether the audit flagged it. The audit catches mechanical issues; description quality and borderline classification (read-only vs. local-write) always require agent reasoning. You must not skip this.</li>
+<li><strong>Accepting MCP-description findings carries a stricter contract.</strong> <code>thin-mcp-description</code> and <code>empty-mcp-description</code> accepts require three pre-decision fields (<code>spec_source_material</code>, <code>target_description</code>, <code>gap_analysis</code>) populated per finding. The binary rejects bulk accepts (&gt;5 findings sharing one rationale) and runs that &quot;complete&quot; without lifting MCPDescriptionQuality. Fix via override or generator improvement is the expected path; accept is rare. See <code>references/tools-polish.md</code> &quot;Marking a finding accepted&quot; for the full contract.</li>
+</ol>
+<p>Proceed to &quot;After all fixes&quot; only when the audit's summary line reads <code>no pending findings</code> with no <code>incomplete:</code> block — every gate (pre-decision fields, duplicate rationale, scorecard delta) passes.</p>
+<h5>Priority 8: Customer-PII gate</h5>
+<p><strong>Your goal now is to clear the PII ledger so promote and publish gates pass.</strong> The PII gate is the deterministic floor that prevents real customer values from reaching published library content. It catches card-last-4, email, US phone, ZIP+4, postal-address, and account-identifier shapes in high-risk files.</p>
+<p>Stop and:</p>
+<ol>
+<li>Run <code>&quot;$PRINTING_PRESS_BIN&quot; pii-audit &quot;$CLI_DIR&quot; &quot;${PII_ARGS[@]}&quot;</code> to surface pending findings (or read <code>/tmp/polish-pii-audit-before.json</code> from Phase 1's baseline). When <code>RESEARCH_DIR</code> exists, this includes that run's <code>research.json</code> and <code>research/*.md</code> with <code>.manuscripts/&lt;run-id&gt;/...</code> paths so accepts carry forward into <code>publish package</code>.</li>
+<li>You must read <code>references/pii-polish.md</code> and follow its per-finding decision tree — fix real values in source with non-matching placeholders, or accept with the <code>category</code> + <code>evidence_context</code> pre-decision fields.</li>
+<li><strong>Accepting PII findings carries a strict contract.</strong> Missing fields, 6+ accepts sharing a rationale, or wholesale-accepting ≥10 findings without source fixes all fail the gate. See <code>references/pii-polish.md</code> &quot;The accept contract&quot; and &quot;Forbidden accept patterns&quot; for the full rules.</li>
+</ol>
+<p>Proceed to &quot;After all fixes&quot; only when <code>pii-audit</code> reads <code>no pending findings</code> with no <code>incomplete:</code> block.</p>
+<h5>After all fixes</h5>
+<pre><code class="language-bash">go build -o &quot;$CLI_NAME&quot; ./cmd/&quot;$CLI_NAME&quot;
+gofmt -w .
+</code></pre>
+<h4>Phase 3: Re-diagnose</h4>
+<p>Re-run the diagnostic sweep on the fixed CLI:</p>
+<pre><code class="language-bash"># RESEARCH_ARGS must travel with dogfood here too — without it,
+# checkNovelFeatures doesn't re-sync novel_features_built after Phase 2
+# edits, and publish-validate's transcendence gate reads stale state
+# from Phase 1's pass.
+&quot;$PRINTING_PRESS_BIN&quot; dogfood --dir &quot;$CLI_DIR&quot; $SPEC_FLAG &quot;${RESEARCH_ARGS[@]}&quot; 2&gt;&amp;1
+&quot;$PRINTING_PRESS_BIN&quot; verify --dir &quot;$CLI_DIR&quot; $SPEC_FLAG --json 2&gt;&amp;1
+&quot;$PRINTING_PRESS_BIN&quot; workflow-verify --dir &quot;$CLI_DIR&quot; --json 2&gt;&amp;1
+&quot;$PRINTING_PRESS_BIN&quot; verify-skill --dir &quot;$CLI_DIR&quot; --json 2&gt;&amp;1
+if [ &quot;$STANDALONE_MODE&quot; = &quot;true&quot; ]; then
+  &quot;$PRINTING_PRESS_BIN&quot; publish validate --dir &quot;$CLI_DIR&quot; --json 2&gt;&amp;1
+fi
+&quot;$PRINTING_PRESS_BIN&quot; scorecard --dir &quot;$CLI_DIR&quot; $SPEC_FLAG 2&gt;&amp;1
+&quot;$PRINTING_PRESS_BIN&quot; tools-audit &quot;$CLI_DIR&quot; 2&gt;&amp;1
+&quot;$PRINTING_PRESS_BIN&quot; pii-audit &quot;$CLI_DIR&quot; &quot;${PII_ARGS[@]}&quot; 2&gt;&amp;1
+go vet ./... 2&gt;&amp;1
+polish_gosec() {
+  local out=&quot;$*&quot; built
+  if command -v gosec &gt;/dev/null 2&gt;&amp;1; then
+    gosec -fmt=json -out=&quot;$out&quot; ./... 2&gt;&amp;1 || true
+    [ &quot;$(jq '(.&quot;Golang errors&quot; // {}) | length' &quot;$out&quot; 2&gt;/dev/null || echo 1)&quot; = 0 ] &amp;&amp; return 0
+    echo &quot;polish_gosec: installed gosec could not load every package; building the pinned fallback&quot; &gt;&amp;2
+  fi
+  built=$(mktemp -d) || return 1
+  if ! (cd &quot;$built&quot; &amp;&amp; export GOWORK=off &amp;&amp; go mod init polish-gosec &amp;&amp; go get github.com/securego/gosec/v2/cmd/gosec@v2.29.0 golang.org/x/tools@v0.52.0 &amp;&amp; go build -o gosec github.com/securego/gosec/v2/cmd/gosec) &gt;&quot;$built/build.log&quot; 2&gt;&amp;1; then
+    echo &quot;polish_gosec: could not build the gosec fallback:&quot; &gt;&amp;2
+    tail -n 20 &quot;$built/build.log&quot; &gt;&amp;2
+    rm -rf &quot;$built&quot;
+    return 1
+  fi
+  &quot;$built/gosec&quot; -fmt=json -out=&quot;$out&quot; ./... 2&gt;&amp;1 || true
+  rm -rf &quot;$built&quot;
+}
+polish_gosec /tmp/polish-gosec-after.json
+</code></pre>
+<p>Record the after scores, including the live matrix qualifier from the final <code>scorecard --live-check --json</code> output. If the gosec command fails before writing <code>/tmp/polish-gosec-after.json</code>, or that report still has a non-empty <code>&quot;Golang errors&quot;</code> map, treat the missing or partial post-fix scan as a polish failure: add it to <code>remaining_issues</code>, set <code>ship_recommendation: hold</code>, and include the stderr summary. If verify-skill still has any <code>severity=error</code> findings, workflow-verify still reports <code>workflow-fail</code>, publish-validate still reports <code>passed: false</code> (standalone mode only — mid-pipeline polish doesn't run this check), gosec still reports unresolved findings in hand-authored novel-feature Go, pii-audit still has pending findings or gate failures, or the final live matrix qualifier is <code>not_exercised</code>, ship cannot fire (see ship logic below). For a non-exercised live matrix, add a <code>remaining_issues</code> item such as <code>live matrix not exercised (mock-only/no live token); run the live gate before publish</code>.</p>
+<h4>Ship logic</h4>
+<p>Compute the ship recommendation:</p>
+<ul>
+<li>
+<p><strong><code>ship</code></strong>: verify &gt;= 80%, scorecard &gt;= 75, no critical failures, <strong>AND</strong> verify-skill exits 0 (no SKILL/CLI mismatches), <strong>AND</strong> workflow-verify is not <code>workflow-fail</code>, <strong>AND</strong> (when <code>STANDALONE_MODE=true</code>) publish-validate reports <code>passed: true</code>, <strong>AND</strong> gosec has zero unresolved findings in hand-authored novel-feature Go, <strong>AND</strong> tools-audit shows zero pending findings (every finding fixed or explicitly accepted with rationale), <strong>AND</strong> pii-audit shows zero pending findings and zero gate failures (every PII finding fixed in source or accepted with valid pre-decision fields). The SKILL/workflow/publish/gosec/PII gates are hard requirements: a CLI that ships with a SKILL that lies about it (verify-skill findings) gives agents broken instructions; a CLI whose primary workflow fails verification has not actually shipped; a CLI that publish-validate rejects is not publishable; a CLI with unresolved security static-analysis findings in hand-authored novel-feature code is still reviewer bait; a CLI that fails pii-audit at promote/publish gates will halt shipping anyway. The publish-validate gate applies only when polish ran it (standalone mode); mid-pipeline polish defers publish-readiness to the main SKILL's Phase 6.</p>
+</li>
+<li>
+<p><strong><code>ship-with-gaps</code></strong>: verify &gt;= 65%, scorecard &gt;= 65, non-critical gaps remain, <strong>AND</strong> the SKILL/workflow/gosec/PII gates above are satisfied, <strong>AND</strong> (when <code>STANDALONE_MODE=true</code>) the publish-validate gate is satisfied, <strong>AND</strong> the README has a <code>## Known Gaps</code> block that lists the user-facing gaps. Reserved for the rare case where a refactor or external-dependency blocker prevents a clean fix.</p>
+<p><strong>README Known Gaps is mandatory for ship-with-gaps.</strong> The published library copy is what downstream users see; if the verdict claims gaps exist but the README hides them, downstream users meet a CLI that misbehaves with no disclosure. Before emitting <code>ship_recommendation: ship-with-gaps</code>:</p>
+<ol>
+<li>
+<p>Read the CLI's <code>README.md</code>. If a <code>## Known Gaps</code> section already exists (e.g., the main SKILL Phase 4 wrote it before polish ran), confirm it covers the user-facing items in <code>remaining_issues</code>. Add bullets for any newly surfaced user-facing gap polish discovered.</p>
+</li>
+<li>
+<p>If <code>## Known Gaps</code> is missing, write it — placed after <code>## Quick Start</code> (or before <code>## Usage</code>) to mirror the <code>## Unique Features</code> placement convention. One bullet per user-facing item from <code>remaining_issues</code>. Phrase from the user's perspective: what command misbehaves, what the workaround is. Example:</p>
+<pre><code class="language-markdown">## Known Gaps
+
+- **`analytics export --csv`** returns truncated rows on workspaces with &gt;10k events. Use `--json` and pipe to `jq` as a workaround until the underlying export endpoint is paginated.
+</code></pre>
+</li>
+<li>
+<p>Filter <code>remaining_issues</code> for user-facing entries when populating the section. Internal items (verify drift on a deprecated flag, MCP description tuning, polish-internal notes) do not belong in the public Known Gaps. If the agent cannot identify any user-facing gap from <code>remaining_issues</code>, the verdict is <code>ship</code>, not <code>ship-with-gaps</code>.</p>
+</li>
+<li>
+<p>List each Known Gaps write/update in <code>fixes_applied</code> so the caller can surface that this happened.</p>
+</li>
+</ol>
+<p>If polish cannot responsibly populate Known Gaps from the available evidence (e.g., <code>remaining_issues</code> is all internal jargon with no user-facing reading), downgrade the verdict to <code>hold</code> rather than ship without disclosure.</p>
+</li>
+<li>
+<p><strong><code>hold</code></strong>: verify &lt; 65% or scorecard &lt; 65 or critical failures, <strong>OR</strong> verify-skill has unresolved findings, <strong>OR</strong> workflow-verify reports <code>workflow-fail</code> and the workflow is the CLI's primary value, <strong>OR</strong> (when <code>STANDALONE_MODE=true</code>) publish-validate reports <code>passed: false</code>, <strong>OR</strong> gosec still reports unresolved findings in hand-authored novel-feature Go, <strong>OR</strong> pii-audit still has pending findings or gate failures, <strong>OR</strong> the Phase 3 gate bundle says this is a prior sub-60 reprint with missing transcendence rows and no accepted <code>partial_transcendence_override</code>. Mid-pipeline polish never reaches <code>hold</code> because of publish-validate — the check doesn't run in that mode and <code>publish_validate_*</code> is emitted as <code>skipped (mid-pipeline)</code>.</p>
+</li>
+</ul>
+<h5>Push higher without gaming</h5>
+<p>The ship gates are a floor, not a ceiling. After they pass, look at scorecard dimensions still below max and ask whether each gap is real or structural:</p>
+<ol>
+<li><strong>Find the underlying deficit, not the score.</strong> The scorecard is a proxy for quality, not the goal itself. A README scoring 8/10 might be missing a Cookbook section or have outdated commands — that's a real, fixable gap. A <code>mcp_surface_strategy</code> scoring 2/10 on a 200-endpoint API might be flagging that the surface is mostly endpoint mirrors — also potentially fixable.</li>
+<li><strong>If there's a real, agent-grade improvement available, make it.</strong> Better description, missing flag doc, weak README section, an example that doesn't reflect actual usage. The CLI gets better and the score follows.</li>
+<li><strong>If the deficit is structural, document and accept.</strong> Some dimensions assume capabilities the CLI's domain doesn't have (a read-only API scored against write-workflow dimensions, a CLI with no auth scored on auth dimensions, a small API penalized on <code>surface_strategy</code> thresholds calibrated for large APIs). Note the reason in <code>skipped_findings</code> and move on.</li>
+<li><strong>Never add scaffolding to satisfy the scorer.</strong> Fake commands, fake tests, fake flags, or boilerplate prose written purely to nudge a number — those degrade the CLI to satisfy the proxy. The scorer is imperfect by design (the &quot;scoring may be imperfect&quot; caveat in AGENTS.md applies). Trust the underlying judgment, not the number.</li>
+</ol>
+<h6>MCP scorecard dims map to spec fields, not generator code</h6>
+<p>When <code>mcp_token_efficiency</code>, <code>mcp_tool_design</code>, <code>mcp_remote_transport</code>, or <code>mcp_surface_strategy</code> are below max, the fix is almost always a spec edit + regenerate (or <code>regen-merge</code> from a freshly-generated tree), <strong>not</strong> a generator-template change. Polish CAN address these — do not classify them as &quot;feature add to a generator-owned file, retro candidate.&quot; Cobratree shell-out tools already catalog from Short (not operator Long help), so leftover <code>mcp_token_efficiency</code> pressure is typed-endpoint descriptions, not framework <code>--help</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Weak dim</th>
+<th>Spec field that fixes it</th>
+<th>What to add to <code>spec.yaml</code>'s <code>mcp:</code> block</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mcp_remote_transport</code></td>
+<td><code>mcp.transport</code></td>
+<td><code>transport: [stdio, http]</code> (small APIs at or under <code>spec.DefaultRemoteTransportEndpointThreshold</code> typed endpoints already get this by default; the override is only needed when the spec opted into a narrower list or the API is above the threshold and still wants remote reach)</td>
+</tr>
+<tr>
+<td><code>mcp_token_efficiency</code>, <code>mcp_surface_strategy</code></td>
+<td><code>mcp.endpoint_tools</code>, <code>mcp.orchestration</code></td>
+<td><code>endpoint_tools: hidden</code> + <code>orchestration: code</code> (Cloudflare pattern: ~70 raw endpoint tools collapse to <code>&lt;api&gt;_search</code> + <code>&lt;api&gt;_read</code> + <code>&lt;api&gt;_execute</code>; reads use <code>_read</code>, and <code>_execute</code> previews state-changing calls until <code>confirm</code> is boolean <code>true</code>)</td>
+</tr>
+<tr>
+<td><code>mcp_tool_design</code></td>
+<td><code>mcp.intents</code></td>
+<td>Define multi-step intent compositions for the workflows the API supports</td>
+</tr>
+<tr>
+<td><code>mcp_description_quality</code></td>
+<td><code>mcp-descriptions.json</code> (override file at the CLI root)</td>
+<td>Per-tool description overrides; thin spec-derived descriptions get richer text without spec edits</td>
+</tr>
+</tbody>
+</table>
+<p>Recommended threshold: at &gt;50 typed endpoints, default to recommending all four (<code>transport</code>, <code>endpoint_tools=hidden</code>, <code>orchestration=code</code>, <code>intents</code> for the headline workflows). Small APIs (&lt;= <code>spec.DefaultRemoteTransportEndpointThreshold</code>) get the http transport by default already, so <code>mcp_remote_transport</code> lands at 10/10 without any spec edit — only call it out if the spec explicitly narrowed the list. The full reference is <code>docs/SPEC-EXTENSIONS.md</code>.</p>
+<p>After editing the spec, regenerate (or <code>regen-merge</code> the changes into the published library) so the new <code>mcp:</code> block reaches templates. Cobratree-walked novel commands continue to surface as MCP tools either way; they don't need spec changes.</p>
+<p>Rule of thumb: if your fix would still be valuable if the scorecard didn't exist, do it. If the only motivation is &quot;to push the score,&quot; don't.</p>
+<h4>Display delta and emit result block</h4>
+<p>Display the delta to the user, then emit the structured <code>---POLISH-RESULT---</code> block. The block lets calling skills (e.g., main printing-press Phase 5.5) parse the recommendation and scores reliably; the human-readable table above is for the user.</p>
+<pre><code>Polish Results for &lt;CLI_NAME&gt;:
+
+                    Before    After     Delta
+  Scorecard:        XX/100    XX/100    +N
+  Verify:           XX%       XX%       +N%
+  Live matrix:      exercised/not_exercised -&gt; exercised/not_exercised
+  Tools-audit:      XX        XX        -N pending findings
+
+Fixes applied:
+  - &lt;one-line description of each fix&gt;
+
+Skipped findings:
+  - &lt;finding&gt;: &lt;why you chose not to fix it&gt;
+
+Remaining issues:
+  - &lt;one-line description of each issue you tried to fix but couldn't&gt;
+
+---POLISH-RESULT---
+scorecard_before: &lt;N&gt;
+scorecard_after: &lt;N&gt;
+verify_before: &lt;N&gt;
+verify_after: &lt;N&gt;
+dogfood_before: &lt;PASS|FAIL&gt;
+dogfood_after: &lt;PASS|FAIL&gt;
+dogfood_live_matrix_before: &lt;exercised|not_exercised|unknown&gt;
+dogfood_live_matrix_after: &lt;exercised|not_exercised|unknown&gt;
+govet_before: &lt;N&gt;
+govet_after: &lt;N&gt;
+gosec_before: &lt;N&gt;
+gosec_after: &lt;N&gt;
+tools_audit_before: &lt;N pending&gt;
+tools_audit_after: &lt;N pending&gt;
+publish_validate_before: &lt;PASS|FAIL|skipped (mid-pipeline)&gt;
+publish_validate_after: &lt;PASS|FAIL|skipped (mid-pipeline)&gt;
+fixes_applied:
+- &lt;one-line description of each fix&gt;
+skipped_findings:
+- &lt;finding&gt;: &lt;why you chose not to fix it&gt;
+remaining_issues:
+- &lt;one-line description of each issue you tried to fix but couldn't&gt;
+ship_recommendation: &lt;ship|ship-with-gaps|hold&gt;
+further_polish_recommended: &lt;yes|no&gt;
+further_polish_reasoning: &lt;one sentence explaining the call&gt;
+---END-POLISH-RESULT---
+</code></pre>
+<p>The three lists serve different purposes:</p>
+<ul>
+<li><strong>fixes_applied</strong>: what changed — the caller displays these</li>
+<li><strong>skipped_findings</strong>: issues you found but deliberately did not fix, with reasoning (e.g., &quot;verify classifies <code>stale</code> as read — scorer bug, not a CLI problem&quot;, &quot;thin-short on <code>version</code> accepted as-is — accurate and brief&quot;). The caller surfaces these so the user can decide whether to address them manually.</li>
+<li><strong>remaining_issues</strong>: issues you tried to fix but couldn't resolve.</li>
+</ul>
+<p><strong><code>publish_validate_*</code> values.</strong> Emit <code>PASS</code> or <code>FAIL</code> when polish ran publish-validate (standalone mode). Emit the literal string <code>skipped (mid-pipeline)</code> when polish skipped it (mid-pipeline invocation, <code>STANDALONE_MODE=false</code>). The skipped value is informational only: callers must not treat it as a failure when deciding whether to cascade polish's <code>ship_recommendation</code> into a CLI-level hold.</p>
+<p><strong><code>dogfood_live_matrix_*</code> values.</strong> Emit <code>exercised</code> only when live-check evaluated at least one real sample. Emit <code>not_exercised</code> for mock-only/no-token/no-research/no-evaluated-sample runs. When <code>dogfood_after: PASS</code> but <code>dogfood_live_matrix_after: not_exercised</code>, the human summary must say <code>dogfood PASS (mock only; live matrix not exercised — run the live gate before publish)</code>, and <code>ship_recommendation</code> must be <code>hold</code> unless the parent caller explicitly owns a later live gate.</p>
+<p><strong><code>gosec_*</code> values.</strong> Emit the post-triage count of gosec findings that are
+still relevant to this printed CLI after generated-file triage. These values
+are intentionally not the raw <code>Issues[]</code> length from <code>/tmp/polish-gosec-*.json</code>:
+do not count generator-emitted findings that were routed to <code>skipped_findings</code>
+as retro candidates, but do count unresolved hand-authored findings that force
+<code>hold</code>.</p>
+<h5>Picking <code>further_polish_recommended</code></h5>
+<p>Your judgment, not a count of <code>remaining_issues</code>. Set <code>yes</code> when another polish invocation has a real chance of closing what's left:</p>
+<ul>
+<li><code>remaining_issues</code> includes verify or dogfood failures you ran out of time on and a fresh pass with more attention per failure could plausibly resolve.</li>
+<li>The fixes you did land may have unblocked dependent issues you couldn't reach this pass.</li>
+<li>A SKILL/CLI mismatch needs a second look after this pass changed the source tree.</li>
+</ul>
+<p>Set <code>no</code> when another invocation would re-tread the same ground:</p>
+<ul>
+<li><code>remaining_issues</code> are decisions only the user can make (rename a flagship command, choose a default behavior, accept a structural trade-off).</li>
+<li>You already attempted the fix in two different ways this pass and both failed for the same reason.</li>
+<li>The blocker is external (API changed shape, rate-limited, missing credential) and not something a fresh polish run sees differently.</li>
+<li><code>remaining_issues</code> is empty AND <code>skipped_findings</code> are all environmental or structural — there is nothing left for polish to do.</li>
+</ul>
+<p><code>further_polish_reasoning</code> is one sentence the caller surfaces verbatim. Make it specific (&quot;verify failures on <code>analytics export</code> and <code>report show</code> looked closable but I gave up too early&quot;) rather than generic (&quot;more polish might help&quot;). Callers use this signal to decide whether to offer &quot;Polish again&quot; in their next prompt; a vague reason makes their prompt vague.</p>
+<h4>Publish Offer</h4>
+<p><strong>Skip this entire section unless <code>STANDALONE_MODE</code> is true.</strong> <code>STANDALONE_MODE</code> is set in the &quot;Resolve CLI&quot; block above based on the caller mode: true for slash-command invocations (<code>/printing-press-polish ...</code>) or Skill-tool invocations that pass <code>--standalone</code> in <code>args</code>; false otherwise. When false, polish is being called from main SKILL Phase 5.5 or hold-path &quot;Polish to retry,&quot; and the working CLI has not been promoted to library yet. <code>/printing-press-publish &lt;slug&gt;</code> would resolve to <code>$PRESS_LIBRARY/&lt;slug&gt;/</code>, which is either empty or holds a stale prior run — invoking publish here would either fail to resolve or ship the wrong copy. The parent skill owns the publish flow on that path; just emit the result block and return.</p>
+<p>Apply the publish turn-boundary rule: the <code>AskUserQuestion</code> answer may authorize only a handoff message, not a same-turn publish. Publishing opens or updates a public-library PR, so it requires a fresh user-authored message after polish completes. See <code>references/publish-turn-boundary.md</code> for rationale.</p>
+<p>A simple check:</p>
+<pre><code class="language-bash">if [ &quot;$STANDALONE_MODE&quot; != &quot;true&quot; ]; then
+  echo &quot;non-standalone caller; skipping Publish Offer&quot;
+  return
+fi
+</code></pre>
+<p>The gate is the caller-mode flag, <strong>not</strong> the resolved path. A Skill-tool invocation without <code>--standalone</code> defers publish even when the path lives under <code>$PRESS_LIBRARY/&lt;slug&gt;/</code>; this is the safer default, and the only way the inverted Phase 5.5/5.6 failure mode (mid-pipeline run firing a public fork + PR) gets caught at the polish boundary. The previous path-substring heuristic (<code>*.runstate/*</code>) is no longer load-bearing here — it has been retained in the research-dir resolution block above because that block is selecting between two real on-disk layouts, which is a different concern from publish gating.</p>
+<p>For standalone invocations, continue with the offer below.</p>
+<p>If <code>ship</code> or <code>ship-with-gaps</code>:</p>
+<p>Construct the prompt from the result block. The shape is data-driven so the user is never asked to weigh &quot;Polish again&quot; against &quot;Publish&quot; when polish itself just decided another pass would not help.</p>
+<h5>Recommendation</h5>
+<p>Pick the recommended action from the polish result:</p>
+<ul>
+<li><code>ship</code> + <code>remaining_issues</code> empty → recommend <strong>Publish</strong>.</li>
+<li><code>ship</code> + <code>remaining_issues</code> non-empty + <code>further_polish_recommended: yes</code> → recommend <strong>Polish again</strong>.</li>
+<li><code>ship</code> + <code>remaining_issues</code> non-empty + <code>further_polish_recommended: no</code> → recommend <strong>Publish</strong> if the remaining issues do not touch the CLI's headline commands, otherwise surface the trade-off and let the user decide between <strong>Publish</strong> (as-is; README is not auto-updated for <code>ship</code> verdicts) and <strong>Done</strong>.</li>
+<li><code>ship-with-gaps</code> + <code>further_polish_recommended: yes</code> → recommend <strong>Polish again</strong>.</li>
+<li><code>ship-with-gaps</code> + <code>further_polish_recommended: no</code> → recommend <strong>Publish</strong> (the gap is already in README's <code>## Known Gaps</code> because polish's ship logic enforces that for <code>ship-with-gaps</code> — see &quot;Ship logic&quot; above) or <strong>Done</strong> if the gap is publish-blocking — agent judgment.</li>
+</ul>
+<h5>Menu</h5>
+<p>Suppress the &quot;Polish again&quot; option entirely when <code>further_polish_recommended: no</code>. Keep &quot;Publish&quot; and &quot;Done&quot; always available.</p>
+<p>Surface <code>further_polish_reasoning</code> as context when polish opted out of recommending another pass — the user should see <em>why</em> polish is done.</p>
+<p>Present via <code>AskUserQuestion</code>. Two example shapes:</p>
+<p><strong>Polish converged clean</strong> (<code>remaining_issues</code> empty, <code>further_polish_recommended: no</code>):</p>
+<blockquote>
+<p>&quot;&lt;CLI_NAME&gt; polished: scorecard XX/100, verify XX%. Polish ran cleanly — nothing more to fix.</p>
+<p>Recommendation: Publish.</p>
+<ol>
+<li><strong>Publish separately</strong> (recommended) — show the publish command for the next user message</li>
+<li><strong>Done for now</strong> — CLI is at $PRESS_LIBRARY/&lt;cli-name&gt;&quot;</li>
+</ol>
+</blockquote>
+<p><strong>Polish thinks another pass would help</strong> (<code>remaining_issues</code> non-empty, <code>further_polish_recommended: yes</code>):</p>
+<blockquote>
+<p>&quot;&lt;CLI_NAME&gt; polished: scorecard XX/100, verify XX%. &lt;N&gt; issues remain.</p>
+<p>Polish notes: '&lt;further_polish_reasoning&gt;'</p>
+<p>Recommendation: Polish again before publishing.</p>
+<ol>
+<li><strong>Polish again</strong> (recommended) — close the remaining &lt;N&gt; issues</li>
+<li><strong>Publish separately</strong> — show the publish command to ship as-is in the next user message</li>
+<li><strong>Done for now</strong> — CLI is at $PRESS_LIBRARY/&lt;cli-name&gt;&quot;</li>
+</ol>
+</blockquote>
+<p>The recommended option leads, carries the <code>(recommended)</code> label, and the leading <code>Recommendation:</code> line states the agent's call explicitly. Three reinforcing channels so the user does not have to infer from ordering.</p>
+<h5>If &quot;Publish separately&quot;</h5>
+<p>Do not invoke <code>/printing-press-publish &lt;cli-name&gt;</code> from this same turn, and do not check or create public-library PRs here. Print a handoff that requires an explicit fresh user-authored message. Include the <code>--from-polish</code> marker so publish can offer the same post-publish retro tail that polish used to offer after a successful inline publish:</p>
+<blockquote>
+<p>&quot;Publishing requires a separate user confirmation because it can fork <code>mvanhorn/printing-press-library</code>, push a branch, and open or update a PR.</p>
+<p>To publish, send this as your next message:</p>
+<p><code>/printing-press-publish &lt;cli-name&gt; --from-polish</code>&quot;</p>
+</blockquote>
+<p>After printing the handoff, stop. If the user sends the command in a later message, the publish skill owns validation, packaging, public-library PR creation or update, and the <code>--from-polish</code> post-publish retro offer.</p>
+<p>(When <code>STANDALONE_MODE</code> is false this whole section is unreachable — the Publish Offer guard at the top of this section returns early — so no extra check is needed here.)</p>
+<h5>If &quot;Polish again&quot;</h5>
+<p>Re-run Phase 1 → Phase 2 → Phase 3 with the same CLI. Maximum 2 additional polish passes (3 total including the first).</p>
+<h5>If &quot;Done for now&quot;</h5>
+<p>End normally.</p>
+<h4>Rules</h4>
+<ul>
+<li>Fix everything. Do not ask for approval before fixing — polish is autonomous.</li>
+<li>Report results honestly. Show what improved and what didn't.</li>
+<li>Do not add new features. Polish fixes quality issues, not feature gaps.</li>
+<li>Do not re-run research or generation. Polish works with the CLI as-is.</li>
+<li>Do not modify the printing-press generator. That's <code>/printing-press-retro</code>.</li>
+<li>Do not modify any files outside <code>$CLI_DIR</code>.</li>
+<li>If polish adds or renames a Cobra command, the MCP surface updates automatically through the generated <code>internal/mcp/cobratree</code> runtime mirror. Update <code>novel_features</code> only when README/SKILL highlights or registry display should change; use <code>cmd.Annotations[&quot;mcp:hidden&quot;] = &quot;true&quot;</code> for debug-only commands.</li>
+<li>Maximum 1 fix-and-rediagnose pass per polish invocation. The &quot;Polish again&quot; path runs additional invocations (max 3 total).</li>
+<li>Prefer mechanical fixes over creative decisions. When a creative decision is needed (like the CLI description), use the research brief from manuscripts if available.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

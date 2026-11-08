@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>observability-and-instrumentation · SkillHub</title>
+    <meta name="description" content="Use it when: you build anything that runs in production, add an endpoint, job or outside integration, or an incident was hard to diagnose. It does: writes down what on-call will ask about the feature, adds the log, metric or trace that answers each question, then alerts with runbooks. You get: JSON logs with a request ID on every line, rate, error and latency metrics, OpenTelemetry traces, and alerts linked to short runbooks. Proves it: forces an error in staging, finds it through the telemetry alone, and fires each new alert once. Unlike: shipping-and-launch, which lists what to watch on launch day, it adds the logs, metrics, traces and alerts that feed it." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=addyosmani%2Fagent-skills">addyosmani/agent-skills</a> <span aria-hidden="true">/</span> <a href="/bundle/addyosmani/agent-skills/">Addy&#39;s Agent Skills</a></p>
+      <div class="title-row"><h1>observability-and-instrumentation</h1><button type="button" class="save" data-save="skill:addyosmani/agent-skills/skills/observability-and-instrumentation" aria-pressed="false" aria-label="Save observability-and-instrumentation" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you build anything that runs in production, add an endpoint, job or outside integration, or an incident was hard to diagnose</dd></div><div><dt>It does</dt><dd>writes down what on-call will ask about the feature, adds the log, metric or trace that answers each question, then alerts with runbooks</dd></div><div><dt>You get</dt><dd>JSON logs with a request ID on every line, rate, error and latency metrics, OpenTelemetry traces, and alerts linked to short runbooks</dd></div><div><dt>Proves it</dt><dd>forces an error in staging, finds it through the telemetry alone, and fires each new alert once</dd></div><div><dt>Unlike</dt><dd>shipping-and-launch, which lists what to watch on launch day, it adds the logs, metrics, traces and alerts that feed it</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 12 of 25 in the <a href="/bundle/addyosmani/agent-skills/">Addy&#39;s Agent Skills</a> bundle · Before it: <a href="/skill/addyosmani/agent-skills/skills/api-and-interface-design/">api-and-interface-design</a> · After it: <a href="/skill/addyosmani/agent-skills/skills/doubt-driven-development/">doubt-driven-development</a></p>
+    
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Instrumentation is written with the feature, like tests. The agent starts from two to four questions an on-call engineer will ask, such as why payments fail, and every signal must answer one: metrics say that something is wrong, traces say where, logs say why. Logs are structured events with stable names, a correlation ID carried across every call and, when several entry points write to one log, a field naming which one started the run; secrets and full personal data never go in. Every endpoint and outside dependency gets RED metrics (rate, errors, duration), resources get USE (utilization, saturation, errors), latency is a histogram read at p50, p95 and p99, and labels come only from small fixed sets, never user IDs or URLs. Tracing uses OpenTelemetry auto-instrumentation, with manual spans only around meaningful work. Alerts fire on symptoms users feel, such as error rate or latency, not on CPU; each is actionable, has a justified threshold, one of two severities and a runbook of a few lines in docs/runbooks/. Finally it verifies the telemetry itself: logs are structured, metrics appear, a request can be followed across services, and alerts reach the right channel.</p>
+      <p class="muted">Summarizes <a href="https://github.com/addyosmani/agent-skills/tree/301b02b12bff98e4688e6984af6556802322bbde/skills/observability-and-instrumentation">the skill at 301b02b</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">addyosmani/</span><wbr><span class="word">agent-skills</span> <span class="word">--skill</span> <span class="word">observability-and-instrumentation</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/addyosmani/agent-skills --skill observability-and-instrumentation">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/addyosmani/agent-skills/observability-and-instrumentation">skills.sh page</a> · <a href="https://github.com/addyosmani/agent-skills/tree/HEAD/skills/observability-and-instrumentation">Source on GitHub</a> · <a href="/?repo=addyosmani%2Fagent-skills">All skills from addyosmani/agent-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>62,800 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>113,924 <span class="muted">addyosmani/agent-skills</span></dd></div><div><dt>First seen</dt><dd>Jun 11, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">4.5K</div>
+      <div class="stat-delta">+49% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 3,039; week to Sep 27: 3,973; week to Oct 4: 3,752; week to Oct 11: 3,976; week to Oct 18: 5,066; week to Oct 25: 5,641; week to Nov 1: 5,346; week to Nov 8: 4,522. Use the left and right arrow keys to read each week."
+        data-values="3039,3973,3752,3976,5066,5641,5346,4522" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,26.3 38.6,19.0 71.1,20.7 103.7,19.0 136.3,10.5 168.9,6.0 201.4,8.3 234.0,14.7" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="14.7" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>3,039</td></tr><tr><td>Sep 27</td><td>3,973</td></tr><tr><td>Oct 4</td><td>3,752</td></tr><tr><td>Oct 11</td><td>3,976</td></tr><tr><td>Oct 18</td><td>5,066</td></tr><tr><td>Oct 25</td><td>5,641</td></tr><tr><td>Nov 1</td><td>5,346</td></tr><tr><td>Nov 8</td><td>4,522</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:cloud" data-facet="category" title="Deploy, provision, observe and debug cloud apps." href="/?tag=category%3Acloud">category:<wbr>cloud</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Deploy, provision, observe and debug cloud apps.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="observability" data-facet="topic" href="/?tag=observability">observability</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:opentelemetry" data-facet="stack" href="/?tag=stack%3Aopentelemetry">stack:<wbr>opentelemetry</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/addyosmani/agent-skills/blob/301b02b12bff98e4688e6984af6556802322bbde/skills/observability-and-instrumentation/SKILL.md">addyosmani/agent-skills at 301b02b</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: observability-and-instrumentation
+description: Instruments code so production behavior is visible and diagnosable. Use when adding logging, metrics, tracing, or alerting. Use when shipping any feature that runs in production and you need evidence it works. Use when production issues are reported but you can&#39;t tell what happened from the available data.</code></pre></details>
+        <div class="markdown"><h3>Observability and Instrumentation</h3>
+<h4>Overview</h4>
+<p>Code you can't observe is code you can't operate. Observability is the ability to answer &quot;what is the system doing and why?&quot; from the outside, using the telemetry the code emits. Instrumentation is not a post-launch add-on — it's written alongside the feature, the same way tests are. If a feature ships without telemetry, the first user-reported bug becomes archaeology instead of a query.</p>
+<h4>When to Use</h4>
+<ul>
+<li>Building any feature that will run in production</li>
+<li>Adding a new service, endpoint, background job, or external integration</li>
+<li>A production incident took too long to diagnose (&quot;we couldn't tell what happened&quot;)</li>
+<li>Setting up or reviewing alerting rules</li>
+<li>Reviewing a PR that adds I/O, retries, queues, or cross-service calls</li>
+</ul>
+<p><strong>NOT for:</strong></p>
+<ul>
+<li>Diagnosing a failure happening right now — use the <code>debugging-and-error-recovery</code> skill (observability is what makes that skill fast next time)</li>
+<li>Profiling and optimizing measured slowness — use the <code>performance-optimization</code> skill</li>
+<li>Launch-day monitoring checklists and rollback triggers — see the <code>shipping-and-launch</code> skill; this skill covers the instrumentation that feeds them</li>
+</ul>
+<h4>Process</h4>
+<h5>1. Define &quot;working&quot; before instrumenting</h5>
+<p>Telemetry without a question is noise. Before adding any instrumentation, write down 2–4 questions an on-call engineer will ask about this feature:</p>
+<pre><code>FEATURE: checkout payment retry
+QUESTIONS ON-CALL WILL ASK:
+1. What fraction of payments succeed on first attempt vs after retry?
+2. When a payment fails permanently, why? (provider error? timeout? validation?)
+3. Is the payment provider slower than usual?
+→ Every signal below must help answer one of these.
+</code></pre>
+<p>If you can't name the questions, you're not ready to instrument — you'll log everything and learn nothing.</p>
+<h5>2. Pick the right signal for each question</h5>
+<table>
+<thead>
+<tr>
+<th>Signal</th>
+<th>Answers</th>
+<th>Cost profile</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Structured log</strong></td>
+<td>&quot;What happened in this specific case?&quot;</td>
+<td>Per-event; grows with traffic</td>
+<td><code>payment_failed</code> with provider error code</td>
+</tr>
+<tr>
+<td><strong>Metric</strong></td>
+<td>&quot;How often / how fast, in aggregate?&quot;</td>
+<td>Fixed per series; cheap to query</td>
+<td>p99 latency of provider calls</td>
+</tr>
+<tr>
+<td><strong>Trace</strong></td>
+<td>&quot;Where did time go across services?&quot;</td>
+<td>Per-request; usually sampled</td>
+<td>One slow checkout, broken down by hop</td>
+</tr>
+</tbody>
+</table>
+<p>Rule of thumb: metrics tell you <strong>that</strong> something is wrong, traces tell you <strong>where</strong>, logs tell you <strong>why</strong>.</p>
+<h5>3. Structured logging</h5>
+<p>Log events, not prose. Every log line is a JSON object with a stable event name and machine-readable fields:</p>
+<pre><code class="language-typescript">// BAD: string interpolation — unqueryable, inconsistent
+logger.info(`Payment ${id} failed for user ${userId} after ${n} retries`);
+
+// GOOD: stable event name + structured fields
+logger.warn({
+  event: 'payment_failed',
+  paymentId: id,
+  provider: 'stripe',
+  errorCode: err.code,
+  attempt: n,
+}, 'payment failed');
+</code></pre>
+<p><strong>Log levels — use them consistently:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Meaning</th>
+<th>On-call action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>error</code></td>
+<td>Invariant broken; someone may need to act</td>
+<td>Investigate</td>
+</tr>
+<tr>
+<td><code>warn</code></td>
+<td>Degraded but handled (retry succeeded, fallback used)</td>
+<td>Watch for trends</td>
+</tr>
+<tr>
+<td><code>info</code></td>
+<td>Significant business event (order placed, job finished)</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>debug</code></td>
+<td>Diagnostic detail</td>
+<td>Off in production by default</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Correlation IDs are mandatory.</strong> Generate (or accept) a request ID at the system boundary and attach it to every log line, span, and outbound call. Without it, you cannot reconstruct a single request from interleaved logs:</p>
+<pre><code class="language-typescript">// Express: child logger per request, ID propagated downstream
+app.use((req, res, next) =&gt; {
+  req.id = req.headers['x-request-id'] ?? crypto.randomUUID();
+  req.log = logger.child({ requestId: req.id });
+  res.setHeader('x-request-id', req.id);
+  next();
+});
+</code></pre>
+<p><strong>When several entry points write to one log, name the entry point.</strong> A correlation ID identifies a run; it does not say which code path started it. The same job reached by a scheduler, by a replay endpoint, and by a manual CLI run produces interchangeable lines in one sink, so attributing a line falls back to elimination — cross-reading the scheduler's history, the process table, a deploy log — and that argument holds only as long as those external records happen to still exist. Stamp the entry point where the run starts, next to the correlation ID, and propagate both the same way:</p>
+<pre><code class="language-typescript">// One helper for every entry point: the run's own logger carries both fields.
+// `entryPoint`, not `source` — ECS reserves `source.*` for network fields.
+export const runLog = (entryPoint: 'scheduler' | 'replay_endpoint' | 'cli', runId: string) =&gt;
+  logger.child({ entryPoint, requestId: runId });
+
+// scheduler tick        -&gt; runLog('scheduler', crypto.randomUUID())
+// POST /jobs/:id/replay -&gt; runLog('replay_endpoint', req.id)
+// CLI invocation        -&gt; runLog('cli', process.env.RUN_ID ?? crypto.randomUUID())
+</code></pre>
+<p>Both fields have to cross the same boundaries as the correlation ID — queue metadata, HTTP headers — or a worker re-derives the entry point and guesses. A field that merely correlates with an entry point is a hint, not an attribution: anything that can invoke the job can reproduce it.</p>
+<p><strong>Never log secrets, tokens, passwords, or full PII.</strong> This is a hard rule from the <code>security-and-hardening</code> skill — telemetry pipelines are a classic data-leak path. Allowlist fields; don't log whole request bodies.</p>
+<h5>4. Metrics</h5>
+<p>For request-driven services, instrument <strong>RED</strong> on every endpoint and every external dependency: <strong>R</strong>ate (requests/sec), <strong>E</strong>rrors (failure rate), <strong>D</strong>uration (latency histogram, not average). For resources (queues, pools, hosts), use <strong>USE</strong>: <strong>U</strong>tilization, <strong>S</strong>aturation, <strong>E</strong>rrors.</p>
+<p>As with tracing, the vendor-neutral path is the OpenTelemetry metrics API (same SDK and context as step 5). The example below uses Prometheus' <code>prom-client</code> — one common backend choice, not the only one; the RED/USE and cardinality rules are identical either way.</p>
+<pre><code class="language-typescript">import { Histogram } from 'prom-client';
+
+const httpDuration = new Histogram({
+  name: 'http_request_duration_seconds',
+  help: 'HTTP request duration',
+  labelNames: ['method', 'route', 'status_class'],  // '2xx', not '200'
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
+});
+</code></pre>
+<p><strong>Cardinality is the failure mode.</strong> Every unique label combination is a separate time series. Labels must come from small, fixed sets (route template, status class, provider name). Never use user IDs, raw URLs, error messages, or other unbounded values as labels — that belongs in logs and traces.</p>
+<pre><code>OK as label:    route=&quot;/api/tasks/:id&quot;   status_class=&quot;5xx&quot;   provider=&quot;stripe&quot;
+NEVER a label:  user_id, email, request_id, full URL, error message text
+</code></pre>
+<p>Track averages never, percentiles always: an average hides the 1% of users having a terrible time. Use histograms and read p50/p95/p99.</p>
+<h5>5. Distributed tracing</h5>
+<p>Use OpenTelemetry — it's the vendor-neutral standard, and auto-instrumentation covers HTTP, gRPC, and common DB clients with near-zero code:</p>
+<pre><code class="language-typescript">// tracing.ts — must be imported before anything else
+import { NodeSDK } from '@opentelemetry/sdk-node';
+import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+
+const sdk = new NodeSDK({
+  serviceName: 'checkout-service',
+  instrumentations: [getNodeAutoInstrumentations()],
+});
+sdk.start();
+</code></pre>
+<p>Add manual spans only around meaningful internal units of work (e.g., <code>applyDiscounts</code>, <code>chargeProvider</code>) and attach the attributes on-call will filter by. Propagate context across every async boundary — HTTP headers, queue message metadata — or the trace dies at the gap. Sample head-based at a low rate by default; keep 100% of errors if your backend supports tail sampling.</p>
+<h5>6. Alerting</h5>
+<p>Alert on <strong>symptoms users feel</strong>, not on causes:</p>
+<pre><code>SYMPTOM (page-worthy):           CAUSE (dashboard, not a page):
+error rate &gt; 1% for 5 min        CPU at 85%
+p99 latency &gt; 2s                 one pod restarted
+queue age &gt; 10 min               disk at 70%
+</code></pre>
+<p>Cause-based alerts fire when nothing is wrong and miss failures you didn't predict. Symptom-based alerts fire exactly when users are hurt, regardless of the cause.</p>
+<p>Rules for every alert you create:</p>
+<ol>
+<li><strong>It must be actionable.</strong> If the response is &quot;ignore it, it self-heals&quot;, delete the alert.</li>
+<li><strong>It links to a runbook</strong> — even three lines: what it means, first query to run, escalation path.</li>
+<li><strong>It has a threshold and duration</strong> justified by the SLO or by historical data, not by a guess.</li>
+<li>Use two severities only: <strong>page</strong> (user-facing, act now) and <strong>ticket</strong> (degradation, act this week). A third tier becomes noise that trains people to ignore everything.</li>
+</ol>
+<h6>Writing Runbooks</h6>
+<p>Rule 2 above requires every alert to link to a runbook. A runbook's job is to answer three questions without requiring the reader to think: what is happening, what to check first, and who to call if that doesn't resolve it. Store in <code>docs/runbooks/</code> named after the alert.</p>
+<p><strong>Minimum viable runbook (three lines):</strong></p>
+<pre><code class="language-markdown"># Runbook: High Error Rate on /api/tasks
+**Means:** DB connection pool likely exhausted, or a bad deploy.
+**First check:** `SELECT count(*) FROM pg_stat_activity WHERE backend_type = 'client backend';`
+  — if count &gt; pool limit, see Step 2. (Swap in the equivalent for your database.)
+**Escalate to:** #db-oncall or engineering on-call rotation.
+</code></pre>
+<p><strong>When to expand beyond three lines:</strong> add steps only when the first check alone isn't enough to decide. A five-step runbook that covers the three most common causes is better than a twenty-step document that covers every edge case and gets skimmed.</p>
+<p><strong>Keep runbooks current.</strong> Update the runbook as part of closing every incident it was used in — a stale runbook builds false confidence. If a step was wrong or missing, fix it before marking the incident resolved.</p>
+<h5>7. Verify the telemetry itself</h5>
+<p>Instrumentation is code; it can be wrong. Before calling the work done, trigger the paths and look at the actual output:</p>
+<ul>
+<li>Force an error in staging → find it in the logs by <code>requestId</code>, confirm fields are structured (not <code>[object Object]</code>)</li>
+<li>Send test traffic → confirm metric series appear with the expected labels and sane values</li>
+<li>Follow one request across services in the tracing UI → no broken spans</li>
+<li>Fire each new alert once (lower the threshold temporarily) → confirm it reaches the right channel and the runbook link works</li>
+</ul>
+<h4>Common Rationalizations</h4>
+<table>
+<thead>
+<tr>
+<th>Rationalization</th>
+<th>Reality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;I'll add logging after it works&quot;</td>
+<td>&quot;After&quot; becomes &quot;after the first incident&quot;, which is the most expensive moment to discover you're blind. Instrument as you build.</td>
+</tr>
+<tr>
+<td>&quot;More logs = more observability&quot;</td>
+<td>Unstructured noise makes incidents slower, not faster. Three queryable events beat three hundred prose lines.</td>
+</tr>
+<tr>
+<td>&quot;console.log is fine for now&quot;</td>
+<td>Unstructured output can't be filtered, correlated, or alerted on. The structured logger costs five extra minutes once.</td>
+</tr>
+<tr>
+<td>&quot;We can just look at the dashboards when something breaks&quot;</td>
+<td>Dashboards built without defined questions show you everything except the answer. Start from on-call questions.</td>
+</tr>
+<tr>
+<td>&quot;Alert on everything important, we'll tune later&quot;</td>
+<td>A noisy pager trains people to ignore it. The tuning never happens; the missed real page does.</td>
+</tr>
+<tr>
+<td>&quot;User ID as a metric label makes debugging easier&quot;</td>
+<td>It also makes your metrics backend fall over. High-cardinality lookups belong in logs and traces.</td>
+</tr>
+<tr>
+<td>&quot;Tracing is overkill for our two services&quot;</td>
+<td>Two services already means cross-service latency questions logs can't answer. Auto-instrumentation makes the cost trivial.</td>
+</tr>
+</tbody>
+</table>
+<h4>Red Flags</h4>
+<ul>
+<li>A feature PR with retries, queues, or external calls and zero new telemetry</li>
+<li>Log lines built by string interpolation instead of structured fields</li>
+<li>No correlation/request ID — each log line is an orphan</li>
+<li>One log stream fed by a scheduler, a webhook, and manual runs, with no field naming which one produced the line</li>
+<li>Metrics labeled with user IDs, raw URLs, or error message text (cardinality bomb)</li>
+<li>Latency tracked as an average with no percentiles</li>
+<li>Alerts that fire daily and get acknowledged without action</li>
+<li>Alerts on causes (CPU, memory) paging humans while user-facing error rate is unmonitored</li>
+<li>Secrets, tokens, or full request bodies appearing in logs</li>
+<li>&quot;It works on my machine&quot; as the only evidence a production feature is healthy</li>
+</ul>
+<h4>Verification</h4>
+<p>After instrumenting a feature, confirm:</p>
+<ul>
+<li>[ ] The on-call questions for this feature are written down, and each signal maps to one</li>
+<li>[ ] All log output is structured (JSON), with stable event names and a correlation ID on every line</li>
+<li>[ ] Every log sink written by more than one entry point carries an entry-point field, set where the run starts and propagated with the correlation ID rather than inferred downstream</li>
+<li>[ ] No secrets, tokens, or unredacted PII in any log line (spot-check actual output)</li>
+<li>[ ] RED metrics exist for every new endpoint and every external dependency, with bounded label sets</li>
+<li>[ ] Latency is a histogram; p95/p99 are queryable</li>
+<li>[ ] A single request can be followed end-to-end in the tracing UI without broken spans</li>
+<li>[ ] Every new alert is symptom-based, has a runbook link, and was test-fired once</li>
+<li>[ ] An induced failure in staging was located via telemetry alone, without reading the source</li>
+</ul>
+<p>For the at-a-glance version of this list, including the pre-launch instrumentation gate, see <code>../../references/observability-checklist.md</code>.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

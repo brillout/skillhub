@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>iterative-retrieval · SkillHub</title>
+    <meta name="description" content="Use it when: a subagent needs codebase context you can&#039;t predict up front, or agent tasks fail from too much or too little context. It does: searches broadly, scores each file&#039;s relevance from 0 to 1, notes what&#039;s still missing, refines the search and repeats, at most three times. You get: a short list of the files that matter, those scoring 0.7 or higher. Unlike: sending a subagent everything or nothing; the first pass often reveals the codebase&#039;s own terms, such as &quot;throttle&quot; for rate limiting." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <div class="title-row"><h1>iterative-retrieval</h1><button type="button" class="save" data-save="skill:affaan-m/ecc/skills/iterative-retrieval" aria-pressed="false" aria-label="Save iterative-retrieval" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>a subagent needs codebase context you can&#39;t predict up front, or agent tasks fail from too much or too little context</dd></div><div><dt>It does</dt><dd>searches broadly, scores each file&#39;s relevance from 0 to 1, notes what&#39;s still missing, refines the search and repeats, at most three times</dd></div><div><dt>You get</dt><dd>a short list of the files that matter, those scoring 0.7 or higher</dd></div><div><dt>Unlike</dt><dd>sending a subagent everything or nothing; the first pass often reveals the codebase&#39;s own terms, such as &#34;throttle&#34; for rate limiting</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Subagents start without knowing which files matter, what patterns the codebase uses or what it calls things. Sending everything overflows the context, and sending nothing leaves them blind. This skill gives the agent a four-phase loop instead. Dispatch runs a broad search by file patterns and keywords. Evaluate scores each result: 0.8 to 1 when it implements the target, 0.5 to 0.7 for related patterns or types, lower for tangential files, and excludes the irrelevant ones. Refine adds the patterns and terms found in relevant files, drops what was excluded and targets the gaps it noted. Loop repeats until there are at least three highly relevant files with no critical gaps, or three cycles have passed. It comes with JavaScript sketches of each phase, two worked examples and a five-step version to paste into a subagent&#39;s prompt.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/iterative-retrieval">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">affaan-m/</span><wbr><span class="word">ecc</span> <span class="word">--skill</span> <span class="word">iterative-retrieval</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill iterative-retrieval">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/iterative-retrieval">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/iterative-retrieval">Source on GitHub</a> · <a href="/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,400 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>299,252 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">480</div>
+      <div class="stat-delta">+63% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 294; week to Sep 27: 262; week to Oct 4: 162; week to Oct 11: 142; week to Oct 18: 229; week to Oct 25: 422; week to Nov 1: 410; week to Nov 8: 480. Use the left and right arrow keys to read each week."
+        data-values="294,262,162,142,229,422,410,480" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.0 38.6,26.0 71.1,35.1 103.7,37.0 136.3,29.0 168.9,11.3 201.4,12.4 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>294</td></tr><tr><td>Sep 27</td><td>262</td></tr><tr><td>Oct 4</td><td>162</td></tr><tr><td>Oct 11</td><td>142</td></tr><tr><td>Oct 18</td><td>229</td></tr><tr><td>Oct 25</td><td>422</td></tr><tr><td>Nov 1</td><td>410</td></tr><tr><td>Nov 8</td><td>480</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/?tag=category%3Aagents">category:<wbr>agents</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="multi-agent" data-facet="topic" href="/?tag=multi-agent">multi-agent</a><a class="tag" data-tag="token-saving" data-facet="topic" href="/?tag=token-saving">token-saving</a><a class="tag" data-tag="agent-workflows" data-facet="topic" href="/?tag=agent-workflows">agent-workflows</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/iterative-retrieval/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: iterative-retrieval
+description: Pattern for progressively refining context retrieval to solve the subagent context problem. Use when a subagent lacks the context it needs and retrieval must be refined across passes.
+metadata:
+  origin: ECC</code></pre></details>
+        <div class="markdown"><h3>Iterative Retrieval Pattern</h3>
+<p>Solves the &quot;context problem&quot; in multi-agent workflows where subagents don't know what context they need until they start working.</p>
+<h4>When to Activate</h4>
+<ul>
+<li>Spawning subagents that need codebase context they cannot predict upfront</li>
+<li>Building multi-agent workflows where context is progressively refined</li>
+<li>Encountering &quot;context too large&quot; or &quot;missing context&quot; failures in agent tasks</li>
+<li>Designing RAG-like retrieval pipelines for code exploration</li>
+<li>Optimizing token usage in agent orchestration</li>
+</ul>
+<h4>The Problem</h4>
+<p>Subagents are spawned with limited context. They don't know:</p>
+<ul>
+<li>Which files contain relevant code</li>
+<li>What patterns exist in the codebase</li>
+<li>What terminology the project uses</li>
+</ul>
+<p>Standard approaches fail:</p>
+<ul>
+<li><strong>Send everything</strong>: Exceeds context limits</li>
+<li><strong>Send nothing</strong>: Agent lacks critical information</li>
+<li><strong>Guess what's needed</strong>: Often wrong</li>
+</ul>
+<h4>The Solution: Iterative Retrieval</h4>
+<p>A 4-phase loop that progressively refines context:</p>
+<pre><code>┌─────────────────────────────────────────────┐
+│                                             │
+│   ┌──────────┐      ┌──────────┐            │
+│   │ DISPATCH │─────│ EVALUATE │            │
+│   └──────────┘      └──────────┘            │
+│        ▲                  │                 │
+│        │                  ▼                 │
+│   ┌──────────┐      ┌──────────┐            │
+│   │   LOOP   │─────│  REFINE  │            │
+│   └──────────┘      └──────────┘            │
+│                                             │
+│        Max 3 cycles, then proceed           │
+└─────────────────────────────────────────────┘
+</code></pre>
+<h5>Phase 1: DISPATCH</h5>
+<p>Initial broad query to gather candidate files:</p>
+<pre><code class="language-javascript">// Start with high-level intent
+const initialQuery = {
+  patterns: ['src/**/*.ts', 'lib/**/*.ts'],
+  keywords: ['authentication', 'user', 'session'],
+  excludes: ['*.test.ts', '*.spec.ts']
+};
+
+// Dispatch to retrieval agent
+const candidates = await retrieveFiles(initialQuery);
+</code></pre>
+<h5>Phase 2: EVALUATE</h5>
+<p>Assess retrieved content for relevance:</p>
+<pre><code class="language-javascript">function evaluateRelevance(files, task) {
+  return files.map(file =&gt; ({
+    path: file.path,
+    relevance: scoreRelevance(file.content, task),
+    reason: explainRelevance(file.content, task),
+    missingContext: identifyGaps(file.content, task)
+  }));
+}
+</code></pre>
+<p>Scoring criteria:</p>
+<ul>
+<li><strong>High (0.8-1.0)</strong>: Directly implements target functionality</li>
+<li><strong>Medium (0.5-0.7)</strong>: Contains related patterns or types</li>
+<li><strong>Low (0.2-0.4)</strong>: Tangentially related</li>
+<li><strong>None (0-0.2)</strong>: Not relevant, exclude</li>
+</ul>
+<h5>Phase 3: REFINE</h5>
+<p>Update search criteria based on evaluation:</p>
+<pre><code class="language-javascript">function refineQuery(evaluation, previousQuery) {
+  return {
+    // Add new patterns discovered in high-relevance files
+    patterns: [...previousQuery.patterns, ...extractPatterns(evaluation)],
+
+    // Add terminology found in codebase
+    keywords: [...previousQuery.keywords, ...extractKeywords(evaluation)],
+
+    // Exclude confirmed irrelevant paths
+    excludes: [...previousQuery.excludes, ...evaluation
+      .filter(e =&gt; e.relevance &lt; 0.2)
+      .map(e =&gt; e.path)
+    ],
+
+    // Target specific gaps
+    focusAreas: evaluation
+      .flatMap(e =&gt; e.missingContext)
+      .filter(unique)
+  };
+}
+</code></pre>
+<h5>Phase 4: LOOP</h5>
+<p>Repeat with refined criteria (max 3 cycles):</p>
+<pre><code class="language-javascript">async function iterativeRetrieve(task, maxCycles = 3) {
+  let query = createInitialQuery(task);
+  let bestContext = [];
+
+  for (let cycle = 0; cycle &lt; maxCycles; cycle++) {
+    const candidates = await retrieveFiles(query);
+    const evaluation = evaluateRelevance(candidates, task);
+
+    // Check if we have sufficient context
+    const highRelevance = evaluation.filter(e =&gt; e.relevance &gt;= 0.7);
+    if (highRelevance.length &gt;= 3 &amp;&amp; !hasCriticalGaps(evaluation)) {
+      return highRelevance;
+    }
+
+    // Refine and continue
+    query = refineQuery(evaluation, query);
+    bestContext = mergeContext(bestContext, highRelevance);
+  }
+
+  return bestContext;
+}
+</code></pre>
+<h4>Practical Examples</h4>
+<h5>Example 1: Bug Fix Context</h5>
+<pre><code>Task: &quot;Fix the authentication token expiry bug&quot;
+
+Cycle 1:
+  DISPATCH: Search for &quot;token&quot;, &quot;auth&quot;, &quot;expiry&quot; in src/**
+  EVALUATE: Found auth.ts (0.9), tokens.ts (0.8), user.ts (0.3)
+  REFINE: Add &quot;refresh&quot;, &quot;jwt&quot; keywords; exclude user.ts
+
+Cycle 2:
+  DISPATCH: Search refined terms
+  EVALUATE: Found session-manager.ts (0.95), jwt-utils.ts (0.85)
+  REFINE: Sufficient context (2 high-relevance files)
+
+Result: auth.ts, tokens.ts, session-manager.ts, jwt-utils.ts
+</code></pre>
+<h5>Example 2: Feature Implementation</h5>
+<pre><code>Task: &quot;Add rate limiting to API endpoints&quot;
+
+Cycle 1:
+  DISPATCH: Search &quot;rate&quot;, &quot;limit&quot;, &quot;api&quot; in routes/**
+  EVALUATE: No matches - codebase uses &quot;throttle&quot; terminology
+  REFINE: Add &quot;throttle&quot;, &quot;middleware&quot; keywords
+
+Cycle 2:
+  DISPATCH: Search refined terms
+  EVALUATE: Found throttle.ts (0.9), middleware/index.ts (0.7)
+  REFINE: Need router patterns
+
+Cycle 3:
+  DISPATCH: Search &quot;router&quot;, &quot;express&quot; patterns
+  EVALUATE: Found router-setup.ts (0.8)
+  REFINE: Sufficient context
+
+Result: throttle.ts, middleware/index.ts, router-setup.ts
+</code></pre>
+<h4>Integration with Agents</h4>
+<p>Use in agent prompts:</p>
+<pre><code class="language-markdown">When retrieving context for this task:
+1. Start with broad keyword search
+2. Evaluate each file's relevance (0-1 scale)
+3. Identify what context is still missing
+4. Refine search criteria and repeat (max 3 cycles)
+5. Return files with relevance &gt;= 0.7
+</code></pre>
+<h4>Best Practices</h4>
+<ol>
+<li><strong>Start broad, narrow progressively</strong> - Don't over-specify initial queries</li>
+<li><strong>Learn codebase terminology</strong> - First cycle often reveals naming conventions</li>
+<li><strong>Track what's missing</strong> - Explicit gap identification drives refinement</li>
+<li><strong>Stop at &quot;good enough&quot;</strong> - 3 high-relevance files beats 10 mediocre ones</li>
+<li><strong>Exclude confidently</strong> - Low-relevance files won't become relevant</li>
+</ol>
+<h4>Related</h4>
+<ul>
+<li><a href="https://x.com/affaanmustafa/status/2014040193557471352">The Longform Guide</a> - Subagent orchestration section</li>
+<li><code>continuous-learning</code> skill - For patterns that improve over time</li>
+<li>Agent definitions bundled with ECC (manual install path: <code>agents/</code>)</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

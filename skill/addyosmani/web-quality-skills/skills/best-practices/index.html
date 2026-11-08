@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>best-practices · SkillHub</title>
+    <meta name="description" content="Use it when: you want a site checked and fixed for the security, compatibility and code-quality problems Lighthouse&#039;s Best Practices audit looks for. It does: runs Lighthouse&#039;s Best Practices audit, inspects the console and network failures, checks dependencies, headers and config, fixes the code and re-runs the audit. You get: fixed code, with security findings kept apart from style preferences; it never presents a high score as proof the app is secure. Works with: Chrome DevTools MCP if available, otherwise the Lighthouse CLI with dependency and header checks. Covers: HTTPS and HSTS, CSP, sanitizing HTML, pinned third-party scripts, doctype and charset, deprecated APIs, passive listeners, error handling, source maps, permission prompts." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=addyosmani%2Fweb-quality-skills">addyosmani/web-quality-skills</a> <span aria-hidden="true">/</span> <a href="/bundle/addyosmani/web-quality-skills/">Web Quality Skills</a></p>
+      <div class="title-row"><h1>best-practices</h1><button type="button" class="save" data-save="skill:addyosmani/web-quality-skills/skills/best-practices" aria-pressed="false" aria-label="Save best-practices" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want a site checked and fixed for the security, compatibility and code-quality problems Lighthouse&#39;s Best Practices audit looks for</dd></div><div><dt>It does</dt><dd>runs Lighthouse&#39;s Best Practices audit, inspects the console and network failures, checks dependencies, headers and config, fixes the code and re-runs the audit</dd></div><div><dt>You get</dt><dd>fixed code, with security findings kept apart from style preferences; it never presents a high score as proof the app is secure</dd></div><div><dt>Works with</dt><dd>Chrome DevTools MCP if available, otherwise the Lighthouse CLI with dependency and header checks</dd></div><div><dt>Covers</dt><dd>HTTPS and HSTS, CSP, sanitizing HTML, pinned third-party scripts, doctype and charset, deprecated APIs, passive listeners, error handling, source maps, permission prompts</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 6 of 6 in the <a href="/bundle/addyosmani/web-quality-skills/">Web Quality Skills</a> bundle · Before it: <a href="/skill/addyosmani/web-quality-skills/skills/seo/">seo</a></p>
+    
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Part of Addy Osmani&#39;s web quality skills. Lighthouse isn&#39;t a full security assessment, so it adds dependency, header, configuration and source checks, and verifies headers on the running site, since config files don&#39;t prove what&#39;s actually sent. A separate security reference, read when security is in scope, covers HSTS, CSP and Trusted Types, Subresource Integrity, cookies and sanitization. The rest is before-and-after code: an HTML5 doctype, charset first in the head, a viewport tag, feature detection over browser sniffing, polyfills bundled at build time rather than loaded from a third-party CDN (it cites the 2024 polyfill.io compromise), replacing document.write and synchronous requests, passive scroll and touch listeners, error boundaries and global error handlers, hidden source maps in production, event delegation and listener cleanup, valid semantic HTML, and asking for permissions such as location only after a user action. It ends with an audit checklist across security, compatibility, code quality and UX, and tools such as npm audit, SecurityHeaders.com, the W3C validator and Mozilla Observatory.</p>
+      <p class="muted">Summarizes <a href="https://github.com/addyosmani/web-quality-skills/tree/afa8da942115f2961fdbfa80807ea0b232ff6c00/skills/best-practices">the skill at afa8da9</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">addyosmani/</span><wbr><span class="word">web-quality-skills</span> <span class="word">--skill</span> <span class="word">best-practices</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/addyosmani/web-quality-skills --skill best-practices">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/addyosmani/web-quality-skills/best-practices">skills.sh page</a> · <a href="https://github.com/addyosmani/web-quality-skills/tree/HEAD/skills/best-practices">Source on GitHub</a> · <a href="/?repo=addyosmani%2Fweb-quality-skills">All skills from addyosmani/web-quality-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>30,600 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>3,054 <span class="muted">addyosmani/web-quality-skills</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">902</div>
+      <div class="stat-delta">-14% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 1,046; week to Sep 27: 912; week to Oct 4: 802; week to Oct 11: 799; week to Oct 18: 858; week to Oct 25: 862; week to Nov 1: 914; week to Nov 8: 902. Use the left and right arrow keys to read each week."
+        data-values="1046,912,802,799,858,862,914,902" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,11.6 71.1,16.3 103.7,16.4 136.3,13.9 168.9,13.7 201.4,11.6 234.0,12.1" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="12.1" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>1,046</td></tr><tr><td>Sep 27</td><td>912</td></tr><tr><td>Oct 4</td><td>802</td></tr><tr><td>Oct 11</td><td>799</td></tr><tr><td>Oct 18</td><td>858</td></tr><tr><td>Oct 25</td><td>862</td></tr><tr><td>Nov 1</td><td>914</td></tr><tr><td>Nov 8</td><td>902</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/?tag=category%3Adebugging">category:<wbr>debugging</a><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/?tag=category%3Asecurity">category:<wbr>security</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/?tag=security">security</a><a class="tag" data-tag="code-quality" data-facet="topic" href="/?tag=code-quality">code-quality</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/addyosmani/web-quality-skills/blob/afa8da942115f2961fdbfa80807ea0b232ff6c00/skills/best-practices/SKILL.md">addyosmani/web-quality-skills at afa8da9</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: best-practices
+description: Apply modern web development best practices for security, compatibility, and code quality. Use when asked to &#34;apply best practices&#34;, &#34;security audit&#34;, &#34;modernize code&#34;, &#34;code quality review&#34;, or &#34;check for vulnerabilities&#34;.
+license: MIT
+metadata:
+  author: web-quality-skills
+  version: &#34;2.0&#34;</code></pre></details>
+        <div class="markdown"><h3>Best practices</h3>
+<p>Modern web development standards based on Lighthouse best practices audits. Covers security, browser compatibility, and code quality patterns.</p>
+<h4>Evidence-led audit workflow</h4>
+<p>When a rendered page is available:</p>
+<ol>
+<li>Run a live Lighthouse Best Practices audit when that capability is available; with Chrome DevTools MCP, use <code>lighthouse_audit</code>. Use navigation mode for a normal page load or snapshot mode when the current state must be preserved.</li>
+<li>Inspect the listed console and network failures and fetch individual details only when they support a finding.</li>
+<li>Supplement runtime evidence with dependency, header, configuration, and source inspection; Lighthouse is not a complete security assessment.</li>
+<li>Fix the implicated code, re-run the same audit, and keep security findings separate from style preferences.</li>
+</ol>
+<p>If live tools are unavailable, use the Lighthouse CLI plus focused dependency and header checks. Never report a high Lighthouse score as proof that the application is secure.</p>
+<h4>Security</h4>
+<p>Read <a href="https://github.com/addyosmani/web-quality-skills/blob/afa8da942115f2961fdbfa80807ea0b232ff6c00/skills/best-practices/references/SECURITY.md">the security reference</a> when security is in scope or a live audit surfaces a related failure. It covers HTTPS/HSTS, CSP and Trusted Types, Subresource Integrity, headers, dependencies, sanitization, and cookies.</p>
+<p>At minimum:</p>
+<ul>
+<li><strong>Use HTTPS without mixed content.</strong> Add HSTS only after confirming every relevant subdomain supports HTTPS.</li>
+<li><strong>Treat a strict CSP as defense in depth.</strong> Prefer nonces or hashes and test with report-only before enforcement.</li>
+<li><strong>Sanitize untrusted HTML and protect DOM XSS sinks.</strong> Prefer text APIs when markup is not required.</li>
+<li><strong>Pin and review third-party code.</strong> Use SRI where the delivery model supports it and keep dependencies patched.</li>
+<li><strong>Verify response headers at runtime.</strong> Source configuration alone does not prove what the deployed page sends.</li>
+</ul>
+<h4>Browser compatibility</h4>
+<h5>Doctype declaration</h5>
+<pre><code class="language-html">&lt;!-- ❌ Missing or invalid doctype --&gt;
+&lt;HTML&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01//EN&quot;&gt;
+
+&lt;!-- ✅ HTML5 doctype --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+</code></pre>
+<h5>Character encoding</h5>
+<pre><code class="language-html">&lt;!-- ❌ Missing or late charset --&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;Page&lt;/title&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+&lt;/head&gt;
+
+&lt;!-- ✅ Charset as first element in head --&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;title&gt;Page&lt;/title&gt;
+&lt;/head&gt;
+</code></pre>
+<h5>Viewport meta tag</h5>
+<pre><code class="language-html">&lt;!-- ❌ Missing viewport --&gt;
+&lt;head&gt;
+  &lt;title&gt;Page&lt;/title&gt;
+&lt;/head&gt;
+
+&lt;!-- ✅ Responsive viewport --&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+  &lt;title&gt;Page&lt;/title&gt;
+&lt;/head&gt;
+</code></pre>
+<h5>Feature detection</h5>
+<pre><code class="language-javascript">// ❌ Browser detection (brittle)
+if (navigator.userAgent.includes('Chrome')) {
+  // Chrome-specific code
+}
+
+// ✅ Feature detection
+if ('IntersectionObserver' in window) {
+  // Use IntersectionObserver
+} else {
+  // Fallback
+}
+
+// ✅ Using @supports in CSS
+@supports (display: grid) {
+  .container {
+    display: grid;
+  }
+}
+
+@supports not (display: grid) {
+  .container {
+    display: flex;
+  }
+}
+</code></pre>
+<h5>Polyfills (when needed)</h5>
+<p>Prefer <strong>bundling polyfills at build time</strong> (Babel/SWC + <code>core-js</code>, or <code>@vitejs/plugin-legacy</code>) targeted by your supported-browsers list. This eliminates the runtime check entirely and avoids shipping polyfill bytes to modern browsers.</p>
+<p>If you must load a polyfill at runtime, append a script element — never use <code>document.write</code> (it blocks the parser and is broken in async/deferred contexts):</p>
+<pre><code class="language-html">&lt;script&gt;
+  if (!('fetch' in window)) {
+    const s = document.createElement('script');
+    s.src = '/polyfills/fetch.js';
+    s.defer = true;
+    document.head.appendChild(s);
+  }
+&lt;/script&gt;
+</code></pre>
+<p><strong>Never load polyfills from a third-party CDN you don't control.</strong> The <code>polyfill.io</code> service was <a href="https://sansec.io/research/polyfill-supply-chain-attack">compromised in mid-2024</a> in a supply-chain attack and used to serve malware to ~100k sites. Self-host, or use a vetted mirror (e.g. <a href="https://blog.cloudflare.com/polyfill-io-now-available-on-cdnjs-reduce-your-supply-chain-risk/">Cloudflare's <code>cdnjs</code> polyfill build</a>) — and pin the version with <a href="#subresource-integrity-sri-for-third-party-scripts">Subresource Integrity</a>.</p>
+<hr>
+<h4>Deprecated APIs</h4>
+<h5>Avoid these</h5>
+<pre><code class="language-javascript">// ❌ document.write (blocks parsing)
+document.write('&lt;script src=&quot;...&quot;&gt;&lt;/script&gt;');
+
+// ✅ Dynamic script loading
+const script = document.createElement('script');
+script.src = '...';
+document.head.appendChild(script);
+
+// ❌ Synchronous XHR (blocks main thread)
+const xhr = new XMLHttpRequest();
+xhr.open('GET', url, false); // false = synchronous
+
+// ✅ Async fetch
+const response = await fetch(url);
+
+// ❌ Application Cache (deprecated)
+&lt;html manifest=&quot;cache.manifest&quot;&gt;
+
+// ✅ Service Workers
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js');
+}
+</code></pre>
+<h5>Event listener passive</h5>
+<pre><code class="language-javascript">// ❌ Non-passive touch/wheel (may block scrolling)
+element.addEventListener('touchstart', handler);
+element.addEventListener('wheel', handler);
+
+// ✅ Passive listeners (allows smooth scrolling)
+element.addEventListener('touchstart', handler, { passive: true });
+element.addEventListener('wheel', handler, { passive: true });
+
+// ✅ If you need preventDefault, be explicit
+element.addEventListener('touchstart', handler, { passive: false });
+</code></pre>
+<hr>
+<h4>Console &amp; errors</h4>
+<h5>No console errors</h5>
+<pre><code class="language-javascript">// ❌ Errors in production
+console.log('Debug info'); // Remove in production
+throw new Error('Unhandled'); // Catch all errors
+
+// ✅ Proper error handling
+try {
+  riskyOperation();
+} catch (error) {
+  // Log to error tracking service
+  errorTracker.captureException(error);
+  // Show user-friendly message
+  showErrorMessage('Something went wrong. Please try again.');
+}
+</code></pre>
+<h5>Error boundaries (React)</h5>
+<pre><code class="language-jsx">class ErrorBoundary extends React.Component {
+  state = { hasError: false };
+  
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+  
+  componentDidCatch(error, info) {
+    errorTracker.captureException(error, { extra: info });
+  }
+  
+  render() {
+    if (this.state.hasError) {
+      return &lt;FallbackUI /&gt;;
+    }
+    return this.props.children;
+  }
+}
+
+// Usage
+&lt;ErrorBoundary&gt;
+  &lt;App /&gt;
+&lt;/ErrorBoundary&gt;
+</code></pre>
+<h5>Global error handler</h5>
+<pre><code class="language-javascript">// Catch unhandled errors
+window.addEventListener('error', (event) =&gt; {
+  errorTracker.captureException(event.error);
+});
+
+// Catch unhandled promise rejections
+window.addEventListener('unhandledrejection', (event) =&gt; {
+  errorTracker.captureException(event.reason);
+});
+</code></pre>
+<hr>
+<h4>Source maps</h4>
+<h5>Production configuration</h5>
+<pre><code class="language-javascript">// ❌ Source maps exposed in production
+// webpack.config.js
+module.exports = {
+  devtool: 'source-map', // Exposes source code
+};
+
+// ✅ Hidden source maps (uploaded to error tracker)
+module.exports = {
+  devtool: 'hidden-source-map',
+};
+
+// ✅ Or no source maps in production
+module.exports = {
+  devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
+};
+</code></pre>
+<p><strong>Strip <code>sourcesContent</code> from production maps</strong> when uploading to your error tracker. By default, bundlers embed the full original source inside the <code>.map</code> file — anyone who obtains the map (including via a misconfigured upload step) gets your unminified code. Configure your bundler to omit <code>sourcesContent</code>, or use a Sentry/Bugsnag CLI flag that does so when uploading.</p>
+<p>For Vite, prefer <code>sourcemap: 'hidden'</code> over <code>'true'</code> so the <code>//# sourceMappingURL=</code> comment isn't emitted into the bundle.</p>
+<hr>
+<h4>Performance best practices</h4>
+<h5>Avoid blocking patterns</h5>
+<pre><code class="language-javascript">// ❌ Blocking script
+&lt;script src=&quot;heavy-library.js&quot;&gt;&lt;/script&gt;
+
+// ✅ Deferred script
+&lt;script defer src=&quot;heavy-library.js&quot;&gt;&lt;/script&gt;
+
+// ❌ Blocking CSS import
+@import url('other-styles.css');
+
+// ✅ Link tags (parallel loading)
+&lt;link rel=&quot;stylesheet&quot; href=&quot;styles.css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;other-styles.css&quot;&gt;
+</code></pre>
+<h5>Efficient event handlers</h5>
+<pre><code class="language-javascript">// ❌ Handler on every element
+items.forEach(item =&gt; {
+  item.addEventListener('click', handleClick);
+});
+
+// ✅ Event delegation
+container.addEventListener('click', (e) =&gt; {
+  if (e.target.matches('.item')) {
+    handleClick(e);
+  }
+});
+</code></pre>
+<h5>Memory management</h5>
+<pre><code class="language-javascript">// ❌ Memory leak (never removed)
+const handler = () =&gt; { /* ... */ };
+window.addEventListener('resize', handler);
+
+// ✅ Cleanup when done
+const handler = () =&gt; { /* ... */ };
+window.addEventListener('resize', handler);
+
+// Later, when component unmounts:
+window.removeEventListener('resize', handler);
+
+// ✅ Using AbortController
+const controller = new AbortController();
+window.addEventListener('resize', handler, { signal: controller.signal });
+
+// Cleanup:
+controller.abort();
+</code></pre>
+<hr>
+<h4>Code quality</h4>
+<h5>Valid HTML</h5>
+<pre><code class="language-html">&lt;!-- ❌ Invalid HTML --&gt;
+&lt;div id=&quot;header&quot;&gt;
+&lt;div id=&quot;header&quot;&gt; &lt;!-- Duplicate ID --&gt;
+
+&lt;ul&gt;
+  &lt;div&gt;Item&lt;/div&gt; &lt;!-- Invalid child --&gt;
+&lt;/ul&gt;
+
+&lt;a href=&quot;/&quot;&gt;&lt;button&gt;Click&lt;/button&gt;&lt;/a&gt; &lt;!-- Invalid nesting --&gt;
+
+&lt;!-- ✅ Valid HTML --&gt;
+&lt;header id=&quot;site-header&quot;&gt;
+&lt;/header&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Item&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;a href=&quot;/&quot; class=&quot;button&quot;&gt;Click&lt;/a&gt;
+</code></pre>
+<h5>Semantic HTML</h5>
+<pre><code class="language-html">&lt;!-- ❌ Non-semantic --&gt;
+&lt;div class=&quot;header&quot;&gt;
+  &lt;div class=&quot;nav&quot;&gt;
+    &lt;div class=&quot;nav-item&quot;&gt;Home&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;main&quot;&gt;
+  &lt;div class=&quot;article&quot;&gt;
+    &lt;div class=&quot;title&quot;&gt;Headline&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- ✅ Semantic HTML5 --&gt;
+&lt;header&gt;
+  &lt;nav&gt;
+    &lt;a href=&quot;/&quot;&gt;Home&lt;/a&gt;
+  &lt;/nav&gt;
+&lt;/header&gt;
+&lt;main&gt;
+  &lt;article&gt;
+    &lt;h1&gt;Headline&lt;/h1&gt;
+  &lt;/article&gt;
+&lt;/main&gt;
+</code></pre>
+<h5>Image aspect ratios</h5>
+<pre><code class="language-html">&lt;!-- ❌ Distorted images --&gt;
+&lt;img src=&quot;photo.jpg&quot; width=&quot;300&quot; height=&quot;100&quot;&gt;
+&lt;!-- If actual ratio is 4:3, this squishes the image --&gt;
+
+&lt;!-- ✅ Preserve aspect ratio --&gt;
+&lt;img src=&quot;photo.jpg&quot; width=&quot;300&quot; height=&quot;225&quot;&gt;
+&lt;!-- Actual 4:3 dimensions --&gt;
+
+&lt;!-- ✅ CSS object-fit for flexibility --&gt;
+&lt;img src=&quot;photo.jpg&quot; style=&quot;width: 300px; height: 200px; object-fit: cover;&quot;&gt;
+</code></pre>
+<hr>
+<h4>Permissions &amp; privacy</h4>
+<h5>Request permissions properly</h5>
+<pre><code class="language-javascript">// ❌ Request on page load (bad UX, often denied)
+navigator.geolocation.getCurrentPosition(success, error);
+
+// ✅ Request in context, after user action
+findNearbyButton.addEventListener('click', async () =&gt; {
+  // Explain why you need it
+  if (await showPermissionExplanation()) {
+    navigator.geolocation.getCurrentPosition(success, error);
+  }
+});
+</code></pre>
+<h5>Permissions policy</h5>
+<pre><code class="language-html">&lt;!-- Restrict powerful features --&gt;
+&lt;meta http-equiv=&quot;Permissions-Policy&quot; 
+      content=&quot;geolocation=(), camera=(), microphone=()&quot;&gt;
+
+&lt;!-- Or allow for specific origins --&gt;
+&lt;meta http-equiv=&quot;Permissions-Policy&quot; 
+      content=&quot;geolocation=(self 'https://maps.example.com')&quot;&gt;
+</code></pre>
+<hr>
+<h4>Audit checklist</h4>
+<h5>Security (critical)</h5>
+<ul>
+<li>[ ] HTTPS enabled, no mixed content</li>
+<li>[ ] No vulnerable dependencies (<code>npm audit</code>)</li>
+<li>[ ] CSP headers configured (with <code>frame-ancestors</code>, <code>base-uri</code>, <code>form-action</code>)</li>
+<li>[ ] <code>require-trusted-types-for 'script'</code> enforced (or report-only during rollout)</li>
+<li>[ ] Third-party <code>&lt;script&gt;</code>/<code>&lt;link rel=&quot;stylesheet&quot;&gt;</code> pinned with SRI hashes</li>
+<li>[ ] Security headers present (HSTS, X-Content-Type-Options, Referrer-Policy)</li>
+<li>[ ] No exposed source maps (and <code>sourcesContent</code> stripped from uploaded ones)</li>
+</ul>
+<h5>Compatibility</h5>
+<ul>
+<li>[ ] Valid HTML5 doctype</li>
+<li>[ ] Charset declared first in head</li>
+<li>[ ] Viewport meta tag present</li>
+<li>[ ] No deprecated APIs used</li>
+<li>[ ] Passive event listeners for scroll/touch</li>
+</ul>
+<h5>Code quality</h5>
+<ul>
+<li>[ ] No console errors</li>
+<li>[ ] Valid HTML (no duplicate IDs)</li>
+<li>[ ] Semantic HTML elements used</li>
+<li>[ ] Proper error handling</li>
+<li>[ ] Memory cleanup in components</li>
+</ul>
+<h5>UX</h5>
+<ul>
+<li>[ ] No intrusive interstitials</li>
+<li>[ ] Permission requests in context</li>
+<li>[ ] Clear error messages</li>
+<li>[ ] Appropriate image aspect ratios</li>
+</ul>
+<h4>Tools</h4>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>npm audit</code></td>
+<td>Dependency vulnerabilities</td>
+</tr>
+<tr>
+<td><a href="https://securityheaders.com">SecurityHeaders.com</a></td>
+<td>Header analysis</td>
+</tr>
+<tr>
+<td><a href="https://validator.w3.org">W3C Validator</a></td>
+<td>HTML validation</td>
+</tr>
+<tr>
+<td>Live Lighthouse audit (Chrome DevTools MCP: <code>lighthouse_audit</code>)</td>
+<td>Rendered Best Practices checks for agents</td>
+</tr>
+<tr>
+<td>Lighthouse CLI</td>
+<td>Best Practices audit fallback</td>
+</tr>
+<tr>
+<td><a href="https://observatory.mozilla.org">Observatory</a></td>
+<td>Security scan</td>
+</tr>
+</tbody>
+</table>
+<h4>References</h4>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/Security">MDN Web Security</a></li>
+<li><a href="https://owasp.org/www-project-top-ten/">OWASP Top 10</a></li>
+<li><a href="https://github.com/addyosmani/web-quality-skills/blob/afa8da942115f2961fdbfa80807ea0b232ff6c00/skills/web-quality-audit/SKILL.md">Web Quality Audit</a></li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

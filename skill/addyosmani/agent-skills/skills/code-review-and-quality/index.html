@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>code-review-and-quality · SkillHub</title>
+    <meta name="description" content="Use it when: a change, diff or pull request needs reviewing before it merges, whether you, another agent or a person wrote it. It does: reads the tests first, walks each file for correctness, readability, architecture, security and performance, then checks how the author verified it. You get: findings ordered by impact, each marked Critical, required, Optional, Nit or FYI, and a verdict: approve or request changes. Also checks: that the tests would catch a regression, by flipping one condition and rerunning them; plus change size, dead code and dependency upgrades." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=addyosmani%2Fagent-skills">addyosmani/agent-skills</a> <span aria-hidden="true">/</span> <a href="/bundle/addyosmani/agent-skills/">Addy&#39;s Agent Skills</a></p>
+      <div class="title-row"><h1>code-review-and-quality</h1><button type="button" class="save" data-save="skill:addyosmani/agent-skills/skills/code-review-and-quality" aria-pressed="false" aria-label="Save code-review-and-quality" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>a change, diff or pull request needs reviewing before it merges, whether you, another agent or a person wrote it</dd></div><div><dt>It does</dt><dd>reads the tests first, walks each file for correctness, readability, architecture, security and performance, then checks how the author verified it</dd></div><div><dt>You get</dt><dd>findings ordered by impact, each marked Critical, required, Optional, Nit or FYI, and a verdict: approve or request changes</dd></div><div><dt>Also checks</dt><dd>that the tests would catch a regression, by flipping one condition and rerunning them; plus change size, dead code and dependency upgrades</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 17 of 25 in the <a href="/bundle/addyosmani/agent-skills/">Addy&#39;s Agent Skills</a> bundle · Before it: <a href="/skill/addyosmani/agent-skills/skills/debugging-and-error-recovery/">debugging-and-error-recovery</a> · After it: <a href="/skill/addyosmani/agent-skills/skills/code-simplification/">code-simplification</a></p>
+    
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Its approval standard: approve a change once it clearly improves the health of the codebase, even if it isn&#39;t perfect. The agent first asks what the change is for and which spec it implements, then reads the tests, and proves they&#39;d catch a regression by inverting one condition the change adds, running the suite and restoring the file. Then it goes file by file through the five axes, with concrete questions such as N+1 queries, unvalidated input, feature logic leaking into shared modules, or a refactor that only moves complexity around. Before reporting, it drops findings that callers, guards or tests rule out, separates old defects from new regressions, and accepts zero findings as a valid result. When it flags a structural problem it names the fix, such as replacing a chain of conditionals with a dispatcher. Other sections cover change sizing (about 100 lines is good, 1,000 should be split), commit descriptions, listing dead code and asking before deleting it, reviewing dependency upgrades one package at a time against their changelog, and having a second model review the first one&#39;s code. It ends with a review checklist.</p>
+      <p class="muted">Summarizes <a href="https://github.com/addyosmani/agent-skills/tree/301b02b12bff98e4688e6984af6556802322bbde/skills/code-review-and-quality">the skill at 301b02b</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">addyosmani/</span><wbr><span class="word">agent-skills</span> <span class="word">--skill</span> <span class="word">code-review-and-quality</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/addyosmani/agent-skills --skill code-review-and-quality">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/addyosmani/agent-skills/code-review-and-quality">skills.sh page</a> · <a href="https://github.com/addyosmani/agent-skills/tree/HEAD/skills/code-review-and-quality">Source on GitHub</a> · <a href="/?repo=addyosmani%2Fagent-skills">All skills from addyosmani/agent-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>82,968 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>113,924 <span class="muted">addyosmani/agent-skills</span></dd></div><div><dt>First seen</dt><dd>Feb 16, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">5.4K</div>
+      <div class="stat-delta">+53% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 3,503; week to Sep 27: 4,573; week to Oct 4: 4,388; week to Oct 11: 4,720; week to Oct 18: 5,783; week to Oct 25: 6,429; week to Nov 1: 6,032; week to Nov 8: 5,359. Use the left and right arrow keys to read each week."
+        data-values="3503,4573,4388,4720,5783,6429,6032,5359" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,26.0 38.6,18.7 71.1,20.0 103.7,17.7 136.3,10.4 168.9,6.0 201.4,8.7 234.0,13.3" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="13.3" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>3,503</td></tr><tr><td>Sep 27</td><td>4,573</td></tr><tr><td>Oct 4</td><td>4,388</td></tr><tr><td>Oct 11</td><td>4,720</td></tr><tr><td>Oct 18</td><td>5,783</td></tr><tr><td>Oct 25</td><td>6,429</td></tr><tr><td>Nov 1</td><td>6,032</td></tr><tr><td>Nov 8</td><td>5,359</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/?tag=category%3Adebugging">category:<wbr>debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="code-review" data-facet="topic" href="/?tag=code-review">code-review</a><a class="tag" data-tag="code-quality" data-facet="topic" href="/?tag=code-quality">code-quality</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/addyosmani/agent-skills/blob/301b02b12bff98e4688e6984af6556802322bbde/skills/code-review-and-quality/SKILL.md">addyosmani/agent-skills at 301b02b</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: code-review-and-quality
+description: Conducts multi-axis code review. Use before merging any change. Use when reviewing code written by yourself, another agent, or a human. Use when you need to assess code quality across multiple dimensions before it enters the main branch. Use when asked to review a diff or a pull request, even when the diff is pasted inline.</code></pre></details>
+        <div class="markdown"><h3>Code Review and Quality</h3>
+<h4>Overview</h4>
+<p>Multi-dimensional code review with quality gates. Every change gets reviewed before merge — no exceptions. Review covers five axes: correctness, readability, architecture, security, and performance.</p>
+<p><strong>The approval standard:</strong> Approve a change when it definitely improves overall code health, even if it isn't perfect. Perfect code doesn't exist — the goal is continuous improvement. Don't block a change because it isn't exactly how you would have written it. If it improves the codebase and follows the project's conventions, approve it.</p>
+<h4>When to Use</h4>
+<ul>
+<li>Before merging any PR or change</li>
+<li>After completing a feature implementation</li>
+<li>When another agent or model produced code you need to evaluate</li>
+<li>When refactoring existing code</li>
+<li>After any bug fix (review both the fix and the regression test)</li>
+</ul>
+<h4>The Five-Axis Review</h4>
+<p>Every review evaluates code across these dimensions:</p>
+<h5>1. Correctness</h5>
+<p>Does the code do what it claims to do?</p>
+<ul>
+<li>Does it match the spec or task requirements?</li>
+<li>Are edge cases handled (null, empty, boundary values)?</li>
+<li>Are error paths handled (not just the happy path)?</li>
+<li>Does it pass all tests? Are the tests actually testing the right things?</li>
+<li>Are there off-by-one errors, race conditions, or state inconsistencies?</li>
+</ul>
+<h5>2. Readability &amp; Simplicity</h5>
+<p>Can another engineer (or agent) understand this code without the author explaining it?</p>
+<ul>
+<li>Are names descriptive and consistent with project conventions? (No <code>temp</code>, <code>data</code>, <code>result</code> without context)</li>
+<li>Is the control flow straightforward (avoid nested ternaries, deep callbacks)?</li>
+<li>Is the code organized logically (related code grouped, clear module boundaries)?</li>
+<li>Are there any &quot;clever&quot; tricks that should be simplified?</li>
+<li><strong>Could this be done in fewer lines?</strong> (1000 lines where 100 suffice is a failure)</li>
+<li><strong>Are abstractions earning their complexity?</strong> (Don't generalize until the third use case)</li>
+<li>Would comments help clarify non-obvious intent? (But don't comment obvious code.)</li>
+<li>Are there dead code artifacts: no-op variables (<code>_unused</code>), backwards-compat shims, or <code>// removed</code> comments?</li>
+<li><strong>Is a new conditional bolted onto an unrelated flow?</strong> That's a design smell, not a nit — push the logic into its own helper, state, or policy instead of tangling an existing path.</li>
+<li><strong>Do repeated conditionals on the same shape appear?</strong> They signal a missing model or dispatcher. A &quot;temporary&quot; branch is usually permanent debt.</li>
+</ul>
+<h5>3. Architecture</h5>
+<p>Does the change fit the system's design?</p>
+<ul>
+<li>Does it follow existing patterns or introduce a new one? If new, is it justified?</li>
+<li>Does it maintain clean module boundaries?</li>
+<li>Is there code duplication that should be shared?</li>
+<li>Are dependencies flowing in the right direction (no circular dependencies)?</li>
+<li>Is the abstraction level appropriate (not over-engineered, not too coupled)?</li>
+<li><strong>Does this refactor reduce complexity or just relocate it?</strong> Count the concepts a reader must hold to follow the change. If a &quot;cleaner&quot; version leaves that count unchanged, it isn't cleaner — prefer the restructuring that makes whole branches, modes, or layers disappear over one that re-centralizes the same logic. Prefer deleting an abstraction to polishing it.</li>
+<li><strong>Is feature-specific logic leaking into a shared or general-purpose module?</strong> Keep logic in its owning layer, reuse the existing canonical helper instead of a near-duplicate, and don't normalize architectural drift.</li>
+<li><strong>Are type boundaries explicit?</strong> Question gratuitous <code>any</code>/<code>unknown</code>/optional/casts and silent fallbacks that paper over an unclear invariant — making the boundary explicit often makes the surrounding control flow simpler.</li>
+</ul>
+<h5>4. Security</h5>
+<p>For detailed security guidance, see <code>security-and-hardening</code>. Does the change introduce vulnerabilities?</p>
+<ul>
+<li>Is user input validated and sanitized?</li>
+<li>Are secrets kept out of code, logs, and version control?</li>
+<li>Is authentication/authorization checked where needed?</li>
+<li>Are SQL queries parameterized (no string concatenation)?</li>
+<li>Are outputs encoded to prevent XSS?</li>
+<li>Are dependencies from trusted sources with no known vulnerabilities?</li>
+<li>Is data from external sources (APIs, logs, user content, config files) treated as untrusted?</li>
+<li>Are external data flows validated at system boundaries before use in logic or rendering?</li>
+</ul>
+<h5>5. Performance</h5>
+<p>For detailed profiling and optimization, see <code>performance-optimization</code>. Does the change introduce performance problems?</p>
+<ul>
+<li>Any N+1 query patterns?</li>
+<li>Any unbounded loops or unconstrained data fetching?</li>
+<li>Any synchronous operations that should be async?</li>
+<li>Any unnecessary re-renders in UI components?</li>
+<li>Any missing pagination on list endpoints?</li>
+<li>Any large objects created in hot paths?</li>
+</ul>
+<h4>Structural Remedies</h4>
+<p>When you flag a structural problem, propose the move — not just the problem. A review that only says &quot;this is complex&quot; leaves the author guessing. Reach for a named restructuring:</p>
+<ul>
+<li><strong>Replace a chain of conditionals</strong> with a typed model or an explicit dispatcher.</li>
+<li><strong>Collapse duplicate branches</strong> into a single clearer flow.</li>
+<li><strong>Separate orchestration from business logic</strong> so each reads on its own.</li>
+<li><strong>Move feature-specific logic</strong> out of a shared module into the package that owns the concept.</li>
+<li><strong>Reuse the canonical helper</strong> instead of a bespoke near-duplicate.</li>
+<li><strong>Make a type boundary explicit</strong> so downstream branching disappears.</li>
+<li><strong>Delete a pass-through wrapper</strong> that adds indirection without clarifying the API.</li>
+<li><strong>Extract a helper, or split a large file</strong> into focused modules.</li>
+</ul>
+<p>Prefer the remedy that removes moving pieces over one that spreads the same complexity around.</p>
+<h4>Change Sizing</h4>
+<p>Small, focused changes are easier to review, faster to merge, and safer to deploy. Target these sizes:</p>
+<pre><code>~100 lines changed   → Good. Reviewable in one sitting.
+~300 lines changed   → Acceptable if it's a single logical change.
+~1000 lines changed  → Too large. Split it.
+</code></pre>
+<p><strong>Watch file size, not just diff size.</strong> A small diff can still push a file past a healthy boundary — around 1000 <em>total</em> lines in a single file (distinct from the ~1000 <em>changed</em>-lines threshold above) is a common inspection signal, not a hard cap. When a change materially grows an already-large file, ask whether to extract helpers, subcomponents, or modules <em>first</em>, before piling more on. Decompose, then add.</p>
+<p><strong>What counts as &quot;one change&quot;:</strong> A single self-contained modification that addresses one thing, includes related tests, and keeps the system functional after submission. One part of a feature — not the whole feature.</p>
+<p><strong>Splitting strategies when a change is too large:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>How</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Stack</strong></td>
+<td>Submit a small change, start the next one based on it</td>
+<td>Sequential dependencies</td>
+</tr>
+<tr>
+<td><strong>By file group</strong></td>
+<td>Separate changes for groups needing different reviewers</td>
+<td>Cross-cutting concerns</td>
+</tr>
+<tr>
+<td><strong>Horizontal</strong></td>
+<td>Create shared code/stubs first, then consumers</td>
+<td>Layered architecture</td>
+</tr>
+<tr>
+<td><strong>Vertical</strong></td>
+<td>Break into smaller full-stack slices of the feature</td>
+<td>Feature work</td>
+</tr>
+</tbody>
+</table>
+<p><strong>When large changes are acceptable:</strong> Complete file deletions and automated refactoring where the reviewer only needs to verify intent, not every line.</p>
+<p><strong>Separate refactoring from feature work.</strong> A change that refactors existing code and adds new behavior is two changes — submit them separately. Small cleanups (variable renaming) can be included at reviewer discretion.</p>
+<h4>Change Descriptions</h4>
+<p>Every change needs a description that stands alone in version control history.</p>
+<p><strong>First line:</strong> Short, imperative, standalone. &quot;Delete the FizzBuzz RPC&quot; not &quot;Deleting the FizzBuzz RPC.&quot; Must be informative enough that someone searching history can understand the change without reading the diff.</p>
+<p><strong>Body:</strong> What is changing and why. Include context, decisions, and reasoning not visible in the code itself. Link to bug numbers, benchmark results, or design docs where relevant. Acknowledge approach shortcomings when they exist.</p>
+<p><strong>Anti-patterns:</strong> &quot;Fix bug,&quot; &quot;Fix build,&quot; &quot;Add patch,&quot; &quot;Moving code from A to B,&quot; &quot;Phase 1,&quot; &quot;Add convenience functions.&quot;</p>
+<h4>Review Process</h4>
+<h5>Step 1: Understand the Context</h5>
+<p>Before looking at code, understand the intent:</p>
+<pre><code>- What is this change trying to accomplish?
+- What spec or task does it implement?
+- What is the expected behavior change?
+</code></pre>
+<h5>Step 2: Review the Tests First</h5>
+<p>Tests reveal intent and coverage:</p>
+<pre><code>- Do tests exist for the change?
+- Do they test behavior (not implementation details)?
+- Are edge cases covered?
+- Do tests have descriptive names?
+- Would the tests catch a regression if the code changed?
+</code></pre>
+<p>Answer the last question by experiment, not by reading. Invert one condition the change adds (drop a negation, swap <code>&amp;&amp;</code> for <code>||</code>), run the suite, then restore the file from a copy. A mutation that stays green is a finding: name the test case that is missing. For a project-wide mutation score, see <code>constraint-driven-development</code>.</p>
+<h5>Step 3: Review the Implementation</h5>
+<p>Walk through the code with the five axes in mind:</p>
+<pre><code>For each file changed:
+1. Correctness: Does this code do what the test says it should?
+2. Readability: Can I understand this without help?
+3. Architecture: Does this fit the system?
+4. Security: Any vulnerabilities?
+5. Performance: Any bottlenecks?
+</code></pre>
+<h5>Step 4: Categorize Findings</h5>
+<p>Before reporting a finding, check it against the callers, guards and tests that reach the changed code, and drop it if they rule it out. Label defects that already exist in the base separately from regressions this change introduces. Zero findings is a valid result; do not invent one.</p>
+<p>Label every comment with its severity so the author knows what's required vs optional:</p>
+<table>
+<thead>
+<tr>
+<th>Prefix</th>
+<th>Meaning</th>
+<th>Author Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>(no prefix)</em></td>
+<td>Required change</td>
+<td>Must address before merge</td>
+</tr>
+<tr>
+<td><strong>Critical:</strong></td>
+<td>Blocks merge</td>
+<td>Security vulnerability, data loss, broken functionality</td>
+</tr>
+<tr>
+<td><strong>Nit:</strong></td>
+<td>Minor, optional</td>
+<td>Author may ignore — formatting, style preferences</td>
+</tr>
+<tr>
+<td><strong>Optional:</strong> / <strong>Consider:</strong></td>
+<td>Suggestion</td>
+<td>Worth considering but not required</td>
+</tr>
+<tr>
+<td><strong>FYI</strong></td>
+<td>Informational only</td>
+<td>No action needed — context for future reference</td>
+</tr>
+</tbody>
+</table>
+<p>This prevents authors from treating all feedback as mandatory and wasting time on optional suggestions.</p>
+<p><strong>Lead with what matters.</strong> Order findings by leverage: correctness and security first, then structural regressions and missed simplifications, then everything else. Don't bury a real issue under cosmetic nits — a few high-conviction comments beat a long list. If you have one structural problem and ten nits, the structural problem <em>is</em> the review.</p>
+<h5>Step 5: Verify the Verification</h5>
+<p>Check the author's verification story:</p>
+<pre><code>- What tests were run?
+- Did the build pass?
+- Was the change tested manually?
+- Are there screenshots for UI changes?
+- Is there a before/after comparison?
+</code></pre>
+<h4>Multi-Model Review Pattern</h4>
+<p>Use different models for different review perspectives:</p>
+<pre><code>Model A writes the code
+    │
+    ▼
+Model B reviews for correctness and architecture
+    │
+    ▼
+Model A addresses the feedback
+    │
+    ▼
+Human makes the final call
+</code></pre>
+<p>This catches issues that a single model might miss — different models have different blind spots.</p>
+<p><strong>Example prompt for a review agent:</strong></p>
+<pre><code>Review this code change for correctness, security, and adherence to
+our project conventions. The spec says [X]. The change should [Y].
+Flag any issues as Critical, Required, Optional, or Nit.
+</code></pre>
+<h4>Dead Code Hygiene</h4>
+<p>After any refactoring or implementation change, check for orphaned code:</p>
+<ol>
+<li>Identify code that is now unreachable or unused</li>
+<li>List it explicitly</li>
+<li><strong>Ask before deleting:</strong> &quot;Should I remove these now-unused elements: [list]?&quot;</li>
+</ol>
+<p>Don't leave dead code lying around — it confuses future readers and agents. But don't silently delete things you're not sure about. When in doubt, ask.</p>
+<pre><code>DEAD CODE IDENTIFIED:
+- formatLegacyDate() in src/utils/date.ts — replaced by formatDate()
+- OldTaskCard component in src/components/ — replaced by TaskCard
+- LEGACY_API_URL constant in src/config.ts — no remaining references
+→ Safe to remove these?
+</code></pre>
+<h4>Review Speed</h4>
+<p>Slow reviews block entire teams. The cost of context-switching to review is less than the waiting cost imposed on others.</p>
+<ul>
+<li><strong>Respond within one business day</strong> — this is the maximum, not the target</li>
+<li><strong>Ideal cadence:</strong> Respond shortly after a review request arrives, unless deep in focused coding. A typical change should complete multiple review rounds in a single day</li>
+<li><strong>Prioritize fast individual responses</strong> over quick final approval. Quick feedback reduces frustration even if multiple rounds are needed</li>
+<li><strong>Large changes:</strong> Ask the author to split them rather than reviewing one massive changeset</li>
+</ul>
+<h4>Handling Disagreements</h4>
+<p>When resolving review disputes, apply this hierarchy:</p>
+<ol>
+<li><strong>Technical facts and data</strong> override opinions and preferences</li>
+<li><strong>Style guides</strong> are the absolute authority on style matters</li>
+<li><strong>Software design</strong> must be evaluated on engineering principles, not personal preference</li>
+<li><strong>Codebase consistency</strong> is acceptable if it doesn't degrade overall health</li>
+</ol>
+<p><strong>Don't accept &quot;I'll clean it up later.&quot;</strong> Experience shows deferred cleanup rarely happens. Require cleanup before submission unless it's a genuine emergency. If surrounding issues can't be addressed in this change, require filing a bug with self-assignment.</p>
+<h4>Honesty in Review</h4>
+<p>When reviewing code — whether written by you, another agent, or a human:</p>
+<ul>
+<li><strong>Don't rubber-stamp.</strong> &quot;LGTM&quot; without evidence of review helps no one.</li>
+<li><strong>Don't soften real issues.</strong> &quot;This might be a minor concern&quot; when it's a bug that will hit production is dishonest.</li>
+<li><strong>Quantify problems when possible.</strong> &quot;This N+1 query will add ~50ms per item in the list&quot; is better than &quot;this could be slow.&quot;</li>
+<li><strong>Push back on approaches with clear problems.</strong> Sycophancy is a failure mode in reviews. If the implementation has issues, say so directly and propose alternatives.</li>
+<li><strong>Accept override gracefully.</strong> If the author has full context and disagrees, defer to their judgment. Comment on code, not people — reframe personal critiques to focus on the code itself.</li>
+</ul>
+<h4>Dependency Discipline</h4>
+<p>Part of code review is dependency review:</p>
+<p><strong>Before adding any dependency:</strong></p>
+<ol>
+<li>Does the existing stack solve this? (Often it does.)</li>
+<li>How large is the dependency? (Check bundle impact.)</li>
+<li>Is it actively maintained? (Check last commit, open issues.)</li>
+<li>Does it have known vulnerabilities? (<code>npm audit</code>)</li>
+<li>What's the license? (Must be compatible with the project.)</li>
+</ol>
+<p><strong>Rule:</strong> Prefer standard library and existing utilities over new dependencies. Every dependency is a liability.</p>
+<p><strong>Upgrading an existing dependency</strong> is a code change like any other, and the riskiest upgrades are the ones merged in bulk with a message like &quot;bump deps.&quot; Review them with the same discipline:</p>
+<ol>
+<li><strong>Read the changelog, not just the version number.</strong> Semver is a promise the maintainer may not have kept — a &quot;patch&quot; can carry a behavioral change. For a major bump, read the migration notes and find what breaks.</li>
+<li><strong>One dependency per change.</strong> Upgrade and merge them individually (or in small related groups). When a bulk bump breaks the build, you've lost which package did it; a single-package change makes the cause obvious and the revert clean.</li>
+<li><strong>Let the tests decide.</strong> The upgrade is verified by a green suite before <em>and</em> after, not by &quot;it installed.&quot; If coverage around the dependency's behavior is thin, that gap is the real finding — add a test first.</li>
+<li><strong>Mind the transitive graph.</strong> Most installed packages are ones nobody chose directly. Review the lockfile diff, not just <code>package.json</code>; a single direct bump can pull in dozens of indirect changes.</li>
+<li><strong>Keep the lockfile honest.</strong> Commit it, review its diff, and never hand-edit it. The lockfile is the thing that actually pins what ships.</li>
+</ol>
+<p>For triaging <code>npm audit</code> findings and supply-chain risk (typosquatting, compromised maintainers), follow the <code>security-and-hardening</code> skill — this section covers the upgrade <em>workflow</em>, that one covers the security verdict.</p>
+<h4>The Review Checklist</h4>
+<pre><code class="language-markdown">## Review: [PR/Change title]
+
+### Context
+- [ ] I understand what this change does and why
+
+### Correctness
+- [ ] Change matches spec/task requirements
+- [ ] Edge cases handled
+- [ ] Error paths handled
+- [ ] Tests cover the change adequately
+
+### Readability
+- [ ] Names are clear and consistent
+- [ ] Logic is straightforward
+- [ ] No unnecessary complexity
+
+### Architecture
+- [ ] Follows existing patterns
+- [ ] No unnecessary coupling or dependencies
+- [ ] Appropriate abstraction level
+- [ ] Refactors reduce complexity rather than relocate it
+- [ ] No feature logic in shared modules; file stays within a healthy size
+
+### Security
+- [ ] No secrets in code
+- [ ] Input validated at boundaries
+- [ ] No injection vulnerabilities
+- [ ] Auth checks in place
+- [ ] External data sources treated as untrusted
+
+### Performance
+- [ ] No N+1 patterns
+- [ ] No unbounded operations
+- [ ] Pagination on list endpoints
+
+### Verification
+- [ ] Tests pass
+- [ ] Build succeeds
+- [ ] Manual verification done (if applicable)
+
+### Verdict
+- [ ] **Approve** — Ready to merge
+- [ ] **Request changes** — Issues must be addressed
+</code></pre>
+<h4>See Also</h4>
+<ul>
+<li>For detailed security review guidance, see <code>../../references/security-checklist.md</code></li>
+<li>For performance review checks, see <code>../../references/performance-checklist.md</code></li>
+</ul>
+<h4>Common Rationalizations</h4>
+<table>
+<thead>
+<tr>
+<th>Rationalization</th>
+<th>Reality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;It works, that's good enough&quot;</td>
+<td>Working code that's unreadable, insecure, or architecturally wrong creates debt that compounds.</td>
+</tr>
+<tr>
+<td>&quot;I wrote it, so I know it's correct&quot;</td>
+<td>Authors are blind to their own assumptions. Every change benefits from another set of eyes.</td>
+</tr>
+<tr>
+<td>&quot;We'll clean it up later&quot;</td>
+<td>Later never comes. The review is the quality gate — use it. Require cleanup before merge, not after.</td>
+</tr>
+<tr>
+<td>&quot;AI-generated code is probably fine&quot;</td>
+<td>AI code needs more scrutiny, not less. It's confident and plausible, even when wrong.</td>
+</tr>
+<tr>
+<td>&quot;The tests pass, so it's good&quot;</td>
+<td>Tests are necessary but not sufficient. They don't catch architecture problems, security issues, or readability concerns.</td>
+</tr>
+<tr>
+<td>&quot;The refactor makes it cleaner&quot;</td>
+<td>Relocating complexity isn't reducing it. If the reader still holds the same number of concepts, the structure didn't improve — look for the version where branches disappear.</td>
+</tr>
+<tr>
+<td>&quot;It's only a small addition to this file&quot;</td>
+<td>Small diffs still push files past a healthy size and bolt branches onto unrelated flows. Judge the resulting structure, not the diff size.</td>
+</tr>
+<tr>
+<td>&quot;It's just a version bump&quot;</td>
+<td>A bump is a behavior change you didn't write. Read the changelog; semver doesn't guarantee no breakage.</td>
+</tr>
+<tr>
+<td>&quot;I'll upgrade everything in one PR to save time&quot;</td>
+<td>A bulk bump that breaks the build hides which package did it. One dependency per change keeps the cause and the revert clean.</td>
+</tr>
+</tbody>
+</table>
+<h4>Red Flags</h4>
+<ul>
+<li>PRs merged without any review</li>
+<li>Review that only checks if tests pass (ignoring other axes)</li>
+<li>&quot;LGTM&quot; without evidence of actual review</li>
+<li>Security-sensitive changes without security-focused review</li>
+<li>Large PRs that are &quot;too big to review properly&quot; (split them)</li>
+<li>No regression tests with bug fix PRs</li>
+<li>Review comments without severity labels — makes it unclear what's required vs optional</li>
+<li>Accepting &quot;I'll fix it later&quot; — it never happens</li>
+<li>A refactor that moves code around without reducing the number of concepts a reader must hold</li>
+<li>A change that grows an already-large file instead of decomposing it</li>
+<li>New conditionals scattered into unrelated code paths (a missing abstraction)</li>
+<li>A bespoke helper that duplicates an existing canonical one, or feature logic placed in a shared module</li>
+<li>A bulk &quot;bump dependencies&quot; PR with no changelog review and no per-package isolation</li>
+<li>A lockfile change that's hand-edited, uncommitted, or merged without reviewing its diff</li>
+</ul>
+<h4>Verification</h4>
+<p>After review is complete:</p>
+<ul>
+<li>[ ] All Critical issues are resolved</li>
+<li>[ ] All Required (no-prefix) changes are resolved or explicitly deferred with justification</li>
+<li>[ ] Tests pass</li>
+<li>[ ] Build succeeds</li>
+<li>[ ] The verification story is documented (what changed, how it was verified)</li>
+<li>[ ] Dependency upgrades were reviewed against their changelog, isolated per package, and verified by a green suite with the lockfile diff reviewed</li>
+</ul>
+<p><strong>Presumptive blockers:</strong> surface and propose the simpler design for each of these; escalate to Required only when the change actively makes structure worse: a refactor that relocates complexity instead of reducing it; a change that pushes a file past the size boundary with no decomposition; feature logic added to a shared module; a near-duplicate of an existing canonical helper; a silent fallback that hides an unclear invariant.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

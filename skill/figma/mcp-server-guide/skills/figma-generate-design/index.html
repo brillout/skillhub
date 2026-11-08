@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>figma-generate-design · SkillHub</title>
+    <meta name="description" content="Use it when: you want an app page, modal, form or dashboard built in Figma from code or a description, or a Figma screen updated to match the code. It does: finds design-system components via Code Connect files (code-to-Figma links), existing screens and library search, then builds section by section with its variables and styles, not hardcoded values. You get: an editable Figma view of design system instances, local components for repeated pieces, imported SVG icons and the product&#039;s own font. Never: imports a screenshot of the whole UI as the result; if the view isn&#039;t mostly editable layers, it rebuilds it or reports failure. Unlike build-design: Jakub Krehel&#039;s skill for turning a Figma design into code, this goes the other way, from code into Figma." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=figma%2Fmcp-server-guide">figma/mcp-server-guide</a></p>
+      <div class="title-row"><h1>figma-generate-design</h1><button type="button" class="save" data-save="skill:figma/mcp-server-guide/skills/figma-generate-design" aria-pressed="false" aria-label="Save figma-generate-design" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want an app page, modal, form or dashboard built in Figma from code or a description, or a Figma screen updated to match the code</dd></div><div><dt>It does</dt><dd>finds design-system components via Code Connect files (code-to-Figma links), existing screens and library search, then builds section by section with its variables and styles, not hardcoded values</dd></div><div><dt>You get</dt><dd>an editable Figma view of design system instances, local components for repeated pieces, imported SVG icons and the product&#39;s own font</dd></div><div><dt>Never</dt><dd>imports a screenshot of the whole UI as the result; if the view isn&#39;t mostly editable layers, it rebuilds it or reports failure</dd></div><div><dt>Unlike build-design</dt><dd>Jakub Krehel&#39;s skill for turning a Figma design into code, this goes the other way, from code into Figma</dd></div></dl></section>
+      
+      <p class="note">Needs the Figma MCP server and a Figma file whose design system is published. Before every Figma script it loads the repo&#39;s figma-use skill, which SkillHub doesn&#39;t list: install it alongside.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Figma&#39;s own skill for the code-to-design direction. It reads the source to list the view&#39;s sections and components, finds the product&#39;s typeface instead of defaulting to Inter, and checks for images. For a web app with photos, avatars or logos it also captures the running page into the same file with generate_figma_design: the capture sets exact spacing and supplies the image fills, then gets deleted. Component keys come first from Code Connect files next to the source, then from a search scoped to the file&#39;s libraries and an inventory of existing screens; variables and text and effect styles come from the same places, and an empty list of local variables never counts as proof there are none. Each section is built inside one wrapper frame, instance text set through component properties, variants taken from the component&#39;s source defaults. Validation reads back node counts, then compares one screenshot with the source for clipped text, overlaps, leftover placeholder text, wrong variants, wrong fonts and blank images, and makes targeted fixes. Raw HTML, or a new design with nothing rendered yet, goes through html_to_figma instead. Placeholder images from Figma&#39;s generate_image use Figma AI credits, and it tells you so.</p>
+      <p class="muted">Summarizes <a href="https://github.com/figma/mcp-server-guide/tree/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-generate-design">the skill at 19be8d5</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">figma/</span><wbr><span class="word">mcp-server-guide</span> <span class="word">--skill</span> <span class="word">figma-generate-design</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/figma/mcp-server-guide --skill figma-generate-design">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/figma/mcp-server-guide/figma-generate-design">skills.sh page</a> · <a href="https://github.com/figma/mcp-server-guide/tree/HEAD/skills/figma-generate-design">Source on GitHub</a> · <a href="/?repo=figma%2Fmcp-server-guide">All skills from figma/mcp-server-guide</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>6,300 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>2,161 <span class="muted">figma/mcp-server-guide</span></dd></div><div><dt>First seen</dt><dd>Mar 24, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">189</div>
+      <div class="stat-delta">+29% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 146; week to Sep 27: 131; week to Oct 4: 146; week to Oct 11: 168; week to Oct 18: 162; week to Oct 25: 177; week to Nov 1: 231; week to Nov 8: 189. Use the left and right arrow keys to read each week."
+        data-values="146,131,146,168,162,177,231,189" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,22.2 38.6,25.0 71.1,22.2 103.7,18.0 136.3,19.1 168.9,16.3 201.4,6.0 234.0,14.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="14.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>146</td></tr><tr><td>Sep 27</td><td>131</td></tr><tr><td>Oct 4</td><td>146</td></tr><tr><td>Oct 11</td><td>168</td></tr><tr><td>Oct 18</td><td>162</td></tr><tr><td>Oct 25</td><td>177</td></tr><tr><td>Nov 1</td><td>231</td></tr><tr><td>Nov 8</td><td>189</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:design" data-facet="category" title="Taste for interfaces that don&#39;t look generated: direction, motion and accessibility." href="/?tag=category%3Adesign">category:<wbr>design</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Taste for interfaces that don&#39;t look generated: direction, motion and accessibility.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:remote" data-facet="effect" title="Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service." href="/?tag=effect%3Aremote">effect:<wbr>remote</a></div>
+          <p class="tag-meaning">Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:mcp" data-facet="needs" title="Needs an MCP server connected." href="/?tag=needs%3Amcp">needs:<wbr>mcp</a><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/?tag=needs%3Aaccount">needs:<wbr>account</a></div>
+          <p class="tag-meaning">Needs an MCP server connected.</p><p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="design" data-facet="topic" href="/?tag=design">design</a><a class="tag" data-tag="design-system" data-facet="topic" href="/?tag=design-system">design-system</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:figma" data-facet="stack" href="/?tag=stack%3Afigma">stack:<wbr>figma</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/figma/mcp-server-guide/blob/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-generate-design/SKILL.md">figma/mcp-server-guide at 19be8d5</a>. Checked daily, last changed Nov 7, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: figma-generate-design
+description: &#34;Use this skill alongside figma-use when the task involves translating an application page, view, or multi-section layout into Figma. Triggers: &#39;write to Figma&#39;, &#39;create in Figma from code&#39;, &#39;push page to Figma&#39;, &#39;take this app/page and build it in Figma&#39;, &#39;create a screen&#39;, &#39;build a landing page in Figma&#39;, &#39;update the Figma screen to match code&#39;, &#39;convert this modal/dialog/drawer/panel to Figma&#39;. This is the preferred workflow skill whenever the user wants to build or update a full page, modal, dialog, drawer, sidebar, panel, form, dashboard, list, table, card, header, message preview, or other composed product UI in Figma from code or a description—even when the user calls that composed UI a component. Discovers design system components, variables, and styles from Code Connect files, existing screens, and library search, then imports them and assembles views incrementally section-by-section using design system tokens instead of hardcoded values.&#34;
+disable-model-invocation: false</code></pre></details>
+        <div class="markdown"><h3>Build / Update Screens and Views from Design System</h3>
+<p><strong>Hard deliverable gate:</strong> Code-to-design output must recreate the UI as editable text, components, icons, and hierarchy.
+Treat any screenshot or flattened rendering of the complete UI only as a visual reference: never upload or import it into the deliverable, including as the wrapper fill or a child node, even if it exists in the repository or appears more pixel-accurate. Before completion, inspect the result; if the UI is not primarily represented by editable layers, rebuild it semantically or report failure.</p>
+<p>Use this skill to create or update <strong>screens, views, and multi-section UI containers</strong> in Figma by <strong>reusing the published design system</strong> — components, variables, and styles — rather than drawing primitives with hardcoded values. This includes full pages, modals, dialogs, drawers, sidebars, panels, and any composed view with multiple sections. The key insight: the Figma file likely has a published design system with components, color/spacing variables, and text/effect styles that correspond to the codebase's UI components and tokens. Find and use those instead of drawing boxes with hex colors.</p>
+<p><strong>MANDATORY</strong>: You MUST also load <a href="https://github.com/figma/mcp-server-guide/blob/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-use/SKILL.md">figma-use</a> before any <code>use_figma</code> call. That skill contains critical rules (color ranges, font loading, etc.) that apply to every script you write.</p>
+<p>When available, call <code>create_session</code> with <code>fileKey</code> and <code>description</code> before file reads or edits (create the file first if needed), then pass the returned <code>sessionId</code> unchanged to every call that accepts it, including follow-ups and work across files.</p>
+<p><strong>Always include <code>figma-generate-design</code> in the comma-separated <code>skillNames</code> parameter when calling <code>use_figma</code> as part of this skill. If this skill was loaded via an MCP resource, you MUST prefix the name with <code>resource:</code> (e.g. <code>resource:figma-generate-design</code>).</strong> This is a logging parameter — it does not affect execution.</p>
+<h4>HTML-to-Figma Exceptions</h4>
+<p>Use <code>html_to_figma</code> for initial creation in these cases:</p>
+<ul>
+<li>The input is an existing raw or static HTML document. Pass it directly to <code>html_to_figma</code>.</li>
+<li>The prompt asks to create a new design and there is no rendered UI implementation to reproduce. Create a self-contained HTML document and pass it to <code>html_to_figma</code>.</li>
+</ul>
+<p>If <code>html_to_figma</code> is unavailable, follow the existing workflow below.</p>
+<h4>Skill Boundaries</h4>
+<ul>
+<li>Use this skill when the deliverable is a <strong>composed Figma view</strong> (new or updated) — including a form, dashboard, list, table, card, header, panel, dialog, message preview, or other multi-section container — built from design system component instances. This applies even when the user calls the composed view a component.</li>
+<li>If the primary deliverable is a <strong>reusable library primitive or foundation</strong> intended for variants, tokens, or publication, use <a href="https://github.com/figma/mcp-server-guide/blob/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-generate-library/SKILL.md">figma-generate-library</a> with <a href="https://github.com/figma/mcp-server-guide/blob/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-use/SKILL.md">figma-use</a> instead.</li>
+<li>If the user wants to write <strong>Code Connect mappings</strong>, switch to <a href="https://github.com/figma/mcp-server-guide/blob/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-code-connect/SKILL.md">figma-code-connect</a>.</li>
+</ul>
+<h4>Prerequisites</h4>
+<ul>
+<li>Figma MCP server must be connected</li>
+<li>The target Figma file must have a published design system with components (or access to a team library)</li>
+<li>User must provide a target Figma file (URL or <code>fileKey</code>). If they don't have one yet, invoke <code>/figma-create-new-file</code> (or call <code>create_new_file</code>) first and reuse the returned file_key. Both <code>use_figma</code> and <code>generate_figma_design</code> require an existing <code>fileKey</code>.</li>
+<li>Source code or description of the screen/view to build/update</li>
+</ul>
+<h4>Parallel Workflow with generate_figma_design (Web Apps Only)</h4>
+<p>When building a screen from a <strong>web app</strong> that can be rendered in a browser, the best results come from running both approaches in parallel:</p>
+<ol>
+<li><strong>In parallel:</strong>
+<ul>
+<li>Start building the screen using this skill's workflow (use_figma + design system components) against the target Figma file (<code>fileKey</code>).</li>
+<li>Run <code>generate_figma_design</code> against the <strong>same <code>fileKey</code></strong> to capture a pixel-perfect screenshot of the running web app into that file. <code>generate_figma_design</code> always requires <code>fileKey</code> — if the user does not yet have a Figma file, first invoke <code>/figma-create-new-file</code> (or call the <code>create_new_file</code> MCP tool) to get one, and reuse that file_key for both this skill and the capture.</li>
+</ul>
+</li>
+<li><strong>Once both complete:</strong> Update the use_figma output to match the pixel-perfect layout from the <code>generate_figma_design</code> capture. The capture provides the exact spacing, sizing, and visual treatment to aim for, while your use_figma output has proper component instances linked to the design system. If the capture contains images, transfer them to your use_figma output by copying <code>imageHash</code> values from the capture's image fills (see Step 5 for details).</li>
+<li><strong>Once confirmed looking good:</strong> Delete the <code>generate_figma_design</code> output — it was only used as a visual reference.</li>
+</ol>
+<p>This combines the best of both: <code>generate_figma_design</code> gives pixel-perfect layout accuracy, while use_figma gives proper design system component instances that stay linked and updatable.</p>
+<p><strong>This parallel workflow is MANDATORY when the source contains discrete content images used by the app, such as photos, avatars, logos, or icons. A screenshot or flattened rendering of the complete UI is a visual reference, not a content image.</strong> The <code>use_figma</code> Plugin API cannot fetch external image URLs — it can only set image fills by copying <code>imageHash</code> values from nodes already in the file. <code>generate_figma_design</code> rasterizes all visible images into Figma, providing the hashes you need. If you skip the capture when these content images are present, their image frames will be left blank.</p>
+<p>For non-web apps (iOS, Android, etc.) or when updating existing screens, use the standard workflow below.</p>
+<h4>Required Workflow</h4>
+<p><strong>Follow these steps in order. Do not skip steps.</strong></p>
+<blockquote>
+<p><strong>Required invariants:</strong></p>
+<ul>
+<li>Complete Code Connect discovery and select the target library before mutating the deliverable. Discovery-only imports and temporary instances are allowed; remove temporary instances immediately.</li>
+<li>Apply each selected asset where it is imported. If an import fails, try the next applicable exact result before building a manual fallback.</li>
+</ul>
+</blockquote>
+<h5>Step 1: Understand the Deliverable</h5>
+<p>Before touching Figma, understand what you're building:</p>
+<ol>
+<li>If building from code, read the relevant source files to understand the structure, sections, and which components are used.</li>
+<li>Identify the major sections of the view (e.g., for a page: Header, Hero, Content Panels, Footer; for a modal: Title Bar, Form Sections, Action Bar; for a sidebar: Navigation, Content Area, Footer Actions).</li>
+<li>For each section, list the UI components involved (buttons, inputs, cards, navigation pills, accordions, etc.).</li>
+<li><strong>Identify the product's font family from the source. Do not default to Inter.</strong> Find <em>which</em> typeface the product uses before writing any script. See <a href="https://github.com/figma/mcp-server-guide/blob/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-generate-design/references/discover-product-font.md">references/discover-product-font.md</a> for where to look (CSS variables, component files) and how to resolve messy Figma font names.</li>
+<li><strong>Check whether the view contains any images</strong> (e.g., <code>&lt;img&gt;</code>, <code>&lt;Image&gt;</code>, background images, product photos, avatars, icons loaded from URLs). If it does and this is a web app, you <strong>must</strong> run the parallel <code>generate_figma_design</code> capture workflow — start it immediately alongside Step 2 so the capture runs while you discover components. See &quot;Parallel Workflow with generate_figma_design&quot; above.</li>
+</ol>
+<h5>Step 2: Collect Component Keys, Variables, and Styles</h5>
+<p>You need three things from the design system: <strong>components</strong> (buttons, cards, etc.), <strong>variables</strong> (colors, spacing, radii), and <strong>styles</strong> (text styles, effect styles like shadows). Don't hardcode hex colors or pixel values when design system tokens exist.</p>
+<h6>2a: Discover components</h6>
+<p><strong>2a-i — REQUIRED: Check Code Connect for needed components.</strong> Starting from the component list you built in Step 1, check whether each component has a Code Connect file in the codebase. Code Connect files live next to the component source and are named by platform:</p>
+<ul>
+<li><strong>TypeScript/JS</strong>: <code>*.figma.ts</code>, <code>*.figma.js</code></li>
+<li><strong>React (parser-based)</strong>: <code>*.figma.tsx</code></li>
+<li><strong>Kotlin/Compose</strong>: <code>.kt</code> files containing <code>@FigmaConnect</code></li>
+<li><strong>Swift</strong>: <code>.swift</code> files containing <code>FigmaConnect</code></li>
+</ul>
+<p>For each component you need (e.g., Button, Card, Input), search for its Code Connect file — glob or grep by component name (e.g., <code>**/Button.figma.tsx</code>, <code>**/Card.figma.ts</code>). Only read files that match components you actually need.</p>
+<p>From each matching Code Connect file, extract the Figma component URL. Parse <code>fileKey</code> and <code>nodeId</code> from the URL (convert hyphens to colons: <code>123-456</code> → <code>123:456</code>). Then resolve component keys via <code>use_figma</code>:</p>
+<p><strong>Example:</strong> Code Connect file contains <code>// url=https://figma.com/design/ABC123/File?node-id=609-35535</code>. Parse <code>fileKey</code> = <code>ABC123</code>, <code>nodeId</code> = <code>609:35535</code>. Run <code>use_figma</code> against the <strong>library file</strong> (fileKey <code>ABC123</code>, not the target file) to resolve the key:</p>
+<pre><code class="language-js">const node = await figma.getNodeByIdAsync(&quot;609:35535&quot;);
+const set = node?.parent?.type === &quot;COMPONENT_SET&quot; ? node.parent : node;
+if (set?.type === &quot;COMPONENT_SET&quot;) {
+  return { assetType: &quot;component_set&quot;, componentSetKey: set.key };
+}
+if (set?.type === &quot;COMPONENT&quot;) {
+  return { assetType: &quot;component&quot;, componentKey: set.key };
+}
+throw new Error(&quot;Expected a component or component set&quot;);
+</code></pre>
+<p>Batch multiple lookups in a single call. Use the returned keys with either <code>importComponentByKeyAsync()</code> or <code>importComponentSetByKeyAsync()</code> depending on each item's <code>assetType</code> in Step 4.</p>
+<p>Mark resolved components and continue with unresolved ones.</p>
+<p><strong>2a-ii — REQUIRED: Select the library scope, then search and inspect the whole view.</strong> Call <code>get_libraries</code>. If the user names one or more libraries, use their exact keys whether they appear in <code>libraries_added_to_file</code> or <code>libraries_available_to_add</code>. Otherwise search across all libraries in <code>libraries_added_to_file</code> together. Pass the selected keys in <code>includeLibraryKeys</code> on every search. Only when unresolved gaps have no suitable match, add specifically relevant libraries from <code>libraries_available_to_add</code> and retry those unresolved queries; do not broaden to unrelated available libraries. In the first batched <code>search_design_system</code> call, include one component query for the requested view or flow alongside queries for unresolved items already known from source or Code Connect inspection. Name the whole-view query by purpose and container (for example, <code>billing settings drawer</code>). Inspect the strongest candidate. If it covers two or more requested sections, select it as a foundation; otherwise continue without a whole-view composite.</p>
+<p><strong>2a-iii — Inspect existing screens.</strong> Check if the target file already contains screens using the same design system. One read-only <code>use_figma</code> call inventories an existing frame — its component keys, bound variables, and text/effect styles — in a single authoritative pass. Run it once here and reuse the result in 2b and 2c rather than re-walking the frame:</p>
+<pre><code class="language-js">const frame = figma.currentPage.findOne(n =&gt; n.name === &quot;Existing Screen&quot;);
+const components = new Map();
+const styles = { text: new Map(), effect: new Map() };
+const variableIds = new Set();
+
+// boundVariables and style ids can sit on any scene node, so walk them all.
+for (const node of frame?.findAll(() =&gt; true) ?? []) {
+  if (node.type === &quot;INSTANCE&quot;) {
+    const mc = node.mainComponent;
+    const cs = mc?.parent?.type === &quot;COMPONENT_SET&quot; ? mc.parent : null;
+    const key = cs ? cs.key : mc?.key;
+    if (key &amp;&amp; !components.has(key)) {
+      components.set(key, { name: cs ? cs.name : mc.name, key, isSet: !!cs, sampleVariant: mc.name });
+    }
+  }
+  for (const b of Object.values(node.boundVariables ?? {}).flat()) {
+    if (b?.id) variableIds.add(b.id);
+  }
+  for (const [prop, bucket] of [[&quot;textStyleId&quot;, &quot;text&quot;], [&quot;effectStyleId&quot;, &quot;effect&quot;]]) {
+    if (prop in node &amp;&amp; typeof node[prop] === &quot;string&quot; &amp;&amp; node[prop]) {
+      const s = await figma.getStyleByIdAsync(node[prop]);
+      if (s) styles[bucket].set(s.id, { name: s.name, id: s.id, key: s.key });
+    }
+  }
+}
+const vars = await Promise.all([...variableIds].map(id =&gt; figma.variables.getVariableByIdAsync(id)));
+
+return {
+  components: [...components.values()],
+  variables: vars.filter(Boolean).map(v =&gt; ({ name: v.name, id: v.id, key: v.key, type: v.resolvedType, remote: v.remote })),
+  textStyles: [...styles.text.values()],
+  effectStyles: [...styles.effect.values()],
+};
+</code></pre>
+<p>Match <code>components</code> against your unresolved components; Code Connect keys from 2a-i stay authoritative. Mark any newly resolved.</p>
+<p><strong>2a-iv — Search only the gaps needed for construction.</strong> After Code Connect, whole-view discovery, and existing-screen inspection, search for unresolved components and tokens the design still needs. Batch independent one-intent entries, keep <code>includeLibraryKeys</code> restricted to the selected library scope, and carry selected keys into the build. Do not delay construction to exhaustively search every unresolved role.</p>
+<pre><code>// Step 1: Discover available libraries
+get_libraries({ fileKey })
+// Returns: {
+//   libraries_added_to_file: [...],
+//   libraries_available_to_add: [...],
+//   libraries_available_to_add_next_offset: number | null
+// }
+
+// Step 2: Search within a specific library using its libraryKey
+search_design_system({ queries: [{ entity: &quot;component&quot;, query: &quot;button&quot; }], fileKey, includeLibraryKeys: [&quot;lk-abc123...&quot;] })
+</code></pre>
+<p>Org libraries in <code>libraries_available_to_add</code> are paginated (20 per page). When <code>libraries_available_to_add_next_offset</code> is non-null, more org libraries are available — call <code>get_libraries</code> again with <code>offset</code> set to that value to fetch the next page. Community UI kits only appear on the first page. If the user names a specific library you don't see in the current page, page further before giving up.</p>
+<p>This is especially useful when the file has many libraries and you want targeted results (e.g. searching only within &quot;iOS 26&quot; or &quot;Material 3&quot; instead of getting matches from every library).</p>
+<p><strong>Use one intent per query.</strong> <code>search_design_system</code> does not apply OR semantics, so never pack alternatives or synonyms into one string (&quot;Button IconButton icon&quot; matches nothing useful). Use an exact design-system name or component type when known; otherwise search by the asset's UI role, such as &quot;archive action icon&quot; or &quot;primary submit button&quot;.
+Map every selected key to a section or property. Reuse applicable composite descendants instead of building parallel replacements, and keep nested instances intact unless only an example/template wrapper must be detached.</p>
+<p><strong>Include component properties</strong> in your map — you need to know which TEXT properties each component exposes for text overrides. Create a temporary instance, read its <code>componentProperties</code> (and those of nested instances), then remove the temp instance.</p>
+<p>Example component map with property info:</p>
+<pre><code>Component Map:
+- Button → key: &quot;abc123&quot;, type: COMPONENT_SET
+  Properties: { &quot;Label#2:0&quot;: TEXT, &quot;Has Icon#4:64&quot;: BOOLEAN }
+- PricingCard → key: &quot;ghi789&quot;, type: COMPONENT_SET
+  Properties: { &quot;Device&quot;: VARIANT, &quot;Variant&quot;: VARIANT }
+  Nested &quot;Text Heading&quot; has: { &quot;Text#2104:5&quot;: TEXT }
+  Nested &quot;Button&quot; has: { &quot;Label#2:0&quot;: TEXT }
+</code></pre>
+<h6>2b: Discover variables (colors, spacing, radii)</h6>
+<p><strong>Inspect existing screens first.</strong> Reuse <code>variables</code> from the 2a-iii inventory; if that step was skipped, run the inventory here when an existing screen is available. For unresolved variables, use <code>search_design_system</code> with <code>queries</code> entries whose <code>entity</code> is <code>&quot;variable&quot;</code>.</p>
+<blockquote>
+<p><strong>WARNING: Two different variable discovery methods — do not confuse them.</strong></p>
+<ul>
+<li><code>use_figma</code> with <code>figma.variables.getLocalVariableCollectionsAsync()</code> — returns <strong>only local variables defined in the current file</strong>. If this returns empty, it does <strong>not</strong> mean no variables exist. Remote/published library variables are invisible to this API.</li>
+<li><code>search_design_system</code> with <code>entity: &quot;variable&quot;</code> query entries — searches remote and published library variables. Scope every query to the library keys selected in 2a-ii with <code>includeLibraryKeys</code>.</li>
+</ul>
+<p><strong>Never conclude &quot;no variables exist&quot; based solely on <code>getLocalVariableCollectionsAsync()</code> returning empty.</strong> Always also run <code>search_design_system</code> with variable query entries to check for library variables before deciding to create your own.</p>
+</blockquote>
+<p><strong>Query strategy:</strong> <code>search_design_system</code> matches against <strong>variable names</strong> (e.g., &quot;Gray/gray-9&quot;, &quot;core/gray/100&quot;, &quot;space/400&quot;), not categories. Put multiple short, simple searches in one <code>queries</code> call rather than one compound query. Every array entry must be an <code>{ &quot;entity&quot;: &quot;variable&quot;, &quot;query&quot;: &quot;...&quot; }</code> object, never a bare string:</p>
+<ul>
+<li><strong>Primitive colors:</strong> <code>{ &quot;entity&quot;: &quot;variable&quot;, &quot;query&quot;: &quot;gray&quot; }</code>, <code>{ &quot;entity&quot;: &quot;variable&quot;, &quot;query&quot;: &quot;red&quot; }</code>, etc.</li>
+<li><strong>Semantic colors:</strong> <code>{ &quot;entity&quot;: &quot;variable&quot;, &quot;query&quot;: &quot;background&quot; }</code>, <code>{ &quot;entity&quot;: &quot;variable&quot;, &quot;query&quot;: &quot;surface&quot; }</code>, etc.</li>
+<li><strong>Spacing/sizing:</strong> <code>{ &quot;entity&quot;: &quot;variable&quot;, &quot;query&quot;: &quot;space&quot; }</code>, <code>{ &quot;entity&quot;: &quot;variable&quot;, &quot;query&quot;: &quot;radius&quot; }</code>, etc.</li>
+</ul>
+<p>If initial searches return empty, try shorter fragments or different naming conventions — libraries vary widely (&quot;grey&quot; vs &quot;gray&quot;, &quot;spacing&quot; vs &quot;space&quot;, &quot;color/bg&quot; vs &quot;background&quot;).</p>
+<p>For library variables (remote = true), import them by key with <code>figma.variables.importVariableByKeyAsync(key)</code>. For local variables, use <code>figma.variables.getVariableByIdAsync(id)</code> directly.</p>
+<p>See <a href="https://github.com/figma/mcp-server-guide/blob/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-use/references/variable-patterns.md">variable-patterns.md</a> for binding patterns.</p>
+<h6>2c: Discover styles (text styles, effect styles)</h6>
+<p>Reuse <code>textStyles</code> and <code>effectStyles</code> from the inventory in 2a-iii or 2b. If no inventory exists, inspect an available screen with the same script. Before hardcoding an unresolved reusable fill/stroke, typography, or effect role, issue a focused <code>search_design_system</code> entry with <code>entity: &quot;style&quot;</code>, such as &quot;surface&quot;, &quot;border&quot;, &quot;heading&quot;, &quot;body&quot;, &quot;shadow&quot;, or &quot;elevation&quot;. Batch independent entries, but do not exhaustively search roles covered by a selected component or existing-screen style. Search for any styles still missing.</p>
+<p>Import library styles with <code>figma.importStyleByKeyAsync(key)</code>, then apply with <code>node.textStyleId = style.id</code> or <code>node.effectStyleId = style.id</code>.</p>
+<p>See <a href="https://github.com/figma/mcp-server-guide/blob/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-use/references/text-style-patterns.md">text-style-patterns.md</a> and <a href="https://github.com/figma/mcp-server-guide/blob/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-use/references/effect-style-patterns.md">effect-style-patterns.md</a> for details.</p>
+<h5>Step 3: Create the Wrapper Frame</h5>
+<p><strong>Do NOT build sections as top-level page children and reparent them later</strong> — moving nodes across <code>use_figma</code> calls with <code>appendChild()</code> silently fails and produces orphaned frames. Create a mutable wrapper frame first, then build each section directly inside it.</p>
+<p>Import and instantiate any selected whole-view composite inside the wrapper. Customize its covered descendants and append missing sections to the wrapper alongside it; never append children directly to an instance. Position the wrapper away from existing content and return its ID:</p>
+<pre><code class="language-js">// Find clear space
+let maxX = 0;
+for (const child of figma.currentPage.children) {
+  maxX = Math.max(maxX, child.x + child.width);
+}
+
+const wrapper = figma.createAutoLayout(&quot;VERTICAL&quot;);
+
+// --- Size the wrapper based on container type ---
+// Full page:       wrapper.resize(1440, 100); wrapper.name = &quot;Homepage&quot;;
+// Modal/dialog:    wrapper.resize(640, 100);  wrapper.name = &quot;Settings Modal&quot;;
+// Drawer/sidebar:  wrapper.resize(360, 100);  wrapper.name = &quot;Navigation Drawer&quot;;
+// Panel:           wrapper.resize(400, 100);  wrapper.name = &quot;Details Panel&quot;;
+// Adapt width to match the source code's actual dimensions.
+
+wrapper.name = &quot;VIEW_NAME&quot;;
+wrapper.primaryAxisAlignItems = &quot;CENTER&quot;;
+wrapper.counterAxisAlignItems = &quot;CENTER&quot;;
+wrapper.resize(WIDTH, 100);
+wrapper.layoutSizingHorizontal = &quot;FIXED&quot;;
+wrapper.x = maxX + 200;
+wrapper.y = 0;
+
+return { success: true, wrapperId: wrapper.id };
+</code></pre>
+<h5>Step 4: Customize Covered Sections and Build Missing Sections</h5>
+<p><strong>This is the most important step.</strong> Start with the selected composite: customize the descendants it already covers and build only missing sections. Work in retry-safe construction phases, batching related sections when safe. Split only for page-context boundaries, hard-to-recover partial execution, or a targeted retry after a failure—not merely to create a validation checkpoint. At the start of each script, fetch the mutable wrapper frame by ID. Append new content to that frame, never to a component instance.</p>
+<pre><code class="language-js">const createdNodeIds = [];
+
+// Resolve the wrapper and import every design system dependency in parallel.
+// Sequential awaits here serialize N independent IPC round-trips at the top
+// of every section build; one Promise.all is dramatically faster.
+const [wrapper, buttonSet, bgColorVar, spacingVar, shadowStyle] = await Promise.all([
+  figma.getNodeByIdAsync(&quot;WRAPPER_ID_FROM_STEP_3&quot;),
+  figma.importComponentSetByKeyAsync(&quot;BUTTON_SET_KEY&quot;),
+  figma.variables.importVariableByKeyAsync(&quot;BG_COLOR_VAR_KEY&quot;),
+  figma.variables.importVariableByKeyAsync(&quot;SPACING_VAR_KEY&quot;),
+  figma.importStyleByKeyAsync(&quot;SHADOW_STYLE_KEY&quot;),
+]);
+const primaryButton = buttonSet.children.find(c =&gt;
+  c.type === &quot;COMPONENT&quot; &amp;&amp; c.name.includes(&quot;variant=primary&quot;)
+) || buttonSet.defaultVariant;
+
+// Build section frame with variable bindings (not hardcoded values)
+const section = figma.createAutoLayout();
+section.name = &quot;Header&quot;;
+section.setBoundVariable(&quot;paddingLeft&quot;, spacingVar);
+section.setBoundVariable(&quot;paddingRight&quot;, spacingVar);
+const bgPaint = figma.variables.setBoundVariableForPaint(
+  { type: 'SOLID', color: { r: 0, g: 0, b: 0 } }, 'color', bgColorVar
+);
+section.fills = [bgPaint];
+
+// Apply the effect style imported above
+section.effectStyleId = shadowStyle.id;
+
+// Create component instances inside the section
+const btnInstance = primaryButton.createInstance();
+section.appendChild(btnInstance);
+createdNodeIds.push(btnInstance.id);
+
+// Append section to wrapper
+wrapper.appendChild(section);
+section.layoutSizingHorizontal = &quot;FILL&quot;; // AFTER appending
+
+createdNodeIds.push(section.id);
+return { success: true, createdNodeIds };
+</code></pre>
+<p>Return the created node IDs plus the relevant counts, names, and bounds from each call — this is your default structural validation. Run a separate structural read only when that evidence is missing or when a relevant mutation has invalidated it. Save the visual pass for Step 5.</p>
+<h6>Override instance text with setProperties()</h6>
+<p>Component instances ship with placeholder text (&quot;Title&quot;, &quot;Heading&quot;, &quot;Button&quot;). Use the component property keys you discovered in Step 2 to override them with <code>setProperties()</code> — this is more reliable than direct <code>node.characters</code> manipulation. See <a href="https://github.com/figma/mcp-server-guide/blob/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-use/references/component-patterns.md#overriding-text-in-a-component-instance">component-patterns.md</a> for the full pattern.</p>
+<p>For nested instances that expose their own TEXT properties, call <code>setProperties()</code> on the nested instance:</p>
+<pre><code class="language-js">// Use the type-indexed criteria for the type filter, then narrow by name.
+const nestedHeading = cardInstance
+  .findAllWithCriteria({ types: [&quot;INSTANCE&quot;] })
+  .find(n =&gt; n.name === &quot;Text Heading&quot;);
+if (nestedHeading) {
+  nestedHeading.setProperties({ &quot;Text#2104:5&quot;: &quot;Actual heading from source code&quot; });
+}
+</code></pre>
+<p>Only fall back to direct <code>node.characters</code> for text that is NOT managed by any component property.</p>
+<h6>Read source code defaults carefully</h6>
+<p>When translating code components to Figma instances, check the component's default prop values in the source code, not just what's explicitly passed. For example, <code>&lt;Button size=&quot;small&quot;&gt;Register&lt;/Button&gt;</code> with no variant prop — check the component definition to find <code>variant = &quot;primary&quot;</code> as the default. Selecting the wrong variant (e.g., Neutral instead of Primary) produces a visually incorrect result that's easy to miss.</p>
+<h6>What to build manually vs. import from design system</h6>
+<table>
+<thead>
+<tr>
+<th>Build manually</th>
+<th>Import from design system</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Wrapper frame</td>
+<td><strong>Components</strong>: buttons, cards, inputs, nav, etc.</td>
+</tr>
+<tr>
+<td>Section container frames</td>
+<td><strong>Variables</strong>: colors (fills, strokes), spacing (padding, gap), radii</td>
+</tr>
+<tr>
+<td>Layout grids (rows, columns)</td>
+<td><strong>Text styles</strong>: heading, body, caption, etc.</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>Effect styles</strong>: shadows, blurs, etc.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Never hardcode hex colors or pixel spacing</strong> when a design system variable exists. Use <code>setBoundVariable</code> for spacing/radii and <code>setBoundVariableForPaint</code> for colors. Apply text styles with <code>node.textStyleId</code> and effect styles with <code>node.effectStyleId</code>.</p>
+<h6>Componentize repeated and reusable elements (required)</h6>
+<p>Componentization is part of the <strong>default</strong> workflow, not an optional follow-up. Produce a componentized structure on the first pass; do not emit a flat tree of one-off frames and wait for a second &quot;now make it componentized&quot; prompt.</p>
+<ul>
+<li><strong>Design-system instances are already componentized</strong> (Step 2). Prefer them.</li>
+<li><strong>For anything the design system does not cover that repeats or maps to a reusable source component, create a local component once with <code>figma.createComponent()</code> and place instances</strong>, instead of hand-building N near-identical frames. One source component maps to one Figma main component.</li>
+</ul>
+<p>See <a href="https://github.com/figma/mcp-server-guide/blob/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-generate-design/references/componentization.md">references/componentization.md</a> for the build-once-place-instances pattern and code.</p>
+<h6>Icons: import the SVG, never reconstruct from rotated primitives</h6>
+<p>Icons are the <strong>main exception to the build-manually-vs-import split above.</strong> If the design system exposes an icon as a component, instance it (a single INSTANCE_SWAP property, not a variant per icon). Otherwise — most commonly when <strong>grabbing an icon from the codebase to place or replace it in Figma</strong> — import the icon's <strong>SVG source directly</strong> as a vector node. This is the primary, default path for icons; do not redraw them.</p>
+<ol>
+<li><strong>Get the SVG from the codebase.</strong> Read the icon's source — inline <code>&lt;svg&gt;</code>, the imported <code>.svg</code> asset, or the icon-library entry — and pass that exact SVG string. Prefer the codebase's own SVG over hand-authoring one.</li>
+<li><strong>Import with <code>figma.createNodeFromSvg(svgString)</code></strong>, which returns a <code>FrameNode</code> of editable vector paths. The SVG string <strong>must</strong> include a <code>viewBox</code> plus explicit <code>width</code>/<code>height</code> (e.g. <code>&lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot; ...&gt;</code>). Without <code>width</code>/<code>height</code> it falls back to the <code>viewBox</code> size, which is often smaller than the slot — the usual cause of &quot;the icon didn't size properly.&quot;</li>
+<li><strong>Size it to the slot.</strong> <code>createNodeFromSvg</code> frames scale their contents on resize, so <code>icon.resize(size, size)</code> fits the whole icon (stroke weight included) to the target box. Equivalently author <code>width</code>/<code>height</code> equal to the target. Match the source's icon size — commonly 16/20/24px.</li>
+<li><strong>Never reconstruct an icon from rotated line/rect/ellipse primitives.</strong> Figma's line rotation is unreliable in the <code>use_figma</code> context and produces broken, mis-rotated icons (a chevron collapses into a blob, an arrowhead detaches from its shaft). Importing the SVG is both more reliable and more editable.</li>
+</ol>
+<pre><code class="language-js">// Place / replace an icon from a codebase SVG into a 24px slot
+const icon = figma.createNodeFromSvg(
+  '&lt;svg width=&quot;24&quot; height=&quot;24&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;' +
+  '&lt;path d=&quot;m9 18 6-6-6-6&quot; stroke=&quot;#1A1A1A&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;'
+);
+icon.name = &quot;icon/chevron-right&quot;;
+icon.resize(24, 24);          // scales the whole icon to the slot
+slotFrame.appendChild(icon);
+</code></pre>
+<p><strong>Codebase SVGs usually use <code>currentColor</code></strong> (e.g. <code>stroke=&quot;currentColor&quot;</code> / <code>fill=&quot;currentColor&quot;</code>), which <code>createNodeFromSvg</code> imports as <strong>black</strong> — it does not inherit the parent's color. Set the intended color after import: substitute the literal color into the SVG string before importing, or bind the imported vector fills/strokes to a design-system color variable with <code>setBoundVariableForPaint</code> (same as any paint). To turn an imported SVG into a reusable icon component (for INSTANCE_SWAP), see <a href="https://github.com/figma/mcp-server-guide/blob/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-generate-library/references/component-creation.md">figma-generate-library → Creating Icon Components</a> and the <a href="https://github.com/figma/mcp-server-guide/blob/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-use/references/component-patterns.md#instance_swap-avoiding-variant-explosion">INSTANCE_SWAP pattern</a>.</p>
+<h5>Step 5: Validate the Full View and Transfer Images</h5>
+<p>Before visual validation, use <code>use_figma</code> to read back the wrapper and return its total descendant count, counts for every descendant node type present, and the ID, name, node type, and dimensions of every image-filled node. These counts are evidence, not a numeric pass threshold; do not infer editability from a screenshot or accept token editable nodes layered over a complete-UI raster. If a screenshot or flattened rendering of the complete UI is present anywhere inside the wrapper, remove it and rebuild the UI semantically or report failure; do not claim completion.</p>
+<p>After composing all sections, take <strong>one full-view composition screenshot</strong> of the wrapper frame and compare against the source. If it reveals a meaningful visual defect, apply targeted <code>use_figma</code> fixes — don't rebuild the entire view — then take <strong>one</strong> post-fix screenshot. The most recent passing screenshot is the final check: do not take an additional unchanged &quot;final&quot; shot, and do not screenshot every section individually.</p>
+<p>Before visual fixes, compare the wrapper's instance, style, and bound-variable keys with the Step 2 map. Every applicable selected asset should appear in the output; replace manual equivalents and raw values before finishing.</p>
+<p>Inspect the composition screenshot for:</p>
+<ul>
+<li><strong>Cropped/clipped text</strong> — line heights or frame sizing cutting off descenders, ascenders, or entire lines</li>
+<li><strong>Overlapping content</strong> — elements stacking on top of each other due to incorrect sizing or missing auto-layout</li>
+<li>Placeholder text still showing (&quot;Title&quot;, &quot;Heading&quot;, &quot;Button&quot;)</li>
+<li>Truncated content from layout sizing bugs</li>
+<li>Wrong component variants (e.g., Neutral vs Primary button)</li>
+<li><strong>Wrong font family</strong> — text rendered in a different typeface than the product uses (e.g. Inter where the product is SF Pro). The script ran without error, so this is invisible at a glance; assert it explicitly (see &quot;Assert the font family is correct&quot; below)</li>
+<li><strong>Blank image placeholders</strong> — if images are missing, transfer them from the <code>generate_figma_design</code> capture before considering <code>generate_image</code> to generate placeholders (see &quot;Transfer images from the generate_figma_design capture&quot; below)</li>
+</ul>
+<h6>Assert the font family is correct</h6>
+<p><strong>You MUST explicitly assert that rendered text uses the product font(s) identified in Step 1</strong>, and treat any mismatch as a failed validation. Do not assume a successfully loaded font is the correct font: loading Inter when the product uses SF Pro is a failure even if no errors occur. <strong>If you have a source reference (the running web app, a design mock, or the <code>generate_figma_design</code> capture), you MUST also compare rendered screenshots</strong> — a near-miss style within the right family can pass a family check but still look wrong.</p>
+<p>See <a href="https://github.com/figma/mcp-server-guide/blob/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-generate-design/references/discover-product-font.md#verify-the-font-after-building">references/discover-product-font.md</a> for the read-back script (which separates free-standing text you fix from design-system-governed text you flag) and the screenshot-comparison steps.</p>
+<h6>Transfer images from the generate_figma_design capture</h6>
+<p>If you ran <code>generate_figma_design</code> in parallel, transfer only discrete content assets used by the app into your design system output. Never upload or transfer the capture root or any screenshot or flattened rendering of the complete UI.</p>
+<ol>
+<li>Find all image nodes in the capture output by searching for fills with <code>type === &quot;IMAGE&quot;</code>:<pre><code class="language-js">const capture = await figma.getNodeByIdAsync(&quot;CAPTURE_NODE_ID&quot;);
+const imageNodes = capture.findAll(() =&gt; true).flatMap(n =&gt; {
+  if (!Array.isArray(n.fills)) return [];
+  const imageFill = n.fills.find(f =&gt; f.type === &quot;IMAGE&quot;);
+  return imageFill ? [{ name: n.name, id: n.id, imageHash: imageFill.imageHash }] : [];
+});
+return imageNodes;
+</code></pre>
+</li>
+<li>Match each captured image to the corresponding frame in your use_figma output (by position, name, or order).</li>
+<li>Apply the image hash to the target frame:<pre><code class="language-js">targetFrame.fills = [{ type: &quot;IMAGE&quot;, imageHash: &quot;hash_from_capture&quot;, scaleMode: &quot;FILL&quot; }];
+</code></pre>
+</li>
+<li>Delete the <code>generate_figma_design</code> capture output after all images are transferred.</li>
+</ol>
+<h6>Generating placeholder images</h6>
+<p>Reuse available source, captured, or library images first. If placeholders remain, call the Figma <code>generate_image</code> tool. After generating the images, inform the user that Figma AI credits were used to generate them.</p>
+<p>If Figma AI is unavailable or its AI credit limit is reached, confirm with the user if alternative image generation tools can be used. Upload only these alternative-provider images with <code>upload_assets</code>.</p>
+<h5>Step 6: Updating an Existing View</h5>
+<p>When updating rather than creating from scratch:</p>
+<ol>
+<li>Use <code>get_metadata</code> to inspect the existing screen structure.</li>
+<li>Identify which sections need updating and which can stay.</li>
+<li>For each section that needs changes:
+<ul>
+<li>Locate the existing nodes by ID or name</li>
+<li>Swap component instances if the design system component changed</li>
+<li>Update text content, variant properties, or layout as needed</li>
+<li>Remove deprecated sections</li>
+<li>Add new sections</li>
+</ul>
+</li>
+<li>Follow the same evidence and screenshot cadence as Steps 4–5: rely on returned IDs plus relevant counts, names, and bounds for structural validation, then take one full-view screenshot after the updates (and one post-fix screenshot only if a targeted visual fix is needed).</li>
+</ol>
+<pre><code class="language-js">// Example: Swap a button variant in an existing screen.
+// Batch the node lookup and component-set import in parallel — they are
+// independent and awaiting them sequentially serializes two IPC round-trips.
+const [existingButton, buttonSet] = await Promise.all([
+  figma.getNodeByIdAsync(&quot;EXISTING_BUTTON_INSTANCE_ID&quot;),
+  figma.importComponentSetByKeyAsync(&quot;BUTTON_SET_KEY&quot;),
+]);
+if (existingButton &amp;&amp; existingButton.type === &quot;INSTANCE&quot;) {
+  const newVariant = buttonSet.children.find(c =&gt;
+    c.name.includes(&quot;variant=primary&quot;) &amp;&amp; c.name.includes(&quot;size=lg&quot;)
+  ) || buttonSet.defaultVariant;
+  existingButton.swapComponent(newVariant);
+}
+return { success: true, mutatedNodeIds: [existingButton.id] };
+</code></pre>
+<h4>Reference Docs</h4>
+<p>For detailed API patterns and gotchas, load these from the <a href="https://github.com/figma/mcp-server-guide/blob/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-use/SKILL.md">figma-use</a> references as needed:</p>
+<ul>
+<li><a href="https://github.com/figma/mcp-server-guide/blob/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-use/references/component-patterns.md">component-patterns.md</a> — importing by key, finding variants, setProperties, text overrides, working with instances</li>
+<li><a href="https://github.com/figma/mcp-server-guide/blob/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-use/references/variable-patterns.md">variable-patterns.md</a> — creating/binding variables, importing library variables, scopes, aliasing, discovering existing variables</li>
+<li><a href="https://github.com/figma/mcp-server-guide/blob/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-use/references/text-style-patterns.md">text-style-patterns.md</a> — creating/applying text styles, importing library text styles, type ramps</li>
+<li><a href="https://github.com/figma/mcp-server-guide/blob/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-use/references/effect-style-patterns.md">effect-style-patterns.md</a> — creating/applying effect styles (shadows), importing library effect styles</li>
+<li><a href="https://github.com/figma/mcp-server-guide/blob/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-use/references/gotchas.md">gotchas.md</a> — layout pitfalls (HUG/FILL interactions, counterAxisAlignItems, sizing order), paint/color issues, page context resets</li>
+</ul>
+<h4>Error Recovery</h4>
+<p>Follow <a href="https://github.com/figma/mcp-server-guide/blob/19be8d51c6a2f8ca949d33e5cd8e9662c5d243e8/skills/figma-use/references/validation-and-recovery.md#error-recovery-after-failed-use_figma">figma-use error recovery</a>:</p>
+<ul>
+<li>If <code>safeToRetryWithoutCanvasRead</code> is <code>true</code>, fix the error and retry.</li>
+<li>If <code>false</code>, read the canvas, determine what changed, then make changes.</li>
+</ul>
+<p>Because this skill works in retry-safe construction phases, errors are naturally scoped to the current phase. Content from previous successful calls remains intact.</p>
+<h4>Best Practices</h4>
+<ul>
+<li><strong>Always search before building.</strong> The design system likely has the component, variable, or style you need. Manual construction and hardcoded values should be the exception, not the rule.</li>
+<li><strong>Search unresolved gaps, one intent per query.</strong> Try synonyms and partial terms as separate <code>{ entity, query }</code> entries in one <code>queries</code> call, never combined into one string—a &quot;NavigationPill&quot; might be found under &quot;pill&quot;, &quot;nav&quot;, &quot;tab&quot;, or &quot;chip&quot;, so pass those as four component entries. For variables, use <code>entity: &quot;variable&quot;</code> with queries like &quot;color&quot;, &quot;spacing&quot;, and &quot;radius&quot;. Do this only for unresolved construction gaps, and stop once a suitable asset is found.</li>
+<li><strong>Prefer design system tokens over hardcoded values.</strong> Use variable bindings for colors, spacing, and radii. Use text styles for typography. Use effect styles for shadows. This keeps the screen linked to the design system.</li>
+<li><strong>Prefer component instances over manual builds.</strong> Instances stay linked to the source component and update automatically when the design system evolves.</li>
+<li><strong>Componentize by default.</strong> Build repeated or reusable elements as a component once, then place instances. Do not ship a flat tree of one-off frames that needs a second &quot;make it componentized&quot; pass.</li>
+<li><strong>Work in retry-safe construction phases.</strong> Batch related sections into one <code>use_figma</code> call when the script stays safe to retry; split only at page-context boundaries, hard-to-recover mutations, or a targeted retry after an actual failure.</li>
+<li><strong>Return node IDs and validation evidence from every call.</strong> Return created IDs plus the relevant counts, names, and bounds — this is your default structural validation, and you'll need the IDs to compose sections and for error recovery.</li>
+<li><strong>Validate visually with one composition screenshot.</strong> Take one full-view screenshot after composition, and one more only after a targeted visual fix; the most recent passing screenshot is final.</li>
+<li><strong>Assert the font family, not just a successful load.</strong> A script can load the wrong font without error. After building, verify rendered text uses the product font identified in Step 1 (see Step 5).</li>
+<li><strong>Match existing conventions.</strong> If the file already has screens, match their naming, sizing, and layout patterns.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

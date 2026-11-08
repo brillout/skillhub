@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>defi-amm-security · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re writing or auditing an AMM, liquidity pool, LP vault or swap function in Solidity. It does: pairs each vulnerability with vulnerable and hardened code, using OpenZeppelin&#039;s ReentrancyGuard, SafeERC20 and Ownable2Step, a Uniswap V3 TWAP read and FullMath. You get: code checked against an 11-item checklist, plus Slither static analysis and Echidna and Foundry fuzzing commands to run before production. Unlike: wshobson&#039;s solidity-security, which covers smart contracts broadly; this one targets pool share math, reserves and swap paths." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <div class="title-row"><h1>defi-amm-security</h1><button type="button" class="save" data-save="skill:affaan-m/ecc/skills/defi-amm-security" aria-pressed="false" aria-label="Save defi-amm-security" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re writing or auditing an AMM, liquidity pool, LP vault or swap function in Solidity</dd></div><div><dt>It does</dt><dd>pairs each vulnerability with vulnerable and hardened code, using OpenZeppelin&#39;s ReentrancyGuard, SafeERC20 and Ownable2Step, a Uniswap V3 TWAP read and FullMath</dd></div><div><dt>You get</dt><dd>code checked against an 11-item checklist, plus Slither static analysis and Echidna and Foundry fuzzing commands to run before production</dd></div><div><dt>Unlike</dt><dd>wshobson&#39;s solidity-security, which covers smart contracts broadly; this one targets pool share math, reserves and swap paths</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A checklist and pattern library from ECC for DeFi pool contracts. The agent reviews every user entrypoint against six areas, each with vulnerable and safe code. Reentrancy: follow checks-effects-interactions order and use OpenZeppelin&#39;s nonReentrant rather than a hand-rolled guard. Donation or inflation attacks: don&#39;t base share math on the contract&#39;s raw token balance, which anyone can inflate by sending tokens to it; track assets internally and measure what a deposit actually received. Oracle manipulation: spot prices can be moved with a flash loan, so read a time-weighted average price (TWAP) instead. Slippage: every swap takes a caller-set minimum output and a deadline. Reserve math: use mulDiv instead of a naive multiply-then-divide where overflow is possible. Admin controls: two-step ownership transfer and access control on every privileged path, such as fee setters and pausers. It ends with Slither, Echidna and forge fuzz commands, and says to run them only in a trusted checkout, ask before long or costly runs, and keep private keys and secrets out of commands and reports.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/defi-amm-security">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">affaan-m/</span><wbr><span class="word">ecc</span> <span class="word">--skill</span> <span class="word">defi-amm-security</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill defi-amm-security">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/defi-amm-security">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/defi-amm-security">Source on GitHub</a> · <a href="/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,300 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>299,252 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">468</div>
+      <div class="stat-delta">+63% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 287; week to Sep 27: 254; week to Oct 4: 159; week to Oct 11: 138; week to Oct 18: 230; week to Oct 25: 408; week to Nov 1: 399; week to Nov 8: 468. Use the left and right arrow keys to read each week."
+        data-values="287,254,159,138,230,408,399,468" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.0 38.6,26.1 71.1,35.1 103.7,37.0 136.3,28.4 168.9,11.6 201.4,12.5 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>287</td></tr><tr><td>Sep 27</td><td>254</td></tr><tr><td>Oct 4</td><td>159</td></tr><tr><td>Oct 11</td><td>138</td></tr><tr><td>Oct 18</td><td>230</td></tr><tr><td>Oct 25</td><td>408</td></tr><tr><td>Nov 1</td><td>399</td></tr><tr><td>Nov 8</td><td>468</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/?tag=category%3Asecurity">category:<wbr>security</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/?tag=type%3Aguidelines">type:<wbr>guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="web3" data-facet="topic" href="/?tag=web3">web3</a><a class="tag" data-tag="security" data-facet="topic" href="/?tag=security">security</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:solidity" data-facet="stack" href="/?tag=stack%3Asolidity">stack:<wbr>solidity</a><a class="tag" data-tag="stack:openzeppelin" data-facet="stack" href="/?tag=stack%3Aopenzeppelin">stack:<wbr>openzeppelin</a><a class="tag" data-tag="stack:slither" data-facet="stack" href="/?tag=stack%3Aslither">stack:<wbr>slither</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/defi-amm-security/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: defi-amm-security
+description: Security checklist for Solidity AMM contracts, liquidity pools, and swap flows. Covers reentrancy, CEI ordering, donation or inflation attacks, oracle manipulation, slippage, admin controls, and integer math. Use when auditing or writing Solidity AMM, liquidity pool, or swap code.
+metadata:
+  version: &#34;1.0.0&#34;
+  origin: ECC direct-port adaptation</code></pre></details>
+        <div class="markdown"><h3>DeFi AMM Security</h3>
+<p>Critical vulnerability patterns and hardened implementations for Solidity AMM contracts, LP vaults, and swap functions.</p>
+<h4>When to Use</h4>
+<ul>
+<li>Writing or auditing a Solidity AMM or liquidity-pool contract</li>
+<li>Implementing swap, deposit, withdraw, mint, or burn flows that hold token balances</li>
+<li>Reviewing any contract that uses <code>token.balanceOf(address(this))</code> in share or reserve math</li>
+<li>Adding fee setters, pausers, oracle updates, or other admin functions to a DeFi protocol</li>
+</ul>
+<h4>How It Works</h4>
+<p>Use this as a checklist-plus-pattern library. Review every user entrypoint against the categories below and prefer the hardened examples over hand-rolled variants.</p>
+<h4>Execution Safety</h4>
+<p>The shell commands in this skill are local audit examples. Run them only in a trusted checkout or disposable sandbox, and do not splice untrusted contract names, paths, RPC URLs, private keys, or user-supplied flags into shell commands. Ask before installing tools or running long fuzzing/static-analysis jobs that may consume significant local or paid resources.</p>
+<p>Never include secrets, private keys, seed phrases, API tokens, or mainnet signing credentials in command examples, logs, or reports.</p>
+<h4>Examples</h4>
+<h5>Reentrancy: enforce CEI order</h5>
+<p>Vulnerable:</p>
+<pre><code class="language-solidity">function withdraw(uint256 amount) external {
+    require(balances[msg.sender] &gt;= amount);
+    token.transfer(msg.sender, amount);
+    balances[msg.sender] -= amount;
+}
+</code></pre>
+<p>Safe:</p>
+<pre><code class="language-solidity">import {ReentrancyGuard} from &quot;@openzeppelin/contracts/utils/ReentrancyGuard.sol&quot;;
+import {SafeERC20} from &quot;@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol&quot;;
+
+using SafeERC20 for IERC20;
+
+function withdraw(uint256 amount) external nonReentrant {
+    require(balances[msg.sender] &gt;= amount, &quot;Insufficient&quot;);
+    balances[msg.sender] -= amount;
+    token.safeTransfer(msg.sender, amount);
+}
+</code></pre>
+<p>Do not write your own guard when a hardened library exists.</p>
+<h5>Donation or inflation attacks</h5>
+<p>Using <code>token.balanceOf(address(this))</code> directly for share math lets attackers manipulate the denominator by sending tokens to the contract outside the intended path.</p>
+<pre><code class="language-solidity">// Vulnerable
+function deposit(uint256 assets) external returns (uint256 shares) {
+    shares = (assets * totalShares) / token.balanceOf(address(this));
+}
+</code></pre>
+<pre><code class="language-solidity">// Safe
+uint256 private _totalAssets;
+
+function deposit(uint256 assets) external nonReentrant returns (uint256 shares) {
+    uint256 balBefore = token.balanceOf(address(this));
+    token.safeTransferFrom(msg.sender, address(this), assets);
+    uint256 received = token.balanceOf(address(this)) - balBefore;
+
+    shares = totalShares == 0 ? received : (received * totalShares) / _totalAssets;
+    _totalAssets += received;
+    totalShares += shares;
+}
+</code></pre>
+<p>Track internal accounting and measure actual tokens received.</p>
+<h5>Oracle manipulation</h5>
+<p>Spot prices are flash-loan manipulable. Prefer TWAP.</p>
+<pre><code class="language-solidity">uint32[] memory secondsAgos = new uint32[](2);
+secondsAgos[0] = 1800;
+secondsAgos[1] = 0;
+(int56[] memory tickCumulatives,) = IUniswapV3Pool(pool).observe(secondsAgos);
+int24 twapTick = int24(
+    (tickCumulatives[1] - tickCumulatives[0]) / int56(uint56(30 minutes))
+);
+uint160 sqrtPriceX96 = TickMath.getSqrtRatioAtTick(twapTick);
+</code></pre>
+<h5>Slippage protection</h5>
+<p>Every swap path needs caller-provided slippage and a deadline.</p>
+<pre><code class="language-solidity">function swap(
+    uint256 amountIn,
+    uint256 amountOutMin,
+    uint256 deadline
+) external returns (uint256 amountOut) {
+    require(block.timestamp &lt;= deadline, &quot;Expired&quot;);
+    amountOut = _calculateOut(amountIn);
+    require(amountOut &gt;= amountOutMin, &quot;Slippage exceeded&quot;);
+    _executeSwap(amountIn, amountOut);
+}
+</code></pre>
+<h5>Safe reserve math</h5>
+<pre><code class="language-solidity">import {FullMath} from &quot;@uniswap/v3-core/contracts/libraries/FullMath.sol&quot;;
+
+uint256 result = FullMath.mulDiv(a, b, c);
+</code></pre>
+<p>For large reserve math, avoid naive <code>a * b / c</code> when overflow risk exists.</p>
+<h5>Admin controls</h5>
+<pre><code class="language-solidity">import {Ownable2Step} from &quot;@openzeppelin/contracts/access/Ownable2Step.sol&quot;;
+
+contract MyAMM is Ownable2Step {
+    function setFee(uint256 fee) external onlyOwner { ... }
+    function pause() external onlyOwner { ... }
+}
+</code></pre>
+<p>Prefer explicit acceptance for ownership transfer and gate every privileged path.</p>
+<h4>Security Checklist</h4>
+<ul>
+<li>Reentrancy-exposed entrypoints use <code>nonReentrant</code></li>
+<li>CEI ordering is respected</li>
+<li>Share math does not depend on raw <code>balanceOf(address(this))</code></li>
+<li>ERC-20 transfers use <code>SafeERC20</code></li>
+<li>Deposits measure actual tokens received</li>
+<li>Oracle reads use TWAP or another manipulation-resistant source</li>
+<li>Swaps require <code>amountOutMin</code> and <code>deadline</code></li>
+<li>Overflow-sensitive reserve math uses safe primitives like <code>mulDiv</code></li>
+<li>Admin functions are access-controlled</li>
+<li>Emergency pause exists and is tested</li>
+<li>Static analysis and fuzzing are run before production</li>
+</ul>
+<h4>Audit Tools</h4>
+<pre><code class="language-bash">pip install slither-analyzer
+slither . --exclude-dependencies
+
+echidna-test . --contract YourAMM --config echidna.yaml
+
+forge test --fuzz-runs 10000
+</code></pre>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

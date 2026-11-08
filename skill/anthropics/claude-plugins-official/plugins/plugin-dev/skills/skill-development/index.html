@@ -1,0 +1,637 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>skill-development · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re adding a skill to a Claude Code plugin, or tightening an existing skill&#039;s description and layout. It does: walks six steps: gather concrete examples, plan scripts, references and assets, create the folder, write SKILL.md, validate, iterate. You get: a skill folder whose SKILL.md body stays around 1,500 to 2,000 words, with detail moved to references/, examples/ and scripts/. Unlike: Anthropic&#039;s general skill-creator, it skips the init script and packaging: plugin skills live in the plugin&#039;s skills/ folder and ship with it." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=anthropics%2Fclaude-plugins-official">anthropics/claude-plugins-official</a></p>
+      <div class="title-row"><h1>skill-development</h1><button type="button" class="save" data-save="skill:anthropics/claude-plugins-official/plugins/plugin-dev/skills/skill-development" aria-pressed="false" aria-label="Save skill-development" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re adding a skill to a Claude Code plugin, or tightening an existing skill&#39;s description and layout</dd></div><div><dt>It does</dt><dd>walks six steps: gather concrete examples, plan scripts, references and assets, create the folder, write SKILL.md, validate, iterate</dd></div><div><dt>You get</dt><dd>a skill folder whose SKILL.md body stays around 1,500 to 2,000 words, with detail moved to references/, examples/ and scripts/</dd></div><div><dt>Unlike</dt><dd>Anthropic&#39;s general skill-creator, it skips the init script and packaging: plugin skills live in the plugin&#39;s skills/ folder and ship with it</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>From Anthropic&#39;s plugin-dev plugin for Claude Code, adapting the original skill-creator method to plugins. Its core idea is progressive disclosure: the name and description are always in context, the SKILL.md body loads when the skill triggers, and bundled files load only as needed, so the body stays lean and detail moves to references/. It asks for a third-person description packed with the exact phrases users would say (&#34;This skill should be used when the user asks to...&#34;) and an imperative, verb-first body rather than second person. A validation checklist covers structure, description quality, writing style, referenced files that actually exist and working examples; testing means loading the plugin locally with --plugin-dir and asking questions that should trigger the skill. The plugin&#39;s own hook, agent and settings skills serve as worked examples, and it suggests the plugin&#39;s skill-reviewer agent for a final review.</p>
+      <p class="muted">Summarizes <a href="https://github.com/anthropics/claude-plugins-official/tree/c07c748f1c680734a813eefd909bc073f8a9103f/plugins/plugin-dev/skills/skill-development">the skill at c07c748</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">anthropics/</span><wbr><span class="word">claude-plugins-official</span> <span class="word">--skill</span> <span class="word">skill-development</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/anthropics/claude-plugins-official --skill skill-development">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/anthropics/claude-plugins-official/skill-development">skills.sh page</a> · <a href="https://github.com/anthropics/claude-plugins-official/tree/HEAD/plugins/plugin-dev/skills/skill-development">Source on GitHub</a> · <a href="/?repo=anthropics%2Fclaude-plugins-official">All skills from anthropics/claude-plugins-official</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>7,600 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>46,381 <span class="muted">anthropics/claude-plugins-official</span></dd></div><div><dt>First seen</dt><dd>Feb 5, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">305</div>
+      <div class="stat-delta">+61% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 190; week to Sep 27: 182; week to Oct 4: 88; week to Oct 11: 53; week to Oct 18: 140; week to Oct 25: 315; week to Nov 1: 259; week to Nov 8: 305. Use the left and right arrow keys to read each week."
+        data-values="190,182,88,53,140,315,259,305" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,23.5 38.6,24.6 71.1,37.7 103.7,42.6 136.3,30.4 168.9,6.0 201.4,13.8 234.0,7.4" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="7.4" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>190</td></tr><tr><td>Sep 27</td><td>182</td></tr><tr><td>Oct 4</td><td>88</td></tr><tr><td>Oct 11</td><td>53</td></tr><tr><td>Oct 18</td><td>140</td></tr><tr><td>Oct 25</td><td>315</td></tr><tr><td>Nov 1</td><td>259</td></tr><tr><td>Nov 8</td><td>305</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:skill-tools" data-facet="category" title="Find, write, vet and route to other skills." href="/?tag=category%3Askill-tools">category:<wbr>skill-tools</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Find, write, vet and route to other skills.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:claude-code" data-facet="needs" title="Uses Claude Code features such as hooks or background agents." href="/?tag=needs%3Aclaude-code">needs:<wbr>claude-code</a></div>
+          <p class="tag-meaning">Uses Claude Code features such as hooks or background agents.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="skill-authoring" data-facet="topic" href="/?tag=skill-authoring">skill-authoring</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:claude" data-facet="stack" href="/?tag=stack%3Aclaude">stack:<wbr>claude</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/anthropics/claude-plugins-official/blob/c07c748f1c680734a813eefd909bc073f8a9103f/plugins/plugin-dev/skills/skill-development/SKILL.md">anthropics/claude-plugins-official at c07c748</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: skill-development
+description: This skill should be used when the user wants to &#34;create a skill&#34;, &#34;add a skill to plugin&#34;, &#34;write a new skill&#34;, &#34;improve skill description&#34;, &#34;organize skill content&#34;, or needs guidance on skill structure, progressive disclosure, or skill development best practices for Claude Code plugins.
+version: 0.1.0</code></pre></details>
+        <div class="markdown"><h3>Skill Development for Claude Code Plugins</h3>
+<p>This skill provides guidance for creating effective skills for Claude Code plugins.</p>
+<h4>About Skills</h4>
+<p>Skills are modular, self-contained packages that extend Claude's capabilities by providing
+specialized knowledge, workflows, and tools. Think of them as &quot;onboarding guides&quot; for specific
+domains or tasks—they transform Claude from a general-purpose agent into a specialized agent
+equipped with procedural knowledge that no model can fully possess.</p>
+<h5>What Skills Provide</h5>
+<ol>
+<li>Specialized workflows - Multi-step procedures for specific domains</li>
+<li>Tool integrations - Instructions for working with specific file formats or APIs</li>
+<li>Domain expertise - Company-specific knowledge, schemas, business logic</li>
+<li>Bundled resources - Scripts, references, and assets for complex and repetitive tasks</li>
+</ol>
+<h5>Anatomy of a Skill</h5>
+<p>Every skill consists of a required SKILL.md file and optional bundled resources:</p>
+<pre><code>skill-name/
+├── SKILL.md (required)
+│   ├── YAML frontmatter metadata (required)
+│   │   ├── name: (required)
+│   │   └── description: (required)
+│   └── Markdown instructions (required)
+└── Bundled Resources (optional)
+    ├── scripts/          - Executable code (Python/Bash/etc.)
+    ├── references/       - Documentation intended to be loaded into context as needed
+    └── assets/           - Files used in output (templates, icons, fonts, etc.)
+</code></pre>
+<h6>SKILL.md (required)</h6>
+<p><strong>Metadata Quality:</strong> The <code>name</code> and <code>description</code> in YAML frontmatter determine when Claude will use the skill. Be specific about what the skill does and when to use it. Use the third-person (e.g. &quot;This skill should be used when...&quot; instead of &quot;Use this skill when...&quot;).</p>
+<h6>Bundled Resources (optional)</h6>
+<h6>Scripts (<code>scripts/</code>)</h6>
+<p>Executable code (Python/Bash/etc.) for tasks that require deterministic reliability or are repeatedly rewritten.</p>
+<ul>
+<li><strong>When to include</strong>: When the same code is being rewritten repeatedly or deterministic reliability is needed</li>
+<li><strong>Example</strong>: <code>scripts/rotate_pdf.py</code> for PDF rotation tasks</li>
+<li><strong>Benefits</strong>: Token efficient, deterministic, may be executed without loading into context</li>
+<li><strong>Note</strong>: Scripts may still need to be read by Claude for patching or environment-specific adjustments</li>
+</ul>
+<h6>References (<code>references/</code>)</h6>
+<p>Documentation and reference material intended to be loaded as needed into context to inform Claude's process and thinking.</p>
+<ul>
+<li><strong>When to include</strong>: For documentation that Claude should reference while working</li>
+<li><strong>Examples</strong>: <code>references/finance.md</code> for financial schemas, <code>references/mnda.md</code> for company NDA template, <code>references/policies.md</code> for company policies, <code>references/api_docs.md</code> for API specifications</li>
+<li><strong>Use cases</strong>: Database schemas, API documentation, domain knowledge, company policies, detailed workflow guides</li>
+<li><strong>Benefits</strong>: Keeps SKILL.md lean, loaded only when Claude determines it's needed</li>
+<li><strong>Best practice</strong>: If files are large (&gt;10k words), include grep search patterns in SKILL.md</li>
+<li><strong>Avoid duplication</strong>: Information should live in either SKILL.md or references files, not both. Prefer references files for detailed information unless it's truly core to the skill—this keeps SKILL.md lean while making information discoverable without hogging the context window. Keep only essential procedural instructions and workflow guidance in SKILL.md; move detailed reference material, schemas, and examples to references files.</li>
+</ul>
+<h6>Assets (<code>assets/</code>)</h6>
+<p>Files not intended to be loaded into context, but rather used within the output Claude produces.</p>
+<ul>
+<li><strong>When to include</strong>: When the skill needs files that will be used in the final output</li>
+<li><strong>Examples</strong>: <code>assets/logo.png</code> for brand assets, <code>assets/slides.pptx</code> for PowerPoint templates, <code>assets/frontend-template/</code> for HTML/React boilerplate, <code>assets/font.ttf</code> for typography</li>
+<li><strong>Use cases</strong>: Templates, images, icons, boilerplate code, fonts, sample documents that get copied or modified</li>
+<li><strong>Benefits</strong>: Separates output resources from documentation, enables Claude to use files without loading them into context</li>
+</ul>
+<h5>Progressive Disclosure Design Principle</h5>
+<p>Skills use a three-level loading system to manage context efficiently:</p>
+<ol>
+<li><strong>Metadata (name + description)</strong> - Always in context (~100 words)</li>
+<li><strong>SKILL.md body</strong> - When skill triggers (&lt;5k words)</li>
+<li><strong>Bundled resources</strong> - As needed by Claude (Unlimited*)</li>
+</ol>
+<p>*Unlimited because scripts can be executed without reading into context window.</p>
+<h4>Skill Creation Process</h4>
+<p>To create a skill, follow the &quot;Skill Creation Process&quot; in order, skipping steps only if there is a clear reason why they are not applicable.</p>
+<h5>Step 1: Understanding the Skill with Concrete Examples</h5>
+<p>Skip this step only when the skill's usage patterns are already clearly understood. It remains valuable even when working with an existing skill.</p>
+<p>To create an effective skill, clearly understand concrete examples of how the skill will be used. This understanding can come from either direct user examples or generated examples that are validated with user feedback.</p>
+<p>For example, when building an image-editor skill, relevant questions include:</p>
+<ul>
+<li>&quot;What functionality should the image-editor skill support? Editing, rotating, anything else?&quot;</li>
+<li>&quot;Can you give some examples of how this skill would be used?&quot;</li>
+<li>&quot;I can imagine users asking for things like 'Remove the red-eye from this image' or 'Rotate this image'. Are there other ways you imagine this skill being used?&quot;</li>
+<li>&quot;What would a user say that should trigger this skill?&quot;</li>
+</ul>
+<p>To avoid overwhelming users, avoid asking too many questions in a single message. Start with the most important questions and follow up as needed for better effectiveness.</p>
+<p>Conclude this step when there is a clear sense of the functionality the skill should support.</p>
+<h5>Step 2: Planning the Reusable Skill Contents</h5>
+<p>To turn concrete examples into an effective skill, analyze each example by:</p>
+<ol>
+<li>Considering how to execute on the example from scratch</li>
+<li>Identifying what scripts, references, and assets would be helpful when executing these workflows repeatedly</li>
+</ol>
+<p>Example: When building a <code>pdf-editor</code> skill to handle queries like &quot;Help me rotate this PDF,&quot; the analysis shows:</p>
+<ol>
+<li>Rotating a PDF requires re-writing the same code each time</li>
+<li>A <code>scripts/rotate_pdf.py</code> script would be helpful to store in the skill</li>
+</ol>
+<p>Example: When designing a <code>frontend-webapp-builder</code> skill for queries like &quot;Build me a todo app&quot; or &quot;Build me a dashboard to track my steps,&quot; the analysis shows:</p>
+<ol>
+<li>Writing a frontend webapp requires the same boilerplate HTML/React each time</li>
+<li>An <code>assets/hello-world/</code> template containing the boilerplate HTML/React project files would be helpful to store in the skill</li>
+</ol>
+<p>Example: When building a <code>big-query</code> skill to handle queries like &quot;How many users have logged in today?&quot; the analysis shows:</p>
+<ol>
+<li>Querying BigQuery requires re-discovering the table schemas and relationships each time</li>
+<li>A <code>references/schema.md</code> file documenting the table schemas would be helpful to store in the skill</li>
+</ol>
+<p><strong>For Claude Code plugins:</strong> When building a hooks skill, the analysis shows:</p>
+<ol>
+<li>Developers repeatedly need to validate hooks.json and test hook scripts</li>
+<li><code>scripts/validate-hook-schema.sh</code> and <code>scripts/test-hook.sh</code> utilities would be helpful</li>
+<li><code>references/patterns.md</code> for detailed hook patterns to avoid bloating SKILL.md</li>
+</ol>
+<p>To establish the skill's contents, analyze each concrete example to create a list of the reusable resources to include: scripts, references, and assets.</p>
+<h5>Step 3: Create Skill Structure</h5>
+<p>For Claude Code plugins, create the skill directory structure:</p>
+<pre><code class="language-bash">mkdir -p plugin-name/skills/skill-name/{references,examples,scripts}
+touch plugin-name/skills/skill-name/SKILL.md
+</code></pre>
+<p><strong>Note:</strong> Unlike the generic skill-creator which uses <code>init_skill.py</code>, plugin skills are created directly in the plugin's <code>skills/</code> directory with a simpler manual structure.</p>
+<h5>Step 4: Edit the Skill</h5>
+<p>When editing the (newly-created or existing) skill, remember that the skill is being created for another instance of Claude to use. Focus on including information that would be beneficial and non-obvious to Claude. Consider what procedural knowledge, domain-specific details, or reusable assets would help another Claude instance execute these tasks more effectively.</p>
+<h6>Start with Reusable Skill Contents</h6>
+<p>To begin implementation, start with the reusable resources identified above: <code>scripts/</code>, <code>references/</code>, and <code>assets/</code> files. Note that this step may require user input. For example, when implementing a <code>brand-guidelines</code> skill, the user may need to provide brand assets or templates to store in <code>assets/</code>, or documentation to store in <code>references/</code>.</p>
+<p>Also, delete any example files and directories not needed for the skill. Create only the directories you actually need (references/, examples/, scripts/).</p>
+<h6>Update SKILL.md</h6>
+<p><strong>Writing Style:</strong> Write the entire skill using <strong>imperative/infinitive form</strong> (verb-first instructions), not second person. Use objective, instructional language (e.g., &quot;To accomplish X, do Y&quot; rather than &quot;You should do X&quot; or &quot;If you need to do X&quot;). This maintains consistency and clarity for AI consumption.</p>
+<p><strong>Description (Frontmatter):</strong> Use third-person format with specific trigger phrases:</p>
+<pre><code class="language-yaml">---
+name: Skill Name
+description: This skill should be used when the user asks to &quot;specific phrase 1&quot;, &quot;specific phrase 2&quot;, &quot;specific phrase 3&quot;. Include exact phrases users would say that should trigger this skill. Be concrete and specific.
+version: 0.1.0
+---
+</code></pre>
+<p><strong>Good description examples:</strong></p>
+<pre><code class="language-yaml">description: This skill should be used when the user asks to &quot;create a hook&quot;, &quot;add a PreToolUse hook&quot;, &quot;validate tool use&quot;, &quot;implement prompt-based hooks&quot;, or mentions hook events (PreToolUse, PostToolUse, Stop).
+</code></pre>
+<p><strong>Bad description examples:</strong></p>
+<pre><code class="language-yaml">description: Use this skill when working with hooks.  # Wrong person, vague
+description: Load when user needs hook help.  # Not third person
+description: Provides hook guidance.  # No trigger phrases
+</code></pre>
+<p>To complete SKILL.md body, answer the following questions:</p>
+<ol>
+<li>What is the purpose of the skill, in a few sentences?</li>
+<li>When should the skill be used? (Include this in frontmatter description with specific triggers)</li>
+<li>In practice, how should Claude use the skill? All reusable skill contents developed above should be referenced so that Claude knows how to use them.</li>
+</ol>
+<p><strong>Keep SKILL.md lean:</strong> Target 1,500-2,000 words for the body. Move detailed content to references/:</p>
+<ul>
+<li>Detailed patterns → <code>references/patterns.md</code></li>
+<li>Advanced techniques → <code>references/advanced.md</code></li>
+<li>Migration guides → <code>references/migration.md</code></li>
+<li>API references → <code>references/api-reference.md</code></li>
+</ul>
+<p><strong>Reference resources in SKILL.md:</strong></p>
+<pre><code class="language-markdown">## Additional Resources
+
+### Reference Files
+
+For detailed patterns and techniques, consult:
+- **`references/patterns.md`** - Common patterns
+- **`references/advanced.md`** - Advanced use cases
+
+### Example Files
+
+Working examples in `examples/`:
+- **`example-script.sh`** - Working example
+</code></pre>
+<h5>Step 5: Validate and Test</h5>
+<p><strong>For plugin skills, validation is different from generic skills:</strong></p>
+<ol>
+<li><strong>Check structure</strong>: Skill directory in <code>plugin-name/skills/skill-name/</code></li>
+<li><strong>Validate SKILL.md</strong>: Has frontmatter with name and description</li>
+<li><strong>Check trigger phrases</strong>: Description includes specific user queries</li>
+<li><strong>Verify writing style</strong>: Body uses imperative/infinitive form, not second person</li>
+<li><strong>Test progressive disclosure</strong>: SKILL.md is lean (~1,500-2,000 words), detailed content in references/</li>
+<li><strong>Check references</strong>: All referenced files exist</li>
+<li><strong>Validate examples</strong>: Examples are complete and correct</li>
+<li><strong>Test scripts</strong>: Scripts are executable and work correctly</li>
+</ol>
+<p><strong>Use the skill-reviewer agent:</strong></p>
+<pre><code>Ask: &quot;Review my skill and check if it follows best practices&quot;
+</code></pre>
+<p>The skill-reviewer agent will check description quality, content organization, and progressive disclosure.</p>
+<h5>Step 6: Iterate</h5>
+<p>After testing the skill, users may request improvements. Often this happens right after using the skill, with fresh context of how the skill performed.</p>
+<p><strong>Iteration workflow:</strong></p>
+<ol>
+<li>Use the skill on real tasks</li>
+<li>Notice struggles or inefficiencies</li>
+<li>Identify how SKILL.md or bundled resources should be updated</li>
+<li>Implement changes and test again</li>
+</ol>
+<p><strong>Common improvements:</strong></p>
+<ul>
+<li>Strengthen trigger phrases in description</li>
+<li>Move long sections from SKILL.md to references/</li>
+<li>Add missing examples or scripts</li>
+<li>Clarify ambiguous instructions</li>
+<li>Add edge case handling</li>
+</ul>
+<h4>Plugin-Specific Considerations</h4>
+<h5>Skill Location in Plugins</h5>
+<p>Plugin skills live in the plugin's <code>skills/</code> directory:</p>
+<pre><code>my-plugin/
+├── .claude-plugin/
+│   └── plugin.json
+├── commands/
+├── agents/
+└── skills/
+    └── my-skill/
+        ├── SKILL.md
+        ├── references/
+        ├── examples/
+        └── scripts/
+</code></pre>
+<h5>Auto-Discovery</h5>
+<p>Claude Code automatically discovers skills:</p>
+<ul>
+<li>Scans <code>skills/</code> directory</li>
+<li>Finds subdirectories containing <code>SKILL.md</code></li>
+<li>Loads skill metadata (name + description) always</li>
+<li>Loads SKILL.md body when skill triggers</li>
+<li>Loads references/examples when needed</li>
+</ul>
+<h5>No Packaging Needed</h5>
+<p>Plugin skills are distributed as part of the plugin, not as separate ZIP files. Users get skills when they install the plugin.</p>
+<h5>Testing in Plugins</h5>
+<p>Test skills by installing plugin locally:</p>
+<pre><code class="language-bash"># Test with --plugin-dir
+cc --plugin-dir /path/to/plugin
+
+# Ask questions that should trigger the skill
+# Verify skill loads correctly
+</code></pre>
+<h4>Examples from Plugin-Dev</h4>
+<p>Study the skills in this plugin as examples of best practices:</p>
+<p><strong>hook-development skill:</strong></p>
+<ul>
+<li>Excellent trigger phrases: &quot;create a hook&quot;, &quot;add a PreToolUse hook&quot;, etc.</li>
+<li>Lean SKILL.md (1,651 words)</li>
+<li>3 references/ files for detailed content</li>
+<li>3 examples/ of working hooks</li>
+<li>3 scripts/ utilities</li>
+</ul>
+<p><strong>agent-development skill:</strong></p>
+<ul>
+<li>Strong triggers: &quot;create an agent&quot;, &quot;agent frontmatter&quot;, etc.</li>
+<li>Focused SKILL.md (1,438 words)</li>
+<li>References include the AI generation prompt from Claude Code</li>
+<li>Complete agent examples</li>
+</ul>
+<p><strong>plugin-settings skill:</strong></p>
+<ul>
+<li>Specific triggers: &quot;plugin settings&quot;, &quot;.local.md files&quot;, &quot;YAML frontmatter&quot;</li>
+<li>References show real implementations (multi-agent-swarm, ralph-loop)</li>
+<li>Working parsing scripts</li>
+</ul>
+<p>Each demonstrates progressive disclosure and strong triggering.</p>
+<h4>Progressive Disclosure in Practice</h4>
+<h5>What Goes in SKILL.md</h5>
+<p><strong>Include (always loaded when skill triggers):</strong></p>
+<ul>
+<li>Core concepts and overview</li>
+<li>Essential procedures and workflows</li>
+<li>Quick reference tables</li>
+<li>Pointers to references/examples/scripts</li>
+<li>Most common use cases</li>
+</ul>
+<p><strong>Keep under 3,000 words, ideally 1,500-2,000 words</strong></p>
+<h5>What Goes in references/</h5>
+<p><strong>Move to references/ (loaded as needed):</strong></p>
+<ul>
+<li>Detailed patterns and advanced techniques</li>
+<li>Comprehensive API documentation</li>
+<li>Migration guides</li>
+<li>Edge cases and troubleshooting</li>
+<li>Extensive examples and walkthroughs</li>
+</ul>
+<p><strong>Each reference file can be large (2,000-5,000+ words)</strong></p>
+<h5>What Goes in examples/</h5>
+<p><strong>Working code examples:</strong></p>
+<ul>
+<li>Complete, runnable scripts</li>
+<li>Configuration files</li>
+<li>Template files</li>
+<li>Real-world usage examples</li>
+</ul>
+<p><strong>Users can copy and adapt these directly</strong></p>
+<h5>What Goes in scripts/</h5>
+<p><strong>Utility scripts:</strong></p>
+<ul>
+<li>Validation tools</li>
+<li>Testing helpers</li>
+<li>Parsing utilities</li>
+<li>Automation scripts</li>
+</ul>
+<p><strong>Should be executable and documented</strong></p>
+<h4>Writing Style Requirements</h4>
+<h5>Imperative/Infinitive Form</h5>
+<p>Write using verb-first instructions, not second person:</p>
+<p><strong>Correct (imperative):</strong></p>
+<pre><code>To create a hook, define the event type.
+Configure the MCP server with authentication.
+Validate settings before use.
+</code></pre>
+<p><strong>Incorrect (second person):</strong></p>
+<pre><code>You should create a hook by defining the event type.
+You need to configure the MCP server.
+You must validate settings before use.
+</code></pre>
+<h5>Third-Person in Description</h5>
+<p>The frontmatter description must use third person:</p>
+<p><strong>Correct:</strong></p>
+<pre><code class="language-yaml">description: This skill should be used when the user asks to &quot;create X&quot;, &quot;configure Y&quot;...
+</code></pre>
+<p><strong>Incorrect:</strong></p>
+<pre><code class="language-yaml">description: Use this skill when you want to create X...
+description: Load this skill when user asks...
+</code></pre>
+<h5>Objective, Instructional Language</h5>
+<p>Focus on what to do, not who should do it:</p>
+<p><strong>Correct:</strong></p>
+<pre><code>Parse the frontmatter using sed.
+Extract fields with grep.
+Validate values before use.
+</code></pre>
+<p><strong>Incorrect:</strong></p>
+<pre><code>You can parse the frontmatter...
+Claude should extract fields...
+The user might validate values...
+</code></pre>
+<h4>Validation Checklist</h4>
+<p>Before finalizing a skill:</p>
+<p><strong>Structure:</strong></p>
+<ul>
+<li>[ ] SKILL.md file exists with valid YAML frontmatter</li>
+<li>[ ] Frontmatter has <code>name</code> and <code>description</code> fields</li>
+<li>[ ] Markdown body is present and substantial</li>
+<li>[ ] Referenced files actually exist</li>
+</ul>
+<p><strong>Description Quality:</strong></p>
+<ul>
+<li>[ ] Uses third person (&quot;This skill should be used when...&quot;)</li>
+<li>[ ] Includes specific trigger phrases users would say</li>
+<li>[ ] Lists concrete scenarios (&quot;create X&quot;, &quot;configure Y&quot;)</li>
+<li>[ ] Not vague or generic</li>
+</ul>
+<p><strong>Content Quality:</strong></p>
+<ul>
+<li>[ ] SKILL.md body uses imperative/infinitive form</li>
+<li>[ ] Body is focused and lean (1,500-2,000 words ideal, &lt;5k max)</li>
+<li>[ ] Detailed content moved to references/</li>
+<li>[ ] Examples are complete and working</li>
+<li>[ ] Scripts are executable and documented</li>
+</ul>
+<p><strong>Progressive Disclosure:</strong></p>
+<ul>
+<li>[ ] Core concepts in SKILL.md</li>
+<li>[ ] Detailed docs in references/</li>
+<li>[ ] Working code in examples/</li>
+<li>[ ] Utilities in scripts/</li>
+<li>[ ] SKILL.md references these resources</li>
+</ul>
+<p><strong>Testing:</strong></p>
+<ul>
+<li>[ ] Skill triggers on expected user queries</li>
+<li>[ ] Content is helpful for intended tasks</li>
+<li>[ ] No duplicated information across files</li>
+<li>[ ] References load when needed</li>
+</ul>
+<h4>Common Mistakes to Avoid</h4>
+<h5>Mistake 1: Weak Trigger Description</h5>
+<p>❌ <strong>Bad:</strong></p>
+<pre><code class="language-yaml">description: Provides guidance for working with hooks.
+</code></pre>
+<p><strong>Why bad:</strong> Vague, no specific trigger phrases, not third person</p>
+<p>✅ <strong>Good:</strong></p>
+<pre><code class="language-yaml">description: This skill should be used when the user asks to &quot;create a hook&quot;, &quot;add a PreToolUse hook&quot;, &quot;validate tool use&quot;, or mentions hook events. Provides comprehensive hooks API guidance.
+</code></pre>
+<p><strong>Why good:</strong> Third person, specific phrases, concrete scenarios</p>
+<h5>Mistake 2: Too Much in SKILL.md</h5>
+<p>❌ <strong>Bad:</strong></p>
+<pre><code>skill-name/
+└── SKILL.md  (8,000 words - everything in one file)
+</code></pre>
+<p><strong>Why bad:</strong> Bloats context when skill loads, detailed content always loaded</p>
+<p>✅ <strong>Good:</strong></p>
+<pre><code>skill-name/
+├── SKILL.md  (1,800 words - core essentials)
+└── references/
+    ├── patterns.md (2,500 words)
+    └── advanced.md (3,700 words)
+</code></pre>
+<p><strong>Why good:</strong> Progressive disclosure, detailed content loaded only when needed</p>
+<h5>Mistake 3: Second Person Writing</h5>
+<p>❌ <strong>Bad:</strong></p>
+<pre><code class="language-markdown">You should start by reading the configuration file.
+You need to validate the input.
+You can use the grep tool to search.
+</code></pre>
+<p><strong>Why bad:</strong> Second person, not imperative form</p>
+<p>✅ <strong>Good:</strong></p>
+<pre><code class="language-markdown">Start by reading the configuration file.
+Validate the input before processing.
+Use the grep tool to search for patterns.
+</code></pre>
+<p><strong>Why good:</strong> Imperative form, direct instructions</p>
+<h5>Mistake 4: Missing Resource References</h5>
+<p>❌ <strong>Bad:</strong></p>
+<pre><code class="language-markdown"># SKILL.md
+
+[Core content]
+
+[No mention of references/ or examples/]
+</code></pre>
+<p><strong>Why bad:</strong> Claude doesn't know references exist</p>
+<p>✅ <strong>Good:</strong></p>
+<pre><code class="language-markdown"># SKILL.md
+
+[Core content]
+
+## Additional Resources
+
+### Reference Files
+- **`references/patterns.md`** - Detailed patterns
+- **`references/advanced.md`** - Advanced techniques
+
+### Examples
+- **`examples/script.sh`** - Working example
+</code></pre>
+<p><strong>Why good:</strong> Claude knows where to find additional information</p>
+<h4>Quick Reference</h4>
+<h5>Minimal Skill</h5>
+<pre><code>skill-name/
+└── SKILL.md
+</code></pre>
+<p>Good for: Simple knowledge, no complex resources needed</p>
+<h5>Standard Skill (Recommended)</h5>
+<pre><code>skill-name/
+├── SKILL.md
+├── references/
+│   └── detailed-guide.md
+└── examples/
+    └── working-example.sh
+</code></pre>
+<p>Good for: Most plugin skills with detailed documentation</p>
+<h5>Complete Skill</h5>
+<pre><code>skill-name/
+├── SKILL.md
+├── references/
+│   ├── patterns.md
+│   └── advanced.md
+├── examples/
+│   ├── example1.sh
+│   └── example2.json
+└── scripts/
+    └── validate.sh
+</code></pre>
+<p>Good for: Complex domains with validation utilities</p>
+<h4>Best Practices Summary</h4>
+<p>✅ <strong>DO:</strong></p>
+<ul>
+<li>Use third-person in description (&quot;This skill should be used when...&quot;)</li>
+<li>Include specific trigger phrases (&quot;create X&quot;, &quot;configure Y&quot;)</li>
+<li>Keep SKILL.md lean (1,500-2,000 words)</li>
+<li>Use progressive disclosure (move details to references/)</li>
+<li>Write in imperative/infinitive form</li>
+<li>Reference supporting files clearly</li>
+<li>Provide working examples</li>
+<li>Create utility scripts for common operations</li>
+<li>Study plugin-dev's skills as templates</li>
+</ul>
+<p>❌ <strong>DON'T:</strong></p>
+<ul>
+<li>Use second person anywhere</li>
+<li>Have vague trigger conditions</li>
+<li>Put everything in SKILL.md (&gt;3,000 words without references/)</li>
+<li>Write in second person (&quot;You should...&quot;)</li>
+<li>Leave resources unreferenced</li>
+<li>Include broken or incomplete examples</li>
+<li>Skip validation</li>
+</ul>
+<h4>Additional Resources</h4>
+<h5>Study These Skills</h5>
+<p>Plugin-dev's skills demonstrate best practices:</p>
+<ul>
+<li><code>../hook-development/</code> - Progressive disclosure, utilities</li>
+<li><code>../agent-development/</code> - AI-assisted creation, references</li>
+<li><code>../mcp-integration/</code> - Comprehensive references</li>
+<li><code>../plugin-settings/</code> - Real-world examples</li>
+<li><code>../command-development/</code> - Clear critical concepts</li>
+<li><code>../plugin-structure/</code> - Good organization</li>
+</ul>
+<h5>Reference Files</h5>
+<p>For complete skill-creator methodology:</p>
+<ul>
+<li><strong><code>references/skill-creator-original.md</code></strong> - Full original skill-creator content</li>
+</ul>
+<h4>Implementation Workflow</h4>
+<p>To create a skill for your plugin:</p>
+<ol>
+<li><strong>Understand use cases</strong>: Identify concrete examples of skill usage</li>
+<li><strong>Plan resources</strong>: Determine what scripts/references/examples needed</li>
+<li><strong>Create structure</strong>: <code>mkdir -p skills/skill-name/{references,examples,scripts}</code></li>
+<li><strong>Write SKILL.md</strong>:
+<ul>
+<li>Frontmatter with third-person description and trigger phrases</li>
+<li>Lean body (1,500-2,000 words) in imperative form</li>
+<li>Reference supporting files</li>
+</ul>
+</li>
+<li><strong>Add resources</strong>: Create references/, examples/, scripts/ as needed</li>
+<li><strong>Validate</strong>: Check description, writing style, organization</li>
+<li><strong>Test</strong>: Verify skill loads on expected triggers</li>
+<li><strong>Iterate</strong>: Improve based on usage</li>
+</ol>
+<p>Focus on strong trigger descriptions, progressive disclosure, and imperative writing style for effective skills that load when needed and provide targeted guidance.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

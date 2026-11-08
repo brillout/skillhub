@@ -1,0 +1,975 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>build-dashboard · SkillHub</title>
+    <meta name="description" content="Use it when: you want an executive overview, a monitoring snapshot or a shareable report with several charts and filters in one file. You get: one HTML file with KPI cards, Chart.js charts, filters and a sortable table, its data embedded as JSON, opened in your browser. Data from: a connected data warehouse, pasted data or a CSV; without data it invents a realistic sample set and labels it as sample data. Unlike: a BI tool, it makes a point-in-time snapshot, not a live dashboard. Runs: as /build-dashboard with a description and an optional data source. Part of: the data plugin of Anthropic&#039;s knowledge-work plugins." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=anthropics%2Fknowledge-work-plugins">anthropics/knowledge-work-plugins</a></p>
+      <div class="title-row"><h1>build-dashboard</h1><button type="button" class="save" data-save="skill:anthropics/knowledge-work-plugins/data/skills/build-dashboard" aria-pressed="false" aria-label="Save build-dashboard" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want an executive overview, a monitoring snapshot or a shareable report with several charts and filters in one file</dd></div><div><dt>You get</dt><dd>one HTML file with KPI cards, Chart.js charts, filters and a sortable table, its data embedded as JSON, opened in your browser</dd></div><div><dt>Data from</dt><dd>a connected data warehouse, pasted data or a CSV; without data it invents a realistic sample set and labels it as sample data</dd></div><div><dt>Unlike</dt><dd>a BI tool, it makes a point-in-time snapshot, not a live dashboard</dd></div><div><dt>Runs</dt><dd>as /build-dashboard with a description and an optional data source</dd></div><div><dt>Part of</dt><dd>the data plugin of Anthropic&#39;s knowledge-work plugins</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>The agent first settles the dashboard&#39;s purpose, audience, key metrics, the dimensions to filter by and the data source. Data comes from a query when a data warehouse is connected, from pasted or uploaded data it cleans, or from a sample dataset it invents to match your description, with instructions for swapping in real data. The layout is a title with filters, two to four KPI cards, one to three charts, then an optional detail table. It writes one HTML file from its base template: card-based CSS, line, bar, doughnut, stacked and mixed charts with Chart.js loaded from a CDN, dropdown and date-range filters that update every chart and the table together, sortable columns, number formatting and print styles. For bigger data it pre-aggregates before embedding, and past 100,000 rows it points you to a BI tool instead. It saves the file under a descriptive name, opens it in your browser, checks that it renders, and explains how to update the data or the styling.</p>
+      <p class="muted">Summarizes <a href="https://github.com/anthropics/knowledge-work-plugins/tree/ab4cb1cd383b4eb87383be8cf4e70cb5b2a2348d/data/skills/build-dashboard">the skill at ab4cb1c</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">anthropics/</span><wbr><span class="word">knowledge-work-plugins</span> <span class="word">--skill</span> <span class="word">build-dashboard</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/anthropics/knowledge-work-plugins --skill build-dashboard">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/anthropics/knowledge-work-plugins/build-dashboard">skills.sh page</a> · <a href="https://github.com/anthropics/knowledge-work-plugins/tree/HEAD/data/skills/build-dashboard">Source on GitHub</a> · <a href="/?repo=anthropics%2Fknowledge-work-plugins">All skills from anthropics/knowledge-work-plugins</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>9,400 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>35,145 <span class="muted">anthropics/knowledge-work-plugins</span></dd></div><div><dt>First seen</dt><dd>Mar 13, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">125</div>
+      <div class="stat-delta">-25% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 166; week to Sep 27: 169; week to Oct 4: 122; week to Oct 11: 124; week to Oct 18: 142; week to Oct 25: 180; week to Nov 1: 161; week to Nov 8: 125. Use the left and right arrow keys to read each week."
+        data-values="166,169,122,124,142,180,161,125" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,9.4 38.6,8.7 71.1,20.2 103.7,19.7 136.3,15.3 168.9,6.0 201.4,10.6 234.0,19.4" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="19.4" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>166</td></tr><tr><td>Sep 27</td><td>169</td></tr><tr><td>Oct 4</td><td>122</td></tr><tr><td>Oct 11</td><td>124</td></tr><tr><td>Oct 18</td><td>142</td></tr><tr><td>Oct 25</td><td>180</td></tr><tr><td>Nov 1</td><td>161</td></tr><tr><td>Nov 8</td><td>125</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:science" data-facet="category" title="Research reproduction, financial data, charts and diagrams." href="/?tag=category%3Ascience">category:<wbr>science</a></div>
+          <p class="tag-meaning">Research reproduction, financial data, charts and diagrams.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="charts" data-facet="topic" href="/?tag=charts">charts</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:chartjs" data-facet="stack" href="/?tag=stack%3Achartjs">stack:<wbr>chartjs</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/anthropics/knowledge-work-plugins/blob/ab4cb1cd383b4eb87383be8cf4e70cb5b2a2348d/data/skills/build-dashboard/SKILL.md">anthropics/knowledge-work-plugins at ab4cb1c</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: build-dashboard
+description: Build an interactive HTML dashboard with charts, filters, and tables. Use when creating an executive overview with KPI cards, turning query results into a shareable self-contained report, building a team monitoring snapshot, or needing multiple charts with filters in one browser-openable file.
+argument-hint: &#34;&#60;description&#62; [data source]&#34;</code></pre></details>
+        <div class="markdown"><h3>/build-dashboard - Build Interactive Dashboards</h3>
+<blockquote>
+<p>If you see unfamiliar placeholders or need to check which tools are connected, see <a href="https://github.com/anthropics/knowledge-work-plugins/blob/ab4cb1cd383b4eb87383be8cf4e70cb5b2a2348d/data/CONNECTORS.md">CONNECTORS.md</a>.</p>
+</blockquote>
+<p>Build a self-contained interactive HTML dashboard with charts, filters, tables, and professional styling. Opens directly in a browser -- no server or dependencies required.</p>
+<h4>Usage</h4>
+<pre><code>/build-dashboard &lt;description of dashboard&gt; [data source]
+</code></pre>
+<h4>Workflow</h4>
+<h5>1. Understand the Dashboard Requirements</h5>
+<p>Determine:</p>
+<ul>
+<li><strong>Purpose</strong>: Executive overview, operational monitoring, deep-dive analysis, team reporting</li>
+<li><strong>Audience</strong>: Who will use this dashboard?</li>
+<li><strong>Key metrics</strong>: What numbers matter most?</li>
+<li><strong>Dimensions</strong>: What should users be able to filter or slice by?</li>
+<li><strong>Data source</strong>: Live query, pasted data, CSV file, or sample data</li>
+</ul>
+<h5>2. Gather the Data</h5>
+<p><strong>If data warehouse is connected:</strong></p>
+<ol>
+<li>Query the necessary data</li>
+<li>Embed the results as JSON within the HTML file</li>
+</ol>
+<p><strong>If data is pasted or uploaded:</strong></p>
+<ol>
+<li>Parse and clean the data</li>
+<li>Embed as JSON in the dashboard</li>
+</ol>
+<p><strong>If working from a description without data:</strong></p>
+<ol>
+<li>Create a realistic sample dataset matching the described schema</li>
+<li>Note in the dashboard that it uses sample data</li>
+<li>Provide instructions for swapping in real data</li>
+</ol>
+<h5>3. Design the Dashboard Layout</h5>
+<p>Follow a standard dashboard layout pattern:</p>
+<pre><code>┌──────────────────────────────────────────────────┐
+│  Dashboard Title                    [Filters ▼]  │
+├────────────┬────────────┬────────────┬───────────┤
+│  KPI Card  │  KPI Card  │  KPI Card  │ KPI Card  │
+├────────────┴────────────┼────────────┴───────────┤
+│                         │                        │
+│    Primary Chart        │   Secondary Chart      │
+│    (largest area)       │                        │
+│                         │                        │
+├─────────────────────────┴────────────────────────┤
+│                                                  │
+│    Detail Table (sortable, scrollable)           │
+│                                                  │
+└──────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>Adapt the layout to the content:</strong></p>
+<ul>
+<li>2-4 KPI cards at the top for headline numbers</li>
+<li>1-3 charts in the middle section for trends and breakdowns</li>
+<li>Optional detail table at the bottom for drill-down data</li>
+<li>Filters in the header or sidebar depending on complexity</li>
+</ul>
+<h5>4. Build the HTML Dashboard</h5>
+<p>Generate a single self-contained HTML file using the base template below. The file includes:</p>
+<p><strong>Structure (HTML):</strong></p>
+<ul>
+<li>Semantic HTML5 layout</li>
+<li>Responsive grid using CSS Grid or Flexbox</li>
+<li>Filter controls (dropdowns, date pickers, toggles)</li>
+<li>KPI cards with values and labels</li>
+<li>Chart containers</li>
+<li>Data table with sortable headers</li>
+</ul>
+<p><strong>Styling (CSS):</strong></p>
+<ul>
+<li>Professional color scheme (clean whites, grays, with accent colors for data)</li>
+<li>Card-based layout with subtle shadows</li>
+<li>Consistent typography (system fonts for fast loading)</li>
+<li>Responsive design that works on different screen sizes</li>
+<li>Print-friendly styles</li>
+</ul>
+<p><strong>Interactivity (JavaScript):</strong></p>
+<ul>
+<li>Chart.js for interactive charts (included via CDN)</li>
+<li>Filter dropdowns that update all charts and tables simultaneously</li>
+<li>Sortable table columns</li>
+<li>Hover tooltips on charts</li>
+<li>Number formatting (commas, currency, percentages)</li>
+</ul>
+<p><strong>Data (embedded JSON):</strong></p>
+<ul>
+<li>All data embedded directly in the HTML as JavaScript variables</li>
+<li>No external data fetches required</li>
+<li>Dashboard works completely offline</li>
+</ul>
+<h5>5. Implement Chart Types</h5>
+<p>Use Chart.js for all charts. Common dashboard chart patterns:</p>
+<ul>
+<li><strong>Line chart</strong>: Time series trends</li>
+<li><strong>Bar chart</strong>: Category comparisons</li>
+<li><strong>Doughnut chart</strong>: Composition (when &lt;6 categories)</li>
+<li><strong>Stacked bar</strong>: Composition over time</li>
+<li><strong>Mixed (bar + line)</strong>: Volume with rate overlay</li>
+</ul>
+<p>Use the Chart.js integration patterns below for each chart type.</p>
+<h5>6. Add Interactivity</h5>
+<p>Use the filter and interactivity implementation patterns below for dropdown filters, date range filters, combined filter logic, sortable tables, and chart updates.</p>
+<h5>7. Save and Open</h5>
+<ol>
+<li>Save the dashboard as an HTML file with a descriptive name (e.g., <code>sales_dashboard.html</code>)</li>
+<li>Open it in the user's default browser</li>
+<li>Confirm it renders correctly</li>
+<li>Provide instructions for updating data or customizing</li>
+</ol>
+<hr>
+<h4>Base Template</h4>
+<p>Every dashboard follows this structure:</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Dashboard Title&lt;/title&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/chart.js@4.5.1&quot; integrity=&quot;sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ&quot; crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0&quot; integrity=&quot;sha384-cVMg8E3QFwTvGCDuK+ET4PD341jF3W8nO1auiXfuZNQkzbUUiBGLsIQUE+b1mxws&quot; crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+    &lt;style&gt;
+        /* Dashboard styles go here */
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;dashboard-container&quot;&gt;
+        &lt;header class=&quot;dashboard-header&quot;&gt;
+            &lt;h1&gt;Dashboard Title&lt;/h1&gt;
+            &lt;div class=&quot;filters&quot;&gt;
+                &lt;!-- Filter controls --&gt;
+            &lt;/div&gt;
+        &lt;/header&gt;
+
+        &lt;section class=&quot;kpi-row&quot;&gt;
+            &lt;!-- KPI cards --&gt;
+        &lt;/section&gt;
+
+        &lt;section class=&quot;chart-row&quot;&gt;
+            &lt;!-- Chart containers --&gt;
+        &lt;/section&gt;
+
+        &lt;section class=&quot;table-section&quot;&gt;
+            &lt;!-- Data table --&gt;
+        &lt;/section&gt;
+
+        &lt;footer class=&quot;dashboard-footer&quot;&gt;
+            &lt;span&gt;Data as of: &lt;span id=&quot;data-date&quot;&gt;&lt;/span&gt;&lt;/span&gt;
+        &lt;/footer&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        // Embedded data
+        const DATA = [];
+
+        // Dashboard logic
+        class Dashboard {
+            constructor(data) {
+                this.rawData = data;
+                this.filteredData = data;
+                this.charts = {};
+                this.init();
+            }
+
+            init() {
+                this.setupFilters();
+                this.renderKPIs();
+                this.renderCharts();
+                this.renderTable();
+            }
+
+            applyFilters() {
+                // Filter logic
+                this.filteredData = this.rawData.filter(row =&gt; {
+                    // Apply each active filter
+                    return true; // placeholder
+                });
+                this.renderKPIs();
+                this.updateCharts();
+                this.renderTable();
+            }
+
+            // ... methods for each section
+        }
+
+        const dashboard = new Dashboard(DATA);
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h4>KPI Card Pattern</h4>
+<pre><code class="language-html">&lt;div class=&quot;kpi-card&quot;&gt;
+    &lt;div class=&quot;kpi-label&quot;&gt;Total Revenue&lt;/div&gt;
+    &lt;div class=&quot;kpi-value&quot; id=&quot;kpi-revenue&quot;&gt;$0&lt;/div&gt;
+    &lt;div class=&quot;kpi-change positive&quot; id=&quot;kpi-revenue-change&quot;&gt;+0%&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<pre><code class="language-javascript">function renderKPI(elementId, value, previousValue, format = 'number') {
+    const el = document.getElementById(elementId);
+    const changeEl = document.getElementById(elementId + '-change');
+
+    // Format the value
+    el.textContent = formatValue(value, format);
+
+    // Calculate and display change
+    if (previousValue &amp;&amp; previousValue !== 0) {
+        const pctChange = ((value - previousValue) / previousValue) * 100;
+        const sign = pctChange &gt;= 0 ? '+' : '';
+        changeEl.textContent = `${sign}${pctChange.toFixed(1)}% vs prior period`;
+        changeEl.className = `kpi-change ${pctChange &gt;= 0 ? 'positive' : 'negative'}`;
+    }
+}
+
+function formatValue(value, format) {
+    switch (format) {
+        case 'currency':
+            if (value &gt;= 1e6) return `$${(value / 1e6).toFixed(1)}M`;
+            if (value &gt;= 1e3) return `$${(value / 1e3).toFixed(1)}K`;
+            return `$${value.toFixed(0)}`;
+        case 'percent':
+            return `${value.toFixed(1)}%`;
+        case 'number':
+            if (value &gt;= 1e6) return `${(value / 1e6).toFixed(1)}M`;
+            if (value &gt;= 1e3) return `${(value / 1e3).toFixed(1)}K`;
+            return value.toLocaleString();
+        default:
+            return value.toString();
+    }
+}
+</code></pre>
+<h4>Chart.js Integration</h4>
+<h5>Chart Container Pattern</h5>
+<pre><code class="language-html">&lt;div class=&quot;chart-container&quot;&gt;
+    &lt;h3 class=&quot;chart-title&quot;&gt;Monthly Revenue Trend&lt;/h3&gt;
+    &lt;canvas id=&quot;revenue-chart&quot;&gt;&lt;/canvas&gt;
+&lt;/div&gt;
+</code></pre>
+<h5>Line Chart</h5>
+<pre><code class="language-javascript">function createLineChart(canvasId, labels, datasets) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    return new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: datasets.map((ds, i) =&gt; ({
+                label: ds.label,
+                data: ds.data,
+                borderColor: COLORS[i % COLORS.length],
+                backgroundColor: COLORS[i % COLORS.length] + '20',
+                borderWidth: 2,
+                fill: ds.fill || false,
+                tension: 0.3,
+                pointRadius: 3,
+                pointHoverRadius: 6,
+            }))
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false,
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: { usePointStyle: true, padding: 20 }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.dataset.label}: ${formatValue(context.parsed.y, 'currency')}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: false }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return formatValue(value, 'currency');
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+</code></pre>
+<h5>Bar Chart</h5>
+<pre><code class="language-javascript">function createBarChart(canvasId, labels, data, options = {}) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    const isHorizontal = options.horizontal || labels.length &gt; 8;
+
+    return new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: options.label || 'Value',
+                data: data,
+                backgroundColor: options.colors || COLORS.map(c =&gt; c + 'CC'),
+                borderColor: options.colors || COLORS,
+                borderWidth: 1,
+                borderRadius: 4,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: isHorizontal ? 'y' : 'x',
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return formatValue(context.parsed[isHorizontal ? 'x' : 'y'], options.format || 'number');
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    grid: { display: isHorizontal },
+                    ticks: isHorizontal ? {
+                        callback: function(value) {
+                            return formatValue(value, options.format || 'number');
+                        }
+                    } : {}
+                },
+                y: {
+                    beginAtZero: !isHorizontal,
+                    grid: { display: !isHorizontal },
+                    ticks: !isHorizontal ? {
+                        callback: function(value) {
+                            return formatValue(value, options.format || 'number');
+                        }
+                    } : {}
+                }
+            }
+        }
+    });
+}
+</code></pre>
+<h5>Doughnut Chart</h5>
+<pre><code class="language-javascript">function createDoughnutChart(canvasId, labels, data) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    return new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: COLORS.map(c =&gt; c + 'CC'),
+                borderColor: '#ffffff',
+                borderWidth: 2,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '60%',
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: { usePointStyle: true, padding: 15 }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) =&gt; a + b, 0);
+                            const pct = ((context.parsed / total) * 100).toFixed(1);
+                            return `${context.label}: ${formatValue(context.parsed, 'number')} (${pct}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+</code></pre>
+<h5>Updating Charts on Filter Change</h5>
+<pre><code class="language-javascript">function updateChart(chart, newLabels, newData) {
+    chart.data.labels = newLabels;
+
+    if (Array.isArray(newData[0])) {
+        // Multiple datasets
+        newData.forEach((data, i) =&gt; {
+            chart.data.datasets[i].data = data;
+        });
+    } else {
+        chart.data.datasets[0].data = newData;
+    }
+
+    chart.update('none'); // 'none' disables animation for instant update
+}
+</code></pre>
+<h4>Filter and Interactivity Implementation</h4>
+<h5>Dropdown Filter</h5>
+<pre><code class="language-html">&lt;div class=&quot;filter-group&quot;&gt;
+    &lt;label for=&quot;filter-region&quot;&gt;Region&lt;/label&gt;
+    &lt;select id=&quot;filter-region&quot; onchange=&quot;dashboard.applyFilters()&quot;&gt;
+        &lt;option value=&quot;all&quot;&gt;All Regions&lt;/option&gt;
+    &lt;/select&gt;
+&lt;/div&gt;
+</code></pre>
+<pre><code class="language-javascript">function populateFilter(selectId, data, field) {
+    const select = document.getElementById(selectId);
+    const values = [...new Set(data.map(d =&gt; d[field]))].sort();
+
+    // Keep the &quot;All&quot; option, add unique values
+    values.forEach(val =&gt; {
+        const option = document.createElement('option');
+        option.value = val;
+        option.textContent = val;
+        select.appendChild(option);
+    });
+}
+
+function getFilterValue(selectId) {
+    const val = document.getElementById(selectId).value;
+    return val === 'all' ? null : val;
+}
+</code></pre>
+<h5>Date Range Filter</h5>
+<pre><code class="language-html">&lt;div class=&quot;filter-group&quot;&gt;
+    &lt;label&gt;Date Range&lt;/label&gt;
+    &lt;input type=&quot;date&quot; id=&quot;filter-date-start&quot; onchange=&quot;dashboard.applyFilters()&quot;&gt;
+    &lt;span&gt;to&lt;/span&gt;
+    &lt;input type=&quot;date&quot; id=&quot;filter-date-end&quot; onchange=&quot;dashboard.applyFilters()&quot;&gt;
+&lt;/div&gt;
+</code></pre>
+<pre><code class="language-javascript">function filterByDateRange(data, dateField, startDate, endDate) {
+    return data.filter(row =&gt; {
+        const rowDate = new Date(row[dateField]);
+        if (startDate &amp;&amp; rowDate &lt; new Date(startDate)) return false;
+        if (endDate &amp;&amp; rowDate &gt; new Date(endDate)) return false;
+        return true;
+    });
+}
+</code></pre>
+<h5>Combined Filter Logic</h5>
+<pre><code class="language-javascript">applyFilters() {
+    const region = getFilterValue('filter-region');
+    const category = getFilterValue('filter-category');
+    const startDate = document.getElementById('filter-date-start').value;
+    const endDate = document.getElementById('filter-date-end').value;
+
+    this.filteredData = this.rawData.filter(row =&gt; {
+        if (region &amp;&amp; row.region !== region) return false;
+        if (category &amp;&amp; row.category !== category) return false;
+        if (startDate &amp;&amp; row.date &lt; startDate) return false;
+        if (endDate &amp;&amp; row.date &gt; endDate) return false;
+        return true;
+    });
+
+    this.renderKPIs();
+    this.updateCharts();
+    this.renderTable();
+}
+</code></pre>
+<h5>Sortable Table</h5>
+<pre><code class="language-javascript">function renderTable(containerId, data, columns) {
+    const container = document.getElementById(containerId);
+    let sortCol = null;
+    let sortDir = 'desc';
+
+    function render(sortedData) {
+        let html = '&lt;table class=&quot;data-table&quot;&gt;';
+
+        // Header
+        html += '&lt;thead&gt;&lt;tr&gt;';
+        columns.forEach(col =&gt; {
+            const arrow = sortCol === col.field
+                ? (sortDir === 'asc' ? ' ▲' : ' ▼')
+                : '';
+            html += `&lt;th onclick=&quot;sortTable('${col.field}')&quot; style=&quot;cursor:pointer&quot;&gt;${col.label}${arrow}&lt;/th&gt;`;
+        });
+        html += '&lt;/tr&gt;&lt;/thead&gt;';
+
+        // Body
+        html += '&lt;tbody&gt;';
+        sortedData.forEach(row =&gt; {
+            html += '&lt;tr&gt;';
+            columns.forEach(col =&gt; {
+                const value = col.format ? formatValue(row[col.field], col.format) : row[col.field];
+                html += `&lt;td&gt;${value}&lt;/td&gt;`;
+            });
+            html += '&lt;/tr&gt;';
+        });
+        html += '&lt;/tbody&gt;&lt;/table&gt;';
+
+        container.innerHTML = html;
+    }
+
+    window.sortTable = function(field) {
+        if (sortCol === field) {
+            sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+            sortCol = field;
+            sortDir = 'desc';
+        }
+        const sorted = [...data].sort((a, b) =&gt; {
+            const aVal = a[field], bVal = b[field];
+            const cmp = aVal &lt; bVal ? -1 : aVal &gt; bVal ? 1 : 0;
+            return sortDir === 'asc' ? cmp : -cmp;
+        });
+        render(sorted);
+    };
+
+    render(data);
+}
+</code></pre>
+<h4>CSS Styling for Dashboards</h4>
+<h5>Color System</h5>
+<pre><code class="language-css">:root {
+    /* Background layers */
+    --bg-primary: #f8f9fa;
+    --bg-card: #ffffff;
+    --bg-header: #1a1a2e;
+
+    /* Text */
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --text-on-dark: #ffffff;
+
+    /* Accent colors for data */
+    --color-1: #4C72B0;
+    --color-2: #DD8452;
+    --color-3: #55A868;
+    --color-4: #C44E52;
+    --color-5: #8172B3;
+    --color-6: #937860;
+
+    /* Status colors */
+    --positive: #28a745;
+    --negative: #dc3545;
+    --neutral: #6c757d;
+
+    /* Spacing */
+    --gap: 16px;
+    --radius: 8px;
+}
+</code></pre>
+<h5>Layout</h5>
+<pre><code class="language-css">* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.5;
+}
+
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--gap);
+}
+
+.dashboard-header {
+    background: var(--bg-header);
+    color: var(--text-on-dark);
+    padding: 20px 24px;
+    border-radius: var(--radius);
+    margin-bottom: var(--gap);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.dashboard-header h1 {
+    font-size: 20px;
+    font-weight: 600;
+}
+</code></pre>
+<h5>KPI Cards</h5>
+<pre><code class="language-css">.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--gap);
+    margin-bottom: var(--gap);
+}
+
+.kpi-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.kpi-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.kpi-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.kpi-change {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.kpi-change.positive { color: var(--positive); }
+.kpi-change.negative { color: var(--negative); }
+</code></pre>
+<h5>Chart Containers</h5>
+<pre><code class="language-css">.chart-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: var(--gap);
+    margin-bottom: var(--gap);
+}
+
+.chart-container {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.chart-container h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+}
+
+.chart-container canvas {
+    max-height: 300px;
+}
+</code></pre>
+<h5>Filters</h5>
+<pre><code class="language-css">.filters {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.filter-group label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.filter-group select,
+.filter-group input[type=&quot;date&quot;] {
+    padding: 6px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-on-dark);
+    font-size: 13px;
+}
+
+.filter-group select option {
+    background: var(--bg-header);
+    color: var(--text-on-dark);
+}
+</code></pre>
+<h5>Data Table</h5>
+<pre><code class="language-css">.table-section {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.data-table thead th {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 2px solid #dee2e6;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.data-table thead th:hover {
+    color: var(--text-primary);
+    background: #f8f9fa;
+}
+
+.data-table tbody td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.data-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+</code></pre>
+<h5>Responsive Design</h5>
+<pre><code class="language-css">@media (max-width: 768px) {
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .kpi-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .chart-row {
+        grid-template-columns: 1fr;
+    }
+
+    .filters {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media print {
+    body { background: white; }
+    .dashboard-container { max-width: none; }
+    .filters { display: none; }
+    .chart-container { break-inside: avoid; }
+    .kpi-card { border: 1px solid #dee2e6; box-shadow: none; }
+}
+</code></pre>
+<h4>Performance Considerations for Large Datasets</h4>
+<h5>Data Size Guidelines</h5>
+<table>
+<thead>
+<tr>
+<th>Data Size</th>
+<th>Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&lt;1,000 rows</td>
+<td>Embed directly in HTML. Full interactivity.</td>
+</tr>
+<tr>
+<td>1,000 - 10,000 rows</td>
+<td>Embed in HTML. May need to pre-aggregate for charts.</td>
+</tr>
+<tr>
+<td>10,000 - 100,000 rows</td>
+<td>Pre-aggregate server-side. Embed only aggregated data.</td>
+</tr>
+<tr>
+<td>&gt;100,000 rows</td>
+<td>Not suitable for client-side dashboard. Use a BI tool or paginate.</td>
+</tr>
+</tbody>
+</table>
+<h5>Pre-Aggregation Pattern</h5>
+<p>Instead of embedding raw data and aggregating in the browser:</p>
+<pre><code class="language-javascript">// DON'T: embed 50,000 raw rows
+const RAW_DATA = [/* 50,000 rows */];
+
+// DO: pre-aggregate before embedding
+const CHART_DATA = {
+    monthly_revenue: [
+        { month: '2024-01', revenue: 150000, orders: 1200 },
+        { month: '2024-02', revenue: 165000, orders: 1350 },
+        // ... 12 rows instead of 50,000
+    ],
+    top_products: [
+        { product: 'Widget A', revenue: 45000 },
+        // ... 10 rows
+    ],
+    kpis: {
+        total_revenue: 1980000,
+        total_orders: 15600,
+        avg_order_value: 127,
+    }
+};
+</code></pre>
+<h5>Chart Performance</h5>
+<ul>
+<li>Limit line charts to &lt;500 data points per series (downsample if needed)</li>
+<li>Limit bar charts to &lt;50 categories</li>
+<li>For scatter plots, cap at 1,000 points (use sampling for larger datasets)</li>
+<li>Disable animations for dashboards with many charts: <code>animation: false</code> in Chart.js options</li>
+<li>Use <code>Chart.update('none')</code> instead of <code>Chart.update()</code> for filter-triggered updates</li>
+</ul>
+<h5>DOM Performance</h5>
+<ul>
+<li>Limit data tables to 100-200 visible rows. Add pagination for more.</li>
+<li>Use <code>requestAnimationFrame</code> for coordinated chart updates</li>
+<li>Avoid rebuilding the entire DOM on filter change -- update only changed elements</li>
+</ul>
+<pre><code class="language-javascript">// Efficient table pagination
+function renderTablePage(data, page, pageSize = 50) {
+    const start = page * pageSize;
+    const end = Math.min(start + pageSize, data.length);
+    const pageData = data.slice(start, end);
+    // Render only pageData
+    // Show pagination controls: &quot;Showing 1-50 of 2,340&quot;
+}
+</code></pre>
+<h4>Examples</h4>
+<pre><code>/build-dashboard Monthly sales dashboard with revenue trend, top products, and regional breakdown. Data is in the orders table.
+</code></pre>
+<pre><code>/build-dashboard Here's our support ticket data [pastes CSV]. Build a dashboard showing volume by priority, response time trends, and resolution rates.
+</code></pre>
+<pre><code>/build-dashboard Create a template executive dashboard for a SaaS company showing MRR, churn, new customers, and NPS. Use sample data.
+</code></pre>
+<h4>Tips</h4>
+<ul>
+<li>Dashboards are fully self-contained HTML files -- share them with anyone by sending the file</li>
+<li>For real-time dashboards, consider connecting to a BI tool instead. These dashboards are point-in-time snapshots</li>
+<li>Request &quot;dark mode&quot; or &quot;presentation mode&quot; for different styling</li>
+<li>You can request a specific color scheme to match your brand</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

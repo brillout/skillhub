@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>codex-delegate · SkillHub</title>
+    <meta name="description" content="Use it when: you want Codex to write the code for a task, or a queue of tasks, while your main agent stays the reviewer. It does: writes a self-contained brief, runs Codex through a bundled relay script, then re-runs your project&#039;s tests and lint and reads the diff against the brief. You get: verified changes committed by your main agent, plus a result.json with Codex&#039;s report, the files it touched and the session id for follow-up fixes. Unlike codex-rescue: the openai-codex plugin&#039;s agent, which forwards one task and returns the output, it reviews and lands each result itself. Second opinions: a read-only run asks Codex to defend or concede each contested point without touching files. Needs: the codex CLI signed in, Node 18+ and git." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=amelnagdy%2Fdelegate-skills">amelnagdy/delegate-skills</a> <span aria-hidden="true">/</span> <a href="/bundle/amelnagdy/delegate-skills/">Delegate skills</a></p>
+      <div class="title-row"><h1>codex-delegate</h1><button type="button" class="save" data-save="skill:amelnagdy/delegate-skills/skills/codex-delegate" aria-pressed="false" aria-label="Save codex-delegate" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want Codex to write the code for a task, or a queue of tasks, while your main agent stays the reviewer</dd></div><div><dt>It does</dt><dd>writes a self-contained brief, runs Codex through a bundled relay script, then re-runs your project&#39;s tests and lint and reads the diff against the brief</dd></div><div><dt>You get</dt><dd>verified changes committed by your main agent, plus a result.json with Codex&#39;s report, the files it touched and the session id for follow-up fixes</dd></div><div><dt>Unlike codex-rescue</dt><dd>the openai-codex plugin&#39;s agent, which forwards one task and returns the output, it reviews and lands each result itself</dd></div><div><dt>Second opinions</dt><dd>a read-only run asks Codex to defend or concede each contested point without touching files</dd></div><div><dt>Needs</dt><dd>the codex CLI signed in, Node 18+ and git</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 2 of 5 in the <a href="/bundle/amelnagdy/delegate-skills/">Delegate skills</a> bundle · Before it: <a href="/skill/amelnagdy/delegate-skills/skills/delegate-setup/">delegate-setup</a> · After it: <a href="/skill/amelnagdy/delegate-skills/skills/opencode-delegate/">opencode-delegate</a></p>
+    
+      <p class="note">Needs the Codex CLI signed in, Node 18+ and git. Codex edits in a write-capable sandbox by default, and once you&#39;ve asked it to delegate, your agent commits work that passes review.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Your main agent is the orchestrator and Codex is the implementer. Codex sees only the brief, so the brief carries the goal, the current state, what to change and what to leave alone, the project&#39;s real check commands taken from CLAUDE.md, AGENTS.md or the Makefile, and a report format, and it tells Codex not to commit. The bundled relay.mjs wraps codex exec in a write-capable workspace sandbox, keeps its artifacts in a temp folder and blocks until Codex finishes, so Claude Code runs it in the background. The agent then distrusts Codex&#39;s self-report: it re-runs the checks, reads the diff for scope creep or gaps, round-trips migrations and greps for dangling references after removals. Only then does it commit. Rework goes back to the same Codex session as a short delta brief. It reports Codex&#39;s design choices instead of silently keeping them, and stops to ask before going beyond the brief. Flags add a time limit, web search or network access inside the sandbox.</p>
+      <p class="muted">Summarizes <a href="https://github.com/amelnagdy/delegate-skills/tree/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/codex-delegate">the skill at 7f8ae34</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">amelnagdy/</span><wbr><span class="word">delegate-skills</span> <span class="word">--skill</span> <span class="word">codex-delegate</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/amelnagdy/delegate-skills --skill codex-delegate">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/amelnagdy/delegate-skills/codex-delegate">skills.sh page</a> · <a href="https://github.com/amelnagdy/delegate-skills/tree/HEAD/skills/codex-delegate">Source on GitHub</a> · <a href="/?repo=amelnagdy%2Fdelegate-skills">All skills from amelnagdy/delegate-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>8,200 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>2,578 <span class="muted">amelnagdy/delegate-skills</span></dd></div><div><dt>First seen</dt><dd>Jun 14, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">261</div>
+      <div class="stat-delta">-72% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 934; week to Sep 27: 552; week to Oct 4: 481; week to Oct 11: 347; week to Oct 18: 336; week to Oct 25: 438; week to Nov 1: 309; week to Nov 8: 261. Use the left and right arrow keys to read each week."
+        data-values="934,552,481,347,336,438,309,261" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,24.0 71.1,27.3 103.7,33.7 136.3,34.2 168.9,29.4 201.4,35.4 234.0,37.7" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="37.7" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>934</td></tr><tr><td>Sep 27</td><td>552</td></tr><tr><td>Oct 4</td><td>481</td></tr><tr><td>Oct 11</td><td>347</td></tr><tr><td>Oct 18</td><td>336</td></tr><tr><td>Oct 25</td><td>438</td></tr><tr><td>Nov 1</td><td>309</td></tr><tr><td>Nov 8</td><td>261</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/?tag=category%3Aagents">category:<wbr>agents</a><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/?tag=category%3Aengineering">category:<wbr>engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/?tag=needs%3Acli">needs:<wbr>cli</a><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/?tag=needs%3Aaccount">needs:<wbr>account</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="multi-agent" data-facet="topic" href="/?tag=multi-agent">multi-agent</a><a class="tag" data-tag="agent-workflows" data-facet="topic" href="/?tag=agent-workflows">agent-workflows</a><a class="tag" data-tag="implementation" data-facet="topic" href="/?tag=implementation">implementation</a><a class="tag" data-tag="code-review" data-facet="topic" href="/?tag=code-review">code-review</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:codex" data-facet="stack" href="/?tag=stack%3Acodex">stack:<wbr>codex</a><a class="tag" data-tag="stack:git" data-facet="stack" href="/?tag=stack%3Agit">stack:<wbr>git</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/codex-delegate/SKILL.md">amelnagdy/delegate-skills at 7f8ae34</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: codex-delegate
+description: &#62;-
+  Delegate a coding task to the OpenAI Codex CLI as a background implementer, then review its diff and
+  land it yourself. Use this whenever the user wants to hand implementation work to Codex — phrasings
+  like &#34;have Codex do X&#34;, &#34;delegate this to Codex&#34;, &#34;run it through Codex&#34;, or &#34;use Codex to
+  implement/fix/refactor&#34; — or to run a queue of coding tasks through Codex while staying the reviewer.
+  Prefer it over a one-shot Codex forwarder (such as the codex-rescue agent) when the user will review
+  the diff and commit it themselves. DO NOT USE for tasks small enough to do inline, or when the user
+  wants the code written directly without delegating.
+license: MIT
+compatibility: Requires the `codex` CLI (OpenAI Codex) installed and authenticated, Node 18+, and git. The orchestrating agent must be able to run shell commands and read files. Shell examples assume bash/zsh (macOS/Linux, or Git Bash/WSL on Windows).
+metadata:
+  version: 0.5.0</code></pre></details>
+        <div class="markdown"><h3>Codex Delegate</h3>
+<p>You are the <strong>orchestrator</strong>. This skill lets you hand a bounded coding task to a separate
+<strong>implementer</strong> — the OpenAI Codex CLI — then review what it produced and land it yourself. You write
+the brief and own the judgment; Codex does the typing in its own sandbox; you verify and commit.</p>
+<p>Nothing here is specific to one orchestrating agent. The loop needs only the ability to run a shell
+command and read a file, so it works the same whether you are Claude Code, OpenCode with a selected
+model, or any comparable agent. (It is designed for and run on Claude Code; treat other orchestrators
+as designed-for, not yet proven.)</p>
+<h4>When NOT to use this</h4>
+<ul>
+<li>The task is small enough to just do inline — delegation overhead is not worth it.</li>
+<li>The <code>codex</code> CLI is not installed or not authenticated (run <code>codex login</code>).</li>
+<li>You want to write the code yourself, or you only need a review (use Codex's own <code>review</code> command).</li>
+</ul>
+<h4>Prerequisites (check once)</h4>
+<ol>
+<li><code>codex --version</code> succeeds. If not, install (<code>npm i -g @openai/codex</code>) and <code>codex login</code>.</li>
+<li><strong>Confirm which <code>codex</code> is on PATH.</strong> Multiple installs are common (e.g. a current npm/nvm copy and
+a stale Homebrew one). <code>command -v codex</code> shows the active one and <code>codex --version</code> its version —
+an old binary predates flags this skill relies on (<code>codex exec --json</code>, <code>-o</code>, <code>exec resume</code>). The
+relay also records the version it ran into <code>result.json</code>, so a stale binary is visible after the fact.</li>
+<li>You are in (or will point <code>--cd</code> at) the target git repository.</li>
+</ol>
+<h4>The loop</h4>
+<p>Run these five steps per task. Steps 1, 4, and 5 are your judgment; 2 and 3 are mechanical.</p>
+<h5>1. Write the brief</h5>
+<p>Codex sees <strong>only</strong> the text you send — no repo memory, no chat history, no shared context. Everything the
+task needs goes in the brief: the goal, the current state, what to change, what to leave untouched,
+the project's <strong>actual</strong> gate commands (discover them from the repo's CLAUDE.md/AGENTS.md/Makefile —
+do not assume), and a report contract. Tell Codex it will <strong>not</strong> commit (you will). Keep one task per
+brief. Full guidance and a template: <a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/codex-delegate/references/writing-the-brief.md">references/writing-the-brief.md</a>.</p>
+<h5>2. Dispatch</h5>
+<p>Send the brief to Codex with the bundled helper. It wraps <code>codex exec</code>, captures the run, and writes a
+structured <code>result.json</code> — so your only job is &quot;run a command, read a file.&quot; (<code>&lt;skill-dir&gt;</code> below is
+this skill's installed directory — the folder containing this <code>SKILL.md</code>, i.e. the directory you loaded
+the skill from. Claude Code prints it as &quot;Base directory for this skill&quot; when the skill loads; on other
+orchestrators use that same directory — if unsure where it landed, run
+<code>find ~ -name relay.mjs -path '*codex-delegate*'</code> and substitute the directory above it.)</p>
+<pre><code class="language-bash">node &quot;&lt;skill-dir&gt;/scripts/relay.mjs&quot; --brief brief.txt --cd /path/to/repo
+# read-only (review/diagnosis, no edits):   add --read-only
+# isolated review (skip ambient MCP/user config): add --ignore-user-config
+# subagent defaults:                        add --subagent-model &lt;name&gt; --subagent-effort &lt;level&gt;  (again on every resume)
+# web search mode (disabled|cached|indexed|live): add --web-search live  (again on every resume)
+# network inside the sandbox (gh, curl, installs): add --network-access  (on resume: --sandbox workspace-write --network-access)
+# continue the exact Codex session:         add --session &lt;threadId&gt;  (from result.json; send only the delta brief)
+# fallback when no thread id is available:  add --resume-last
+# hard time limit (watchdog):               add --timeout 2h  (default: off; implementation runs routinely need 1-2h)
+# see all options:                          node .../relay.mjs --help
+</code></pre>
+<p>The helper defaults to a write-capable (<code>workspace-write</code>) sandbox and writes its artifacts to a temp
+dir, so the repo under review stays clean. It <strong>never commits</strong> — see step 5. Mechanics, flags, and the
+<code>result.json</code> shape: <a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/codex-delegate/references/dispatch-and-poll.md">references/dispatch-and-poll.md</a>.</p>
+<h5>3. Wait for completion</h5>
+<p>The helper blocks until Codex finishes, so back it with whatever your orchestrator offers and resume
+when it returns:</p>
+<ul>
+<li><strong>Claude Code:</strong> run the Bash call with <code>run_in_background: true</code>; you are notified on completion.</li>
+<li><strong>Plain shell / other agents:</strong> run it in the foreground for short tasks, or background it and poll
+the result file — <code>… &amp;</code> in bash/zsh (including Git Bash/WSL), or your shell's equivalent (<code>Start-Job</code>
+in PowerShell, <code>start /b</code> in cmd). The run is done when <code>result.json</code> exists with a <code>status</code>. (A
+pre-run usage error — bad args or an empty brief — instead exits with code 2 and a stderr message and
+writes no result file, so check the exit code too. A missing <code>codex</code> binary exits 127 but <em>does</em> write
+a <code>result.json</code> with status <code>codex_unavailable</code>.)</li>
+</ul>
+<p>Do not trust progress trackers over reality: a run is finished when <code>result.json</code> is written and the
+process has exited. Read the working tree, not a status line. The implementer's full report is
+the <code>finalMessage</code> field in <code>result.json</code> (also printed in full on stdout between the report markers).</p>
+<h5>4. Review — do not trust the self-report</h5>
+<p>Codex's <code>result.json</code> includes its own summary and gate claims. <strong>Re-verify, don't accept:</strong></p>
+<ul>
+<li><strong>Re-run the project's gates yourself</strong> (the test/lint/build commands from step 1). Never take
+&quot;gates passed&quot; on faith.</li>
+<li><strong>Read the diff</strong> against the brief: did Codex do what was asked, nothing more (scope creep) and
+nothing less? <code>touchedFiles</code> in the result is your starting point.</li>
+<li><strong>Run the relevant guard skills</strong> on the diff if you have them installed (clean-code-guard,
+test-guard, etc. from <code>guard-skills</code>) — this skill produces the work; those skills judge it.</li>
+<li>For schema/migration changes, round-trip them; for removals, grep for dangling references.</li>
+</ul>
+<p>Full checklist: <a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/codex-delegate/references/review-and-land.md">references/review-and-land.md</a>.</p>
+<h5>5. Land it</h5>
+<p>Because Codex's sandbox cannot reliably write <code>.git</code> (it varies by version, OS, and path), <strong>the
+orchestrator commits.</strong> Only after the gates pass and the diff holds:</p>
+<ul>
+<li>Commit the verified work yourself, with a clear message.</li>
+<li>If it needs changes, send a delta brief with <code>--session &lt;threadId&gt;</code> from the prior <code>result.json</code>
+(use <code>--resume-last</code> only when no thread id is available), and review again.</li>
+</ul>
+<h4>Read-only second opinions</h4>
+<p>The relay doubles as a clean way to get an adversarial second opinion with no write risk: dispatch
+<code>--read-only</code> with a brief that lists the agreed points, then each contested point with both
+positions, and ask Codex to defend or concede each — deliverable in its final message, touching no
+files. Any delegation skill whose implementer offers a read-only mode supports the same use, but
+check how hard that mode's guarantee is first: Codex's sandbox enforces it, while Grok's is
+best-effort and only flagged after the fact (<code>readOnlyViolation</code>) — for those implementers,
+verify <code>touchedFiles</code> came back empty instead of assuming no edits.</p>
+<h4>Authorization model</h4>
+<p>Delegation is something the human opts into. Once they have (&quot;run this queue&quot;, &quot;proceed&quot;), committing
+verified, gate-passing work is the agreed contract — that is the whole point. Two limits on that
+mandate: <strong>surface, don't absorb</strong> (report Codex's design decisions, defensible-but-unasked turns, and
+non-blocking nitpicks rather than silently keeping them) and <strong>stop for scope changes</strong> (if correct
+completion needs going beyond the brief, ask — don't expand the mandate yourself). The full treatment
+is in <a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/codex-delegate/references/review-and-land.md">references/review-and-land.md</a>.</p>
+<h4>If you have the openai-codex plugin</h4>
+<p>The official openai-codex Claude Code plugin is excellent and <strong>complementary</strong> — <code>codex-delegate</code>
+builds on the same <code>codex</code> CLI, it doesn't replace the plugin. They point in different directions:</p>
+<ul>
+<li>The plugin's <code>codex:codex-rescue</code> agent is a <strong>forwarder</strong>: it hands one task to Codex and returns
+the output. It deliberately does not poll, review, or commit.</li>
+<li>The plugin's review command and stop-review gate run the <strong>inverse</strong> direction: <strong>Codex reviews your work</strong>.</li>
+<li><code>codex-delegate</code> is the <strong>orchestration loop in the other direction</strong>: <em>you</em> drive Codex to
+implement across one task or a queue, and <em>you</em> review and land each result. That loop — brief →
+dispatch → poll → review → commit, with the orchestrator owning the commit — is what the plugin
+leaves to you, and what this skill encodes.</li>
+</ul>
+<p>If you have the plugin installed, its companion CLI is an optional alternative dispatch backend; the
+bundled <code>relay.mjs</code> is the default because it adds no install of its own beyond the <code>codex</code> binary
+(Node and <code>git</code>, which the relay also needs, are prerequisites for every skill here).</p>
+<h4>References</h4>
+<ul>
+<li><a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/codex-delegate/references/writing-the-brief.md">references/writing-the-brief.md</a> — how to write a brief Codex can
+execute blind: structure, XML blocks, the report contract, embedding the real gate commands.</li>
+<li><a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/codex-delegate/references/dispatch-and-poll.md">references/dispatch-and-poll.md</a> — <code>relay.mjs</code> flags, the
+<code>result.json</code> contract, backgrounding per orchestrator, and recovery when a run misbehaves.</li>
+<li><a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/codex-delegate/references/review-and-land.md">references/review-and-land.md</a> — the review checklist, the commit
+boundary, and the exact-session rework cycle.</li>
+<li><a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/codex-delegate/references/multi-task-queues.md">references/multi-task-queues.md</a> — running a sequential queue:
+carrying constraints forward, progress tracking, and the end-of-run coherence check.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

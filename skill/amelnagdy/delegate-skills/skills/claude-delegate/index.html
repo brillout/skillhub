@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>claude-delegate · SkillHub</title>
+    <meta name="description" content="Use it when: you explicitly want another Claude Code session to write the code for a task, or a queue of tasks, while your main agent reviews. It does: writes a self-contained brief, runs claude -p through a bundled relay script, then re-runs your project&#039;s checks and reads the full diff against the brief. You get: verified changes committed by your main agent, plus a result.json with the session&#039;s final message, the files git shows as changed and its session id. The child session: gets only read, search, file-editing and shell tools, with MCP, skills and subagents turned off; its shell runs in Claude&#039;s sandbox, except on native Windows. Read-only runs: use plan mode with read and search tools only, and report whether the working tree changed anyway. Unlike Claude&#039;s subagents: it works from any orchestrator, Claude or not, with one brief, dispatch, review and commit contract. Needs: the claude CLI signed in, Node 18+ and git." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=amelnagdy%2Fdelegate-skills">amelnagdy/delegate-skills</a> <span aria-hidden="true">/</span> <a href="/bundle/amelnagdy/delegate-skills/">Delegate skills</a></p>
+      <div class="title-row"><h1>claude-delegate</h1><button type="button" class="save" data-save="skill:amelnagdy/delegate-skills/skills/claude-delegate" aria-pressed="false" aria-label="Save claude-delegate" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you explicitly want another Claude Code session to write the code for a task, or a queue of tasks, while your main agent reviews</dd></div><div><dt>It does</dt><dd>writes a self-contained brief, runs claude -p through a bundled relay script, then re-runs your project&#39;s checks and reads the full diff against the brief</dd></div><div><dt>You get</dt><dd>verified changes committed by your main agent, plus a result.json with the session&#39;s final message, the files git shows as changed and its session id</dd></div><div><dt>The child session</dt><dd>gets only read, search, file-editing and shell tools, with MCP, skills and subagents turned off; its shell runs in Claude&#39;s sandbox, except on native Windows</dd></div><div><dt>Read-only runs</dt><dd>use plan mode with read and search tools only, and report whether the working tree changed anyway</dd></div><div><dt>Unlike Claude&#39;s subagents</dt><dd>it works from any orchestrator, Claude or not, with one brief, dispatch, review and commit contract</dd></div><div><dt>Needs</dt><dd>the claude CLI signed in, Node 18+ and git</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 4 of 5 in the <a href="/bundle/amelnagdy/delegate-skills/">Delegate skills</a> bundle · Before it: <a href="/skill/amelnagdy/delegate-skills/skills/opencode-delegate/">opencode-delegate</a> · After it: <a href="/skill/amelnagdy/delegate-skills/skills/agy-delegate/">agy-delegate</a></p>
+    
+      <p class="note">Needs the Claude Code CLI signed in, Node 18+ and git. The child session edits files and runs sandboxed shell commands without asking (on native Windows its shell isn&#39;t sandboxed), and once you&#39;ve asked it to delegate, your agent commits work that passes review.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Your main agent is the orchestrator and a separate Claude Code process is the implementer. It triggers only when you ask to delegate to Claude, not just because the orchestrator is Claude. The child loads the project&#39;s CLAUDE.md on its own but not AGENTS.md, so the orchestrator copies AGENTS.md&#39;s constraints and the project&#39;s real check commands into the brief and says not to commit. The relay runs claude -p in acceptEdits mode with streamed JSON output, keeps its artifacts in a temp folder and blocks until the child exits; flags set the model and effort, turn and budget caps, a timeout and the auto-compact window, and a delegate-setup lane can set the model, effort and timeout instead. Direct forms of git commit, git push and nested claude are denied, which the skill calls only a speed bump. The orchestrator treats the child&#39;s report as a claim: it reviews edits to existing tests first, re-runs the checks, inspects untracked and staged files, and commits only when the diff holds. Rework resumes the same session with a short delta brief. Skipping Claude&#39;s permission checks is a separate flag, for when you&#39;ve explicitly accepted it.</p>
+      <p class="muted">Summarizes <a href="https://github.com/amelnagdy/delegate-skills/tree/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/claude-delegate">the skill at 7f8ae34</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">amelnagdy/</span><wbr><span class="word">delegate-skills</span> <span class="word">--skill</span> <span class="word">claude-delegate</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/amelnagdy/delegate-skills --skill claude-delegate">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/amelnagdy/delegate-skills/claude-delegate">skills.sh page</a> · <a href="https://github.com/amelnagdy/delegate-skills/tree/HEAD/skills/claude-delegate">Source on GitHub</a> · <a href="/?repo=amelnagdy%2Fdelegate-skills">All skills from amelnagdy/delegate-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>6,500 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>2,578 <span class="muted">amelnagdy/delegate-skills</span></dd></div><div><dt>First seen</dt><dd>Jul 26, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">235</div>
+      <div class="stat-delta">-72% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 844; week to Sep 27: 498; week to Oct 4: 433; week to Oct 11: 339; week to Oct 18: 308; week to Oct 25: 385; week to Nov 1: 272; week to Nov 8: 235. Use the left and right arrow keys to read each week."
+        data-values="844,498,433,339,308,385,272,235" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,24.0 71.1,27.4 103.7,32.3 136.3,33.9 168.9,29.9 201.4,35.8 234.0,37.7" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="37.7" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>844</td></tr><tr><td>Sep 27</td><td>498</td></tr><tr><td>Oct 4</td><td>433</td></tr><tr><td>Oct 11</td><td>339</td></tr><tr><td>Oct 18</td><td>308</td></tr><tr><td>Oct 25</td><td>385</td></tr><tr><td>Nov 1</td><td>272</td></tr><tr><td>Nov 8</td><td>235</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/?tag=category%3Aagents">category:<wbr>agents</a><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/?tag=category%3Aengineering">category:<wbr>engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/?tag=needs%3Acli">needs:<wbr>cli</a><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/?tag=needs%3Aaccount">needs:<wbr>account</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="multi-agent" data-facet="topic" href="/?tag=multi-agent">multi-agent</a><a class="tag" data-tag="agent-workflows" data-facet="topic" href="/?tag=agent-workflows">agent-workflows</a><a class="tag" data-tag="implementation" data-facet="topic" href="/?tag=implementation">implementation</a><a class="tag" data-tag="code-review" data-facet="topic" href="/?tag=code-review">code-review</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:claude" data-facet="stack" href="/?tag=stack%3Aclaude">stack:<wbr>claude</a><a class="tag" data-tag="stack:git" data-facet="stack" href="/?tag=stack%3Agit">stack:<wbr>git</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/claude-delegate/SKILL.md">amelnagdy/delegate-skills at 7f8ae34</a>. Checked daily, last changed Nov 7, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: claude-delegate
+description: &#62;-
+  Delegate a coding task to a separate Claude Code CLI process or another Claude session as an
+  implementer, then review its diff and land it yourself. Use only when the user explicitly asks to
+  delegate implementation to Claude Code, another Claude session, or the `claude` CLI — for example,
+  &#34;have another Claude implement this&#34;, &#34;delegate this to Claude Code&#34;, or &#34;run this queue through a
+  separate Claude session.&#34; Do not trigger merely because the current orchestrator is Claude, and do
+  not use when the user asks the current Claude to implement directly without delegation.
+license: MIT
+compatibility: Requires the `claude` CLI (Claude Code) installed and authenticated, Node 18+, and git. The orchestrating agent must be able to run shell commands and read files. Claude&#39;s shell sandbox requires macOS, Linux, or WSL2; on native Windows the npm `claude.cmd` launch is verified and a direct `claude.exe` launch is pending verification. The optional --autocompact flag requires claude 2.1.221 or newer.
+metadata:
+  version: 0.5.0</code></pre></details>
+        <div class="markdown"><h3>Claude Delegate</h3>
+<p>You are the <strong>orchestrator</strong>. Delegate one bounded coding task to a separate <strong>implementer</strong> — a Claude
+Code CLI session — then review what it produced and land it yourself. You write the brief and own the
+judgment; the separate Claude session edits the working tree; you verify and commit.</p>
+<p>This skill is not a signal for the current Claude to implement directly. Use it only after the human
+explicitly asks for delegation to another Claude Code process or session.</p>
+<h4>When not to use this</h4>
+<ul>
+<li>The human asked the current agent to implement the task directly.</li>
+<li>The task is small enough to do inline and the human did not request delegation.</li>
+<li>The <code>claude</code> CLI is missing or unauthenticated (<code>claude auth status</code>).</li>
+<li>The task needs a stronger host boundary than Claude Code's tool permissions and shell-only sandbox
+provide. Use an isolated container or VM for that requirement.</li>
+</ul>
+<h4>Prerequisites</h4>
+<ol>
+<li><code>claude --version</code> succeeds.</li>
+<li><code>claude auth status</code> reports an authenticated session. On macOS the live credentials sit in the
+login Keychain; when the orchestrator's own sandbox blocks Keychain access (Codex's sandbox
+does), <code>claude</code> falls back to a possibly stale credentials file and reports <code>loggedIn: false</code>
+even though the login is valid. Re-run the check — and the dispatch itself — with that sandbox
+escalated or outside it before concluding the CLI is unauthenticated.</li>
+<li>The target repository is the directory passed with <code>--cd</code>.</li>
+<li>On Linux/WSL2, Claude's sandbox dependencies are installed. The normal relay profile is
+configured to fail when the sandbox is unavailable instead of silently running shell commands
+unsandboxed. Existing merged settings can still affect the effective boundary.</li>
+</ol>
+<h4>The loop</h4>
+<h5>1. Write the brief</h5>
+<p>The separate session has no orchestrator chat history. It receives the brief on stdin and can inspect
+the target working tree.</p>
+<p>Claude Code automatically discovers the target project's <code>CLAUDE.md</code> and normal local Claude
+configuration because the relay does not use <code>--bare</code>. It does <strong>not</strong> generically auto-load
+<code>AGENTS.md</code>. Read <code>AGENTS.md</code> yourself and copy every load-bearing constraint and the real gate
+commands into the brief. Tell the implementer not to commit. Keep one task per brief.</p>
+<p>Template and details: <a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/claude-delegate/references/writing-the-brief.md">references/writing-the-brief.md</a>.</p>
+<h5>2. Dispatch</h5>
+<pre><code class="language-bash">node &quot;&lt;skill-dir&gt;/scripts/relay.mjs&quot; --brief brief.txt --cd /path/to/repo
+# review/diagnosis only:                 add --read-only
+# continue the latest session:           add --resume-last
+# continue the recorded session:         add --session &lt;id&gt;
+# choose limits:                         add --max-turns 40 --max-budget-usd 10
+# set the auto-compact window:           add --autocompact 400k
+# hard relay deadline:                   add --timeout 2h
+# inspect every option:                  node .../relay.mjs --help
+</code></pre>
+<p><code>&lt;skill-dir&gt;</code> is this installed skill directory, the folder containing this <code>SKILL.md</code>.</p>
+<p>The relay runs <code>claude -p --output-format stream-json --verbose</code>, sends the brief through stdin, and
+writes artifacts under the system temp directory by default. It never uses <code>--bg</code> or <code>--bare</code>, and it
+never commits. See <a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/claude-delegate/references/dispatch-and-poll.md">references/dispatch-and-poll.md</a>.</p>
+<p><code>--autocompact &lt;auto|tokens&gt;</code> passes Claude Code's auto-compact window setting on every new or resumed invocation, and needs Claude Code <code>2.1.221</code> or newer — older builds fail the dispatch with <code>unknown option '--autocompact'</code>. The installed CLI owns the accepted range (<code>auto</code>, or 100k–1M tokens); the relay records the requested value but does not claim that Claude applied or enforced it.</p>
+<h5>3. Wait</h5>
+<p>The relay blocks until Claude exits. Use the orchestrator's background-command facility, or run it in
+the foreground and wait. Completion means the process exited and <code>result.json</code> exists.</p>
+<ul>
+<li>A pre-run usage error exits 2 and writes no <code>result.json</code>.</li>
+<li>A missing <code>claude</code> exits 127 and writes <code>status: &quot;claude_unavailable&quot;</code>.</li>
+<li>Timeout and caught relay signals terminate the whole implementer process tree and preserve an
+outcome artifact.</li>
+</ul>
+<p>Read <code>finalMessage</code>, <code>touchedFiles</code>, <code>resultSubtype</code>, and the raw artifact paths from <code>result.json</code>.</p>
+<h5>4. Review</h5>
+<p>Treat the implementer's report and gate outcomes as claims:</p>
+<ul>
+<li>Review edits to existing tests before a green gate means anything.</li>
+<li>Re-run the project's actual gates yourself.</li>
+<li>Read the complete diff against the brief, starting with <code>touchedFiles</code>.</li>
+<li>Inspect untracked and staged content as well as the ordinary diff.</li>
+<li>Run relevant guard skills if installed.</li>
+</ul>
+<p>Full checklist: <a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/claude-delegate/references/review-and-land.md">references/review-and-land.md</a>.</p>
+<h5>5. Land</h5>
+<p>The <strong>orchestrator commits</strong> only after the gates pass and the diff holds. For rework, resume the same
+Claude session with a delta brief:</p>
+<pre><code class="language-bash">echo &quot;Keep the implementation, replace the mocked DB test with the migrated fixture, and remove the
+unused import.&quot; | node &quot;&lt;skill-dir&gt;/scripts/relay.mjs&quot; --session &lt;id&gt; --cd /path/to/repo
+</code></pre>
+<p>Review a resumed run exactly like the first run.</p>
+<h4>Permission profiles</h4>
+<p>The normal profile is deliberately explicit:</p>
+<ul>
+<li><code>acceptEdits</code> permission mode.</li>
+<li>Built-in tools restricted to Read, Glob, Grep, Edit, Write, and the platform shell.</li>
+<li>On macOS, Linux, and WSL2, Claude's shell sandbox is enabled with startup failure on missing
+dependencies and no unsandboxed retry. Commands that stay sandboxed are auto-approved so ordinary
+gates can run headlessly. The sandbox governs shell processes and their children only; merged
+local or managed sandbox settings can add effective paths or exclusions.</li>
+<li>Configured MCP discovery and Claude.ai connectors are disabled, all MCP tools are denied, and
+skills, commands, and Claude's Agent tool are unavailable to the child. Project <code>CLAUDE.md</code>, hooks,
+normal authentication, session persistence, and other local settings still load.</li>
+<li>String rules deny common direct shell forms of <code>git commit</code>, <code>git push</code>, and nested <code>claude</code>, plus
+any command containing <code>claude-delegate</code>. Aliases, scripts, and wrappers can bypass them, so they
+are only a speed bump; the brief's no-commit instruction and orchestrator review remain the boundary.</li>
+</ul>
+<p>Native Windows does not support Claude's shell sandbox. The relay restricts the tool surface and
+pre-approves PowerShell so the run remains non-interactive, but that shell is not OS-isolated. Native
+<code>claude.exe</code> and npm <code>claude.cmd</code> launch paths are implemented. The <code>claude.cmd</code> path has a recorded
+native Windows run (see the README's Verification status); a directly spawned <code>claude.exe</code> is not yet
+verified.</p>
+<p><code>--read-only</code> uses <code>plan</code> mode with only Read, Glob, and Grep. It removes edit, write, and shell paths,
+then compares parsed git porcelain and fingerprints the working-tree identity and index entries of
+Git-visible paths that were already dirty.
+<code>readOnlyViolation</code> is <code>true</code> when either signal proves a change, <code>false</code> when coverage is complete and
+detects none, and <code>null</code> when coverage is incomplete. This is a reporting tripwire, not an OS boundary:
+ignored paths and perfect restores are outside it, local hooks can write, and concurrent changes cannot
+be attributed to Claude.</p>
+<p><code>--dangerously-skip-permissions</code> is an explicit opt-in to Claude's <code>bypassPermissions</code> mode. The
+restricted tool surface, direct commit/push deny rules, and supported-platform shell sandbox remain,
+but direct file tools can cross normal permission boundaries. Use it only with the human's explicit
+acceptance.</p>
+<h4>Complementary to native Claude features</h4>
+<p>Claude subagents, agent teams, and background sessions are useful when the current Claude environment
+is already the orchestrator and native coordination is the goal. This skill is complementary: it
+provides a cross-orchestrator contract — self-contained brief → dispatch → artifacts → review → land
+— and keeps the commit with the orchestrator.</p>
+<h4>References</h4>
+<ul>
+<li><a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/claude-delegate/references/writing-the-brief.md">references/writing-the-brief.md</a> — context, <code>CLAUDE.md</code> versus
+<code>AGENTS.md</code>, real gates, report contract, and delta briefs.</li>
+<li><a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/claude-delegate/references/dispatch-and-poll.md">references/dispatch-and-poll.md</a> — flags, profiles, artifacts,
+<code>result.json</code>, polling, and failure recovery.</li>
+<li><a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/claude-delegate/references/review-and-land.md">references/review-and-land.md</a> — generated-code review, the commit
+boundary, and session rework.</li>
+<li><a href="https://github.com/amelnagdy/delegate-skills/blob/7f8ae3435e5bc68a54efdca9f67797e905845562/skills/claude-delegate/references/multi-task-queues.md">references/multi-task-queues.md</a> — sequential queues, progress
+tracking, constraint carry-forward, and final coherence.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

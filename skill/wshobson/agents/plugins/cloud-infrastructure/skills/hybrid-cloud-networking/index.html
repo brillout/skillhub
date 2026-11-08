@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hybrid-cloud-networking · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re linking an on-premises data center to one or more clouds, running hybrid active-active setups or migrating to the cloud gradually. It does: weighs each cloud&#039;s site-to-site VPN against its dedicated link: AWS Direct Connect, Azure ExpressRoute, GCP Interconnect and OCI FastConnect. You get: Terraform for AWS and Azure VPN gateways and two AWS tunnels, diagrams of hub-and-spoke, multi-region and multi-cloud layouts, and example BGP settings. Also covers: ten security practices, cost advice, the metrics to watch and AWS, Azure and OCI CLI commands for troubleshooting." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=wshobson%2Fagents">wshobson/agents</a></p>
+      <div class="title-row"><h1>hybrid-cloud-networking</h1><button type="button" class="save" data-save="skill:wshobson/agents/plugins/cloud-infrastructure/skills/hybrid-cloud-networking" aria-pressed="false" aria-label="Save hybrid-cloud-networking" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re linking an on-premises data center to one or more clouds, running hybrid active-active setups or migrating to the cloud gradually</dd></div><div><dt>It does</dt><dd>weighs each cloud&#39;s site-to-site VPN against its dedicated link: AWS Direct Connect, Azure ExpressRoute, GCP Interconnect and OCI FastConnect</dd></div><div><dt>You get</dt><dd>Terraform for AWS and Azure VPN gateways and two AWS tunnels, diagrams of hub-and-spoke, multi-region and multi-cloud layouts, and example BGP settings</dd></div><div><dt>Also covers</dt><dd>ten security practices, cost advice, the metrics to watch and AWS, Azure and OCI CLI commands for troubleshooting</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A reference rather than a step-by-step workflow. For AWS, Azure, GCP and Oracle Cloud it sets an IPsec VPN, cheaper but over the internet (up to 1.25 Gbps per AWS tunnel, 3 Gbps on GCP), against a dedicated private link with lower latency and up to 100 Gbps. It sketches three layouts: hub-and-spoke from on-premises through a transit gateway or Azure vWAN to production, staging and development networks; multi-region with a Direct Connect per region; and multi-cloud with one dedicated link per provider. Routing uses BGP with example AS numbers, route propagation and filtering. High availability means dual VPN tunnels and active-active links with ECMP routing and BGP failover. Security practices include private links, encrypted tunnels, VPC endpoints, flow logs and DDoS protection; cost advice is to right-size links and keep VPN for low-bandwidth traffic. It lists the metrics to watch: tunnel state, traffic, packet loss, latency and BGP sessions. A short reference file compares the four dedicated-link services and advises redundant circuits in separate facilities, with VPN as backup. It points to multi-cloud-architecture and terraform-module-library.</p>
+      <p class="muted">Summarizes <a href="https://github.com/wshobson/agents/tree/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/cloud-infrastructure/skills/hybrid-cloud-networking">the skill at 4bde316</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">wshobson/</span><wbr><span class="word">agents</span> <span class="word">--skill</span> <span class="word">hybrid-cloud-networking</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/wshobson/agents --skill hybrid-cloud-networking">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/wshobson/agents/hybrid-cloud-networking">skills.sh page</a> · <a href="https://github.com/wshobson/agents/tree/HEAD/plugins/cloud-infrastructure/skills/hybrid-cloud-networking">Source on GitHub</a> · <a href="/?repo=wshobson%2Fagents">All skills from wshobson/agents</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>10,900 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>42,292 <span class="muted">wshobson/agents</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">164</div>
+      <div class="stat-delta">-3% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 169; week to Sep 27: 181; week to Oct 4: 215; week to Oct 11: 266; week to Oct 18: 207; week to Oct 25: 175; week to Nov 1: 176; week to Nov 8: 164. Use the left and right arrow keys to read each week."
+        data-values="169,181,215,266,207,175,176,164" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,22.0 38.6,20.1 71.1,14.4 103.7,6.0 136.3,15.8 168.9,21.1 201.4,20.9 234.0,22.9" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="22.9" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>169</td></tr><tr><td>Sep 27</td><td>181</td></tr><tr><td>Oct 4</td><td>215</td></tr><tr><td>Oct 11</td><td>266</td></tr><tr><td>Oct 18</td><td>207</td></tr><tr><td>Oct 25</td><td>175</td></tr><tr><td>Nov 1</td><td>176</td></tr><tr><td>Nov 8</td><td>164</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:cloud" data-facet="category" title="Deploy, provision, observe and debug cloud apps." href="/?tag=category%3Acloud">category:<wbr>cloud</a><a class="tag" data-tag="category:networking" data-facet="category" title="Computer networks: home labs, VLANs, VPNs, DNS, routing and network diagnostics." href="/?tag=category%3Anetworking">category:<wbr>networking</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Deploy, provision, observe and debug cloud apps.</p><p class="tag-meaning">Computer networks: home labs, VLANs, VPNs, DNS, routing and network diagnostics.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/?tag=type%3Aguidelines">type:<wbr>guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="infrastructure" data-facet="topic" href="/?tag=infrastructure">infrastructure</a><a class="tag" data-tag="security" data-facet="topic" href="/?tag=security">security</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:amazon" data-facet="stack" href="/?tag=stack%3Aamazon">stack:<wbr>amazon</a><a class="tag" data-tag="stack:azure" data-facet="stack" href="/?tag=stack%3Aazure">stack:<wbr>azure</a><a class="tag" data-tag="stack:google-cloud" data-facet="stack" href="/?tag=stack%3Agoogle-cloud">stack:<wbr>google-cloud</a><a class="tag" data-tag="stack:oracle-cloud" data-facet="stack" href="/?tag=stack%3Aoracle-cloud">stack:<wbr>oracle-cloud</a><a class="tag" data-tag="stack:terraform" data-facet="stack" href="/?tag=stack%3Aterraform">stack:<wbr>terraform</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/wshobson/agents/blob/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/cloud-infrastructure/skills/hybrid-cloud-networking/SKILL.md">wshobson/agents at 4bde316</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: hybrid-cloud-networking
+description: Configure secure, high-performance connectivity between on-premises infrastructure and cloud platforms using VPN and dedicated connections. Use when building hybrid cloud architectures, connecting data centers to cloud, or implementing secure cross-premises networking.</code></pre></details>
+        <div class="markdown"><h3>Hybrid Cloud Networking</h3>
+<p>Configure secure, high-performance connectivity between on-premises and cloud environments using VPN, Direct Connect, ExpressRoute, Interconnect, and FastConnect.</p>
+<h4>Purpose</h4>
+<p>Establish secure, reliable network connectivity between on-premises data centers and cloud providers (AWS, Azure, GCP, OCI).</p>
+<h4>When to Use</h4>
+<ul>
+<li>Connect on-premises to cloud</li>
+<li>Extend datacenter to cloud</li>
+<li>Implement hybrid active-active setups</li>
+<li>Meet compliance requirements</li>
+<li>Migrate to cloud gradually</li>
+</ul>
+<h4>Connection Options</h4>
+<h5>AWS Connectivity</h5>
+<h6>1. Site-to-Site VPN</h6>
+<ul>
+<li>IPSec VPN over internet</li>
+<li>Up to 1.25 Gbps per tunnel</li>
+<li>Cost-effective for moderate bandwidth</li>
+<li>Higher latency, internet-dependent</li>
+</ul>
+<pre><code class="language-hcl">resource &quot;aws_vpn_gateway&quot; &quot;main&quot; {
+  vpc_id = aws_vpc.main.id
+  tags = {
+    Name = &quot;main-vpn-gateway&quot;
+  }
+}
+
+resource &quot;aws_customer_gateway&quot; &quot;main&quot; {
+  bgp_asn    = 65000
+  ip_address = &quot;203.0.113.1&quot;
+  type       = &quot;ipsec.1&quot;
+}
+
+resource &quot;aws_vpn_connection&quot; &quot;main&quot; {
+  vpn_gateway_id      = aws_vpn_gateway.main.id
+  customer_gateway_id = aws_customer_gateway.main.id
+  type                = &quot;ipsec.1&quot;
+  static_routes_only  = false
+}
+</code></pre>
+<h6>2. AWS Direct Connect</h6>
+<ul>
+<li>Dedicated network connection</li>
+<li>1 Gbps to 100 Gbps</li>
+<li>Lower latency, consistent bandwidth</li>
+<li>More expensive, setup time required</li>
+</ul>
+<p><strong>Reference:</strong> See <code>references/direct-connect.md</code></p>
+<h5>Azure Connectivity</h5>
+<h6>1. Site-to-Site VPN</h6>
+<pre><code class="language-hcl">resource &quot;azurerm_virtual_network_gateway&quot; &quot;vpn&quot; {
+  name                = &quot;vpn-gateway&quot;
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+
+  type     = &quot;Vpn&quot;
+  vpn_type = &quot;RouteBased&quot;
+  sku      = &quot;VpnGw1&quot;
+
+  ip_configuration {
+    name                          = &quot;vnetGatewayConfig&quot;
+    public_ip_address_id          = azurerm_public_ip.vpn.id
+    private_ip_address_allocation = &quot;Dynamic&quot;
+    subnet_id                     = azurerm_subnet.gateway.id
+  }
+}
+</code></pre>
+<h6>2. Azure ExpressRoute</h6>
+<ul>
+<li>Private connection via connectivity provider</li>
+<li>Up to 100 Gbps</li>
+<li>Low latency, high reliability</li>
+<li>Premium for global connectivity</li>
+</ul>
+<h5>GCP Connectivity</h5>
+<h6>1. Cloud VPN</h6>
+<ul>
+<li>IPSec VPN (Classic or HA VPN)</li>
+<li>HA VPN: 99.99% SLA</li>
+<li>Up to 3 Gbps per tunnel</li>
+</ul>
+<h6>2. Cloud Interconnect</h6>
+<ul>
+<li>Dedicated (10 Gbps, 100 Gbps)</li>
+<li>Partner (50 Mbps to 50 Gbps)</li>
+<li>Lower latency than VPN</li>
+</ul>
+<h5>OCI Connectivity</h5>
+<h6>1. IPSec VPN Connect</h6>
+<ul>
+<li>IPSec VPN with redundant tunnels</li>
+<li>Dynamic routing through DRG</li>
+<li>Good fit for branch offices and migration phases</li>
+</ul>
+<h6>2. OCI FastConnect</h6>
+<ul>
+<li>Private dedicated connectivity through Oracle or partner edge</li>
+<li>Suitable for predictable throughput and lower-latency hybrid traffic</li>
+<li>Commonly paired with DRG for hub-and-spoke designs</li>
+</ul>
+<h4>Hybrid Network Patterns</h4>
+<h5>Pattern 1: Hub-and-Spoke</h5>
+<pre><code>On-Premises Datacenter
+         ↓
+    VPN/Direct Connect
+         ↓
+    Transit Gateway (AWS) / vWAN (Azure)
+         ↓
+    ├─ Production VPC/VNet
+    ├─ Staging VPC/VNet
+    └─ Development VPC/VNet
+</code></pre>
+<h5>Pattern 2: Multi-Region Hybrid</h5>
+<pre><code>On-Premises
+    ├─ Direct Connect → us-east-1
+    └─ Direct Connect → us-west-2
+            ↓
+        Cross-Region Peering
+</code></pre>
+<h5>Pattern 3: Multi-Cloud Hybrid</h5>
+<pre><code>On-Premises Datacenter
+    ├─ Direct Connect → AWS
+    ├─ ExpressRoute → Azure
+    ├─ Interconnect → GCP
+    └─ FastConnect → OCI
+</code></pre>
+<h4>Routing Configuration</h4>
+<h5>BGP Configuration</h5>
+<pre><code>On-Premises Router:
+- AS Number: 65000
+- Advertise: 10.0.0.0/8
+
+Cloud Router:
+- AS Number: 64512 (AWS), 65515 (Azure), provider-assigned for GCP/OCI
+- Advertise: Cloud VPC/VNet CIDRs
+</code></pre>
+<h5>Route Propagation</h5>
+<ul>
+<li>Enable route propagation on route tables</li>
+<li>Use BGP for dynamic routing</li>
+<li>Implement route filtering</li>
+<li>Monitor route advertisements</li>
+</ul>
+<h4>Security Best Practices</h4>
+<ol>
+<li><strong>Use private connectivity</strong> (Direct Connect/ExpressRoute/Interconnect/FastConnect)</li>
+<li><strong>Implement encryption</strong> for VPN tunnels</li>
+<li><strong>Use VPC endpoints</strong> to avoid internet routing</li>
+<li><strong>Configure network ACLs</strong> and security groups</li>
+<li><strong>Enable VPC Flow Logs</strong> for monitoring</li>
+<li><strong>Implement DDoS protection</strong></li>
+<li><strong>Use PrivateLink/Private Endpoints</strong></li>
+<li><strong>Monitor connections</strong> with CloudWatch/Azure Monitor/Cloud Monitoring/OCI Monitoring</li>
+<li><strong>Implement redundancy</strong> (dual tunnels)</li>
+<li><strong>Regular security audits</strong></li>
+</ol>
+<h4>High Availability</h4>
+<h5>Dual VPN Tunnels</h5>
+<pre><code class="language-hcl">resource &quot;aws_vpn_connection&quot; &quot;primary&quot; {
+  vpn_gateway_id      = aws_vpn_gateway.main.id
+  customer_gateway_id = aws_customer_gateway.primary.id
+  type                = &quot;ipsec.1&quot;
+}
+
+resource &quot;aws_vpn_connection&quot; &quot;secondary&quot; {
+  vpn_gateway_id      = aws_vpn_gateway.main.id
+  customer_gateway_id = aws_customer_gateway.secondary.id
+  type                = &quot;ipsec.1&quot;
+}
+</code></pre>
+<h5>Active-Active Configuration</h5>
+<ul>
+<li>Multiple connections from different locations</li>
+<li>BGP for automatic failover</li>
+<li>Equal-cost multi-path (ECMP) routing</li>
+<li>Monitor health of all connections</li>
+</ul>
+<h4>Monitoring and Troubleshooting</h4>
+<h5>Key Metrics</h5>
+<ul>
+<li>Tunnel status (up/down)</li>
+<li>Bytes in/out</li>
+<li>Packet loss</li>
+<li>Latency</li>
+<li>BGP session status</li>
+</ul>
+<h5>Troubleshooting</h5>
+<pre><code class="language-bash"># AWS VPN
+aws ec2 describe-vpn-connections
+aws ec2 get-vpn-connection-telemetry
+
+# Azure VPN
+az network vpn-connection show
+az network vpn-connection show-device-config-script
+
+# OCI IPSec VPN
+oci network ip-sec-connection list
+oci network cpe list
+</code></pre>
+<h4>Cost Optimization</h4>
+<ol>
+<li><strong>Right-size connections</strong> based on traffic</li>
+<li><strong>Use VPN for low-bandwidth</strong> workloads</li>
+<li><strong>Consolidate traffic</strong> through fewer connections</li>
+<li><strong>Minimize data transfer</strong> costs</li>
+<li><strong>Use dedicated private links</strong> for high bandwidth</li>
+<li><strong>Implement caching</strong> to reduce traffic</li>
+</ol>
+<h4>Related Skills</h4>
+<ul>
+<li><code>multi-cloud-architecture</code> - For architecture decisions</li>
+<li><code>terraform-module-library</code> - For IaC implementation</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

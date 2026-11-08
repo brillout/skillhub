@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>api-security-best-practices · SkillHub</title>
+    <meta name="description" content="Use it when: you add a protected endpoint, review who can reach which objects, or investigate an API abuse path. It does: follows the request from caller identity through authorization and validated input to storage and response, keeping your existing identity provider. You get: the route policy, the failure cases reproduced, the exact test command and output, and the gaps left untested. Examples in: Node, with Express, jsonwebtoken and Zod, as sketches to check against your installed versions. Isn&#039;t: a penetration test or certified audit; it tests with synthetic identities in a test environment." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=sickn33%2Fagentic-awesome-skills">sickn33/agentic-awesome-skills</a></p>
+      <div class="title-row"><h1>api-security-best-practices</h1><button type="button" class="save" data-save="skill:sickn33/agentic-awesome-skills/skills/api-security-best-practices" aria-pressed="false" aria-label="Save api-security-best-practices" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you add a protected endpoint, review who can reach which objects, or investigate an API abuse path</dd></div><div><dt>It does</dt><dd>follows the request from caller identity through authorization and validated input to storage and response, keeping your existing identity provider</dd></div><div><dt>You get</dt><dd>the route policy, the failure cases reproduced, the exact test command and output, and the gaps left untested</dd></div><div><dt>Examples in</dt><dd>Node, with Express, jsonwebtoken and Zod, as sketches to check against your installed versions</dd></div><div><dt>Isn&#39;t</dt><dd>a penetration test or certified audit; it tests with synthetic identities in a test environment</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Security guidance for one API boundary at a time, starting from the failing route when there&#39;s a concrete defect rather than deploying new security infrastructure. It covers verifying JWTs against a fixed algorithm, issuer and audience, and rotating refresh tokens in one transaction so that reuse revokes the session family; authorizing each object and tenant inside the database write instead of checking first; parsing input once, rejecting partial numbers, unknown properties and oversized bodies, with notes on HTML sanitizing, outbound URLs and uploads; rate limits with shared stores, correct proxy trust and accurate Retry-After headers, without claiming DDoS protection; Argon2id for new password storage; and logs that never hold tokens, passwords or request bodies. A worked example takes a PATCH /users/:id endpoint through missing tokens, malformed IDs, an extra role field and cross-tenant access. It says plainly that passing structural checks doesn&#39;t prove an API secure, and wants separate authority before production scans, account writes or messages.</p>
+      <p class="muted">Summarizes <a href="https://github.com/sickn33/agentic-awesome-skills/tree/828257c3037dc7c3c3ec987decc5a603025a0ce5/skills/api-security-best-practices">the skill at 828257c</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">sickn33/</span><wbr><span class="word">agentic-awesome-skills</span> <span class="word">--skill</span> <span class="word">api-security-best-practices</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/sickn33/agentic-awesome-skills --skill api-security-best-practices">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/sickn33/agentic-awesome-skills/api-security-best-practices">skills.sh page</a> · <a href="https://github.com/sickn33/agentic-awesome-skills/tree/HEAD/skills/api-security-best-practices">Source on GitHub</a> · <a href="/?repo=sickn33%2Fagentic-awesome-skills">All skills from sickn33/agentic-awesome-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>8,900 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>49,334 <span class="muted">sickn33/agentic-awesome-skills</span></dd></div><div><dt>First seen</dt><dd>Jan 22, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">37</div>
+      <div class="stat-delta">-37% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 59; week to Sep 27: 65; week to Oct 4: 79; week to Oct 11: 89; week to Oct 18: 34; week to Oct 25: 34; week to Nov 1: 47; week to Nov 8: 37. Use the left and right arrow keys to read each week."
+        data-values="59,65,79,89,34,34,47,37" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,20.8 38.6,17.9 71.1,10.9 103.7,6.0 136.3,33.2 168.9,33.2 201.4,26.8 234.0,31.7" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="31.7" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>59</td></tr><tr><td>Sep 27</td><td>65</td></tr><tr><td>Oct 4</td><td>79</td></tr><tr><td>Oct 11</td><td>89</td></tr><tr><td>Oct 18</td><td>34</td></tr><tr><td>Oct 25</td><td>34</td></tr><tr><td>Nov 1</td><td>47</td></tr><tr><td>Nov 8</td><td>37</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/?tag=category%3Asecurity">category:<wbr>security</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/?tag=type%3Aguidelines">type:<wbr>guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/?tag=security">security</a><a class="tag" data-tag="auth" data-facet="topic" href="/?tag=auth">auth</a><a class="tag" data-tag="backend" data-facet="topic" href="/?tag=backend">backend</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:node" data-facet="stack" href="/?tag=stack%3Anode">stack:<wbr>node</a><a class="tag" data-tag="stack:express" data-facet="stack" href="/?tag=stack%3Aexpress">stack:<wbr>express</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/sickn33/agentic-awesome-skills/blob/828257c3037dc7c3c3ec987decc5a603025a0ce5/skills/api-security-best-practices/SKILL.md">sickn33/agentic-awesome-skills at 828257c</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: api-security-best-practices
+description: &#34;Implement secure API design patterns including authentication, authorization, input validation, rate limiting, and protection against common API vulnerabilities&#34;
+risk: critical
+source: community
+date_added: &#34;2026-02-27&#34;</code></pre></details>
+        <div class="markdown"><h3>API Security Best Practices</h3>
+<p>Review the request boundary from caller identity through authorization, validated
+input, storage and observable response. Preserve the application's actual identity
+provider and data model rather than introducing a second authentication system.</p>
+<h4>When to Use</h4>
+<p>Use when adding a protected endpoint, reviewing object access, replacing permissive
+request parsing, or investigating an API abuse path. For a concrete defect, start
+with the failing route and its callers; do not deploy unrelated security infrastructure.</p>
+<h4>Inputs and prerequisites</h4>
+<p>Record the routes, caller/tenant model, identity provider, token contract, runtime and
+locked dependency versions, database schema, proxy topology and authorized test scope.
+Use synthetic identities in a test environment. Existing task authorization carries
+forward; production scans, account writes and message sends need their own authority.
+The Node examples below are integration sketches for Express, jsonwebtoken and Zod;
+application/database adapters are deliberately named rather than presented as a full
+runnable service. Confirm APIs against the installed versions before integrating.</p>
+<h4>1. Authenticate the exact token contract</h4>
+<p>Prefer the established provider/session middleware. When the service owns an HMAC
+JWT contract, require a strong server-owned key, a fixed algorithm, exact issuer and
+audience, and required runtime claims. Do not infer permissions from a decoded token
+before signature verification. Never accept a caller-selected verification algorithm.</p>
+<pre><code class="language-javascript">const jwt = require('jsonwebtoken');
+
+// Illustrative first-party access-token contract; not a third-party OAuth adapter.
+const ACCESS_POLICY = {
+  algorithms: ['HS256'], issuer: 'example-auth', audience: 'example-api'
+};
+function verifyAccessToken(token, signingKey) {
+  const claims = jwt.verify(token, signingKey, ACCESS_POLICY);
+  if (!claims || typeof claims !== 'object' ||
+      typeof claims.sub !== 'string' || !claims.sub ||
+      typeof claims.tenantId !== 'string' || !claims.tenantId ||
+      !Number.isSafeInteger(claims.exp) || !Number.isSafeInteger(claims.iat) ||
+      claims.exp &lt;= claims.iat) {
+    throw new Error('Invalid access claims');
+  }
+  return { subject: claims.sub, tenantId: claims.tenantId };
+}
+function readBearer(header) {
+  if (typeof header !== 'string' || header.length &gt; 8192) return null;
+  const match = /^Bearer ([A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)$/i.exec(header);
+  return match ? match[1] : null;
+}
+</code></pre>
+<p>Issue access tokens with the same issuer/audience/algorithm and a short application-
+approved expiration. Handle verification failure as a generic 401 without echoing the
+token or exception. Expiration alone does not revoke a token; define revocation or
+short-lived sessions according to the actual threat model. A service using asymmetric
+provider keys needs the provider's discovery/JWKS validation and key-rotation policy,
+not this HMAC example. Never reuse an access token as a refresh token.</p>
+<h5>Refresh sessions</h5>
+<p>Use the provider's supported session flow or a server-side opaque refresh design:
+store only a digest, expiry, user/session family and revocation state. In one atomic
+transaction consume the old active token and create the replacement. Concurrent reuse
+must not issue two successors; defined reuse handling revokes the affected family.
+Check current user status and permissions when issuing new access tokens. Bind refresh
+to the intended client/session and protect cookie-based requests against CSRF. Do not
+log tokens, store them plaintext in a database, or return a refresh token through a URL.
+Test simultaneous refresh, expiry, replay, revocation and transaction failure before
+calling the flow complete. No database transaction adapter is bundled here.</p>
+<h4>2. Authorize the resource and operation</h4>
+<p>Authentication identifies the caller; authorization decides the exact operation on
+an object and tenant. A role name does not automatically grant cross-tenant access.
+Apply the owner/tenant predicate in the database mutation to avoid a check-then-write
+race, and allowlist writable properties. Use 404/403 consistently with the product's
+resource-disclosure policy.</p>
+<pre><code class="language-javascript">// Prisma-style sketch; id and tenant types must match your actual schema.
+async function deleteOwnedPost(prisma, postId, principal) {
+  const result = await prisma.post.deleteMany({
+    where: { id: postId, userId: principal.subject, tenantId: principal.tenantId }
+  });
+  return result.count === 1;
+}
+</code></pre>
+<p>An administrator path needs an explicit separate policy and audit event; do not add
+an implicit admin bypass to every owner check. Test a valid user accessing another
+user's object, the same ID in another tenant, deleted memberships and bulk endpoints.</p>
+<h4>3. Parse once, then use the validated value</h4>
+<p>Reject partial numeric parses (<code>12abc</code> is not ID 12), unsafe integers, unexpected
+properties and oversized requests. Use parameterized database queries. An ORM does
+not provide business authorization or make unsafe raw SQL safe.</p>
+<pre><code class="language-javascript">function parsePositiveId(raw) {
+  if (typeof raw !== 'string' || !/^[1-9][0-9]{0,15}$/.test(raw)) return null;
+  const value = Number(raw);
+  return Number.isSafeInteger(value) &amp;&amp; value &gt; 0 ? value : null;
+}
+
+const { z } = require('zod');
+const profileUpdate = z.object({
+  displayName: z.string().trim().min(1).max(100)
+}).strict();
+function validateBody(schema) {
+  return (req, res, next) =&gt; {
+    const parsed = schema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ error: 'Invalid request' });
+    }
+    req.validatedBody = parsed.data; // Defaults/transforms must reach the handler.
+    next();
+  };
+}
+// Handler uses req.validatedBody, never the original body or an arbitrary spread.
+</code></pre>
+<p>Set body limits before parsing. Zod shape validation is only one layer: check current
+ownership, allowed transitions and uniqueness in the transaction. For HTML allow only
+needed tags/attributes with a maintained sanitizer, then render with the destination's
+safe output API. For plain comments prefer plain text; sanitizing a string does not
+make it safe in every JavaScript, URL or HTML context. Validate upstream API responses
+as untrusted input too.</p>
+<p>For outbound URLs, define the allowed scheme/hosts, redirect behavior, resolved IP
+ranges, credentials policy, timeout and response size. A regex or a URL parser alone
+does not prevent SSRF or DNS rebinding. File uploads likewise need type/content checks,
+size limits, isolated storage and authorization on reads.</p>
+<h4>4. Control abuse without claiming DDoS protection</h4>
+<p>Use the existing gateway and maintained rate-limit store. Authenticate before deriving
+an authenticated-user key, and never trust a user-supplied tier. For anonymous traffic,
+use the library's supported IPv6-aware IP key handling and configure Express trust
+proxy to the actual trusted hops; do not blindly enable it for all callers.</p>
+<p>For a distributed quota, use an atomic counter-plus-expiration implementation with
+defined store-outage behavior. Avoid a handwritten <code>INCR</code> followed by <code>EXPIRE</code>: a crash
+between them can leave a permanent key. Distinguish per-user quotas, per-IP abuse
+controls, concurrency limits and upstream service budgets. Record actual window/reset
+semantics and send an accurate Retry-After rather than a hardcoded full-window value.
+An in-memory limiter is per-process unless a shared store is configured.</p>
+<p>Test concurrent requests, IPv4/IPv6, forged forwarding headers, unknown tiers, absent
+identity, Redis failure and expiration. Application rate limits cannot absorb network
+saturation. Helmet configures HTTP response headers; it is not DDoS protection, access
+control or a substitute for upstream capacity controls. Roll out CSP/HSTS against the
+actual deployment and subdomain policy; do not copy preload settings blindly.</p>
+<h4>5. Passwords, secrets and logging</h4>
+<p>Use the established identity provider where possible. For stored passwords, use a
+maintained password-hashing scheme with calibrated parameters (prefer Argon2id for
+new designs). Check breached/common passwords and support passphrases. Do not impose
+arbitrary uppercase/symbol composition rules or silently truncate long passwords.
+Legacy bcrypt has an input-byte limit that must be accounted for explicitly during
+migration; password length in characters and UTF-8 bytes are different.</p>
+<p>Keep secrets in the approved secret mechanism, check required configuration at startup
+without printing values, and rotate exposed credentials. Never include raw tokens,
+passwords, request bodies or complete database exceptions in routine logs. Log bounded
+event names, request correlation and safe status/error classes under an appropriate
+retention/access policy. Sanitized errors should not return mass-assigned user objects.
+CORS controls browser cross-origin access; it is not API authentication or CSRF protection.</p>
+<h4>Worked example: a profile update boundary</h4>
+<p>Given <code>PATCH /users/:id</code> with a string ID and an editable display name:</p>
+<ol>
+<li>Record the authorized caller/tenant and current endpoint behavior in fixtures.</li>
+<li>Check missing/expired/wrong-audience tokens return 401 before storage access.</li>
+<li>Send <code>12abc</code>, an unsafe integer, an empty name and an extra <code>role</code> field; expect 400
+and no database mutation. Send a padded valid name; confirm only the parsed trimmed
+value reaches the owner-and-tenant-scoped update.</li>
+<li>Try a different user's valid ID and a cross-tenant ID; expect the documented denial
+and no mutation. A valid owner request updates only the allowed property.</li>
+<li>Exercise quota/store failure and confirm logs contain no request token or name.</li>
+</ol>
+<p>Return the route policy, reproduced failure cases, exact test command/output and
+remaining gaps. These are expected checks to execute in the target application, not
+claims that this repository has tested a deployed API.</p>
+<h4>Limitations</h4>
+<p>This guide is not a full identity service, certified security audit or penetration
+test. Snippets omit application adapters and integration error middleware. Unit tests
+of a parser do not verify database transactions, proxy behavior or provider sessions.
+Report any untested route, tenant path and failure mode explicitly. Do not infer a
+clean security posture from passing structural checks or from a risk metadata label.</p>
+<h4>References</h4>
+<ul>
+<li><a href="https://owasp.org/www-project-api-security/">OWASP API Security</a></li>
+<li><a href="https://www.rfc-editor.org/rfc/rfc8725">JWT best current practices, RFC 8725</a></li>
+<li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html">OWASP Session Management</a></li>
+<li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html">OWASP Password Storage</a></li>
+<li><a href="https://expressjs.com/en/advanced/best-practice-security.html">Express production security</a></li>
+<li><a href="https://zod.dev/basics">Zod basic parsing</a></li>
+<li>Related skills: <code>auth-implementation-patterns</code>, <code>api-patterns</code>, <code>systematic-debugging</code>.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

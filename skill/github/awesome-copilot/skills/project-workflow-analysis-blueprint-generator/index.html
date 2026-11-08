@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>project-workflow-analysis-blueprint-generator · SkillHub</title>
+    <meta name="description" content="Use it when: you want an agent or a new developer to add features the way the existing code already does them. It does: detects the stack, entry points and persistence, then traces each workflow from its entry point through services, mapping, data access, responses, errors and async work. You get: documentation of each workflow with the files and real code involved, naming conventions, reusable code templates and implementation guidelines. Configure: variables set the project type, entry point, persistence, architecture pattern, number of workflows, detail level, test patterns and a sequence diagram. Unlike: folder-structure-blueprint-generator, from the same repo, which maps where files live; this follows how a request moves through them." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=github%2Fawesome-copilot">github/awesome-copilot</a></p>
+      <div class="title-row"><h1>project-workflow-analysis-blueprint-generator</h1><button type="button" class="save" data-save="skill:github/awesome-copilot/skills/project-workflow-analysis-blueprint-generator" aria-pressed="false" aria-label="Save project-workflow-analysis-blueprint-generator" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want an agent or a new developer to add features the way the existing code already does them</dd></div><div><dt>It does</dt><dd>detects the stack, entry points and persistence, then traces each workflow from its entry point through services, mapping, data access, responses, errors and async work</dd></div><div><dt>You get</dt><dd>documentation of each workflow with the files and real code involved, naming conventions, reusable code templates and implementation guidelines</dd></div><div><dt>Configure</dt><dd>variables set the project type, entry point, persistence, architecture pattern, number of workflows, detail level, test patterns and a sequence diagram</dd></div><div><dt>Unlike</dt><dd>folder-structure-blueprint-generator, from the same repo, which maps where files live; this follows how a request moves through them</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A prompt template for writing down how a codebase actually implements its features. It starts by detecting the technologies, the entry points (API controllers, GraphQL resolvers, UI components that call APIs, message handlers, scheduled jobs) and the persistence (database contexts, repositories, ORM mappings, API clients, file access). For each workflow it names the business purpose, the trigger and every file or class involved, then documents the entry point with its full signature and request model, the services and their dependency injection, DTO-to-domain mapping, data access with the actual queries, response construction and status codes, error handling down to retries and compensating actions, and background jobs or events. Optional sections add test patterns and a sequence diagram. It then records naming conventions for controllers, services, repositories and DTOs, gives code templates for a new endpoint, service method, repository method and domain model, and ends with guidance: the order to build a similar feature in, pitfalls in the current code and its extension points. Patterns specific to .NET, Spring and React are covered when detected.</p>
+      <p class="muted">Summarizes <a href="https://github.com/github/awesome-copilot/tree/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/project-workflow-analysis-blueprint-generator">the skill at 797337f</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">github/</span><wbr><span class="word">awesome-copilot</span> <span class="word">--skill</span> <span class="word">project-workflow-analysis-blueprint-generator</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/github/awesome-copilot --skill project-workflow-analysis-blueprint-generator">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/github/awesome-copilot/project-workflow-analysis-blueprint-generator">skills.sh page</a> · <a href="https://github.com/github/awesome-copilot/tree/HEAD/skills/project-workflow-analysis-blueprint-generator">Source on GitHub</a> · <a href="/?repo=github%2Fawesome-copilot">All skills from github/awesome-copilot</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>9,400 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>40,908 <span class="muted">github/awesome-copilot</span></dd></div><div><dt>First seen</dt><dd>Feb 25, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">5</div>
+      <div class="stat-delta">-67% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 15; week to Sep 27: 16; week to Oct 4: 18; week to Oct 11: 19; week to Oct 18: 7; week to Oct 25: 8; week to Nov 1: 6; week to Nov 8: 5. Use the left and right arrow keys to read each week."
+        data-values="15,16,18,19,7,8,6,5" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,15.3 38.6,12.9 71.1,8.3 103.7,6.0 136.3,33.8 168.9,31.5 201.4,36.1 234.0,38.4" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="38.4" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>15</td></tr><tr><td>Sep 27</td><td>16</td></tr><tr><td>Oct 4</td><td>18</td></tr><tr><td>Oct 11</td><td>19</td></tr><tr><td>Oct 18</td><td>7</td></tr><tr><td>Oct 25</td><td>8</td></tr><tr><td>Nov 1</td><td>6</td></tr><tr><td>Nov 8</td><td>5</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:writing" data-facet="category" title="Articles, docs, internal comms, research write-ups and prose that doesn&#39;t read as generated." href="/?tag=category%3Awriting">category:<wbr>writing</a></div>
+          <p class="tag-meaning">Articles, docs, internal comms, research write-ups and prose that doesn&#39;t read as generated.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:command" data-facet="type" title="A one-shot action you invoke by name, such as turning the conversation into a PRD." href="/?tag=type%3Acommand">type:<wbr>command</a></div>
+          <p class="tag-meaning">A one-shot action you invoke by name, such as turning the conversation into a PRD.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="docs-writing" data-facet="topic" href="/?tag=docs-writing">docs-writing</a><a class="tag" data-tag="architecture" data-facet="topic" href="/?tag=architecture">architecture</a><a class="tag" data-tag="implementation" data-facet="topic" href="/?tag=implementation">implementation</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/github/awesome-copilot/blob/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/project-workflow-analysis-blueprint-generator/SKILL.md">github/awesome-copilot at 797337f</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: project-workflow-analysis-blueprint-generator
+description: &#39;Comprehensive technology-agnostic prompt generator for documenting end-to-end application workflows. Automatically detects project architecture patterns, technology stacks, and data flow patterns to generate detailed implementation blueprints covering entry points, service layers, data access, error handling, and testing approaches across multiple technologies including .NET, Java/Spring, React, and microservices architectures.&#39;</code></pre></details>
+        <div class="markdown"><h3>Project Workflow Documentation Generator</h3>
+<h4>Configuration Variables</h4>
+<pre><code>${PROJECT_TYPE=&quot;Auto-detect|.NET|Java|Spring|Node.js|Python|React|Angular|Microservices|Other&quot;}
+&lt;!-- Primary technology stack --&gt;
+
+${ENTRY_POINT=&quot;API|GraphQL|Frontend|CLI|Message Consumer|Scheduled Job|Custom&quot;}
+&lt;!-- Starting point for the flow --&gt;
+
+${PERSISTENCE_TYPE=&quot;Auto-detect|SQL Database|NoSQL Database|File System|External API|Message Queue|Cache|None&quot;}
+&lt;!-- Data storage type --&gt;
+
+${ARCHITECTURE_PATTERN=&quot;Auto-detect|Layered|Clean|CQRS|Microservices|MVC|MVVM|Serverless|Event-Driven|Other&quot;}
+&lt;!-- Primary architecture pattern --&gt;
+
+${WORKFLOW_COUNT=1-5}
+&lt;!-- Number of workflows to document --&gt;
+
+${DETAIL_LEVEL=&quot;Standard|Implementation-Ready&quot;}
+&lt;!-- Level of implementation detail to include --&gt;
+
+${INCLUDE_SEQUENCE_DIAGRAM=true|false}
+&lt;!-- Generate sequence diagram --&gt;
+
+${INCLUDE_TEST_PATTERNS=true|false}
+&lt;!-- Include testing approach --&gt;
+</code></pre>
+<h4>Generated Prompt</h4>
+<pre><code>&quot;Analyze the codebase and document ${WORKFLOW_COUNT} representative end-to-end workflows 
+that can serve as implementation templates for similar features. Use the following approach:
+</code></pre>
+<h5>Initial Detection Phase</h5>
+<pre><code>${PROJECT_TYPE == &quot;Auto-detect&quot; ? 
+  &quot;Begin by examining the codebase structure to identify technologies:
+   - Check for .NET solutions/projects, Spring configurations, Node.js/Express files, etc.
+   - Identify the primary programming language(s) and frameworks in use
+   - Determine the architectural patterns based on folder structure and key components&quot; 
+  : &quot;Focus on ${PROJECT_TYPE} patterns and conventions&quot;}
+</code></pre>
+<pre><code>${ENTRY_POINT == &quot;Auto-detect&quot; ? 
+  &quot;Identify typical entry points by looking for:
+   - API controllers or route definitions
+   - GraphQL resolvers
+   - UI components that initiate network requests
+   - Message handlers or event subscribers
+   - Scheduled job definitions&quot; 
+  : &quot;Focus on ${ENTRY_POINT} entry points&quot;}
+</code></pre>
+<pre><code>${PERSISTENCE_TYPE == &quot;Auto-detect&quot; ? 
+  &quot;Determine persistence mechanisms by examining:
+   - Database context/connection configurations
+   - Repository implementations
+   - ORM mappings
+   - External API clients
+   - File system interactions&quot; 
+  : &quot;Focus on ${PERSISTENCE_TYPE} interactions&quot;}
+</code></pre>
+<h5>Workflow Documentation Instructions</h5>
+<p>For each of the <code>${WORKFLOW_COUNT}</code> most representative workflow(s) in the system:</p>
+<h6>1. Workflow Overview</h6>
+<ul>
+<li>Provide a name and brief description of the workflow</li>
+<li>Explain the business purpose it serves</li>
+<li>Identify the triggering action or event</li>
+<li>List all files/classes involved in the complete workflow</li>
+</ul>
+<h6>2. Entry Point Implementation</h6>
+<p><strong>API Entry Points:</strong></p>
+<pre><code>${ENTRY_POINT == &quot;API&quot; || ENTRY_POINT == &quot;Auto-detect&quot; ? 
+  &quot;- Document the API controller class and method that receives the request
+   - Show the complete method signature including attributes/annotations
+   - Include the full request DTO/model class definition
+   - Document validation attributes and custom validators
+   - Show authentication/authorization attributes and checks&quot; : &quot;&quot;}
+</code></pre>
+<p><strong>GraphQL Entry Points:</strong></p>
+<pre><code>${ENTRY_POINT == &quot;GraphQL&quot; || ENTRY_POINT == &quot;Auto-detect&quot; ? 
+  &quot;- Document the GraphQL resolver class and method
+   - Show the complete schema definition for the query/mutation
+   - Include input type definitions
+   - Show resolver method implementation with parameter handling&quot; : &quot;&quot;}
+</code></pre>
+<p><strong>Frontend Entry Points:</strong></p>
+<pre><code>${ENTRY_POINT == &quot;Frontend&quot; || ENTRY_POINT == &quot;Auto-detect&quot; ? 
+  &quot;- Document the component that initiates the API call
+   - Show the event handler that triggers the request
+   - Include the API client service method
+   - Show state management code related to the request&quot; : &quot;&quot;}
+</code></pre>
+<p><strong>Message Consumer Entry Points:</strong></p>
+<pre><code>${ENTRY_POINT == &quot;Message Consumer&quot; || ENTRY_POINT == &quot;Auto-detect&quot; ? 
+  &quot;- Document the message handler class and method
+   - Show message subscription configuration
+   - Include the complete message model definition
+   - Show deserialization and validation logic&quot; : &quot;&quot;}
+</code></pre>
+<h6>3. Service Layer Implementation</h6>
+<ul>
+<li>Document each service class involved with their dependencies</li>
+<li>Show the complete method signatures with parameters and return types</li>
+<li>Include actual method implementations with key business logic</li>
+<li>Document interface definitions where applicable</li>
+<li>Show dependency injection registration patterns</li>
+</ul>
+<p><strong>CQRS Patterns:</strong></p>
+<pre><code>${ARCHITECTURE_PATTERN == &quot;CQRS&quot; || ARCHITECTURE_PATTERN == &quot;Auto-detect&quot; ? 
+  &quot;- Include complete command/query handler implementations&quot; : &quot;&quot;}
+</code></pre>
+<p><strong>Clean Architecture Patterns:</strong></p>
+<pre><code>${ARCHITECTURE_PATTERN == &quot;Clean&quot; || ARCHITECTURE_PATTERN == &quot;Auto-detect&quot; ? 
+  &quot;- Show use case/interactor implementations&quot; : &quot;&quot;}
+</code></pre>
+<h6>4. Data Mapping Patterns</h6>
+<ul>
+<li>Document DTO to domain model mapping code</li>
+<li>Show object mapper configurations or manual mapping methods</li>
+<li>Include validation logic during mapping</li>
+<li>Document any domain events created during mapping</li>
+</ul>
+<h6>5. Data Access Implementation</h6>
+<ul>
+<li>Document repository interfaces and their implementations</li>
+<li>Show complete method signatures with parameters and return types</li>
+<li>Include actual query implementations</li>
+<li>Document entity/model class definitions with all properties</li>
+<li>Show transaction handling patterns</li>
+</ul>
+<p><strong>SQL Database Patterns:</strong></p>
+<pre><code>${PERSISTENCE_TYPE == &quot;SQL Database&quot; || PERSISTENCE_TYPE == &quot;Auto-detect&quot; ? 
+  &quot;- Include ORM configurations, annotations, or Fluent API usage
+   - Show actual SQL queries or ORM statements&quot; : &quot;&quot;}
+</code></pre>
+<p><strong>NoSQL Database Patterns:</strong></p>
+<pre><code>${PERSISTENCE_TYPE == &quot;NoSQL Database&quot; || PERSISTENCE_TYPE == &quot;Auto-detect&quot; ? 
+  &quot;- Show document structure definitions
+   - Include document query/update operations&quot; : &quot;&quot;}
+</code></pre>
+<h6>6. Response Construction</h6>
+<ul>
+<li>Document response DTO/model class definitions</li>
+<li>Show mapping from domain/entity models to response models</li>
+<li>Include status code selection logic</li>
+<li>Document error response structure and generation</li>
+</ul>
+<h6>7. Error Handling Patterns</h6>
+<ul>
+<li>Document exception types used in the workflow</li>
+<li>Show try/catch patterns at each layer</li>
+<li>Include global exception handler configurations</li>
+<li>Document error logging implementations</li>
+<li>Show retry policies or circuit breaker patterns</li>
+<li>Include compensating actions for failure scenarios</li>
+</ul>
+<h6>8. Asynchronous Processing Patterns</h6>
+<ul>
+<li>Document background job scheduling code</li>
+<li>Show event publication implementations</li>
+<li>Include message queue sending patterns</li>
+<li>Document callback or webhook implementations</li>
+<li>Show how async operations are tracked and monitored</li>
+</ul>
+<p><strong>Testing Approach (Optional):</strong></p>
+<pre><code>${INCLUDE_TEST_PATTERNS ? 
+  &quot;9. **Testing Approach**
+     - Document unit test implementations for each layer
+     - Show mocking patterns and test fixture setup
+     - Include integration test implementations
+     - Document test data generation approaches
+     - Show API/controller test implementations&quot; : &quot;&quot;}
+</code></pre>
+<p><strong>Sequence Diagram (Optional):</strong></p>
+<pre><code>${INCLUDE_SEQUENCE_DIAGRAM ? 
+  &quot;10. **Sequence Diagram**
+      - Generate a detailed sequence diagram showing all components
+      - Include method calls with parameter types
+      - Show return values between components
+      - Document conditional flows and error paths&quot; : &quot;&quot;}
+</code></pre>
+<h6>11. Naming Conventions</h6>
+<p>Document consistent patterns for:</p>
+<ul>
+<li>Controller naming (e.g., <code>EntityNameController</code>)</li>
+<li>Service naming (e.g., <code>EntityNameService</code>)</li>
+<li>Repository naming (e.g., <code>IEntityNameRepository</code>)</li>
+<li>DTO naming (e.g., <code>EntityNameRequest</code>, <code>EntityNameResponse</code>)</li>
+<li>Method naming patterns for CRUD operations</li>
+<li>Variable naming conventions</li>
+<li>File organization patterns</li>
+</ul>
+<h6>12. Implementation Templates</h6>
+<p>Provide reusable code templates for:</p>
+<ul>
+<li>Creating a new API endpoint following the pattern</li>
+<li>Implementing a new service method</li>
+<li>Adding a new repository method</li>
+<li>Creating new domain model classes</li>
+<li>Implementing proper error handling</li>
+</ul>
+<h5>Technology-Specific Implementation Patterns</h5>
+<p><strong>.NET Implementation Patterns (if detected):</strong></p>
+<pre><code>${PROJECT_TYPE == &quot;.NET&quot; || PROJECT_TYPE == &quot;Auto-detect&quot; ? 
+  &quot;- Complete controller class with attributes, filters, and dependency injection
+   - Service registration in Startup.cs or Program.cs
+   - Entity Framework DbContext configuration
+   - Repository implementation with EF Core or Dapper
+   - AutoMapper profile configurations
+   - Middleware implementations for cross-cutting concerns
+   - Extension method patterns
+   - Options pattern implementation for configuration
+   - Logging implementation with ILogger
+   - Authentication/authorization filter or policy implementations&quot; : &quot;&quot;}
+</code></pre>
+<p><strong>Spring Implementation Patterns (if detected):</strong></p>
+<pre><code>${PROJECT_TYPE == &quot;Java&quot; || PROJECT_TYPE == &quot;Spring&quot; || PROJECT_TYPE == &quot;Auto-detect&quot; ? 
+  &quot;- Complete controller class with annotations and dependency injection
+   - Service implementation with transaction boundaries
+   - Repository interface and implementation
+   - JPA entity definitions with relationships
+   - DTO class implementations
+   - Bean configuration and component scanning
+   - Exception handler implementations
+   - Custom validator implementations&quot; : &quot;&quot;}
+</code></pre>
+<p><strong>React Implementation Patterns (if detected):</strong></p>
+<pre><code>${PROJECT_TYPE == &quot;React&quot; || PROJECT_TYPE == &quot;Auto-detect&quot; ? 
+  &quot;- Component structure with props and state
+   - Hook implementation patterns (useState, useEffect, custom hooks)
+   - API service implementation
+   - State management patterns (Context, Redux)
+   - Form handling implementations
+   - Route configuration&quot; : &quot;&quot;}
+</code></pre>
+<h5>Implementation Guidelines</h5>
+<p>Based on the documented workflows, provide specific guidance for implementing new features:</p>
+<h6>1. Step-by-Step Implementation Process</h6>
+<ul>
+<li>Where to start when adding a similar feature</li>
+<li>Order of implementation (e.g., model → repository → service → controller)</li>
+<li>How to integrate with existing cross-cutting concerns</li>
+</ul>
+<h6>2. Common Pitfalls to Avoid</h6>
+<ul>
+<li>Identify error-prone areas in the current implementation</li>
+<li>Note performance considerations</li>
+<li>List common bugs or issues encountered</li>
+</ul>
+<h6>3. Extension Mechanisms</h6>
+<ul>
+<li>Document how to plug into existing extension points</li>
+<li>Show how to add new behavior without modifying existing code</li>
+<li>Explain configuration-driven feature patterns</li>
+</ul>
+<p><strong>Conclusion:</strong>
+Conclude with a summary of the most important patterns that should be followed when
+implementing new features to maintain consistency with the codebase.&quot;</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

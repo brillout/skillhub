@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>agentic-eval · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re building an LLM pipeline or agent whose output should be graded and refined before it&#039;s returned. It does: lays out three loops in Python sketches: self-reflection, separate evaluator and optimizer steps, and test-driven code fixing, plus outcome, LLM-judge and rubric scoring. You get: patterns and an implementation checklist: criteria, a score threshold, an iteration cap, convergence detection and logging. Code: Python built around a placeholder llm() function, so it shows the shape of each loop rather than a library to call." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=github%2Fawesome-copilot">github/awesome-copilot</a></p>
+      <div class="title-row"><h1>agentic-eval</h1><button type="button" class="save" data-save="skill:github/awesome-copilot/skills/agentic-eval" aria-pressed="false" aria-label="Save agentic-eval" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re building an LLM pipeline or agent whose output should be graded and refined before it&#39;s returned</dd></div><div><dt>It does</dt><dd>lays out three loops in Python sketches: self-reflection, separate evaluator and optimizer steps, and test-driven code fixing, plus outcome, LLM-judge and rubric scoring</dd></div><div><dt>You get</dt><dd>patterns and an implementation checklist: criteria, a score threshold, an iteration cap, convergence detection and logging</dd></div><div><dt>Code</dt><dd>Python built around a placeholder llm() function, so it shows the shape of each loop rather than a library to call</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A short pattern guide for generate, evaluate, critique and refine loops. In basic reflection the model critiques its own output against your criteria as JSON pass/fail verdicts and refines until everything passes or it runs out of iterations. The evaluator-optimizer pattern splits generation, evaluation and optimization into separate steps, looping until an overall score clears a threshold, 0.8 in the example. Code-specific reflection writes code and pytest tests, runs them and feeds failures back until they pass. For judging it offers outcome checks against an expected result, an LLM comparing two outputs, and weighted rubrics such as accuracy 0.4, clarity 0.3 and completeness 0.3. Its best practices: define measurable criteria up front, cap iterations at three to five, stop when scores stop improving, log every iteration, use structured JSON for results and handle parse failures gracefully.</p>
+      <p class="muted">Summarizes <a href="https://github.com/github/awesome-copilot/tree/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/agentic-eval">the skill at 797337f</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">github/</span><wbr><span class="word">awesome-copilot</span> <span class="word">--skill</span> <span class="word">agentic-eval</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/github/awesome-copilot --skill agentic-eval">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/github/awesome-copilot/agentic-eval">skills.sh page</a> · <a href="https://github.com/github/awesome-copilot/tree/HEAD/skills/agentic-eval">Source on GitHub</a> · <a href="/?repo=github%2Fawesome-copilot">All skills from github/awesome-copilot</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>10,300 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>40,908 <span class="muted">github/awesome-copilot</span></dd></div><div><dt>First seen</dt><dd>Jan 23, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">14</div>
+      <div class="stat-delta">-55% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 31; week to Sep 27: 37; week to Oct 4: 29; week to Oct 11: 25; week to Oct 18: 17; week to Oct 25: 20; week to Nov 1: 12; week to Nov 8: 14. Use the left and right arrow keys to read each week."
+        data-values="31,37,29,25,17,20,12,14" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,13.1 38.6,6.0 71.1,15.5 103.7,20.3 136.3,29.8 168.9,26.2 201.4,35.7 234.0,33.4" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="33.4" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>31</td></tr><tr><td>Sep 27</td><td>37</td></tr><tr><td>Oct 4</td><td>29</td></tr><tr><td>Oct 11</td><td>25</td></tr><tr><td>Oct 18</td><td>17</td></tr><tr><td>Oct 25</td><td>20</td></tr><tr><td>Nov 1</td><td>12</td></tr><tr><td>Nov 8</td><td>14</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/?tag=category%3Aagents">category:<wbr>agents</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/?tag=type%3Aguidelines">type:<wbr>guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="agent-development" data-facet="topic" href="/?tag=agent-development">agent-development</a><a class="tag" data-tag="self-improvement" data-facet="topic" href="/?tag=self-improvement">self-improvement</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/github/awesome-copilot/blob/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/agentic-eval/SKILL.md">github/awesome-copilot at 797337f</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: agentic-eval
+description: |
+  Patterns and techniques for evaluating and improving AI agent outputs. Use this skill when:
+  - Implementing self-critique and reflection loops
+  - Building evaluator-optimizer pipelines for quality-critical generation
+  - Creating test-driven code refinement workflows
+  - Designing rubric-based or LLM-as-judge evaluation systems
+  - Adding iterative improvement to agent outputs (code, reports, analysis)
+  - Measuring and improving agent response quality</code></pre></details>
+        <div class="markdown"><h3>Agentic Evaluation Patterns</h3>
+<p>Patterns for self-improvement through iterative evaluation and refinement.</p>
+<h4>Overview</h4>
+<p>Evaluation patterns enable agents to assess and improve their own outputs, moving beyond single-shot generation to iterative refinement loops.</p>
+<pre><code>Generate → Evaluate → Critique → Refine → Output
+    ↑                              │
+    └──────────────────────────────┘
+</code></pre>
+<h4>When to Use</h4>
+<ul>
+<li><strong>Quality-critical generation</strong>: Code, reports, analysis requiring high accuracy</li>
+<li><strong>Tasks with clear evaluation criteria</strong>: Defined success metrics exist</li>
+<li><strong>Content requiring specific standards</strong>: Style guides, compliance, formatting</li>
+</ul>
+<hr>
+<h4>Pattern 1: Basic Reflection</h4>
+<p>Agent evaluates and improves its own output through self-critique.</p>
+<pre><code class="language-python">def reflect_and_refine(task: str, criteria: list[str], max_iterations: int = 3) -&gt; str:
+    &quot;&quot;&quot;Generate with reflection loop.&quot;&quot;&quot;
+    output = llm(f&quot;Complete this task:\n{task}&quot;)
+    
+    for i in range(max_iterations):
+        # Self-critique
+        critique = llm(f&quot;&quot;&quot;
+        Evaluate this output against criteria: {criteria}
+        Output: {output}
+        Rate each: PASS/FAIL with feedback as JSON.
+        &quot;&quot;&quot;)
+        
+        critique_data = json.loads(critique)
+        all_pass = all(c[&quot;status&quot;] == &quot;PASS&quot; for c in critique_data.values())
+        if all_pass:
+            return output
+        
+        # Refine based on critique
+        failed = {k: v[&quot;feedback&quot;] for k, v in critique_data.items() if v[&quot;status&quot;] == &quot;FAIL&quot;}
+        output = llm(f&quot;Improve to address: {failed}\nOriginal: {output}&quot;)
+    
+    return output
+</code></pre>
+<p><strong>Key insight</strong>: Use structured JSON output for reliable parsing of critique results.</p>
+<hr>
+<h4>Pattern 2: Evaluator-Optimizer</h4>
+<p>Separate generation and evaluation into distinct components for clearer responsibilities.</p>
+<pre><code class="language-python">class EvaluatorOptimizer:
+    def __init__(self, score_threshold: float = 0.8):
+        self.score_threshold = score_threshold
+    
+    def generate(self, task: str) -&gt; str:
+        return llm(f&quot;Complete: {task}&quot;)
+    
+    def evaluate(self, output: str, task: str) -&gt; dict:
+        return json.loads(llm(f&quot;&quot;&quot;
+        Evaluate output for task: {task}
+        Output: {output}
+        Return JSON: {{&quot;overall_score&quot;: 0-1, &quot;dimensions&quot;: {{&quot;accuracy&quot;: ..., &quot;clarity&quot;: ...}}}}
+        &quot;&quot;&quot;))
+    
+    def optimize(self, output: str, feedback: dict) -&gt; str:
+        return llm(f&quot;Improve based on feedback: {feedback}\nOutput: {output}&quot;)
+    
+    def run(self, task: str, max_iterations: int = 3) -&gt; str:
+        output = self.generate(task)
+        for _ in range(max_iterations):
+            evaluation = self.evaluate(output, task)
+            if evaluation[&quot;overall_score&quot;] &gt;= self.score_threshold:
+                break
+            output = self.optimize(output, evaluation)
+        return output
+</code></pre>
+<hr>
+<h4>Pattern 3: Code-Specific Reflection</h4>
+<p>Test-driven refinement loop for code generation.</p>
+<pre><code class="language-python">class CodeReflector:
+    def reflect_and_fix(self, spec: str, max_iterations: int = 3) -&gt; str:
+        code = llm(f&quot;Write Python code for: {spec}&quot;)
+        tests = llm(f&quot;Generate pytest tests for: {spec}\nCode: {code}&quot;)
+        
+        for _ in range(max_iterations):
+            result = run_tests(code, tests)
+            if result[&quot;success&quot;]:
+                return code
+            code = llm(f&quot;Fix error: {result['error']}\nCode: {code}&quot;)
+        return code
+</code></pre>
+<hr>
+<h4>Evaluation Strategies</h4>
+<h5>Outcome-Based</h5>
+<p>Evaluate whether output achieves the expected result.</p>
+<pre><code class="language-python">def evaluate_outcome(task: str, output: str, expected: str) -&gt; str:
+    return llm(f&quot;Does output achieve expected outcome? Task: {task}, Expected: {expected}, Output: {output}&quot;)
+</code></pre>
+<h5>LLM-as-Judge</h5>
+<p>Use LLM to compare and rank outputs.</p>
+<pre><code class="language-python">def llm_judge(output_a: str, output_b: str, criteria: str) -&gt; str:
+    return llm(f&quot;Compare outputs A and B for {criteria}. Which is better and why?&quot;)
+</code></pre>
+<h5>Rubric-Based</h5>
+<p>Score outputs against weighted dimensions.</p>
+<pre><code class="language-python">RUBRIC = {
+    &quot;accuracy&quot;: {&quot;weight&quot;: 0.4},
+    &quot;clarity&quot;: {&quot;weight&quot;: 0.3},
+    &quot;completeness&quot;: {&quot;weight&quot;: 0.3}
+}
+
+def evaluate_with_rubric(output: str, rubric: dict) -&gt; float:
+    scores = json.loads(llm(f&quot;Rate 1-5 for each dimension: {list(rubric.keys())}\nOutput: {output}&quot;))
+    return sum(scores[d] * rubric[d][&quot;weight&quot;] for d in rubric) / 5
+</code></pre>
+<hr>
+<h4>Best Practices</h4>
+<table>
+<thead>
+<tr>
+<th>Practice</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Clear criteria</strong></td>
+<td>Define specific, measurable evaluation criteria upfront</td>
+</tr>
+<tr>
+<td><strong>Iteration limits</strong></td>
+<td>Set max iterations (3-5) to prevent infinite loops</td>
+</tr>
+<tr>
+<td><strong>Convergence check</strong></td>
+<td>Stop if output score isn't improving between iterations</td>
+</tr>
+<tr>
+<td><strong>Log history</strong></td>
+<td>Keep full trajectory for debugging and analysis</td>
+</tr>
+<tr>
+<td><strong>Structured output</strong></td>
+<td>Use JSON for reliable parsing of evaluation results</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4>Quick Start Checklist</h4>
+<pre><code class="language-markdown">## Evaluation Implementation Checklist
+
+### Setup
+- [ ] Define evaluation criteria/rubric
+- [ ] Set score threshold for &quot;good enough&quot;
+- [ ] Configure max iterations (default: 3)
+
+### Implementation
+- [ ] Implement generate() function
+- [ ] Implement evaluate() function with structured output
+- [ ] Implement optimize() function
+- [ ] Wire up the refinement loop
+
+### Safety
+- [ ] Add convergence detection
+- [ ] Log all iterations for debugging
+- [ ] Handle evaluation parse failures gracefully
+</code></pre>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

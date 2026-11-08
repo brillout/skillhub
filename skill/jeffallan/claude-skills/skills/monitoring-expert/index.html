@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>monitoring-expert · SkillHub</title>
+    <meta name="description" content="Use it when: a service needs logs, metrics, traces and alerts, or you&#039;re debugging a production issue, load testing, profiling or planning capacity. It does: picks what to measure, instruments the code, configures collection and checks data arrives, builds dashboards, then defines alerts. You get: instrumentation code, collection config, dashboards and Prometheus alert rules, plus k6 load tests when you need them. RED and USE: its dashboard methods: rate, errors and duration of requests; utilization, saturation and errors of resources. Rules: JSON logs with request IDs, no passwords, tokens or personal data in logs, alerts only on critical paths, business metrics too." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=jeffallan%2Fclaude-skills">jeffallan/claude-skills</a></p>
+      <div class="title-row"><h1>monitoring-expert</h1><button type="button" class="save" data-save="skill:jeffallan/claude-skills/skills/monitoring-expert" aria-pressed="false" aria-label="Save monitoring-expert" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>a service needs logs, metrics, traces and alerts, or you&#39;re debugging a production issue, load testing, profiling or planning capacity</dd></div><div><dt>It does</dt><dd>picks what to measure, instruments the code, configures collection and checks data arrives, builds dashboards, then defines alerts</dd></div><div><dt>You get</dt><dd>instrumentation code, collection config, dashboards and Prometheus alert rules, plus k6 load tests when you need them</dd></div><div><dt>RED and USE</dt><dd>its dashboard methods: rate, errors and duration of requests; utilization, saturation and errors of resources</dd></div><div><dt>Rules</dt><dd>JSON logs with request IDs, no passwords, tokens or personal data in logs, alerts only on critical paths, business metrics too</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Its code examples are in Node.js: structured logging with Pino, a request counter and latency histogram with prom-client behind a /metrics endpoint for Prometheus to scrape, and OpenTelemetry tracing with a manual span around a critical operation. It also shows a Prometheus rule that alerts when more than 5% of requests fail, and a k6 load test that ramps to 50 virtual users with limits on 95th-percentile latency and error rate. Before alerts ship it checks they won&#39;t flood you with false positives, and it adds health check endpoints. Alerting on every error is out, to avoid alert fatigue. Reference files cover structured logging, Prometheus metrics, OpenTelemetry, alerting rules, Grafana dashboards, load testing with k6 and Artillery, CPU and memory profiling, and capacity planning.</p>
+      <p class="muted">Summarizes <a href="https://github.com/jeffallan/claude-skills/tree/078a25cc5bfd8011459be7b91d004e900c1d02d3/skills/monitoring-expert">the skill at 078a25c</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">jeffallan/</span><wbr><span class="word">claude-skills</span> <span class="word">--skill</span> <span class="word">monitoring-expert</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/jeffallan/claude-skills --skill monitoring-expert">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/jeffallan/claude-skills/monitoring-expert">skills.sh page</a> · <a href="https://github.com/jeffallan/claude-skills/tree/HEAD/skills/monitoring-expert">Source on GitHub</a> · <a href="/?repo=jeffallan%2Fclaude-skills">All skills from jeffallan/claude-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,900 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>12,267 <span class="muted">jeffallan/claude-skills</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">175</div>
+      <div class="stat-delta">+64% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 107; week to Sep 27: 119; week to Oct 4: 150; week to Oct 11: 156; week to Oct 18: 184; week to Oct 25: 212; week to Nov 1: 183; week to Nov 8: 175. Use the left and right arrow keys to read each week."
+        data-values="107,119,150,156,184,212,183,175" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,27.8 38.6,25.3 71.1,18.9 103.7,17.6 136.3,11.8 168.9,6.0 201.4,12.0 234.0,13.7" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="13.7" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>107</td></tr><tr><td>Sep 27</td><td>119</td></tr><tr><td>Oct 4</td><td>150</td></tr><tr><td>Oct 11</td><td>156</td></tr><tr><td>Oct 18</td><td>184</td></tr><tr><td>Oct 25</td><td>212</td></tr><tr><td>Nov 1</td><td>183</td></tr><tr><td>Nov 8</td><td>175</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:cloud" data-facet="category" title="Deploy, provision, observe and debug cloud apps." href="/?tag=category%3Acloud">category:<wbr>cloud</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Deploy, provision, observe and debug cloud apps.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="observability" data-facet="topic" href="/?tag=observability">observability</a><a class="tag" data-tag="performance" data-facet="topic" href="/?tag=performance">performance</a><a class="tag" data-tag="testing" data-facet="topic" href="/?tag=testing">testing</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:prometheus" data-facet="stack" href="/?tag=stack%3Aprometheus">stack:<wbr>prometheus</a><a class="tag" data-tag="stack:grafana" data-facet="stack" href="/?tag=stack%3Agrafana">stack:<wbr>grafana</a><a class="tag" data-tag="stack:opentelemetry" data-facet="stack" href="/?tag=stack%3Aopentelemetry">stack:<wbr>opentelemetry</a><a class="tag" data-tag="stack:k6" data-facet="stack" href="/?tag=stack%3Ak6">stack:<wbr>k6</a><a class="tag" data-tag="stack:node" data-facet="stack" href="/?tag=stack%3Anode">stack:<wbr>node</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/jeffallan/claude-skills/blob/078a25cc5bfd8011459be7b91d004e900c1d02d3/skills/monitoring-expert/SKILL.md">jeffallan/claude-skills at 078a25c</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: monitoring-expert
+description: Configures monitoring systems, implements structured logging pipelines, creates Prometheus/Grafana dashboards, defines alerting rules, and instruments distributed tracing. Implements Prometheus/Grafana stacks, conducts load testing, performs application profiling, and plans infrastructure capacity. Use when setting up application monitoring, adding observability to services, debugging production issues with logs/metrics/traces, running load tests with k6 or Artillery, profiling CPU/memory bottlenecks, or forecasting capacity needs.
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
+  version: &#34;1.1.0&#34;
+  domain: devops
+  triggers: monitoring, observability, logging, metrics, tracing, alerting, Prometheus, Grafana, DataDog, APM, performance testing, load testing, profiling, capacity planning, bottleneck
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: devops-engineer, debugging-wizard, architecture-designer</code></pre></details>
+        <div class="markdown"><h3>Monitoring Expert</h3>
+<p>Observability and performance specialist implementing comprehensive monitoring, alerting, tracing, and performance testing systems.</p>
+<h4>Core Workflow</h4>
+<ol>
+<li><strong>Assess</strong> — Identify what needs monitoring (SLIs, critical paths, business metrics)</li>
+<li><strong>Instrument</strong> — Add logging, metrics, and traces to the application (see examples below)</li>
+<li><strong>Collect</strong> — Configure aggregation and storage (Prometheus scrape, log shipper, OTLP endpoint); verify data arrives before proceeding</li>
+<li><strong>Visualize</strong> — Build dashboards using RED (Rate/Errors/Duration) or USE (Utilization/Saturation/Errors) methods</li>
+<li><strong>Alert</strong> — Define threshold and anomaly alerts on critical paths; validate no false-positive flood before shipping</li>
+</ol>
+<h4>Quick-Start Examples</h4>
+<h5>Structured Logging (Node.js / Pino)</h5>
+<pre><code class="language-js">import pino from 'pino';
+
+const logger = pino({ level: 'info' });
+
+// Good — structured fields, includes correlation ID
+logger.info({ requestId: req.id, userId: req.user.id, durationMs: elapsed }, 'order.created');
+
+// Bad — string interpolation, no correlation
+console.log(`Order created for user ${userId}`);
+</code></pre>
+<h5>Prometheus Metrics (Node.js)</h5>
+<pre><code class="language-js">import { Counter, Histogram, register } from 'prom-client';
+
+const httpRequests = new Counter({
+  name: 'http_requests_total',
+  help: 'Total HTTP requests',
+  labelNames: ['method', 'route', 'status'],
+});
+
+const httpDuration = new Histogram({
+  name: 'http_request_duration_seconds',
+  help: 'HTTP request latency',
+  labelNames: ['method', 'route'],
+  buckets: [0.05, 0.1, 0.3, 0.5, 1, 2, 5],
+});
+
+// Instrument a route
+app.use((req, res, next) =&gt; {
+  const end = httpDuration.startTimer({ method: req.method, route: req.path });
+  res.on('finish', () =&gt; {
+    httpRequests.inc({ method: req.method, route: req.path, status: res.statusCode });
+    end();
+  });
+  next();
+});
+
+// Expose scrape endpoint
+app.get('/metrics', async (req, res) =&gt; {
+  res.set('Content-Type', register.contentType);
+  res.end(await register.metrics());
+});
+</code></pre>
+<h5>OpenTelemetry Tracing (Node.js)</h5>
+<pre><code class="language-js">import { NodeSDK } from '@opentelemetry/sdk-node';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
+import { trace } from '@opentelemetry/api';
+
+const sdk = new NodeSDK({
+  traceExporter: new OTLPTraceExporter({ url: 'http://jaeger:4318/v1/traces' }),
+});
+sdk.start();
+
+// Manual span around a critical operation
+const tracer = trace.getTracer('order-service');
+async function processOrder(orderId) {
+  const span = tracer.startSpan('order.process');
+  span.setAttribute('order.id', orderId);
+  try {
+    const result = await db.saveOrder(orderId);
+    span.setStatus({ code: SpanStatusCode.OK });
+    return result;
+  } catch (err) {
+    span.recordException(err);
+    span.setStatus({ code: SpanStatusCode.ERROR });
+    throw err;
+  } finally {
+    span.end();
+  }
+}
+</code></pre>
+<h5>Prometheus Alerting Rule</h5>
+<pre><code class="language-yaml">groups:
+  - name: api.rules
+    rules:
+      - alert: HighErrorRate
+        expr: |
+          rate(http_requests_total{status=~&quot;5..&quot;}[5m])
+          / rate(http_requests_total[5m]) &gt; 0.05
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: &quot;Error rate above 5% on {{ $labels.route }}&quot;
+</code></pre>
+<h5>k6 Load Test</h5>
+<pre><code class="language-js">import http from 'k6/http';
+import { check, sleep } from 'k6';
+
+export const options = {
+  stages: [
+    { duration: '1m', target: 50 },   // ramp up
+    { duration: '5m', target: 50 },   // sustained load
+    { duration: '1m', target: 0 },    // ramp down
+  ],
+  thresholds: {
+    http_req_duration: ['p(95)&lt;500'],  // 95th percentile &lt; 500 ms
+    http_req_failed:   ['rate&lt;0.01'],  // error rate &lt; 1%
+  },
+};
+
+export default function () {
+  const res = http.get('https://api.example.com/orders');
+  check(res, { 'status is 200': (r) =&gt; r.status === 200 });
+  sleep(1);
+}
+</code></pre>
+<h4>Reference Guide</h4>
+<p>Load detailed guidance based on context:</p>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Reference</th>
+<th>Load When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Logging</td>
+<td><code>references/structured-logging.md</code></td>
+<td>Pino, JSON logging</td>
+</tr>
+<tr>
+<td>Metrics</td>
+<td><code>references/prometheus-metrics.md</code></td>
+<td>Counter, Histogram, Gauge</td>
+</tr>
+<tr>
+<td>Tracing</td>
+<td><code>references/opentelemetry.md</code></td>
+<td>OpenTelemetry, spans</td>
+</tr>
+<tr>
+<td>Alerting</td>
+<td><code>references/alerting-rules.md</code></td>
+<td>Prometheus alerts</td>
+</tr>
+<tr>
+<td>Dashboards</td>
+<td><code>references/dashboards.md</code></td>
+<td>RED/USE method, Grafana</td>
+</tr>
+<tr>
+<td>Performance Testing</td>
+<td><code>references/performance-testing.md</code></td>
+<td>Load testing, k6, Artillery, benchmarks</td>
+</tr>
+<tr>
+<td>Profiling</td>
+<td><code>references/application-profiling.md</code></td>
+<td>CPU/memory profiling, bottlenecks</td>
+</tr>
+<tr>
+<td>Capacity Planning</td>
+<td><code>references/capacity-planning.md</code></td>
+<td>Scaling, forecasting, budgets</td>
+</tr>
+</tbody>
+</table>
+<h4>Constraints</h4>
+<h5>MUST DO</h5>
+<ul>
+<li>Use structured logging (JSON)</li>
+<li>Include request IDs for correlation</li>
+<li>Set up alerts for critical paths</li>
+<li>Monitor business metrics, not just technical</li>
+<li>Use appropriate metric types (counter/gauge/histogram)</li>
+<li>Implement health check endpoints</li>
+</ul>
+<h5>MUST NOT DO</h5>
+<ul>
+<li>Log sensitive data (passwords, tokens, PII)</li>
+<li>Alert on every error (alert fatigue)</li>
+<li>Use string interpolation in logs (use structured fields)</li>
+<li>Skip correlation IDs in distributed systems</li>
+</ul>
+<p>Maintained by <a href="https://github.com/jeffallan">@jeffallan</a>, Principal Consultant at <a href="https://synergetic.solutions">Synergetic Solutions</a></p>
+<p><a href="https://jeffallan.github.io/claude-skills/skills/devops/monitoring-expert/">Documentation</a></p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

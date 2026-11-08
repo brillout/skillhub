@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>memory-forensics · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re responding to an incident or analyzing malware and have, or need to capture, a RAM dump from Windows, Linux, macOS or a VM. It does: captures memory with tools such as WinPmem, LiME or osxpmem, then runs Volatility 3 plugins in a malware workflow and an incident-response workflow. You get: text files of processes, connections and injected code, dumped executables and their strings, a timeline CSV and YARA matches. Needs: Volatility 3, installed with pip, Windows symbol tables, and the capture tool for your system. Detects: process injection and hollowing, rootkits that hide processes or hook system calls, and Cobalt Strike beacons, with sample YARA rules." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=wshobson%2Fagents">wshobson/agents</a></p>
+      <div class="title-row"><h1>memory-forensics</h1><button type="button" class="save" data-save="skill:wshobson/agents/plugins/reverse-engineering/skills/memory-forensics" aria-pressed="false" aria-label="Save memory-forensics" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re responding to an incident or analyzing malware and have, or need to capture, a RAM dump from Windows, Linux, macOS or a VM</dd></div><div><dt>It does</dt><dd>captures memory with tools such as WinPmem, LiME or osxpmem, then runs Volatility 3 plugins in a malware workflow and an incident-response workflow</dd></div><div><dt>You get</dt><dd>text files of processes, connections and injected code, dumped executables and their strings, a timeline CSV and YARA matches</dd></div><div><dt>Needs</dt><dd>Volatility 3, installed with pip, Windows symbol tables, and the capture tool for your system</dd></div><div><dt>Detects</dt><dd>process injection and hollowing, rootkits that hide processes or hook system calls, and Cobalt Strike beacons, with sample YARA rules</dd></div></dl></section>
+      
+      <p class="note">Capture and analyze memory only from systems you own or are authorized to investigate: its steps also dump password hashes, LSA secrets and cached domain credentials.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A forensic reference with two ready-made workflows. Acquisition covers live capture on Windows (WinPmem, DumpIt and GUI tools), Linux (LiME, /dev/mem, /proc/kcore) and macOS (osxpmem), and copying memory out of VMware, VirtualBox, QEMU and Hyper-V. A reference file holds Volatility 3&#39;s setup and its main plugins for processes, network, DLLs and modules, injection, the registry and files on Windows, and for Linux and macOS. The malware workflow surveys processes and connections, runs malfind to find injected code, inspects suspicious processes&#39; DLLs and handles, dumps them, extracts strings and scans with YARA. The incident-response workflow builds a timeline, then checks command lines, Run-key persistence, services, scheduled tasks and recent files. It explains the Windows structures these tools read (EPROCESS, PEB, VAD), four injection techniques, rootkit checks such as comparing pslist with psscan to find hidden processes, credential extraction (password hashes, LSA secrets, cached domain logins), memory YARA rules, and FLOSS for obfuscated strings. Its best practices: hash the dump right away, keep a chain of custody, cross-check plugins and correlate with disk and network evidence.</p>
+      <p class="muted">Summarizes <a href="https://github.com/wshobson/agents/tree/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/reverse-engineering/skills/memory-forensics">the skill at 4bde316</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">wshobson/</span><wbr><span class="word">agents</span> <span class="word">--skill</span> <span class="word">memory-forensics</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/wshobson/agents --skill memory-forensics">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/wshobson/agents/memory-forensics">skills.sh page</a> · <a href="https://github.com/wshobson/agents/tree/HEAD/plugins/reverse-engineering/skills/memory-forensics">Source on GitHub</a> · <a href="/?repo=wshobson%2Fagents">All skills from wshobson/agents</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>11,400 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>42,292 <span class="muted">wshobson/agents</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">177</div>
+      <div class="stat-delta">+4% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 170; week to Sep 27: 183; week to Oct 4: 217; week to Oct 11: 267; week to Oct 18: 222; week to Oct 25: 185; week to Nov 1: 185; week to Nov 8: 177. Use the left and right arrow keys to read each week."
+        data-values="170,183,217,267,222,185,185,177" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,22.0 38.6,19.8 71.1,14.2 103.7,6.0 136.3,13.4 168.9,19.5 201.4,19.5 234.0,20.8" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="20.8" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>170</td></tr><tr><td>Sep 27</td><td>183</td></tr><tr><td>Oct 4</td><td>217</td></tr><tr><td>Oct 11</td><td>267</td></tr><tr><td>Oct 18</td><td>222</td></tr><tr><td>Oct 25</td><td>185</td></tr><tr><td>Nov 1</td><td>185</td></tr><tr><td>Nov 8</td><td>177</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/?tag=category%3Asecurity">category:<wbr>security</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/?tag=needs%3Acli">needs:<wbr>cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/?tag=security">security</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:volatility" data-facet="stack" href="/?tag=stack%3Avolatility">stack:<wbr>volatility</a><a class="tag" data-tag="stack:yara" data-facet="stack" href="/?tag=stack%3Ayara">stack:<wbr>yara</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/wshobson/agents/blob/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/reverse-engineering/skills/memory-forensics/SKILL.md">wshobson/agents at 4bde316</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: memory-forensics
+description: Master memory forensics techniques including memory acquisition, process analysis, and artifact extraction using Volatility and related tools. Use when analyzing memory dumps, investigating incidents, or performing malware analysis from RAM captures.</code></pre></details>
+        <div class="markdown"><h3>Memory Forensics</h3>
+<p>Comprehensive techniques for acquiring, analyzing, and extracting artifacts from memory dumps for incident response and malware analysis.</p>
+<h4>When to Use This Skill</h4>
+<ul>
+<li>Performing memory analysis during incident response or breach investigation</li>
+<li>Extracting malware artifacts (processes, injected code, network connections) from a RAM capture</li>
+<li>Acquiring volatile memory from a live Windows/Linux/macOS system before shutdown</li>
+<li>Using Volatility 3 / Rekall to triage memory dumps</li>
+<li>Recovering credentials, browser sessions, or open files from process memory</li>
+</ul>
+<h4>Memory Acquisition</h4>
+<h5>Live Acquisition Tools</h5>
+<h6>Windows</h6>
+<pre><code class="language-powershell"># WinPmem (Recommended)
+winpmem_mini_x64.exe memory.raw
+
+# DumpIt
+DumpIt.exe
+
+# Belkasoft RAM Capturer
+# GUI-based, outputs raw format
+
+# Magnet RAM Capture
+# GUI-based, outputs raw format
+</code></pre>
+<h6>Linux</h6>
+<pre><code class="language-bash"># LiME (Linux Memory Extractor)
+sudo insmod lime.ko &quot;path=/tmp/memory.lime format=lime&quot;
+
+# /dev/mem (limited, requires permissions)
+sudo dd if=/dev/mem of=memory.raw bs=1M
+
+# /proc/kcore (ELF format)
+sudo cp /proc/kcore memory.elf
+</code></pre>
+<h6>macOS</h6>
+<pre><code class="language-bash"># osxpmem
+sudo ./osxpmem -o memory.raw
+
+# MacQuisition (commercial)
+</code></pre>
+<h5>Virtual Machine Memory</h5>
+<pre><code class="language-bash"># VMware: .vmem file is raw memory
+cp vm.vmem memory.raw
+
+# VirtualBox: Use debug console
+vboxmanage debugvm &quot;VMName&quot; dumpvmcore --filename memory.elf
+
+# QEMU
+virsh dump &lt;domain&gt; memory.raw --memory-only
+
+# Hyper-V
+# Checkpoint contains memory state
+</code></pre>
+<h4>Detailed section: Volatility 3 Framework</h4>
+<p>Originally a 2680-byte section in this SKILL.md. Moved to <code>references/details.md</code> to fit Codex's 8 KB skill body cap.</p>
+<h4>Analysis Workflows</h4>
+<h5>Malware Analysis Workflow</h5>
+<pre><code class="language-bash"># 1. Initial process survey
+vol -f memory.raw windows.pstree &gt; processes.txt
+vol -f memory.raw windows.pslist &gt; pslist.txt
+
+# 2. Network connections
+vol -f memory.raw windows.netscan &gt; network.txt
+
+# 3. Detect injection
+vol -f memory.raw windows.malfind &gt; malfind.txt
+
+# 4. Analyze suspicious processes
+vol -f memory.raw windows.dlllist --pid &lt;PID&gt;
+vol -f memory.raw windows.handles --pid &lt;PID&gt;
+
+# 5. Dump suspicious executables
+vol -f memory.raw windows.pslist --pid &lt;PID&gt; --dump
+
+# 6. Extract strings from dumps
+strings -a pid.&lt;PID&gt;.exe &gt; strings.txt
+
+# 7. YARA scanning
+vol -f memory.raw windows.yarascan --yara-rules malware.yar
+</code></pre>
+<h5>Incident Response Workflow</h5>
+<pre><code class="language-bash"># 1. Timeline of events
+vol -f memory.raw windows.timeliner &gt; timeline.csv
+
+# 2. User activity
+vol -f memory.raw windows.cmdline
+vol -f memory.raw windows.consoles
+
+# 3. Persistence mechanisms
+vol -f memory.raw windows.registry.printkey \
+    --key &quot;Software\Microsoft\Windows\CurrentVersion\Run&quot;
+
+# 4. Services
+vol -f memory.raw windows.svcscan
+
+# 5. Scheduled tasks
+vol -f memory.raw windows.scheduled_tasks
+
+# 6. Recent files
+vol -f memory.raw windows.filescan | grep -i &quot;recent&quot;
+</code></pre>
+<h4>Data Structures</h4>
+<h5>Windows Process Structures</h5>
+<pre><code class="language-c">// EPROCESS (Executive Process)
+typedef struct _EPROCESS {
+    KPROCESS Pcb;                    // Kernel process block
+    EX_PUSH_LOCK ProcessLock;
+    LARGE_INTEGER CreateTime;
+    LARGE_INTEGER ExitTime;
+    // ...
+    LIST_ENTRY ActiveProcessLinks;   // Doubly-linked list
+    ULONG_PTR UniqueProcessId;       // PID
+    // ...
+    PEB* Peb;                        // Process Environment Block
+    // ...
+} EPROCESS;
+
+// PEB (Process Environment Block)
+typedef struct _PEB {
+    BOOLEAN InheritedAddressSpace;
+    BOOLEAN ReadImageFileExecOptions;
+    BOOLEAN BeingDebugged;           // Anti-debug check
+    // ...
+    PVOID ImageBaseAddress;          // Base address of executable
+    PPEB_LDR_DATA Ldr;              // Loader data (DLL list)
+    PRTL_USER_PROCESS_PARAMETERS ProcessParameters;
+    // ...
+} PEB;
+</code></pre>
+<h5>VAD (Virtual Address Descriptor)</h5>
+<pre><code class="language-c">typedef struct _MMVAD {
+    MMVAD_SHORT Core;
+    union {
+        ULONG LongFlags;
+        MMVAD_FLAGS VadFlags;
+    } u;
+    // ...
+    PVOID FirstPrototypePte;
+    PVOID LastContiguousPte;
+    // ...
+    PFILE_OBJECT FileObject;
+} MMVAD;
+
+// Memory protection flags
+#define PAGE_EXECUTE           0x10
+#define PAGE_EXECUTE_READ      0x20
+#define PAGE_EXECUTE_READWRITE 0x40
+#define PAGE_EXECUTE_WRITECOPY 0x80
+</code></pre>
+<h4>Detection Patterns</h4>
+<h5>Process Injection Indicators</h5>
+<pre><code class="language-python"># Malfind indicators
+# - PAGE_EXECUTE_READWRITE protection (suspicious)
+# - MZ header in non-image VAD region
+# - Shellcode patterns at allocation start
+
+# Common injection techniques
+# 1. Classic DLL Injection
+#    - VirtualAllocEx + WriteProcessMemory + CreateRemoteThread
+
+# 2. Process Hollowing
+#    - CreateProcess (SUSPENDED) + NtUnmapViewOfSection + WriteProcessMemory
+
+# 3. APC Injection
+#    - QueueUserAPC targeting alertable threads
+
+# 4. Thread Execution Hijacking
+#    - SuspendThread + SetThreadContext + ResumeThread
+</code></pre>
+<h5>Rootkit Detection</h5>
+<pre><code class="language-bash"># Compare process lists
+vol -f memory.raw windows.pslist &gt; pslist.txt
+vol -f memory.raw windows.psscan &gt; psscan.txt
+diff pslist.txt psscan.txt  # Hidden processes
+
+# Check for DKOM (Direct Kernel Object Manipulation)
+vol -f memory.raw windows.callbacks
+
+# Detect hooked functions
+vol -f memory.raw windows.ssdt  # System Service Descriptor Table
+
+# Driver analysis
+vol -f memory.raw windows.driverscan
+vol -f memory.raw windows.driverirp
+</code></pre>
+<h5>Credential Extraction</h5>
+<pre><code class="language-bash"># Dump hashes (requires hivelist first)
+vol -f memory.raw windows.hashdump
+
+# LSA secrets
+vol -f memory.raw windows.lsadump
+
+# Cached domain credentials
+vol -f memory.raw windows.cachedump
+
+# Mimikatz-style extraction
+# Requires specific plugins/tools
+</code></pre>
+<h4>YARA Integration</h4>
+<h5>Writing Memory YARA Rules</h5>
+<pre><code class="language-yara">rule Suspicious_Injection
+{
+    meta:
+        description = &quot;Detects common injection shellcode&quot;
+
+    strings:
+        // Common shellcode patterns
+        $mz = { 4D 5A }
+        $shellcode1 = { 55 8B EC 83 EC }  // Function prologue
+        $api_hash = { 68 ?? ?? ?? ?? 68 ?? ?? ?? ?? E8 }  // Push hash, call
+
+    condition:
+        $mz at 0 or any of ($shellcode*)
+}
+
+rule Cobalt_Strike_Beacon
+{
+    meta:
+        description = &quot;Detects Cobalt Strike beacon in memory&quot;
+
+    strings:
+        $config = { 00 01 00 01 00 02 }
+        $sleep = &quot;sleeptime&quot;
+        $beacon = &quot;%s (admin)&quot; wide
+
+    condition:
+        2 of them
+}
+</code></pre>
+<h5>Scanning Memory</h5>
+<pre><code class="language-bash"># Scan all process memory
+vol -f memory.raw windows.yarascan --yara-rules rules.yar
+
+# Scan specific process
+vol -f memory.raw windows.yarascan --yara-rules rules.yar --pid 1234
+
+# Scan kernel memory
+vol -f memory.raw windows.yarascan --yara-rules rules.yar --kernel
+</code></pre>
+<h4>String Analysis</h4>
+<h5>Extracting Strings</h5>
+<pre><code class="language-bash"># Basic string extraction
+strings -a memory.raw &gt; all_strings.txt
+
+# Unicode strings
+strings -el memory.raw &gt;&gt; all_strings.txt
+
+# Targeted extraction from process dump
+vol -f memory.raw windows.memmap --pid 1234 --dump
+strings -a pid.1234.dmp &gt; process_strings.txt
+
+# Pattern matching
+grep -E &quot;(https?://|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})&quot; all_strings.txt
+</code></pre>
+<h5>FLOSS for Obfuscated Strings</h5>
+<pre><code class="language-bash"># FLOSS extracts obfuscated strings
+floss malware.exe &gt; floss_output.txt
+
+# From memory dump
+floss pid.1234.dmp
+</code></pre>
+<h4>Best Practices</h4>
+<h5>Acquisition Best Practices</h5>
+<ol>
+<li><strong>Minimize footprint</strong>: Use lightweight acquisition tools</li>
+<li><strong>Document everything</strong>: Record time, tool, and hash of capture</li>
+<li><strong>Verify integrity</strong>: Hash memory dump immediately after capture</li>
+<li><strong>Chain of custody</strong>: Maintain proper forensic handling</li>
+</ol>
+<h5>Analysis Best Practices</h5>
+<ol>
+<li><strong>Start broad</strong>: Get overview before deep diving</li>
+<li><strong>Cross-reference</strong>: Use multiple plugins for same data</li>
+<li><strong>Timeline correlation</strong>: Correlate memory findings with disk/network</li>
+<li><strong>Document findings</strong>: Keep detailed notes and screenshots</li>
+<li><strong>Validate results</strong>: Verify findings through multiple methods</li>
+</ol>
+<h5>Common Pitfalls</h5>
+<ul>
+<li><strong>Stale data</strong>: Memory is volatile, analyze promptly</li>
+<li><strong>Incomplete dumps</strong>: Verify dump size matches expected RAM</li>
+<li><strong>Symbol issues</strong>: Ensure correct symbol files for OS version</li>
+<li><strong>Smear</strong>: Memory may change during acquisition</li>
+<li><strong>Encryption</strong>: Some data may be encrypted in memory</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

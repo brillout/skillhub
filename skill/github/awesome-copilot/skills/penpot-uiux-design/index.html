@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>penpot-uiux-design · SkillHub</title>
+    <meta name="description" content="Use it when: you want the agent to design screens, forms, dashboards, landing pages or a component library directly in a Penpot file. It does: checks for your design system first, reads the page&#039;s structure, creates boards, shapes, text and flex layouts through Penpot&#039;s plugin API, then exports shapes as images to check them. You get: designs in your Penpot file, placed beside existing boards without overlapping, and CSS you can extract from them. Needs: the penpot-mcp server and its plugin connected; it tests the connection first and gives setup steps only once you confirm it isn&#039;t installed. Defaults: an 8px spacing scale, a type scale and status colors, used only when you have no design system of your own." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=github%2Fawesome-copilot">github/awesome-copilot</a></p>
+      <div class="title-row"><h1>penpot-uiux-design</h1><button type="button" class="save" data-save="skill:github/awesome-copilot/skills/penpot-uiux-design" aria-pressed="false" aria-label="Save penpot-uiux-design" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want the agent to design screens, forms, dashboards, landing pages or a component library directly in a Penpot file</dd></div><div><dt>It does</dt><dd>checks for your design system first, reads the page&#39;s structure, creates boards, shapes, text and flex layouts through Penpot&#39;s plugin API, then exports shapes as images to check them</dd></div><div><dt>You get</dt><dd>designs in your Penpot file, placed beside existing boards without overlapping, and CSS you can extract from them</dd></div><div><dt>Needs</dt><dd>the penpot-mcp server and its plugin connected; it tests the connection first and gives setup steps only once you confirm it isn&#39;t installed</dd></div><div><dt>Defaults</dt><dd>an 8px spacing scale, a type scale and status colors, used only when you have no design system of your own</dd></div></dl></section>
+      
+      <p class="note">Needs the penpot/penpot-mcp server running locally, with its plugin loaded and connected in an open Penpot design file.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>The agent designs by running JavaScript in Penpot&#39;s plugin context through the MCP server&#39;s execute_code tool. It first tries a tool call to see whether the server is connected; if not, and you confirm it isn&#39;t installed, it walks you through cloning penpot-mcp, running npm install and npm run bootstrap, and loading the plugin from localhost:4400. It then asks whether you have a design system, or reads one from the file&#39;s colors, text styles and components, and uses those tokens; otherwise it falls back to its own defaults. Alongside the workflow it carries design rules: visual hierarchy, mobile and desktop layout sizes, checklists for buttons, forms and navigation, WCAG AA contrast and 44px touch targets, plus Penpot API gotchas such as read-only width and height. Before finishing it runs a review checklist and checks for elements outside their bounds, text under 12px and weak contrast, the last by exporting a shape and looking at it. Reference files cover setup troubleshooting, component specs, accessibility and platform guidelines.</p>
+      <p class="muted">Summarizes <a href="https://github.com/github/awesome-copilot/tree/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/penpot-uiux-design">the skill at 797337f</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">github/</span><wbr><span class="word">awesome-copilot</span> <span class="word">--skill</span> <span class="word">penpot-uiux-design</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/github/awesome-copilot --skill penpot-uiux-design">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/github/awesome-copilot/penpot-uiux-design">skills.sh page</a> · <a href="https://github.com/github/awesome-copilot/tree/HEAD/skills/penpot-uiux-design">Source on GitHub</a> · <a href="/?repo=github%2Fawesome-copilot">All skills from github/awesome-copilot</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>12,900 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>40,908 <span class="muted">github/awesome-copilot</span></dd></div><div><dt>First seen</dt><dd>Feb 4, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">42</div>
+      <div class="stat-delta">-19% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 52; week to Sep 27: 82; week to Oct 4: 45; week to Oct 11: 41; week to Oct 18: 47; week to Oct 25: 44; week to Nov 1: 43; week to Nov 8: 42. Use the left and right arrow keys to read each week."
+        data-values="52,82,45,41,47,44,43,42" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,22.1 38.6,6.0 71.1,25.9 103.7,28.0 136.3,24.8 168.9,26.4 201.4,26.9 234.0,27.5" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="27.5" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>52</td></tr><tr><td>Sep 27</td><td>82</td></tr><tr><td>Oct 4</td><td>45</td></tr><tr><td>Oct 11</td><td>41</td></tr><tr><td>Oct 18</td><td>47</td></tr><tr><td>Oct 25</td><td>44</td></tr><tr><td>Nov 1</td><td>43</td></tr><tr><td>Nov 8</td><td>42</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:design" data-facet="category" title="Taste for interfaces that don&#39;t look generated: direction, motion and accessibility." href="/?tag=category%3Adesign">category:<wbr>design</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Taste for interfaces that don&#39;t look generated: direction, motion and accessibility.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:remote" data-facet="effect" title="Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service." href="/?tag=effect%3Aremote">effect:<wbr>remote</a></div>
+          <p class="tag-meaning">Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:mcp" data-facet="needs" title="Needs an MCP server connected." href="/?tag=needs%3Amcp">needs:<wbr>mcp</a></div>
+          <p class="tag-meaning">Needs an MCP server connected.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="design" data-facet="topic" href="/?tag=design">design</a><a class="tag" data-tag="design-system" data-facet="topic" href="/?tag=design-system">design-system</a><a class="tag" data-tag="accessibility" data-facet="topic" href="/?tag=accessibility">accessibility</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:penpot" data-facet="stack" href="/?tag=stack%3Apenpot">stack:<wbr>penpot</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/github/awesome-copilot/blob/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/penpot-uiux-design/SKILL.md">github/awesome-copilot at 797337f</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: penpot-uiux-design
+description: &#39;Comprehensive guide for creating professional UI/UX designs in Penpot using MCP tools. Use this skill when: (1) Creating new UI/UX designs for web, mobile, or desktop applications, (2) Building design systems with components and tokens, (3) Designing dashboards, forms, navigation, or landing pages, (4) Applying accessibility standards and best practices, (5) Following platform guidelines (iOS, Android, Material Design), (6) Reviewing or improving existing Penpot designs for usability. Triggers: &#34;design a UI&#34;, &#34;create interface&#34;, &#34;build layout&#34;, &#34;design dashboard&#34;, &#34;create form&#34;, &#34;design landing page&#34;, &#34;make it accessible&#34;, &#34;design system&#34;, &#34;component library&#34;.&#39;</code></pre></details>
+        <div class="markdown"><h3>Penpot UI/UX Design Guide</h3>
+<p>Create professional, user-centered designs in Penpot using the <code>penpot/penpot-mcp</code> MCP server and proven UI/UX principles.</p>
+<h4>Available MCP Tools</h4>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mcp__penpot__execute_code</code></td>
+<td>Run JavaScript in Penpot plugin context to create/modify designs</td>
+</tr>
+<tr>
+<td><code>mcp__penpot__export_shape</code></td>
+<td>Export shapes as PNG/SVG for visual inspection</td>
+</tr>
+<tr>
+<td><code>mcp__penpot__import_image</code></td>
+<td>Import images (icons, photos, logos) into designs</td>
+</tr>
+<tr>
+<td><code>mcp__penpot__penpot_api_info</code></td>
+<td>Retrieve Penpot API documentation</td>
+</tr>
+</tbody>
+</table>
+<h4>MCP Server Setup</h4>
+<p>The Penpot MCP tools require the <code>penpot/penpot-mcp</code> server running locally. For detailed installation and troubleshooting, see <a href="https://github.com/github/awesome-copilot/blob/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/penpot-uiux-design/references/setup-troubleshooting.md">setup-troubleshooting.md</a>.</p>
+<h5>Before Setup: Check If Already Running</h5>
+<p><strong>Always check if the MCP server is already available before attempting setup:</strong></p>
+<ol>
+<li>
+<p><strong>Try calling a tool first</strong>: Attempt <code>mcp__penpot__penpot_api_info</code> - if it succeeds, the server is running and connected. No setup needed.</p>
+</li>
+<li>
+<p><strong>If the tool fails</strong>, ask the user:</p>
+<blockquote>
+<p>&quot;The Penpot MCP server doesn't appear to be connected. Is the server already installed and running? If so, I can help troubleshoot. If not, I can guide you through the setup.&quot;</p>
+</blockquote>
+</li>
+<li>
+<p><strong>Only proceed with setup instructions if the user confirms the server is not installed.</strong></p>
+</li>
+</ol>
+<h5>Quick Start (Only If Not Installed)</h5>
+<pre><code class="language-bash"># Clone and install
+git clone https://github.com/penpot/penpot-mcp.git
+cd penpot-mcp
+npm install
+
+# Build and start servers
+npm run bootstrap
+</code></pre>
+<p>Then in Penpot:</p>
+<ol>
+<li>Open a design file</li>
+<li>Go to <strong>Plugins</strong> → <strong>Load plugin from URL</strong></li>
+<li>Enter: <code>http://localhost:4400/manifest.json</code></li>
+<li>Click <strong>&quot;Connect to MCP server&quot;</strong> in the plugin UI</li>
+</ol>
+<h5>VS Code Configuration</h5>
+<p>Add to <code>settings.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;mcp&quot;: {
+    &quot;servers&quot;: {
+      &quot;penpot&quot;: {
+        &quot;url&quot;: &quot;http://localhost:4401/sse&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<h5>Troubleshooting (If Server Is Installed But Not Working)</h5>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Plugin won't connect</td>
+<td>Check servers are running (<code>npm run start:all</code> in penpot-mcp dir)</td>
+</tr>
+<tr>
+<td>Browser blocks localhost</td>
+<td>Allow local network access prompt, or disable Brave Shield, or try Firefox</td>
+</tr>
+<tr>
+<td>Tools not appearing in client</td>
+<td>Restart VS Code/Claude completely after config changes</td>
+</tr>
+<tr>
+<td>Tool execution fails/times out</td>
+<td>Ensure Penpot plugin UI is open and shows &quot;Connected&quot;</td>
+</tr>
+<tr>
+<td>&quot;WebSocket connection failed&quot;</td>
+<td>Check firewall allows ports 4400, 4401, 4402</td>
+</tr>
+</tbody>
+</table>
+<h4>Quick Reference</h4>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Reference File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MCP server installation &amp; troubleshooting</td>
+<td><a href="https://github.com/github/awesome-copilot/blob/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/penpot-uiux-design/references/setup-troubleshooting.md">setup-troubleshooting.md</a></td>
+</tr>
+<tr>
+<td>Component specs (buttons, forms, nav)</td>
+<td><a href="https://github.com/github/awesome-copilot/blob/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/penpot-uiux-design/references/component-patterns.md">component-patterns.md</a></td>
+</tr>
+<tr>
+<td>Accessibility (contrast, touch targets)</td>
+<td><a href="https://github.com/github/awesome-copilot/blob/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/penpot-uiux-design/references/accessibility.md">accessibility.md</a></td>
+</tr>
+<tr>
+<td>Screen sizes &amp; platform specs</td>
+<td><a href="https://github.com/github/awesome-copilot/blob/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/penpot-uiux-design/references/platform-guidelines.md">platform-guidelines.md</a></td>
+</tr>
+</tbody>
+</table>
+<h4>Core Design Principles</h4>
+<h5>The Golden Rules</h5>
+<ol>
+<li><strong>Clarity over cleverness</strong>: Every element must have a purpose</li>
+<li><strong>Consistency builds trust</strong>: Reuse patterns, colors, and components</li>
+<li><strong>User goals first</strong>: Design for tasks, not features</li>
+<li><strong>Accessibility is not optional</strong>: Design for everyone</li>
+<li><strong>Test with real users</strong>: Validate assumptions early</li>
+</ol>
+<h5>Visual Hierarchy (Priority Order)</h5>
+<ol>
+<li><strong>Size</strong>: Larger = more important</li>
+<li><strong>Color/Contrast</strong>: High contrast draws attention</li>
+<li><strong>Position</strong>: Top-left (LTR) gets seen first</li>
+<li><strong>Whitespace</strong>: Isolation emphasizes importance</li>
+<li><strong>Typography weight</strong>: Bold stands out</li>
+</ol>
+<h4>Design Workflow</h4>
+<ol>
+<li><strong>Check for design system first</strong>: Ask user if they have existing tokens/specs, or discover from current Penpot file</li>
+<li><strong>Understand the page</strong>: Call <code>mcp__penpot__execute_code</code> with <code>penpotUtils.shapeStructure()</code> to see hierarchy</li>
+<li><strong>Find elements</strong>: Use <code>penpotUtils.findShapes()</code> to locate elements by type or name</li>
+<li><strong>Create/modify</strong>: Use <code>penpot.createBoard()</code>, <code>penpot.createRectangle()</code>, <code>penpot.createText()</code> etc.</li>
+<li><strong>Apply layout</strong>: Use <code>addFlexLayout()</code> for responsive containers</li>
+<li><strong>Validate</strong>: Call <code>mcp__penpot__export_shape</code> to visually check your work</li>
+</ol>
+<h4>Design System Handling</h4>
+<p><strong>Before creating designs, determine if the user has an existing design system:</strong></p>
+<ol>
+<li><strong>Ask the user</strong>: &quot;Do you have a design system or brand guidelines to follow?&quot;</li>
+<li><strong>Discover from Penpot</strong>: Check for existing components, colors, and patterns</li>
+</ol>
+<pre><code class="language-javascript">// Discover existing design patterns in current file
+const allShapes = penpotUtils.findShapes(() =&gt; true, penpot.root);
+
+// Find existing colors in use
+const colors = new Set();
+allShapes.forEach(s =&gt; {
+  if (s.fills) s.fills.forEach(f =&gt; colors.add(f.fillColor));
+});
+
+// Find existing text styles (font sizes, weights)
+const textStyles = allShapes
+  .filter(s =&gt; s.type === 'text')
+  .map(s =&gt; ({ fontSize: s.fontSize, fontWeight: s.fontWeight }));
+
+// Find existing components
+const components = penpot.library.local.components;
+
+return { colors: [...colors], textStyles, componentCount: components.length };
+</code></pre>
+<p><strong>If user HAS a design system:</strong></p>
+<ul>
+<li>Use their specified colors, spacing, typography</li>
+<li>Match their existing component patterns</li>
+<li>Follow their naming conventions</li>
+</ul>
+<p><strong>If user has NO design system:</strong></p>
+<ul>
+<li>Use the default tokens below as a starting point</li>
+<li>Offer to help establish consistent patterns</li>
+<li>Reference specs in <a href="https://github.com/github/awesome-copilot/blob/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/penpot-uiux-design/references/component-patterns.md">component-patterns.md</a></li>
+</ul>
+<h4>Key Penpot API Gotchas</h4>
+<ul>
+<li><code>width</code>/<code>height</code> are READ-ONLY → use <code>shape.resize(w, h)</code></li>
+<li><code>parentX</code>/<code>parentY</code> are READ-ONLY → use <code>penpotUtils.setParentXY(shape, x, y)</code></li>
+<li>Use <code>insertChild(index, shape)</code> for z-ordering (not <code>appendChild</code>)</li>
+<li>Flex children array order is REVERSED for <code>dir=&quot;column&quot;</code> or <code>dir=&quot;row&quot;</code></li>
+<li>After <code>text.resize()</code>, reset <code>growType</code> to <code>&quot;auto-width&quot;</code> or <code>&quot;auto-height&quot;</code></li>
+</ul>
+<h4>Positioning New Boards</h4>
+<p><strong>Always check existing boards before creating new ones</strong> to avoid overlap:</p>
+<pre><code class="language-javascript">// Find all existing boards and calculate next position
+const boards = penpotUtils.findShapes(s =&gt; s.type === 'board', penpot.root);
+let nextX = 0;
+const gap = 100; // Space between boards
+
+if (boards.length &gt; 0) {
+  // Find rightmost board edge
+  boards.forEach(b =&gt; {
+    const rightEdge = b.x + b.width;
+    if (rightEdge + gap &gt; nextX) {
+      nextX = rightEdge + gap;
+    }
+  });
+}
+
+// Create new board at calculated position
+const newBoard = penpot.createBoard();
+newBoard.x = nextX;
+newBoard.y = 0;
+newBoard.resize(375, 812);
+</code></pre>
+<p><strong>Board spacing guidelines:</strong></p>
+<ul>
+<li>Use 100px gap between related screens (same flow)</li>
+<li>Use 200px+ gap between different sections/flows</li>
+<li>Align boards vertically (same y) for visual organization</li>
+<li>Group related screens horizontally in user flow order</li>
+</ul>
+<h4>Default Design Tokens</h4>
+<p><strong>Use these defaults only when user has no design system. Always prefer user's tokens if available.</strong></p>
+<h5>Spacing Scale (8px base)</h5>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Value</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>spacing-xs</code></td>
+<td>4px</td>
+<td>Tight inline elements</td>
+</tr>
+<tr>
+<td><code>spacing-sm</code></td>
+<td>8px</td>
+<td>Related elements</td>
+</tr>
+<tr>
+<td><code>spacing-md</code></td>
+<td>16px</td>
+<td>Default padding</td>
+</tr>
+<tr>
+<td><code>spacing-lg</code></td>
+<td>24px</td>
+<td>Section spacing</td>
+</tr>
+<tr>
+<td><code>spacing-xl</code></td>
+<td>32px</td>
+<td>Major sections</td>
+</tr>
+<tr>
+<td><code>spacing-2xl</code></td>
+<td>48px</td>
+<td>Page-level spacing</td>
+</tr>
+</tbody>
+</table>
+<h5>Typography Scale</h5>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Size</th>
+<th>Weight</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Display</td>
+<td>48-64px</td>
+<td>Bold</td>
+<td>Hero headlines</td>
+</tr>
+<tr>
+<td>H1</td>
+<td>32-40px</td>
+<td>Bold</td>
+<td>Page titles</td>
+</tr>
+<tr>
+<td>H2</td>
+<td>24-28px</td>
+<td>Semibold</td>
+<td>Section headers</td>
+</tr>
+<tr>
+<td>H3</td>
+<td>20-22px</td>
+<td>Semibold</td>
+<td>Subsections</td>
+</tr>
+<tr>
+<td>Body</td>
+<td>16px</td>
+<td>Regular</td>
+<td>Main content</td>
+</tr>
+<tr>
+<td>Small</td>
+<td>14px</td>
+<td>Regular</td>
+<td>Secondary text</td>
+</tr>
+<tr>
+<td>Caption</td>
+<td>12px</td>
+<td>Regular</td>
+<td>Labels, hints</td>
+</tr>
+</tbody>
+</table>
+<h5>Color Usage</h5>
+<table>
+<thead>
+<tr>
+<th>Purpose</th>
+<th>Recommendation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primary</td>
+<td>Main brand color, CTAs</td>
+</tr>
+<tr>
+<td>Secondary</td>
+<td>Supporting actions</td>
+</tr>
+<tr>
+<td>Success</td>
+<td>#22C55E range (confirmations)</td>
+</tr>
+<tr>
+<td>Warning</td>
+<td>#F59E0B range (caution)</td>
+</tr>
+<tr>
+<td>Error</td>
+<td>#EF4444 range (errors)</td>
+</tr>
+<tr>
+<td>Neutral</td>
+<td>Gray scale for text/borders</td>
+</tr>
+</tbody>
+</table>
+<h4>Common Layouts</h4>
+<h5>Mobile Screen (375×812)</h5>
+<pre><code class="language-text">┌─────────────────────────────┐
+│ Status Bar (44px)           │
+├─────────────────────────────┤
+│ Header/Nav (56px)           │
+├─────────────────────────────┤
+│                             │
+│ Content Area                │
+│ (Scrollable)                │
+│ Padding: 16px horizontal    │
+│                             │
+├─────────────────────────────┤
+│ Bottom Nav/CTA (84px)       │
+└─────────────────────────────┘
+
+</code></pre>
+<h5>Desktop Dashboard (1440×900)</h5>
+<pre><code class="language-text">┌──────┬──────────────────────────────────┐
+│      │ Header (64px)                    │
+│ Side │──────────────────────────────────│
+│ bar  │ Page Title + Actions             │
+│      │──────────────────────────────────│
+│ 240  │ Content Grid                     │
+│ px   │ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ │
+│      │ │Card │ │Card │ │Card │ │Card │ │
+│      │ └─────┘ └─────┘ └─────┘ └─────┘ │
+│      │                                  │
+└──────┴──────────────────────────────────┘
+
+</code></pre>
+<h4>Component Checklist</h4>
+<h5>Buttons</h5>
+<ul>
+<li>[ ] Clear, action-oriented label (2-3 words)</li>
+<li>[ ] Minimum touch target: 44×44px</li>
+<li>[ ] Visual states: default, hover, active, disabled, loading</li>
+<li>[ ] Sufficient contrast (3:1 against background)</li>
+<li>[ ] Consistent border radius across app</li>
+</ul>
+<h5>Forms</h5>
+<ul>
+<li>[ ] Labels above inputs (not just placeholders)</li>
+<li>[ ] Required field indicators</li>
+<li>[ ] Error messages adjacent to fields</li>
+<li>[ ] Logical tab order</li>
+<li>[ ] Input types match content (email, tel, etc.)</li>
+</ul>
+<h5>Navigation</h5>
+<ul>
+<li>[ ] Current location clearly indicated</li>
+<li>[ ] Consistent position across screens</li>
+<li>[ ] Maximum 7±2 top-level items</li>
+<li>[ ] Touch-friendly on mobile (48px targets)</li>
+</ul>
+<h4>Accessibility Quick Checks</h4>
+<ol>
+<li><strong>Color contrast</strong>: Text 4.5:1, Large text 3:1</li>
+<li><strong>Touch targets</strong>: Minimum 44×44px</li>
+<li><strong>Focus states</strong>: Visible keyboard focus indicators</li>
+<li><strong>Alt text</strong>: Meaningful descriptions for images</li>
+<li><strong>Hierarchy</strong>: Proper heading levels (H1→H2→H3)</li>
+<li><strong>Color independence</strong>: Never rely solely on color</li>
+</ol>
+<h4>Design Review Checklist</h4>
+<p>Before finalizing any design:</p>
+<ul>
+<li>[ ] Visual hierarchy is clear</li>
+<li>[ ] Consistent spacing and alignment</li>
+<li>[ ] Typography is readable (16px+ body text)</li>
+<li>[ ] Color contrast meets WCAG AA</li>
+<li>[ ] Interactive elements are obvious</li>
+<li>[ ] Mobile-friendly touch targets</li>
+<li>[ ] Loading/empty/error states considered</li>
+<li>[ ] Consistent with design system</li>
+</ul>
+<h4>Validating Designs</h4>
+<p>Use these validation approaches with <code>mcp__penpot__execute_code</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Elements outside bounds</td>
+<td><code>penpotUtils.analyzeDescendants()</code> with <code>isContainedIn()</code></td>
+</tr>
+<tr>
+<td>Text too small (&lt;12px)</td>
+<td><code>penpotUtils.findShapes()</code> filtering by <code>fontSize</code></td>
+</tr>
+<tr>
+<td>Missing contrast</td>
+<td>Call <code>mcp__penpot__export_shape</code> and visually inspect</td>
+</tr>
+<tr>
+<td>Hierarchy structure</td>
+<td><code>penpotUtils.shapeStructure()</code> to review nesting</td>
+</tr>
+</tbody>
+</table>
+<h5>Export CSS</h5>
+<p>Use <code>penpot.generateStyle(selection, { type: 'css', includeChildren: true })</code> via <code>mcp__penpot__execute_code</code> to extract CSS from designs.</p>
+<h4>Tips for Great Designs</h4>
+<ol>
+<li><strong>Start with content</strong>: Real content reveals layout needs</li>
+<li><strong>Design mobile-first</strong>: Constraints breed creativity</li>
+<li><strong>Use a grid</strong>: 8px base grid keeps things aligned</li>
+<li><strong>Limit colors</strong>: 1 primary + 1 secondary + neutrals</li>
+<li><strong>Limit fonts</strong>: 1-2 typefaces maximum</li>
+<li><strong>Embrace whitespace</strong>: Breathing room improves comprehension</li>
+<li><strong>Be consistent</strong>: Same action = same appearance everywhere</li>
+<li><strong>Provide feedback</strong>: Every action needs a response</li>
+</ol>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

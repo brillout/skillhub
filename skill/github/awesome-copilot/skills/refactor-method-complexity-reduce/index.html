@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>refactor-method-complexity-reduce · SkillHub</title>
+    <meta name="description" content="Use it when: a method is flagged as too complex and you want it split up without changing what it does. It does: finds nesting, long if-else chains, repeated blocks and complex conditions, extracts validation and case-specific logic into helpers, and flattens the main method. You get: the method rewritten as a high-level flow of small helpers, with inputs, outputs, exceptions and error messages unchanged. Checks: runs the related tests and reads the output for failed=0 instead of assuming a pass, fixing and rerunning until it gets there. Takes: the method&#039;s name and the target complexity threshold." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=github%2Fawesome-copilot">github/awesome-copilot</a></p>
+      <div class="title-row"><h1>refactor-method-complexity-reduce</h1><button type="button" class="save" data-save="skill:github/awesome-copilot/skills/refactor-method-complexity-reduce" aria-pressed="false" aria-label="Save refactor-method-complexity-reduce" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>a method is flagged as too complex and you want it split up without changing what it does</dd></div><div><dt>It does</dt><dd>finds nesting, long if-else chains, repeated blocks and complex conditions, extracts validation and case-specific logic into helpers, and flattens the main method</dd></div><div><dt>You get</dt><dd>the method rewritten as a high-level flow of small helpers, with inputs, outputs, exceptions and error messages unchanged</dd></div><div><dt>Checks</dt><dd>runs the related tests and reads the output for failed=0 instead of assuming a pass, fixing and rerunning until it gets there</dd></div><div><dt>Takes</dt><dd>the method&#39;s name and the target complexity threshold</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Cognitive complexity is a score of how hard code is to follow; the skill lists its sources as nested conditionals, long if-else or switch chains, repeated blocks, loops with conditions and complex boolean expressions. The agent extracts validation into Validate* methods, type- or case-specific processing into handler methods and repeated operations into utility methods, each with one responsibility, made static when it needs no instance state and kept close to where it&#39;s used. The main method then reads as a high-level flow, with guard clauses early, less nesting and switch statements where they dispatch more cleanly. Behavior must not change, including validation, exception types and error messages. Afterwards the agent must run the related tests and read the summary line itself: any count other than failed=0 is a failure, which it states, analyzes, fixes and reruns. It finishes with a checklist: the code compiles, the tests show failed=0, complexity is at or below the target, and the project&#39;s conventions are kept. It names no tool for measuring complexity.</p>
+      <p class="muted">Summarizes <a href="https://github.com/github/awesome-copilot/tree/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/refactor-method-complexity-reduce">the skill at 797337f</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">github/</span><wbr><span class="word">awesome-copilot</span> <span class="word">--skill</span> <span class="word">refactor-method-complexity-reduce</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/github/awesome-copilot --skill refactor-method-complexity-reduce">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/github/awesome-copilot/refactor-method-complexity-reduce">skills.sh page</a> · <a href="https://github.com/github/awesome-copilot/tree/HEAD/skills/refactor-method-complexity-reduce">Source on GitHub</a> · <a href="/?repo=github%2Fawesome-copilot">All skills from github/awesome-copilot</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>10,000 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>40,908 <span class="muted">github/awesome-copilot</span></dd></div><div><dt>First seen</dt><dd>Feb 25, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">16</div>
+      <div class="stat-delta">0% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 16; week to Sep 27: 19; week to Oct 4: 28; week to Oct 11: 24; week to Oct 18: 18; week to Oct 25: 6; week to Nov 1: 6; week to Nov 8: 16. Use the left and right arrow keys to read each week."
+        data-values="16,19,28,24,18,6,6,16" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,24.9 38.6,20.1 71.1,6.0 103.7,12.3 136.3,21.7 168.9,40.6 201.4,40.6 234.0,24.9" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="24.9" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>16</td></tr><tr><td>Sep 27</td><td>19</td></tr><tr><td>Oct 4</td><td>28</td></tr><tr><td>Oct 11</td><td>24</td></tr><tr><td>Oct 18</td><td>18</td></tr><tr><td>Oct 25</td><td>6</td></tr><tr><td>Nov 1</td><td>6</td></tr><tr><td>Nov 8</td><td>16</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/?tag=category%3Aengineering">category:<wbr>engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="refactoring" data-facet="topic" href="/?tag=refactoring">refactoring</a><a class="tag" data-tag="code-quality" data-facet="topic" href="/?tag=code-quality">code-quality</a><a class="tag" data-tag="verification" data-facet="topic" href="/?tag=verification">verification</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/github/awesome-copilot/blob/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/refactor-method-complexity-reduce/SKILL.md">github/awesome-copilot at 797337f</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: refactor-method-complexity-reduce
+description: &#39;Refactor given method `${input:methodName}` to reduce its cognitive complexity to `${input:complexityThreshold}` or below, by extracting helper methods.&#39;</code></pre></details>
+        <div class="markdown"><h3>Refactor Method to Reduce Cognitive Complexity</h3>
+<h4>Objective</h4>
+<p>Refactor the method <code>${input:methodName}</code>, to reduce its cognitive complexity to <code>${input:complexityThreshold}</code> or below, by extracting logic into focused helper methods.</p>
+<h4>Instructions</h4>
+<ol>
+<li>
+<p><strong>Analyze the current method</strong> to identify sources of cognitive complexity:</p>
+<ul>
+<li>Nested conditional statements</li>
+<li>Multiple if-else or switch chains</li>
+<li>Repeated code blocks</li>
+<li>Multiple loops with conditions</li>
+<li>Complex boolean expressions</li>
+</ul>
+</li>
+<li>
+<p><strong>Identify extraction opportunities</strong>:</p>
+<ul>
+<li>Validation logic that can be extracted into a separate method</li>
+<li>Type-specific or case-specific processing that repeats</li>
+<li>Complex transformations or calculations</li>
+<li>Common patterns that appear multiple times</li>
+</ul>
+</li>
+<li>
+<p><strong>Extract focused helper methods</strong>:</p>
+<ul>
+<li>Each helper should have a single, clear responsibility</li>
+<li>Extract validation into separate <code>Validate*</code> methods</li>
+<li>Extract type-specific logic into handler methods</li>
+<li>Create utility methods for common operations</li>
+<li>Use appropriate access levels (static, private, async)</li>
+</ul>
+</li>
+<li>
+<p><strong>Simplify the main method</strong>:</p>
+<ul>
+<li>Reduce nesting depth</li>
+<li>Replace massive if-else chains with smaller orchestrated calls</li>
+<li>Use switch statements where appropriate for cleaner dispatch</li>
+<li>Ensure the main method reads as a high-level flow</li>
+</ul>
+</li>
+<li>
+<p><strong>Preserve functionality</strong>:</p>
+<ul>
+<li>Maintain the same input/output behavior</li>
+<li>Keep all validation and error handling</li>
+<li>Preserve exception types and error messages</li>
+<li>Ensure all parameters are properly passed to helpers</li>
+</ul>
+</li>
+<li>
+<p><strong>Best practices</strong>:</p>
+<ul>
+<li>Make helper methods static when they don't need instance state</li>
+<li>Use null checks and guard clauses early</li>
+<li>Avoid creating unnecessary local variables</li>
+<li>Consider using tuples for multiple return values</li>
+<li>Group related helper methods together</li>
+</ul>
+</li>
+</ol>
+<h4>Implementation Approach</h4>
+<ul>
+<li>Extract helper methods before refactoring the main flow</li>
+<li>Test incrementally to ensure no regressions</li>
+<li>Use meaningful names that describe the extracted responsibility</li>
+<li>Keep extracted methods close to where they're used</li>
+<li>Consider making repeated code patterns into generic methods</li>
+</ul>
+<h4>Result</h4>
+<p>The refactored method should:</p>
+<ul>
+<li>Have cognitive complexity reduced to the target threshold of <code>${input:complexityThreshold}</code> or below</li>
+<li>Be more readable and maintainable</li>
+<li>Have clear separation of concerns</li>
+<li>Be easier to test and debug</li>
+<li>Retain all original functionality</li>
+</ul>
+<h4>Testing and Validation</h4>
+<p><strong>CRITICAL: After completing the refactoring, you MUST:</strong></p>
+<ol>
+<li><strong>Run all existing tests</strong> related to the refactored method and its surrounding functionality</li>
+<li><strong>MANDATORY: Explicitly verify test results show &quot;failed=0&quot;</strong>
+<ul>
+<li><strong>NEVER assume tests passed</strong> - always examine the actual test output</li>
+<li>Search for the summary line containing pass/fail counts (e.g., &quot;passed=X failed=Y&quot;)</li>
+<li><strong>If the summary shows any number other than &quot;failed=0&quot;, tests have FAILED</strong></li>
+<li>If test output is in a file, read the entire file to locate and verify the failure count</li>
+<li>Running tests is NOT the same as verifying tests passed</li>
+<li><strong>Do not proceed</strong> until you have explicitly confirmed zero failures</li>
+</ul>
+</li>
+<li><strong>If any tests fail (failed &gt; 0):</strong>
+<ul>
+<li>State clearly how many tests failed</li>
+<li>Analyze each failure to understand what functionality was broken</li>
+<li>Common causes: null handling, empty collection checks, condition logic errors</li>
+<li>Identify the root cause in the refactored code</li>
+<li>Correct the refactored code to restore the original behavior</li>
+<li>Re-run tests and verify &quot;failed=0&quot; in the output</li>
+<li>Repeat until all tests pass (failed=0)</li>
+</ul>
+</li>
+<li><strong>Verify compilation</strong> - Ensure there are no compilation errors</li>
+<li><strong>Check cognitive complexity</strong> - Confirm the metric is at or below the target threshold of <code>${input:complexityThreshold}</code></li>
+</ol>
+<h4>Confirmation Checklist</h4>
+<ul>
+<li>[ ] Code compiles without errors</li>
+<li>[ ] <strong>Test results explicitly state &quot;failed=0&quot;</strong> (verified by reading the output)</li>
+<li>[ ] All test failures analyzed and corrected (if any occurred)</li>
+<li>[ ] Cognitive complexity is at or below the target threshold of <code>${input:complexityThreshold}</code></li>
+<li>[ ] All original functionality is preserved</li>
+<li>[ ] Code follows project conventions and standards</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

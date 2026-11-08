@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>gh-fix-ci · SkillHub</title>
+    <meta name="description" content="Use it when: a pull request&#039;s GitHub Actions checks are failing and you want them diagnosed and fixed. It does: checks gh is logged in, finds the PR for the current branch or the one you name, and pulls the failing runs&#039; logs with a bundled Python script. You get: each failing check&#039;s name, run URL and log snippet, a fix plan to approve, then the fix with a summary of diffs and tests. Needs: the GitHub CLI, gh, logged in with repo and workflow scopes, and Python for the script. Skips: checks run by other CI providers such as Buildkite, reporting only their URL. Unlike diagnose-ci-failures: Warp&#039;s skill, which stops at a fix plan, this one carries out the plan after you approve it." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=openai%2Fskills">openai/skills</a></p>
+      <div class="title-row"><h1>gh-fix-ci</h1><button type="button" class="save" data-save="skill:openai/skills/skills/.curated/gh-fix-ci" aria-pressed="false" aria-label="Save gh-fix-ci" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>a pull request&#39;s GitHub Actions checks are failing and you want them diagnosed and fixed</dd></div><div><dt>It does</dt><dd>checks gh is logged in, finds the PR for the current branch or the one you name, and pulls the failing runs&#39; logs with a bundled Python script</dd></div><div><dt>You get</dt><dd>each failing check&#39;s name, run URL and log snippet, a fix plan to approve, then the fix with a summary of diffs and tests</dd></div><div><dt>Needs</dt><dd>the GitHub CLI, gh, logged in with repo and workflow scopes, and Python for the script</dd></div><div><dt>Skips</dt><dd>checks run by other CI providers such as Buildkite, reporting only their URL</dd></div><div><dt>Unlike diagnose-ci-failures</dt><dd>Warp&#39;s skill, which stops at a fix plan, this one carries out the plan after you approve it</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A CI-repair loop from OpenAI&#39;s catalog of Codex skills. The agent confirms gh is authenticated, asking you to run gh auth login if not, resolves the PR (the current branch&#39;s by default, or a number or URL you give) and inspects its checks. A bundled script, inspect_pr_checks.py, finds the failing checks, fetches their GitHub Actions logs, falls back to job logs while a run is still in progress, and extracts the failure snippet; it can print JSON and exits non-zero while failures remain. Plain gh commands are the fallback. Checks from other providers are labelled external and only their details URL is reported. The agent summarizes each failure, calls out missing logs, and drafts a plan, through a create-plan skill when one is available or inline otherwise. Nothing changes until you approve. Then it applies the plan, summarizes the diffs and tests, asks whether to open a PR, and suggests re-running the tests and gh pr checks. The openai/skills repository is marked deprecated; its README points to openai/plugins for current Codex skills.</p>
+      <p class="muted">Summarizes <a href="https://github.com/openai/skills/tree/49f948faa9258a0c61caceaf225e179651397431/skills/.curated/gh-fix-ci">the skill at 49f948f</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">openai/</span><wbr><span class="word">skills</span> <span class="word">--skill</span> <span class="word">gh-fix-ci</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/openai/skills --skill gh-fix-ci">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/openai/skills/gh-fix-ci">skills.sh page</a> · <a href="https://github.com/openai/skills/tree/HEAD/skills/.curated/gh-fix-ci">Source on GitHub</a> · <a href="/?repo=openai%2Fskills">All skills from openai/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>11,800 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>28,590 <span class="muted">openai/skills</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">182</div>
+      <div class="stat-delta">-9% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 199; week to Sep 27: 193; week to Oct 4: 175; week to Oct 11: 268; week to Oct 18: 240; week to Oct 25: 279; week to Nov 1: 242; week to Nov 8: 182. Use the left and right arrow keys to read each week."
+        data-values="199,193,175,268,240,279,242,182" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,18.6 38.6,19.6 71.1,22.4 103.7,7.7 136.3,12.2 168.9,6.0 201.4,11.8 234.0,21.3" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="21.3" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>199</td></tr><tr><td>Sep 27</td><td>193</td></tr><tr><td>Oct 4</td><td>175</td></tr><tr><td>Oct 11</td><td>268</td></tr><tr><td>Oct 18</td><td>240</td></tr><tr><td>Oct 25</td><td>279</td></tr><tr><td>Nov 1</td><td>242</td></tr><tr><td>Nov 8</td><td>182</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/?tag=category%3Adebugging">category:<wbr>debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/?tag=needs%3Acli">needs:<wbr>cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="ci" data-facet="topic" href="/?tag=ci">ci</a><a class="tag" data-tag="debugging" data-facet="topic" href="/?tag=debugging">debugging</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:github" data-facet="stack" href="/?tag=stack%3Agithub">stack:<wbr>github</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">No copy of its SKILL.md yet.</p>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

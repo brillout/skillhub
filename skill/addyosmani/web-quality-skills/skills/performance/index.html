@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>performance · SkillHub</title>
+    <meta name="description" content="Use it when: a site loads slowly or feels sluggish and you want it faster, with numbers to show it. It does: sets a baseline from real-user Chrome data (CrUX) and a browser performance trace, changes only the code behind measured bottlenecks, then re-runs the same measurement. You get: code changes and a report of before and after values, test conditions and uncertainty; real-user confirmation is left pending. Without a live page: it inspects the source but labels findings as hypotheses, and gives the command or browser steps that would verify the high-impact ones. Works with: Chrome DevTools MCP traces if available, otherwise the Lighthouse CLI, PageSpeed Insights or CrUX tools. Unlike core-web-vitals: its sibling skill focused on three Core Web Vitals, it covers loading and runtime speed as a whole: budgets, images, fonts, caching, scripts." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=addyosmani%2Fweb-quality-skills">addyosmani/web-quality-skills</a> <span aria-hidden="true">/</span> <a href="/bundle/addyosmani/web-quality-skills/">Web Quality Skills</a></p>
+      <div class="title-row"><h1>performance</h1><button type="button" class="save" data-save="skill:addyosmani/web-quality-skills/skills/performance" aria-pressed="false" aria-label="Save performance" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>a site loads slowly or feels sluggish and you want it faster, with numbers to show it</dd></div><div><dt>It does</dt><dd>sets a baseline from real-user Chrome data (CrUX) and a browser performance trace, changes only the code behind measured bottlenecks, then re-runs the same measurement</dd></div><div><dt>You get</dt><dd>code changes and a report of before and after values, test conditions and uncertainty; real-user confirmation is left pending</dd></div><div><dt>Without a live page</dt><dd>it inspects the source but labels findings as hypotheses, and gives the command or browser steps that would verify the high-impact ones</dd></div><div><dt>Works with</dt><dd>Chrome DevTools MCP traces if available, otherwise the Lighthouse CLI, PageSpeed Insights or CrUX tools</dd></div><div><dt>Unlike core-web-vitals</dt><dd>its sibling skill focused on three Core Web Vitals, it covers loading and runtime speed as a whole: budgets, images, fonts, caching, scripts</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 2 of 6 in the <a href="/bundle/addyosmani/web-quality-skills/">Web Quality Skills</a> bundle · Before it: <a href="/skill/addyosmani/web-quality-skills/skills/web-quality-audit/">web-quality-audit</a> · After it: <a href="/skill/addyosmani/web-quality-skills/skills/core-web-vitals/">core-web-vitals</a></p>
+    
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>The measurement workflow it reads first, shared with the repo&#39;s core-web-vitals and web-quality-audit skills, keeps evidence types apart: CrUX field data from real Chrome users decides whether users have a problem, a DevTools trace or Lighthouse run in the lab finds why, and code inspection only forms hypotheses. It tests mobile conditions by default, records the browser, throttling and cache state, takes the median of three runs for decisions, and never treats missing CrUX data as passing. The rest is a reference of fixes with code: a starting performance budget (1.5 MB page, 300 KB of JavaScript), server response and compression, preconnect, preloads only where a trace shows late discovery, Speculation Rules prerendering, deferred scripts and CSS, code splitting, AVIF and WebP images with srcset, font loading, Cache-Control and service workers, avoiding layout thrashing, virtualized lists, View Transitions, and delaying third-party widgets until needed. For production monitoring, it points to Google&#39;s web-vitals library over hand-written observers.</p>
+      <p class="muted">Summarizes <a href="https://github.com/addyosmani/web-quality-skills/tree/afa8da942115f2961fdbfa80807ea0b232ff6c00/skills/performance">the skill at afa8da9</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">addyosmani/</span><wbr><span class="word">web-quality-skills</span> <span class="word">--skill</span> <span class="word">performance</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/addyosmani/web-quality-skills --skill performance">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/addyosmani/web-quality-skills/performance">skills.sh page</a> · <a href="https://github.com/addyosmani/web-quality-skills/tree/HEAD/skills/performance">Source on GitHub</a> · <a href="/?repo=addyosmani%2Fweb-quality-skills">All skills from addyosmani/web-quality-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>43,400 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>3,054 <span class="muted">addyosmani/web-quality-skills</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">1.1K</div>
+      <div class="stat-delta">-19% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 1,354; week to Sep 27: 1,165; week to Oct 4: 1,131; week to Oct 11: 1,011; week to Oct 18: 1,048; week to Oct 25: 1,057; week to Nov 1: 1,110; week to Nov 8: 1,091. Use the left and right arrow keys to read each week."
+        data-values="1354,1165,1131,1011,1048,1057,1110,1091" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,12.1 71.1,13.2 103.7,17.1 136.3,15.9 168.9,15.7 201.4,13.9 234.0,14.5" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="14.5" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>1,354</td></tr><tr><td>Sep 27</td><td>1,165</td></tr><tr><td>Oct 4</td><td>1,131</td></tr><tr><td>Oct 11</td><td>1,011</td></tr><tr><td>Oct 18</td><td>1,048</td></tr><tr><td>Oct 25</td><td>1,057</td></tr><tr><td>Nov 1</td><td>1,110</td></tr><tr><td>Nov 8</td><td>1,091</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/?tag=category%3Adebugging">category:<wbr>debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="performance" data-facet="topic" href="/?tag=performance">performance</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/addyosmani/web-quality-skills/blob/afa8da942115f2961fdbfa80807ea0b232ff6c00/skills/performance/SKILL.md">addyosmani/web-quality-skills at afa8da9</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: performance
+description: Optimize web performance for faster loading and better user experience. Use when asked to &#34;speed up my site&#34;, &#34;optimize performance&#34;, &#34;reduce load time&#34;, &#34;fix slow loading&#34;, &#34;improve page speed&#34;, or &#34;performance audit&#34;.
+license: MIT
+metadata:
+  author: web-quality-skills
+  version: &#34;2.0&#34;</code></pre></details>
+        <div class="markdown"><h3>Performance optimization</h3>
+<p>Evidence-led performance optimization using real-user signals for prioritization and browser traces for diagnosis. Focuses on loading speed, runtime responsiveness, and resource delivery.</p>
+<h4>How it works</h4>
+<ol>
+<li>If a page can run, read <a href="https://github.com/addyosmani/web-quality-skills/blob/afa8da942115f2961fdbfa80807ea0b232ff6c00/skills/performance/references/MEASUREMENT.md">the measurement workflow</a> and establish a field-plus-lab baseline before editing.</li>
+<li>Prioritize poor real-user Core Web Vitals. Use a DevTools performance trace and its focused insights to find the cause.</li>
+<li>Inspect and change only the code or assets connected to measured bottlenecks.</li>
+<li>Re-run equivalent lab measurements and report before/after values, conditions, and uncertainty. Field verification remains pending until enough new user data arrives.</li>
+</ol>
+<p>When no runnable page exists, perform static inspection but call findings <strong>hypotheses</strong>, not measured regressions. Include the command or browser workflow that can verify each high-impact hypothesis.</p>
+<p>Prefer a browser tool that records a performance trace and exposes focused insights. With Chrome DevTools MCP, use <code>performance_start_trace</code> and <code>performance_analyze_insight</code>; do not route performance through <code>lighthouse_audit</code>, which covers non-performance Lighthouse categories.</p>
+<h4>Starting performance budget</h4>
+<p>Budgets must reflect the product's target devices, networks, page types, and user journeys. The values below are initial guardrails for a typical content or commerce page, not universal pass/fail criteria. Preserve an existing project budget when one is already defined.</p>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Budget</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Total page weight</td>
+<td>&lt; 1.5 MB</td>
+<td>Bounds transfer time and data cost on constrained target networks; calibrate with representative pages</td>
+</tr>
+<tr>
+<td>JavaScript (compressed)</td>
+<td>&lt; 300 KB</td>
+<td>Protect parse and execution cost</td>
+</tr>
+<tr>
+<td>CSS (compressed)</td>
+<td>&lt; 100 KB</td>
+<td>Limit render-blocking work</td>
+</tr>
+<tr>
+<td>Images (above-fold)</td>
+<td>&lt; 500 KB</td>
+<td>Protect likely LCP resources</td>
+</tr>
+<tr>
+<td>Fonts</td>
+<td>&lt; 100 KB</td>
+<td>Limit critical font transfer</td>
+</tr>
+<tr>
+<td>Third-party</td>
+<td>&lt; 200 KB</td>
+<td>Bound code outside product control</td>
+</tr>
+</tbody>
+</table>
+<h4>Critical rendering path</h4>
+<h5>Server response</h5>
+<ul>
+<li><strong>TTFB &lt; 800ms.</strong> Time to First Byte should be fast. Use CDN, caching, and efficient backends.</li>
+<li><strong>Enable compression.</strong> Gzip or Brotli for text assets. Brotli preferred (15-20% smaller).</li>
+<li><strong>HTTP/2 or HTTP/3.</strong> Multiplexing reduces connection overhead.</li>
+<li><strong>Edge caching.</strong> Cache HTML at CDN edge when possible.</li>
+<li><strong>Consider Early Hints (HTTP 103) for measured document latency.</strong> If a trace shows slow HTML generation and stable critical subresources, send an interim <code>103</code> with <code>Link</code> headers before the normal final response from the same request. Use HTTP/2 or later. A CDN may synthesize the <code>103</code> from <code>Link</code> headers on an earlier <code>200</code>, or the origin/edge handler can emit it directly. Unsupported clients continue to the final response, but confirm current browser and infrastructure support. Limit hints to proven critical preloads or preconnects: inaccurate hints waste bandwidth. Cloudflare reported a 20–30% LCP improvement in an artificial, image-heavy test; treat that as a vendor case study, not an expected saving, and measure your result. See <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/103">MDN's 103 implementation example</a> and <a href="https://blog.cloudflare.com/early-hints-performance/">the Cloudflare study</a>.</li>
+</ul>
+<h5>Resource loading</h5>
+<p><strong>Preconnect to required origins:</strong></p>
+<pre><code class="language-html">&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;&gt;
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://cdn.example.com&quot; crossorigin&gt;
+</code></pre>
+<p><strong>Preload critical resources:</strong></p>
+<p>Preload only resources whose late discovery is visible in the trace. Each preload competes for bandwidth and an unnecessary high-priority request can delay LCP.</p>
+<pre><code class="language-html">&lt;!-- LCP image --&gt;
+&lt;link rel=&quot;preload&quot; href=&quot;/hero.webp&quot; as=&quot;image&quot; fetchpriority=&quot;high&quot;&gt;
+
+&lt;!-- Critical font --&gt;
+&lt;link rel=&quot;preload&quot; href=&quot;/font.woff2&quot; as=&quot;font&quot; type=&quot;font/woff2&quot; crossorigin&gt;
+</code></pre>
+<p><strong>Prerender likely-next navigations</strong> with the <a href="https://developer.chrome.com/docs/web-platform/prerender-pages">Speculation Rules API</a>:</p>
+<pre><code class="language-html">&lt;script type=&quot;speculationrules&quot;&gt;
+{
+  &quot;prerender&quot;: [{
+    &quot;where&quot;: { &quot;href_matches&quot;: &quot;/*&quot; },
+    &quot;eagerness&quot;: &quot;moderate&quot;
+  }]
+}
+&lt;/script&gt;
+</code></pre>
+<p><code>moderate</code> waits for a stronger intent signal than eager modes. Measure prediction hit rate, transferred bytes, and server cost; a wrong prerender is roughly an unused navigation. See <a href="https://github.com/addyosmani/web-quality-skills/blob/afa8da942115f2961fdbfa80807ea0b232ff6c00/skills/core-web-vitals/SKILL.md#lcp-largest-contentful-paint">core-web-vitals → LCP</a> for the tradeoffs and the <code>prerenderingchange</code> gating needed for analytics.</p>
+<p><strong>Defer non-critical CSS:</strong></p>
+<pre><code class="language-html">&lt;!-- Critical CSS inlined --&gt;
+&lt;style&gt;/* Above-fold styles */&lt;/style&gt;
+
+&lt;!-- Non-critical CSS --&gt;
+&lt;link rel=&quot;preload&quot; href=&quot;/styles.css&quot; as=&quot;style&quot; onload=&quot;this.onload=null;this.rel='stylesheet'&quot;&gt;
+&lt;noscript&gt;&lt;link rel=&quot;stylesheet&quot; href=&quot;/styles.css&quot;&gt;&lt;/noscript&gt;
+</code></pre>
+<h5>JavaScript optimization</h5>
+<p><strong>Defer non-essential scripts:</strong></p>
+<pre><code class="language-html">&lt;!-- Parser-blocking (avoid) --&gt;
+&lt;script src=&quot;/critical.js&quot;&gt;&lt;/script&gt;
+
+&lt;!-- Deferred (preferred) --&gt;
+&lt;script defer src=&quot;/app.js&quot;&gt;&lt;/script&gt;
+
+&lt;!-- Async (for independent scripts) --&gt;
+&lt;script async src=&quot;/analytics.js&quot;&gt;&lt;/script&gt;
+
+&lt;!-- Module (deferred by default) --&gt;
+&lt;script type=&quot;module&quot; src=&quot;/app.mjs&quot;&gt;&lt;/script&gt;
+</code></pre>
+<p><strong>Code splitting patterns:</strong></p>
+<pre><code class="language-javascript">// Route-based splitting
+const Dashboard = lazy(() =&gt; import('./Dashboard'));
+
+// Component-based splitting
+const HeavyChart = lazy(() =&gt; import('./HeavyChart'));
+
+// Feature-based splitting
+if (user.isPremium) {
+  const PremiumFeatures = await import('./PremiumFeatures');
+}
+</code></pre>
+<p><strong>Tree shaking best practices:</strong></p>
+<pre><code class="language-javascript">// ❌ Imports entire library
+import _ from 'lodash';
+_.debounce(fn, 300);
+
+// ✅ Imports only what's needed
+import debounce from 'lodash/debounce';
+debounce(fn, 300);
+</code></pre>
+<h4>Image optimization</h4>
+<h5>Format selection</h5>
+<table>
+<thead>
+<tr>
+<th>Format</th>
+<th>Use case</th>
+<th>Browser support</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AVIF</td>
+<td>Photos, best compression</td>
+<td>92%+</td>
+</tr>
+<tr>
+<td>WebP</td>
+<td>Photos, good fallback</td>
+<td>97%+</td>
+</tr>
+<tr>
+<td>PNG</td>
+<td>Graphics with transparency</td>
+<td>Universal</td>
+</tr>
+<tr>
+<td>SVG</td>
+<td>Icons, logos, illustrations</td>
+<td>Universal</td>
+</tr>
+</tbody>
+</table>
+<h5>Responsive images</h5>
+<pre><code class="language-html">&lt;picture&gt;
+  &lt;!-- AVIF for modern browsers --&gt;
+  &lt;source 
+    type=&quot;image/avif&quot;
+    srcset=&quot;hero-400.avif 400w,
+            hero-800.avif 800w,
+            hero-1200.avif 1200w&quot;
+    sizes=&quot;(max-width: 600px) 100vw, 50vw&quot;&gt;
+  
+  &lt;!-- WebP fallback --&gt;
+  &lt;source 
+    type=&quot;image/webp&quot;
+    srcset=&quot;hero-400.webp 400w,
+            hero-800.webp 800w,
+            hero-1200.webp 1200w&quot;
+    sizes=&quot;(max-width: 600px) 100vw, 50vw&quot;&gt;
+  
+  &lt;!-- JPEG fallback --&gt;
+  &lt;img 
+    src=&quot;hero-800.jpg&quot;
+    srcset=&quot;hero-400.jpg 400w,
+            hero-800.jpg 800w,
+            hero-1200.jpg 1200w&quot;
+    sizes=&quot;(max-width: 600px) 100vw, 50vw&quot;
+    width=&quot;1200&quot; 
+    height=&quot;600&quot;
+    alt=&quot;Hero image&quot;
+    loading=&quot;lazy&quot;
+    decoding=&quot;async&quot;&gt;
+&lt;/picture&gt;
+</code></pre>
+<h5>LCP image priority</h5>
+<pre><code class="language-html">&lt;!-- Above-fold LCP image: eager loading, high priority --&gt;
+&lt;img 
+  src=&quot;hero.webp&quot; 
+  fetchpriority=&quot;high&quot;
+  loading=&quot;eager&quot;
+  decoding=&quot;sync&quot;
+  alt=&quot;Hero&quot;&gt;
+
+&lt;!-- Below-fold images: lazy loading --&gt;
+&lt;img 
+  src=&quot;product.webp&quot; 
+  loading=&quot;lazy&quot;
+  decoding=&quot;async&quot;
+  alt=&quot;Product&quot;&gt;
+</code></pre>
+<h4>Font optimization</h4>
+<h5>Loading strategy</h5>
+<pre><code class="language-css">/* System font stack as fallback */
+body {
+  font-family: 'Custom Font', -apple-system, BlinkMacSystemFont, 
+               'Segoe UI', Roboto, sans-serif;
+}
+
+/* Prevent invisible text */
+@font-face {
+  font-family: 'Custom Font';
+  src: url('/fonts/custom.woff2') format('woff2');
+  font-display: swap; /* or optional for non-critical */
+  font-weight: 400;
+  font-style: normal;
+  unicode-range: U+0000-00FF; /* Subset to Latin */
+}
+</code></pre>
+<h5>Preloading critical fonts</h5>
+<pre><code class="language-html">&lt;link rel=&quot;preload&quot; href=&quot;/fonts/heading.woff2&quot; as=&quot;font&quot; type=&quot;font/woff2&quot; crossorigin&gt;
+</code></pre>
+<h5>Variable fonts</h5>
+<pre><code class="language-css">/* One file instead of multiple weights */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Variable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-display: swap;
+}
+</code></pre>
+<h4>Caching strategy</h4>
+<h5>Cache-Control headers</h5>
+<pre><code># HTML (short or no cache)
+Cache-Control: no-cache, must-revalidate
+
+# Static assets with hash (immutable)
+Cache-Control: public, max-age=31536000, immutable
+
+# Static assets without hash
+Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+# API responses
+Cache-Control: private, max-age=0, must-revalidate
+</code></pre>
+<h5>Service worker caching</h5>
+<pre><code class="language-javascript">// Cache-first for static assets
+self.addEventListener('fetch', (event) =&gt; {
+  if (event.request.destination === 'image' ||
+      event.request.destination === 'style' ||
+      event.request.destination === 'script') {
+    event.respondWith(
+      caches.match(event.request).then((cached) =&gt; {
+        return cached || fetch(event.request).then((response) =&gt; {
+          const clone = response.clone();
+          caches.open('static-v1').then((cache) =&gt; cache.put(event.request, clone));
+          return response;
+        });
+      })
+    );
+  }
+});
+</code></pre>
+<h4>Runtime performance</h4>
+<h5>Avoid layout thrashing</h5>
+<pre><code class="language-javascript">// ❌ Forces multiple reflows
+elements.forEach(el =&gt; {
+  const height = el.offsetHeight; // Read
+  el.style.height = height + 10 + 'px'; // Write
+});
+
+// ✅ Batch reads, then batch writes
+const heights = elements.map(el =&gt; el.offsetHeight); // All reads
+elements.forEach((el, i) =&gt; {
+  el.style.height = heights[i] + 10 + 'px'; // All writes
+});
+</code></pre>
+<h5>Debounce expensive operations</h5>
+<pre><code class="language-javascript">function debounce(fn, delay) {
+  let timeout;
+  return (...args) =&gt; {
+    clearTimeout(timeout);
+    timeout = setTimeout(() =&gt; fn(...args), delay);
+  };
+}
+
+// Debounce scroll/resize handlers
+window.addEventListener('scroll', debounce(handleScroll, 100));
+</code></pre>
+<h5>Use requestAnimationFrame</h5>
+<pre><code class="language-javascript">// ❌ May cause jank
+setInterval(animate, 16);
+
+// ✅ Synced with display refresh
+function animate() {
+  // Animation logic
+  requestAnimationFrame(animate);
+}
+requestAnimationFrame(animate);
+</code></pre>
+<h5>Virtualize long lists</h5>
+<pre><code class="language-javascript">// For lists &gt; 100 items, render only visible items
+// Use libraries like react-window, vue-virtual-scroller, or native CSS:
+.virtual-list {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 50px; /* Estimated item height */
+}
+</code></pre>
+<h5>Smooth navigations with View Transitions</h5>
+<p>The <a href="https://developer.chrome.com/docs/web-platform/view-transitions">View Transitions API</a> lets the browser cross-fade (or custom-animate) between two DOM states using a single GPU-composited snapshot — no double-render, no layout thrash, and the snapshot doesn't count toward CLS.</p>
+<p><strong>Same-document (SPA-style) — Baseline 2026:</strong></p>
+<pre><code class="language-javascript">// Wrap the DOM mutation that swaps the view
+function navigate(newView) {
+  if (!document.startViewTransition) return swapDOM(newView);
+  document.startViewTransition(() =&gt; swapDOM(newView));
+}
+</code></pre>
+<p><strong>Cross-document (MPA-style) — Chromium-stable, progressive enhancement elsewhere:</strong></p>
+<pre><code class="language-css">/* On both source and destination pages */
+@view-transition { navigation: auto; }
+</code></pre>
+<p>That's the entire integration — same-origin navigations now fade automatically. To opt specific elements into shared-element transitions (e.g. a thumbnail expanding into a hero), give them a matching <code>view-transition-name</code>:</p>
+<pre><code class="language-css">.product-thumb[data-id=&quot;42&quot;], .product-hero { view-transition-name: product-42; }
+</code></pre>
+<p>Pair this with Speculation Rules (above) for instant + animated navigations.</p>
+<h4>Third-party scripts</h4>
+<h5>Load strategies</h5>
+<pre><code class="language-javascript">// ❌ Blocks main thread
+&lt;script src=&quot;https://analytics.example.com/script.js&quot;&gt;&lt;/script&gt;
+
+// ✅ Async loading
+&lt;script async src=&quot;https://analytics.example.com/script.js&quot;&gt;&lt;/script&gt;
+
+// ✅ Delay until interaction
+&lt;script&gt;
+document.addEventListener('DOMContentLoaded', () =&gt; {
+  const observer = new IntersectionObserver((entries) =&gt; {
+    if (entries[0].isIntersecting) {
+      const script = document.createElement('script');
+      script.src = 'https://widget.example.com/embed.js';
+      document.body.appendChild(script);
+      observer.disconnect();
+    }
+  });
+  observer.observe(document.querySelector('#widget-container'));
+});
+&lt;/script&gt;
+</code></pre>
+<h5>Facade pattern</h5>
+<pre><code class="language-html">&lt;!-- Show static placeholder until interaction --&gt;
+&lt;div class=&quot;youtube-facade&quot; 
+     data-video-id=&quot;abc123&quot; 
+     onclick=&quot;loadYouTube(this)&quot;&gt;
+  &lt;img src=&quot;/thumbnails/abc123.jpg&quot; alt=&quot;Video title&quot;&gt;
+  &lt;button aria-label=&quot;Play video&quot;&gt;▶&lt;/button&gt;
+&lt;/div&gt;
+</code></pre>
+<h4>Measurement</h4>
+<p>Use <a href="https://github.com/addyosmani/web-quality-skills/blob/afa8da942115f2961fdbfa80807ea0b232ff6c00/skills/performance/references/MEASUREMENT.md">the measurement workflow</a> whenever a URL is runnable. It defines Chrome DevTools MCP routing, CrUX and fallback sources, repeatable lab conditions, and a compact evidence format.</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Kind</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LCP, INP, CLS at p75</td>
+<td>Field</td>
+<td>User-outcome Core Web Vitals; use for pass/fail prioritization</td>
+</tr>
+<tr>
+<td>LCP, CLS in a trace</td>
+<td>Lab</td>
+<td>Reproducible diagnostic values for one navigation</td>
+</tr>
+<tr>
+<td>TBT</td>
+<td>Lab</td>
+<td>Main-thread blocking diagnostic and a rough INP proxy, not field INP</td>
+</tr>
+<tr>
+<td>FCP, Speed Index</td>
+<td>Lab</td>
+<td>Loading diagnostics, not Core Web Vitals</td>
+</tr>
+</tbody>
+</table>
+<p>Raw <code>PerformanceObserver</code> snippets are useful for the current browser session but are not real-user data by themselves. When the user wants production telemetry, read <a href="https://github.com/addyosmani/web-quality-skills/blob/afa8da942115f2961fdbfa80807ea0b232ff6c00/skills/performance/references/RUM.md">the first-party RUM reference</a> and prefer <code>web-vitals</code> over a hand-rolled metric implementation.</p>
+<h4>References</h4>
+<p>For Core Web Vitals specific optimizations, see <a href="https://github.com/addyosmani/web-quality-skills/blob/afa8da942115f2961fdbfa80807ea0b232ff6c00/skills/core-web-vitals/SKILL.md">Core Web Vitals</a>.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

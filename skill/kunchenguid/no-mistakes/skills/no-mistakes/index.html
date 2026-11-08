@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>no-mistakes · SkillHub</title>
+    <meta name="description" content="Use it when: you want a change validated before it reaches your remote, or type /no-mistakes with a task for the agent to do and then validate. It does: drives the no-mistakes pipeline (intent, rebase, review, test, document, lint, push, PR, CI) and answers each gate, a stop that waits for a decision, with fix, approve or skip. You get: a PR with green checks, left for you to review and merge, and a summary of what was validated and every fix the pipeline made. Asks you: about every finding marked ask-user, quoted verbatim, unless you passed --yes to let it drive the whole run. Needs: the no-mistakes CLI initialized in the repo, a coding agent for the pipeline, and your work committed on a feature branch." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=kunchenguid%2Fno-mistakes">kunchenguid/no-mistakes</a></p>
+      <div class="title-row"><h1>no-mistakes</h1><button type="button" class="save" data-save="skill:kunchenguid/no-mistakes/skills/no-mistakes" aria-pressed="false" aria-label="Save no-mistakes" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want a change validated before it reaches your remote, or type /no-mistakes with a task for the agent to do and then validate</dd></div><div><dt>It does</dt><dd>drives the no-mistakes pipeline (intent, rebase, review, test, document, lint, push, PR, CI) and answers each gate, a stop that waits for a decision, with fix, approve or skip</dd></div><div><dt>You get</dt><dd>a PR with green checks, left for you to review and merge, and a summary of what was validated and every fix the pipeline made</dd></div><div><dt>Asks you</dt><dd>about every finding marked ask-user, quoted verbatim, unless you passed --yes to let it drive the whole run</dd></div><div><dt>Needs</dt><dd>the no-mistakes CLI initialized in the repo, a coding agent for the pipeline, and your work committed on a feature branch</dd></div></dl></section>
+      
+      <p class="note">Needs the no-mistakes CLI, set up in the repo with no-mistakes init, and a supported coding agent CLI to run its pipeline. It pushes your branch and opens a PR, and after checks pass it keeps watching the PR, rebasing and re-pushing on a merge conflict.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>no-mistakes puts a local gate in front of your remote, and this skill is how a coding agent drives it, through the `no-mistakes axi` commands. With a task, it does the work, commits only the related changes on a feature branch, then validates; bare /no-mistakes validates what&#39;s already committed. Every run needs your intent in full, not a diff summary, because the review step uses it to tell deliberate choices from mistakes. Each run and respond call blocks for minutes until a gate or an outcome; the agent reads every findings table, hands auto-fix findings to the pipeline, and never edits code itself while a run is active. Review auto-fix is off by default. Once checks pass the agent stops and the PR waits for you, while no-mistakes keeps watching it and, on a merge conflict, rebases, revalidates and re-pushes by itself. A failed run is fixed on the same branch and run again, with guarded sync and recovery commands instead of manual resets. It also bans tests that only grep source text: tests must check observable behavior against an independent oracle, an expected result from outside the code, such as a specification or worked example.</p>
+      <p class="muted">Summarizes <a href="https://github.com/kunchenguid/no-mistakes/tree/d950c619e3b90833f423b62848797116ac4ee604/skills/no-mistakes">the skill at d950c61</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">kunchenguid/</span><wbr><span class="word">no-mistakes</span> <span class="word">--skill</span> <span class="word">no-mistakes</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/kunchenguid/no-mistakes --skill no-mistakes">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/kunchenguid/no-mistakes/no-mistakes">skills.sh page</a> · <a href="https://github.com/kunchenguid/no-mistakes/tree/HEAD/skills/no-mistakes">Source on GitHub</a> · <a href="/?repo=kunchenguid%2Fno-mistakes">All skills from kunchenguid/no-mistakes</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>6,500 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>9,161 <span class="muted">kunchenguid/no-mistakes</span></dd></div><div><dt>First seen</dt><dd>Jun 9, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">459</div>
+      <div class="stat-delta">+350% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 102; week to Sep 27: 138; week to Oct 4: 390; week to Oct 11: 982; week to Oct 18: 1,370; week to Oct 25: 792; week to Nov 1: 336; week to Nov 8: 459. Use the left and right arrow keys to read each week."
+        data-values="102,138,390,982,1370,792,336,459" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,46.7 38.6,45.6 71.1,37.5 103.7,18.5 136.3,6.0 168.9,24.6 201.4,39.2 234.0,35.3" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="35.3" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>102</td></tr><tr><td>Sep 27</td><td>138</td></tr><tr><td>Oct 4</td><td>390</td></tr><tr><td>Oct 11</td><td>982</td></tr><tr><td>Oct 18</td><td>1,370</td></tr><tr><td>Oct 25</td><td>792</td></tr><tr><td>Nov 1</td><td>336</td></tr><tr><td>Nov 8</td><td>459</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/?tag=category%3Adebugging">category:<wbr>debugging</a><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/?tag=category%3Aengineering">category:<wbr>engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/?tag=type%3Atool">type:<wbr>tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:remote" data-facet="effect" title="Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service." href="/?tag=effect%3Aremote">effect:<wbr>remote</a></div>
+          <p class="tag-meaning">Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/?tag=needs%3Acli">needs:<wbr>cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="code-review" data-facet="topic" href="/?tag=code-review">code-review</a><a class="tag" data-tag="testing" data-facet="topic" href="/?tag=testing">testing</a><a class="tag" data-tag="ci" data-facet="topic" href="/?tag=ci">ci</a><a class="tag" data-tag="verification" data-facet="topic" href="/?tag=verification">verification</a><a class="tag" data-tag="git" data-facet="topic" href="/?tag=git">git</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:no-mistakes" data-facet="stack" href="/?tag=stack%3Ano-mistakes">stack:<wbr>no-mistakes</a><a class="tag" data-tag="stack:git" data-facet="stack" href="/?tag=stack%3Agit">stack:<wbr>git</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/kunchenguid/no-mistakes/blob/d950c619e3b90833f423b62848797116ac4ee604/skills/no-mistakes/SKILL.md">kunchenguid/no-mistakes at d950c61</a>. Checked daily, last changed Nov 7, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: no-mistakes
+description: Validate your code changes through the no-mistakes pipeline - automated code review, tests, lint, docs, push, PR, and CI - before they reach the configured push target. Use when the user asks to run no-mistakes, gate or ship or validate their changes, push safely, asks you to do a task and then validate it, or invokes /no-mistakes.
+user-invocable: true</code></pre></details>
+        <div class="markdown"><h3>no-mistakes</h3>
+<p><code>no-mistakes</code> is a local gate that validates your code changes through a pipeline
+(intent, rebase, review, test, document, lint, push, PR, CI) before they reach
+the configured push target. You drive it through the <code>no-mistakes axi</code> command family, which prints
+machine-readable <a href="https://toonformat.dev">TOON</a> to stdout and progress to stderr.</p>
+<h4>Active validation-step boundary</h4>
+<p>A no-mistakes validation-step agent is already inside an active outer run. It
+must inspect, fix, and return only its assigned phase. It must never initialize,
+start, reattach, rerun, respond to, synchronize, abort, eject, or directly push
+a no-mistakes pipeline. Delivery requirements in user intent remain
+acceptance context, but the outer executor alone performs the other validation,
+push, PR, and CI phases.</p>
+<p><code>NO_MISTAKES_GATE</code> is fast diagnostic evidence, not authorization by
+itself. The runtime combines managed Git identity with authenticated process
+ancestry. If a pipeline-control command returns
+<code>error.code: nested_gate_context</code>, stop immediately and
+return control to the outer executor. Safe inspection remains available through
+<code>no-mistakes axi status</code>, <code>no-mistakes axi logs</code>, help, and
+<code>no-mistakes doctor</code>.</p>
+<p>When the user invokes <code>/no-mistakes</code>, report the outcome at the end. If the user
+asks for something specific, translate that request into the matching <code>axi run</code>
+flags yourself - for example, &quot;skip the lint step&quot; becomes <code>--skip=lint</code>. Run
+<code>no-mistakes axi run --help</code> to see the available flags.</p>
+<h4>Two ways to invoke</h4>
+<p><code>/no-mistakes</code> works in two modes, depending on whether the user hands you a
+task along with the command:</p>
+<ul>
+<li><strong>Validate-only</strong> - bare <code>/no-mistakes</code> (optionally with flag-style requests
+like &quot;skip the lint step&quot;). The user's code changes are already committed;
+validate them and report the outcome.</li>
+<li><strong>Task-first</strong> - <code>/no-mistakes &lt;task&gt;</code>, e.g.
+<code>/no-mistakes add a --json flag to the status command</code>. First carry out the
+task yourself, then validate the result through the pipeline:
+<ol>
+<li><strong>Check scope.</strong> Inspect <code>git status</code> before you change or commit anything.
+Preserve unrelated pre-existing uncommitted changes, and when you commit,
+commit only the changes that belong to the user's task.</li>
+<li><strong>Do the work.</strong> Make the changes the task describes, then <strong>commit them on
+a feature branch</strong>. If the user is on the repository's default branch,
+create a feature branch first - the gate validates committed history on a
+non-default branch, so the work must land there before you run.</li>
+<li><strong>Then validate</strong>, passing the user's task as explicit intent. The task
+text is exactly what the user set out to accomplish, in their own words, so
+it <em>is</em> the intent - preserve requirements stated directly by the user,
+including constraints, exclusions, acceptance criteria, and later decisions;
+do not condense them into a diff summary or drop them while adding
+implementation context. Enrich it with the decisions and tradeoffs you
+made while doing the work (see
+<a href="#intent-is-required">Intent is required</a>).</li>
+</ol>
+</li>
+</ul>
+<h4>Test-quality rule</h4>
+<p>Never add a test whose only evidence is that it opens, reads, greps, parses, or
+snapshots implementation source code and finds or omits particular strings,
+tokens, lines, commands, function names, prompt phrases, regex matches, AST
+shapes, or incidental snapshots. That does not prove behavior: matching text
+can be dead or commented out, and a behavior-preserving refactor can change it.</p>
+<p>Instead execute a public or executable interface and assert observable behavior,
+state, output, side effects, and failure modes. For machine-consumed declarative
+artifacts such as workflow YAML, JSON, policy, .gitignore, or generated
+configuration, invoke the real consumer when feasible or parse into a typed or
+normalized semantic model and assert meaning. A raw substring or regex over the
+file is still the anti-pattern.</p>
+<p>Reading a file is legitimate when the file is itself generated public output, a
+serialized protocol, persisted state, an intentional snapshot, or another
+explicitly owned text or byte contract. Name that contract, and do not use its
+contents as a proxy that unrelated code works. A natural-language prompt or
+instruction is not proven effective because its source contains a sentence.
+Deterministic CI may test the final emitted prompt delivered to an agent as an
+intentional generated interface; model interpretation belongs in
+development-only evaluation, not live-LLM CI.</p>
+<p>Use an independent oracle: the expected result must come from somewhere other
+than the code under test, such as a specification, worked example, published
+constant, external contract, or independently justified property. Name the
+public behavior, the oracle's source, and a plausible wrong behavior the test
+would reject. Do not only check your own mocks, compare a result to itself, or
+copy the implementation's expected-value rule: a shared mistake can pass both
+sides. External-boundary mocks, constants, snapshots, and computed expectations
+remain legitimate when they check an independent contract.</p>
+<p>For a regression, reproduce the reported failure when feasible: the test should
+fail before the fix and pass after it.</p>
+<p>Everything below - preconditions, intent, the validate-and-decide loop - applies
+the same way once the work is committed on a feature branch.</p>
+<h4>Before you start</h4>
+<ul>
+<li>The work you want validated must be <strong>committed</strong> on a branch. The gate
+validates committed history, not your uncommitted working tree.</li>
+<li>You must be on a <strong>feature branch</strong>, not the repository's default branch.</li>
+<li>The repository must already be initialized with <code>no-mistakes init</code>.</li>
+<li>The daemon must have a runnable configured pipeline agent: a supported native
+agent binary, the <code>agent: cursor</code> or <code>agent: devin</code> ACP alias, or an explicit
+<code>acp:&lt;target&gt;</code> through <code>acpx</code>. You are the AXI driver, not an
+implicit pipeline-agent backend. If none is available, the run fails
+before its first step; <code>no-mistakes doctor</code> reports the configuration problem.</li>
+</ul>
+<p>If any of these is not met, <code>axi run</code> returns an <code>error:</code> with the exact command
+to fix it - read it and act on it (commit your work, or create a branch). If the
+repository is not initialized, run <code>no-mistakes init</code> first; if the <code>no-mistakes</code>
+command itself is missing or misbehaving, <code>no-mistakes doctor</code> reports what is
+wrong.
+Before starting, run <code>no-mistakes axi</code> (home view).
+If it shows an active run on your current branch, inspect it with <code>no-mistakes axi status</code>.
+If it is parked at a gate, drive it with <code>no-mistakes axi respond</code>.
+Reattach an in-flight run by re-running <code>no-mistakes axi run</code> when it still matches your current <code>HEAD</code> - either as the submitted head or as the current pipeline head.
+Only <code>no-mistakes axi abort</code> it when you mean to discard that run before starting over; aborting is a between-runs action, never a way to take over or bypass a gate while a run is still going (see <a href="#validate-and-decide">Validate and decide</a>).
+If it shows an active run on another branch, leave that run alone and start validation for your current branch with <code>no-mistakes axi run --intent &quot;...&quot;</code>.</p>
+<h4>Intent is required</h4>
+<p>When you start a new run you must supply explicit intent through exactly one of
+<code>--intent TEXT</code>, <code>--intent-file PATH</code>, or <code>--intent -</code> (stdin until EOF):
+<strong>what the user set out to
+accomplish</strong> - the goal or request behind this work, in their terms. This is not
+a description of the diff or the files you changed; it is the objective the
+change is meant to achieve. You know it from the conversation, so pass it
+directly - no-mistakes uses the supplied intent instead of inferring it from local
+agent transcripts. Empty or whitespace-only input is rejected, never inferred.
+For input handling, whitespace preservation, and reattachment semantics, see the
+<a href="https://kunchenguid.github.io/no-mistakes/reference/cli/#intent-input">CLI intent input reference</a>.</p>
+<p>Err on the side of completeness, not brevity. The review step uses explicit intent
+to tell a deliberate decision apart from a mistake, so a thin one-line summary
+makes it flag things the user already chose. Capture the nuance: the user's
+goal, the specific decisions and tradeoffs they made along the way, any
+constraints or approaches they ruled in or out, and anything they explicitly
+asked for that might otherwise look surprising in the diff. A few sentences to a
+short paragraph is normal - write down what you learned from the conversation
+that a reviewer reading only the diff would not know.</p>
+<h4>Validate and decide</h4>
+<p>Run the pipeline and decide on its findings as they come up:</p>
+<ol>
+<li>
+<p>Start the run. It blocks until the first decision point or the end:</p>
+<pre><code class="language-sh">no-mistakes axi run --intent &quot;&lt;what the user set out to accomplish&gt;&quot;
+</code></pre>
+<p><code>axi run</code> and every <code>axi respond</code> block synchronously - the review, test,
+and CI steps can each take <strong>several minutes</strong>, so a single call may not
+return for a while. That is normal; do not cancel or re-issue the command
+because it seems slow. Both commands default to <code>--wait 8m</code> so a harness
+with a 10-minute tool cap gets a structured return instead of an unbounded
+hang. If the command returns because that wait elapsed, it is not a failed
+run and does not mean the daemon is dead: re-run <code>no-mistakes axi run</code> to reattach,
+also after an <code>axi respond</code> whose wait elapsed.
+Keep the blocking <code>no-mistakes axi run</code> / <code>no-mistakes axi respond</code> call
+open, or background that same call if your harness needs to, and collect its
+return. When backgrounding, pass a long <code>--wait</code>, for example <code>--wait 6h</code>:
+a backgrounded task notifies its harness when it exits, so a short hold
+causes repeated wake-ups. Do not poll progress with separate <code>no-mistakes axi status</code> calls
+or sleep loops. Use <code>axi status</code> to inspect a run after a wait expiry,
+a refusal, or during recovery, not as a progress-polling loop.
+A slow live daemon is retried after a health probe rather than treated as
+I/O failure. A long-running call is working, not stalled, but the run
+<strong>never advances past a gate on its own</strong>. Read every
+return; on a <code>gate:</code>, respond; loop until an <code>outcome:</code>. Never idle-wait
+for the run to move forward by itself.
+When that status output includes <code>awaiting_agent: parked &lt;duration&gt;</code> under the run,
+the run is parked at an approval or fix-review gate and waiting for you to
+send <code>axi respond</code>. The field is observability only: it does not change
+gate resolution, auto-resume the run, or make <code>--yes</code> the default.
+While a step is actively <code>running</code> or <code>fixing</code>, <code>axi status</code> may include
+<code>active_steps</code> with step-scoped <code>active_for</code>, current-round <code>round_active_for</code>,
+<code>last_activity</code>, a native <code>agent_pid</code> when a subprocess agent is running, and the current round such as <code>round 1</code>,
+<code>auto-fix 1/3</code>, or <code>fix 2</code>. If <code>last_activity</code> is prefixed with
+<code>quiet</code>, no step log or native-agent lifecycle activity has arrived for
+longer than <code>step_quiet_warning</code>. Treat that as a liveness clue, not as
+permission to cancel, rerun, or edit the worktree yourself.</p>
+</li>
+<li>
+<p>If the output contains a <code>gate:</code> object, the pipeline is waiting on you.
+Read its <code>findings</code> table. Each finding has an <code>id</code>, <code>severity</code>,
+<code>file</code>, <code>description</code>, and an <code>action</code> that tells you how the
+pipeline classified it:</p>
+<ul>
+<li><code>auto-fix</code> - mechanical and low-risk; you can authorize the fix on
+your own judgment by responding with <code>--action fix</code>.</li>
+<li><code>no-op</code> - informational only; nothing to do.</li>
+<li><code>ask-user</code> - the finding challenges the user's deliberate intent or
+touches product behavior. This is a call only the user can make - see
+<a href="#escalate-ask-user-findings">Escalate <code>ask-user</code> findings</a> below.</li>
+</ul>
+<p><strong>Review auto-fix is disabled by default</strong> (<code>auto_fix.review: 0</code>; a repo
+or global <code>auto_fix.review &gt; 0</code> override re-enables it), so blocking and
+ask-user review findings park for your decision rather than being silently
+self-fixed. (Other steps such as test and lint may auto-fix within the
+pipeline and re-run before they ever gate.)</p>
+<p>Choose one response:</p>
+<pre><code class="language-sh"># accept the step as-is and continue
+no-mistakes axi respond --action approve
+
+# have the pipeline fix specific findings, then continue
+no-mistakes axi respond --action fix --findings &lt;id1,id2&gt; --instructions &quot;&lt;optional guidance&gt;&quot;
+
+# fix some findings and explicitly decline the rest
+no-mistakes axi respond --action fix --findings &lt;id1,id2&gt; --ignore &lt;id3&gt;
+
+# skip this step
+no-mistakes axi respond --action skip
+
+# continue static review when coverage is incomplete and findings are empty
+no-mistakes axi respond --step review --action complete-coverage
+
+# reject this gate (only when the user has decided it must fail)
+no-mistakes axi respond --action abort --reason &quot;&lt;why the gate is rejected&gt;&quot;
+</code></pre>
+<p><code>complete-coverage</code> runs a fresh reviewer over only the missing paths.
+It reuses stored coverage only for the same run, step, round, head, base, and trusted scope.
+Missing or invalid provenance keeps Review gated. Source changes during the turn also keep it gated.
+It never approves incomplete coverage, runs a code fixer, or answers a question.
+It refuses outstanding findings, finding overrides, and <code>--yes</code>.
+With <code>--action fix</code>, declines are explicit: every finding the gate shows
+must be listed in <code>--findings</code> or <code>--ignore</code>, and a response that
+leaves one out is refused with the missing ids named while the gate stays
+parked. A finding an earlier round of this step already decided may be
+omitted to keep that decision - omitting it does <strong>not</strong> decline it - and a
+finding that round chose to fix cannot be declined by a later response at
+all: reverting an applied fix is out of scope for a gate response, so list
+it in <code>--findings</code> to fix it again or leave it out to keep it. Every
+successful <code>fix</code> response echoes what it recorded in a <code>recorded:</code> object
+(<code>fixed</code>, <code>ignored</code>, <code>kept</code>), so read it to confirm the decision
+you actually made.
+While a run is active, never fix findings by editing the code yourself -
+the pipeline owns both the findings and the fixes. Your job at a gate is to
+decide and respond; <code>--action fix</code> has the pipeline apply the fix and
+re-review the result. For the same reason, while a run is active do <strong>not</strong>
+<code>abort</code> or <code>rerun</code> to go fix a finding yourself - even a real bug in
+your own code - because that discards the pipeline's in-flight work and
+forces a full re-validation. <code>abort</code> and <code>rerun</code> are for <em>between</em>
+runs (after a <code>failed</code> or <code>cancelled</code> outcome), never to circumvent a
+gate.</p>
+<p>Each <code>respond</code> blocks until the next <code>gate:</code>, <code>checks-passed</code> decision point, or final outcome, subject to the same default <code>--wait 8m</code> hold.</p>
+<p>A review gate whose findings are <code>question-&lt;id&gt;</code> rows is waiting on answers to its reviewer's questions, not on a verdict: answer each with <code>no-mistakes axi answer --question &lt;id&gt; --answer &quot;&lt;one of its options&gt;&quot;</code> instead of approving or fixing. The answer that closes the last open question blocks exactly like <code>respond</code> and returns the next <code>gate:</code> or outcome; any other answer returns at once.</p>
+<p>Extra flags on <code>respond</code>:</p>
+<ul>
+<li><code>--wait</code> bounds the hold (default 8m).</li>
+<li><code>--reason &quot;the operator's explanation&quot;</code> records an explicitly authorized Test exception with <code>--step test --action approve</code>.
+This does not grant approval authority; escalate ask-user findings as before.
+Without a reason, Test approval remains effective; an approval past a failing command, <code>no-go</code>, or <code>inconclusive</code> verdict is reported as an exception with no operator reason supplied.</li>
+<li><code>--action abort --reason &quot;&lt;why&gt;&quot;</code> records the user's decision that the parked gate fails. The reason is required.
+The round is recorded as declined, no fix round starts, nothing is approved, pushed or merged, and the run ends <code>failed</code> with the reason in the step and run errors. Saved commits, findings and evidence stay available, but the run's worktree is removed, so uncommitted edits in it are lost.
+Follow the output's <code>branch_sync.next_action</code> to get the branch back. It is the user's call, never yours: do not send it to get past a finding, and it is not <code>axi abort</code>, which cancels the run instead.</li>
+<li>Prefer <code>--instructions-file PATH</code> and <code>--add-finding-file PATH</code> for text containing backticks, quotes, or newlines. Write the exact text to a file and pass its path, without shell substitution. Alternatively <code>--instructions -</code> or <code>--add-finding -</code> reads stdin until EOF, cancellation, or <code>--wait</code> expiry (only one stdin input per response). Each file flag is exclusive with its inline flag; empty or whitespace-only file/stdin input is rejected.</li>
+<li><code>--add-finding '&lt;json&gt;'</code> (with <code>--action fix</code>) folds a finding you
+spotted yourself - one the pipeline did not surface - into the fix round,
+as a JSON finding object. Use it for a problem you noticed that is not in
+the gate's own <code>findings</code> table.</li>
+<li><code>--ignore &lt;id1,id2&gt;</code> (with <code>--action fix</code>) declines the named findings.
+Every finding in the gate's <code>findings</code> table must appear in
+<code>--findings</code> or <code>--ignore</code>; anything left out is refused, naming the
+ids, so an omission can never be recorded as a decline. A finding an
+earlier round of this step already chose to fix cannot be listed here:
+reverting an applied fix is out of scope for a gate response.</li>
+<li><code>--step &lt;name&gt;</code> responds to a specific step instead of the one currently
+awaiting approval. You rarely need this; omit it to answer the active gate.</li>
+</ul>
+</li>
+<li>
+<p>Repeat step 2 until the output has an <code>outcome:</code> instead of a <code>gate:</code>. The
+outcomes are:</p>
+<ul>
+<li><code>checks-passed</code> - the change is validated and CI is green (or the
+trusted default-branch config declares <code>no_ci: true</code> and no checks are
+registered - the help line names that declaration when it applies), but
+the PR is not merged yet. <strong>You are done driving the pipeline.</strong> Do not
+wait for the merge: tell the user the PR is ready and ask them to review
+and merge it (the PR link is in the <code>help</code> line). A generic empty forge
+check list without that declaration is not ready. no-mistakes keeps
+monitoring the PR in the background while the monitor is active; use
+<code>no-mistakes axi handoff</code> to end green monitoring after handing
+the open PR to human reviewers, or let the configured idle timeout elapse.
+Under the opt-in <code>ci.release_after_checks_pass</code> the run instead finishes at
+the verdict: <code>run.status</code> is <code>checks_passed</code>, the run released its worktree,
+and nothing is left watching the PR.
+An update it needs later is a fresh <code>no-mistakes axi run</code> on the updated head;
+this run will not rebase or re-push it.</li>
+<li><code>passed</code> - the pipeline completed under the requested steps, including any
+explicit per-run skips. This alone is not evidence that a PR was merged.</li>
+<li><code>passed-with-override</code> - the pipeline completed with an explicitly approved Test exception or CI failure.
+Report the exception, not a clean pass.
+Test evidence is in <code>run.test_override_reason</code>, including when CI readiness returns <code>checks-passed</code>; do not omit it from the summary.</li>
+<li><code>passed-with-skips</code> - publication or CI verification automatically skipped.
+Report the missing evidence and its cause from <code>run.automatic_skips</code>,
+bound to the full <code>run.head_sha</code>. This is neither CI readiness nor a
+failing code verdict. Explicit per-run skips retain their existing behavior.</li>
+<li><code>failed</code> or <code>cancelled</code> - they did not; read the output and address it.
+Follow the custody guidance below before fixing whatever the output
+points at (a failing test, a lint error, a finding you skipped). Commit the
+fix on the same feature branch, then submit it with
+<code>no-mistakes axi run --intent &quot;...&quot;</code>. A fresh run or <code>rerun</code> is a
+<em>between-runs</em> action, correct only after a terminal outcome like this -
+never mid-run to circumvent a gate. Do not leave the user at a <code>failed</code>
+outcome without either retrying or explaining what blocks it.</li>
+</ul>
+</li>
+</ol>
+<p><code>no-mistakes rerun</code> keeps its existing head selection: the gate head, or the
+latest terminal run's verified unpublished preserved head while custody remains
+outstanding. If a known clean caller <code>HEAD</code> differs from that selected head,
+it refuses before starting or superseding any run and reports both full SHAs.
+It never substitutes the caller head or moves either branch to make them match.
+On refusal, inspect <code>no-mistakes axi status</code> and follow the custody guidance
+below. Dirty callers and callers without clean-head evidence retain existing
+selection behavior.</p>
+<p>When a <code>failed</code> outcome came from the agent invocation itself - a provider
+processing error, a usage or quota limit, a transport failure, or the agent
+process exiting - in Test or an earlier step, and the run never pushed,
+<code>no-mistakes axi retry --run &lt;id&gt;</code> continues that run instead of repeating it:
+a new run starts at the preserved head, carries the steps before the failed
+one, and restarts the failed step from the beginning, so a failed Review
+reviews the resulting head in full before Test. First adopt the preserved head
+with the reported <code>no-mistakes axi sync --recover</code> so your clean <code>HEAD</code> is
+exactly that head. Retry refuses, changing nothing, and names the failed proof
+whenever continuing is not provably safe - a failure about the change itself,
+a moved or dirty branch, another run, or changed configuration (repository
+settings, the agent, or its model since the carried Review ran); then use
+<code>rerun</code> or address the failure. Like <code>respond</code>, it blocks until the next
+<code>gate:</code> or outcome.</p>
+<p>Before any post-pipeline local commit or fresh run, read the structured <code>branch_sync</code> object returned by AXI home, status, or a drive result.
+Only when its <code>next_action.code</code> is <code>sync</code>, run <code>no-mistakes axi sync</code> first.
+That guarded sync may be a strict fast-forward or a content-equivalent diverged advance that anchors the pre-sync head before moving the branch with reset semantics; genuine divergence stays blocked and names <code>git checkout --detach &lt;pushed-sha&gt;</code>, which moves no branch ref.
+If it reports <code>next_action.code</code> is <code>continue_active_run</code>, the pipeline still owns the branch: run the reported command, keep driving the active run, and do not make local follow-up commits.
+When <code>next_action.code</code> is <code>recover_custody</code>, run its exact <code>next_action.command</code> rather than reconstructing one. That is <code>no-mistakes axi sync --recover</code> to take a still-available preserved pipeline head, or <code>no-mistakes axi sync --recover --keep-local</code> in three keep-local cases: when an accessible gate confirms the verified preserved head is missing and you are explicitly discarding those unpublished commits; when that verified head is already pinned at <code>refs/no-mistakes/recover/&lt;run&gt;</code> in the gate, containment does not prove it carries your local work, and the command keeps your branch while those pipeline commits stay at that ref and are not on the branch; or when a bound archive proves divergent later work remains preserved while recovery keeps the branch at the exact reported required head and never selects, merges, or replays the archive. Do not substitute plain <code>--recover</code> or <code>rerun</code> for a reported keep-local action. An unverified terminal head is not offered that recovery. <code>no-mistakes rerun</code> can resume validating a still-available ordinary preserved head instead, subject to the clean-head check above.
+Ordinary recovery takes that head by fast-forward, or by adopting a diverged preserved head proven to carry every local change - the ordinary result of the pipeline rebasing your commits onto a newer base - after anchoring your pre-recovery head under <code>refs/no-mistakes/recover-local/&lt;run&gt;</code>.
+The ordinary containment proof is deliberately narrow, so a rebase whose fix rounds also rewrote your own lines refuses instead of being adopted: when nothing can tell a deliberate pipeline fix from a dropped change, the decision is yours.
+When a run failed in a step after Test without touching the code (a Document or Lint fetch error) and its recorded head was never verified, recovery still returns custody at that head once your clean checkout sits exactly on it and the gate proves the head is the reviewed result plus the pipeline's own later commits on top of the live gate branch; recovery never moves a behind worktree onto an unverified head, so check that exact head out first.
+When <code>next_action.code</code> is <code>recover_remote_rewritten</code>, the configured push target was force-rewritten outside the pipeline after a terminal run: run exact <code>no-mistakes axi sync --recover</code>. It re-verifies the live target, anchors the superseded pipeline head under <code>refs/no-mistakes/recover-rewritten/&lt;run&gt;/&lt;generation&gt;</code>, and rebinds only the recorded push binding to the verified live head; it never moves your branch, the gate, or the remote. It refuses <code>--keep-local</code>, a live head or target that changes during recovery, a head it cannot anchor, and a merged or closed PR. Afterwards follow the ordinary <code>next_action</code> it reports.
+When <code>next_action.code</code> is <code>adopt_published</code>, a custody-returned branch was rebased after its gate lane stopped moving: run <code>no-mistakes axi sync --adopt-published</code>. It verifies the configured push target already has the exact rebased local head, preserves the old lane head, and updates only that stale gate lane. If the target differs or changes during verification, it refuses without replacing the lane.
+A <code>branch_sync.state</code> of <code>user_owned</code> means the run went terminal before changing the submitted head and cancellation released the branch: the exact branch and head are yours and immediately usable for whichever delivery path is authorized - no sync action is needed, and a repeated <code>--recover</code> there is a harmless no-op.
+A dirty worktree, or divergence that cannot be proven contained, makes the recovery refuse with explicit choices; <code>--keep-local</code> keeps your current head while the preserved commits stay anchored under <code>refs/no-mistakes/recover/&lt;run&gt;</code>. The same flag is the recovery when an accessible gate confirms that the verified preserved head is missing and recovery refs are compatible: it returns custody at the current local head without requiring that object.
+If synchronization is blocked, process that structured state instead of improvising reset, stash, merge, rebase, force, or branch replacement.
+After synchronization, commit the follow-up on top and re-run <code>no-mistakes axi run --intent &quot;...&quot;</code> with the original user intent.
+This preserves every prior gate-fix commit regardless of its configured subject.</p>
+<p>The CI step deliberately keeps watching the PR after checks pass, so
+<code>axi run</code> returns <code>checks-passed</code> the moment checks are green (or a trusted
+<code>no_ci: true</code> declaration covers a zero-check repository) rather than
+blocking on the human merge. Never poll or re-run waiting for the merge yourself.
+That monitor is live by default; only the opt-in
+<code>ci.release_after_checks_pass</code> finishes the run at the verdict instead.
+Never treat &quot;no CI checks reported&quot; alone as green.</p>
+<p>Because that monitor stays live by default, a PR that falls behind the default branch or
+hits a merge conflict after checks pass - commonly because another PR merged
+first - needs <strong>no command from you</strong>: never hand-rebase. When the CI monitor
+sees an actual conflict it <strong>rebases onto the base, resolves it, revalidates from Review
+because rebasing cannot prove continuity with the reviewed head, and re-pushes
+the branch through Push</strong>. On GitHub, a clean PR whose base requires branches
+to be up to date (<code>mergeStateStatus: BEHIND</code>) still reports <code>checks-passed</code> and
+waits for a human to bring it up to date; only when the repository opts
+into <code>ci.rebase_behind</code> does the monitor give it the same rebase, once its
+checks are green and the base has held still for one poll. A PR that is merely behind a base without that rule needs nothing, since
+the platform merges it. The one exception is when that monitor is
+no longer running - the PR was closed, the run was aborted, superseded, or
+explicitly handed off, it idle-timed-out, or its auto-fix attempts were
+exhausted - in which case recover with <code>no-mistakes rerun</code>, subject to the
+clean-head check above. An accepted
+rerun cancels the stale monitor and re-runs the full pipeline including a
+deterministic rebase step. Do <strong>not</strong> reach for
+<code>no-mistakes axi run</code> to refresh a still-active PR: with the default
+monitor, after <code>checks-passed</code> it
+reattaches to the running monitor (HEAD unchanged) and returns its output
+without rebasing.</p>
+<p>On a successful outcome (<code>checks-passed</code>, <code>passed</code>, or <code>handed-off</code>), close the loop with the
+user: summarize what happened during the pipeline in a concise, easily readable
+format - what was validated and what was found. If the output includes a
+<code>fixes</code> table, the pipeline fixed findings your original change missed:
+acknowledge those misses and explicitly list each fix so the user can easily
+review them.</p>
+<h4>Escalate <code>ask-user</code> findings</h4>
+<p>A gate whose findings are all <code>auto-fix</code> or <code>no-op</code> is safe to drive on your
+own judgment: respond with <code>--action fix</code> or <code>--action approve</code> as
+appropriate. But a finding marked
+<code>ask-user</code> is a decision that belongs to the user, not you - the pipeline
+flagged it because it challenges their deliberate intent or changes product
+behavior. Do not approve, fix, or skip it on your own. Instead, stop and bring
+it to the user before you respond:</p>
+<ul>
+<li>Relay each <code>ask-user</code> finding to them as the pipeline wrote it - its
+<code>id</code>, <code>file</code>, and full <code>description</code> verbatim. Do not paraphrase,
+summarize away the detail, or pre-judge the answer.</li>
+<li>Ask how they want to proceed, then translate their decision into the matching
+<code>respond</code> call: <code>--action fix</code> (pass their guidance through
+<code>--instructions</code>), <code>--action approve</code>, or <code>--action skip</code>.</li>
+</ul>
+<p>The exception is <code>--yes</code> (below): it is the user's standing consent to
+drive eligible gates unattended, so under <code>--yes</code> you resolve ordinary
+<code>ask-user</code> findings automatically instead of stopping to ask.</p>
+<p>If you have clear consent to drive the run automatically, pass <code>--yes</code> to <code>axi run</code>
+or <code>axi respond</code>. For eligible gates, it treats actionable findings - <code>auto-fix</code> and
+<code>ask-user</code> alike - as consent to fix it, selects every current finding for one
+fix round, accepts the resulting fix review, and approves gates with only
+<code>no-op</code> findings. Only use it when the user has asked you to drive the whole
+run without checking back.</p>
+<p>A <code>protected-path-refusal</code> gate still requires an explicit operator response
+under <code>--yes</code>. Relay its path and rule; do not automatically fix, approve,
+or skip it. Approval is rejected. Have the operator inspect and resolve the
+reported edit, then send <code>--action fix</code> to retry the unfinished step.
+The <a href="https://kunchenguid.github.io/no-mistakes/reference/repo-config/#protected_paths">protected-path reference</a>
+owns the staging guard's scope and limitations.</p>
+<p>A gate holding open <code>question-&lt;id&gt;</code> findings is not eligible either: a question
+is settled by <code>axi answer</code>, never by a verdict, so <code>--yes</code> stands aside
+there - as it does when the question history cannot be read end to end, which
+also parks for a human.</p>
+<p>A <code>test-agent-unvalidated-work</code> finding means a timed-out Test agent left
+commits or changes no Test turn validated. Approval is rejected, so <code>--yes</code>
+stops at that gate without responding. Relay what the finding names and do
+not skip Test, which would publish that work. Ask the operator to choose:
+<code>--action fix</code> spends another agent budget to validate the work, or
+<code>no-mistakes axi abort</code> stops and cancels a discarded run; its behavior is unchanged.</p>
+<p>At a green open-PR CI monitor, <code>no-mistakes axi handoff</code> ends monitoring when the PR is handed to human reviewers. It requires authoritative <code>checks-passed</code> readiness and records terminal <code>handed_off</code>, without merging or closing the PR. Before green, resolve the checks or gates with <code>axi run</code> instead.</p>
+<h4>Inspecting state</h4>
+<pre><code class="language-sh">no-mistakes axi               # home view: current branch, active runs, next steps
+no-mistakes axi status        # full detail plus cached branch_sync when relevant
+no-mistakes axi sync --check  # freshly verify an offered synchronization plan
+no-mistakes axi sync          # apply only an offered guarded synchronization
+no-mistakes axi sync --recover  # return custody after a terminal run left unpublished pipeline commits
+no-mistakes axi sync --adopt-published  # adopt an exactly published rebased head into its stale gate lane
+no-mistakes axi logs --step &lt;name&gt; --full   # one step's recorded findings, complete summary, and full log
+no-mistakes axi handoff       # end green CI monitoring for human review (handed_off, PR stays open)
+no-mistakes axi abort         # cancel the current-branch active run
+no-mistakes axi abort --run &lt;id&gt;   # cancel a specific run by id (works outside its worktree)
+no-mistakes axi respond --run &lt;id&gt; --action approve   # answer a specific run's parked gate by id (works outside its worktree)
+</code></pre>
+<h4>Reading the output</h4>
+<ul>
+<li>Output is TOON: <code>key: value</code> pairs, <code>name[N]{cols}:</code> tables, and <code>help[N]:</code> hints.</li>
+<li><code>axi status</code> is scoped to your current branch when <code>--run</code> is omitted: with a known current branch, an implicitly resolved <code>run:</code> is this branch's. A run under <code>other_branch_run:</code> is one you named with <code>--run &lt;id&gt;</code> that belongs to another branch - never read its status or outcome as your own work. An explicit <code>--run &lt;id&gt;</code> rendered under <code>run:</code> while the current branch is unknown (detached <code>HEAD</code> or a branch-lookup failure) encodes no branch relationship. In a successful status response, no run object at all means this branch has no run yet, whatever the recent-runs table lists; an <code>error:</code> response proves nothing about run ownership, so act on the error instead of concluding the branch is idle.</li>
+<li>A non-terminal run object may include <code>awaiting_agent: parked &lt;duration&gt;</code> immediately after <code>status</code>; that means the run is parked at a gate. Only an implicitly resolved current-branch gate offers bare <code>axi respond</code>; an explicit <code>--run &lt;id&gt;</code> status is inspection-only even when its branch matches, because the branch may have a newer active run, and names <code>axi respond --run &lt;id&gt;</code> as its response command. Follow the response's <code>help</code>.</li>
+<li>A run object with a <code>running</code> or <code>fixing</code> step may include an <code>active_steps</code> table. <code>active_for</code> is the enclosing step duration; <code>round_active_for</code> is the displayed execution or fix round duration and resets for a fix round. Older runs without round timing leave <code>round_active_for</code> empty.</li>
+<li>The <code>help</code> list at the bottom of most responses tells you the next commands to run.</li>
+<li>With <code>--branch &lt;name&gt;</code>, <code>axi status</code> drops that current-branch scope and reads the exact named branch's newest-run publication snapshot and complete run inventory, read-only.</li>
+<li>Errors are printed as <code>error: ...</code> on stdout with a <code>help</code> list; act on the suggestion.</li>
+<li>Exit codes: <code>0</code> success, no-op, or normal decision gates, <code>1</code> failed or cancelled final outcomes, <code>2</code> bad usage.</li>
+</ul>
+<p>A <code>gate:</code> waiting on you looks roughly like this - a <code>gate:</code> line naming the step, optional step-specific fields such as <code>note</code>, a <code>findings[N]{...}:</code> table with one row per finding, and a <code>help[N]:</code> list of next commands:</p>
+<pre><code>gate: review
+note: Review auto-fix is disabled by default (auto_fix.review: 0; a repo or global auto_fix.review &gt; 0 override re-enables it), so blocking and ask-user review findings park for your decision rather than being silently self-fixed.
+findings[2]{id,severity,file,line,action,description}:
+  r1,warning,internal/pipeline/executor.go,,auto-fix,Error from os.Remove is ignored
+  r2,error,cmd/no-mistakes/main.go,,ask-user,New --force flag bypasses the confirm prompt
+help[6]:
+  Run `no-mistakes axi respond --action approve` to accept this step and continue
+  Run `no-mistakes axi respond --action fix --findings &lt;ids&gt; [--ignore &lt;ids&gt;]` to have the pipeline fix the selected findings (do not edit files yourself); list every finding below in `--findings` or `--ignore`, unless an earlier round of this step already decided it, and a finding that round chose to fix cannot be declined by a later response
+  Run `no-mistakes axi respond --action skip` to skip this step
+  Run `no-mistakes axi logs --step review --full` to read the complete step summary and log
+  A long-running call is working, not stalled - background it if your harness needs to, but the run never advances past a gate on its own. Read every return; on a `gate:`, respond; loop until an `outcome:`.
+  Commit post-pipeline follow-up work on top of the existing branch so every pipeline fix commit remains present. Never abort-and-restart, reset, or replace the branch in a way that drops prior gate-fix commits.
+</code></pre>
+<p>Read the <code>action</code> column per row: decide <code>r1</code> (auto-fix) on your own
+judgment - <code>respond --action fix --findings r1</code> hands it to the pipeline to
+fix - but stop and escalate <code>r2</code> (ask-user) to the user before responding. A
+final state
+instead shows <code>outcome: &lt;checks-passed|passed|passed-with-override|passed-with-skips|handed-off|failed|cancelled&gt;</code> with no
+<code>findings</code> table. Field names and exact columns can vary by step and version,
+so read the actual <code>findings</code> header rather than assuming this layout.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

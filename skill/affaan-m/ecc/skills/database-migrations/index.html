@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>database-migrations · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re writing a schema or data migration, adding a column or index to a large table, or planning a zero-downtime deploy. It does: applies five rules, such as forward-only production changes and schema kept apart from data, plus a seven-item safety checklist. You get: migrations that avoid table locks and rewrites, using the commands and file formats of your migration tool. Covers: PostgreSQL SQL, Prisma, Drizzle, Kysely, Django and golang-migrate." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <div class="title-row"><h1>database-migrations</h1><button type="button" class="save" data-save="skill:affaan-m/ecc/skills/database-migrations" aria-pressed="false" aria-label="Save database-migrations" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re writing a schema or data migration, adding a column or index to a large table, or planning a zero-downtime deploy</dd></div><div><dt>It does</dt><dd>applies five rules, such as forward-only production changes and schema kept apart from data, plus a seven-item safety checklist</dd></div><div><dt>You get</dt><dd>migrations that avoid table locks and rewrites, using the commands and file formats of your migration tool</dd></div><div><dt>Covers</dt><dd>PostgreSQL SQL, Prisma, Drizzle, Kysely, Django and golang-migrate</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A migration reference from ECC. Its principles: every change is a migration, production only moves forward (a rollback is a new migration), schema and data changes go in separate migrations, test on production-sized data, and never edit a migration once it has run in production. The PostgreSQL section shows how to add columns without a table rewrite, build indexes with CREATE INDEX CONCURRENTLY, rename a column through expand-contract (add, backfill, switch the code, drop), remove a column only after the code stops using it, and backfill in batches with SKIP LOCKED. For each tool it gives the commands and a sample: Prisma&#39;s migrate dev and deploy, with hand-written SQL for what Prisma can&#39;t generate, Drizzle&#39;s generate and migrate, Kysely&#39;s migration files and migrator, Django&#39;s data migrations and SeparateDatabaseAndState, and golang-migrate&#39;s up and down files. It closes with a zero-downtime plan that spreads one change across several deploys over a week, and a table of anti-patterns with better approaches.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/database-migrations">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">affaan-m/</span><wbr><span class="word">ecc</span> <span class="word">--skill</span> <span class="word">database-migrations</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill database-migrations">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/database-migrations">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/database-migrations">Source on GitHub</a> · <a href="/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>6,200 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>299,252 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">567</div>
+      <div class="stat-delta">+70% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 334; week to Sep 27: 283; week to Oct 4: 212; week to Oct 11: 211; week to Oct 18: 299; week to Oct 25: 483; week to Nov 1: 509; week to Nov 8: 567. Use the left and right arrow keys to read each week."
+        data-values="334,283,212,211,299,483,509,567" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,24.1 38.6,28.0 71.1,33.5 103.7,33.6 136.3,26.8 168.9,12.5 201.4,10.5 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>334</td></tr><tr><td>Sep 27</td><td>283</td></tr><tr><td>Oct 4</td><td>212</td></tr><tr><td>Oct 11</td><td>211</td></tr><tr><td>Oct 18</td><td>299</td></tr><tr><td>Oct 25</td><td>483</td></tr><tr><td>Nov 1</td><td>509</td></tr><tr><td>Nov 8</td><td>567</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/?tag=category%3Aengineering">category:<wbr>engineering</a><a class="tag" data-tag="category:frameworks" data-facet="category" title="Guides for frameworks, databases and SDKs, mostly from their vendors." href="/?tag=category%3Aframeworks">category:<wbr>frameworks</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Guides for frameworks, databases and SDKs, mostly from their vendors.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/?tag=type%3Aguidelines">type:<wbr>guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="migration" data-facet="topic" href="/?tag=migration">migration</a><a class="tag" data-tag="databases" data-facet="topic" href="/?tag=databases">databases</a><a class="tag" data-tag="deployment" data-facet="topic" href="/?tag=deployment">deployment</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:postgres" data-facet="stack" href="/?tag=stack%3Apostgres">stack:<wbr>postgres</a><a class="tag" data-tag="stack:prisma" data-facet="stack" href="/?tag=stack%3Aprisma">stack:<wbr>prisma</a><a class="tag" data-tag="stack:drizzle" data-facet="stack" href="/?tag=stack%3Adrizzle">stack:<wbr>drizzle</a><a class="tag" data-tag="stack:kysely" data-facet="stack" href="/?tag=stack%3Akysely">stack:<wbr>kysely</a><a class="tag" data-tag="stack:django" data-facet="stack" href="/?tag=stack%3Adjango">stack:<wbr>django</a><a class="tag" data-tag="stack:golang-migrate" data-facet="stack" href="/?tag=stack%3Agolang-migrate">stack:<wbr>golang-migrate</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/database-migrations/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: database-migrations
+description: &#34;Safe, reversible database migration patterns: forward-only production changes, expand-contract zero-downtime renames, concurrent indexes, batched backfills, and per-tool workflows for PostgreSQL, Prisma, Drizzle, Kysely, Django, and golang-migrate. Use when writing a schema or data migration, adding a column or index to a large table, planning a rollback, or preparing a zero-downtime deploy.&#34;
+metadata:
+  origin: ECC</code></pre></details>
+        <div class="markdown"><h3>Database Migration Patterns</h3>
+<p>Safe, reversible database schema changes for production systems.</p>
+<h4>When to Activate</h4>
+<ul>
+<li>Creating or altering database tables</li>
+<li>Adding/removing columns or indexes</li>
+<li>Running data migrations (backfill, transform)</li>
+<li>Planning zero-downtime schema changes</li>
+<li>Setting up migration tooling for a new project</li>
+</ul>
+<h4>Core Principles</h4>
+<ol>
+<li><strong>Every change is a migration</strong> — never alter production databases manually</li>
+<li><strong>Migrations are forward-only in production</strong> — rollbacks use new forward migrations</li>
+<li><strong>Schema and data migrations are separate</strong> — never mix DDL and DML in one migration</li>
+<li><strong>Test migrations against production-sized data</strong> — a migration that works on 100 rows may lock on 10M</li>
+<li><strong>Migrations are immutable once deployed</strong> — never edit a migration that has run in production</li>
+</ol>
+<h4>Migration Safety Checklist</h4>
+<p>Before applying any migration:</p>
+<ul>
+<li>[ ] Migration has both UP and DOWN (or is explicitly marked irreversible)</li>
+<li>[ ] No full table locks on large tables (use concurrent operations)</li>
+<li>[ ] New columns have defaults or are nullable (never add NOT NULL without default)</li>
+<li>[ ] Indexes created concurrently (not inline with CREATE TABLE for existing tables)</li>
+<li>[ ] Data backfill is a separate migration from schema change</li>
+<li>[ ] Tested against a copy of production data</li>
+<li>[ ] Rollback plan documented</li>
+</ul>
+<h4>PostgreSQL Patterns</h4>
+<h5>Adding a Column Safely</h5>
+<pre><code class="language-sql">-- GOOD: Nullable column, no lock
+ALTER TABLE users ADD COLUMN avatar_url TEXT;
+
+-- GOOD: Column with default (Postgres 11+ is instant, no rewrite)
+ALTER TABLE users ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT true;
+
+-- BAD: NOT NULL without default on existing table (requires full rewrite)
+ALTER TABLE users ADD COLUMN role TEXT NOT NULL;
+-- This locks the table and rewrites every row
+</code></pre>
+<h5>Adding an Index Without Downtime</h5>
+<pre><code class="language-sql">-- BAD: Blocks writes on large tables
+CREATE INDEX idx_users_email ON users (email);
+
+-- GOOD: Non-blocking, allows concurrent writes
+CREATE INDEX CONCURRENTLY idx_users_email ON users (email);
+
+-- Note: CONCURRENTLY cannot run inside a transaction block
+-- Most migration tools need special handling for this
+</code></pre>
+<h5>Renaming a Column (Zero-Downtime)</h5>
+<p>Never rename directly in production. Use the expand-contract pattern:</p>
+<pre><code class="language-sql">-- Step 1: Add new column (migration 001)
+ALTER TABLE users ADD COLUMN display_name TEXT;
+
+-- Step 2: Backfill data (migration 002, data migration)
+UPDATE users SET display_name = username WHERE display_name IS NULL;
+
+-- Step 3: Update application code to read/write both columns
+-- Deploy application changes
+
+-- Step 4: Stop writing to old column, drop it (migration 003)
+ALTER TABLE users DROP COLUMN username;
+</code></pre>
+<h5>Removing a Column Safely</h5>
+<pre><code class="language-sql">-- Step 1: Remove all application references to the column
+-- Step 2: Deploy application without the column reference
+-- Step 3: Drop column in next migration
+ALTER TABLE orders DROP COLUMN legacy_status;
+
+-- For Django: use SeparateDatabaseAndState to remove from model
+-- without generating DROP COLUMN (then drop in next migration)
+</code></pre>
+<h5>Large Data Migrations</h5>
+<pre><code class="language-sql">-- BAD: Updates all rows in one transaction (locks table)
+UPDATE users SET normalized_email = LOWER(email);
+
+-- GOOD: Batch update with progress
+DO $$
+DECLARE
+  batch_size INT := 10000;
+  rows_updated INT;
+BEGIN
+  LOOP
+    UPDATE users
+    SET normalized_email = LOWER(email)
+    WHERE id IN (
+      SELECT id FROM users
+      WHERE normalized_email IS NULL
+      LIMIT batch_size
+      FOR UPDATE SKIP LOCKED
+    );
+    GET DIAGNOSTICS rows_updated = ROW_COUNT;
+    RAISE NOTICE 'Updated % rows', rows_updated;
+    EXIT WHEN rows_updated = 0;
+    COMMIT;
+  END LOOP;
+END $$;
+</code></pre>
+<h4>Prisma (TypeScript/Node.js)</h4>
+<h5>Workflow</h5>
+<pre><code class="language-bash"># Create migration from schema changes
+npx prisma migrate dev --name add_user_avatar
+
+# Apply pending migrations in production
+npx prisma migrate deploy
+
+# Reset database (dev only)
+npx prisma migrate reset
+
+# Generate client after schema changes
+npx prisma generate
+</code></pre>
+<h5>Schema Example</h5>
+<pre><code class="language-prisma">model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  avatarUrl String?  @map(&quot;avatar_url&quot;)
+  createdAt DateTime @default(now()) @map(&quot;created_at&quot;)
+  updatedAt DateTime @updatedAt @map(&quot;updated_at&quot;)
+  orders    Order[]
+
+  @@map(&quot;users&quot;)
+  @@index([email])
+}
+</code></pre>
+<h5>Custom SQL Migration</h5>
+<p>For operations Prisma cannot express (concurrent indexes, data backfills):</p>
+<pre><code class="language-bash"># Create empty migration, then edit the SQL manually
+npx prisma migrate dev --create-only --name add_email_index
+</code></pre>
+<pre><code class="language-sql">-- migrations/20240115_add_email_index/migration.sql
+-- Prisma cannot generate CONCURRENTLY, so we write it manually
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_users_email ON users (email);
+</code></pre>
+<h4>Drizzle (TypeScript/Node.js)</h4>
+<h5>Workflow</h5>
+<pre><code class="language-bash"># Generate migration from schema changes
+npx drizzle-kit generate
+
+# Apply migrations
+npx drizzle-kit migrate
+
+# Push schema directly (dev only, no migration file)
+npx drizzle-kit push
+</code></pre>
+<h5>Schema Example</h5>
+<pre><code class="language-typescript">import { pgTable, text, timestamp, uuid, boolean } from &quot;drizzle-orm/pg-core&quot;;
+
+export const users = pgTable(&quot;users&quot;, {
+  id: uuid(&quot;id&quot;).primaryKey().defaultRandom(),
+  email: text(&quot;email&quot;).notNull().unique(),
+  name: text(&quot;name&quot;),
+  isActive: boolean(&quot;is_active&quot;).notNull().default(true),
+  createdAt: timestamp(&quot;created_at&quot;).notNull().defaultNow(),
+  updatedAt: timestamp(&quot;updated_at&quot;).notNull().defaultNow(),
+});
+</code></pre>
+<h4>Kysely (TypeScript/Node.js)</h4>
+<h5>Workflow (kysely-ctl)</h5>
+<pre><code class="language-bash"># Initialize config file (kysely.config.ts)
+kysely init
+
+# Create a new migration file
+kysely migrate make add_user_avatar
+
+# Apply all pending migrations
+kysely migrate latest
+
+# Rollback last migration
+kysely migrate down
+
+# Show migration status
+kysely migrate list
+</code></pre>
+<h5>Migration File</h5>
+<pre><code class="language-typescript">// migrations/2024_01_15_001_create_user_profile.ts
+import { type Kysely, sql } from 'kysely'
+
+// IMPORTANT: Always use Kysely&lt;any&gt;, not your typed DB interface.
+// Migrations are frozen in time and must not depend on current schema types.
+export async function up(db: Kysely&lt;any&gt;): Promise&lt;void&gt; {
+  await db.schema
+    .createTable('user_profile')
+    .addColumn('id', 'serial', (col) =&gt; col.primaryKey())
+    .addColumn('email', 'varchar(255)', (col) =&gt; col.notNull().unique())
+    .addColumn('avatar_url', 'text')
+    .addColumn('created_at', 'timestamp', (col) =&gt;
+      col.defaultTo(sql`now()`).notNull()
+    )
+    .execute()
+
+  await db.schema
+    .createIndex('idx_user_profile_avatar')
+    .on('user_profile')
+    .column('avatar_url')
+    .execute()
+}
+
+export async function down(db: Kysely&lt;any&gt;): Promise&lt;void&gt; {
+  await db.schema.dropTable('user_profile').execute()
+}
+</code></pre>
+<h5>Programmatic Migrator</h5>
+<pre><code class="language-typescript">import { Migrator, FileMigrationProvider } from 'kysely'
+import { promises as fs } from 'fs'
+import * as path from 'path'
+// ESM only — CJS can use __dirname directly
+import { fileURLToPath } from 'url'
+const migrationFolder = path.join(
+  path.dirname(fileURLToPath(import.meta.url)),
+  './migrations',
+)
+
+// `db` is your Kysely&lt;any&gt; database instance
+const migrator = new Migrator({
+  db,
+  provider: new FileMigrationProvider({
+    fs,
+    path,
+    migrationFolder,
+  }),
+  // WARNING: Only enable in development. Disables timestamp-ordering
+  // validation, which can cause schema drift between environments.
+  // allowUnorderedMigrations: true,
+})
+
+const { error, results } = await migrator.migrateToLatest()
+
+results?.forEach((it) =&gt; {
+  if (it.status === 'Success') {
+    console.log(`migration &quot;${it.migrationName}&quot; executed successfully`)
+  } else if (it.status === 'Error') {
+    console.error(`failed to execute migration &quot;${it.migrationName}&quot;`)
+  }
+})
+
+if (error) {
+  console.error('migration failed', error)
+  process.exit(1)
+}
+</code></pre>
+<h4>Django (Python)</h4>
+<h5>Workflow</h5>
+<pre><code class="language-bash"># Generate migration from model changes
+python manage.py makemigrations
+
+# Apply migrations
+python manage.py migrate
+
+# Show migration status
+python manage.py showmigrations
+
+# Generate empty migration for custom SQL
+python manage.py makemigrations --empty app_name -n description
+</code></pre>
+<h5>Data Migration</h5>
+<pre><code class="language-python">from django.db import migrations
+
+def backfill_display_names(apps, schema_editor):
+    User = apps.get_model(&quot;accounts&quot;, &quot;User&quot;)
+    batch_size = 5000
+    users = User.objects.filter(display_name=&quot;&quot;)
+    while users.exists():
+        batch = list(users[:batch_size])
+        for user in batch:
+            user.display_name = user.username
+        User.objects.bulk_update(batch, [&quot;display_name&quot;], batch_size=batch_size)
+
+def reverse_backfill(apps, schema_editor):
+    pass  # Data migration, no reverse needed
+
+class Migration(migrations.Migration):
+    dependencies = [(&quot;accounts&quot;, &quot;0015_add_display_name&quot;)]
+
+    operations = [
+        migrations.RunPython(backfill_display_names, reverse_backfill),
+    ]
+</code></pre>
+<h5>SeparateDatabaseAndState</h5>
+<p>Remove a column from the Django model without dropping it from the database immediately:</p>
+<pre><code class="language-python">class Migration(migrations.Migration):
+    operations = [
+        migrations.SeparateDatabaseAndState(
+            state_operations=[
+                migrations.RemoveField(model_name=&quot;user&quot;, name=&quot;legacy_field&quot;),
+            ],
+            database_operations=[],  # Don't touch the DB yet
+        ),
+    ]
+</code></pre>
+<h4>golang-migrate (Go)</h4>
+<h5>Workflow</h5>
+<pre><code class="language-bash"># Create migration pair
+migrate create -ext sql -dir migrations -seq add_user_avatar
+
+# Apply all pending migrations
+migrate -path migrations -database &quot;$DATABASE_URL&quot; up
+
+# Rollback last migration
+migrate -path migrations -database &quot;$DATABASE_URL&quot; down 1
+
+# Force version (fix dirty state)
+migrate -path migrations -database &quot;$DATABASE_URL&quot; force VERSION
+</code></pre>
+<h5>Migration Files</h5>
+<pre><code class="language-sql">-- migrations/000003_add_user_avatar.up.sql
+ALTER TABLE users ADD COLUMN avatar_url TEXT;
+CREATE INDEX CONCURRENTLY idx_users_avatar ON users (avatar_url) WHERE avatar_url IS NOT NULL;
+
+-- migrations/000003_add_user_avatar.down.sql
+DROP INDEX IF EXISTS idx_users_avatar;
+ALTER TABLE users DROP COLUMN IF EXISTS avatar_url;
+</code></pre>
+<h4>Zero-Downtime Migration Strategy</h4>
+<p>For critical production changes, follow the expand-contract pattern:</p>
+<pre><code>Phase 1: EXPAND
+  - Add new column/table (nullable or with default)
+  - Deploy: app writes to BOTH old and new
+  - Backfill existing data
+
+Phase 2: MIGRATE
+  - Deploy: app reads from NEW, writes to BOTH
+  - Verify data consistency
+
+Phase 3: CONTRACT
+  - Deploy: app only uses NEW
+  - Drop old column/table in separate migration
+</code></pre>
+<h5>Timeline Example</h5>
+<pre><code>Day 1: Migration adds new_status column (nullable)
+Day 1: Deploy app v2 — writes to both status and new_status
+Day 2: Run backfill migration for existing rows
+Day 3: Deploy app v3 — reads from new_status only
+Day 7: Migration drops old status column
+</code></pre>
+<h4>Anti-Patterns</h4>
+<table>
+<thead>
+<tr>
+<th>Anti-Pattern</th>
+<th>Why It Fails</th>
+<th>Better Approach</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Manual SQL in production</td>
+<td>No audit trail, unrepeatable</td>
+<td>Always use migration files</td>
+</tr>
+<tr>
+<td>Editing deployed migrations</td>
+<td>Causes drift between environments</td>
+<td>Create new migration instead</td>
+</tr>
+<tr>
+<td>NOT NULL without default</td>
+<td>Locks table, rewrites all rows</td>
+<td>Add nullable, backfill, then add constraint</td>
+</tr>
+<tr>
+<td>Inline index on large table</td>
+<td>Blocks writes during build</td>
+<td>CREATE INDEX CONCURRENTLY</td>
+</tr>
+<tr>
+<td>Schema + data in one migration</td>
+<td>Hard to rollback, long transactions</td>
+<td>Separate migrations</td>
+</tr>
+<tr>
+<td>Dropping column before removing code</td>
+<td>Application errors on missing column</td>
+<td>Remove code first, drop column next deploy</td>
+</tr>
+</tbody>
+</table>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

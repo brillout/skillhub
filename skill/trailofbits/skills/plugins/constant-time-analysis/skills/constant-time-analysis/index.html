@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>constant-time-analysis · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re writing or reviewing signing, encryption, key exchange or key derivation code and worry about timing attacks. It does: runs a bundled analyzer per file that flags divisions, secret-dependent branches, early-exit comparisons, secret-indexed lookups, weak randomness and variable-time encoding, then traces whether a secret reaches each. You get: a verdict per flagged instruction with the data flow behind it, naming the compiler, architecture and optimization level used. Covers: C, C++, Go, Rust, Swift, Java, Kotlin, C#, PHP, JavaScript, TypeScript, Python and Ruby. Unlike: the constant-time-testing skill, which measures timing on a running binary, it only inspects compiler output and never runs your code." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=trailofbits%2Fskills">trailofbits/skills</a></p>
+      <div class="title-row"><h1>constant-time-analysis</h1><button type="button" class="save" data-save="skill:trailofbits/skills/plugins/constant-time-analysis/skills/constant-time-analysis" aria-pressed="false" aria-label="Save constant-time-analysis" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re writing or reviewing signing, encryption, key exchange or key derivation code and worry about timing attacks</dd></div><div><dt>It does</dt><dd>runs a bundled analyzer per file that flags divisions, secret-dependent branches, early-exit comparisons, secret-indexed lookups, weak randomness and variable-time encoding, then traces whether a secret reaches each</dd></div><div><dt>You get</dt><dd>a verdict per flagged instruction with the data flow behind it, naming the compiler, architecture and optimization level used</dd></div><div><dt>Covers</dt><dd>C, C++, Go, Rust, Swift, Java, Kotlin, C#, PHP, JavaScript, TypeScript, Python and Ruby</dd></div><div><dt>Unlike</dt><dd>the constant-time-testing skill, which measures timing on a running binary, it only inspects compiler output and never runs your code</dd></div></dl></section>
+      
+      <p class="note">Needs uv to run its analyzer, plus the compiler or runtime of each language you check, such as gcc or clang, go, rustc, a JDK, the .NET SDK with ilspycmd, or PHP with VLD or OPcache.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>From Trail of Bits. The analyzer has no data-flow analysis, so a failed run is a worklist, not a list of vulnerabilities: for each flagged instruction the agent asks whether an operand comes from a key, plaintext, nonce or token, and says why when it doesn&#39;t. It always passes --warnings, since without it the analyzer reports only division, modulo and weak randomness, and stays silent on early-exit comparison of an authentication tag, the most common real timing bug. Native code is checked at more than one architecture and optimization level, because a cmov at -O2 can become a branch at -O0, and a fix is re-checked across compilers, targets and levels including Os and Oz, since relying on the compiler to strength-reduce a constant divisor works only where it chooses to. Confirmed comparison bugs get the language&#39;s constant-time primitive, such as hmac.compare_digest or crypto.timingSafeEqual. Per-language guides list dangerous instructions and their replacements, and a table states what each language&#39;s report can&#39;t see. It is static only: cache and other microarchitectural channels, and native code the JVM or .NET JIT produces, are invisible to it.</p>
+      <p class="muted">Summarizes <a href="https://github.com/trailofbits/skills/tree/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/constant-time-analysis/skills/constant-time-analysis">the skill at e4dd0bb</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">trailofbits/</span><wbr><span class="word">skills</span> <span class="word">--skill</span> <span class="word">constant-time-analysis</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/trailofbits/skills --skill constant-time-analysis">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/trailofbits/skills/constant-time-analysis">skills.sh page</a> · <a href="https://github.com/trailofbits/skills/tree/HEAD/plugins/constant-time-analysis/skills/constant-time-analysis">Source on GitHub</a> · <a href="/?repo=trailofbits%2Fskills">All skills from trailofbits/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,700 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>8,064 <span class="muted">trailofbits/skills</span></dd></div><div><dt>First seen</dt><dd>Jan 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">172</div>
+      <div class="stat-delta">+50% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 115; week to Sep 27: 109; week to Oct 4: 107; week to Oct 11: 104; week to Oct 18: 126; week to Oct 25: 140; week to Nov 1: 159; week to Nov 8: 172. Use the left and right arrow keys to read each week."
+        data-values="115,109,107,104,126,140,159,172" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,20.6 38.6,22.1 71.1,22.6 103.7,23.4 136.3,17.8 168.9,14.2 201.4,9.3 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>115</td></tr><tr><td>Sep 27</td><td>109</td></tr><tr><td>Oct 4</td><td>107</td></tr><tr><td>Oct 11</td><td>104</td></tr><tr><td>Oct 18</td><td>126</td></tr><tr><td>Oct 25</td><td>140</td></tr><tr><td>Nov 1</td><td>159</td></tr><tr><td>Nov 8</td><td>172</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/?tag=category%3Asecurity">category:<wbr>security</a><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/?tag=category%3Adebugging">category:<wbr>debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/?tag=type%3Atool">type:<wbr>tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/?tag=needs%3Acli">needs:<wbr>cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/?tag=security">security</a><a class="tag" data-tag="code-review" data-facet="topic" href="/?tag=code-review">code-review</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/constant-time-analysis/skills/constant-time-analysis/SKILL.md">trailofbits/skills at e4dd0bb</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: constant-time-analysis
+description: Detects timing side-channel vulnerabilities in cryptographic code. Use when implementing or reviewing crypto code, encountering division on secrets, secret-dependent branches, or constant-time programming questions in C, C++, Go, Rust, Swift, Java, Kotlin, C#, PHP, JavaScript, TypeScript, Python, or Ruby.
+allowed-tools: Bash Read Grep Glob
+effort: medium</code></pre></details>
+        <div class="markdown"><h3>Constant-Time Analysis</h3>
+<p>Compile the code, inspect the emitted assembly or bytecode for variable-time instructions, then decide which of the flagged operations actually touch secrets. The compilation step is mechanical; the triage step is the work.</p>
+<h4>When to Use</h4>
+<ul>
+<li>Implementing or reviewing a signature, encryption, KEM, or key derivation routine</li>
+<li>Code applies <code>/</code> or <code>%</code> to a value derived from a key, plaintext, nonce, or token</li>
+<li>The user mentions &quot;constant-time&quot;, &quot;timing attack&quot;, &quot;side-channel&quot;, or &quot;KyberSlash&quot;</li>
+<li>Reviewing functions named <code>sign</code>, <code>verify</code>, <code>encrypt</code>, <code>decrypt</code>, <code>derive_key</code></li>
+</ul>
+<h4>When NOT to Use</h4>
+<ul>
+<li><strong>Measuring</strong> timing variance on a running binary — use the <code>constant-time-testing</code> skill from the <code>testing-handbook-skills</code> plugin, which covers dudect and statistical approaches and may not be installed. This skill inspects compiler output statically and never executes the code under test.</li>
+<li>Non-cryptographic code, or crypto code where every input is public</li>
+<li>High-level API usage where a vetted library owns the constant-time guarantees</li>
+<li>Cache and other microarchitectural side channels — the assembly view cannot see them</li>
+</ul>
+<h4>Language Routing</h4>
+<p>Read the guide for the target language before interpreting any findings; each one lists that language's dangerous instructions and the idiomatic constant-time replacements.</p>
+<table>
+<thead>
+<tr>
+<th>Guide</th>
+<th>Languages</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/constant-time-analysis/skills/constant-time-analysis/references/compiled.md">references/compiled.md</a></td>
+<td>C, C++, Go, Rust</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/constant-time-analysis/skills/constant-time-analysis/references/swift.md">references/swift.md</a></td>
+<td>Swift</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/constant-time-analysis/skills/constant-time-analysis/references/vm-compiled.md">references/vm-compiled.md</a></td>
+<td>Java, C#</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/constant-time-analysis/skills/constant-time-analysis/references/kotlin.md">references/kotlin.md</a></td>
+<td>Kotlin</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/constant-time-analysis/skills/constant-time-analysis/references/php.md">references/php.md</a></td>
+<td>PHP</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/constant-time-analysis/skills/constant-time-analysis/references/javascript.md">references/javascript.md</a></td>
+<td>JavaScript, TypeScript</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/constant-time-analysis/skills/constant-time-analysis/references/python.md">references/python.md</a></td>
+<td>Python</td>
+</tr>
+<tr>
+<td><a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/constant-time-analysis/skills/constant-time-analysis/references/ruby.md">references/ruby.md</a></td>
+<td>Ruby</td>
+</tr>
+</tbody>
+</table>
+<h4>Running the Analyzer</h4>
+<p>The analyzer takes one file and detects the language from its extension. <strong>Always pass <code>--warnings</code>:</strong></p>
+<pre><code class="language-bash">uv run {baseDir}/ct_analyzer/analyzer.py --warnings &lt;source_file&gt;
+</code></pre>
+<p>Without it the analyzer reports only error-severity findings, which means division, modulo and weak RNG. Four detector families are warning severity and stay silent: secret-dependent branches, early-exit comparison (<code>memcmp</code>, <code>strcmp</code>, <code>.equals</code>, <code>==</code>), table lookups indexed by a secret, and variable-time encoding. Early-exit comparison of an authentication tag is the most common timing bug in real code — Lucky Thirteen was exactly that — so a default run is quiet about the finding you are most likely to have.</p>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--warnings</code></td>
+<td>Add the four warning-severity families above. Pass it every time</td>
+</tr>
+<tr>
+<td><code>--func &lt;regex&gt;</code></td>
+<td>Restrict output to function names matching the regex</td>
+</tr>
+<tr>
+<td><code>--json</code></td>
+<td>Machine-readable output</td>
+</tr>
+<tr>
+<td><code>--github</code></td>
+<td>GitHub Actions annotations</td>
+</tr>
+<tr>
+<td><code>--arch &lt;target&gt;</code></td>
+<td>Target architecture (<code>x86_64</code>, <code>arm64</code>, <code>riscv64</code>, ...) — native languages only</td>
+</tr>
+<tr>
+<td><code>--opt-level &lt;level&gt;</code></td>
+<td>Optimization level (<code>O0</code> through <code>O3</code>, <code>Os</code>, <code>Oz</code>) — native languages only</td>
+</tr>
+<tr>
+<td><code>--compiler &lt;name&gt;</code></td>
+<td>Override compiler choice (<code>gcc</code>, <code>clang</code>, <code>go</code>, <code>rustc</code>, <code>swiftc</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>Narrow a large file to the routines that handle secrets with a regex, for example <code>--func 'sign|verify'</code>.</p>
+<p><strong>Run natively compiled code (C, C++, Go, Rust, Swift) at more than one <code>--arch</code> and <code>--opt-level</code>.</strong> Division timing and branch lowering are architecture- and optimization-dependent: x86_64 <code>IDIV</code> and arm64 <code>SDIV</code> differ, and a <code>cmov</code> at <code>-O2</code> can become a branch at <code>-O0</code>. A single clean run proves one configuration safe, not the code.</p>
+<p><strong>How <code>--arch</code> crosses depends on the toolchain.</strong> clang crosses with <code>--target</code> and needs no second compiler, but any source that includes libc headers also needs that target's C library headers — <code>libc6-dev-riscv64-cross</code> and friends — or it fails with <code>bits/libc-header-start.h file not found</code>. Go cross-builds through <code>GOARCH</code>, though <code>go tool objdump</code> has no riscv64 disassembler. A GNU cross toolchain is a <em>separate binary</em>, so gcc needs it named explicitly — <code>--compiler x86_64-linux-gnu-gcc</code>, <code>--compiler riscv64-linux-gnu-gcc</code> — and nothing is substituted for you, so the report always names the binary that ran. rustc needs the target's standard library (<code>rustup target add</code>), and Swift on Linux targets only the host. Compare against the toolchain that builds your product, not whichever cross build a distribution packages.</p>
+<p><strong>Re-run the whole sweep on the fix, across compilers, targets and every level including <code>Os</code> and <code>Oz</code>.</strong> Any fix that works by handing the compiler a constant divisor to strength-reduce is a fix only where the compiler chooses to cooperate, and that choice varies more than it looks. Replacing <code>key_coef / (2 * gamma2)</code> with a <code>#define</code>d divisor still emits a real divide here:</p>
+<table>
+<thead>
+<tr>
+<th>Toolchain</th>
+<th>Levels that emit a division</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gcc riscv64</td>
+<td><code>O0</code> through <code>Oz</code> — every level</td>
+</tr>
+<tr>
+<td>gcc arm64, gcc x86_64</td>
+<td><code>Os</code>, <code>Oz</code></td>
+</tr>
+<tr>
+<td>clang arm64</td>
+<td><code>O0</code>, <code>Oz</code></td>
+</tr>
+</tbody>
+</table>
+<p>Strength reduction is an optimizer courtesy, not a language guarantee. Prefer an explicit multiply-shift, and verify it against the original expression over the full input range rather than on sampled values — an off-by-a-power-of-two reciprocal matches for millions of inputs before it diverges.</p>
+<p>Java, Kotlin, and C# compile to JVM/CIL bytecode. The analyzer reads that bytecode, so <code>--arch</code> and <code>--opt-level</code> do not apply and the JIT may still introduce variable-time native code the analyzer cannot see.</p>
+<h5>Per-language coverage limits</h5>
+<p>Coverage is not uniform, and the gaps change what a clean report means:</p>
+<table>
+<thead>
+<tr>
+<th>Language</th>
+<th>What the report does not cover</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Go</td>
+<td>Only symbols from the analyzed file. <code>go build</code> links the runtime in, and its divisions — all on public data — would otherwise dominate the findings</td>
+</tr>
+<tr>
+<td>JavaScript, TypeScript</td>
+<td>Bytecode findings are restricted to functions the file declares by name, because V8 dumps node's internals the same way it dumps yours. Anonymous callbacks fall to the source scan. For TypeScript, bytecode findings name the function but carry no line, since V8's positions index the transpiled output</td>
+</tr>
+<tr>
+<td>Python, Ruby, PHP</td>
+<td>Bytecode reflects the interpreter that ran, not a JIT'd or alternative runtime</td>
+</tr>
+<tr>
+<td>Rust</td>
+<td>Analyzed as a library unless the file declares <code>fn main</code>; private functions with no caller may be optimized away before analysis</td>
+</tr>
+<tr>
+<td>Swift</td>
+<td>Targets the host platform on Linux; iOS and macOS triples need an Apple toolchain</td>
+</tr>
+</tbody>
+</table>
+<p>Since findings and silence both depend on the configuration, say which compiler, architecture, and optimization level produced a result when reporting it.</p>
+<p>To sweep a directory, loop in the shell — the analyzer is a deterministic script, one invocation per file:</p>
+<pre><code class="language-bash">for f in src/crypto/*.c; do uv run {baseDir}/ct_analyzer/analyzer.py --warnings --json &quot;$f&quot;; done
+</code></pre>
+<h5>Prerequisites</h5>
+<table>
+<thead>
+<tr>
+<th>Language</th>
+<th>Requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C, C++, Go, Rust</td>
+<td><code>gcc</code>/<code>clang</code>, <code>go</code>, <code>rustc</code> in PATH</td>
+</tr>
+<tr>
+<td>Swift</td>
+<td>Xcode or Swift toolchain (<code>swiftc</code>)</td>
+</tr>
+<tr>
+<td>Java / Kotlin</td>
+<td>JDK (<code>javac</code>, <code>javap</code>); Kotlin also needs <code>kotlinc</code></td>
+</tr>
+<tr>
+<td>C#</td>
+<td>.NET SDK plus <code>ilspycmd</code> (<code>dotnet tool install -g ilspycmd</code>)</td>
+</tr>
+<tr>
+<td>PHP</td>
+<td>PHP with the VLD extension or OPcache</td>
+</tr>
+<tr>
+<td>JavaScript / TypeScript</td>
+<td>Node.js</td>
+</tr>
+<tr>
+<td>Python</td>
+<td>Python 3.x</td>
+</tr>
+<tr>
+<td>Ruby</td>
+<td>Ruby with <code>--dump=insns</code> support</td>
+</tr>
+</tbody>
+</table>
+<p>On a &quot;toolchain not found&quot; error, see <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/constant-time-analysis/skills/constant-time-analysis/references/vm-compiled.md">references/vm-compiled.md</a> for JVM and .NET installation, macOS keg-only PATH configuration, and troubleshooting.</p>
+<h4>Interpreting Results</h4>
+<p><strong>PASSED</strong> — no <em>error</em>-severity finding for the configuration you ran. Warnings do not affect it, so <code>Result: PASSED</code> alongside <code>Warnings: 6</code> is normal and is not a clean result. Read the warning list before concluding anything.</p>
+<p><strong>FAILED</strong> — dangerous instructions found, reported per function:</p>
+<pre><code class="language-text">[ERROR] SDIV
+  Function: decompose_vulnerable
+  Reason: SDIV has early termination optimization; execution time depends on operand values
+</code></pre>
+<h4>Triaging Findings</h4>
+<p><strong>The analyzer has no data flow analysis. It flags every dangerous instruction regardless of whether a secret reaches it, so a FAILED report is a worklist, not a verdict.</strong> Reporting the raw output as a set of vulnerabilities is the primary failure mode of this skill.</p>
+<p>For each flagged instruction, read the source and answer one question: <strong>does an operand depend on secret data?</strong> Trace from the instruction's function back to the caller's inputs, then classify:</p>
+<pre><code class="language-c">// FALSE POSITIVE: operands are a buffer length, already public from the ciphertext size
+int num_blocks = data_len / 16;
+
+// TRUE POSITIVE: dividend is a private-key coefficient; IDIV/SDIV leaks its magnitude
+int32_t q = secret_coef / GAMMA2;
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Question</th>
+<th>If yes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Is the operand a compile-time constant?</td>
+<td>Likely false positive</td>
+</tr>
+<tr>
+<td>Is the operand a public parameter — length, count, index bound?</td>
+<td>Likely false positive</td>
+</tr>
+<tr>
+<td>Is the operand derived from a key, plaintext, nonce, or token?</td>
+<td><strong>True positive</strong></td>
+</tr>
+<tr>
+<td>Can an attacker influence the operand's value?</td>
+<td><strong>True positive</strong></td>
+</tr>
+</tbody>
+</table>
+<p>State the verdict and the data flow that justifies it for every flagged item. A finding you cannot trace to a secret is not a finding; say so explicitly rather than dropping it silently.</p>
+<p><code>{baseDir}/ct_analyzer/tests/triage_samples/</code> holds a known-answer case per language: each fixture pairs a true positive with a false positive that the analyzer reports identically, and <code>expectations.json</code> records which is which and why. <code>triage_c.c</code> is the shortest example — the analyzer flags the division in both <code>ct_high_bits</code> and <code>ct_block_count</code>, and correct triage confirms the first and clears the second.</p>
+<p><strong>Weak-RNG and encoding findings ask a different question.</strong> For <code>Math.random</code>, <code>mt_rand</code>, <code>random.randint</code>, <code>System.Random</code> and <code>base64_encode</code>, no operand is secret, so &quot;does an operand depend on a secret?&quot; does not resolve them. Ask instead what the result is used for: seeding a nonce or key is a true positive, jittering a retry delay is not. These are reported by a regex scan over the source rather than from bytecode, so they are attributed to <code>&lt;source&gt;</code> with a line number instead of to the enclosing function — except in PHP, where they carry the function.</p>
+<p><strong>Comparison and lookup findings have their own question, and their own fix.</strong> For an early-exit comparison, ask whether either side is secret: comparing an authentication tag, MAC, or password hash is a true positive, comparing a public protocol header is not. For a table lookup, ask whether the <em>index</em> is secret — the array's contents do not matter, only what selects the element. Both are exploitable as written, so a confirmed one needs the language's constant-time primitive rather than a rewrite of the loop:</p>
+<table>
+<thead>
+<tr>
+<th>Language</th>
+<th>Constant-time comparison</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C, C++</td>
+<td><code>CRYPTO_memcmp</code> (OpenSSL) or <code>sodium_memcmp</code></td>
+</tr>
+<tr>
+<td>Go</td>
+<td><code>crypto/subtle.ConstantTimeCompare</code></td>
+</tr>
+<tr>
+<td>Rust</td>
+<td>the <code>subtle</code> crate's <code>ConstantTimeEq</code></td>
+</tr>
+<tr>
+<td>Java, Kotlin</td>
+<td><code>MessageDigest.isEqual</code></td>
+</tr>
+<tr>
+<td>C#</td>
+<td><code>CryptographicOperations.FixedTimeEquals</code></td>
+</tr>
+<tr>
+<td>PHP</td>
+<td><code>hash_equals</code></td>
+</tr>
+<tr>
+<td>Python</td>
+<td><code>hmac.compare_digest</code></td>
+</tr>
+<tr>
+<td>Ruby</td>
+<td><code>OpenSSL.secure_compare</code></td>
+</tr>
+<tr>
+<td>JavaScript, TypeScript</td>
+<td><code>crypto.timingSafeEqual</code></td>
+</tr>
+</tbody>
+</table>
+<p>A secret-indexed lookup has no drop-in replacement: it needs a bit-sliced or arithmetic formulation that touches every element, which is why AES S-box tables are the classic case. Encoding a secret through a table — <code>base64_encode</code>, <code>bin2hex</code>, <code>chr</code>/<code>ord</code> — is the same problem in a library, and <code>paragonie/constant_time_encoding</code> is the reference fix for PHP.</p>
+<h4>Limitations</h4>
+<ol>
+<li><strong>Static only</strong> — reads assembly and bytecode, never runtime behavior. Cache timing and other microarchitectural channels are invisible.</li>
+<li><strong>No data flow analysis</strong> — see triage above.</li>
+<li><strong>Configuration-specific</strong> — a different compiler, optimization level, architecture, or runtime version can emit different instructions from identical source.</li>
+</ol>
+<h4>Real-World Impact</h4>
+<ul>
+<li><strong>KyberSlash (2023)</strong> — division instructions in ML-KEM implementations allowed key recovery</li>
+<li><strong>Lucky Thirteen (2013)</strong> — timing differences in CBC padding validation enabled plaintext recovery</li>
+<li><strong>RSA timing attacks</strong> — early implementations leaked private key bits through division timing</li>
+</ul>
+<h4>References</h4>
+<ul>
+<li><a href="https://github.com/veorq/cryptocoding">Cryptocoding Guidelines</a> — defensive coding for crypto</li>
+<li><a href="https://kyberslash.cr.yp.to/">KyberSlash</a> — division timing in post-quantum crypto</li>
+<li><a href="https://www.bearssl.org/constanttime.html">BearSSL Constant-Time</a> — practical constant-time techniques</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

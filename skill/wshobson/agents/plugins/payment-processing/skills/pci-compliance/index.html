@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pci-compliance · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re building or auditing a system that takes card payments, or trying to shrink how much of it PCI DSS covers. It does: lists the standard&#039;s 12 requirements and four merchant levels, and shows Python that masks card numbers in logs, refuses to store CVV or PIN, tokenizes and encrypts. You get: code patterns, a compliance checklist, and the three main self-assessment questionnaires, SAQ A, A-EP and D, with who each is for. Key advice: keep card data off your servers: tokenize in the browser with Stripe.js so the server only ever sees a token." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=wshobson%2Fagents">wshobson/agents</a></p>
+      <div class="title-row"><h1>pci-compliance</h1><button type="button" class="save" data-save="skill:wshobson/agents/plugins/payment-processing/skills/pci-compliance" aria-pressed="false" aria-label="Save pci-compliance" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re building or auditing a system that takes card payments, or trying to shrink how much of it PCI DSS covers</dd></div><div><dt>It does</dt><dd>lists the standard&#39;s 12 requirements and four merchant levels, and shows Python that masks card numbers in logs, refuses to store CVV or PIN, tokenizes and encrypts</dd></div><div><dt>You get</dt><dd>code patterns, a compliance checklist, and the three main self-assessment questionnaires, SAQ A, A-EP and D, with who each is for</dd></div><div><dt>Key advice</dt><dd>keep card data off your servers: tokenize in the browser with Stripe.js so the server only ever sees a token</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A compliance reference for developers. It groups PCI DSS&#39;s 12 requirements under secure networks, protecting cardholder data, vulnerability management, access control, monitoring and security policy, and gives the four merchant levels by yearly transactions. Full magnetic-stripe data, CVV and PIN may never be stored; card number, name and expiry only when encrypted. Python examples mask card numbers in logs to the first six and last four digits, raise an error on prohibited fields, charge a card and attach it to a Stripe customer through tokens, so card details never reach the server, build a token vault with Fernet for when you must store cards, encrypt data at rest with AES-256-GCM, and enforce HTTPS and secure cookies in Flask. A reference file adds a decorator that restricts and logs access to card data, audit logging, input validation, the three main questionnaires (SAQ A for hosted payment pages, A-EP for embedded forms, D for anyone who stores or processes cards, from about 20 to about 300 questions) and a checklist across network security, data protection, vulnerability management, access control, monitoring and policy.</p>
+      <p class="muted">Summarizes <a href="https://github.com/wshobson/agents/tree/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/payment-processing/skills/pci-compliance">the skill at 4bde316</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">wshobson/</span><wbr><span class="word">agents</span> <span class="word">--skill</span> <span class="word">pci-compliance</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/wshobson/agents --skill pci-compliance">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/wshobson/agents/pci-compliance">skills.sh page</a> · <a href="https://github.com/wshobson/agents/tree/HEAD/plugins/payment-processing/skills/pci-compliance">Source on GitHub</a> · <a href="/?repo=wshobson%2Fagents">All skills from wshobson/agents</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>10,900 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>42,292 <span class="muted">wshobson/agents</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">175</div>
+      <div class="stat-delta">+1% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 173; week to Sep 27: 182; week to Oct 4: 218; week to Oct 11: 274; week to Oct 18: 211; week to Oct 25: 186; week to Nov 1: 186; week to Nov 8: 175. Use the left and right arrow keys to read each week."
+        data-values="173,182,218,274,211,186,186,175" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,22.2 38.6,20.8 71.1,15.0 103.7,6.0 136.3,16.1 168.9,20.1 201.4,20.1 234.0,21.9" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="21.9" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>173</td></tr><tr><td>Sep 27</td><td>182</td></tr><tr><td>Oct 4</td><td>218</td></tr><tr><td>Oct 11</td><td>274</td></tr><tr><td>Oct 18</td><td>211</td></tr><tr><td>Oct 25</td><td>186</td></tr><tr><td>Nov 1</td><td>186</td></tr><tr><td>Nov 8</td><td>175</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:security" data-facet="category" title="Compliance, guardrails, skill vetting and browser fingerprinting." href="/?tag=category%3Asecurity">category:<wbr>security</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Compliance, guardrails, skill vetting and browser fingerprinting.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/?tag=type%3Aguidelines">type:<wbr>guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="security" data-facet="topic" href="/?tag=security">security</a><a class="tag" data-tag="payments" data-facet="topic" href="/?tag=payments">payments</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:stripe" data-facet="stack" href="/?tag=stack%3Astripe">stack:<wbr>stripe</a><a class="tag" data-tag="stack:python" data-facet="stack" href="/?tag=stack%3Apython">stack:<wbr>python</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/wshobson/agents/blob/4bde3168b43c0655c4d00ea2726e631719908a6d/plugins/payment-processing/skills/pci-compliance/SKILL.md">wshobson/agents at 4bde316</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: pci-compliance
+description: Implement PCI DSS compliance requirements for secure handling of payment card data and payment systems. Use when securing payment processing, achieving PCI compliance, or implementing payment card security measures.</code></pre></details>
+        <div class="markdown"><h3>PCI Compliance</h3>
+<p>Master PCI DSS (Payment Card Industry Data Security Standard) compliance for secure payment processing and handling of cardholder data.</p>
+<h4>When to Use This Skill</h4>
+<ul>
+<li>Building payment processing systems</li>
+<li>Handling credit card information</li>
+<li>Implementing secure payment flows</li>
+<li>Conducting PCI compliance audits</li>
+<li>Reducing PCI compliance scope</li>
+<li>Implementing tokenization and encryption</li>
+<li>Preparing for PCI DSS assessments</li>
+</ul>
+<h4>PCI DSS Requirements (12 Core Requirements)</h4>
+<h5>Build and Maintain Secure Network</h5>
+<ol>
+<li>Install and maintain firewall configuration</li>
+<li>Don't use vendor-supplied defaults for passwords</li>
+</ol>
+<h5>Protect Cardholder Data</h5>
+<ol start="3">
+<li>Protect stored cardholder data</li>
+<li>Encrypt transmission of cardholder data across public networks</li>
+</ol>
+<h5>Maintain Vulnerability Management</h5>
+<ol start="5">
+<li>Protect systems against malware</li>
+<li>Develop and maintain secure systems and applications</li>
+</ol>
+<h5>Implement Strong Access Control</h5>
+<ol start="7">
+<li>Restrict access to cardholder data by business need-to-know</li>
+<li>Identify and authenticate access to system components</li>
+<li>Restrict physical access to cardholder data</li>
+</ol>
+<h5>Monitor and Test Networks</h5>
+<ol start="10">
+<li>Track and monitor all access to network resources and cardholder data</li>
+<li>Regularly test security systems and processes</li>
+</ol>
+<h5>Maintain Information Security Policy</h5>
+<ol start="12">
+<li>Maintain a policy that addresses information security</li>
+</ol>
+<h4>Compliance Levels</h4>
+<p><strong>Level 1</strong>: &gt; 6 million transactions/year (annual ROC required)
+<strong>Level 2</strong>: 1-6 million transactions/year (annual SAQ)
+<strong>Level 3</strong>: 20,000-1 million e-commerce transactions/year
+<strong>Level 4</strong>: &lt; 20,000 e-commerce or &lt; 1 million total transactions</p>
+<h4>Data Minimization (Never Store)</h4>
+<pre><code class="language-python"># NEVER STORE THESE
+PROHIBITED_DATA = {
+    'full_track_data': 'Magnetic stripe data',
+    'cvv': 'Card verification code/value',
+    'pin': 'PIN or PIN block'
+}
+
+# CAN STORE (if encrypted)
+ALLOWED_DATA = {
+    'pan': 'Primary Account Number (card number)',
+    'cardholder_name': 'Name on card',
+    'expiration_date': 'Card expiration',
+    'service_code': 'Service code'
+}
+
+class PaymentData:
+    &quot;&quot;&quot;Safe payment data handling.&quot;&quot;&quot;
+
+    def __init__(self):
+        self.prohibited_fields = ['cvv', 'cvv2', 'cvc', 'pin']
+
+    def sanitize_log(self, data):
+        &quot;&quot;&quot;Remove sensitive data from logs.&quot;&quot;&quot;
+        sanitized = data.copy()
+
+        # Mask PAN
+        if 'card_number' in sanitized:
+            card = sanitized['card_number']
+            sanitized['card_number'] = f&quot;{card[:6]}{'*' * (len(card) - 10)}{card[-4:]}&quot;
+
+        # Remove prohibited data
+        for field in self.prohibited_fields:
+            sanitized.pop(field, None)
+
+        return sanitized
+
+    def validate_no_prohibited_storage(self, data):
+        &quot;&quot;&quot;Ensure no prohibited data is being stored.&quot;&quot;&quot;
+        for field in self.prohibited_fields:
+            if field in data:
+                raise SecurityError(f&quot;Attempting to store prohibited field: {field}&quot;)
+</code></pre>
+<h4>Tokenization</h4>
+<h5>Using Payment Processor Tokens</h5>
+<pre><code class="language-python">import stripe
+
+class TokenizedPayment:
+    &quot;&quot;&quot;Handle payments using tokens (no card data on server).&quot;&quot;&quot;
+
+    @staticmethod
+    def create_payment_method_token(card_details):
+        &quot;&quot;&quot;Create token from card details (client-side only).&quot;&quot;&quot;
+        # THIS SHOULD ONLY BE DONE CLIENT-SIDE WITH STRIPE.JS
+        # NEVER send card details to your server
+
+        &quot;&quot;&quot;
+        // Frontend JavaScript
+        const stripe = Stripe('pk_...');
+
+        const {token, error} = await stripe.createToken({
+            card: {
+                number: '4242424242424242',
+                exp_month: 12,
+                exp_year: 2024,
+                cvc: '123'
+            }
+        });
+
+        // Send token.id to server (NOT card details)
+        &quot;&quot;&quot;
+        pass
+
+    @staticmethod
+    def charge_with_token(token_id, amount):
+        &quot;&quot;&quot;Charge using token (server-side).&quot;&quot;&quot;
+        # Your server only sees the token, never the card number
+        stripe.api_key = &quot;sk_...&quot;
+
+        charge = stripe.Charge.create(
+            amount=amount,
+            currency=&quot;usd&quot;,
+            source=token_id,  # Token instead of card details
+            description=&quot;Payment&quot;
+        )
+
+        return charge
+
+    @staticmethod
+    def store_payment_method(customer_id, payment_method_token):
+        &quot;&quot;&quot;Store payment method as token for future use.&quot;&quot;&quot;
+        stripe.Customer.modify(
+            customer_id,
+            source=payment_method_token
+        )
+
+        # Store only customer_id and payment_method_id in your database
+        # NEVER store actual card details
+        return {
+            'customer_id': customer_id,
+            'has_payment_method': True
+            # DO NOT store: card number, CVV, etc.
+        }
+</code></pre>
+<h5>Custom Tokenization (Advanced)</h5>
+<pre><code class="language-python">import secrets
+from cryptography.fernet import Fernet
+
+class TokenVault:
+    &quot;&quot;&quot;Secure token vault for card data (if you must store it).&quot;&quot;&quot;
+
+    def __init__(self, encryption_key):
+        self.cipher = Fernet(encryption_key)
+        self.vault = {}  # In production: use encrypted database
+
+    def tokenize(self, card_data):
+        &quot;&quot;&quot;Convert card data to token.&quot;&quot;&quot;
+        # Generate secure random token
+        token = secrets.token_urlsafe(32)
+
+        # Encrypt card data
+        encrypted = self.cipher.encrypt(json.dumps(card_data).encode())
+
+        # Store token -&gt; encrypted data mapping
+        self.vault[token] = encrypted
+
+        return token
+
+    def detokenize(self, token):
+        &quot;&quot;&quot;Retrieve card data from token.&quot;&quot;&quot;
+        encrypted = self.vault.get(token)
+        if not encrypted:
+            raise ValueError(&quot;Token not found&quot;)
+
+        # Decrypt
+        decrypted = self.cipher.decrypt(encrypted)
+        return json.loads(decrypted.decode())
+
+    def delete_token(self, token):
+        &quot;&quot;&quot;Remove token from vault.&quot;&quot;&quot;
+        self.vault.pop(token, None)
+</code></pre>
+<h4>Encryption</h4>
+<h5>Data at Rest</h5>
+<pre><code class="language-python">from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+import os
+
+class EncryptedStorage:
+    &quot;&quot;&quot;Encrypt data at rest using AES-256-GCM.&quot;&quot;&quot;
+
+    def __init__(self, encryption_key):
+        &quot;&quot;&quot;Initialize with 256-bit key.&quot;&quot;&quot;
+        self.key = encryption_key  # Must be 32 bytes
+
+    def encrypt(self, plaintext):
+        &quot;&quot;&quot;Encrypt data.&quot;&quot;&quot;
+        # Generate random nonce
+        nonce = os.urandom(12)
+
+        # Encrypt
+        aesgcm = AESGCM(self.key)
+        ciphertext = aesgcm.encrypt(nonce, plaintext.encode(), None)
+
+        # Return nonce + ciphertext
+        return nonce + ciphertext
+
+    def decrypt(self, encrypted_data):
+        &quot;&quot;&quot;Decrypt data.&quot;&quot;&quot;
+        # Extract nonce and ciphertext
+        nonce = encrypted_data[:12]
+        ciphertext = encrypted_data[12:]
+
+        # Decrypt
+        aesgcm = AESGCM(self.key)
+        plaintext = aesgcm.decrypt(nonce, ciphertext, None)
+
+        return plaintext.decode()
+
+# Usage
+storage = EncryptedStorage(os.urandom(32))
+encrypted_pan = storage.encrypt(&quot;4242424242424242&quot;)
+# Store encrypted_pan in database
+</code></pre>
+<h5>Data in Transit</h5>
+<pre><code class="language-python"># Always use TLS 1.2 or higher
+# Flask/Django example
+app.config['SESSION_COOKIE_SECURE'] = True  # HTTPS only
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Strict'
+
+# Enforce HTTPS
+from flask_talisman import Talisman
+Talisman(app, force_https=True)
+</code></pre>
+<h4>Additional patterns and templates</h4>
+<p>More detailed templates and worked examples live in <code>references/details.md</code>. Read that file for the full pattern library.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

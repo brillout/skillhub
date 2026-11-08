@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dwarf-expert · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re inspecting a binary&#039;s or dSYM&#039;s debug sections, verifying debug info a compiler produced, answering a DWARF standard question, or writing code that reads DWARF. It does: finds DIEs, the entries describing each function, variable and type, by name, address or attribute, escalating from dwarfdump flags to grep to a pyelftools script. You get: DIE listings, verification results, answers checked against the spec, or DWARF-parsing code, by default a Python script using pyelftools. Verifies: debug info with llvm-dwarfdump --verify, and compares --statistics across compiler versions or optimization levels. Looks up: the standard on dwarfstd.org and in LLVM&#039;s or libdwarf&#039;s source rather than answering from memory. Needs: llvm-dwarfdump or libdwarf&#039;s dwarfdump, or readelf; pyelftools for scripts." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=trailofbits%2Fskills">trailofbits/skills</a></p>
+      <div class="title-row"><h1>dwarf-expert</h1><button type="button" class="save" data-save="skill:trailofbits/skills/plugins/dwarf-expert/skills/dwarf-expert" aria-pressed="false" aria-label="Save dwarf-expert" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re inspecting a binary&#39;s or dSYM&#39;s debug sections, verifying debug info a compiler produced, answering a DWARF standard question, or writing code that reads DWARF</dd></div><div><dt>It does</dt><dd>finds DIEs, the entries describing each function, variable and type, by name, address or attribute, escalating from dwarfdump flags to grep to a pyelftools script</dd></div><div><dt>You get</dt><dd>DIE listings, verification results, answers checked against the spec, or DWARF-parsing code, by default a Python script using pyelftools</dd></div><div><dt>Verifies</dt><dd>debug info with llvm-dwarfdump --verify, and compares --statistics across compiler versions or optimization levels</dd></div><div><dt>Looks up</dt><dd>the standard on dwarfstd.org and in LLVM&#39;s or libdwarf&#39;s source rather than answering from memory</dd></div><div><dt>Needs</dt><dd>llvm-dwarfdump or libdwarf&#39;s dwarfdump, or readelf; pyelftools for scripts</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>From Trail of Bits. It first checks which dwarfdump is installed, since libdwarf&#39;s and LLVM&#39;s take different options. It knows the traps: on macOS the debug info stays in the .o files or a .dSYM bundle rather than the linked executable, pyelftools reads only ELF, and a --find lookup uses accelerator tables that can miss names, so it falls back to an exhaustive --name search. For parsing code it prefers an existing library, libdwarf for C/C++, pyelftools for Python, gimli for Rust, debug/dwarf for Go or LibObjectFile for .NET, defaulting to Python, and lists the pitfalls to handle and to look for in review: optional attributes, attributes inherited through abstract_origin or specification links, and types wrapped in chains of const and pointer entries. When a modern compiler emitted an old DWARF version, it looks for the -gdwarf-N flag in the build, which GCC records in the producer string. Runtime debugging with gdb or lldb, and reverse engineering beyond the DWARF sections, are out of scope.</p>
+      <p class="muted">Summarizes <a href="https://github.com/trailofbits/skills/tree/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/dwarf-expert/skills/dwarf-expert">the skill at e4dd0bb</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">trailofbits/</span><wbr><span class="word">skills</span> <span class="word">--skill</span> <span class="word">dwarf-expert</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/trailofbits/skills --skill dwarf-expert">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/trailofbits/skills/dwarf-expert">skills.sh page</a> · <a href="https://github.com/trailofbits/skills/tree/HEAD/plugins/dwarf-expert/skills/dwarf-expert">Source on GitHub</a> · <a href="/?repo=trailofbits%2Fskills">All skills from trailofbits/skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,500 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>8,064 <span class="muted">trailofbits/skills</span></dd></div><div><dt>First seen</dt><dd>Jan 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">161</div>
+      <div class="stat-delta">+49% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 108; week to Sep 27: 107; week to Oct 4: 106; week to Oct 11: 101; week to Oct 18: 118; week to Oct 25: 122; week to Nov 1: 152; week to Nov 8: 161. Use the left and right arrow keys to read each week."
+        data-values="108,107,106,101,118,122,152,161" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,20.5 38.6,20.8 71.1,21.0 103.7,22.4 136.3,17.8 168.9,16.7 201.4,8.5 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>108</td></tr><tr><td>Sep 27</td><td>107</td></tr><tr><td>Oct 4</td><td>106</td></tr><tr><td>Oct 11</td><td>101</td></tr><tr><td>Oct 18</td><td>118</td></tr><tr><td>Oct 25</td><td>122</td></tr><tr><td>Nov 1</td><td>152</td></tr><tr><td>Nov 8</td><td>161</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/?tag=category%3Adebugging">category:<wbr>debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/?tag=type%3Aguidelines">type:<wbr>guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/?tag=needs%3Acli">needs:<wbr>cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="debugging" data-facet="topic" href="/?tag=debugging">debugging</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:dwarf" data-facet="stack" href="/?tag=stack%3Adwarf">stack:<wbr>dwarf</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/trailofbits/skills/blob/e4dd0bb5b15535f7c5a0834187dffba6ac37e4ff/plugins/dwarf-expert/skills/dwarf-expert/SKILL.md">trailofbits/skills at e4dd0bb</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: dwarf-expert
+description: Analyzes DWARF debug information in compiled binaries. Use when inspecting .debug_* sections, DIE trees, or DW_TAG_/DW_AT_ entries with dwarfdump/llvm-dwarfdump or readelf, verifying debug info with llvm-dwarfdump --verify, answering DWARF standard questions, or writing code that parses DWARF (libdwarf, pyelftools, gimli).
+effort: medium
+allowed-tools: Read Write Edit Bash Grep Glob WebSearch WebFetch</code></pre></details>
+        <div class="markdown"><h3>DWARF Expert</h3>
+<p>Expertise for DWARF debug info: parsing and searching it, verifying its
+integrity, answering questions about the standard, and writing code that
+consumes it. Out of scope: runtime debugging (use gdb/lldb), reverse
+engineering beyond the DWARF sections (use Ghidra/IDA), and compiler-specific
+DWARF generation bugs.</p>
+<h3>Authoritative Sources</h3>
+<p>When precision matters, look standard details up instead of answering from memory:</p>
+<ol>
+<li><strong>dwarfstd.org</strong> — the official specification. Web-search specific sections,
+e.g. &quot;DWARF5 DW_TAG_subprogram attributes site:dwarfstd.org&quot;.</li>
+<li><strong>LLVM</strong> — <code>llvm/lib/DebugInfo/DWARF/</code> is a reliable reference implementation:
+<code>DWARFDie.cpp</code> (DIE and attribute access), <code>DWARFUnit.cpp</code> (compilation units),
+<code>DWARFDebugLine.cpp</code> (line tables), <code>DWARFVerifier.cpp</code> (validation).</li>
+<li><strong>libdwarf</strong> — the reference C implementation at github.com/davea42/libdwarf-code.</li>
+</ol>
+<h3>Parsing and Searching with dwarfdump</h3>
+<p>Prefer <code>dwarfdump</code> over <code>readelf</code> for DWARF-specific work. Two implementations
+exist — libdwarf's <code>dwarfdump</code> and LLVM's <code>llvm-dwarfdump</code> — with different
+options, and a bare <code>dwarfdump</code> command may be either: check <code>dwarfdump --version</code>
+first. The options below are LLVM's.</p>
+<p>On macOS, linked Mach-O executables do not carry DWARF: it stays in the <code>.o</code>
+files until <code>dsymutil</code> collects it into a <code>.dSYM</code> bundle. Point <code>dwarfdump</code> at
+the dSYM (or the object files), not the executable. <code>pyelftools</code> is ELF-only —
+for Mach-O scripted work, stay with the LLVM tools.</p>
+<ul>
+<li><code>--all</code>: dump every DWARF section; <code>--debug-info</code>, <code>--debug-line</code>, etc. dump one</li>
+<li><code>--show-children [--recurse-depth=&lt;n&gt;]</code>: include child DIEs when printing
+selected entries — parameters, locals, and struct members are children of
+function and type DIEs</li>
+<li><code>--show-parents [--parent-recurse-depth=&lt;n&gt;]</code>: include parent DIEs</li>
+<li><code>--show-form</code>: print attribute form types, for when encoding details matter</li>
+<li><code>--find=&lt;name&gt;</code>: exact-name lookup via the accelerator tables — fast but not
+exhaustive; fall back to <code>--name</code> when it misses</li>
+<li><code>--name=&lt;pattern&gt; [--ignore-case] [--regex]</code>: exhaustive DIE-name search</li>
+<li><code>--lookup=&lt;address&gt;</code>: find the DIE covering an address</li>
+<li><code>--verbose</code>: print low-level encoding detail</li>
+</ul>
+<h4>Searching DIEs</h4>
+<p>Escalate through these strategies as the query grows more complex:</p>
+<ol>
+<li><strong>Name or address match</strong>: <code>--find</code>, then <code>--name</code>; <code>--lookup</code> for addresses.</li>
+<li><strong>Attribute or type queries</strong> (e.g. all parameters of type <code>float *</code>): dump and
+filter. <code>grep -B</code> pulls in the header line carrying each DIE's offset:
+<code>llvm-dwarfdump file | grep -B 5 &quot;float \*&quot; | grep DW_TAG_formal_parameter</code>,
+then print each DIE at its offset with <code>--debug-info=&lt;offset&gt; --show-children</code>
+(<code>--lookup</code> takes a program address, not a DIE offset).</li>
+<li><strong>Multi-attribute or structural queries</strong>: when grep pipelines turn brittle,
+write a Python script using <code>pyelftools</code> instead.</li>
+</ol>
+<h3>Verifying DWARF Integrity</h3>
+<ul>
+<li><code>llvm-dwarfdump --verify &lt;binary&gt;</code>: structural checks (unit chains, DIE
+relationships, address ranges). <code>--error-display=&lt;quiet|summary|details|full&gt;</code>
+controls detail; <code>--verify-json=&lt;path&gt;</code> writes a machine-readable error
+summary; <code>--quiet</code> for exit-code-only checks.</li>
+<li><code>llvm-dwarfdump --statistics &lt;binary&gt;</code>: debug-info quality metrics as JSON —
+compare across compiler versions or optimization levels to catch regressions.</li>
+</ul>
+<p>Verify after producing DWARF (compilers, binary rewriters), when a debugger
+misbehaves on a binary, and when developing DWARF tooling against known-good
+files.</p>
+<p>When a current-generation compiler emitted an old DWARF version, the build
+explicitly passed <code>-gdwarf-N</code> — modern gcc and clang default to v4/v5, so check
+the build system rather than assuming a toolchain default. GCC embeds its flags
+in <code>DW_AT_producer</code>, so the pin is often readable right there; clang's producer
+string carries no flags. Old versions remain common in the wild and read the
+same way apart from surface forms: in v2 output, member offsets appear as
+location expressions (<code>DW_OP_plus_uconst</code>) and linkage names as
+<code>DW_AT_MIPS_linkage_name</code>.</p>
+<h3>readelf</h3>
+<p>For general ELF structure, or when <code>dwarfdump</code> is unavailable:</p>
+<ul>
+<li><code>--debug-dump=&lt;section&gt;</code>: dump a DWARF section (<code>info</code>, <code>line</code>, ...)</li>
+<li><code>--dwarf-depth=&lt;n&gt;</code> / <code>--dwarf-start=&lt;n&gt;</code>: limit DIE depth / start offset</li>
+</ul>
+<h3>Writing Code That Parses DWARF</h3>
+<p>Prefer an existing library over parsing by hand:</p>
+<table>
+<thead>
+<tr>
+<th>Library</th>
+<th>Language</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>libdwarf</code></td>
+<td>C/C++</td>
+<td>github.com/davea42/libdwarf-code — low-level; used to implement <code>dwarfdump</code></td>
+</tr>
+<tr>
+<td><code>pyelftools</code></td>
+<td>Python</td>
+<td>github.com/eliben/pyelftools — also parses ELF in general</td>
+</tr>
+<tr>
+<td><code>gimli</code></td>
+<td>Rust</td>
+<td>github.com/gimli-rs/gimli — pair with <code>object</code> to load container files</td>
+</tr>
+<tr>
+<td><code>debug/dwarf</code></td>
+<td>Go</td>
+<td>standard library</td>
+</tr>
+<tr>
+<td><code>LibObjectFile</code></td>
+<td>.NET</td>
+<td>github.com/xoofx/LibObjectFile — also handles ELF/PE object files</td>
+</tr>
+</tbody>
+</table>
+<p>Default to Python with <code>pyelftools</code> for one-off scripts unless the task dictates
+otherwise.</p>
+<p>DWARF-specific pitfalls to handle — and to check for when reviewing DWARF code:</p>
+<ul>
+<li>Attributes are optional: a DIE may omit <code>DW_AT_name</code>, <code>DW_AT_type</code>, ranges, etc.</li>
+<li>Attribute indirection: a DIE's attributes may live on the DIE referenced by its
+<code>DW_AT_abstract_origin</code> (inlined instances) or <code>DW_AT_specification</code>
+(out-of-line definitions) — resolve the chain before concluding data is absent.</li>
+<li>Type chains: qualifiers and modifiers (<code>DW_TAG_const_type</code>,
+<code>DW_TAG_pointer_type</code>, ...) wrap the underlying type; walk <code>DW_AT_type</code> links to
+reach the base type.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

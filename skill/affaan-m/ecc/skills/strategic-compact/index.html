@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>strategic-compact · SkillHub</title>
+    <meta name="description" content="Use it when: you run long Claude Code sessions near the context limit and would rather compact between phases than mid-task. It does: gives a table of when to compact, yes after research, planning or debugging, never mid-implementation, and lists what survives compaction. Runs: with ECC&#039;s hook, before each edit or write: it suggests /compact at about 160k tokens on a 200k window, or after 50 tool calls. You decide: the hook only suggests; you run /compact yourself, ideally with a note on what to focus on next. Needs: ECC&#039;s suggest-compact.js hook, which comes with the ECC plugin or its install.sh, not with the skill alone." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <div class="title-row"><h1>strategic-compact</h1><button type="button" class="save" data-save="skill:affaan-m/ecc/skills/strategic-compact" aria-pressed="false" aria-label="Save strategic-compact" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you run long Claude Code sessions near the context limit and would rather compact between phases than mid-task</dd></div><div><dt>It does</dt><dd>gives a table of when to compact, yes after research, planning or debugging, never mid-implementation, and lists what survives compaction</dd></div><div><dt>Runs</dt><dd>with ECC&#39;s hook, before each edit or write: it suggests /compact at about 160k tokens on a 200k window, or after 50 tool calls</dd></div><div><dt>You decide</dt><dd>the hook only suggests; you run /compact yourself, ideally with a note on what to focus on next</dd></div><div><dt>Needs</dt><dd>ECC&#39;s suggest-compact.js hook, which comes with the ECC plugin or its install.sh, not with the skill alone</dd></div></dl></section>
+      
+      <p class="note">The reminder hook, suggest-compact.js, comes with the ECC plugin, or with ECC&#39;s install.sh plus a settings.json entry; installed alone, the skill is only the guidance.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Auto-compaction fires wherever the limit falls, often mid-task. This skill moves compaction to logical boundaries. Its hook, suggest-compact.js, runs before each Edit or Write and reads the latest token usage from the session transcript: it suggests /compact at 160k tokens on a 200k window or 250k on a 1M window, then again every 60k tokens, and, as a weaker signal, after 50 tool calls and every 25 after that. Environment variables change the thresholds and the window size. The decision table says to compact after research, after planning once the plan is written down, after debugging and after a failed approach, maybe between implementation and testing, and never mid-implementation. It lists what survives (CLAUDE.md, files on disk, memory files, git state) and what&#39;s lost (reasoning, file contents already read, preferences you only said aloud), and warns that recent Claude Code versions turn the todo tools off by default on newer models, so the plan belongs in a file before compacting. It ends with tips for trimming context: loading skills from a trigger table, keeping CLAUDE.md lean and removing duplicated rules.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/strategic-compact">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">affaan-m/</span><wbr><span class="word">ecc</span> <span class="word">--skill</span> <span class="word">strategic-compact</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill strategic-compact">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/strategic-compact">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/strategic-compact">Source on GitHub</a> · <a href="/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>5,900 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>299,252 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">519</div>
+      <div class="stat-delta">+59% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 327; week to Sep 27: 298; week to Oct 4: 203; week to Oct 11: 176; week to Oct 18: 264; week to Oct 25: 462; week to Nov 1: 451; week to Nov 8: 519. Use the left and right arrow keys to read each week."
+        data-values="327,298,203,176,264,462,451,519" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,22.3 38.6,24.7 71.1,32.8 103.7,35.1 136.3,27.6 168.9,10.8 201.4,11.8 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>327</td></tr><tr><td>Sep 27</td><td>298</td></tr><tr><td>Oct 4</td><td>203</td></tr><tr><td>Oct 11</td><td>176</td></tr><tr><td>Oct 18</td><td>264</td></tr><tr><td>Oct 25</td><td>462</td></tr><tr><td>Nov 1</td><td>451</td></tr><tr><td>Nov 8</td><td>519</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:agents" data-facet="category" title="Build agents, orchestrate workers and give agents memory." href="/?tag=category%3Aagents">category:<wbr>agents</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Build agents, orchestrate workers and give agents memory.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/?tag=type%3Aguidelines">type:<wbr>guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:claude-code" data-facet="needs" title="Uses Claude Code features such as hooks or background agents." href="/?tag=needs%3Aclaude-code">needs:<wbr>claude-code</a></div>
+          <p class="tag-meaning">Uses Claude Code features such as hooks or background agents.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="token-saving" data-facet="topic" href="/?tag=token-saving">token-saving</a><a class="tag" data-tag="agent-workflows" data-facet="topic" href="/?tag=agent-workflows">agent-workflows</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:claude" data-facet="stack" href="/?tag=stack%3Aclaude">stack:<wbr>claude</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/strategic-compact/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: strategic-compact
+description: Suggests manual context compaction at logical intervals to preserve context through task phases rather than arbitrary auto-compaction. Use when a session is approaching a context limit and a task phase is a natural place to compact.
+metadata:
+  origin: ECC</code></pre></details>
+        <div class="markdown"><h3>Strategic Compact Skill</h3>
+<p>Suggests manual <code>/compact</code> at strategic points in your workflow rather than relying on arbitrary auto-compaction.</p>
+<h4>When to Activate</h4>
+<ul>
+<li>Running long sessions that approach context limits (200K+ tokens)</li>
+<li>Working on multi-phase tasks (research → plan → implement → test)</li>
+<li>Switching between unrelated tasks within the same session</li>
+<li>After completing a major milestone and starting new work</li>
+<li>When responses slow down or become less coherent (context pressure)</li>
+</ul>
+<h4>Why Strategic Compaction?</h4>
+<p>Auto-compaction triggers at arbitrary points:</p>
+<ul>
+<li>Often mid-task, losing important context</li>
+<li>No awareness of logical task boundaries</li>
+<li>Can interrupt complex multi-step operations</li>
+</ul>
+<p>Strategic compaction at logical boundaries:</p>
+<ul>
+<li><strong>After exploration, before execution</strong> — Compact research context, keep implementation plan</li>
+<li><strong>After completing a milestone</strong> — Fresh start for next phase</li>
+<li><strong>Before major context shifts</strong> — Clear exploration context before different task</li>
+</ul>
+<h4>How It Works</h4>
+<p>The <code>suggest-compact.js</code> script runs on PreToolUse (Edit/Write) and combines two signals:</p>
+<ol>
+<li><strong>Context size (primary)</strong> — Reads the latest <code>usage</code> record from the session transcript (<code>transcript_path</code> in the hook payload) and sums <code>input_tokens + cache_read_input_tokens + cache_creation_input_tokens</code> (the true context size of the turn). Suggests <code>/compact</code> at a window-scaled threshold — 160k tokens on a 200k window, 250k on a 1M window (detected from a <code>[1m]</code> model marker, or inferred when observed tokens already exceed 200k) — and re-reminds after every additional 60k tokens of context growth. A valid native compaction budget can lower the default reminder threshold to 80% of that budget; model-capacity percentages still use the resolved model window</li>
+<li><strong>Tool-call count (secondary)</strong> — Counts tool invocations in session; suggests at a configurable threshold (default: 50 calls), then every 25 calls after</li>
+</ol>
+<p>Tool count alone is a weak proxy for window pressure: a few large file reads or MCP responses can fill the window in very few calls, while many tiny calls can cross 50 with a near-empty window. The context-size signal fires when it actually matters.</p>
+<h4>Hook Setup</h4>
+<p><strong>Installed as a plugin?</strong> No setup is needed. The plugin's <code>hooks/hooks.json</code> already registers <code>suggest-compact.js</code> (hook id <code>pre:edit-write:suggest-compact</code>, active in the <code>standard</code> and <code>strict</code> hook profiles). Do not copy the block below into <code>~/.claude/settings.json</code> — <code>~/.claude/scripts/</code> does not exist on plugin installs, and duplicating a plugin hook causes double execution.</p>
+<p><strong>If installed manually</strong> (<code>./install.sh</code>), add to your <code>~/.claude/settings.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;hooks&quot;: {
+    &quot;PreToolUse&quot;: [
+      {
+        &quot;matcher&quot;: &quot;Edit&quot;,
+        &quot;hooks&quot;: [{ &quot;type&quot;: &quot;command&quot;, &quot;command&quot;: &quot;node ~/.claude/scripts/hooks/suggest-compact.js&quot; }]
+      },
+      {
+        &quot;matcher&quot;: &quot;Write&quot;,
+        &quot;hooks&quot;: [{ &quot;type&quot;: &quot;command&quot;, &quot;command&quot;: &quot;node ~/.claude/scripts/hooks/suggest-compact.js&quot; }]
+      }
+    ]
+  }
+}
+</code></pre>
+<h4>Configuration</h4>
+<p>Environment variables:</p>
+<ul>
+<li><code>COMPACT_THRESHOLD</code> — Tool calls before first suggestion (default: 50)</li>
+<li><code>COMPACT_CONTEXT_THRESHOLD</code> — Context tokens before the context-size suggestion (default: 160000 on a 200k window, 250000 on a 1M window, capped at 80% of a valid native compaction budget when earlier). An explicit positive threshold overrides that default cap; <code>0</code> disables the context signal.</li>
+<li><code>COMPACT_CONTEXT_INTERVAL</code> — Additional context tokens before the suggestion repeats (default: 60000)</li>
+<li><code>COMPACT_STATE_TTL_DAYS</code> — Days before stale per-session state files in the temp dir are swept (default: 14)</li>
+<li><code>ECC_CONTEXT_WINDOW_TOKENS</code> — Explicit context-window size, in tokens, overriding auto-detection. Set this for large-window models whose reported id lacks a <code>[1m]</code> marker (e.g. 400k Opus 4.x, or a new 1M-window model family) so the threshold scales to the real window instead of defaulting to 200k and overstating context usage.</li>
+<li><code>CLAUDE_CODE_AUTO_COMPACT_WINDOW</code> — Claude Code's native auto-compact trigger, which may be smaller than the model's context window. For context-window resolution, ECC uses it only as a last-resort fallback, after an explicit ECC override, a <code>[1m]</code> model marker, a known large-window model family, and inference from observed tokens above 200k. It is not an exact model-capacity declaration.</li>
+</ul>
+<blockquote>
+<p>Window precedence is: <code>ECC_CONTEXT_WINDOW_TOKENS</code>, then the <code>[1m]</code> marker, a known large-window model family, observed tokens above 200k, the native auto-compact fallback, and finally the inferred 200k default. Set <code>ECC_CONTEXT_WINDOW_TOKENS</code> when you know the actual window and automatic detection lacks that information; do not treat the native compact trigger as proof of model capacity.</p>
+</blockquote>
+<p>The Stop-hook summary scheduler protects resume state before compaction. It uses the earlier of confirmed capacity and a valid native compaction budget. When capacity is inferred, it uses only a valid native budget, or treats the remaining budget as unknown if none is provided. Model-capacity resolution remains separate. The default <code>/compact</code> reminder threshold independently uses the earlier of its window-scaled default and 80% of a valid native compaction budget. An explicit <code>COMPACT_CONTEXT_THRESHOLD</code>, including <code>0</code>, remains authoritative.</p>
+<h4>Compaction Decision Guide</h4>
+<p>Use this table to decide when to compact:</p>
+<table>
+<thead>
+<tr>
+<th>Phase Transition</th>
+<th>Compact?</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Research → Planning</td>
+<td>Yes</td>
+<td>Research context is bulky; plan is the distilled output</td>
+</tr>
+<tr>
+<td>Planning → Implementation</td>
+<td>Yes</td>
+<td>Plan is written down (a file, or the task list if you have one); free up context for code</td>
+</tr>
+<tr>
+<td>Implementation → Testing</td>
+<td>Maybe</td>
+<td>Keep if tests reference recent code; compact if switching focus</td>
+</tr>
+<tr>
+<td>Debugging → Next feature</td>
+<td>Yes</td>
+<td>Debug traces pollute context for unrelated work</td>
+</tr>
+<tr>
+<td>Mid-implementation</td>
+<td>No</td>
+<td>Losing variable names, file paths, and partial state is costly</td>
+</tr>
+<tr>
+<td>After a failed approach</td>
+<td>Yes</td>
+<td>Clear the dead-end reasoning before trying a new approach</td>
+</tr>
+</tbody>
+</table>
+<h4>What Survives Compaction</h4>
+<p>Understanding what persists helps you compact with confidence:</p>
+<table>
+<thead>
+<tr>
+<th>Persists</th>
+<th>Lost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CLAUDE.md instructions</td>
+<td>Intermediate reasoning and analysis</td>
+</tr>
+<tr>
+<td>Files on disk</td>
+<td>File contents you previously read</td>
+</tr>
+<tr>
+<td>Memory files (<code>~/.claude/memory/</code>)</td>
+<td>Multi-step conversation context</td>
+</tr>
+<tr>
+<td>Git state (commits, branches)</td>
+<td>Tool call history and counts</td>
+</tr>
+<tr>
+<td>The task list — <strong>only if you have the todo tools</strong> (see below)</td>
+<td>Nuanced user preferences stated verbally</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<h5>Don't rely on the task list surviving — it may not exist</h5>
+<p>Claude Code <strong>2.1.233 removed the todo/task tools by default</strong> on Opus 4.8, Sonnet 5,
+Fable 5, Mythos 5 and newer models (<code>TodoWrite</code>, <code>TaskCreate/Get/Update/List</code>).
+<code>CLAUDE_CODE_ENABLE_TODO_TOOLS=1</code> brings them back, but that is a per-machine
+environment setting — <strong>it does not travel with this skill</strong>, so you cannot assume the
+reader has it.</p>
+<p>This matters because &quot;my todo list survives compaction&quot; is a reason people compact
+<em>instead of</em> writing state down. If the tools are absent there is no list to survive,
+and the plan is simply gone. <strong>Write the plan to a file before compacting</strong> — a file
+persists on every version and every model. Treat the task list as a convenience that
+may be missing, never as your durable record.</p>
+</blockquote>
+<h4>Best Practices</h4>
+<ol>
+<li><strong>Compact after planning</strong> — Once the plan is finalized <strong>and written to a file</strong>, compact to start fresh</li>
+<li><strong>Compact after debugging</strong> — Clear error-resolution context before continuing</li>
+<li><strong>Don't compact mid-implementation</strong> — Preserve context for related changes</li>
+<li><strong>Read the suggestion</strong> — The hook tells you <em>when</em>, you decide <em>if</em></li>
+<li><strong>Write before compacting</strong> — Save important context to files or memory before compacting</li>
+<li><strong>Use <code>/compact</code> with a summary</strong> — Add a custom message: <code>/compact Focus on implementing auth middleware next</code></li>
+</ol>
+<h4>Token Optimization Patterns</h4>
+<h5>Trigger-Table Lazy Loading</h5>
+<p>Instead of loading full skill content at session start, use a trigger table that maps keywords to skill paths. Skills load only when triggered, reducing baseline context by 50%+:</p>
+<table>
+<thead>
+<tr>
+<th>Trigger</th>
+<th>Skill</th>
+<th>Load When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;test&quot;, &quot;tdd&quot;, &quot;coverage&quot;</td>
+<td>tdd-workflow</td>
+<td>User mentions testing</td>
+</tr>
+<tr>
+<td>&quot;security&quot;, &quot;auth&quot;, &quot;xss&quot;</td>
+<td>security-review</td>
+<td>Security-related work</td>
+</tr>
+<tr>
+<td>&quot;deploy&quot;, &quot;ci/cd&quot;</td>
+<td>deployment-patterns</td>
+<td>Deployment context</td>
+</tr>
+</tbody>
+</table>
+<h5>Context Composition Awareness</h5>
+<p>Monitor what's consuming your context window:</p>
+<ul>
+<li><strong>CLAUDE.md files</strong> — Always loaded, keep lean</li>
+<li><strong>Loaded skills</strong> — Each skill adds 1-5K tokens</li>
+<li><strong>Conversation history</strong> — Grows with each exchange</li>
+<li><strong>Tool results</strong> — File reads, search results add bulk</li>
+</ul>
+<h5>Duplicate Instruction Detection</h5>
+<p>Common sources of duplicate context:</p>
+<ul>
+<li>Same rules in both <code>~/.claude/rules/</code> and project <code>.claude/rules/</code></li>
+<li>Skills that repeat CLAUDE.md instructions</li>
+<li>Multiple skills covering overlapping domains</li>
+</ul>
+<h5>Context Optimization Tools</h5>
+<ul>
+<li><code>token-optimizer</code> MCP — Automated 95%+ token reduction via content deduplication</li>
+<li><code>context-mode</code> — Context virtualization (315KB to 5.4KB demonstrated)</li>
+</ul>
+<h4>Related</h4>
+<ul>
+<li><a href="https://x.com/affaanmustafa/status/2014040193557471352">The Longform Guide</a> — Token optimization section</li>
+<li>Memory persistence hooks — For state that survives compaction</li>
+<li><code>continuous-learning</code> skill — Extracts patterns before session ends</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

@@ -1,0 +1,781 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>design-doc-mermaid · SkillHub</title>
+    <meta name="description" content="Use it when: you need a flowchart, sequence, class, ER, state, C4 or architecture diagram, or a design document, from a description or your code. It does: loads only the guide for that diagram type, writes the Mermaid code, saves it as a .mmd file and renders it to validate it before adding it to Markdown. You get: .mmd and PNG or SVG files in ./diagrams with image links in your Markdown; full design documents go in docs/design/. Needs: mermaid-cli (mmdc) and Python to validate and export images; writing diagram code alone needs neither. Style: Unicode symbols on nodes, such as 🔐 for auth and 💾 for databases, and high-contrast colors in every style. Unlike archify: which redraws diagrams as interactive HTML in its own style, it produces plain Mermaid that GitHub renders, plus images for Confluence." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=spillwavesolutions%2Fdesign-doc-mermaid">spillwavesolutions/design-doc-mermaid</a></p>
+      <div class="title-row"><h1>design-doc-mermaid</h1><button type="button" class="save" data-save="skill:spillwavesolutions/design-doc-mermaid" aria-pressed="false" aria-label="Save design-doc-mermaid" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you need a flowchart, sequence, class, ER, state, C4 or architecture diagram, or a design document, from a description or your code</dd></div><div><dt>It does</dt><dd>loads only the guide for that diagram type, writes the Mermaid code, saves it as a .mmd file and renders it to validate it before adding it to Markdown</dd></div><div><dt>You get</dt><dd>.mmd and PNG or SVG files in ./diagrams with image links in your Markdown; full design documents go in docs/design/</dd></div><div><dt>Needs</dt><dd>mermaid-cli (mmdc) and Python to validate and export images; writing diagram code alone needs neither</dd></div><div><dt>Style</dt><dd>Unicode symbols on nodes, such as 🔐 for auth and 💾 for databases, and high-contrast colors in every style</dd></div><div><dt>Unlike archify</dt><dd>which redraws diagrams as interactive HTML in its own style, it produces plain Mermaid that GitHub renders, plus images for Confluence</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A decision tree routes each request to one of its guides: activity diagrams for workflows, deployment diagrams for cloud and Kubernetes, architecture, sequence, or a GitHub wiki guide for class, ER and state diagrams. For existing code it has worked examples for Spring Boot, FastAPI, React, Python ETL, Express and Java web apps, such as deriving a deployment diagram from application.yml. Five templates cover architecture, API, feature, database and system design documents. Its rule is never to add a diagram to Markdown until it passes validation: a bundled script saves the .mmd, renders it with mermaid-cli and reports errors; on failure the agent checks a troubleshooting guide of 28 known errors, then searches the web. For GitHub, a fenced mermaid block is enough; for Confluence, Notion, Word or PDF it also exports PNG or SVG. Other scripts extract every diagram from a Markdown file, validate them, swap them for image links, or batch-convert a folder. PlantUML is left for the types Mermaid lacks, such as wireframes, use-case and timing diagrams.</p>
+      <p class="muted">Summarizes <a href="https://github.com/spillwavesolutions/design-doc-mermaid/tree/c36d83503d2ba9c1e51638dc2d8a34758a377dea">the skill at c36d835</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">spillwavesolutions/</span><wbr><span class="word">design-doc-mermaid</span> <span class="word">--skill</span> <span class="word">design-doc-mermaid</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/spillwavesolutions/design-doc-mermaid --skill design-doc-mermaid">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/spillwavesolutions/design-doc-mermaid/design-doc-mermaid">skills.sh page</a> · <a href="https://github.com/spillwavesolutions/design-doc-mermaid">Source on GitHub</a> · <a href="/?repo=spillwavesolutions%2Fdesign-doc-mermaid">All skills from spillwavesolutions/design-doc-mermaid</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>92,849 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>182 <span class="muted">spillwavesolutions/design-doc-mermaid</span></dd></div><div><dt>First seen</dt><dd>Feb 6, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">6.3K</div>
+      <div class="stat-delta">+58% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 4,007; week to Sep 27: 4,062; week to Oct 4: 5,401; week to Oct 11: 5,276; week to Oct 18: 5,890; week to Oct 25: 5,247; week to Nov 1: 6,517; week to Nov 8: 6,318. Use the left and right arrow keys to read each week."
+        data-values="4007,4062,5401,5276,5890,5247,6517,6318" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,22.9 38.6,22.6 71.1,13.5 103.7,14.4 136.3,10.2 168.9,14.6 201.4,6.0 234.0,7.3" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="7.3" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>4,007</td></tr><tr><td>Sep 27</td><td>4,062</td></tr><tr><td>Oct 4</td><td>5,401</td></tr><tr><td>Oct 11</td><td>5,276</td></tr><tr><td>Oct 18</td><td>5,890</td></tr><tr><td>Oct 25</td><td>5,247</td></tr><tr><td>Nov 1</td><td>6,517</td></tr><tr><td>Nov 8</td><td>6,318</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:science" data-facet="category" title="Research reproduction, financial data, charts and diagrams." href="/?tag=category%3Ascience">category:<wbr>science</a><a class="tag" data-tag="category:writing" data-facet="category" title="Articles, docs, internal comms, research write-ups and prose that doesn&#39;t read as generated." href="/?tag=category%3Awriting">category:<wbr>writing</a></div>
+          <p class="tag-meaning">Research reproduction, financial data, charts and diagrams.</p><p class="tag-meaning">Articles, docs, internal comms, research write-ups and prose that doesn&#39;t read as generated.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/?tag=needs%3Acli">needs:<wbr>cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="diagrams" data-facet="topic" href="/?tag=diagrams">diagrams</a><a class="tag" data-tag="architecture" data-facet="topic" href="/?tag=architecture">architecture</a><a class="tag" data-tag="docs-writing" data-facet="topic" href="/?tag=docs-writing">docs-writing</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:mermaid" data-facet="stack" href="/?tag=stack%3Amermaid">stack:<wbr>mermaid</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/spillwavesolutions/design-doc-mermaid/blob/c36d83503d2ba9c1e51638dc2d8a34758a377dea/SKILL.md">spillwavesolutions/design-doc-mermaid at c36d835</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: design-doc-mermaid
+description: Create Mermaid diagrams (flowchart, sequence, class, ER, state, C4, architecture) from text or source code. Default for GitHub wiki. Use when asked to create a diagram, generate mermaid, document architecture, or convert code to diagram. PlantUML is only for leftover types. Confluence needs PNG/SVG as well as the fence.</code></pre></details>
+        <div class="markdown"><h3>Mermaid Architect - Hierarchical Diagram and Documentation Skill</h3>
+<p>Mermaid diagram and documentation system with specialized guides and code-to-diagram capabilities.</p>
+<h4>Table of Contents</h4>
+<ul>
+<li><a href="#decision-tree">Decision Tree</a></li>
+<li><a href="#github-wiki-wikiticket-and-confluence">GitHub wiki, WikiTicket, and Confluence</a></li>
+<li><a href="#available-guides-and-resources">Available Guides and Resources</a></li>
+<li><a href="#usage-patterns">Usage Patterns</a></li>
+<li><a href="#resilient-workflow">Resilient Workflow</a></li>
+<li><a href="#unicode-semantic-symbols">Unicode Semantic Symbols</a></li>
+<li><a href="#python-utilities">Python Utilities</a></li>
+<li><a href="#decision-tree-examples">Decision Tree Examples</a></li>
+<li><a href="#high-contrast-styling">High-Contrast Styling</a></li>
+<li><a href="#file-organization">File Organization</a></li>
+<li><a href="#workflow-summary">Workflow Summary</a></li>
+<li><a href="#when-to-use-what">When to Use What</a></li>
+<li><a href="#best-practices">Best Practices</a></li>
+<li><a href="#learning-path">Learning Path</a></li>
+</ul>
+<h4>Decision Tree</h4>
+<p><strong>How this skill works:</strong></p>
+<ol>
+<li><strong>User makes a request</strong> → Skill analyzes intent</li>
+<li><strong>Skill determines diagram/document type</strong> → Loads appropriate guide(s)</li>
+<li><strong>AI reads specialized guide</strong> → Generates diagram/document using templates</li>
+<li><strong>Result delivered</strong> → With validation and export options</li>
+</ol>
+<p><strong>User Intent Analysis:</strong></p>
+<pre><code class="language-mermaid">flowchart TD
+    Start([User Request]) --&gt; Analyze{Analyze Intent}
+
+    Analyze --&gt;|&quot;workflow, process, business logic&quot;| Activity[Load Activity Diagram Guide&lt;br/&gt;references/guides/diagrams/activity-diagrams.md]
+    Analyze --&gt;|&quot;infrastructure, deployment, cloud&quot;| Deploy[Load Deployment Diagram Guide&lt;br/&gt;references/guides/diagrams/deployment-diagrams.md]
+    Analyze --&gt;|&quot;system architecture, components&quot;| Arch[Load Architecture Guide&lt;br/&gt;references/guides/diagrams/architecture-diagrams.md]
+    Analyze --&gt;|&quot;API flow, interactions&quot;| Sequence[Load Sequence Diagram Guide&lt;br/&gt;references/guides/diagrams/sequence-diagrams.md]
+    Analyze --&gt;|&quot;class, ER, state, wiki, walkthrough&quot;| WikiGuide[Load WikiTicket GitHub Guide&lt;br/&gt;references/guides/wiki-ticket-and-github.md]
+    Analyze --&gt;|&quot;code to diagram&quot;| CodeToDiag[Load Code-to-Diagram Guide&lt;br/&gt;references/guides/code-to-diagram/ + examples/]
+    Analyze --&gt;|&quot;design document, full docs&quot;| DesignDoc[Load Design Document Template&lt;br/&gt;assets/*-design-template.md]
+    Analyze --&gt;|&quot;unicode symbols, icons&quot;| Unicode[Load Unicode Symbols Guide&lt;br/&gt;references/guides/unicode-symbols/guide.md]
+    Analyze --&gt;|&quot;extract, validate, convert&quot;| Scripts[Use Python Scripts&lt;br/&gt;scripts/extract_mermaid.py&lt;br/&gt;scripts/mermaid_to_image.py]
+
+    Activity --&gt; Generate[Generate Diagram]
+    Deploy --&gt; Generate
+    Arch --&gt; Generate
+    Sequence --&gt; Generate
+    WikiGuide --&gt; Generate
+    CodeToDiag --&gt; Generate
+    DesignDoc --&gt; Generate
+    Unicode --&gt; Generate
+    Scripts --&gt; Execute[Execute Script]
+
+    Generate --&gt; Validate{Validate?}
+    Validate --&gt;|Yes| RunValidation[Run mmdc validation]
+    Validate --&gt;|No| Output
+    RunValidation --&gt; Output[Output Result]
+    Execute --&gt; Output
+
+    classDef decision fill:#FFD700,stroke:#333,stroke-width:2px,color:black
+    classDef guide fill:#90EE90,stroke:#333,stroke-width:2px,color:darkgreen
+    classDef action fill:#87CEEB,stroke:#333,stroke-width:2px,color:darkblue
+
+    class Analyze,Validate decision
+    class Activity,Deploy,Arch,Sequence,WikiGuide,CodeToDiag,DesignDoc,Unicode,Scripts guide
+    class Generate,Execute,RunValidation,Output action
+</code></pre>
+<h4>Available Guides and Resources</h4>
+<h5>Diagram Type Guides (<code>references/guides/diagrams/</code>)</h5>
+<table>
+<thead>
+<tr>
+<th>Guide</th>
+<th>Full Path</th>
+<th>Load When User Wants</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Activity Diagrams</td>
+<td><code>references/guides/diagrams/activity-diagrams.md</code></td>
+<td>Workflows, processes, business logic, user flows, decision trees</td>
+<td>&quot;Show checkout flow&quot;, &quot;Document ETL pipeline&quot;, &quot;Create approval workflow&quot;</td>
+</tr>
+<tr>
+<td>Deployment Diagrams</td>
+<td><code>references/guides/diagrams/deployment-diagrams.md</code></td>
+<td>Infrastructure, cloud architecture, K8s, serverless, network topology</td>
+<td>&quot;Show AWS architecture&quot;, &quot;Document GCP deployment&quot;, &quot;Create K8s diagram&quot;</td>
+</tr>
+<tr>
+<td>Architecture Diagrams</td>
+<td><code>references/guides/diagrams/architecture-diagrams.md</code></td>
+<td>System architecture, component design, high-level structure</td>
+<td>&quot;Show system components&quot;, &quot;Document microservices&quot;, &quot;Architecture overview&quot;</td>
+</tr>
+<tr>
+<td>Sequence Diagrams</td>
+<td><code>references/guides/diagrams/sequence-diagrams.md</code></td>
+<td>API interactions, service communication, request/response flows</td>
+<td>&quot;Show API call sequence&quot;, &quot;Document auth flow&quot;, &quot;Service interactions&quot;</td>
+</tr>
+<tr>
+<td>WikiTicket / GitHub / Confluence</td>
+<td><code>references/guides/wiki-ticket-and-github.md</code></td>
+<td>Design docs, walkthroughs, requirements, wiki publish, Confluence images</td>
+<td>&quot;architecture doc&quot;, &quot;code walkthrough&quot;, &quot;wiki&quot;, &quot;Confluence&quot;</td>
+</tr>
+</tbody>
+</table>
+<p>Default for WikiTicket and GitHub wiki is this skill, including <code>classDiagram</code>, <code>erDiagram</code>, and <code>stateDiagram-v2</code>. Do not send those to PlantUML. If GitHub fails to render C4 / architecture-beta / block-beta, fall back to <code>flowchart TD</code>.</p>
+<h5>Code-to-Diagram Guide &amp; Examples</h5>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Full Path</th>
+<th>What It Provides</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Master Guide</strong></td>
+<td><code>references/guides/code-to-diagram/README.md</code></td>
+<td>Complete workflow for analyzing any codebase and extracting diagrams</td>
+</tr>
+<tr>
+<td><strong>Spring Boot</strong></td>
+<td><code>examples/spring-boot/README.md</code></td>
+<td>Controller→Service→Repository architecture, deployment config, sequence from methods, activity from business logic</td>
+</tr>
+<tr>
+<td><strong>FastAPI</strong></td>
+<td><code>examples/fastapi/README.md</code></td>
+<td>Python async patterns, Pydantic models, dependency injection, cloud deployment</td>
+</tr>
+<tr>
+<td><strong>React</strong></td>
+<td><code>examples/react/README.md</code></td>
+<td>Component hierarchy, state management, data flow, build pipeline</td>
+</tr>
+<tr>
+<td><strong>Python ETL</strong></td>
+<td><code>examples/python-etl/README.md</code></td>
+<td>Data pipeline, transformation steps, error handling, scheduling</td>
+</tr>
+<tr>
+<td><strong>Node/Express</strong></td>
+<td><code>examples/node-webapp/README.md</code></td>
+<td>Middleware chain, route handlers, async patterns, deployment</td>
+</tr>
+<tr>
+<td><strong>Java Web App</strong></td>
+<td><code>examples/java-webapp/README.md</code></td>
+<td>Traditional MVC, servlet containers, WAR deployment</td>
+</tr>
+</tbody>
+</table>
+<h5>Design Document Templates</h5>
+<table>
+<thead>
+<tr>
+<th>Template</th>
+<th>Full Path</th>
+<th>Use For</th>
+<th>Load When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Architecture Design</td>
+<td><code>assets/architecture-design-template.md</code></td>
+<td>System-wide architecture</td>
+<td>&quot;Create architecture doc&quot;, &quot;Document system design&quot;</td>
+</tr>
+<tr>
+<td>API Design</td>
+<td><code>assets/api-design-template.md</code></td>
+<td>API specifications</td>
+<td>&quot;API design doc&quot;, &quot;Document REST API&quot;</td>
+</tr>
+<tr>
+<td>Feature Design</td>
+<td><code>assets/feature-design-template.md</code></td>
+<td>Feature planning</td>
+<td>&quot;Feature design&quot;, &quot;Plan new feature&quot;</td>
+</tr>
+<tr>
+<td>Database Design</td>
+<td><code>assets/database-design-template.md</code></td>
+<td>Database schema</td>
+<td>&quot;Database design&quot;, &quot;Document schema&quot;</td>
+</tr>
+<tr>
+<td>System Design</td>
+<td><code>assets/system-design-template.md</code></td>
+<td>Complete system</td>
+<td>&quot;System design doc&quot;, &quot;Full system documentation&quot;</td>
+</tr>
+</tbody>
+</table>
+<h5>Unicode Symbols Guide</h5>
+<p><strong>Full Path:</strong> <code>references/guides/unicode-symbols/guide.md</code></p>
+<p><strong>Load when user mentions:</strong> &quot;unicode symbols&quot;, &quot;emoji in diagrams&quot;, &quot;semantic icons&quot;, &quot;add symbols&quot;</p>
+<p><strong>Quick Reference:</strong></p>
+<ul>
+<li>📦 Infrastructure: ☁️ 🌐 🔌 📡 🗄️</li>
+<li>⚙️ Compute: ⚙️ ⚡ 🔄 ♻️ 🚀 💨</li>
+<li>💾 Data: 💾 📦 📊 📈 🗃️ 🧊</li>
+<li>📨 Messaging: 📨 📬 📤 📥 🐰 📢</li>
+<li>🔐 Security: 🔐 🔑 🛡️ 🚪 👤 🎫</li>
+<li>📝 Monitoring: 📝 📊 🚨 ⚠️ ✅ ❌</li>
+</ul>
+<h5>Python Scripts (<code>scripts/</code>)</h5>
+<table>
+<thead>
+<tr>
+<th>Script</th>
+<th>Use For</th>
+<th>Load When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>extract_mermaid.py</code></td>
+<td>Extract diagrams from Markdown, validate syntax, replace with images</td>
+<td>&quot;extract diagrams&quot;, &quot;validate mermaid&quot;, &quot;find all diagrams&quot;</td>
+</tr>
+<tr>
+<td><code>mermaid_to_image.py</code></td>
+<td>Convert .mmd to PNG/SVG, batch conversion, custom themes</td>
+<td>&quot;convert to image&quot;, &quot;render diagram&quot;, &quot;create PNG&quot;</td>
+</tr>
+<tr>
+<td><code>resilient_diagram.py</code></td>
+<td>Full workflow: save .mmd, generate image, validate, error recovery</td>
+<td>&quot;generate diagram&quot;, &quot;create diagram with validation&quot;, &quot;resilient diagram&quot;</td>
+</tr>
+</tbody>
+</table>
+<h4>GitHub wiki, WikiTicket, and Confluence</h4>
+<p>Load <code>references/guides/wiki-ticket-and-github.md</code> for WikiTicket design docs,
+code walkthroughs, requirements, GitHub wiki, or Confluence.</p>
+<table>
+<thead>
+<tr>
+<th>Target</th>
+<th>What to ship</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GitHub wiki / GFM</td>
+<td>Fenced <code>mermaid</code> block. GitHub renders class, ER, state, sequence, flowchart, C4.</td>
+</tr>
+<tr>
+<td>Confluence / Notion / Word / PDF</td>
+<td>Also render PNG or SVG (<code>scripts/resilient_diagram.py</code> or <code>mmdc</code>) and upload the image. Do not rely on Confluence to render Mermaid.</td>
+</tr>
+</tbody>
+</table>
+<p>PlantUML is opt-in for Salt wireframes, use case, timing, ArchiMate, nwdiag, and WBS. Those always ship as PNG or SVG.</p>
+<h4>Usage Patterns</h4>
+<p>Common request patterns and guide selection. See <a href="#when-to-use-what">When to Use What</a> for complete mapping.</p>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Example Request</th>
+<th>Guides to Load</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Single Diagram</td>
+<td>&quot;Create activity diagram for login flow&quot;</td>
+<td>Diagram type guide + Unicode symbols</td>
+</tr>
+<tr>
+<td>Code-to-Diagram</td>
+<td>&quot;Generate deployment from application.yml&quot;</td>
+<td>Framework example + Deployment guide</td>
+</tr>
+<tr>
+<td>Design Document</td>
+<td>&quot;Create API design document&quot;</td>
+<td>Template from assets/ + Relevant diagram guides</td>
+</tr>
+<tr>
+<td>Extract/Validate</td>
+<td>&quot;Extract diagrams from design.md&quot;</td>
+<td>Use <code>scripts/extract_mermaid.py</code></td>
+</tr>
+<tr>
+<td>Batch Convert</td>
+<td>&quot;Convert all .mmd to PNG&quot;</td>
+<td>Use <code>scripts/mermaid_to_image.py</code></td>
+</tr>
+</tbody>
+</table>
+<h4>Resilient Workflow</h4>
+<p><strong>CRITICAL:</strong> This is the recommended approach for ALL diagram generation. It ensures validation, error recovery, and consistent file organization.</p>
+<p><strong>Full Guide:</strong> <code>references/guides/resilient-workflow.md</code></p>
+<h5>Workflow Overview</h5>
+<pre><code class="language-mermaid">flowchart LR
+    A[1. Identify Type] --&gt; B[2. Save .mmd + Image]
+    B --&gt; C{3. Valid?}
+    C --&gt;|Yes| D[4. Add to Markdown]
+    C --&gt;|No| E[5. Error Recovery]
+    E --&gt; F{Fix Found?}
+    F --&gt;|Yes| A
+    F --&gt;|No| G[Search External]
+    G --&gt; A
+
+    classDef step fill:#90EE90,stroke:#333,color:darkgreen
+    classDef decision fill:#FFD700,stroke:#333,color:black
+    class A,B,D,E,G step
+    class C,F decision
+</code></pre>
+<h5>Key Principle</h5>
+<p><strong>NEVER add a diagram to markdown until it passes validation.</strong> This prevents broken diagrams in documentation.</p>
+<h5>Using the Script (Recommended)</h5>
+<pre><code class="language-bash"># Generate with full error recovery
+python scripts/resilient_diagram.py \
+    --code &quot;flowchart TD; A--&gt;B&quot; \
+    --markdown-file design_doc \
+    --diagram-num 1 \
+    --title &quot;process_flow&quot; \
+    --format png \
+    --json
+</code></pre>
+<p><strong>Output:</strong> Both <code>.mmd</code> and <code>.png</code> files in <code>./diagrams/</code> directory.</p>
+<h5>File Naming Convention</h5>
+<pre><code>./diagrams/&lt;markdown_file&gt;_&lt;num&gt;_&lt;type&gt;_&lt;title&gt;.mmd
+./diagrams/&lt;markdown_file&gt;_&lt;num&gt;_&lt;type&gt;_&lt;title&gt;.png
+</code></pre>
+<p><strong>Example:</strong> <code>./diagrams/api_design_01_sequence_auth_flow.png</code></p>
+<h5>Error Recovery Priority</h5>
+<p>When validation fails, the workflow automatically:</p>
+<ol>
+<li><strong>Check troubleshooting guide</strong> - <code>references/guides/troubleshooting.md</code> (28 documented errors)</li>
+<li><strong>Search with perplexity</strong> - <code>perplexity_ask</code> MCP for syntax questions</li>
+<li><strong>Search with brave</strong> - <code>brave_web_search</code> MCP for recent solutions</li>
+<li><strong>Ask gemini</strong> - <code>gemini</code> skill for alternative perspective</li>
+<li><strong>General search</strong> - <code>WebSearch</code> tool as fallback</li>
+</ol>
+<h5>Manual Fallback Steps</h5>
+<p>If the script is unavailable:</p>
+<ol>
+<li><strong>Identify diagram type</strong> from first line (flowchart, sequence, etc.)</li>
+<li><strong>Load reference guide</strong> from <code>references/guides/diagrams/</code></li>
+<li><strong>Save to</strong> <code>./diagrams/&lt;markdown_file&gt;_&lt;num&gt;_&lt;type&gt;_&lt;title&gt;.mmd</code></li>
+<li><strong>Validate:</strong> <code>mmdc -i file.mmd -o file.png -b transparent</code></li>
+<li><strong>On error:</strong> Search <code>references/guides/troubleshooting.md</code> for matching error</li>
+<li><strong>If not found:</strong> Use search tools in priority order above</li>
+<li><strong>Add reference:</strong> <code>![Description](./diagrams/filename.png)</code></li>
+</ol>
+<h5>Pattern 6: Resilient Diagram Generation</h5>
+<p><strong>User:</strong> &quot;Create a sequence diagram and add it to the design doc&quot;</p>
+<p><strong>Skill Actions:</strong></p>
+<ol>
+<li>Identify intent: <strong>diagram generation</strong> + <strong>markdown integration</strong></li>
+<li>Load workflow guide: <code>references/guides/resilient-workflow.md</code></li>
+<li>Identify diagram type: <strong>sequence</strong></li>
+<li>Load diagram guide: <code>references/guides/diagrams/sequence-diagrams.md</code></li>
+<li>Generate Mermaid code using templates</li>
+<li>Execute resilient workflow:<pre><code class="language-bash">python scripts/resilient_diagram.py \
+    --code &quot;[generated code]&quot; \
+    --markdown-file design_doc \
+    --diagram-num 1 \
+    --title &quot;api_sequence&quot; \
+    --json
+</code></pre>
+</li>
+<li>If validation fails → Apply troubleshooting fix → Retry</li>
+<li>On success → Add <code>![API Sequence](./diagrams/design_doc_01_sequence_api_sequence.png)</code> to markdown</li>
+</ol>
+<h4>Unicode Semantic Symbols</h4>
+<p>Always use Unicode symbols to enhance diagram clarity. Common patterns:</p>
+<h5>Infrastructure &amp; Deployment</h5>
+<pre><code class="language-mermaid">graph TB
+    Client[👤 User] --&gt; LB[🌐 Load Balancer]
+    LB --&gt; App1[⚙️ App Server 1]
+    LB --&gt; App2[⚙️ App Server 2]
+    App1 --&gt; DB[(💾 Database)]
+    App1 --&gt; Cache[(⚡ Redis)]
+</code></pre>
+<h5>Activity Flow with States</h5>
+<pre><code class="language-mermaid">flowchart TD
+    Start([🚀 Start]) --&gt; Process[⚙️ Process Data]
+    Process --&gt; Check{✓ Valid?}
+    Check --&gt;|Yes| Save[💾 Save]
+    Check --&gt;|No| Error[❌ Error]
+    Save --&gt; Complete([✅ Complete])
+</code></pre>
+<h5>Microservices Architecture</h5>
+<pre><code class="language-mermaid">graph TB
+    API[🌐 API Gateway] --&gt; Auth[🔐 Auth Service]
+    API --&gt; Orders[📋 Order Service]
+    Orders --&gt; Queue[📬 Message Queue]
+    Queue --&gt; Worker[⚙️ Background Worker]
+    Worker --&gt; Storage[📦 Object Storage]
+</code></pre>
+<p><strong>For complete symbol reference, load:</strong> <code>references/guides/unicode-symbols/guide.md</code></p>
+<h4>Python Utilities</h4>
+<h5>Extract Mermaid Diagrams</h5>
+<pre><code class="language-bash"># List all diagrams
+python scripts/extract_mermaid.py document.md --list-only
+
+# Extract to separate files
+python scripts/extract_mermaid.py document.md --output-dir diagrams/
+
+# Validate all diagrams
+python scripts/extract_mermaid.py document.md --validate
+
+# Replace with image references (for Confluence upload)
+python scripts/extract_mermaid.py document.md --replace-with-images \
+  --image-format png --output-markdown output.md
+</code></pre>
+<h5>Convert to Images</h5>
+<pre><code class="language-bash"># Single conversion
+python scripts/mermaid_to_image.py diagram.mmd output.png
+
+# With custom settings
+python scripts/mermaid_to_image.py diagram.mmd output.svg \
+  --theme dark --background white --width 1200
+
+# Batch convert directory
+python scripts/mermaid_to_image.py diagrams/ output/ --format png --recursive
+
+# From stdin
+echo &quot;graph TD; A--&gt;B&quot; | python scripts/mermaid_to_image.py - output.png
+</code></pre>
+<h4>Decision Tree Examples</h4>
+<h5>Example 1: User Asks for Workflow Diagram</h5>
+<p><strong>Input:</strong> &quot;Show the checkout process workflow&quot;</p>
+<p><strong>Skill Decision Path:</strong></p>
+<pre><code>1. Analyze: workflow, process → ACTIVITY DIAGRAM
+2. Load guide: guides/diagrams/activity-diagrams.md
+3. Find pattern: E-commerce checkout (template exists in guide)
+4. Generate using template + Unicode symbols
+5. Output activity diagram with decision points
+</code></pre>
+<p><strong>Output:</strong> Complete activity diagram with Unicode symbols for cart, payment, order states.</p>
+<h5>Example 2: User Provides Spring Boot Code</h5>
+<p><strong>Input:</strong> &quot;Here's my Spring Boot controller, create diagrams&quot;</p>
+<p><strong>Skill Decision Path:</strong></p>
+<pre><code>1. Analyze: Spring Boot, code provided → CODE-TO-DIAGRAM + SPRING BOOT
+2. Load guides:
+   - examples/spring-boot/README.md
+   - guides/diagrams/architecture-diagrams.md (for structure)
+   - guides/diagrams/sequence-diagrams.md (for method calls)
+   - guides/diagrams/activity-diagrams.md (for business logic)
+3. Generate multiple diagrams:
+   a. Architecture diagram from @RestController/@Service/@Repository annotations
+   b. Sequence diagram from method call chain
+   c. Activity diagram from business logic flow
+4. Output all diagrams with explanations
+</code></pre>
+<p><strong>Output:</strong> 3-4 diagrams showing different views of the Spring Boot application.</p>
+<h5>Example 3: User Wants Infrastructure Documentation</h5>
+<p><strong>Input:</strong> &quot;Document my GCP Cloud Run deployment with AlloyDB&quot;</p>
+<p><strong>Skill Decision Path:</strong></p>
+<pre><code>1. Analyze: infrastructure, GCP, Cloud Run → DEPLOYMENT DIAGRAM
+2. Load guides:
+   - guides/diagrams/deployment-diagrams.md
+   - examples/spring-boot/ or examples/fastapi/ (if code provided)
+3. Check for IaC files (Pulumi, Terraform, docker-compose)
+4. Generate deployment diagram with:
+   - Cloud Run services with specs
+   - VPC connector
+   - AlloyDB cluster
+   - Security (IAM, Secret Manager)
+   - Monitoring
+5. Apply Unicode symbols for clarity
+6. Output with resource specifications
+</code></pre>
+<p><strong>Output:</strong> Complete GCP deployment diagram with all resources labeled.</p>
+<h4>High-Contrast Styling</h4>
+<p><strong>ALL diagrams MUST use high-contrast colors:</strong></p>
+<pre><code class="language-mermaid">graph TB
+    classDef primary fill:#90EE90,stroke:#333,stroke-width:2px,color:darkgreen
+    classDef secondary fill:#87CEEB,stroke:#333,stroke-width:2px,color:darkblue
+    classDef database fill:#E6E6FA,stroke:#333,stroke-width:2px,color:darkblue
+    classDef error fill:#FFB6C1,stroke:#DC143C,stroke-width:2px,color:black
+
+    %% Every classDef MUST have color: property
+</code></pre>
+<p><strong>Rules:</strong></p>
+<ul>
+<li>Light background → Dark text color</li>
+<li>Dark background → Light text color</li>
+<li>Always specify <code>color:</code> in every <code>classDef</code></li>
+</ul>
+<h4>File Organization</h4>
+<pre><code>design-doc-mermaid/
+├── SKILL.md                          # This file - Main orchestrator
+├── README.md                         # User documentation
+├── CLAUDE.md                         # Claude Code instructions
+│
+├── references/                       # Reference materials
+│   ├── mermaid-diagram-guide.md     # Legacy general guide
+│   └── guides/                       # Specialized guides (load on-demand)
+│       ├── diagrams/
+│       │   ├── activity-diagrams.md      # Workflows, processes
+│       │   ├── deployment-diagrams.md    # Infrastructure, cloud
+│       │   ├── architecture-diagrams.md  # System architecture
+│       │   └── sequence-diagrams.md      # API interactions
+│       ├── code-to-diagram/
+│       │   └── README.md                 # Master guide for code analysis
+│       ├── unicode-symbols/
+│       │   └── guide.md                  # Complete symbol reference
+│       └── troubleshooting.md        # Common syntax errors &amp; fixes
+│
+├── assets/                           # Design document templates
+│   ├── architecture-design-template.md
+│   ├── api-design-template.md
+│   ├── feature-design-template.md
+│   ├── database-design-template.md
+│   └── system-design-template.md
+│
+├── scripts/                          # Python utilities
+│   ├── extract_mermaid.py           # Extract &amp; validate diagrams
+│   └── mermaid_to_image.py          # Convert to PNG/SVG
+│
+├── examples/                         # Language-specific patterns
+│   ├── spring-boot/                 # Spring Boot patterns
+│   ├── fastapi/                     # FastAPI patterns
+│   ├── react/                       # React patterns
+│   ├── python-etl/                  # Data pipeline patterns
+│   ├── node-webapp/                 # Express.js patterns
+│   └── java-webapp/                 # Traditional Java patterns
+│
+└── references/                       # General Mermaid reference
+    └── mermaid-diagram-guide.md     # Complete Mermaid syntax guide
+</code></pre>
+<h4>Workflow Summary</h4>
+<ol>
+<li><strong>Analyze user intent</strong> → Determine diagram type, document type, or action needed</li>
+<li><strong>Load appropriate guide(s)</strong> → Read only what's needed (token efficient)</li>
+<li><strong>Apply templates and patterns</strong> → Use examples from guides</li>
+<li><strong>Generate output</strong> → Create diagram or document</li>
+<li><strong>Validate</strong> (optional) → Use scripts to verify</li>
+<li><strong>Convert</strong> (optional) → Export to images if needed</li>
+</ol>
+<h4>When to Use What</h4>
+<table>
+<thead>
+<tr>
+<th>User Request</th>
+<th>Load This</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;activity diagram&quot;, &quot;workflow&quot;, &quot;process flow&quot;</td>
+<td><code>references/guides/diagrams/activity-diagrams.md</code></td>
+</tr>
+<tr>
+<td>&quot;deployment&quot;, &quot;infrastructure&quot;, &quot;cloud&quot;, &quot;k8s&quot;</td>
+<td><code>references/guides/diagrams/deployment-diagrams.md</code></td>
+</tr>
+<tr>
+<td>&quot;architecture&quot;, &quot;system design&quot;, &quot;components&quot;</td>
+<td><code>references/guides/diagrams/architecture-diagrams.md</code> + design template</td>
+</tr>
+<tr>
+<td>&quot;API&quot;, &quot;sequence&quot;, &quot;interactions&quot;, &quot;flow&quot;</td>
+<td><code>references/guides/diagrams/sequence-diagrams.md</code></td>
+</tr>
+<tr>
+<td>&quot;class diagram&quot;, &quot;ER&quot;, &quot;state machine&quot;, &quot;wiki&quot;, &quot;walkthrough&quot;, &quot;architecture doc&quot;</td>
+<td><code>references/guides/wiki-ticket-and-github.md</code> plus the matching type guide</td>
+</tr>
+<tr>
+<td>&quot;Confluence&quot;, &quot;upload image&quot;, &quot;PNG&quot;, &quot;SVG&quot;</td>
+<td><code>scripts/resilient_diagram.py</code> or <code>scripts/mermaid_to_image.py</code></td>
+</tr>
+<tr>
+<td>&quot;Spring Boot code&quot;</td>
+<td><code>examples/spring-boot/</code> + relevant diagram guides</td>
+</tr>
+<tr>
+<td>&quot;FastAPI code&quot;, &quot;Python API&quot;</td>
+<td><code>examples/fastapi/</code> + relevant diagram guides</td>
+</tr>
+<tr>
+<td>&quot;React app&quot;, &quot;frontend&quot;</td>
+<td><code>examples/react/</code> + architecture guide</td>
+</tr>
+<tr>
+<td>&quot;ETL&quot;, &quot;data pipeline&quot;, &quot;Python batch&quot;</td>
+<td><code>examples/python-etl/</code> + activity guide</td>
+</tr>
+<tr>
+<td>&quot;symbols&quot;, &quot;unicode&quot;, &quot;emoji&quot;</td>
+<td><code>references/guides/unicode-symbols/guide.md</code></td>
+</tr>
+<tr>
+<td>&quot;syntax error&quot;, &quot;diagram won't render&quot;, &quot;troubleshoot&quot;</td>
+<td><code>references/guides/troubleshooting.md</code></td>
+</tr>
+<tr>
+<td>&quot;extract diagrams&quot;</td>
+<td><code>scripts/extract_mermaid.py</code></td>
+</tr>
+<tr>
+<td>&quot;convert to image&quot;, &quot;PNG&quot;, &quot;SVG&quot;</td>
+<td><code>scripts/mermaid_to_image.py</code></td>
+</tr>
+<tr>
+<td>&quot;create diagram&quot;, &quot;generate diagram&quot;, &quot;add diagram to markdown&quot;</td>
+<td><code>scripts/resilient_diagram.py</code> + <code>references/guides/resilient-workflow.md</code></td>
+</tr>
+<tr>
+<td>&quot;design document&quot;, &quot;full docs&quot;</td>
+<td><code>assets/*-design-template.md</code> + diagram guides</td>
+</tr>
+</tbody>
+</table>
+<h4>Best Practices</h4>
+<ol>
+<li><strong>Single Responsibility</strong>: One diagram = One concept</li>
+<li><strong>Unicode Enhancement</strong>: Always use semantic symbols for clarity</li>
+<li><strong>High Contrast</strong>: Never skip the <code>color:</code> property in styles</li>
+<li><strong>Validate Early</strong>: Use scripts to catch syntax errors</li>
+<li><strong>Template Reuse</strong>: Leverage existing templates and examples</li>
+<li><strong>Load On-Demand</strong>: Only read guides needed for the specific request</li>
+<li><strong>Token Efficiency</strong>: Use hierarchical loading instead of reading everything</li>
+</ol>
+<h4>Learning Path</h4>
+<p><strong>New to Mermaid?</strong> Start here:</p>
+<ol>
+<li>Read <code>references/guides/unicode-symbols/guide.md</code> for symbol meanings</li>
+<li>Read <code>references/guides/diagrams/activity-diagrams.md</code> for basic patterns</li>
+<li>Try examples in <code>examples/spring-boot/</code> or <code>examples/fastapi/</code></li>
+<li>Use <code>scripts/extract_mermaid.py --validate</code> to check your work</li>
+</ol>
+<p><strong>Need to document code?</strong> Follow this:</p>
+<ol>
+<li>Identify your framework → Load relevant <code>examples/{framework}/</code></li>
+<li>Match code pattern to diagram type</li>
+<li>Use templates from guide</li>
+<li>Validate with scripts</li>
+</ol>
+<p><strong>Creating design docs?</strong> Follow this:</p>
+<ol>
+<li>Choose document type → Load template from <code>assets/</code></li>
+<li>Fill in text sections</li>
+<li>Load diagram guides as needed for each section</li>
+<li>Use Unicode symbols throughout</li>
+<li>Save to <code>docs/design/</code> with timestamp</li>
+</ol>
+<hr>
+<p><strong>Version:</strong> 2.0 (Hierarchical Architecture)
+<strong>Last Updated:</strong> 2025-01-13
+<strong>Maintained by:</strong> Claude Code Skills</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

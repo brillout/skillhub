@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>playwright-skill · SkillHub</title>
+    <meta name="description" content="Use it when: you want to test a site or your local app in a browser, click through a flow, or automate any page. It does: finds your running dev servers, writes a Playwright script to a temp folder and runs it with the skill&#039;s executor in a visible browser. You get: a report of what it did and what failed, with paths to screenshots, and the script itself if you ask to keep it. Needs: Node 20+ and npm; a one-time setup installs Playwright and Chromium. Unlike: browser CLIs that take one command at a time, the agent writes whole scripts, like Anthropic&#039;s webapp-testing but in JavaScript." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=lackeyjb%2Fplaywright-skill">lackeyjb/playwright-skill</a></p>
+      <div class="title-row"><h1>playwright-skill</h1><button type="button" class="save" data-save="skill:lackeyjb/playwright-skill/skills/playwright-skill" aria-pressed="false" aria-label="Save playwright-skill" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want to test a site or your local app in a browser, click through a flow, or automate any page</dd></div><div><dt>It does</dt><dd>finds your running dev servers, writes a Playwright script to a temp folder and runs it with the skill&#39;s executor in a visible browser</dd></div><div><dt>You get</dt><dd>a report of what it did and what failed, with paths to screenshots, and the script itself if you ask to keep it</dd></div><div><dt>Needs</dt><dd>Node 20+ and npm; a one-time setup installs Playwright and Chromium</dd></div><div><dt>Unlike</dt><dd>browser CLIs that take one command at a time, the agent writes whole scripts, like Anthropic&#39;s webapp-testing but in JavaScript</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A general-purpose Playwright skill. For localhost work it first detects running dev servers: it uses the only one, asks when there are several, or offers to start one. The agent first works out where the skill is installed, then writes a focused script with the target URL in a constant and runs it through the skill&#39;s run.js executor; short tasks can run inline. The browser is visible unless you ask for headless or there&#39;s no display. It prefers locators by role, label, visible text or test ID, relies on Playwright&#39;s auto-waiting instead of fixed sleeps, and must check the resulting page before claiming success. Examples cover responsive screenshots at desktop and mobile sizes, a login flow with test credentials you supply, and connecting to a Chrome you already have open, which reuses its cookies. Helpers detect servers, launch browsers, dismiss cookie banners and take screenshots; environment variables choose Firefox or WebKit, headless mode, extra headers, and where scripts and screenshots are saved. A separate API reference covers network mocking, saved login state, video, device emulation and CI.</p>
+      <p class="muted">Summarizes <a href="https://github.com/lackeyjb/playwright-skill/tree/dd47a6a023e249eb1b36e9e943eab89d0900865d/skills/playwright-skill">the skill at dd47a6a</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">lackeyjb/</span><wbr><span class="word">playwright-skill</span> <span class="word">--skill</span> <span class="word">playwright-skill</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/lackeyjb/playwright-skill --skill playwright-skill">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/lackeyjb/playwright-skill/playwright-skill">skills.sh page</a> · <a href="https://github.com/lackeyjb/playwright-skill/tree/HEAD/skills/playwright-skill">Source on GitHub</a> · <a href="/?repo=lackeyjb%2Fplaywright-skill">All skills from lackeyjb/playwright-skill</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>7,500 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>3,273 <span class="muted">lackeyjb/playwright-skill</span></dd></div><div><dt>First seen</dt><dd>Jan 20, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">321</div>
+      <div class="stat-delta">+11% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 288; week to Sep 27: 261; week to Oct 4: 240; week to Oct 11: 235; week to Oct 18: 260; week to Oct 25: 355; week to Nov 1: 298; week to Nov 8: 321. Use the left and right arrow keys to read each week."
+        data-values="288,261,240,235,260,355,298,321" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,14.3 38.6,17.7 71.1,20.3 103.7,20.9 136.3,17.8 168.9,6.0 201.4,13.1 234.0,10.2" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="10.2" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>288</td></tr><tr><td>Sep 27</td><td>261</td></tr><tr><td>Oct 4</td><td>240</td></tr><tr><td>Oct 11</td><td>235</td></tr><tr><td>Oct 18</td><td>260</td></tr><tr><td>Oct 25</td><td>355</td></tr><tr><td>Nov 1</td><td>298</td></tr><tr><td>Nov 8</td><td>321</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:browser" data-facet="category" title="Drive browsers, scrape pages and search the web." href="/?tag=category%3Abrowser">category:<wbr>browser</a><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/?tag=category%3Adebugging">category:<wbr>debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Drive browsers, scrape pages and search the web.</p><p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:tool" data-facet="type" title="Operates a CLI, API, app or bundled script to get something done." href="/?tag=type%3Atool">type:<wbr>tool</a></div>
+          <p class="tag-meaning">Operates a CLI, API, app or bundled script to get something done.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:remote" data-facet="effect" title="Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service." href="/?tag=effect%3Aremote">effect:<wbr>remote</a></div>
+          <p class="tag-meaning">Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/?tag=needs%3Acli">needs:<wbr>cli</a><a class="tag" data-tag="needs:browser" data-facet="needs" title="Drives a real Chromium or Chrome browser." href="/?tag=needs%3Abrowser">needs:<wbr>browser</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p><p class="tag-meaning">Drives a real Chromium or Chrome browser.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="browser-automation" data-facet="topic" href="/?tag=browser-automation">browser-automation</a><a class="tag" data-tag="testing" data-facet="topic" href="/?tag=testing">testing</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:playwright" data-facet="stack" href="/?tag=stack%3Aplaywright">stack:<wbr>playwright</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/lackeyjb/playwright-skill/blob/dd47a6a023e249eb1b36e9e943eab89d0900865d/skills/playwright-skill/SKILL.md">lackeyjb/playwright-skill at dd47a6a</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: playwright-skill
+description: Complete browser automation with Playwright. Auto-detects dev servers, writes reusable test scripts, and supports screenshots, responsive checks, UX validation, login flows, link checks, and arbitrary browser automation. Use when the user wants to test a website, automate browser interactions, validate web functionality, or perform browser-based testing.
+license: MIT
+compatibility: Requires Node.js 20+, npm, and network access on first setup to install Playwright and Chromium.
+metadata:
+  author: lackeyjb
+  version: &#34;5.0.0&#34;
+allowed-tools: Bash(node:*) Bash(npm:*) Read Write</code></pre></details>
+        <div class="markdown"><h3>Playwright Browser Automation</h3>
+<p>Write and execute focused Playwright scripts for the user's request. Prefer the
+skill's executor and helpers, but use the full Playwright API when needed.</p>
+<h4>Path resolution</h4>
+<p>This skill can be installed in several locations, so resolve its directory
+first. Set <code>SKILL_DIR</code> to the directory containing this SKILL.md file, then run
+the commands below as written:</p>
+<pre><code class="language-bash">export SKILL_DIR=&lt;absolute path of the directory containing this SKILL.md&gt;
+export TMP_DIR=&quot;$(node -p 'require(&quot;node:os&quot;).tmpdir()')&quot;
+</code></pre>
+<p>If shell state does not persist between commands, substitute the literal paths
+for <code>$SKILL_DIR</code> and <code>$TMP_DIR</code> in each command instead.</p>
+<p>Common installation paths:</p>
+<ul>
+<li>Plugin system: <code>~/.claude/plugins/marketplaces/playwright-skill/skills/playwright-skill</code></li>
+<li>Manual global: <code>~/.claude/skills/playwright-skill</code></li>
+<li>Project-specific: <code>&lt;project&gt;/.claude/skills/playwright-skill</code></li>
+</ul>
+<h4>Workflow</h4>
+<ol>
+<li>
+<p>For localhost work, detect running servers before writing a URL:</p>
+<pre><code class="language-bash">node -e &quot;require('$SKILL_DIR/lib/helpers').detectDevServers().then(s =&gt; console.log(JSON.stringify(s)))&quot;
+</code></pre>
+<p>Use the only result automatically. Ask which URL to use when there are
+multiple results. Ask for a URL or offer to start a server when none exist.</p>
+</li>
+<li>
+<p>Write reusable scripts to <code>$TMP_DIR/playwright-test-*.js</code> unless the user
+asks to save them in the project. Use <code>PW_SCRIPT_DIR</code> to preserve scripts.</p>
+</li>
+<li>
+<p>Use a visible browser by default. Use <code>headless: true</code> only when requested
+or when the environment has no display.</p>
+</li>
+<li>
+<p>Put the target URL in a constant or environment variable.</p>
+</li>
+<li>
+<p>Run scripts with <code>node &quot;$SKILL_DIR/run.js&quot; &lt;script.js&gt;</code>.</p>
+</li>
+<li>
+<p>Report actions, failures, and artifact paths. Do not claim success without
+checking the resulting page.</p>
+</li>
+</ol>
+<h4>Setup</h4>
+<p>Run once:</p>
+<pre><code class="language-bash">cd &quot;$SKILL_DIR&quot; &amp;&amp; npm run setup
+</code></pre>
+<p>This installs Playwright and Chromium. Use <code>cd &quot;$SKILL_DIR&quot; &amp;&amp; npm run install-all-browsers</code> when Firefox or WebKit is required.</p>
+<h4>Minimal example</h4>
+<pre><code class="language-javascript">const os = require('node:os');
+const path = require('node:path');
+const { chromium } = require('playwright');
+
+const targetUrl = process.env.TARGET_URL || 'http://localhost:3000';
+const artifactDir = process.env.PW_ARTIFACT_DIR || os.tmpdir();
+
+(async () =&gt; {
+  const browser = await chromium.launch({ headless: false });
+  try {
+    const page = await browser.newPage();
+    await page.goto(targetUrl);
+    console.log('Page loaded:', await page.title());
+    await page.screenshot({ path: path.join(artifactDir, 'page.png'), fullPage: true });
+  } finally {
+    await browser.close();
+  }
+})();
+</code></pre>
+<p>Run it:</p>
+<pre><code class="language-bash">node &quot;$SKILL_DIR/run.js&quot; &quot;$TMP_DIR/playwright-test-page.js&quot;
+</code></pre>
+<p>For short one-off tasks, use inline execution:</p>
+<pre><code class="language-bash">node &quot;$SKILL_DIR/run.js&quot; -e &quot;const browser = await chromium.launch({headless: false}); try { const page = await browser.newPage(); await page.goto('https://example.com'); console.log(await page.title()); } finally { await browser.close(); }&quot;
+</code></pre>
+<p>The <code>-e</code> process exits as soon as the snippet settles, so close the browser
+inside the snippet.</p>
+<h4>Current Playwright patterns</h4>
+<p>Prefer locators that describe what a user sees, in this order:</p>
+<ol>
+<li><code>page.getByRole()</code> with an accessible name</li>
+<li><code>page.getByLabel()</code> for form controls</li>
+<li><code>page.getByText()</code> for visible content</li>
+<li><code>page.getByTestId()</code> when the application provides a test contract</li>
+</ol>
+<p>Actions auto-wait for actionability. Use web-first assertions or a locator's
+<code>waitFor()</code> instead of <code>waitForSelector()</code>, fixed sleeps, or <code>networkidle</code>.</p>
+<pre><code class="language-javascript">await page.getByLabel('Email').fill('test@example.com');
+await page.getByRole('button', { name: 'Sign in' }).click();
+await page.waitForURL('**/dashboard');
+await page.getByRole('heading', { name: 'Dashboard' }).waitFor();
+</code></pre>
+<h4>Common tasks</h4>
+<h5>Responsive checks</h5>
+<pre><code class="language-javascript">{
+  const os = require('node:os');
+  const path = require('node:path');
+
+  const artifactDir = process.env.PW_ARTIFACT_DIR || os.tmpdir();
+  const viewports = [
+    { name: 'desktop', width: 1440, height: 900 },
+    { name: 'mobile', width: 390, height: 844 },
+  ];
+
+  for (const viewport of viewports) {
+    await page.setViewportSize(viewport);
+    await page.goto(targetUrl);
+    await page.screenshot({ path: path.join(artifactDir, `${viewport.name}.png`), fullPage: true });
+  }
+}
+</code></pre>
+<h5>Login flow</h5>
+<p>Use test credentials supplied by the user. Never invent or expose real
+credentials. Verify both the navigation and a post-login element.</p>
+<pre><code class="language-javascript">await page.goto(`${targetUrl}/login`);
+await page.getByLabel('Email').fill(process.env.TEST_EMAIL);
+await page.getByLabel('Password').fill(process.env.TEST_PASSWORD);
+await page.getByRole('button', { name: /sign in|log in/i }).click();
+await page.waitForURL('**/dashboard');
+await page.getByRole('heading', { name: /dashboard/i }).waitFor();
+</code></pre>
+<h5>Save scripts and artifacts</h5>
+<pre><code class="language-bash">PW_SCRIPT_DIR=./playwright-tests node &quot;$SKILL_DIR/run.js&quot; &quot;$TMP_DIR/playwright-test-login.js&quot;
+PW_ARTIFACT_DIR=./playwright-artifacts node &quot;$SKILL_DIR/run.js&quot; &quot;$TMP_DIR/playwright-test-page.js&quot;
+</code></pre>
+<p><code>PW_SCRIPT_DIR</code> copies file-based scripts before execution and adds a timestamp
+when a filename already exists. <code>PW_ARTIFACT_DIR</code> controls helper screenshot
+output; the default is the operating system temporary directory.</p>
+<h5>Connect to an existing Chrome session</h5>
+<p>Start Chrome with remote debugging enabled, then connect with Playwright:</p>
+<pre><code class="language-javascript">const browser = await chromium.connectOverCDP('http://127.0.0.1:9222');
+const page = browser.contexts()[0].pages()[0];
+</code></pre>
+<p>This reuses cookies and extensions in that session. Do not use it for secrets
+unless the user explicitly asks; a connected browser has the user's access.</p>
+<h4>Helpers</h4>
+<pre><code class="language-javascript">const helpers = require(`${process.env.PW_SKILL_DIR}/lib/helpers`);
+
+const servers = await helpers.detectDevServers();
+const browser = await helpers.launchBrowser('chromium');
+const context = await helpers.createContext(browser);
+const page = await context.newPage();
+await helpers.handleCookieBanner(page);
+await helpers.takeScreenshot(page, 'result');
+</code></pre>
+<p>Available helpers are <code>detectDevServers</code>, <code>getExtraHeadersFromEnv</code>,
+<code>launchBrowser</code>, <code>createContext</code>, <code>handleCookieBanner</code>, and <code>takeScreenshot</code>.
+Use Playwright locators and assertions directly for actions, waits, extraction,
+authentication, tables, and retries.</p>
+<h4>Configuration</h4>
+<ul>
+<li><code>PW_BROWSER</code>: <code>chromium</code>, <code>firefox</code>, or <code>webkit</code> for <code>launchBrowser()</code>.</li>
+<li><code>PW_CHANNEL</code>: installed browser channel such as <code>chrome</code> or <code>msedge</code>.</li>
+<li><code>PW_EXECUTABLE_PATH</code>: explicit browser executable path.</li>
+<li><code>PW_HEADLESS</code>: <code>true</code> or <code>false</code>; visible mode is the default.</li>
+<li><code>SLOW_MO</code>: action delay in milliseconds.</li>
+<li><code>PW_HEADER_NAME</code> and <code>PW_HEADER_VALUE</code>: one extra HTTP header.</li>
+<li><code>PW_EXTRA_HEADERS</code>: JSON object of extra HTTP headers.</li>
+<li><code>PW_SCRIPT_DIR</code>: directory for preserving file-based scripts.</li>
+<li><code>PW_ARTIFACT_DIR</code>: directory for helper-generated screenshots.</li>
+</ul>
+<p>See <a href="https://github.com/lackeyjb/playwright-skill/blob/dd47a6a023e249eb1b36e9e943eab89d0900865d/skills/playwright-skill/API_REFERENCE.md">API_REFERENCE.md</a> for network interception, API mocking,
+authentication state, video, visual checks, device emulation, and CI patterns.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

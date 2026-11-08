@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>stitch-loop · SkillHub</title>
+    <meta name="description" content="Use it when: you want an agent to build a whole website with Google Stitch, Google&#039;s AI tool that generates UI screens from text, one page per run. It does: reads the next page&#039;s prompt from a &quot;baton&quot; file, generates the screen in Stitch, adds its HTML to your site and wires up the navigation. You get: a growing static site in site/public, an updated sitemap in .stitch/SITE.md, and the next page&#039;s prompt written for the following run. Runs: once per call; you, a CI job or another agent re-run it to build each next page. Needs: the Stitch MCP server, plus .stitch/DESIGN.md (the design system, which the repo&#039;s design-md skill can write) and .stitch/SITE.md (vision, sitemap, roadmap). Optional: Chrome DevTools MCP, to screenshot each built page and compare it with Stitch&#039;s render." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=google-labs-code%2Fstitch-skills">google-labs-code/stitch-skills</a></p>
+      <div class="title-row"><h1>stitch-loop</h1><button type="button" class="save" data-save="skill:google-labs-code/stitch-skills/plugins/stitch-utilities/skills/stitch-loop" aria-pressed="false" aria-label="Save stitch-loop" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want an agent to build a whole website with Google Stitch, Google&#39;s AI tool that generates UI screens from text, one page per run</dd></div><div><dt>It does</dt><dd>reads the next page&#39;s prompt from a &#34;baton&#34; file, generates the screen in Stitch, adds its HTML to your site and wires up the navigation</dd></div><div><dt>You get</dt><dd>a growing static site in site/public, an updated sitemap in .stitch/SITE.md, and the next page&#39;s prompt written for the following run</dd></div><div><dt>Runs</dt><dd>once per call; you, a CI job or another agent re-run it to build each next page</dd></div><div><dt>Needs</dt><dd>the Stitch MCP server, plus .stitch/DESIGN.md (the design system, which the repo&#39;s design-md skill can write) and .stitch/SITE.md (vision, sitemap, roadmap)</dd></div><div><dt>Optional</dt><dd>Chrome DevTools MCP, to screenshot each built page and compare it with Stitch&#39;s render</dd></div></dl></section>
+      
+      <p class="note">Needs the Stitch MCP server and two files to start: .stitch/DESIGN.md and .stitch/SITE.md, which the repo&#39;s design-md and site-md skills write.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>The &#34;baton&#34; is .stitch/next-prompt.md: a page name and a prompt that must carry the design system block from DESIGN.md, so every page shares one look. Each run reads it, checks SITE.md so it doesn&#39;t rebuild an existing page, and generates the screen in Stitch, creating the Stitch project on the first run and recording project and screen IDs in .stitch/metadata.json. It downloads the screen&#39;s HTML and screenshot, asking before it replaces local copies, moves the HTML into site/public, fixes asset paths and turns placeholder links into real navigation. With Chrome DevTools MCP, it serves the site locally and compares a screenshot with Stitch&#39;s. It then ticks the page off in SITE.md&#39;s sitemap, picks the next page from the roadmap, from SITE.md&#39;s list of ideas, or invents one that fits the site, and writes that prompt to the baton. Skipping that last step breaks the loop, so the skill insists on it. How runs are triggered is up to you: a GitHub Action when the baton changes, a developer reviewing each iteration, or one agent dispatching the next.</p>
+      <p class="muted">Summarizes <a href="https://github.com/google-labs-code/stitch-skills/tree/0337446dadde6f8c94210444e2aa9d546126480f/plugins/stitch-utilities/skills/stitch-loop">the skill at 0337446</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">google-labs-code/</span><wbr><span class="word">stitch-skills</span> <span class="word">--skill</span> <span class="word">stitch-loop</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/google-labs-code/stitch-skills --skill stitch-loop">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/google-labs-code/stitch-skills/stitch-loop">skills.sh page</a> · <a href="https://github.com/google-labs-code/stitch-skills/tree/HEAD/plugins/stitch-utilities/skills/stitch-loop">Source on GitHub</a> · <a href="/?repo=google-labs-code%2Fstitch-skills">All skills from google-labs-code/stitch-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>57,100 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>8,693 <span class="muted">google-labs-code/stitch-skills</span></dd></div><div><dt>First seen</dt><dd>Jan 23, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">426</div>
+      <div class="stat-delta">-12% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 484; week to Sep 27: 459; week to Oct 4: 445; week to Oct 11: 470; week to Oct 18: 495; week to Oct 25: 591; week to Nov 1: 502; week to Nov 8: 426. Use the left and right arrow keys to read each week."
+        data-values="484,459,445,470,495,591,502,426" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,14.0 38.6,15.8 71.1,16.9 103.7,15.0 136.3,13.1 168.9,6.0 201.4,12.6 234.0,18.3" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="18.3" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>484</td></tr><tr><td>Sep 27</td><td>459</td></tr><tr><td>Oct 4</td><td>445</td></tr><tr><td>Oct 11</td><td>470</td></tr><tr><td>Oct 18</td><td>495</td></tr><tr><td>Oct 25</td><td>591</td></tr><tr><td>Nov 1</td><td>502</td></tr><tr><td>Nov 8</td><td>426</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:design" data-facet="category" title="Taste for interfaces that don&#39;t look generated: direction, motion and accessibility." href="/?tag=category%3Adesign">category:<wbr>design</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Taste for interfaces that don&#39;t look generated: direction, motion and accessibility.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:remote" data-facet="effect" title="Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service." href="/?tag=effect%3Aremote">effect:<wbr>remote</a></div>
+          <p class="tag-meaning">Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:mcp" data-facet="needs" title="Needs an MCP server connected." href="/?tag=needs%3Amcp">needs:<wbr>mcp</a><a class="tag" data-tag="needs:account" data-facet="needs" title="An account, API key or paid plan with an outside service." href="/?tag=needs%3Aaccount">needs:<wbr>account</a></div>
+          <p class="tag-meaning">Needs an MCP server connected.</p><p class="tag-meaning">An account, API key or paid plan with an outside service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="design" data-facet="topic" href="/?tag=design">design</a><a class="tag" data-tag="prototyping" data-facet="topic" href="/?tag=prototyping">prototyping</a><a class="tag" data-tag="ai-generation" data-facet="topic" href="/?tag=ai-generation">ai-generation</a><a class="tag" data-tag="agent-workflows" data-facet="topic" href="/?tag=agent-workflows">agent-workflows</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:stitch" data-facet="stack" href="/?tag=stack%3Astitch">stack:<wbr>stitch</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/google-labs-code/stitch-skills/blob/0337446dadde6f8c94210444e2aa9d546126480f/plugins/stitch-utilities/skills/stitch-loop/SKILL.md">google-labs-code/stitch-skills at 0337446</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: stitch-loop
+description: Teaches agents to iteratively build websites using Stitch with an autonomous baton-passing loop pattern
+allowed-tools:
+  - &#34;stitch*:*&#34;
+  - &#34;chrome*:*&#34;
+  - &#34;Read&#34;
+  - &#34;Write&#34;
+  - &#34;Bash&#34;</code></pre></details>
+        <div class="markdown"><h3>Stitch Build Loop</h3>
+<p>You are an <strong>autonomous frontend builder</strong> participating in an iterative site-building loop. Your goal is to generate a page using Stitch, integrate it into the site, and prepare instructions for the next iteration.</p>
+<h4>Overview</h4>
+<p>The Build Loop pattern enables continuous, autonomous website development through a &quot;baton&quot; system. Each iteration:</p>
+<ol>
+<li>Reads the current task from a baton file (<code>.stitch/next-prompt.md</code>)</li>
+<li>Generates a page using Stitch MCP tools</li>
+<li>Integrates the page into the site structure</li>
+<li>Writes the next task to the baton file for the next iteration</li>
+</ol>
+<h4>Prerequisites</h4>
+<p><strong>Required:</strong></p>
+<ul>
+<li>Access to the Stitch MCP Server</li>
+<li>A Stitch project (existing or will be created)</li>
+<li>A <code>.stitch/DESIGN.md</code> file (generate one using the <code>design-md</code> skill if needed)</li>
+<li>A <code>.stitch/SITE.md</code> file documenting the site vision and roadmap</li>
+</ul>
+<p><strong>Optional:</strong></p>
+<ul>
+<li>Chrome DevTools MCP Server — enables visual verification of generated pages</li>
+</ul>
+<h4>The Baton System</h4>
+<p>The <code>.stitch/next-prompt.md</code> file acts as a relay baton between iterations:</p>
+<pre><code class="language-markdown">---
+page: about
+---
+A page describing how jules.top tracking works.
+
+**DESIGN SYSTEM (REQUIRED):**
+[Copy from .stitch/DESIGN.md Section 6]
+
+**Page Structure:**
+1. Header with navigation
+2. Explanation of tracking methodology
+3. Footer with links
+</code></pre>
+<p><strong>Critical rules:</strong></p>
+<ul>
+<li>The <code>page</code> field in YAML frontmatter determines the output filename</li>
+<li>The prompt content must include the design system block from <code>.stitch/DESIGN.md</code></li>
+<li>You MUST update this file before completing your work to continue the loop</li>
+</ul>
+<h4>Execution Protocol</h4>
+<h5>Step 1: Read the Baton</h5>
+<p>Parse <code>.stitch/next-prompt.md</code> to extract:</p>
+<ul>
+<li><strong>Page name</strong> from the <code>page</code> frontmatter field</li>
+<li><strong>Prompt content</strong> from the markdown body</li>
+</ul>
+<h5>Step 2: Consult Context Files</h5>
+<p>Before generating, read these files:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.stitch/SITE.md</code></td>
+<td>Site vision, <strong>Stitch Project ID</strong>, existing pages (sitemap), roadmap</td>
+</tr>
+<tr>
+<td><code>.stitch/DESIGN.md</code></td>
+<td>Required visual style for Stitch prompts</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Important checks:</strong></p>
+<ul>
+<li>Section 4 (Sitemap) — Do NOT recreate pages that already exist</li>
+<li>Section 5 (Roadmap) — Pick tasks from here if backlog exists</li>
+<li>Section 6 (Creative Freedom) — Ideas for new pages if roadmap is empty</li>
+</ul>
+<h5>Step 3: Generate with Stitch</h5>
+<p>Use the Stitch MCP tools to generate the page:</p>
+<ol>
+<li><strong>Discover namespace</strong>: Run <code>list_tools</code> to find the Stitch MCP prefix</li>
+<li><strong>Get or create project</strong>:
+<ul>
+<li>If <code>.stitch/metadata.json</code> exists, use the <code>projectId</code> from it</li>
+<li>Otherwise, call <code>[prefix]:create_project</code>, then call <code>[prefix]:get_project</code> to retrieve full project details, and save them to <code>.stitch/metadata.json</code> (see schema below)</li>
+<li>After generating each screen, call <code>[prefix]:get_project</code> again and update the <code>screens</code> map in <code>.stitch/metadata.json</code> with each screen's full metadata (id, sourceScreen, dimensions, canvas position)</li>
+</ul>
+</li>
+<li><strong>Generate screen</strong>: Call <code>[prefix]:generate_screen_from_text</code> with:
+<ul>
+<li><code>projectId</code>: The project ID</li>
+<li><code>prompt</code>: The full prompt from the baton (including design system block)</li>
+<li><code>deviceType</code>: <code>DESKTOP</code> (or as specified)</li>
+</ul>
+</li>
+<li><strong>Retrieve assets</strong>: Before downloading, check if <code>.stitch/designs/{page}.html</code> and <code>.stitch/designs/{page}.png</code> already exist:
+<ul>
+<li><strong>If files exist</strong>: Ask the user whether to refresh the designs from the Stitch project or reuse the existing local files. Only re-download if the user confirms.</li>
+<li><strong>If files do not exist</strong>: Proceed with download:
+<ul>
+<li><code>htmlCode.downloadUrl</code> — Download and save as <code>.stitch/designs/{page}.html</code></li>
+<li><code>screenshot.downloadUrl</code> — Append <code>=w{width}</code> to the URL before downloading, where <code>{width}</code> is the <code>width</code> value from the screen metadata (Google CDN serves low-res thumbnails by default). Save as <code>.stitch/designs/{page}.png</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h5>Step 4: Integrate into Site</h5>
+<ol>
+<li>Move generated HTML from <code>.stitch/designs/{page}.html</code> to <code>site/public/{page}.html</code></li>
+<li>Fix any asset paths to be relative to the public folder</li>
+<li>Update navigation:
+<ul>
+<li>Find existing placeholder links (e.g., <code>href=&quot;#&quot;</code>) and wire them to the new page</li>
+<li>Add the new page to the global navigation if appropriate</li>
+</ul>
+</li>
+<li>Ensure consistent headers/footers across all pages</li>
+</ol>
+<h5>Step 4.5: Visual Verification (Optional)</h5>
+<p>If the <strong>Chrome DevTools MCP Server</strong> is available, verify the generated page:</p>
+<ol>
+<li><strong>Check availability</strong>: Run <code>list_tools</code> to see if <code>chrome*</code> tools are present</li>
+<li><strong>Start dev server</strong>: Use Bash to start a local server (e.g., <code>npx serve site/public</code>)</li>
+<li><strong>Navigate to page</strong>: Call <code>[chrome_prefix]:navigate</code> to open <code>http://localhost:3000/{page}.html</code></li>
+<li><strong>Capture screenshot</strong>: Call <code>[chrome_prefix]:screenshot</code> to capture the rendered page</li>
+<li><strong>Visual comparison</strong>: Compare against the Stitch screenshot (<code>.stitch/designs/{page}.png</code>) for fidelity</li>
+<li><strong>Stop server</strong>: Terminate the dev server process</li>
+</ol>
+<blockquote>
+<p><strong>Note:</strong> This step is optional. If Chrome DevTools MCP is not installed, skip to Step 5.</p>
+</blockquote>
+<h5>Step 5: Update Site Documentation</h5>
+<p>Modify <code>.stitch/SITE.md</code>:</p>
+<ul>
+<li>Add the new page to Section 4 (Sitemap) with <code>[x]</code></li>
+<li>Remove any idea you consumed from Section 6 (Creative Freedom)</li>
+<li>Update Section 5 (Roadmap) if you completed a backlog item</li>
+</ul>
+<h5>Step 6: Prepare the Next Baton (Critical)</h5>
+<p><strong>You MUST update <code>.stitch/next-prompt.md</code> before completing.</strong> This keeps the loop alive.</p>
+<ol>
+<li><strong>Decide the next page</strong>:
+<ul>
+<li>Check <code>.stitch/SITE.md</code> Section 5 (Roadmap) for pending items</li>
+<li>If empty, pick from Section 6 (Creative Freedom)</li>
+<li>Or invent something new that fits the site vision</li>
+</ul>
+</li>
+<li><strong>Write the baton</strong> with proper YAML frontmatter:</li>
+</ol>
+<pre><code class="language-markdown">---
+page: achievements
+---
+A competitive achievements page showing developer badges and milestones.
+
+**DESIGN SYSTEM (REQUIRED):**
+[Copy the entire design system block from .stitch/DESIGN.md]
+
+**Page Structure:**
+1. Header with title and navigation
+2. Badge grid showing unlocked/locked states
+3. Progress bars for milestone tracking
+</code></pre>
+<h4>File Structure Reference</h4>
+<pre><code>project/
+├── .stitch/
+│   ├── metadata.json   # Stitch project &amp; screen IDs (persist this!)
+│   ├── DESIGN.md       # Visual design system (from design-md skill)
+│   ├── SITE.md         # Site vision, sitemap, roadmap
+│   ├── next-prompt.md  # The baton — current task
+│   └── designs/        # Staging area for Stitch output
+│       ├── {page}.html
+│       └── {page}.png
+└── site/public/        # Production pages
+    ├── index.html
+    └── {page}.html
+</code></pre>
+<h5><code>.stitch/metadata.json</code> Schema</h5>
+<p>This file persists all Stitch identifiers so future iterations can reference them for edits or variants. Populate it by calling <code>[prefix]:get_project</code> after creating a project or generating screens.</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;projects/6139132077804554844&quot;,
+  &quot;projectId&quot;: &quot;6139132077804554844&quot;,
+  &quot;title&quot;: &quot;My App&quot;,
+  &quot;visibility&quot;: &quot;PRIVATE&quot;,
+  &quot;createTime&quot;: &quot;2026-03-04T23:11:25.514932Z&quot;,
+  &quot;updateTime&quot;: &quot;2026-03-04T23:34:40.400007Z&quot;,
+  &quot;projectType&quot;: &quot;PROJECT_DESIGN&quot;,
+  &quot;origin&quot;: &quot;STITCH&quot;,
+  &quot;deviceType&quot;: &quot;MOBILE&quot;,
+  &quot;designTheme&quot;: {
+    &quot;colorMode&quot;: &quot;DARK&quot;,
+    &quot;font&quot;: &quot;INTER&quot;,
+    &quot;roundness&quot;: &quot;ROUND_EIGHT&quot;,
+    &quot;customColor&quot;: &quot;#40baf7&quot;,
+    &quot;saturation&quot;: 3
+  },
+  &quot;screens&quot;: {
+    &quot;index&quot;: {
+      &quot;id&quot;: &quot;d7237c7d78f44befa4f60afb17c818c1&quot;,
+      &quot;sourceScreen&quot;: &quot;projects/6139132077804554844/screens/d7237c7d78f44befa4f60afb17c818c1&quot;,
+      &quot;x&quot;: 0,
+      &quot;y&quot;: 0,
+      &quot;width&quot;: 390,
+      &quot;height&quot;: 1249
+    },
+    &quot;about&quot;: {
+      &quot;id&quot;: &quot;bf6a3fe5c75348e58cf21fc7a9ddeafb&quot;,
+      &quot;sourceScreen&quot;: &quot;projects/6139132077804554844/screens/bf6a3fe5c75348e58cf21fc7a9ddeafb&quot;,
+      &quot;x&quot;: 549,
+      &quot;y&quot;: 0,
+      &quot;width&quot;: 390,
+      &quot;height&quot;: 1159
+    }
+  },
+  &quot;metadata&quot;: {
+    &quot;userRole&quot;: &quot;OWNER&quot;
+  }
+}
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>Full resource name (<code>projects/{id}</code>)</td>
+</tr>
+<tr>
+<td><code>projectId</code></td>
+<td>Stitch project ID (from <code>create_project</code> or <code>get_project</code>)</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>Human-readable project title</td>
+</tr>
+<tr>
+<td><code>designTheme</code></td>
+<td>Design system tokens: color mode, font, roundness, custom color, saturation</td>
+</tr>
+<tr>
+<td><code>deviceType</code></td>
+<td>Target device: <code>MOBILE</code>, <code>DESKTOP</code>, <code>TABLET</code></td>
+</tr>
+<tr>
+<td><code>screens</code></td>
+<td>Map of page name → screen object. Each screen includes <code>id</code>, <code>sourceScreen</code> (resource path for MCP calls), canvas position (<code>x</code>, <code>y</code>), and dimensions (<code>width</code>, <code>height</code>)</td>
+</tr>
+<tr>
+<td><code>metadata.userRole</code></td>
+<td>User's role on the project (<code>OWNER</code>, <code>EDITOR</code>, <code>VIEWER</code>)</td>
+</tr>
+</tbody>
+</table>
+<h4>Orchestration Options</h4>
+<p>The loop can be driven by different orchestration layers:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>How it works</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CI/CD</strong></td>
+<td>GitHub Actions triggers on <code>.stitch/next-prompt.md</code> changes</td>
+</tr>
+<tr>
+<td><strong>Human-in-loop</strong></td>
+<td>Developer reviews each iteration before continuing</td>
+</tr>
+<tr>
+<td><strong>Agent chains</strong></td>
+<td>One agent dispatches to another (e.g., Jules API)</td>
+</tr>
+<tr>
+<td><strong>Manual</strong></td>
+<td>Developer runs the agent repeatedly with the same repo</td>
+</tr>
+</tbody>
+</table>
+<p>The skill is orchestration-agnostic — focus on the pattern, not the trigger mechanism.</p>
+<h4>Design System Integration</h4>
+<p>This skill works best with the <code>design-md</code> skill:</p>
+<ol>
+<li><strong>First time setup</strong>: Generate <code>.stitch/DESIGN.md</code> using the <code>design-md</code> skill from an existing Stitch screen</li>
+<li><strong>Every iteration</strong>: Copy Section 6 (&quot;Design System Notes for Stitch Generation&quot;) into your baton prompt</li>
+<li><strong>Consistency</strong>: All generated pages will share the same visual language</li>
+</ol>
+<h4>Common Pitfalls</h4>
+<ul>
+<li>❌ Forgetting to update <code>.stitch/next-prompt.md</code> (breaks the loop)</li>
+<li>❌ Recreating a page that already exists in the sitemap</li>
+<li>❌ Not including the design system block from <code>.stitch/DESIGN.md</code> in the prompt</li>
+<li>❌ Leaving placeholder links (<code>href=&quot;#&quot;</code>) instead of wiring real navigation</li>
+<li>❌ Forgetting to persist <code>.stitch/metadata.json</code> after creating a new project</li>
+</ul>
+<h4>Troubleshooting</h4>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Stitch generation fails</td>
+<td>Check that the prompt includes the design system block</td>
+</tr>
+<tr>
+<td>Inconsistent styles</td>
+<td>Ensure <code>.stitch/DESIGN.md</code> is up-to-date and copied correctly</td>
+</tr>
+<tr>
+<td>Loop stalls</td>
+<td>Verify <code>.stitch/next-prompt.md</code> was updated with valid frontmatter</td>
+</tr>
+<tr>
+<td>Navigation broken</td>
+<td>Check all internal links use correct relative paths</td>
+</tr>
+</tbody>
+</table>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

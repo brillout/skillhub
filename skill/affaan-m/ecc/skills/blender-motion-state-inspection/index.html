@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>blender-motion-state-inspection · SkillHub</title>
+    <meta name="description" content="Use it when: a Blender character looks twisted, mirrored, offset or foot-sliding, or you need to know whether a retargeted motion matches the expected pose. It does: inventories the scene, maps the skeleton, works out facing axes, samples key frames and measures contact, sliding, crossover, twist and scale drift. You get: a report of scene inventory, orientation, baseline integrity and per-frame findings with coordinates, ending in a pass/fail verdict and the fix needed. Needs: Blender, using its own Python (blender --background) or a Blender state exporter to pull the data. Keeps: your mesh, materials, armature and skinning untouched unless you ask for a repair." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <div class="title-row"><h1>blender-motion-state-inspection</h1><button type="button" class="save" data-save="skill:affaan-m/ecc/skills/blender-motion-state-inspection" aria-pressed="false" aria-label="Save blender-motion-state-inspection" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>a Blender character looks twisted, mirrored, offset or foot-sliding, or you need to know whether a retargeted motion matches the expected pose</dd></div><div><dt>It does</dt><dd>inventories the scene, maps the skeleton, works out facing axes, samples key frames and measures contact, sliding, crossover, twist and scale drift</dd></div><div><dt>You get</dt><dd>a report of scene inventory, orientation, baseline integrity and per-frame findings with coordinates, ending in a pass/fail verdict and the fix needed</dd></div><div><dt>Needs</dt><dd>Blender, using its own Python (blender --background) or a Blender state exporter to pull the data</dd></div><div><dt>Keeps</dt><dd>your mesh, materials, armature and skinning untouched unless you ask for a repair</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Screenshots hide axis conventions, bone names, scale and per-frame contact, so this ECC skill has the agent pull structured facts out of Blender first and use renders only to confirm them. It lists meshes, armatures, helpers and bounding boxes, separating the character from proxy geometry; maps bones such as hips, knees and feet and flags missing left/right pairs; and works out forward and up from pelvis, spine, head and feet together, catching glTF Y-up versus Blender Z-up mix-ups and backwards imports. It samples first, middle, contact, airborne and extreme frames, more densely around landings and turns, then checks ground penetration, foot sliding on planted frames, crossed legs, limb twist and scale drift against the clean starting pose. Its thresholds: penetration over 1-2 cm is visible, a scale change above 5% points to a rig or constraint problem, and a heading jump over 30 degrees in one frame is suspect. The report separates confirmed failures, with frame numbers, bone names and coordinates, from visual suspicions. Two worked examples cover a sliding walk cycle and a character that moves opposite the way it faces.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/blender-motion-state-inspection">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">affaan-m/</span><wbr><span class="word">ecc</span> <span class="word">--skill</span> <span class="word">blender-motion-state-inspection</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill blender-motion-state-inspection">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/blender-motion-state-inspection">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/blender-motion-state-inspection">Source on GitHub</a> · <a href="/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>6,000 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>299,252 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">565</div>
+      <div class="stat-delta">+58% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 357; week to Sep 27: 305; week to Oct 4: 204; week to Oct 11: 208; week to Oct 18: 299; week to Oct 25: 485; week to Nov 1: 475; week to Nov 8: 565. Use the left and right arrow keys to read each week."
+        data-values="357,305,204,208,299,485,475,565" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,22.2 38.6,26.2 71.1,34.1 103.7,33.8 136.3,26.7 168.9,12.2 201.4,13.0 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>357</td></tr><tr><td>Sep 27</td><td>305</td></tr><tr><td>Oct 4</td><td>204</td></tr><tr><td>Oct 11</td><td>208</td></tr><tr><td>Oct 18</td><td>299</td></tr><tr><td>Oct 25</td><td>485</td></tr><tr><td>Nov 1</td><td>475</td></tr><tr><td>Nov 8</td><td>565</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:media" data-facet="category" title="Generate and edit video, images and audio." href="/?tag=category%3Amedia">category:<wbr>media</a><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/?tag=category%3Adebugging">category:<wbr>debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Generate and edit video, images and audio.</p><p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/?tag=needs%3Acli">needs:<wbr>cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="animation" data-facet="topic" href="/?tag=animation">animation</a><a class="tag" data-tag="debugging" data-facet="topic" href="/?tag=debugging">debugging</a><a class="tag" data-tag="verification" data-facet="topic" href="/?tag=verification">verification</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:blender" data-facet="stack" href="/?tag=stack%3Ablender">stack:<wbr>blender</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/blender-motion-state-inspection/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: blender-motion-state-inspection
+description: Use this skill when inspecting Blender characters, rigs, poses, animation retargeting, ground contact, facing direction, or model-vs-motion alignment where screenshots alone are not enough.
+metadata:
+  origin: ECC
+tools: Read, Write, Edit, Bash, Grep, Glob</code></pre></details>
+        <div class="markdown"><h3>Blender Motion State Inspection</h3>
+<h4>When to Use</h4>
+<ul>
+<li>A Blender character looks twisted, mirrored, flattened, offset, or foot-sliding in an animation.</li>
+<li>A user asks whether an imported avatar, armature, or retargeted motion matches an expected pose.</li>
+<li>You need to compare rendered evidence with structured facts such as bones, bounding boxes, contacts, and facing vectors.</li>
+<li>A workflow depends on deciding whether a model is a character, prop, proxy mesh, control rig, or broken import.</li>
+</ul>
+<h4>Core Principle</h4>
+<p>Do not judge animated 3D assets only from screenshots. Screenshots are review evidence, but they hide axis conventions, bone names, object scale, local transforms, parented meshes, material slots, and frame-by-frame contact state.</p>
+<p>First extract structured Blender state, then use viewport screenshots or renders to confirm what the facts imply.</p>
+<h4>How It Works</h4>
+<ol>
+<li>Establish the clean scene and asset baseline before judging motion.</li>
+<li>Extract structured facts from Blender using an exporter or Blender Python run inside Blender's own interpreter.</li>
+<li>Sample the frames most likely to expose contact, orientation, scale, and retargeting errors.</li>
+<li>Compare the measured facts against the user's expected pose, direction, ground plane, and render goal.</li>
+<li>Return a concise report that separates confirmed facts, likely causes, and required fixes.</li>
+</ol>
+<h4>Inspection Workflow</h4>
+<ol>
+<li>
+<p>Inventory the scene.</p>
+<ul>
+<li>List meshes, armatures, empties, cameras, lights, modifiers, parent relationships, and hidden objects.</li>
+<li>Separate character meshes from helper/proxy geometry before judging the avatar.</li>
+<li>Record object-space and world-space bounding boxes.</li>
+</ul>
+</li>
+<li>
+<p>Identify the skeleton.</p>
+<ul>
+<li>Capture armature names, pose bones, bone heads/tails, roll, parent chains, constraints, and rest-pose axes.</li>
+<li>Map semantic bones such as hips, spine, neck, head, shoulders, elbows, hands, thighs, knees, ankles, and feet.</li>
+<li>Flag missing left/right pairs and unusual naming schemes.</li>
+</ul>
+</li>
+<li>
+<p>Determine forward, up, and side axes.</p>
+<ul>
+<li>Use the pelvis, spine, shoulders, hips, head, and feet together; do not rely on a single mesh normal.</li>
+<li>Compare local armature axes with world axes and imported file conventions such as glTF Y-up vs Blender Z-up.</li>
+<li>Mark likely mirrored or backwards imports when face/head/feet direction conflicts with root motion.</li>
+</ul>
+</li>
+<li>
+<p>Sample animation frames.</p>
+<ul>
+<li>Inspect first, middle, contact, airborne, and extreme frames.</li>
+<li>Record root location, root heading, pelvis height, torso lean, limb directions, foot clearance, and mesh bounds.</li>
+<li>For long or fast motion, sample more densely around flips, landings, turns, collisions, and floor contacts.</li>
+</ul>
+</li>
+<li>
+<p>Check model integrity before retargeting blame.</p>
+<ul>
+<li>Confirm the clean baseline shape before applying animation.</li>
+<li>Preserve original mesh, materials, armature, and skinning unless the user explicitly asks for repair.</li>
+<li>Treat unexplained sphere-like blobs, giant proxy meshes, or crushed bodies as import/selection issues until proven otherwise.</li>
+</ul>
+</li>
+<li>
+<p>Diagnose contact and motion issues.</p>
+<ul>
+<li>Ground penetration: compare lowest foot or shoe vertices with floor height per frame.</li>
+<li>Foot sliding: compare foot world positions across planted frames.</li>
+<li>Leg crossover: compare left/right thigh, knee, ankle, and foot side ordering.</li>
+<li>Twist damage: compare bone swing direction separately from roll/twist around the limb axis.</li>
+<li>Scale drift: compare animated mesh bounds against the clean baseline bounds.</li>
+</ul>
+</li>
+<li>
+<p>Report facts before opinions.</p>
+<ul>
+<li>Include frame numbers, object names, bone names, world coordinates, and thresholds.</li>
+<li>Separate confirmed failures from visual suspicions.</li>
+<li>Attach screenshots only after the structured state explains what to look for.</li>
+</ul>
+</li>
+</ol>
+<h4>Recommended Report Shape</h4>
+<pre><code class="language-markdown">## Blender Motion Inspection
+
+### Scene Inventory
+- Character candidates:
+- Armatures:
+- Helper/proxy objects:
+- Cameras/lights:
+
+### Orientation
+- World up:
+- Character forward:
+- Root heading:
+- Mirrored/backwards risk:
+
+### Baseline Integrity
+- Clean mesh bounds:
+- Animated mesh bounds:
+- Materials/skin preserved:
+- Suspicious non-character meshes:
+
+### Frame Findings
+| Frame | Finding | Evidence |
+| --- | --- | --- |
+| 1 | Clean baseline pose | hips/spine/feet aligned |
+| 96 | Foot penetrates floor | left_foot min_z = -0.04 |
+
+### Verdict
+- Pass/fail:
+- Required fix:
+- Render readiness:
+</code></pre>
+<h4>Examples</h4>
+<h5>Walk Cycle With Foot Sliding</h5>
+<p>Scenario: a retargeted character appears to skate during a walk cycle, but the front camera angle makes the foot contact hard to judge.</p>
+<p>Apply the workflow:</p>
+<ul>
+<li>Inventory the scene: character mesh <code>HeroBody</code>, armature <code>HeroRig</code>, ground plane <code>Floor</code>, no hidden proxy meshes.</li>
+<li>Identify the skeleton: semantic feet are <code>foot.L</code> and <code>foot.R</code>; hips are <code>pelvis</code>; root bone is <code>root</code>.</li>
+<li>Sample animation frames: inspect frames 1, 18, 24, 30, 42, and 48 around planted-foot moments.</li>
+<li>Diagnose contact and motion issues: compare world-space foot locations during planted frames.</li>
+</ul>
+<p>Extracted facts:</p>
+<table>
+<thead>
+<tr>
+<th>Frame</th>
+<th>Fact</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>18</td>
+<td>Left foot is planted</td>
+<td><code>foot.L min_z = 0.004</code>, toe and heel both near floor</td>
+</tr>
+<tr>
+<td>24</td>
+<td>Left foot slides while planted</td>
+<td><code>foot.L x = 0.21 -&gt; 0.28</code> over six frames</td>
+</tr>
+<tr>
+<td>30</td>
+<td>Pelvis keeps moving forward</td>
+<td><code>pelvis y = 1.14 -&gt; 1.31</code></td>
+</tr>
+</tbody>
+</table>
+<p>Verdict: fail for render readiness. The motion needs foot-lock cleanup or retargeting constraint review; the body mesh does not need proportion changes.</p>
+<h5>Backwards Imported Character</h5>
+<p>Scenario: a character looks correct in a still frame, but the animation moves opposite the expected travel direction.</p>
+<p>Apply the workflow:</p>
+<ul>
+<li>Determine forward, up, and side axes: compare head, chest, feet, and root motion.</li>
+<li>Sample animation frames: inspect frame 1 and the midpoint of the travel path.</li>
+<li>Report facts before opinions: include the root heading and model-facing direction separately.</li>
+</ul>
+<p>Extracted facts:</p>
+<table>
+<thead>
+<tr>
+<th>Frame</th>
+<th>Fact</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Character face points toward world <code>-Y</code></td>
+<td>head/chest vector from <code>neck</code> to <code>head</code> resolves to <code>-Y</code></td>
+</tr>
+<tr>
+<td>72</td>
+<td>Root motion travels toward world <code>+Y</code></td>
+<td><code>root y = 0.0 -&gt; 2.8</code></td>
+</tr>
+<tr>
+<td>72</td>
+<td>Feet remain visually forward-facing opposite travel</td>
+<td>toe bones point <code>-Y</code> while displacement is <code>+Y</code></td>
+</tr>
+</tbody>
+</table>
+<p>Verdict: likely backwards import or retargeting forward-axis mismatch. Fix the import/retarget axis mapping before editing animation curves.</p>
+<h4>Practical Thresholds</h4>
+<ul>
+<li>Assume Blender's default meter-scale units unless the scene unit scale says otherwise.</li>
+<li>Treat ground penetration above 1-2 cm as visible unless the floor is soft or intentionally stylized.</li>
+<li>Treat a sudden scale change above 5% as a likely rig, constraint, or transform inheritance problem.</li>
+<li>Treat left/right ankle side-order flips during airborne inverted motion as leg crossover risk even if it recovers later.</li>
+<li>Treat root heading jumps above 30 degrees per frame as suspicious unless the source motion includes a snap turn.</li>
+</ul>
+<h4>Anti-Patterns</h4>
+<ul>
+<li>Do not modify body proportions to force pose matching unless the task is explicitly mesh repair.</li>
+<li>Do not bake away the clean baseline before recording it.</li>
+<li>Do not use one rendered camera angle as proof that a pose is correct.</li>
+<li>Do not delete helper objects until you have recorded why they are not part of the character.</li>
+<li>Do not assume an avatar faces +Y, -Y, +X, or -X without checking head, feet, torso, and root motion together.</li>
+</ul>
+<h4>Tooling Notes</h4>
+<p>If a Blender state exporter is available, prefer JSON that includes meshes, armatures, pose bones, materials, contacts, bounding boxes, and sampled animation frames. If no exporter exists, run a small Blender Python script through Blender itself, for example <code>blender --background scene.blend --python collect_motion_state.py</code>, because <code>bpy</code> is not available in a normal system Python interpreter.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

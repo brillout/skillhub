@@ -1,0 +1,1791 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>printing-press-publish · SkillHub</title>
+    <meta name="description" content="Use it when: you want a CLI you printed with printing-press added to the public Printing Press library. It does: validates the CLI (build, vet, govulncheck, manifest), reruns its live test against the real API, scans for secrets and personal data, then packages it and opens the PR. You get: an open pull request on mvanhorn/printing-press-library, driven through Greptile review and CI until stably green; it never merges. Runs: only on a direct request from you, never chained from polish&#039;s menu. Also does: a journal-only PR recording an API the press couldn&#039;t print in the library&#039;s blocked-apis.json, which printing-press&#039;s hold menu can also start. Needs: the GitHub CLI signed in, plus the cli-printing-press binary and Go." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=mvanhorn%2Fcli-printing-press">mvanhorn/cli-printing-press</a> <span aria-hidden="true">/</span> <a href="/bundle/mvanhorn/cli-printing-press/">CLI Printing Press</a></p>
+      <div class="title-row"><h1>printing-press-publish</h1><button type="button" class="save" data-save="skill:mvanhorn/cli-printing-press/skills/printing-press-publish" aria-pressed="false" aria-label="Save printing-press-publish" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want a CLI you printed with printing-press added to the public Printing Press library</dd></div><div><dt>It does</dt><dd>validates the CLI (build, vet, govulncheck, manifest), reruns its live test against the real API, scans for secrets and personal data, then packages it and opens the PR</dd></div><div><dt>You get</dt><dd>an open pull request on mvanhorn/printing-press-library, driven through Greptile review and CI until stably green; it never merges</dd></div><div><dt>Runs</dt><dd>only on a direct request from you, never chained from polish&#39;s menu</dd></div><div><dt>Also does</dt><dd>a journal-only PR recording an API the press couldn&#39;t print in the library&#39;s blocked-apis.json, which printing-press&#39;s hold menu can also start</dd></div><div><dt>Needs</dt><dd>the GitHub CLI signed in, plus the cli-printing-press binary and Go</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 5 of 9 in the <a href="/bundle/mvanhorn/cli-printing-press/">CLI Printing Press</a> bundle · Before it: <a href="/skill/mvanhorn/cli-printing-press/skills/printing-press-score/">printing-press-score</a> · After it: <a href="/skill/mvanhorn/cli-printing-press/skills/printing-press-amend/">printing-press-amend</a></p>
+    <p class="note">Only works inside its bundle: Publishes only CLIs printing-press generated, and applies the PII-scanning step of the secret-protection reference that ships with printing-press. Install <a href="/bundle/mvanhorn/cli-printing-press/">CLI Printing Press</a> instead.</p>
+      <p class="note">Opens or updates a public pull request on mvanhorn/printing-press-library, forking it when you lack push access; needs the GitHub CLI signed in, the cli-printing-press binary and Go. Works only on CLIs printed by printing-press.</p>
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>The last step of CLI Printing Press. It finds which CLI in your local library you mean, confirms its category, and runs the binary&#39;s publish validation: manifest provenance, live-test proof, go mod tidy, govulncheck, go vet, build, --help and --version, stopping on any failure. It won&#39;t rely on an old live test: it reruns the end-to-end gate against the real API on the exact tree it will publish, and asks before running destructive commands again. It then prepares a managed clone of the public library, forking it when needed, stages the CLI while keeping the library&#39;s existing release history, and scans for vendor tokens, your exact API key and personal data, redacting obvious tokens and asking about the rest. It never edits the registry, catalog or skill files the library regenerates after merge. Once the PR is open, it reads Greptile&#39;s summary and inline comments, fixes or answers every finding, waits for CI, and hands back without merging, since maintainers merge by hand. With --blocked-api-journal it instead adds a held API to blocked-apis.json.</p>
+      <p class="muted">Summarizes <a href="https://github.com/mvanhorn/cli-printing-press/tree/94ce80e35cbc516cbab1b80f54d96ca419958ca0/skills/printing-press-publish">the skill at 94ce80e</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">mvanhorn/</span><wbr><span class="word">cli-printing-press</span> <span class="word">--skill</span> <span class="word">printing-press-publish</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/mvanhorn/cli-printing-press --skill printing-press-publish">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/mvanhorn/cli-printing-press/printing-press-publish">skills.sh page</a> · <a href="https://github.com/mvanhorn/cli-printing-press/tree/HEAD/skills/printing-press-publish">Source on GitHub</a> · <a href="/?repo=mvanhorn%2Fcli-printing-press">All skills from mvanhorn/cli-printing-press</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>7,100 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>4,932 <span class="muted">mvanhorn/cli-printing-press</span></dd></div><div><dt>First seen</dt><dd>May 7, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">118</div>
+      <div class="stat-delta">-22% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 151; week to Sep 27: 116; week to Oct 4: 137; week to Oct 11: 126; week to Oct 18: 147; week to Oct 25: 130; week to Nov 1: 121; week to Nov 8: 118. Use the left and right arrow keys to read each week."
+        data-values="151,116,137,126,147,130,121,118" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,6.0 38.6,16.2 71.1,10.1 103.7,13.3 136.3,7.2 168.9,12.1 201.4,14.7 234.0,15.6" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="15.6" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>151</td></tr><tr><td>Sep 27</td><td>116</td></tr><tr><td>Oct 4</td><td>137</td></tr><tr><td>Oct 11</td><td>126</td></tr><tr><td>Oct 18</td><td>147</td></tr><tr><td>Oct 25</td><td>130</td></tr><tr><td>Nov 1</td><td>121</td></tr><tr><td>Nov 8</td><td>118</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/?tag=category%3Aengineering">category:<wbr>engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:remote" data-facet="effect" title="Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service." href="/?tag=effect%3Aremote">effect:<wbr>remote</a></div>
+          <p class="tag-meaning">Its own steps change something outside your machine: post, send, deploy, provision, file issues, drive a website, or upload data to a service.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:cli" data-facet="needs" title="A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI." href="/?tag=needs%3Acli">needs:<wbr>cli</a></div>
+          <p class="tag-meaning">A specific command-line tool or desktop app must be installed, such as gh, agent-browser, LibreOffice, Obsidian or a vendor CLI.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="git" data-facet="topic" href="/?tag=git">git</a><a class="tag" data-tag="ci" data-facet="topic" href="/?tag=ci">ci</a><a class="tag" data-tag="code-review" data-facet="topic" href="/?tag=code-review">code-review</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:github" data-facet="stack" href="/?tag=stack%3Agithub">stack:<wbr>github</a><a class="tag" data-tag="stack:go" data-facet="stack" href="/?tag=stack%3Ago">stack:<wbr>go</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/mvanhorn/cli-printing-press/blob/94ce80e35cbc516cbab1b80f54d96ca419958ca0/skills/printing-press-publish/SKILL.md">mvanhorn/cli-printing-press at 94ce80e</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: printing-press-publish
+description: Publish a generated CLI to the printing-press-library repo
+version: 0.1.0
+min-binary-version: &#34;4.34.3&#34;
+allowed-tools:
+  - Bash
+  - Read
+  - Write
+  - Edit
+  - Glob
+  - Grep
+  - AskUserQuestion
+created_by: user</code></pre></details>
+        <div class="markdown"><h3>/printing-press publish</h3>
+<p>Publish a generated CLI from your local library to the <a href="https://github.com/mvanhorn/printing-press-library">printing-press-library</a> repo as a pull request.</p>
+<pre><code class="language-bash">/printing-press publish notion-pp-cli
+/printing-press publish notion
+/printing-press publish notion --from-polish
+/printing-press publish notion --skip-live-test=auth-unavailable
+/printing-press publish notion --blocked-api-journal notion
+/printing-press publish
+</code></pre>
+<h4>PR shape guard</h4>
+<p>This skill opens only a generated CLI publish PR or, with
+<code>--blocked-api-journal</code>, a <code>blocked-apis.json</code> journal PR. It never opens a
+docs-only, plan, proposal, or spec PR as a substitute for a CLI that is not
+ready to publish. If generation, validation, or live testing is blocked, report
+the exact blocker and stop.</p>
+<h4>Direct User Invocation Required</h4>
+<p>Publishing can fork <code>mvanhorn/printing-press-library</code>, push a branch, and open or
+update a PR. Before setup or validation, check the invocation context. If this
+skill was invoked as a chained continuation from <code>printing-press-polish</code>'s
+Publish Offer, including an <code>AskUserQuestion</code> answer or auto-resolved polish
+recommendation, stop immediately and tell the user to send
+<code>/printing-press-publish &lt;cli-name&gt; --from-polish</code> in a fresh message. A fresh
+user-authored request that explicitly asks to publish is sufficient; do not add
+another confirmation prompt on top of a direct publish request.</p>
+<p>If the fresh user-authored request includes <code>--from-polish</code>, record
+<code>POLISH_HANDOFF=true</code> for the terminal-state step and ignore that marker when
+resolving the CLI name. The marker is not a second confirmation and is not
+passed to <code>cli-printing-press</code>; it only preserves standalone polish's old
+post-publish retro offer after the fresh-turn publish completes.</p>
+<p>If the request includes <code>--blocked-api-journal</code>, enter <strong>Blocked API Journal
+Mode</strong> below instead of the normal printed-CLI publish flow. This mode may be
+invoked from <code>/printing-press</code>'s hold-path menu after the user explicitly chose
+&quot;Add to blocked-API journal&quot;; that parent menu choice is sufficient user
+authorization for the public-library journal write. Do not require a second
+fresh-turn invocation for this journal-only mode.</p>
+<p>If the fresh user-authored request includes <code>--skip-live-test=&lt;reason&gt;</code>, record
+the exact non-empty reason as <code>SKIP_LIVE_TEST_REASON</code> and remove the flag before
+resolving the CLI name. This is the only supported escape valve for the
+publish-time live test gate. Use it only for auth-unavailable, known upstream
+outage, LAN-unreachable hardware APIs, or similarly concrete operator-approved
+cases; never infer a skip from ordinary latency or from the presence of an
+older Phase 5 marker.</p>
+<p>The public library treats <code>library/&lt;category&gt;/&lt;api-slug&gt;/.printing-press.json</code>
+and <code>manifest.json</code> as the source of truth for registry-display fields. Do not
+edit <code>registry.json</code>, README catalog cells, or <code>cli-skills/pp-&lt;api-slug&gt;/SKILL.md</code>
+in publish PRs; all three are bot-regenerated post-merge by the library's own
+workflows. The library's <code>Fail on changes to generated artifacts</code> check in
+<code>verify-library-conventions.yml</code> hard-fails any PR — fork or same-repo — whose
+diff against base touches <code>registry.json</code> or <code>cli-skills/pp-*/SKILL.md</code>, so a
+publish that includes either is pre-rejected before review.</p>
+<p>The public library also owns per-CLI release accounting. Do not manually bump
+<code>CHANGELOG.md</code>, <code>.printing-press-release.json</code>, or runtime <code>var version = ...</code>
+for a publish PR. Fresh printed CLIs may include blank release-ledger skeletons;
+the library's post-merge workflow assigns the final <code>YYYY.M.N</code> release and
+stamps the runtime version after merge. When replacing an existing public
+library CLI, preserve its existing release-ledger files so changelog history is
+not lost in the reprint PR.</p>
+<p><code>blocked-apis.json</code> is different: it is a hand-maintained public-library journal,
+not a generated registry surface. Journal-only PRs may edit <code>blocked-apis.json</code>
+and must not stage <code>library/</code>, <code>registry.json</code>, README catalog cells, or
+<code>cli-skills/</code>.</p>
+<h4>Blocked API Journal Mode</h4>
+<p>Use this mode only when the invocation includes <code>--blocked-api-journal</code>. It
+records a held <code>/printing-press</code> attempt whose blocker is likely to repeat for
+other users until a machine or upstream issue changes.</p>
+<p>Required fields from the caller:</p>
+<ul>
+<li><code>slug</code>: canonical API slug, not the CLI binary name.</li>
+<li><code>attempted_at</code>: <code>YYYY-MM-DD</code>.</li>
+<li><code>verdict</code>: <code>hold</code>.</li>
+<li><code>reason</code>: concise blocker reason, with no secrets, local paths, cookies,
+tokens, or account-specific details.</li>
+<li><code>blocking_issue</code>: Printing Press issue number if known, otherwise <code>null</code>.</li>
+<li><code>permanent</code>: boolean.</li>
+</ul>
+<p>If the caller did not provide one of these fields, infer only safe values from
+the current run context. If <code>reason</code> is missing or vague, stop and ask for one
+specific blocker sentence; do not write an unhelpful journal entry.</p>
+<p>Run the normal Setup, Configuration, scoped clone cleanup, and GitHub auth
+checks, then prepare the public-library clone exactly as the normal publish
+flow does: fork if needed, ensure <code>upstream</code> points to
+<code>mvanhorn/printing-press-library</code>, fetch <code>upstream</code>, and reset the clone to
+<code>upstream/main</code> before editing.</p>
+<p>Then update only <code>$PUBLISH_REPO_DIR/blocked-apis.json</code>:</p>
+<pre><code class="language-bash">cd &quot;$PUBLISH_REPO_DIR&quot;
+if [ ! -f blocked-apis.json ]; then
+  printf '[]\n' &gt; blocked-apis.json
+fi
+jq --arg slug &quot;&lt;api-slug&gt;&quot; \
+   --arg attempted_at &quot;&lt;YYYY-MM-DD&gt;&quot; \
+   --arg verdict &quot;hold&quot; \
+   --arg reason &quot;&lt;reason&gt;&quot; \
+   --argjson blocking_issue '&lt;number-or-null&gt;' \
+   --argjson permanent '&lt;true-or-false&gt;' '
+  (if type == &quot;array&quot; then . else [] end)
+  | map(select(.slug != $slug))
+  + [{
+      slug: $slug,
+      attempted_at: $attempted_at,
+      verdict: $verdict,
+      reason: $reason,
+      blocking_issue: $blocking_issue,
+      permanent: $permanent
+    }]
+  | sort_by(.slug)
+' blocked-apis.json &gt; blocked-apis.json.tmp || {
+  rm -f blocked-apis.json.tmp
+  echo &quot;Error: jq failed to update blocked-apis.json&quot;
+  exit 1
+}
+if ! jq empty blocked-apis.json.tmp; then
+  rm -f blocked-apis.json.tmp
+  echo &quot;Error: blocked-apis.json update produced invalid JSON&quot;
+  exit 1
+fi
+mv blocked-apis.json.tmp blocked-apis.json
+</code></pre>
+<p>Create a journal branch and PR:</p>
+<pre><code class="language-bash">git checkout -B chore/blocked-api-&lt;api-slug&gt;
+git add blocked-apis.json
+git commit -m &quot;chore(&lt;api-slug&gt;): journal blocked API&quot;
+git push --force-with-lease -u origin chore/blocked-api-&lt;api-slug&gt;
+</code></pre>
+<p>Open the PR against <code>mvanhorn/printing-press-library</code> with a body that includes:</p>
+<ul>
+<li>the held API slug and reason</li>
+<li>whether the block is permanent or tied to <code>blocking_issue</code></li>
+<li>the expected Phase 0 behavior: future <code>/printing-press &lt;api-slug&gt;</code> runs warn
+before repeating the attempt</li>
+</ul>
+<p>After the PR is open, report the URL and stop. Do not continue into normal
+printed-CLI package, live-test, registry, or skill-mirror steps.</p>
+<h4>Setup</h4>
+<p>Before doing anything else:</p>
+<p>&lt;!-- PRESS_SETUP_CONTRACT_START --&gt;</p>
+<pre><code class="language-bash"># min-binary-version: 4.34.3
+
+# Derive scope first — needed for local build detection
+_scope_dir=&quot;$(git rev-parse --show-toplevel 2&gt;/dev/null || echo &quot;$PWD&quot;)&quot;
+_scope_dir=&quot;$(cd &quot;$_scope_dir&quot; &amp;&amp; pwd -P)&quot;
+
+# Prefer local build when running from inside the printing-press repo.
+_press_repo=false
+if [ -x &quot;$_scope_dir/cli-printing-press&quot; ] &amp;&amp; [ -d &quot;$_scope_dir/cmd/cli-printing-press&quot; ]; then
+  _press_repo=true
+  export PATH=&quot;$_scope_dir:$PATH&quot;
+  echo &quot;Using local build: $_scope_dir/cli-printing-press&quot;
+elif ! command -v cli-printing-press &gt;/dev/null 2&gt;&amp;1; then
+  if [ -x &quot;$HOME/go/bin/cli-printing-press&quot; ]; then
+    echo &quot;cli-printing-press found at ~/go/bin/cli-printing-press but not on PATH.&quot;
+    echo &quot;Add GOPATH/bin to your PATH:  export PATH=\&quot;\$HOME/go/bin:\$PATH\&quot;&quot;
+  else
+    echo &quot;cli-printing-press binary not found.&quot;
+    echo &quot;Install with:  go install github.com/mvanhorn/cli-printing-press/v4/cmd/cli-printing-press@latest&quot;
+  fi
+  return 1 2&gt;/dev/null || exit 1
+fi
+
+# Resolve and emit the absolute path the agent must use for every later
+# `cli-printing-press` invocation. `export PATH` above only affects this one
+# Bash tool call; subsequent calls open a fresh shell and resolve bare
+# `cli-printing-press` against the user's default PATH, where a stale global
+# can silently shadow the local build. The agent captures this marker and
+# substitutes the absolute path into every later invocation.
+if [ &quot;$_press_repo&quot; = &quot;true&quot; ]; then
+  PRINTING_PRESS_BIN=&quot;$_scope_dir/cli-printing-press&quot;
+else
+  PRINTING_PRESS_BIN=&quot;$(command -v cli-printing-press 2&gt;/dev/null || true)&quot;
+fi
+if ! command -v go &gt;/dev/null 2&gt;&amp;1; then
+  echo &quot;&quot;
+  echo &quot;[setup-error] Go toolchain not found.&quot;
+  echo &quot;&quot;
+  echo &quot;This Printing Press flow runs Go-based build or validation commands.&quot;
+  echo &quot;Install Go 1.26.10 or newer from https://go.dev/dl/, then verify with:&quot;
+  echo &quot;  go version&quot;
+  echo &quot;Then re-run this skill.&quot;
+  echo &quot;&quot;
+  return 1 2&gt;/dev/null || exit 1
+fi
+echo &quot;PRINTING_PRESS_BIN=$PRINTING_PRESS_BIN&quot;
+
+_pp_semver_lt() {
+  if [ -z &quot;${PP_SEMVER_A:-}&quot; ] || [ -z &quot;${PP_SEMVER_B:-}&quot; ]; then
+    echo &quot;[setup-error] semver comparison inputs are missing.&quot; &gt;&amp;2
+    return 2
+  fi
+  awk -v a=&quot;${PP_SEMVER_A:-}&quot; -v b=&quot;${PP_SEMVER_B:-}&quot; 'BEGIN {
+    split(a, x, &quot;.&quot;); split(b, y, &quot;.&quot;)
+    for (i = 1; i &lt;= 3; i++) {
+      if ((x[i] + 0) &lt; (y[i] + 0)) exit 0
+      if ((x[i] + 0) &gt; (y[i] + 0)) exit 1
+    }
+    exit 1
+  }'
+}
+
+_pp_go_version_norm() {
+  printf '%s\n' &quot;${PP_GO_VERSION_INPUT:-}&quot; | sed -nE 's/.*go([0-9]+)\.([0-9]+)(\.([0-9]+))?.*/\1.\2.\4/p' | sed -E 's/\.$/.0/'
+}
+
+_pp_check_go_currency() {
+  _pp_go_installed=&quot;$(PP_GO_VERSION_INPUT=&quot;$(go env GOVERSION 2&gt;/dev/null)&quot; _pp_go_version_norm)&quot;
+  _pp_go_required=&quot;$(PP_GO_VERSION_INPUT=&quot;$(go version &quot;$PRINTING_PRESS_BIN&quot; 2&gt;/dev/null)&quot; _pp_go_version_norm)&quot;
+  PP_SEMVER_A=&quot;$_pp_go_installed&quot;
+  PP_SEMVER_B=&quot;$_pp_go_required&quot;
+  if [ -z &quot;$_pp_go_installed&quot; ] || [ -z &quot;$_pp_go_required&quot; ] || ! _pp_semver_lt; then
+    return 0
+  fi
+
+  echo &quot;&quot;
+  if [ &quot;${GOTOOLCHAIN:-auto}&quot; = &quot;local&quot; ]; then
+    echo &quot;[setup-error] Go $_pp_go_required or newer is required by this cli-printing-press binary (installed: $_pp_go_installed).&quot;
+    echo &quot;GOTOOLCHAIN=local disables automatic toolchain downloads, so later Go quality gates would fail.&quot;
+    echo &quot;Install Go $_pp_go_required or newer from https://go.dev/dl/, or unset GOTOOLCHAIN.&quot;
+    echo &quot;&quot;
+    return 1
+  fi
+
+  echo &quot;[go-toolchain-old] Go $_pp_go_required or newer is required by this cli-printing-press binary (installed: $_pp_go_installed).&quot;
+  echo &quot;PRESS_GO_INSTALLED=$_pp_go_installed&quot;
+  echo &quot;PRESS_GO_REQUIRED=$_pp_go_required&quot;
+  echo &quot;Default GOTOOLCHAIN behavior may download the required toolchain during Go commands.&quot;
+  echo &quot;&quot;
+  return 0
+}
+_pp_check_go_currency || { return 1 2&gt;/dev/null || exit 1; }
+
+PRESS_BASE=&quot;$(basename &quot;$_scope_dir&quot; | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9_-]/-/g; s/^-+//; s/-+$//')&quot;
+if [ -z &quot;$PRESS_BASE&quot; ]; then
+  PRESS_BASE=&quot;workspace&quot;
+fi
+
+PRESS_SCOPE=&quot;$PRESS_BASE-$(printf '%s' &quot;$_scope_dir&quot; | shasum -a 256 | cut -c1-8)&quot;
+PRESS_HOME=&quot;${PRINTING_PRESS_HOME:-$HOME/printing-press}&quot;
+PRESS_RUNSTATE=&quot;$PRESS_HOME/.runstate/$PRESS_SCOPE&quot;
+PRESS_LIBRARY=&quot;$PRESS_HOME/library&quot;
+PRESS_MANUSCRIPTS=&quot;$PRESS_HOME/manuscripts&quot;
+PRESS_CURRENT=&quot;$PRESS_RUNSTATE/current&quot;
+
+_pp_check_disk_space() {
+  _pp_disk_warn_kb=&quot;${PRINTING_PRESS_DISK_WARN_KB:-3145728}&quot;
+  _pp_disk_fail_kb=&quot;${PRINTING_PRESS_DISK_FAIL_KB:-524288}&quot;
+  case &quot;$_pp_disk_warn_kb$_pp_disk_fail_kb&quot; in
+    &quot;&quot;|*[!0-9]*) return 0 ;;
+  esac
+
+  _pp_disk_path=&quot;$PRESS_HOME&quot;
+  while [ ! -e &quot;$_pp_disk_path&quot; ] &amp;&amp; [ &quot;$_pp_disk_path&quot; != &quot;/&quot; ]; do
+    _pp_disk_path=&quot;$(dirname &quot;$_pp_disk_path&quot;)&quot;
+  done
+
+  _pp_disk_avail_kb=&quot;$(df -Pk &quot;$_pp_disk_path&quot; 2&gt;/dev/null | awk 'BEGIN {
+    if ((getline header) &lt;= 0 || (getline record) &lt;= 0) exit
+    field_count = split(record, fields)
+    if (field_count &gt;= 4) print fields[4]
+  }')&quot;
+  case &quot;$_pp_disk_avail_kb&quot; in
+    &quot;&quot;|*[!0-9]*) return 0 ;;
+  esac
+
+  if [ &quot;$_pp_disk_avail_kb&quot; -lt &quot;$_pp_disk_fail_kb&quot; ]; then
+    echo &quot;&quot;
+    echo &quot;[setup-error] Critically low disk space on the Printing Press workspace volume.&quot;
+    echo &quot;PRESS_DISK_PATH=$_pp_disk_path&quot;
+    echo &quot;PRESS_DISK_AVAIL_KB=$_pp_disk_avail_kb&quot;
+    echo &quot;PRESS_DISK_FAIL_KB=$_pp_disk_fail_kb&quot;
+    echo &quot;Free disk space or set PRINTING_PRESS_HOME to a volume with more room, then re-run this skill.&quot;
+    echo &quot;&quot;
+    return 1
+  fi
+
+  if [ &quot;$_pp_disk_avail_kb&quot; -lt &quot;$_pp_disk_warn_kb&quot; ]; then
+    echo &quot;&quot;
+    echo &quot;[low-disk] Printing Press workspace volume is low on free space.&quot;
+    echo &quot;PRESS_DISK_PATH=$_pp_disk_path&quot;
+    echo &quot;PRESS_DISK_AVAIL_KB=$_pp_disk_avail_kb&quot;
+    echo &quot;PRESS_DISK_WARN_KB=$_pp_disk_warn_kb&quot;
+    echo &quot;This flow may need several GiB for generated files, Go build cache, module downloads, or repository clones.&quot;
+    echo &quot;&quot;
+  fi
+}
+_pp_check_disk_space || { return 1 2&gt;/dev/null || exit 1; }
+
+mkdir -p &quot;$PRESS_RUNSTATE&quot; &quot;$PRESS_LIBRARY&quot; &quot;$PRESS_MANUSCRIPTS&quot; &quot;$PRESS_CURRENT&quot;
+</code></pre>
+<p>&lt;!-- PRESS_SETUP_CONTRACT_END --&gt;</p>
+<p>After running the setup contract, capture the <code>PRINTING_PRESS_BIN=&lt;abs-path&gt;</code> line from stdout. <strong>Every subsequent <code>cli-printing-press ...</code> invocation in this skill must use that absolute path</strong> (substitute the value, not the literal <code>$PRINTING_PRESS_BIN</code> token) — <code>export PATH</code> above only affects the single Bash tool call it runs in, so later calls open a fresh shell where bare <code>cli-printing-press</code> resolves against the user's default <code>PATH</code> and a stale global can shadow the local build.</p>
+<p>If setup emitted <code>[go-toolchain-old]</code> or <code>[low-disk]</code>, surface the advisory to the user and continue unless setup also emitted <code>[setup-error]</code>. <code>[go-toolchain-old]</code> means later Go commands may download the required toolchain or fail when downloads are blocked; <code>[low-disk]</code> means this run may need several GiB for generated files, Go build cache, module downloads, or repository clones.</p>
+<p>After capturing the binary path, check binary version compatibility. Read the <code>min-binary-version</code> field from this skill's YAML frontmatter. Run <code>&lt;PRINTING_PRESS_BIN&gt; version --json</code> and parse the version from the output. Compare it to <code>min-binary-version</code> using semver rules. If the installed binary is older than the minimum, stop immediately and tell the user: &quot;cli-printing-press binary vX.Y.Z is older than the minimum required vA.B.C. Run <code>go install github.com/mvanhorn/cli-printing-press/v4/cmd/cli-printing-press@latest</code> to update.&quot;</p>
+<h4>Configuration</h4>
+<pre><code>PUBLISH_REPO_URL=&quot;https://github.com/mvanhorn/printing-press-library&quot;
+PUBLISH_REPO_DIR=&quot;$PRESS_HOME/.publish-repo-$PRESS_SCOPE&quot;
+PUBLISH_CONFIG=&quot;$PRESS_HOME/.publish-config-$PRESS_SCOPE.json&quot;
+</code></pre>
+<h5>Publish config</h5>
+<p><code>$PUBLISH_CONFIG</code> stores persistent publish settings as JSON. On first publish, create it with defaults. The user can edit it to change the library repo or module path base.</p>
+<pre><code class="language-json">{
+  &quot;managed_by&quot;: &quot;printing-press-publish&quot;,
+  &quot;repo_url&quot;: &quot;https://github.com/mvanhorn/printing-press-library&quot;,
+  &quot;access&quot;: &quot;push&quot;,
+  &quot;protocol&quot;: &quot;ssh&quot;,
+  &quot;clone_path&quot;: &quot;&lt;home&gt;/printing-press/.publish-repo-&lt;scope&gt;&quot;,
+  &quot;scope_dir&quot;: &quot;/absolute/path/to/source/worktree&quot;,
+  &quot;module_path_base&quot;: &quot;github.com/mvanhorn/printing-press-library/library&quot;
+}
+</code></pre>
+<p>The <code>module_path_base</code> field sets the Go module path prefix for published CLIs. During packaging, the full module path is constructed as <code>&lt;module_path_base&gt;/&lt;category&gt;/&lt;api-slug&gt;</code>. If the user wants CLIs published to a different repo or path, they edit this field.
+Store expanded absolute paths for <code>clone_path</code> and <code>scope_dir</code> so cleanup can
+check them without relying on shell-specific <code>~</code> expansion. The <code>managed_by</code>
+field is required before cleanup may delete anything.</p>
+<h5>Scoped clone cleanup</h5>
+<p>Before creating or reusing <code>$PUBLISH_REPO_DIR</code>, prune scoped publish clones whose
+source worktree no longer exists. This keeps concurrent worktrees isolated
+without accumulating one library clone forever per short-lived worktree.</p>
+<pre><code class="language-bash">find &quot;$PRESS_HOME&quot; -maxdepth 1 -name '.publish-config-*.json' -type f | while read -r cfg; do
+  [ &quot;$cfg&quot; = &quot;$PUBLISH_CONFIG&quot; ] &amp;&amp; continue
+  managed_by=$(jq -r '.managed_by // empty' &quot;$cfg&quot; 2&gt;/dev/null || true)
+  scope_dir=$(jq -r '.scope_dir // empty' &quot;$cfg&quot; 2&gt;/dev/null || true)
+  clone_path=$(jq -r '.clone_path // empty' &quot;$cfg&quot; 2&gt;/dev/null || true)
+  [ &quot;$managed_by&quot; = &quot;printing-press-publish&quot; ] || continue
+  [ -z &quot;$scope_dir&quot; ] &amp;&amp; continue
+  [ -e &quot;$scope_dir&quot; ] &amp;&amp; continue
+  [ -d &quot;$clone_path/.git&quot; ] || continue
+  case &quot;$clone_path&quot; in &quot;$PRESS_HOME&quot;/.publish-repo-*) ;; *) continue ;; esac
+  origin=$(git -C &quot;$clone_path&quot; remote get-url origin 2&gt;/dev/null || true)
+  case &quot;$origin&quot; in *mvanhorn/printing-press-library*|*/*/printing-press-library*) ;; *) continue ;; esac
+  [ -z &quot;$(git -C &quot;$clone_path&quot; status --porcelain)&quot; ] || continue
+  [ &quot;$(git -C &quot;$clone_path&quot; rev-parse --abbrev-ref HEAD 2&gt;/dev/null || true)&quot; = &quot;main&quot; ] || continue
+  rm -rf &quot;$clone_path&quot; &quot;$cfg&quot;
+done
+</code></pre>
+<h4>Step 1: Prerequisites</h4>
+<p>Verify <code>gh</code> is authenticated:</p>
+<pre><code class="language-bash">gh auth status
+</code></pre>
+<p>If this fails, stop and tell the user: &quot;GitHub CLI is not authenticated. Run <code>gh auth login</code> first.&quot;</p>
+<h4>Step 2: Resolve API Slug</h4>
+<p>Run:</p>
+<pre><code class="language-bash">cli-printing-press library list --json
+</code></pre>
+<p>Parse the JSON output into a list of CLIs. The library is now keyed by API slug (the directory name), not CLI name.</p>
+<p><strong>Name resolution order</strong> (matches the score skill for consistency):</p>
+<ol>
+<li><strong>Exact match:</strong> If the argument matches a directory name (API slug) exactly, use it</li>
+<li><strong>CLI name match:</strong> If no exact match, try matching against <code>cli_name</code> fields, then derive the API slug from the manifest's <code>api_name</code> field</li>
+<li><strong>Suffix match:</strong> If no match yet, try <code>&lt;argument&gt;-pp-cli</code> against <code>cli_name</code> fields</li>
+<li><strong>Glob match:</strong> If no suffix match, search for entries where <code>cli_name</code> or <code>api_name</code> contains the argument as a substring. Cap at 5 most-recent matches. If multiple matches, present them via AskUserQuestion and let the user pick</li>
+<li><strong>No match:</strong> List all available CLIs and ask the user to pick or re-enter</li>
+<li><strong>No argument:</strong> If invoked with no name, list all CLIs sorted by modification time and let the user pick</li>
+</ol>
+<p>Once resolved, read the manifest's <code>api_name</code> field to get the API slug. Use this slug for all downstream operations (branch names, registry entries, collision detection, path construction). The <code>cli_name</code> from the manifest is only used for binary-level operations.</p>
+<p>When presenting matches, show the API slug and modification time in a human-friendly format (e.g., &quot;2 hours ago&quot;, &quot;3 days ago&quot;).</p>
+<h4>Step 3: Determine Category</h4>
+<p>Read <code>.printing-press.json</code> from the resolved CLI directory.</p>
+<p><strong>Category resolution order:</strong></p>
+<ol>
+<li>
+<p>If the manifest has a <code>category</code> field, present it for confirmation:</p>
+<blockquote>
+<p>&quot;Publishing as <strong>&lt;category&gt;</strong>. OK?&quot;
+Give the user the option to change it</p>
+</blockquote>
+</li>
+<li>
+<p>If the manifest does not provide a category, present the full list via AskUserQuestion:</p>
+<ul>
+<li>developer-tools, monitoring, cloud, project-management</li>
+<li>productivity, social-and-messaging, sales-and-crm, marketing</li>
+<li>payments, auth, commerce, ai, food-and-dining, health, maps, media-and-entertainment, devices, other</li>
+<li>travel</li>
+</ul>
+</li>
+</ol>
+<h4>Step 3.5: The Greptile review contract — read before opening the PR</h4>
+<p>Every PR into the public library gets an automated Greptile review plus a <code>Greptile policy gate</code> CI job. The canonical contract is the library's <a href="https://github.com/mvanhorn/printing-press-library/blob/main/AGENTS.md#automated-code-review-with-greptile"><code>AGENTS.md → &quot;Automated code review with Greptile&quot;</code></a>; the essentials:</p>
+<ul>
+<li><strong>The bar is resolving every Greptile finding before merge — the 0-5 score is a confidence signal, not the gate.</strong> A 4/5 with everything resolved is ready; a 5/5 with open P1s is not. Treat every P0 and P1 as blocking; P2s need a fix or a concrete deferral reply.</li>
+<li><strong>Reviews are incremental</strong>: every push re-triggers a fresh review that can surface new findings. Drive the PR to a <em>stable</em> green — never declare done after round one.</li>
+<li><strong>Read the latest <code>greptile-apps</code> top-level summary, not just inline threads.</strong> Summaries can carry actionable <code>Comments Outside Diff</code> blocks even when the thread list is empty. Run the repo's review-state helper before declaring ready:<pre><code class="language-bash">python3 .github/scripts/pr-review-state/greptile_feedback.py &lt;PR_NUMBER&gt;
+</code></pre>
+</li>
+<li><strong>Timeout recovery</strong>: if the policy gate fails with <code>Timed out waiting for Greptile Review to complete</code> (large new-CLI diffs are the common trigger), the gate auto-posts <code>@greptileai review</code> after ~3 minutes; if that doesn't recover, post <code>@greptileai review</code> yourself and wait.</li>
+<li><strong>The score gate</strong>: the policy gate requires the latest Greptile comment on the current head SHA to carry <code>Confidence Score: ≥ 4/5</code>. A new push re-runs it — keep the score meeting threshold on the final head.</li>
+</ul>
+<h4>Step 4: Validate</h4>
+<p>Run:</p>
+<pre><code class="language-bash">cli-printing-press publish validate --dir &lt;cli-dir&gt; --json
+</code></pre>
+<p><code>govulncheck</code> in this step is intentionally scoped to <code>&lt;cli-dir&gt;</code> only. It
+uses the default <code>govulncheck ./...</code> mode so reachable symbol findings block
+publish, while merely-required vulnerable modules without a call path do not
+become release blockers. Do not replace this with a full public-library scan or
+<code>govulncheck -show verbose</code>.</p>
+<p>Parse the JSON result. Display each check result to the user:</p>
+<pre><code>Validating &lt;api-slug&gt;...
+  manifest        PASS
+  phase5          PASS
+  go mod tidy     PASS
+  govulncheck     PASS
+  go vet          PASS
+  go build        PASS
+  --help          PASS
+  --version       PASS
+  manuscripts     WARN (no manuscripts found)
+</code></pre>
+<p>If <code>&quot;passed&quot;: false</code>, report the failing checks and <strong>stop</strong>. Do not create a partial PR.
+The <code>manifest</code> check is authoritative for the public-library provenance
+contract: current <code>schema_version</code>, <code>run_id</code>, <code>printing_press_version</code>,
+<code>printer</code>, <code>printer_name</code>, and MCP metadata files when MCP is advertised. If it
+fails, tell the user to re-print or re-package with current Printing Press
+metadata before opening the library PR.</p>
+<p>Save the <code>help_output</code> field from the result — it's used in the PR description.</p>
+<h4>Step 4.5: Live End-to-End Gate</h4>
+<p>Before touching the managed publish clone, rerun the live behavioral gate
+against the CLI that is about to be published. Step 4 proves the source builds
+and validates structurally; this step proves the current post-edit tree still
+works against the real upstream API. Do not rely on an older
+<code>phase5-acceptance.json</code> from generation or polish because the CLI may have
+been hand-edited since that marker was written.</p>
+<p>The one thing this step reuses is a recorded <code>pp:live-happy-path</code> run. Those
+commands were approved for one real run in Phase 5, so this step never runs
+them again and never passes <code>--allow-destructive</code>, which would apply to every
+mutating command in the run. <code>--reuse-live-happy-path</code> counts a recorded run
+only when the marker's <code>source_fingerprint</code>, API, and run match the current
+tree. If the source changed, or the run was never recorded, the feature reports
+hollow with that reason. Stop and ask the operator to approve a new
+<code>dogfood --live --allow-destructive</code> run; do not add the flag here.</p>
+<p><strong>Marker invalidation and sync.</strong> The acceptance marker carries a source
+fingerprint; any <code>.go</code> edit after it was written makes <code>publish package</code> fail
+with &quot;phase5 marker source fingerprint does not match&quot;. Re-run this live gate
+after every source change and write the marker to <strong>both</strong> copies: the embedded
+<code>$CLI_DIR/.manuscripts/&lt;run&gt;/proofs/</code> and the archived
+<code>$PRESS_MANUSCRIPTS/&lt;api&gt;/&lt;run&gt;/proofs/</code> (manuscript lookup is archive-first;
+proof lookup is embedded-first — a stale copy in either location blocks
+packaging).</p>
+<p>Resolve the Phase 5 proofs directory from the CLI manifest:</p>
+<pre><code class="language-bash">MANIFEST=&quot;$CLI_DIR/.printing-press.json&quot;
+API_SLUG=$(jq -r '.api_name // empty' &quot;$MANIFEST&quot;)
+CLI_NAME=$(jq -r '.cli_name // empty' &quot;$MANIFEST&quot;)
+RUN_ID=$(jq -r '.run_id // empty' &quot;$MANIFEST&quot;)
+AUTH_TYPE=$(jq -r '.auth_type // &quot;none&quot;' &quot;$MANIFEST&quot;)
+AUTH_ENV=$(jq -r '.auth_env_vars[0] // empty' &quot;$MANIFEST&quot;)
+
+if [ -z &quot;$API_SLUG&quot; ] || [ -z &quot;$RUN_ID&quot; ]; then
+  echo &quot;ERROR: manifest is missing api_name or run_id; cannot run publish live gate.&quot;
+  exit 1
+fi
+
+PROOFS_DIR=&quot;$CLI_DIR/.manuscripts/$RUN_ID/proofs&quot;
+if [ ! -d &quot;$PROOFS_DIR&quot; ] &amp;&amp; [ -n &quot;$API_SLUG&quot; ] &amp;&amp; [ -d &quot;$PRESS_MANUSCRIPTS/$API_SLUG/$RUN_ID/proofs&quot; ]; then
+  PROOFS_DIR=&quot;$PRESS_MANUSCRIPTS/$API_SLUG/$RUN_ID/proofs&quot;
+elif [ ! -d &quot;$PROOFS_DIR&quot; ] &amp;&amp; [ -n &quot;$CLI_NAME&quot; ] &amp;&amp; [ -d &quot;$PRESS_MANUSCRIPTS/$CLI_NAME/$RUN_ID/proofs&quot; ]; then
+  PROOFS_DIR=&quot;$PRESS_MANUSCRIPTS/$CLI_NAME/$RUN_ID/proofs&quot;
+fi
+mkdir -p &quot;$PROOFS_DIR&quot;
+
+RESEARCH_DIR=&quot;$(dirname &quot;$PROOFS_DIR&quot;)/research&quot;
+if [ ! -f &quot;$RESEARCH_DIR/research.json&quot; ] &amp;&amp; [ -f &quot;$(dirname &quot;$PROOFS_DIR&quot;)/research.json&quot; ]; then
+  RESEARCH_DIR=&quot;$(dirname &quot;$PROOFS_DIR&quot;)&quot;
+fi
+if [ ! -f &quot;$RESEARCH_DIR/research.json&quot; ]; then
+  echo &quot;ERROR: publish live gate requires the run research.json at $RESEARCH_DIR.&quot; &gt;&amp;2
+  exit 1
+fi
+</code></pre>
+<p>Phase 5 markers are bound to the source tree that was exercised. The live
+dogfood writer records <code>source_fingerprint</code> and per-file hashes automatically.
+Publish validation recomputes the fingerprint from the current CLI directory
+and refuses a marker from a drifted tree, naming changed source files when the
+marker has them. README-only edits are outside this fingerprint and do not
+invalidate the gate.</p>
+<p>If <code>SKIP_LIVE_TEST_REASON</code> is unset, run full live dogfood and write a fresh
+acceptance marker into that proofs directory. Send the raw <code>--json</code> transcript
+to a private temporary directory outside every manuscript tree. It contains
+API response bodies and absolute host paths. <code>mktemp -d</code> creates that directory
+mode <code>0700</code>; the transcript file is mode <code>0600</code>. After the gate, delete the
+directory: on failure, print the failing commands first, then delete it; on
+success, delete it before continuing. <code>publish package</code> enforces the same
+boundary: it omits live-dogfood and live-gate JSON reports whatever the
+filename (a top-level <code>tests</code> array whose entries carry <code>output_sample</code>, or
+<code>dir</code> + <code>binary</code> + <code>verdict</code> + <code>tests</code>), plus <code>publish-live-gate*.json</code>,
+<code>*-publish-live-gate.json</code>, <code>dogfood-results*.json</code>,
+<code>*-dogfood-results.json</code>, and <code>pipeline/</code> trees, including copies already
+saved under proofs by an earlier dogfood run. It still copies
+<code>phase5-acceptance.json</code> and <code>phase5-skip.json</code>. Home paths under
+<code>printing-press</code> or a dotfile directory, and any absolute <code>.runstate</code> path,
+are rewritten to <code>&lt;cli-dir&gt;</code> and <code>&lt;runstate&gt;</code> in other shipped manuscript
+text.</p>
+<pre><code class="language-bash">LIVE_GATE_DIR=$(mktemp -d &quot;${TMPDIR:-/tmp}/printing-press-publish.XXXXXX&quot;)
+chmod 700 &quot;$LIVE_GATE_DIR&quot;
+LIVE_GATE_JSON=&quot;$LIVE_GATE_DIR/${API_SLUG}-${RUN_ID}-publish-live-gate.json&quot;
+LIVE_GATE_ARGS=(
+  dogfood
+  --dir &quot;$CLI_DIR&quot;
+  --live
+  --level full
+  --timeout 120s
+  --research-dir &quot;$RESEARCH_DIR&quot;
+  --write-acceptance &quot;$PROOFS_DIR/phase5-acceptance.json&quot;
+  --reuse-live-happy-path &quot;$PROOFS_DIR/phase5-acceptance.json&quot;
+  --json
+)
+if [ -n &quot;$AUTH_ENV&quot; ]; then
+  LIVE_GATE_ARGS+=(--auth-env &quot;$AUTH_ENV&quot;)
+fi
+
+rm -f &quot;$PROOFS_DIR/phase5-skip.json&quot;
+if ! (
+  umask 077
+  set +e
+  &quot;$PRINTING_PRESS_BIN&quot; &quot;${LIVE_GATE_ARGS[@]}&quot; &gt;&quot;$LIVE_GATE_JSON&quot;
+  live_gate_status=$?
+  chmod 600 &quot;$LIVE_GATE_JSON&quot; 2&gt;/dev/null || true
+  exit &quot;$live_gate_status&quot;
+); then
+  echo &quot;Publish live gate failed. See $PROOFS_DIR/phase5-acceptance.json.&quot;
+  jq -r '.tests[]? | select(.status == &quot;fail&quot;) | &quot;- \(.command) [\(.kind)]: \(.reason // &quot;failed&quot;)&quot;' &quot;$LIVE_GATE_JSON&quot; 2&gt;/dev/null || true
+  rm -rf &quot;$LIVE_GATE_DIR&quot;
+  exit 1
+fi
+rm -rf &quot;$LIVE_GATE_DIR&quot;
+</code></pre>
+<p>On failure, stop exactly like Step 4's <code>passed: false</code>: no managed clone, no
+branch, no package, no PR. Report the failed command, exit code when present,
+stderr or reason snippet, and the path to the fresh proof files so the operator
+can re-run dogfood and fix the CLI.</p>
+<p>If <code>SKIP_LIVE_TEST_REASON</code> is set from <code>--skip-live-test=&lt;reason&gt;</code>, write a
+fresh skip marker instead of running dogfood:</p>
+<pre><code class="language-bash">SKIP_REASON_LOWER=$(printf '%s' &quot;$SKIP_LIVE_TEST_REASON&quot; | tr '[:upper:]' '[:lower:]')
+case &quot;$AUTH_TYPE&quot; in
+  api_key|bearer_token|oauth2)
+    ;;
+  none)
+    case &quot;$SKIP_REASON_LOWER&quot; in
+      *upstream*outage*|lan-unreachable-from-generation-host)
+        ;;
+      *)
+        echo &quot;ERROR: --skip-live-test is only valid for auth_type=none during a known upstream outage or LAN-unreachable hardware case.&quot;
+        exit 1
+        ;;
+    esac
+    ;;
+  *)
+    echo &quot;ERROR: --skip-live-test is not valid for auth_type=$AUTH_TYPE. Run the live gate instead.&quot;
+    exit 1
+    ;;
+esac
+
+API_KEY_AVAILABLE=false
+if [ -n &quot;$AUTH_ENV&quot; ] &amp;&amp; [ -n &quot;${!AUTH_ENV:-}&quot; ]; then
+  API_KEY_AVAILABLE=true
+fi
+
+SOURCE_FILES=$(find &quot;$CLI_DIR&quot; \( -type d \( -name '.git' -o -name '.manuscripts' -o -name '.printing-press' \) -prune \) -o -type f \( -name '*.go' -o -name 'go.mod' -o -name 'go.sum' -o -name 'spec.json' -o -name 'spec.yaml' -o -name 'spec.yml' \) -print | LC_ALL=C sort)
+SOURCE_FINGERPRINT=$(
+  while IFS= read -r SOURCE_FILE; do
+    [ -z &quot;$SOURCE_FILE&quot; ] &amp;&amp; continue
+    SOURCE_REL=&quot;${SOURCE_FILE#&quot;$CLI_DIR&quot;/}&quot;
+    SOURCE_HASH=$(shasum -a 256 &quot;$SOURCE_FILE&quot; | sed 's/[[:space:]].*//')
+    printf '%s\0%s\n' &quot;$SOURCE_REL&quot; &quot;$SOURCE_HASH&quot;
+  done &lt;&lt;EOF | shasum -a 256 | sed 's/[[:space:]].*//'
+$SOURCE_FILES
+EOF
+)
+if [ -z &quot;$SOURCE_FINGERPRINT&quot; ]; then
+  echo &quot;ERROR: unable to fingerprint CLI source before writing the Phase 5 skip marker.&quot;
+  exit 1
+fi
+
+rm -f &quot;$PROOFS_DIR/phase5-acceptance.json&quot;
+jq -n \
+  --arg api &quot;$API_SLUG&quot; \
+  --arg run &quot;$RUN_ID&quot; \
+  --arg reason &quot;$SKIP_LIVE_TEST_REASON&quot; \
+  --arg auth &quot;$AUTH_TYPE&quot; \
+  --arg source_fingerprint &quot;$SOURCE_FINGERPRINT&quot; \
+  --argjson api_key_available &quot;$API_KEY_AVAILABLE&quot; \
+  --argjson browser_session_available false \
+  '{
+    schema_version: 1,
+    api_name: $api,
+    run_id: $run,
+    status: &quot;skip&quot;,
+    level: &quot;none&quot;,
+    source_fingerprint: $source_fingerprint,
+    skip_reason: $reason,
+    auth_context: {
+      type: $auth,
+      api_key_available: $api_key_available,
+      browser_session_available: $browser_session_available
+    }
+  }' &gt; &quot;$PROOFS_DIR/phase5-skip.json&quot;
+if [ &quot;$SKIP_REASON_LOWER&quot; = &quot;lan-unreachable-from-generation-host&quot; ]; then
+  tmp_marker=$(mktemp &quot;${TMPDIR:-/tmp}/phase5-skip.XXXXXX&quot;)
+  jq '.auth_context.local_network_only = true' &quot;$PROOFS_DIR/phase5-skip.json&quot; &gt; &quot;$tmp_marker&quot; &amp;&amp;
+    mv &quot;$tmp_marker&quot; &quot;$PROOFS_DIR/phase5-skip.json&quot;
+fi
+LIVE_GATE_JSON=&quot;&quot;
+</code></pre>
+<p>Then rerun Step 4's validation:</p>
+<pre><code class="language-bash">&quot;$PRINTING_PRESS_BIN&quot; publish validate --dir &quot;$CLI_DIR&quot; --json
+</code></pre>
+<p>This second validation proves the fresh acceptance or skip marker satisfies the
+same Phase 5 contract that package and publish rely on. If it fails, stop
+before Step 5.</p>
+<h4>Step 5: Managed Clone</h4>
+<p>The publish skill manages its own clone of the library repo at <code>$PUBLISH_REPO_DIR</code>.</p>
+<h5>First-time setup</h5>
+<p>If <code>$PUBLISH_REPO_DIR</code> does not exist:</p>
+<ol>
+<li>
+<p><strong>Detect push access:</strong></p>
+<pre><code class="language-bash">GH_USER=$(gh api user --jq '.login')
+HAS_PUSH=$(gh api repos/mvanhorn/printing-press-library --jq '.permissions.push' 2&gt;/dev/null || echo &quot;false&quot;)
+</code></pre>
+</li>
+<li>
+<p><strong>Detect git protocol:</strong></p>
+<pre><code class="language-bash">USE_SSH=false
+if ssh -T git@github.com 2&gt;&amp;1 | grep -q &quot;successfully authenticated&quot;; then
+  USE_SSH=true
+fi
+</code></pre>
+</li>
+<li>
+<p><strong>Clone based on access:</strong></p>
+<p><strong>Push access</strong> (<code>HAS_PUSH</code> is <code>true</code>):</p>
+<pre><code class="language-bash"># Clone directly — origin IS the upstream
+if [ &quot;$USE_SSH&quot; = &quot;true&quot; ]; then
+  REPO_URL=&quot;git@github.com:mvanhorn/printing-press-library.git&quot;
+else
+  REPO_URL=&quot;https://github.com/mvanhorn/printing-press-library.git&quot;
+fi
+# Lightweight clone: blobless + shallow + sparse. The publish flow only
+# touches the target CLI's own directory — it no longer regenerates the
+# cli-skills/registry mirror (see Step 6) — so materializing every other
+# CLI's source is wasted bandwidth and disk (a full clone is multiple GB;
+# this is tens of MB). The cone keeps `tools`, `cli-skills`, and the target
+# `library/&lt;category&gt;` so the in-category find/rm/copy operations below work
+# on a real working tree. Cross-category collision checks use `git ls-tree`
+# (which reads the full tree from the blobless clone) instead of `ls`.
+git clone --filter=blob:none --depth 1 --sparse &quot;$REPO_URL&quot; &quot;$PUBLISH_REPO_DIR&quot;
+# Skill-managed clones are owned by this flow; force LF checkout behavior so
+# Windows core.autocrlf defaults do not create CRLF-only mirror diffs.
+git -C &quot;$PUBLISH_REPO_DIR&quot; config core.autocrlf false
+git -C &quot;$PUBLISH_REPO_DIR&quot; sparse-checkout set tools cli-skills library/&lt;category&gt;
+</code></pre>
+<p><strong>No push access</strong> (<code>HAS_PUSH</code> is <code>false</code>):</p>
+<pre><code class="language-bash"># Fork first — fail explicitly if forking is blocked
+if ! gh repo fork mvanhorn/printing-press-library --clone=false 2&gt;&amp;1; then
+  echo &quot;ERROR: Could not fork mvanhorn/printing-press-library.&quot;
+  echo &quot;The repo may restrict forking, or you may already have a fork with a different name.&quot;
+  echo &quot;Fork manually at https://github.com/mvanhorn/printing-press-library/fork&quot;
+  exit 1
+fi
+FORK=&quot;$GH_USER/printing-press-library&quot;
+
+# Build URLs based on protocol preference
+if [ &quot;$USE_SSH&quot; = &quot;true&quot; ]; then
+  FORK_URL=&quot;git@github.com:$FORK.git&quot;
+  UPSTREAM_URL=&quot;git@github.com:mvanhorn/printing-press-library.git&quot;
+else
+  FORK_URL=&quot;https://github.com/$FORK.git&quot;
+  UPSTREAM_URL=&quot;https://github.com/mvanhorn/printing-press-library.git&quot;
+fi
+
+# Lightweight clone (blobless + shallow + sparse) — see the push-access
+# branch above for the rationale and cone contents.
+git clone --filter=blob:none --depth 1 --sparse &quot;$FORK_URL&quot; &quot;$PUBLISH_REPO_DIR&quot;
+# Skill-managed clones are owned by this flow; force LF checkout behavior so
+# Windows core.autocrlf defaults do not create CRLF-only mirror diffs.
+git -C &quot;$PUBLISH_REPO_DIR&quot; config core.autocrlf false
+cd &quot;$PUBLISH_REPO_DIR&quot;
+git sparse-checkout set tools cli-skills library/&lt;category&gt;
+git remote add upstream &quot;$UPSTREAM_URL&quot;
+git fetch --filter=blob:none --depth 1 upstream
+</code></pre>
+</li>
+<li>
+<p><strong>Cache the config:</strong></p>
+<pre><code class="language-json">{
+  &quot;managed_by&quot;: &quot;printing-press-publish&quot;,
+  &quot;repo_url&quot;: &quot;https://github.com/mvanhorn/printing-press-library&quot;,
+  &quot;access&quot;: &quot;push or fork&quot;,
+  &quot;gh_user&quot;: &quot;&lt;gh username&gt;&quot;,
+  &quot;protocol&quot;: &quot;ssh or https&quot;,
+  &quot;clone_path&quot;: &quot;&lt;expanded $PUBLISH_REPO_DIR&gt;&quot;,
+  &quot;scope_dir&quot;: &quot;&lt;absolute source worktree path&gt;&quot;,
+  &quot;module_path_base&quot;: &quot;github.com/mvanhorn/printing-press-library/library&quot;
+}
+</code></pre>
+<p>Write to <code>$PUBLISH_CONFIG</code>. The <code>access</code> field determines the flow for all subsequent steps. The <code>gh_user</code> field is used for cross-repo PR heads. The <code>module_path_base</code> always references the upstream repo (PRs land there).</p>
+</li>
+</ol>
+<h5>Subsequent publishes</h5>
+<p>Read <code>$PUBLISH_CONFIG</code>, then re-check access in case it changed (user was granted push access, or access was revoked):</p>
+<pre><code class="language-bash">CURRENT_ACCESS=$(gh api repos/mvanhorn/printing-press-library --jq '.permissions.push' 2&gt;/dev/null || echo &quot;false&quot;)
+CACHED_ACCESS=$(jq -r .access &quot;$PUBLISH_CONFIG&quot;)
+
+if [ &quot;$CURRENT_ACCESS&quot; = &quot;true&quot; ] &amp;&amp; [ &quot;$CACHED_ACCESS&quot; = &quot;fork&quot; ]; then
+  echo &quot;Access upgraded to push. Reconfiguring clone...&quot;
+  rm -rf &quot;$PUBLISH_REPO_DIR&quot;
+  # Re-run first-time setup with push access
+fi
+if [ &quot;$CURRENT_ACCESS&quot; = &quot;false&quot; ] &amp;&amp; [ &quot;$CACHED_ACCESS&quot; = &quot;push&quot; ]; then
+  echo &quot;Push access revoked. Reconfiguring clone with fork...&quot;
+  rm -rf &quot;$PUBLISH_REPO_DIR&quot;
+  # Re-run first-time setup with fork access
+fi
+</code></pre>
+<p>If the clone was removed due to an access change, re-run first-time setup above. Otherwise, freshen the clone to match the canonical upstream:</p>
+<pre><code class="language-bash">cd &quot;$PUBLISH_REPO_DIR&quot;
+git config core.autocrlf false
+
+if [ &quot;$(jq -r .access $PUBLISH_CONFIG)&quot; = &quot;push&quot; ]; then
+  # Push access: origin IS the upstream
+  git fetch --filter=blob:none --depth 1 origin
+  git checkout main
+  git reset --hard origin/main
+  # Remove stale untracked library fragments from prior publish branches before
+  # copying this CLI. Ignored files hidden by a branch-local .gitignore can
+  # become ordinary untracked files after checkout, and a later broad library
+  # add must not sweep another CLI's leftovers into this PR.
+  git clean -fdq library/
+else
+  # Fork: origin is the fork, upstream is canonical
+  git fetch --filter=blob:none --depth 1 upstream
+  git checkout main
+  git reset --hard upstream/main
+  # Remove stale untracked library fragments from prior publish branches before
+  # copying this CLI. Ignored files hidden by a branch-local .gitignore can
+  # become ordinary untracked files after checkout, and a later broad library
+  # add must not sweep another CLI's leftovers into this PR.
+  git clean -fdq library/
+  # Also sync origin (fork) so git push works cleanly
+  git push origin main --force-with-lease 2&gt;/dev/null || true
+fi
+
+# Existing managed clones may already be sparse for a different publish
+# category. Refresh the cone for the current target category before Step 6 uses
+# filesystem-based removal and copy operations.
+if git -C &quot;$PUBLISH_REPO_DIR&quot; config --bool core.sparseCheckout | grep -qx true; then
+  git -C &quot;$PUBLISH_REPO_DIR&quot; sparse-checkout set tools cli-skills library/&lt;category&gt;
+fi
+</code></pre>
+<p>Verify the clone is healthy:</p>
+<pre><code class="language-bash">git rev-parse --is-inside-work-tree
+test &quot;$(git rev-parse --abbrev-ref HEAD)&quot; = &quot;main&quot;
+</code></pre>
+<p>If this fails, the clone is corrupt. Remove <code>$PUBLISH_REPO_DIR</code> and re-run first-time setup.</p>
+<h5>Interrupted state recovery</h5>
+<p>Before creating a new branch, check for uncommitted changes:</p>
+<pre><code class="language-bash">cd &quot;$PUBLISH_REPO_DIR&quot;
+git status --porcelain
+</code></pre>
+<p>If there are uncommitted changes, ask the user via AskUserQuestion:</p>
+<ul>
+<li>&quot;Reset and start fresh&quot;</li>
+<li>&quot;Continue with existing changes&quot;</li>
+</ul>
+<p>If reset, run <code>git checkout -- . &amp;&amp; git clean -fd</code>.</p>
+<h5>Pre-package publication-state snapshot</h5>
+<p>Before Step 6 mutates the managed clone, record whether this API slug already
+exists in the public library tree. Step 6 removes and replaces
+<code>library/*/&lt;api-slug&gt;</code>, so any collision or publication-path decision made
+after packaging must use this pre-package snapshot, not a fresh <code>ls</code>.</p>
+<pre><code class="language-bash"># Read from the git tree, not the working dir: the sparse checkout only
+# materializes the target category, but a slug can collide in any category.
+PREEXISTING_MERGED_PATHS=$(git -C &quot;$PUBLISH_REPO_DIR&quot; ls-tree -r --name-only HEAD \
+  | sed -n 's#^\(library/[^/]*/&lt;api-slug&gt;\)/.*#\1#p' | sort -u || true)
+PREEXISTING_MERGED_COLLISION=false
+if [ -n &quot;$PREEXISTING_MERGED_PATHS&quot; ]; then
+  PREEXISTING_MERGED_COLLISION=true
+  # If this is a category-change reprint, materialize the existing category path
+  # before Step 6 runs filesystem-based ledger preservation and removal.
+  if git -C &quot;$PUBLISH_REPO_DIR&quot; config --bool core.sparseCheckout | grep -qx true; then
+    while IFS= read -r EXISTING_MERGED_PATH; do
+      [ -n &quot;$EXISTING_MERGED_PATH&quot; ] || continue
+      if [ &quot;$EXISTING_MERGED_PATH&quot; != &quot;library/&lt;category&gt;/&lt;api-slug&gt;&quot; ]; then
+        git -C &quot;$PUBLISH_REPO_DIR&quot; sparse-checkout add &quot;$EXISTING_MERGED_PATH&quot;
+      fi
+    done &lt;&lt;EOF
+$PREEXISTING_MERGED_PATHS
+EOF
+  fi
+fi
+</code></pre>
+<h4>Step 6: Package</h4>
+<p>Read <code>$PUBLISH_CONFIG</code> to get <code>module_path_base</code>. Construct the full module path using the API slug (not the CLI name):</p>
+<pre><code>MODULE_PATH=&quot;&lt;module_path_base&gt;/&lt;category&gt;/&lt;api-slug&gt;&quot;
+</code></pre>
+<p>For example: <code>github.com/mvanhorn/printing-press-library/library/productivity/notion</code></p>
+<p><strong><code>--module-path</code> is required in <code>--dest</code> mode.</strong> When packaging with <code>--dest</code>,
+always pass <code>--module-path &quot;$MODULE_PATH&quot;</code>. Omitting it silently skips the
+go.mod/import rewrite (<code>RewriteModulePath</code> is gated on the flag), so the
+packaged CLI keeps <code>module &lt;cli-name&gt;</code> and the library CI rejects the PR with a
+module-path mismatch. <code>publish package</code> verifies the staged tree's module path
+after the rewrite: with <code>--module-path</code>, the staged <code>go.mod</code> must declare
+exactly that path (bare CLI-name modules still fail); without <code>--module-path</code>,
+the canonical <code>github.com/mvanhorn/printing-press-library/library/</code> prefix is
+required. Standalone <code>publish validate</code> on a source tree surfaces the check as
+a warning — the bare module name is expected there pre-rewrite; the
+authoritative failure is in the package step.</p>
+<p>Run <code>publish package</code> with <code>--target</code> to stage the CLI into a unique temporary
+directory, then copy it into the publish repo:</p>
+<pre><code class="language-bash">PUBLISH_STAGING_ROOT=&quot;/tmp/printing-press/publish&quot;
+mkdir -p &quot;$PUBLISH_STAGING_ROOT&quot;
+STAGING_PARENT=&quot;$(mktemp -d &quot;$PUBLISH_STAGING_ROOT/&lt;api-slug&gt;-XXXXXX&quot;)&quot;
+STAGING_DIR=&quot;$STAGING_PARENT/package&quot;
+
+# Reprints pass the existing public-library entry so package stamps its
+# runtime version declaration layout instead of leaving 0.0.0-dev.
+BASE_CLI_DIR=&quot;$(find &quot;$PUBLISH_REPO_DIR/library&quot; -mindepth 2 -maxdepth 2 -type d -name &quot;&lt;api-slug&gt;&quot; -print -quit)&quot;
+PACKAGE_BASE_ARGS=()
+if [ -n &quot;$BASE_CLI_DIR&quot; ]; then
+  PACKAGE_BASE_ARGS=(--base-dir &quot;$BASE_CLI_DIR&quot;)
+fi
+
+cli-printing-press publish package \
+  --dir &lt;cli-dir&gt; \
+  --category &lt;category&gt; \
+  --target &quot;$STAGING_DIR&quot; \
+  --module-path &quot;$MODULE_PATH&quot; \
+  &quot;${PACKAGE_BASE_ARGS[@]}&quot; \
+  --json
+</code></pre>
+<p>Parse the JSON result. Note the <code>staged_dir</code>, <code>module_path</code>, <code>manuscripts_included</code>, and <code>run_id</code>. The <code>module_path</code> field confirms the Go module path that was set in the packaged CLI's <code>go.mod</code> and import paths.</p>
+<p><code>publish package</code> performs the mandatory vendor-prefix secret scan over the staged CLI, including copied manuscripts, before returning success. If it reports <code>vendor-prefix tokens detected</code>, stop and remove or redact the reported file:line findings before retrying. This is a hard gate and does not depend on <code>gitleaks</code>, <code>trufflehog</code>, or destination-repo push protection.</p>
+<p>Then copy the staged CLI into the publish repo, replacing any existing version
+while preserving the public library's release ledger files when this is a
+reprint:</p>
+<pre><code class="language-bash">STAGED_CLI_DIR=&quot;$STAGING_DIR/library/&lt;category&gt;/&lt;api-slug&gt;&quot;
+DEST_CATEGORY_DIR=&quot;$PUBLISH_REPO_DIR/library/&lt;category&gt;&quot;
+DEST_CLI_DIR=&quot;$DEST_CATEGORY_DIR/&lt;api-slug&gt;&quot;
+
+if [ ! -d &quot;$STAGED_CLI_DIR&quot; ]; then
+  echo &quot;missing staged CLI directory: $STAGED_CLI_DIR&quot; &gt;&amp;2
+  exit 1
+fi
+mkdir -p &quot;$DEST_CATEGORY_DIR&quot;
+
+# Preserve release-ledger files and existing shipcheck reports from the
+# current public-library entry before removing it. New CLIs omit .printing-press-release.json until the library's
+# post-merge workflow stamps a real release; reprints keep existing changelog
+# history and release metadata until that workflow stamps the next release.
+# Fresh prints strip dogfood-results.json and workflow-verify-report.json from
+# the staged tree; reprints must copy those catalog files back so the overlay
+# does not delete them.
+RELEASE_LEDGER_TMP=&quot;$(mktemp -d)&quot;
+PUBLISH_SWAP_DIR=&quot;$(mktemp -d &quot;$DEST_CATEGORY_DIR/.&lt;api-slug&gt;.XXXXXX&quot;)&quot;
+trap 'rm -rf &quot;$RELEASE_LEDGER_TMP&quot; &quot;$PUBLISH_SWAP_DIR&quot;' EXIT
+for LEDGER_FILE in CHANGELOG.md .printing-press-release.json dogfood-results.json workflow-verify-report.json; do
+  EXISTING_LEDGER=&quot;$(find &quot;$PUBLISH_REPO_DIR/library&quot; -mindepth 3 -maxdepth 3 -path &quot;*/&lt;api-slug&gt;/$LEDGER_FILE&quot; -print -quit)&quot;
+  if [ -n &quot;$EXISTING_LEDGER&quot; ]; then
+    cp &quot;$EXISTING_LEDGER&quot; &quot;$RELEASE_LEDGER_TMP/$LEDGER_FILE&quot;
+  fi
+done
+
+# Copy staged CLI into a same-category swap dir before deleting the current
+# public-library entry. This keeps a failed copy from leaving the publish repo
+# with the old CLI removed.
+cp -R &quot;$STAGED_CLI_DIR/.&quot; &quot;$PUBLISH_SWAP_DIR/&quot;
+
+for LEDGER_FILE in CHANGELOG.md .printing-press-release.json dogfood-results.json workflow-verify-report.json; do
+  if [ -f &quot;$RELEASE_LEDGER_TMP/$LEDGER_FILE&quot; ]; then
+    cp &quot;$RELEASE_LEDGER_TMP/$LEDGER_FILE&quot; &quot;$PUBLISH_SWAP_DIR/$LEDGER_FILE&quot;
+  fi
+done
+
+# Remove existing version (handles category changes), then atomically install
+# the prepared replacement within the destination category.
+rm -rf &quot;$PUBLISH_REPO_DIR/library&quot;/*/&quot;&lt;api-slug&gt;&quot;
+mv &quot;$PUBLISH_SWAP_DIR&quot; &quot;$DEST_CLI_DIR&quot;
+rm -rf &quot;$RELEASE_LEDGER_TMP&quot;
+trap - EXIT
+
+# Reprints must preserve the base CLI's runtime version declaration layout as
+# well as its ledger files. Fresh prints can move `var version = ...` between
+# files, but the public library's release-ledger guard rejects those moves in a
+# normal publish PR because the post-merge release workflow owns version stamps.
+cd &quot;$PUBLISH_REPO_DIR&quot;
+VERSION_DECL_BASE_REF=upstream/main
+if ! git rev-parse --verify --quiet &quot;$VERSION_DECL_BASE_REF&quot; &gt;/dev/null; then
+  VERSION_DECL_BASE_REF=origin/main
+fi
+VERSION_DECL_DIFF=&quot;$(git diff --unified=0 &quot;$VERSION_DECL_BASE_REF&quot; -- \
+  &quot;library/*/&lt;api-slug&gt;/internal/cli/root.go&quot; \
+  &quot;library/*/&lt;api-slug&gt;/internal/cli/version.go&quot; \
+  &quot;library/*/&lt;api-slug&gt;/cmd/&lt;api-slug&gt;-pp-mcp/main.go&quot;)&quot; || {
+  echo &quot;failed to compare runtime version declarations with ${VERSION_DECL_BASE_REF}&quot; &gt;&amp;2
+  exit 1
+}
+printf '%s\n' &quot;$VERSION_DECL_DIFF&quot; \
+  | grep -E '^[+-][[:space:]]*var version[[:space:]]*=' || true
+
+# If the command prints a change, stop. Do not hand-edit version declarations.
+# publish package --base-dir should already have reconciled the replacement to
+# the base tree:
+# - A root.go declaration stays in root.go with the exact stamped value; remove
+#   only the duplicate declaration from version.go and keep its command code.
+# - A version.go declaration stays in version.go with the exact stamped value;
+#   remove any fresh declaration added elsewhere in the internal CLI package.
+# - An MCP main declaration stays in MCP main with the exact stamped value. If
+#   the base MCP main hardcodes the version instead, preserve that expression.
+# - If the base has no declaration in one of these runtime surfaces, preserve
+#   that no declaration layout and its existing literal/reference form. Do not
+#   introduce the fresh print's 0.0.0-dev declaration.
+# Re-run publish package with --base-dir pointing at the existing library entry,
+# then repeat this diff. Do not continue until the command prints no matching lines.
+
+# Remove root-level binaries (should not be committed). publish package
+# already strips these before the copy; this rm -f is belt-and-suspenders
+# for the agent path. Cover the names local build paths can drop: bare slug,
+# CLI binary, live-dogfood probe binary, and MCP peer.
+rm -f &quot;$PUBLISH_REPO_DIR/library/&lt;category&gt;/&lt;api-slug&gt;/&lt;api-slug&gt;&quot; \
+      &quot;$PUBLISH_REPO_DIR/library/&lt;category&gt;/&lt;api-slug&gt;/&lt;cli-name&gt;&quot; \
+      &quot;$PUBLISH_REPO_DIR/library/&lt;category&gt;/&lt;api-slug&gt;/&lt;cli-name&gt;-dogfood&quot; \
+      &quot;$PUBLISH_REPO_DIR/library/&lt;category&gt;/&lt;api-slug&gt;/&lt;api-slug&gt;-pp-mcp&quot;
+
+# publish package removes `.printing-press-live-check-*` directories and
+# compiled executables at any depth from the staged tree before this copy.
+# Do not copy those paths back from &lt;cli-dir&gt;; a depth-1 rm does not see them.
+
+# Defense-in-depth: validate printer attribution before README and registry surfaces.
+PRINTER=$(jq -r '.printer // &quot;&quot;' &quot;$PUBLISH_REPO_DIR/library/&lt;category&gt;/&lt;api-slug&gt;/.printing-press.json&quot;)
+PRINTER_NAME=$(jq -r '.printer_name // &quot;&quot;' &quot;$PUBLISH_REPO_DIR/library/&lt;category&gt;/&lt;api-slug&gt;/.printing-press.json&quot;)
+if [ -z &quot;$PRINTER&quot; ]; then
+  echo &quot;ERROR: manifest .printer is empty. Set 'git config --global github.user &lt;your-handle&gt;' and re-print before publishing.&quot;
+  exit 1
+fi
+if [ &quot;$PRINTER&quot; = &quot;USER&quot; ] || [ &quot;$PRINTER&quot; = &quot;user&quot; ]; then
+  echo &quot;ERROR: manifest .printer is the literal sentinel \&quot;$PRINTER\&quot; (git config github.user was unset at print time). Set it and re-print before publishing.&quot;
+  exit 1
+fi
+if [ -z &quot;$PRINTER_NAME&quot; ]; then
+  echo &quot;ERROR: manifest .printer_name is empty. Set 'git config --global user.name &lt;your display name&gt;' and re-print before publishing.&quot;
+  exit 1
+fi
+
+# Do NOT regenerate or commit `cli-skills/pp-&lt;api-slug&gt;/SKILL.md` or
+# `registry.json` here. Both are regenerated post-merge by the library's
+# `generate-skills.yml` and `generate-registry.yml` workflows via
+# `[skip ci]` bot commits. The library's `Fail on changes to generated
+# artifacts` check in `verify-library-conventions.yml` hard-fails any PR
+# whose diff against base touches these files, regardless of fork vs
+# same-repo origin. The library no longer has an in-PR auto-fix path;
+# do not re-introduce a mirror or registry regen here. Also do NOT hand-update
+# CHANGELOG.md, .printing-press-release.json, or runtime version strings for
+# release accounting; the library release-ledger workflow owns those post-merge.
+
+# Verify this changed/new CLI builds and has no reachable Go vulnerabilities from the publish repo
+cd &quot;$PUBLISH_REPO_DIR/library/&lt;category&gt;/&lt;api-slug&gt;&quot; \
+  &amp;&amp; go build ./... \
+  &amp;&amp; go run golang.org/x/vuln/cmd/govulncheck@v1.3.0 ./...
+</code></pre>
+<p>Keep vulnerability verification scoped to <code>library/&lt;category&gt;/&lt;api-slug&gt;</code> in
+publish PRs. The public library is a historical collection and cannot be kept
+fully current on every unrelated PR; whole-library govulncheck sweeps belong in
+a scheduled/reporting workflow, while blocking CI should scan only added or
+changed CLI modules.</p>
+<p>After the publish repo copy and build verification are complete, remove the staging
+directory:</p>
+<pre><code class="language-bash">rm -rf &quot;$STAGING_PARENT&quot;
+</code></pre>
+<p>Note: <code>staged_dir</code> is keyed by the API slug (e.g., <code>espn</code>), matching the publish repo's directory layout. The copy step is a same-name copy, not a rename.</p>
+<h4>Step 6.5: Record Customizations</h4>
+<p>Before collision detection or branch creation, inspect the packaged CLI's
+customizations index:</p>
+<p>The index ships in one of two shapes: the per-patch directory
+<code>.printing-press-patches/</code> (current) or the legacy single-array
+<code>.printing-press-patches.json</code> (older prints, not yet normalized). Validate
+whichever is present:</p>
+<pre><code class="language-bash">PATCHES_DIR=&quot;$PUBLISH_REPO_DIR/library/&lt;category&gt;/&lt;api-slug&gt;/.printing-press-patches&quot;
+PATCHES_INDEX=&quot;$PUBLISH_REPO_DIR/library/&lt;category&gt;/&lt;api-slug&gt;/.printing-press-patches.json&quot;
+if [ -d &quot;$PATCHES_DIR&quot; ]; then
+  # Per-patch directory: every &lt;id&gt;.json must be a JSON object carrying the same
+  # provenance the legacy single-array file kept at its top level (now per file),
+  # so validation is at parity with the legacy branch below. _meta.json
+  # (CLI-global lists) and .gitkeep are exempt.
+  for f in &quot;$PATCHES_DIR&quot;/*.json; do
+    [ -e &quot;$f&quot; ] || continue
+    [ &quot;$(basename &quot;$f&quot;)&quot; = &quot;_meta.json&quot; ] &amp;&amp; continue
+    if ! jq -e '
+      (type == &quot;object&quot;) and
+      (.schema_version | type == &quot;number&quot;) and
+      (.id | type == &quot;string&quot; and length &gt; 0) and
+      (.applied_at | type == &quot;string&quot; and length &gt; 0) and
+      (.base_run_id | type == &quot;string&quot; and length &gt; 0) and
+      (.base_printing_press_version | type == &quot;string&quot; and length &gt; 0)
+    ' &quot;$f&quot; &gt;/dev/null; then
+      echo &quot;ERROR: packaged CLI has a malformed patch file $f. Reprint with a current cli-printing-press binary before publishing.&quot;
+      exit 1
+    fi
+  done
+elif [ -f &quot;$PATCHES_INDEX&quot; ]; then
+  if ! jq -e '
+    (.schema_version | type == &quot;number&quot;) and
+    (.applied_at | type == &quot;string&quot; and length &gt; 0) and
+    (.base_run_id | type == &quot;string&quot; and length &gt; 0) and
+    (.base_printing_press_version | type == &quot;string&quot; and length &gt; 0) and
+    (.patches | type == &quot;array&quot;)
+  ' &quot;$PATCHES_INDEX&quot; &gt;/dev/null; then
+    echo &quot;ERROR: packaged CLI has malformed .printing-press-patches.json. Reprint with a current cli-printing-press binary before publishing.&quot;
+    exit 1
+  fi
+else
+  echo &quot;ERROR: packaged CLI is missing its patches index (.printing-press-patches/ or .printing-press-patches.json). Reprint with a current cli-printing-press binary before publishing.&quot;
+  exit 1
+fi
+</code></pre>
+<p>Fresh prints from current <code>cli-printing-press generate</code> include the
+<code>.printing-press-patches/</code> directory with just a <code>.gitkeep</code>; leave it unchanged
+when no hand customization was made after generation. If neither shape is
+present, the CLI was generated by an older binary; reprint with a current
+<code>cli-printing-press</code> build rather than synthesizing the
+deterministic provenance fields by hand.</p>
+<h4>Step 6.6: Record contributor attribution</h4>
+<p>When the human running this publish is <strong>not</strong> the CLI's original creator,
+record them as a contributor so they are credited in the README byline, NOTICE,
+and the public registry. The command is idempotent — it skips the creator and
+anyone already listed — so it is safe to run on every publish:</p>
+<pre><code class="language-bash">&quot;$PRINTING_PRESS_BIN&quot; contributors add \
+  --dir &quot;$PUBLISH_REPO_DIR/library/&lt;category&gt;/&lt;api-slug&gt;&quot; \
+  || echo &quot;note: this binary predates 'contributors add'; skipping contributor recording&quot;
+</code></pre>
+<p>The step is best-effort: <code>contributors add</code> is an additive command, so a binary
+that predates it simply skips recording rather than blocking the publish (the
+<code>min-binary-version</code> floor only tracks the major). Pass <code>--front</code> when this
+publish is a reprint (a from-scratch regeneration) so the reprinter is listed
+first among contributors. Never edit <code>contributors[]</code> or the <code>creator</code> block by
+hand — the creator is permanent, and the command owns the list (matching the
+manifest-as-authority rule).</p>
+<p>If you changed generated CLI files during the print or publish session, record
+one concise entry per customization before opening the library PR — one
+<code>.printing-press-patches/&lt;id&gt;.json</code> file per patch (the directory supersedes the
+legacy <code>patches[]</code> array, so concurrent PRs never conflict). These entries are
+the durable hand-edit contract that tells future agents and regen tooling what
+must be preserved beyond generator output.</p>
+<p>Use this shape (one file, <code>.printing-press-patches/&lt;id&gt;.json</code>):</p>
+<pre><code class="language-json">{
+  &quot;schema_version&quot;: 2,
+  &quot;id&quot;: &quot;&lt;api-slug&gt;-&lt;short-feature-name&gt;&quot;,
+  &quot;applied_at&quot;: &quot;&lt;YYYY-MM-DD&gt;&quot;,
+  &quot;base_run_id&quot;: &quot;&lt;copy from .printing-press.json&gt;&quot;,
+  &quot;base_printing_press_version&quot;: &quot;&lt;copy from .printing-press.json&gt;&quot;,
+  &quot;summary&quot;: &quot;What changed (one sentence).&quot;,
+  &quot;reason&quot;: &quot;Why the generated output needed this customization.&quot;,
+  &quot;files&quot;: [&quot;internal/cli/example.go&quot;],
+  &quot;validated_outcome&quot;: &quot;Optional: focused check that proved the customization.&quot;,
+  &quot;upstream_issue&quot;: &quot;Optional: https://github.com/mvanhorn/cli-printing-press/issues/&lt;n&gt;&quot;
+}
+</code></pre>
+<p>Rules:</p>
+<ul>
+<li>Filename is the patch <code>id</code>. Use kebab-case ids prefixed with the API slug for
+grep-ability across the public library.</li>
+<li>Keep <code>summary</code> and <code>reason</code> short. Each entry is an index, not a duplicate
+of the git diff.</li>
+<li>Include non-Go support files in <code>files</code> when they are part of the same
+code-level customization. README/SKILL.md-only polish does not need a patch
+manifest entry. <code>publish validate</code> reads the records and fails if a
+recorded <code>files[]</code> path is missing, the per-patch record omits
+<code>schema_version</code> or declares an unsupported one, or a declared
+<code>call_sites</code> / <code>markers</code> / <code>marker</code> string is absent from the recorded
+files. <code>files[]</code> is required for every <code>call_sites</code> / <code>markers</code> /
+<code>marker</code> needle so a leftover substring elsewhere cannot mask a dropped
+customization. Needles are checked only in those recorded files.</li>
+<li>Inline <code>// PATCH(...)</code> source comments are optional navigation aids. The public
+library verifier requires a patches index (the directory or the legacy file)
+and well-formed entries; it does not require a marker/comment pairing.</li>
+<li>If an entry exists only to work around an old verifier or pipeline bug that no
+longer applies, delete the stale workaround file instead of carrying it
+forward.</li>
+</ul>
+<p>For the authoritative public-library authoring contract, read the
+<code>mvanhorn/printing-press-library</code> <code>AGENTS.md</code> section
+&quot;<code>.printing-press-patches/</code> records library-side customizations&quot;.</p>
+<h4>Step 7: Collision Detection &amp; Resolution</h4>
+<p>After the managed clone is freshened, check for name collisions before creating a branch or PR. This replaces the previous &quot;Check for Existing PR&quot; step.</p>
+<h5>Detection</h5>
+<p>Run these checks in sequence:</p>
+<p><strong>1. Check merged CLIs in managed clone:</strong></p>
+<pre><code class="language-bash">MERGED_COLLISION=&quot;$PREEXISTING_MERGED_COLLISION&quot;
+MERGED_PATHS=&quot;$PREEXISTING_MERGED_PATHS&quot;
+</code></pre>
+<p>Use the pre-package snapshot from Step 5. Do not re-run <code>ls &quot;$PUBLISH_REPO_DIR/library&quot;/*/&quot;&lt;api-slug&gt;&quot;</code> here: Step 6 has already copied the
+new package into that path, so a fresh <code>ls</code> would make every new print look like
+a merged collision. If <code>MERGED_COLLISION=true</code>, note the category path from
+<code>MERGED_PATHS</code>.</p>
+<p><strong>2. Check all open PRs (any author):</strong></p>
+<pre><code class="language-bash">gh pr list --repo mvanhorn/printing-press-library --head &quot;feat/&lt;api-slug&gt;&quot; --state open --json number,title,url,author
+</code></pre>
+<p>If the list is non-empty, record <code>PR_COLLISION=true</code>. For each PR, note the PR number, URL, and author login.</p>
+<p><strong>3. Identify own PRs:</strong></p>
+<p>Filter the PR list from step 2 by <code>--author @me</code>:</p>
+<p>For fork-based PRs, the head includes the username prefix:</p>
+<pre><code class="language-bash">ACCESS=$(jq -r .access &quot;$PUBLISH_CONFIG&quot;)
+GH_USER=$(jq -r .gh_user &quot;$PUBLISH_CONFIG&quot;)
+
+if [ &quot;$ACCESS&quot; = &quot;fork&quot; ]; then
+  HEAD_REF=&quot;$GH_USER:feat/&lt;api-slug&gt;&quot;
+else
+  HEAD_REF=&quot;feat/&lt;api-slug&gt;&quot;
+fi
+
+gh pr list --repo mvanhorn/printing-press-library --head &quot;$HEAD_REF&quot; --state open --author @me --json number,title,url
+</code></pre>
+<p>If found, record <code>OWN_PR=true</code>, store <code>EXISTING_PR_NUMBER</code> and <code>EXISTING_PR_URL</code>.</p>
+<p><strong>If no open PR was found</strong>, also check for a previously merged PR on the same branch — by ANY author, not just yours:</p>
+<pre><code class="language-bash">MERGED_PR=$(gh pr list --repo mvanhorn/printing-press-library --head &quot;$HEAD_REF&quot; --state merged --json number --jq '.[0].number' 2&gt;/dev/null)
+</code></pre>
+<p>If <code>MERGED_PR</code> is non-empty, the branch name was already used and merged. Set <code>BRANCH_MERGED=true</code> so Step 8 creates a new branch name (e.g., <code>feat/&lt;api-slug&gt;-YYYYMMDD</code>) instead of reusing the merged branch. Do NOT force-push onto a merged branch — <code>gh pr edit</code> would silently update a closed PR nobody is watching.</p>
+<p>The author-agnostic lookup also catches <strong>squash-zombie branches</strong>: GitHub squash-merge leaves the source branch behind on the remote, with pre-squash commit refs that look &quot;ahead of main&quot; but are content-equivalent to the squash commit. Without this check, the skill misclassifies the zombie as fresh-publish, then <code>git push -u</code> fails because the remote branch already exists. Timestamping sidesteps the issue entirely.</p>
+<h5>No collision</h5>
+<p>If no merged CLI exists and no open PRs match (other than your own), set <code>EXISTING_PR_NUMBER</code> from the own-PR check (or empty if none) and proceed to Step 8 normally.</p>
+<p>If an existing open PR of yours was found, inform the user:</p>
+<blockquote>
+<p>&quot;Found your open PR #N for <code>&lt;api-slug&gt;</code>. Will update it with the new version.&quot;</p>
+</blockquote>
+<h5>Collision detected — display info</h5>
+<p>Show the user what was found:</p>
+<pre><code>⚠️  Name collision detected for &lt;api-slug&gt;
+
+  Merged: &lt;category&gt;/&lt;api-slug&gt; exists in the library
+  Open PR: #&lt;number&gt; by &lt;author&gt; — &lt;url&gt;
+</code></pre>
+<p>Show all applicable lines. If <code>OWN_PR=true</code>, tag the PR as &quot;(yours)&quot;.</p>
+<h5>Resolution paths</h5>
+<p>Present three options via AskUserQuestion:</p>
+<p><strong>If <code>OWN_PR=true</code> (your own open PR exists):</strong></p>
+<ul>
+<li><strong>Update</strong> — Update your existing PR with the new version (default, preserves current behavior)</li>
+<li><strong>Alongside</strong> — Rename yours with a qualifier and publish next to the existing one</li>
+<li><strong>Bail</strong> — Cancel the publish</li>
+</ul>
+<p><strong>If PR collision exists but is another user's, or merged collision only:</strong></p>
+<ul>
+<li><strong>Replace</strong> — Intentionally overwrite the existing CLI</li>
+<li><strong>Alongside</strong> — Rename yours with a qualifier and publish next to the existing one</li>
+<li><strong>Bail</strong> — Cancel the publish and view the existing CLI/PR</li>
+</ul>
+<h6>Update path (own PR)</h6>
+<p>This is the existing update flow with a divergence guard. Set
+<code>EXISTING_PR_NUMBER</code> from the detection step and proceed to Step 8, which
+fetches the current PR branch head, checks for branch-only fixes that the new
+package would revert, and only then handles force-push and PR description
+update.</p>
+<h6>Replace path</h6>
+<p><strong>For merged CLIs or your own PR:</strong> Standard confirmation:</p>
+<blockquote>
+<p>&quot;This will replace the existing <code>&lt;api-slug&gt;</code>. Continue?&quot;</p>
+</blockquote>
+<p><strong>For another user's PR:</strong> Stronger confirmation naming the other author:</p>
+<blockquote>
+<p>&quot;⚠️  This will replace <code>&lt;author&gt;</code>'s <code>&lt;api-slug&gt;</code> (PR #N). Are you sure?&quot;</p>
+</blockquote>
+<p>If confirmed:</p>
+<ul>
+<li>The PR description must include: <code>⚠️ **Replaces existing \</code>&lt;api-slug&gt;`** — &lt;reason provided by user or &quot;newer version&quot;&gt;`</li>
+<li>Set <code>EXISTING_PR_NUMBER=&quot;&quot;</code> (create a new PR, don't update theirs)</li>
+<li>Proceed to Step 8 normally</li>
+</ul>
+<h6>Alongside path (rename)</h6>
+<p><strong>1. Extract the original API slug</strong> from the manifest's <code>api_name</code> field:</p>
+<pre><code class="language-bash"># Read from .printing-press.json in the publish repo's staged CLI
+ORIGINAL_API_SLUG=$(cat &quot;$PUBLISH_REPO_DIR/library/&lt;category&gt;/&lt;api-slug&gt;/.printing-press.json&quot; | jq -r '.api_name')
+</code></pre>
+<p><strong>2. Generate rename suggestions</strong> using slug format. Derive the new CLI name from the chosen slug:</p>
+<ul>
+<li>Numeric: <code>&lt;api-slug&gt;-2</code> (if that collides, try <code>-3</code>, <code>-4</code>, etc.)</li>
+<li>Non-numeric: <code>&lt;api-slug&gt;-alt</code></li>
+<li>Custom: prompt the user for a qualifier word</li>
+</ul>
+<p>After the user chooses a slug, compute:</p>
+<pre><code class="language-bash">NEW_API_SLUG=&quot;&lt;chosen-slug&gt;&quot;
+NEW_CLI_NAME=&quot;${NEW_API_SLUG}-pp-cli&quot;
+</code></pre>
+<p>Present the format to the user:</p>
+<blockquote>
+<p>&quot;Rename format: <code>&lt;api-slug&gt;-&lt;qualifier&gt;</code>. Pick a qualifier:&quot;</p>
+<ol>
+<li><code>2</code> → <code>&lt;api-slug&gt;-2</code></li>
+<li><code>alt</code> → <code>&lt;api-slug&gt;-alt</code></li>
+<li>Enter custom qualifier</li>
+</ol>
+</blockquote>
+<p><strong>3. Verify each suggestion is non-colliding</strong> before presenting:</p>
+<pre><code class="language-bash"># Check merged (read the git tree, not the sparse working dir)
+git -C &quot;$PUBLISH_REPO_DIR&quot; ls-tree -r --name-only HEAD \
+  | sed -n 's#^\(library/[^/]*/&lt;suggestion&gt;\)/.*#\1#p' | sort -u
+# Check open PRs
+gh pr list --repo mvanhorn/printing-press-library --head &quot;feat/&lt;suggestion&gt;&quot; --state open --json number
+</code></pre>
+<p>If a suggestion collides, skip it or increment the numeric suffix.</p>
+<p><strong>4. Rename the CLI in the publish repo:</strong></p>
+<p>Since Step 6 copied the staged CLI into <code>$PUBLISH_REPO_DIR</code>, the rename operates on that directory. Note: <code>--old-name</code>/<code>--new-name</code> still use CLI-name format (e.g., <code>dub-pp-cli</code>) because <code>RenameCLI</code> does content replacement — bare slugs would cause collateral damage. The <code>--dir</code> path uses the slug-keyed directory. Rename also rewrites <code>go.mod</code>, leftover module-path slugs, installer slugs, env prefixes, and <code>research.json</code> <code>api_name</code> (including under <code>.manuscripts/</code>). Do not hand-fix those after a successful rename.</p>
+<pre><code class="language-bash">cli-printing-press publish rename \
+  --dir &quot;$PUBLISH_REPO_DIR/library/&lt;category&gt;/&lt;api-slug&gt;&quot; \
+  --old-name &lt;old-cli-name&gt; \
+  --new-name &quot;$NEW_CLI_NAME&quot; \
+  --json
+</code></pre>
+<p>Parse the JSON result. Verify <code>&quot;success&quot;: true</code>. Note that <code>new_dir</code> should now be <code>$PUBLISH_REPO_DIR/library/&lt;category&gt;/$NEW_API_SLUG</code>.</p>
+<p><strong>5. Update all downstream references for Step 8:</strong></p>
+<ul>
+<li>Branch name: <code>feat/$NEW_API_SLUG</code> (not the old slug)</li>
+<li>PR title: <code>feat($NEW_API_SLUG): add $NEW_API_SLUG</code></li>
+<li>Commit message: <code>feat($NEW_API_SLUG): add $NEW_API_SLUG</code></li>
+<li>Registry.json entry: <code>name</code> → <code>$NEW_API_SLUG</code></li>
+<li>Set <code>EXISTING_PR_NUMBER=&quot;&quot;</code> (always a new PR for a renamed CLI)</li>
+</ul>
+<p>Proceed to Step 8 with the new name.</p>
+<h6>Bail path</h6>
+<p>Show links to what exists:</p>
+<ul>
+<li>If merged: &quot;Existing CLI at <code>library/&lt;category&gt;/&lt;api-slug&gt;/</code>&quot;</li>
+<li>If open PR: &quot;Open PR: &lt;url&gt;&quot;</li>
+</ul>
+<p>Exit the publish flow. If Step 6 already wrote files into <code>$PUBLISH_REPO_DIR</code>, clean up with <code>git checkout -- . &amp;&amp; git clean -fd</code> in the managed clone.</p>
+<h4>Step 8: Branch, Commit, and PR</h4>
+<h5>Create branch</h5>
+<p><strong>If <code>EXISTING_PR_NUMBER</code> is set</strong> (updating an existing PR):</p>
+<p>Fetch and inspect the current PR branch before replacing it. The latest
+<code>origin/main</code> plus the newly packaged <code>library/&lt;category&gt;/&lt;api-slug&gt;/</code> tree is
+the proposed update. The remote PR branch may also contain accepted review
+fixes from the drive-to-green loop. Those branch-only edits must not be erased
+silently.</p>
+<pre><code class="language-bash">UPDATE_BRANCH=&quot;feat/&lt;api-slug&gt;&quot;
+UPDATE_BASE_REF=&quot;refs/printing-press-update-base/&lt;api-slug&gt;&quot;
+
+git fetch origin &quot;+main:refs/remotes/origin/main&quot; &quot;+$UPDATE_BRANCH:$UPDATE_BASE_REF&quot;
+
+# Show the scoped change from the current PR head to the new packaged working
+# tree. This is informational for clean updates and mandatory context for holds.
+git diff --stat &quot;$UPDATE_BASE_REF&quot; -- &quot;library/&lt;category&gt;/&lt;api-slug&gt;/&quot;
+
+# Branch-only paths are files that exist on the current PR branch but are absent
+# from the new packaged working tree. These are always a hold because a
+# force-push would delete them.
+WORKTREE_PATHS=$(find &quot;library/&lt;category&gt;/&lt;api-slug&gt;&quot; -type f -print 2&gt;/dev/null | sort)
+BRANCH_ONLY_PATHS=$(comm -23 \
+  &lt;(git ls-tree -r --name-only &quot;$UPDATE_BASE_REF&quot; -- &quot;library/&lt;category&gt;/&lt;api-slug&gt;/&quot; | sort) \
+  &lt;([ -n &quot;$WORKTREE_PATHS&quot; ] &amp;&amp; printf '%s\n' &quot;$WORKTREE_PATHS&quot; || true))
+
+# Modified paths need human review only when a branch patch relative to
+# origin/main is not present in the new packaged working tree. A strict superset
+# passes: if the branch patch can be reverse-applied from the working tree, the
+# fix is still there even if the file also has fresh generated changes.
+BRANCH_ONLY_EDITS=$(git diff --name-only origin/main &quot;$UPDATE_BASE_REF&quot; -- &quot;library/&lt;category&gt;/&lt;api-slug&gt;/&quot; | while read -r path; do
+  [ -n &quot;$path&quot; ] || continue
+  if git diff origin/main &quot;$UPDATE_BASE_REF&quot; -- &quot;$path&quot; | git apply --check --reverse &gt;/dev/null 2&gt;&amp;1; then
+    continue
+  else
+    printf '%s\n' &quot;$path&quot;
+  fi
+done | sort -u)
+
+if [ -n &quot;$BRANCH_ONLY_PATHS$BRANCH_ONLY_EDITS&quot; ]; then
+  echo &quot;HOLD: updating PR #$EXISTING_PR_NUMBER would overwrite branch-only changes.&quot;
+  if [ -n &quot;$BRANCH_ONLY_PATHS&quot; ]; then
+    echo &quot;Files present on the PR branch but missing from the new package:&quot;
+    printf '%s\n' &quot;$BRANCH_ONLY_PATHS&quot; | sed 's/^/- /'
+  fi
+  if [ -n &quot;$BRANCH_ONLY_EDITS&quot; ]; then
+    echo &quot;Files edited on the PR branch and changed again by the new package:&quot;
+    printf '%s\n' &quot;$BRANCH_ONLY_EDITS&quot; | sed 's/^/- /'
+  fi
+  echo &quot;Do not push yet. Reconcile by restoring the branch-only fixes onto the new tree, or ask the user for explicit overwrite confirmation after showing the paths above.&quot;
+  exit 1
+fi
+</code></pre>
+<p>If the guard exits, offer the user two choices via <code>AskUserQuestion</code>:</p>
+<ul>
+<li><strong>Reconcile first</strong> — restore the named branch-only files or edits onto the
+new packaged tree, keep or add matching <code>.printing-press-patches/&lt;id&gt;.json</code>
+records for code-level fixes, rerun Step 6 verification, then rerun this
+divergence guard.</li>
+<li><strong>Overwrite intentionally</strong> — only after the user confirms the listed paths
+are obsolete, continue and include a PR-body note naming the overwritten
+branch-only paths.</li>
+</ul>
+<p>If the guard finds no branch-only paths or edits, overwrite the local branch:</p>
+<pre><code class="language-bash">git checkout -B feat/&lt;api-slug&gt;
+</code></pre>
+<p><strong>If <code>EXISTING_PR_NUMBER</code> is empty and <code>BRANCH_MERGED</code> is true</strong> (previous PR was merged):</p>
+<p>Auto-create a timestamped branch — do not reuse the merged branch name:</p>
+<pre><code class="language-bash">git checkout -b feat/&lt;api-slug&gt;-$(date +%Y%m%d)
+</code></pre>
+<p><strong>If <code>EXISTING_PR_NUMBER</code> is empty and <code>BRANCH_MERGED</code> is not set</strong> (no open or merged PR):</p>
+<p>Check for stale branches and competing PRs:</p>
+<pre><code class="language-bash"># Check local and remote branches
+LOCAL_BRANCH=$(git branch --list &quot;feat/&lt;api-slug&gt;&quot; | head -1)
+REMOTE_BRANCH=$(git ls-remote --heads origin &quot;feat/&lt;api-slug&gt;&quot; 2&gt;/dev/null | head -1)
+
+# If a remote branch exists, check who owns it
+if [ -n &quot;$REMOTE_BRANCH&quot; ]; then
+  # Check for ANY open PR on this branch (not just ours)
+  OTHER_PR=$(gh pr list --repo mvanhorn/printing-press-library --head &quot;feat/&lt;api-slug&gt;&quot; --state open --json number,author --jq '.[0]' 2&gt;/dev/null)
+fi
+</code></pre>
+<p><strong>If another user's open PR exists on this branch</strong> (<code>OTHER_PR</code> is non-empty and author is not <code>@me</code>):</p>
+<blockquote>
+<p>&quot;Someone else has an open PR for <code>&lt;api-slug&gt;</code> (PR #N by @author). Creating a timestamped branch to avoid conflicts.&quot;</p>
+</blockquote>
+<p>Auto-create a timestamped branch: <code>feat/&lt;api-slug&gt;-YYYYMMDD</code>. Do NOT offer to overwrite — that would stomp their work.</p>
+<p><strong>If the branch exists but no competing PR</strong> (stale branch from a previously closed/merged PR):</p>
+<p>Ask via AskUserQuestion:</p>
+<blockquote>
+<p>&quot;Found a stale branch <code>feat/&lt;api-slug&gt;</code> (likely from a previous publish). Overwrite it?&quot;</p>
+</blockquote>
+<ul>
+<li>&quot;Overwrite existing branch&quot; — reuse the branch name</li>
+<li>&quot;Create timestamped variant (feat/&lt;api-slug&gt;-YYYYMMDD)&quot;</li>
+</ul>
+<p><strong>If no branch exists:</strong> Create normally.</p>
+<pre><code class="language-bash"># New branch:
+git checkout -b feat/&lt;api-slug&gt;
+
+# Overwrite existing:
+git checkout -B feat/&lt;api-slug&gt;
+</code></pre>
+<h5>Commit and push</h5>
+<pre><code class="language-bash">cd &quot;$PUBLISH_REPO_DIR&quot;
+git add -A library/
+# The staged package has already stripped local binaries and passed the
+# mandatory secret/PII scans, so it is the source of truth for this publish.
+# Force-add the whole CLI directory after the broad add: destination-repo or
+# package-local .gitignore rules such as `*-pp-cli`, `*-pp-mcp`,
+# `/.manuscripts/`, or report filenames must not silently suppress required
+# publish artifacts under cmd/, .manuscripts/, or metadata files.
+git add -f &quot;library/&lt;category&gt;/&lt;api-slug&gt;/&quot;
+
+# Pre-commit scope guard: only this CLI's replacement plus any pre-existing
+# merged paths for the same slug may be staged. This catches stale untracked
+# fragments from previous publish branches before they leak into the wrong PR.
+EXPECTED_STAGE_PREFIXES=$(printf '%s\n' &quot;library/&lt;category&gt;/&lt;api-slug&gt;/&quot; &quot;$PREEXISTING_MERGED_PATHS&quot; | sed '/^$/d; s#/*$#/#' | sort -u)
+UNEXPECTED_STAGED=$(git diff --cached --name-only | awk -v prefixes=&quot;$EXPECTED_STAGE_PREFIXES&quot; '
+BEGIN {
+  n = split(prefixes, p, &quot;\n&quot;)
+  while ((getline line) &gt; 0) {
+    matched = 0
+    for (i = 1; i &lt;= n; i++) {
+      if (p[i] != &quot;&quot; &amp;&amp; (line == p[i] || index(line, p[i]) == 1)) {
+        matched = 1
+        break
+      }
+    }
+    if (!matched) print line
+  }
+}')
+if [ -n &quot;$UNEXPECTED_STAGED&quot; ]; then
+  echo &quot;ERROR: publish staged paths outside the expected CLI scope:&quot; &gt;&amp;2
+  printf '%s\n' &quot;$UNEXPECTED_STAGED&quot; | sed 's/^/- /' &gt;&amp;2
+  echo &quot;Reset the managed clone and rerun publish package before committing.&quot; &gt;&amp;2
+  exit 1
+fi
+git commit -m &quot;feat(&lt;api-slug&gt;): add &lt;api-slug&gt;&quot;
+</code></pre>
+<p>Push to origin (which is the fork for non-push users, or the upstream for push users):</p>
+<p><strong>If updating an existing PR</strong> (<code>EXISTING_PR_NUMBER</code> is set):</p>
+<pre><code class="language-bash"># Only run this after the update-path divergence guard above has passed, or
+# after the user explicitly confirmed an intentional overwrite of the named
+# branch-only paths.
+git push --force-with-lease -u origin feat/&lt;api-slug&gt;
+</code></pre>
+<p><strong>If creating a new PR</strong> and you chose &quot;Overwrite existing branch&quot; earlier:</p>
+<pre><code class="language-bash">git push --force-with-lease -u origin feat/&lt;api-slug&gt;
+</code></pre>
+<p><strong>Otherwise</strong> (new branch, no conflicts):</p>
+<pre><code class="language-bash">git push -u origin feat/&lt;api-slug&gt;
+</code></pre>
+<h5>Capture the pushed commit SHA</h5>
+<p>After pushing, capture the head commit SHA. This is used to build durable manuscript links in the PR body (see &quot;Build the PR description&quot; below).</p>
+<pre><code class="language-bash">HEAD_SHA=$(git rev-parse HEAD)
+</code></pre>
+<p>The SHA stays resolvable on <code>mvanhorn/printing-press-library</code> for the life of the PR (GitHub mirrors fork-PR head commits to <code>refs/pull/&lt;N&gt;/head</code> on the upstream), and remains valid after the PR is merged and the branch is deleted. Each invocation of this skill captures a fresh <code>HEAD_SHA</code> after its push and rewrites the body, so links stay current across updates the skill performs. If the branch is force-pushed outside this skill, re-run <code>/printing-press-publish</code> to refresh the body — the prior links will still resolve, but they'll point at the manuscript contents from before the out-of-band push.</p>
+<h5>Create or update PR</h5>
+<p>Read <code>access</code> and <code>gh_user</code> from <code>$PUBLISH_CONFIG</code>. These determine how <code>gh pr create</code> is called.</p>
+<p><strong>For fork-based PRs</strong> (<code>access</code> is <code>fork</code>): use <code>--head &lt;gh_user&gt;:feat/&lt;api-slug&gt;</code> so GitHub creates a cross-repo PR from the fork to the upstream. Without <code>--head</code>, <code>gh pr create</code> would try to find the branch on the upstream repo (where the user can't push) and fail.</p>
+<p><strong>For push-access PRs</strong> (<code>access</code> is <code>push</code>): use <code>--head feat/&lt;api-slug&gt;</code> so GitHub creates the PR from the branch this flow just pushed, even when the managed clone or shell session has other branches checked out.</p>
+<p>Build the PR description from:</p>
+<ul>
+<li>The manifest (<code>description</code>, <code>api_name</code>, <code>category</code>, <code>printing_press_version</code>, <code>spec_url</code>)</li>
+<li>The manifest's <code>novel_features</code> array from the packaged CLI after Step 6</li>
+<li>The <code>help_output</code> captured in Step 4</li>
+<li>The CLI's README (first 2-3 paragraphs, or note that README is missing)</li>
+<li>Links to every file under <code>.manuscripts/&lt;run-id&gt;/research/</code> and <code>.manuscripts/&lt;run-id&gt;/proofs/</code>. Each link must be a full <code>https://github.com/mvanhorn/printing-press-library/blob/&lt;HEAD_SHA&gt;/library/&lt;category&gt;/&lt;api-slug&gt;/.manuscripts/&lt;run-id&gt;/&lt;subdir&gt;/&lt;filename&gt;</code> URL — never a relative path (GitHub resolves those against <code>…/pull/</code>, producing broken <code>…/pull/library/…</code> URLs) and never a directory (the blob view requires a file). Enumerate the actual files; do not invent or skip them.</li>
+<li>The validation results from Step 4</li>
+<li>The publish live gate result from Step 4.5, including any explicit
+<code>--skip-live-test</code> reason</li>
+<li>A Gaps section listing any missing manifest fields</li>
+</ul>
+<p>Read <code>novel_features</code> from
+<code>$PUBLISH_REPO_DIR/library/&lt;category&gt;/&lt;api-slug&gt;/.printing-press.json</code> after
+packaging. Preserve the manifest order. Do not derive
+this section from README prose, SKILL prose, root help, or memory of the run:
+those surfaces may be summarized or hand-edited, while the packaged manifest is
+the publish-time source of truth. For each entry, include the command, name, and
+description. If the array is empty, write <code>No novel commands recorded in .printing-press.json.</code> and include the missing field in <strong>Gaps</strong>; do not omit the
+section.</p>
+<p>Also include a publication-path line so new prints, reprints, PR updates, and
+collision renames are distinguishable:</p>
+<ul>
+<li><code>New print</code> — no merged CLI and no existing PR matched this slug.</li>
+<li><code>Update existing PR #&lt;N&gt;</code> — this publish refreshes an open PR.</li>
+<li><code>Reprint/replace</code> — a merged library CLI existed before this publish and the
+selected path replaces it. This must be based on
+<code>PREEXISTING_MERGED_COLLISION=true</code>, not on the post-package tree.</li>
+<li><code>Alongside print</code> — this publish renamed the API slug to avoid a collision;
+include the original slug.
+If <code>/printing-press-reprint</code> handed off a degraded reprint with no prior
+public-library source, use <code>New print</code> and add the degraded-reprint note only if
+that context is available from the handoff.</li>
+</ul>
+<p><strong>MANDATORY: Before constructing the PR body, scrub all workspace PII.</strong> The library
+repo is public. Scan any live test results, acceptance data, or manuscript excerpts
+for organization names, team member names, and email addresses. Replace with generic
+descriptions (&quot;the workspace&quot;, &quot;5 team members&quot;, &quot;12 users&quot;). Team keys (e.g., &quot;ESP&quot;)
+are OK but org names (e.g., &quot;Acme Corp&quot;) are not. See <code>references/secret-protection.md</code>
+in the printing-press skill for the full policy.</p>
+<p>Write the constructed PR body to a temporary Markdown file and pass it with
+<code>--body-file</code>. Do this for both PR creation and PR updates. Do not inline the
+body in a shell argument; large fenced help output, Markdown tables, and
+backticks are too easy to mangle.</p>
+<p><strong>PR description template:</strong></p>
+<pre><code class="language-markdown">## &lt;api-slug&gt;
+
+&lt;If this is a Replace path, add: &quot;⚠️ **Replaces existing `&lt;api-slug&gt;`** — &lt;reason from user&gt;&quot;&gt;
+
+&lt;description from manifest, or &quot;No description available&quot;&gt;
+
+**API:** &lt;api_name&gt; | **Category:** &lt;category&gt; | **Press version:** &lt;printing_press_version&gt;
+**Spec:** &lt;spec_url or &quot;Not specified&quot;&gt;
+
+### Publication Path
+
+&lt;New print | Update existing PR #N | Reprint/replace | Alongside print from &lt;original-api-slug&gt;&gt;
+
+### CLI Shape
+
+\`\`\`bash
+$ &lt;cli-name&gt; --help
+&lt;help_output from validation&gt;
+\`\`\`
+
+### Novel Commands
+
+| Command | Name | Description |
+|---------|------|-------------|
+| `&lt;command&gt;` | &lt;name&gt; | &lt;description&gt; |
+
+### What This CLI Does
+
+&lt;First 2-3 paragraphs from README.md in the CLI directory, or &quot;README not found&quot;&gt;
+
+### Manuscripts
+
+&lt;!-- One bullet per file, NOT one per directory. Repeat the research/ row for every file in research/, and the proofs/ row for every file in proofs/. Use a human label that matches the file (e.g. `Research Brief`, `Absorb Manifest`, `Novel Features Brainstorm`, `Phase 5 Acceptance`). Substitute `&lt;HEAD_SHA&gt;` with the value captured after push. Do NOT use relative paths. --&gt;
+
+- [&lt;label&gt;](https://github.com/mvanhorn/printing-press-library/blob/&lt;HEAD_SHA&gt;/library/&lt;category&gt;/&lt;api-slug&gt;/.manuscripts/&lt;run-id&gt;/research/&lt;filename&gt;)
+- [&lt;label&gt;](https://github.com/mvanhorn/printing-press-library/blob/&lt;HEAD_SHA&gt;/library/&lt;category&gt;/&lt;api-slug&gt;/.manuscripts/&lt;run-id&gt;/research/&lt;filename&gt;)
+- … (one bullet for each remaining file in `.manuscripts/&lt;run-id&gt;/research/`)
+- [&lt;label&gt;](https://github.com/mvanhorn/printing-press-library/blob/&lt;HEAD_SHA&gt;/library/&lt;category&gt;/&lt;api-slug&gt;/.manuscripts/&lt;run-id&gt;/proofs/&lt;filename&gt;)
+- [&lt;label&gt;](https://github.com/mvanhorn/printing-press-library/blob/&lt;HEAD_SHA&gt;/library/&lt;category&gt;/&lt;api-slug&gt;/.manuscripts/&lt;run-id&gt;/proofs/&lt;filename&gt;)
+- … (one bullet for each remaining file in `.manuscripts/&lt;run-id&gt;/proofs/`)
+
+### Validation Results
+
+| Check | Result |
+|-------|--------|
+| Manifest | PASS/FAIL |
+| Phase 5 | PASS/FAIL |
+| go mod tidy | PASS/FAIL |
+| govulncheck (this CLI only, reachable findings) | PASS/FAIL |
+| go vet | PASS/FAIL |
+| go build | PASS/FAIL |
+| --help | PASS/FAIL |
+| --version | PASS/FAIL |
+| Manuscripts | PRESENT/MISSING |
+
+### Publish Live Gate
+
+&lt;If Step 4.5 ran dogfood: &quot;Full live dogfood reran at publish time and passed. Proof: `&lt;proof path or manuscript link&gt;`&quot;&gt;
+&lt;If Step 4.5 was skipped: &quot;Skipped with explicit reason: `&lt;SKIP_LIVE_TEST_REASON&gt;`&quot;&gt;
+
+### Gaps
+
+&lt;List any missing manifest fields, or omit this section if everything is present&gt;
+</code></pre>
+<p><strong>If updating an existing PR</strong> (<code>EXISTING_PR_NUMBER</code> is set):</p>
+<pre><code class="language-bash">cd &quot;$PUBLISH_REPO_DIR&quot;
+PR_BODY_FILE=&quot;$(mktemp)&quot;
+# Write the constructed PR body Markdown to &quot;$PR_BODY_FILE&quot;.
+gh pr edit &quot;$EXISTING_PR_NUMBER&quot; \
+  --repo mvanhorn/printing-press-library \
+  --body-file &quot;$PR_BODY_FILE&quot;
+rm -f &quot;$PR_BODY_FILE&quot;
+</code></pre>
+<p>Display the full PR URL: &quot;Updated PR: &lt;EXISTING_PR_URL&gt;&quot; (use the full <code>https://</code> URL, not shorthand).</p>
+<p><strong>If creating a new PR:</strong></p>
+<pre><code class="language-bash">cd &quot;$PUBLISH_REPO_DIR&quot;
+
+# Read access mode from config
+ACCESS=$(jq -r .access &quot;$PUBLISH_CONFIG&quot;)
+GH_USER=$(jq -r .gh_user &quot;$PUBLISH_CONFIG&quot;)
+
+if [ &quot;$ACCESS&quot; = &quot;fork&quot; ]; then
+  PR_HEAD_REF=&quot;$GH_USER:feat/&lt;api-slug&gt;&quot;
+else
+  PR_HEAD_REF=&quot;feat/&lt;api-slug&gt;&quot;
+fi
+
+PR_BODY_FILE=&quot;$(mktemp)&quot;
+# Write the constructed PR body Markdown to &quot;$PR_BODY_FILE&quot;.
+
+gh pr create \
+  --repo mvanhorn/printing-press-library \
+  --head &quot;$PR_HEAD_REF&quot; \
+  --base main \
+  --title &quot;feat(&lt;api-slug&gt;): add &lt;api-slug&gt;&quot; \
+  --body-file &quot;$PR_BODY_FILE&quot;
+
+rm -f &quot;$PR_BODY_FILE&quot;
+</code></pre>
+<p>Display the full PR URL (e.g., <code>https://github.com/mvanhorn/printing-press-library/pull/10</code>), not the shorthand <code>org/repo#N</code> format. The full URL is clickable in all terminals and contexts.</p>
+<h4>After the PR opens</h4>
+<p>Once the PR is open, it enters the public library repo's review contract. That contract is owned by <a href="https://github.com/mvanhorn/printing-press-library/blob/main/AGENTS.md#automated-code-review-with-greptile"><code>mvanhorn/printing-press-library</code> AGENTS.md → &quot;Automated code review with Greptile&quot;</a>; read it for the canonical version. An agent invoking this skill from <code>cli-printing-press</code> will not have loaded the library's AGENTS.md, so the obligations are summarized here.</p>
+<p>Greptile reviews <strong>incrementally</strong>: every commit you push re-triggers a fresh review, which can surface new findings the previous round didn't. This is a loop, not a single pass — drive the PR to a <em>stable</em> green and don't declare done after round one.</p>
+<h5>Drive the PR to stable green</h5>
+<p>Iterate until <strong>all</strong> of these hold, confirmed by the review that your most recent fix commit triggered:</p>
+<ul>
+<li><strong>All Greptile findings resolved.</strong> The 0-5 score is a confidence signal, not the gate — the bar is resolving every finding. 4/5 with everything resolved is ready; 5/5 with open P1s is not. For each P0/P1/P2 thread, either push a fix or reply with a concrete reason it shouldn't fire — not &quot;won't fix&quot;, but <em>why</em> the code is right as written or <em>why</em> deferral is justified. The policy gate also requires the latest score on the current head SHA to be ≥ 4/5, so keep the final head meeting that threshold.</li>
+<li><strong>All CI checks pass.</strong> <code>verify-library-conventions</code>, <code>Govulncheck</code>, and any other workflow on the PR.</li>
+</ul>
+<p>Read findings from two surfaces — they don't overlap:</p>
+<ul>
+<li><code>gh pr view &lt;PR&gt; --repo &lt;owner&gt;/&lt;repo&gt; --comments</code> returns the top-level issue conversation (Greptile's summary comment, score, CI bots).</li>
+<li><code>gh api repos/&lt;owner&gt;/&lt;repo&gt;/pulls/&lt;PR&gt;/comments</code> returns the inline diff-anchored review comments — Greptile posts each P0/P1/P2 finding here, <strong>and these are NOT included in <code>--comments</code></strong>. Skipping this call is how an agent silently declares &quot;all findings resolved&quot; while every inline thread is still open.</li>
+</ul>
+<p><strong>Monitoring is the harness's job, not a busy-loop you hand-roll.</strong> Use whatever PR-activity monitoring your environment provides — react to review/CI events as they arrive, or re-check on an interval if it doesn't push events. After each fix push, wait for the re-triggered review to land before judging done; a new round can reopen the gate.</p>
+<p><strong>Don't hand-edit <code>registry.json</code> or <code>cli-skills/pp-&lt;api-slug&gt;/SKILL.md</code> to satisfy a finding</strong> — both are bot-regenerated post-merge by <code>[skip ci]</code> commits, and the library's <code>Fail on changes to generated artifacts</code> check pre-rejects any PR that touches them.</p>
+<h5>Terminal state — then hand back</h5>
+<p>Once the PR is stably green, the skill's job is done. <strong>Do not merge it and do not poll waiting for it to merge</strong> — merges into the public library are the maintainer's manual review, not this skill's and (for a fork contributor) not the user's either.</p>
+<p>Read <code>access</code> from <code>$PUBLISH_CONFIG</code> (<code>jq -r .access &quot;$PUBLISH_CONFIG&quot;</code>) to determine what to do next:</p>
+<ul>
+<li><strong>If <code>access</code> is <code>push</code></strong> (maintainer/admin with push access): apply the <code>awaiting-maintainer</code> label to signal the PR is ready for manual review:<pre><code class="language-bash">gh pr edit &lt;PR&gt; --repo mvanhorn/printing-press-library --add-label awaiting-maintainer
+</code></pre>
+</li>
+<li><strong>If <code>access</code> is <code>fork</code></strong> (community contributor): you cannot merge or label the upstream PR. There is nothing more to do once it's green.</li>
+</ul>
+<p>Then <strong>report the terminal state and return control to the caller.</strong> Do not offer a retro or any follow-up menu from this skill by default — that decision belongs to whoever invoked publish. The <code>printing-press</code> pipeline offers retro as its own post-publish tail; a direct human invocation without <code>--from-polish</code> just ends here.</p>
+<p>If <code>POLISH_HANDOFF=true</code>, offer retro as a soft tail after the PR is green. This preserves the standalone polish -&gt; publish workflow without allowing polish's same-turn <code>AskUserQuestion</code> answer to create or update a public-library PR.</p>
+<p>Present via <code>AskUserQuestion</code>:</p>
+<blockquote>
+<p>&quot;PR opened: &lt;PR_URL&gt;. Run a retro? It surfaces systemic gaps from this session (generator misses, scorer bugs, skill-doc drift) as a GitHub issue for the Printing Press maintainers. Every retro filed raises the floor for the next CLI, and your session context is freshest right now.&quot;</p>
+<ol>
+<li><strong>No, I'm done</strong> (default)</li>
+<li><strong>Yes, run retro now</strong></li>
+</ol>
+</blockquote>
+<p>If the user picks yes, invoke <code>/printing-press-retro</code>.</p>
+<h4>Secret &amp; PII Protection</h4>
+<p>Before creating the PR, verify that no secrets leaked into the packaged CLI.</p>
+<p><strong>This matters because the library repo is public.</strong> A leaked API key in a PR is
+a security incident — anyone can see it, even if the PR is later closed.</p>
+<h5>What the Printing Press checks (deterministic)</h5>
+<p>The generation skill (<code>/printing-press</code>) runs an exact-value scan during Phase 5.6
+if the user provided an API key. By the time publish runs, the Printing Press's own
+mistakes should already be caught. But the user may have edited files between
+generation and publish.</p>
+<h5>What publish checks</h5>
+<ol>
+<li>
+<p><strong>Mandatory binary scan:</strong> <code>cli-printing-press publish package</code> scans the staged CLI and manuscripts for live-looking vendor-prefix tokens (<code>sk-or-v1-*</code>, <code>sk_live_*</code>, <code>ghp_*</code>, <code>ghs_*</code>, <code>xoxb-*</code>, <code>AKIA*</code>, and similar). If it fails with <code>vendor-prefix tokens detected</code>, treat the package as unpublishable. Do not copy, commit, push, or open a PR until the reported file:line findings are removed or redacted.</p>
+</li>
+<li>
+<p><strong>If the user's exact API key value is known</strong>, scan the packaged tree before creating the PR. This catches edits or manuscripts added after <code>/printing-press</code> Phase 5.6:</p>
+<pre><code class="language-bash">if [ -n &quot;$API_KEY_VALUE&quot; ] &amp;&amp; [ ${#API_KEY_VALUE} -ge 16 ]; then
+  if grep -rF &quot;$API_KEY_VALUE&quot; &quot;$PUBLISH_REPO_DIR/library/&lt;category&gt;/&lt;api-slug&gt;&quot; 2&gt;/dev/null; then
+    echo &quot;BLOCKING: API key value found in staged publish tree.&quot;
+    exit 1
+  fi
+fi
+</code></pre>
+</li>
+<li>
+<p><strong>If <code>gitleaks</code> or <code>trufflehog</code> is installed</strong>, run it as an enrichment pass on the staged directory:</p>
+<pre><code class="language-bash">if command -v gitleaks &gt;/dev/null 2&gt;&amp;1; then
+  gitleaks detect --source &quot;&lt;staging-dir&gt;/library&quot; --no-git --verbose 2&gt;&amp;1
+elif command -v trufflehog &gt;/dev/null 2&gt;&amp;1; then
+  trufflehog filesystem &quot;&lt;staging-dir&gt;/library&quot; 2&gt;&amp;1
+fi
+</code></pre>
+<p>These tools use vendor-specific patterns (Steam keys, Stripe keys, GitHub
+tokens) with low false-positive rates. Their findings add detector breadth
+beyond the mandatory floor. Review any finding before proceeding.</p>
+</li>
+<li>
+<p><strong>Always do the lightweight structural check:</strong></p>
+<ul>
+<li>Verify no <code>.env</code> files, <code>session-state.json</code>, or <code>config.toml</code> with
+real credentials exist in the staged directory</li>
+<li>Check README examples use <code>&quot;your-key-here&quot;</code> placeholders, not real values</li>
+<li>Check manuscripts (if included) don't contain auth headers or cookie values</li>
+</ul>
+</li>
+<li>
+<p><strong>Never include</strong> in the staged directory:</p>
+<ul>
+<li><code>.env</code> files</li>
+<li><code>session-state.json</code></li>
+<li>Config files with real credentials</li>
+<li>HAR captures with un-stripped auth headers</li>
+</ul>
+</li>
+</ol>
+<p>If the mandatory binary scan or exact-value scan finds issues, stop. For
+external-tool or lightweight structural findings, warn the user and ask whether
+to proceed. The user makes the final call on those non-mandatory findings.</p>
+<h5>PII pattern scanning (mandatory)</h5>
+<p>Beyond the secret scans above, run the <strong>PII pattern scanning</strong> step defined in
+<code>references/secret-protection.md</code> in the printing-press skill, section <em>PII
+pattern scanning</em>. It carries the Tier 1 pattern set and the sweep loop. This catches PII captured during live dogfood
+that the prose guidance missed — emails, real attendee names, account
+identifiers — before they ship to the public library repo.</p>
+<p>The scan has two tiers:</p>
+<ul>
+<li><strong>Tier 1 (auto-redact silently):</strong> vendor-prefix-anchored bearer tokens
+(<code>Bearer cal_live_*</code>, <code>Bearer sk_live_*</code>, <code>Bearer ghp_*</code>, <code>xoxp-*</code>, etc.).
+Near-zero false-positive rate.</li>
+<li><strong>Tier 2 (warn, batched user prompt):</strong> generic emails, generic bearer tokens,
+capitalized first+last name patterns. Allowlist suppresses spec-derived API
+vocabulary (&quot;Event Types&quot;, &quot;Booking Links&quot;) automatically.</li>
+</ul>
+<p>A pre-scrub copy of the staging directory is preserved at
+<code>&lt;staging&gt;.pre-pii-scrub/</code> so the user can recover from a wrong redaction.</p>
+<p>Two prior PII leaks shipped to the public library before this scan existed.
+The scan is the mechanical defense layer the prose guidance alone could not
+provide.</p>
+<h4>Error Handling</h4>
+<ul>
+<li><strong><code>gh</code> not authenticated:</strong> Detect in Step 1, tell user to run <code>gh auth login</code></li>
+<li><strong>CLI not found:</strong> Show available CLIs in Step 2, let user pick</li>
+<li><strong>Validation fails:</strong> Show per-check results in Step 4, stop</li>
+<li><strong>Repo unreachable:</strong> Report clearly in Step 5</li>
+<li><strong>Fork creation fails:</strong> <code>gh repo fork</code> may fail if the user already has a fork with a different name, or if the org restricts forking. Report the error and suggest the user fork manually via the GitHub web UI.</li>
+<li><strong>Collision check fails:</strong> If <code>gh pr list</code> or <code>ls</code> commands fail (network, auth), warn but don't block — proceed as if no collision exists</li>
+<li><strong>Rename fails:</strong> Show the error from <code>publish rename --json</code>. Offer to retry with a different qualifier or bail. If the publish repo is in a partial state, reset with <code>git checkout -- . &amp;&amp; git clean -fd</code> before retrying</li>
+<li><strong>Branch conflict (no existing PR):</strong> Ask user in Step 8 (overwrite or timestamp)</li>
+<li><strong>Push fails:</strong> For fork users, ensure they're pushing to their fork (origin), not upstream. Report the error, suggest checking <code>gh auth status</code> and <code>git remote -v</code></li>
+<li><strong>Cross-repo PR creation fails:</strong> If <code>gh pr create --head user:branch</code> fails with &quot;head not found&quot;, the branch wasn't pushed to the fork. Verify with <code>git ls-remote origin feat/&lt;api-slug&gt;</code></li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

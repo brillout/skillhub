@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>performance-optimization · SkillHub</title>
+    <meta name="description" content="Use it when: pages load slowly, Core Web Vitals miss their targets, an endpoint drags, or a change may have made things slower. It does: measures a baseline, finds the actual bottleneck, fixes that one thing, re-measures the same way, then adds a guard against regression. Keeps: a change only if it beats run-to-run variance with tests still green; anything neutral or worse is reverted, and every attempt is logged. Covers: frontend and backend: images, re-renders, bundle size, N+1 queries, query plans and indexes, connection pools and caching." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=addyosmani%2Fagent-skills">addyosmani/agent-skills</a> <span aria-hidden="true">/</span> <a href="/bundle/addyosmani/agent-skills/">Addy&#39;s Agent Skills</a></p>
+      <div class="title-row"><h1>performance-optimization</h1><button type="button" class="save" data-save="skill:addyosmani/agent-skills/skills/performance-optimization" aria-pressed="false" aria-label="Save performance-optimization" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>pages load slowly, Core Web Vitals miss their targets, an endpoint drags, or a change may have made things slower</dd></div><div><dt>It does</dt><dd>measures a baseline, finds the actual bottleneck, fixes that one thing, re-measures the same way, then adds a guard against regression</dd></div><div><dt>Keeps</dt><dd>a change only if it beats run-to-run variance with tests still green; anything neutral or worse is reverted, and every attempt is logged</dd></div><div><dt>Covers</dt><dd>frontend and backend: images, re-renders, bundle size, N+1 queries, query plans and indexes, connection pools and caching</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 20 of 25 in the <a href="/bundle/addyosmani/agent-skills/">Addy&#39;s Agent Skills</a> bundle · Before it: <a href="/skill/addyosmani/agent-skills/skills/security-and-hardening/">security-and-hardening</a> · After it: <a href="/skill/addyosmani/agent-skills/skills/git-workflow-and-versioning/">git-workflow-and-versioning</a></p>
+    
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>Its rule is measure first: no optimization without data. Step one takes a baseline, both lab measurements such as Lighthouse or a DevTools trace and real-user data from the web-vitals library, and a decision tree points from the symptom (slow first load, sluggish clicks, a slow endpoint) to what to measure. Step two names the bottleneck from tables of likely causes. Step three fixes only that, with rules for the usual suspects: N+1 queries, missing pagination, indexes judged by EXPLAIN ANALYZE rather than guessed, connection pools sized to the database&#39;s limit, caches keyed on every input, images with dimensions and modern formats, needless re-renders, code splitting. Step four re-measures under the same conditions and decides strictly: keep only a gain past the noise with tests green, otherwise revert, and log every attempt, kept or reverted, in the PR or a PERF.md so dead ideas aren&#39;t retried. Step five guards the user-facing metric with a CI budget and field monitoring. Targets are the Core Web Vitals &#34;good&#34; thresholds, LCP 2.5 s, INP 200 ms and CLS 0.1, plus default budgets such as 200 KB of gzipped JavaScript.</p>
+      <p class="muted">Summarizes <a href="https://github.com/addyosmani/agent-skills/tree/301b02b12bff98e4688e6984af6556802322bbde/skills/performance-optimization">the skill at 301b02b</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">addyosmani/</span><wbr><span class="word">agent-skills</span> <span class="word">--skill</span> <span class="word">performance-optimization</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/addyosmani/agent-skills --skill performance-optimization">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/addyosmani/agent-skills/performance-optimization">skills.sh page</a> · <a href="https://github.com/addyosmani/agent-skills/tree/HEAD/skills/performance-optimization">Source on GitHub</a> · <a href="/?repo=addyosmani%2Fagent-skills">All skills from addyosmani/agent-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>74,108 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>113,924 <span class="muted">addyosmani/agent-skills</span></dd></div><div><dt>First seen</dt><dd>Feb 16, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">5.2K</div>
+      <div class="stat-delta">+63% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 3,156; week to Sep 27: 4,169; week to Oct 4: 3,900; week to Oct 11: 4,246; week to Oct 18: 5,431; week to Oct 25: 6,229; week to Nov 1: 5,793; week to Nov 8: 5,155. Use the left and right arrow keys to read each week."
+        data-values="3156,4169,3900,4246,5431,6229,5793,5155" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,27.7 38.6,20.6 71.1,22.5 103.7,20.0 136.3,11.6 168.9,6.0 201.4,9.1 234.0,13.6" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="13.6" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>3,156</td></tr><tr><td>Sep 27</td><td>4,169</td></tr><tr><td>Oct 4</td><td>3,900</td></tr><tr><td>Oct 11</td><td>4,246</td></tr><tr><td>Oct 18</td><td>5,431</td></tr><tr><td>Oct 25</td><td>6,229</td></tr><tr><td>Nov 1</td><td>5,793</td></tr><tr><td>Nov 8</td><td>5,155</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/?tag=category%3Adebugging">category:<wbr>debugging</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="performance" data-facet="topic" href="/?tag=performance">performance</a><a class="tag" data-tag="databases" data-facet="topic" href="/?tag=databases">databases</a><a class="tag" data-tag="verification" data-facet="topic" href="/?tag=verification">verification</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/addyosmani/agent-skills/blob/301b02b12bff98e4688e6984af6556802322bbde/skills/performance-optimization/SKILL.md">addyosmani/agent-skills at 301b02b</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: performance-optimization
+description: Optimizes application performance across frontend, backend, queries, and databases. Use when performance requirements exist, when you suspect performance regressions, when Core Web Vitals or load times need improvement, when N+1 query patterns need fixing, or when profiling reveals bottlenecks.</code></pre></details>
+        <div class="markdown"><h3>Performance Optimization</h3>
+<h4>Overview</h4>
+<p>Measure before optimizing. Performance work without measurement is guessing — and guessing leads to premature optimization that adds complexity without improving what matters. Profile first, identify the actual bottleneck, fix it, measure again. Optimize only what measurements prove matters.</p>
+<h4>When to Use</h4>
+<ul>
+<li>Performance requirements exist in the spec (load time budgets, response time SLAs)</li>
+<li>Users or monitoring report slow behavior</li>
+<li>Core Web Vitals scores are below thresholds</li>
+<li>You suspect a change introduced a regression</li>
+<li>Building features that handle large datasets or high traffic</li>
+</ul>
+<p><strong>When NOT to use:</strong> Don't optimize before you have evidence of a problem. Premature optimization adds complexity that costs more than the performance it gains.</p>
+<h4>Core Web Vitals Targets</h4>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Good</th>
+<th>Needs Improvement</th>
+<th>Poor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>LCP</strong> (Largest Contentful Paint)</td>
+<td>≤ 2.5s</td>
+<td>≤ 4.0s</td>
+<td>&gt; 4.0s</td>
+</tr>
+<tr>
+<td><strong>INP</strong> (Interaction to Next Paint)</td>
+<td>≤ 200ms</td>
+<td>≤ 500ms</td>
+<td>&gt; 500ms</td>
+</tr>
+<tr>
+<td><strong>CLS</strong> (Cumulative Layout Shift)</td>
+<td>≤ 0.1</td>
+<td>≤ 0.25</td>
+<td>&gt; 0.25</td>
+</tr>
+</tbody>
+</table>
+<h4>The Optimization Workflow</h4>
+<pre><code>1. MEASURE  → Establish baseline with real data
+2. IDENTIFY → Find the actual bottleneck (not assumed)
+3. FIX      → Address the specific bottleneck
+4. VERIFY   → Measure again; keep or revert
+5. GUARD    → Add monitoring or tests to prevent regression
+</code></pre>
+<h5>Step 1: Measure</h5>
+<p>Two complementary approaches — use both:</p>
+<ul>
+<li><strong>Synthetic (Lighthouse, DevTools Performance tab):</strong> Controlled conditions, reproducible. Best for CI regression detection and isolating specific issues.</li>
+<li><strong>RUM (web-vitals library, CrUX):</strong> Real user data in real conditions. Required to validate that a fix actually improved user experience.</li>
+</ul>
+<p><strong>Frontend:</strong></p>
+<pre><code class="language-javascript">// Synthetic: Lighthouse in Chrome DevTools (or CI)
+// Chrome DevTools → Performance tab → Record
+// Chrome DevTools MCP → Performance trace
+
+// RUM: Web Vitals library in code
+import { onLCP, onINP, onCLS } from 'web-vitals';
+
+onLCP(console.log);
+onINP(console.log);
+onCLS(console.log);
+</code></pre>
+<p><strong>Backend:</strong></p>
+<pre><code class="language-javascript">// Response time logging
+// Application Performance Monitoring (APM)
+// Database query logging with timing
+
+// Simple timing
+console.time('db-query');
+const result = await db.query(...);
+console.timeEnd('db-query');
+</code></pre>
+<h5>Where to Start Measuring</h5>
+<p>Use the symptom to decide what to measure first:</p>
+<pre><code>What is slow?
+├── First page load
+│   ├── Large bundle? --&gt; Measure bundle size, check code splitting
+│   ├── Slow server response? --&gt; Measure TTFB in DevTools Network waterfall
+│   │   ├── DNS long? --&gt; Add dns-prefetch / preconnect for known origins
+│   │   ├── TCP/TLS long? --&gt; Enable HTTP/2, check edge deployment, keep-alive
+│   │   └── Waiting (server) long? --&gt; Profile backend, check queries and caching
+│   └── Render-blocking resources? --&gt; Check network waterfall for CSS/JS blocking
+├── Interaction feels sluggish
+│   ├── UI freezes on click? --&gt; Profile main thread, look for long tasks (&gt;50ms)
+│   ├── Form input lag? --&gt; Check re-renders, controlled component overhead
+│   └── Animation jank? --&gt; Check layout thrashing, forced reflows
+├── Page after navigation
+│   ├── Data loading? --&gt; Measure API response times, check for waterfalls
+│   └── Client rendering? --&gt; Profile component render time, check for N+1 fetches
+└── Backend / API
+    ├── Single endpoint slow? --&gt; Profile database queries, check indexes
+    ├── All endpoints slow? --&gt; Check connection pool, memory, CPU
+    └── Intermittent slowness? --&gt; Check for lock contention, GC pauses, external deps
+</code></pre>
+<h5>Step 2: Identify the Bottleneck</h5>
+<p>Common bottlenecks by category:</p>
+<p><strong>Frontend:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Likely Cause</th>
+<th>Investigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Slow LCP</td>
+<td>Large images, render-blocking resources, slow server</td>
+<td>Check network waterfall, image sizes</td>
+</tr>
+<tr>
+<td>High CLS</td>
+<td>Images without dimensions, late-loading content, font shifts</td>
+<td>Check layout shift attribution</td>
+</tr>
+<tr>
+<td>Poor INP</td>
+<td>Heavy JavaScript on main thread, large DOM updates</td>
+<td>Check long tasks in Performance trace</td>
+</tr>
+<tr>
+<td>Slow initial load</td>
+<td>Large bundle, many network requests</td>
+<td>Check bundle size, code splitting</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Backend:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Likely Cause</th>
+<th>Investigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Slow API responses</td>
+<td>N+1 queries, missing indexes, unoptimized queries</td>
+<td>Check database query log</td>
+</tr>
+<tr>
+<td>Memory growth</td>
+<td>Leaked references, unbounded caches, large payloads</td>
+<td>Heap snapshot analysis</td>
+</tr>
+<tr>
+<td>CPU spikes</td>
+<td>Synchronous heavy computation, regex backtracking</td>
+<td>CPU profiling</td>
+</tr>
+<tr>
+<td>High latency</td>
+<td>Missing caching, redundant computation, network hops</td>
+<td>Trace requests through the stack</td>
+</tr>
+</tbody>
+</table>
+<h5>Step 3: Fix the Bottleneck</h5>
+<p>Fix the one thing Step 2 identified, nothing else. The anti-patterns below are the usual suspects; each entry gives the rule and the signature to recognize it, and links to a worked fix in <a href="https://github.com/addyosmani/agent-skills/blob/301b02b12bff98e4688e6984af6556802322bbde/skills/performance-optimization/references/optimization-patterns.md">references/optimization-patterns.md</a>. Open the one you need when you reach that code, not before.</p>
+<p><strong>Backend</strong></p>
+<ul>
+<li><strong>N+1 queries.</strong> One query per row is the most common backend bottleneck. Fetch the relation in the same query (join/include) instead of in the loop. <a href="https://github.com/addyosmani/agent-skills/blob/301b02b12bff98e4688e6984af6556802322bbde/skills/performance-optimization/references/optimization-patterns.md#n1-queries-backend">Pattern</a>.</li>
+<li><strong>Unbounded data fetching.</strong> Every list endpoint paginates with a limit and a stable order. <a href="https://github.com/addyosmani/agent-skills/blob/301b02b12bff98e4688e6984af6556802322bbde/skills/performance-optimization/references/optimization-patterns.md#unbounded-data-fetching">Pattern</a>.</li>
+<li><strong>Queries that ignore their index.</strong> &quot;Add an index&quot; is the guess; <code>EXPLAIN ANALYZE</code> is the measurement. A <code>Seq Scan</code> where you expected an index, a <code>rows=</code> estimate off by an order of magnitude, and a <code>Sort</code> node above the scan each call for a different fix; a bad <code>rows=</code> estimate means stale statistics, so run <code>ANALYZE</code> rather than adding an index. Index for the shape of the query (equality columns first, then the range or sort column). A plain index will not help a query on a low-selectivity dominant value (a partial index serves the rare value), a leading wildcard (needs trigram or full-text), or a function applied to the column (index the expression, as in <code>WHERE lower(email) = ?</code>), and every index taxes every write. Re-run the plan afterwards; an index that did not change it is a revert. <a href="https://github.com/addyosmani/agent-skills/blob/301b02b12bff98e4688e6984af6556802322bbde/skills/performance-optimization/references/optimization-patterns.md#queries-that-ignore-their-index">Pattern</a>.</li>
+<li><strong>Connection pool exhaustion.</strong> Signature: <em>every</em> endpoint slows at once, time is spent waiting for a connection rather than executing, and the database shows mostly idle sessions. One pool per process, sized so <code>instances × max</code> stays under the database's connection ceiling. Bigger is not faster; it relocates the queue to the database where it is harder to see. With unbounded instance counts (serverless, autoscaling), multiplex through a proxy (pgbouncer, RDS Proxy) instead of raising <code>max</code>. <a href="https://github.com/addyosmani/agent-skills/blob/301b02b12bff98e4688e6984af6556802322bbde/skills/performance-optimization/references/optimization-patterns.md#connection-pool-exhaustion">Pattern</a>.</li>
+<li><strong>Missing caching.</strong> Cache what is expensive to produce and read far more often than it changes; caching an already-fast query adds a network hop and a staleness bug in exchange for nothing. Pick the layer deliberately (in-process, shared, CDN). Every input that changes the response belongs in the key (tenant, locale, permissions, feature flags): a key that omits the viewer is how one user's data gets served to another. Choose one invalidation strategy (TTL, event or tag based, versioned keys) and state the acceptable staleness window explicitly. Guard hot keys against the stampede: serve stale while one request recomputes, or coalesce concurrent misses behind a single in-flight promise. Never cache what must be fresh (balances, permissions, inventory at checkout). <a href="https://github.com/addyosmani/agent-skills/blob/301b02b12bff98e4688e6984af6556802322bbde/skills/performance-optimization/references/optimization-patterns.md#missing-caching-backend">Pattern</a>; request coalescing, write strategies, and negative caching in <code>../../references/performance-checklist.md</code>.</li>
+</ul>
+<p><strong>Frontend</strong></p>
+<ul>
+<li><strong>Missing image optimization.</strong> Every image declares <code>width</code> and <code>height</code> (CLS). The LCP image gets <code>fetchpriority=&quot;high&quot;</code>, modern formats (AVIF, WebP) through <code>&lt;picture&gt;</code>, and <code>srcset</code>/<code>sizes</code> for resolution switching; below-the-fold images get <code>loading=&quot;lazy&quot;</code> and <code>decoding=&quot;async&quot;</code>. <a href="https://github.com/addyosmani/agent-skills/blob/301b02b12bff98e4688e6984af6556802322bbde/skills/performance-optimization/references/optimization-patterns.md#missing-image-optimization-frontend">Pattern</a>.</li>
+<li><strong>Unnecessary re-renders.</strong> An object or function created in render is a new reference every time and re-renders every child that receives it. Hoist constants; reserve <code>React.memo</code> and <code>useMemo</code> for work the profile shows is expensive, since overuse is its own cost. <a href="https://github.com/addyosmani/agent-skills/blob/301b02b12bff98e4688e6984af6556802322bbde/skills/performance-optimization/references/optimization-patterns.md#unnecessary-re-renders-react">Pattern</a>.</li>
+<li><strong>Large bundle size.</strong> Modern bundlers tree-shake ESM named imports on their own; the real gains are route-level code splitting and lazy-loading heavy, rarely-used features behind <code>Suspense</code>. Profile before changing import styles. <a href="https://github.com/addyosmani/agent-skills/blob/301b02b12bff98e4688e6984af6556802322bbde/skills/performance-optimization/references/optimization-patterns.md#large-bundle-size">Pattern</a>.</li>
+</ul>
+<h5>Step 4: Verify (Keep or Revert)</h5>
+<p>A fix is a hypothesis until you re-measure. This step decides whether it survives.</p>
+<p><strong>Re-measure the way you measured the baseline:</strong> same command, same conditions, same fixed budget (wall-clock, sample count, or request count). A baseline taken on a cold cache against a result taken on a warm one measures the cache, not your change.</p>
+<p><strong>Change one thing at a time.</strong> Three optimizations landed together produce one number, and you cannot attribute it. If they must ship together, measure each in isolation first.</p>
+<p><strong>Beat the noise, not just the mean.</strong> Repeat the measurement and compare the delta against run-to-run variance. A 3% gain inside ±5% variance is not a gain; it is a different sample.</p>
+<p>Then decide, strictly:</p>
+<table>
+<thead>
+<tr>
+<th>Result vs. baseline</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Past the threshold, tests green</td>
+<td><strong>Keep.</strong> Commit with the before/after numbers in the message.</td>
+</tr>
+<tr>
+<td>Within noise (no measurable change)</td>
+<td><strong>Revert.</strong></td>
+</tr>
+<tr>
+<td>Worse</td>
+<td><strong>Revert.</strong></td>
+</tr>
+<tr>
+<td>Improved, but a test went red</td>
+<td><strong>Revert.</strong> A regression wearing a win's clothing.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>&quot;Neutral&quot; is a revert, not a keep.</strong> This is the step teams skip: the change is already written, throwing it away feels wasteful, so it lands unmeasured, and the codebase accretes complexity that never bought anything. Code you keep, you maintain forever. Make it pay for itself.</p>
+<p><strong>Correctness gates the metric.</strong> The suite stays green <em>and</em> the number moves. An &quot;optimization&quot; that wins by dropping work the product needed (skipping a validation, caching something that must be fresh, removing an <code>await</code> that was load-bearing) is a regression, not a win.</p>
+<h6>Log every attempt, including the reverted ones</h6>
+<p>Reverted work leaves no trace in git history, which is exactly why the same dead idea gets tried again next quarter. Keep a short ledger so a discarded idea stays discarded:</p>
+<table>
+<thead>
+<tr>
+<th>Idea</th>
+<th>Baseline → Result</th>
+<th>Verdict</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Memoize the row component</td>
+<td>INP 240ms → 235ms</td>
+<td>reverted</td>
+<td>Inside noise (±15ms). Rows weren't the bottleneck.</td>
+</tr>
+<tr>
+<td>Virtualize the list</td>
+<td>INP 240ms → 90ms</td>
+<td>kept</td>
+<td>Long tasks gone from the trace.</td>
+</tr>
+<tr>
+<td>Preconnect to the API origin</td>
+<td>LCP 2.8s → 2.8s</td>
+<td>reverted</td>
+<td>Already same-origin.</td>
+</tr>
+</tbody>
+</table>
+<p>A section in the PR description or a <code>PERF.md</code> in the repo both work. What matters is that the next person (or the next agent) reads it before proposing an experiment, and doesn't re-run one that already failed.</p>
+<h5>Step 5: Guard Against Regression</h5>
+<p>Guard the metric the user actually feels, not every available number. Use the
+same LCP, INP, p95 latency, or other primary metric that justified the fix.</p>
+<p>Use two complementary layers when the surface is user-facing:</p>
+<ul>
+<li><strong>Synthetic CI gate:</strong> Catch reproducible regressions before merge with a
+performance budget. Repeat noisy measurements or compare a median/trend so
+normal run-to-run variance does not turn the gate into a flaky check.</li>
+<li><strong>Field monitoring:</strong> Alert on a meaningful p75 movement in RUM data. Use
+attributed <code>web-vitals</code> data to locate the cause; treat CrUX's rolling window
+as confirmation rather than an immediate alert.</li>
+</ul>
+<p>When either guard fires, return to Step 1 and establish a fresh baseline before
+proposing another fix.</p>
+<p><strong>Set budgets and enforce them:</strong></p>
+<pre><code>JavaScript bundle: &lt; 200KB gzipped (initial load)
+CSS: &lt; 50KB gzipped
+Images: &lt; 200KB per image (above the fold)
+Fonts: &lt; 100KB total
+API response time: &lt; 200ms (p95)
+Time to Interactive: &lt; 3.5s on 4G
+Lighthouse Performance score: ≥ 90
+</code></pre>
+<p><strong>Enforce in CI:</strong></p>
+<pre><code class="language-bash"># Bundle size check
+npx bundlesize --config bundlesize.config.json
+
+# Lighthouse CI. The CLI package is @lhci/cli; unscoped `lhci` on npm is not it.
+npx --package=@lhci/cli lhci autorun
+</code></pre>
+<h4>See Also</h4>
+<p>For detailed performance checklists, optimization commands, and anti-pattern reference, see <code>../../references/performance-checklist.md</code>.</p>
+<h4>Common Rationalizations</h4>
+<table>
+<thead>
+<tr>
+<th>Rationalization</th>
+<th>Reality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;We'll optimize later&quot;</td>
+<td>Performance debt compounds. Fix obvious anti-patterns now, defer micro-optimizations.</td>
+</tr>
+<tr>
+<td>&quot;It's fast on my machine&quot;</td>
+<td>Your machine isn't the user's. Profile on representative hardware and networks.</td>
+</tr>
+<tr>
+<td>&quot;This optimization is obvious&quot;</td>
+<td>If you didn't measure, you don't know. Profile first.</td>
+</tr>
+<tr>
+<td>&quot;Users won't notice 100ms&quot;</td>
+<td>Research shows 100ms delays impact conversion rates. Users notice more than you think.</td>
+</tr>
+<tr>
+<td>&quot;The framework handles performance&quot;</td>
+<td>Frameworks prevent some issues but can't fix N+1 queries or oversized bundles.</td>
+</tr>
+<tr>
+<td>&quot;The query is slow, add an index&quot;</td>
+<td>Read the plan first. The index may already exist and be unusable, and every index taxes writes forever.</td>
+</tr>
+<tr>
+<td>&quot;Just cache it&quot;</td>
+<td>Caching an already-cheap call buys nothing and adds a staleness bug. Cache what is expensive <em>and</em> re-read far more than written.</td>
+</tr>
+<tr>
+<td>&quot;Raise the pool size, we're running out of connections&quot;</td>
+<td>A pool bigger than the database can serve moves the queue somewhere less visible. Find what holds connections.</td>
+</tr>
+<tr>
+<td>&quot;It didn't help much, but it doesn't hurt&quot;</td>
+<td>Neutral changes are a revert. You pay maintenance on them forever and got nothing back.</td>
+</tr>
+<tr>
+<td>&quot;We already wrote it, may as well keep it&quot;</td>
+<td>Sunk cost. The measurement doesn't care how long the change took to write.</td>
+</tr>
+<tr>
+<td>&quot;The improvement is obvious, no need to re-measure&quot;</td>
+<td>Then re-measuring is cheap and proves it. Unmeasured wins are how neutral complexity lands.</td>
+</tr>
+</tbody>
+</table>
+<h4>Red Flags</h4>
+<ul>
+<li>Optimization without profiling data to justify it</li>
+<li>N+1 query patterns in data fetching</li>
+<li>An index added without a query plan before and after to justify it</li>
+<li>A cache key that omits an input the response depends on (tenant, locale, viewer)</li>
+<li>A cache with no stated staleness window and no invalidation strategy</li>
+<li>Connection pool size raised in response to exhaustion, without finding what holds connections</li>
+<li>List endpoints without pagination</li>
+<li>Images without dimensions, lazy loading, or responsive sizes</li>
+<li>Bundle size growing without review</li>
+<li>No performance monitoring in production</li>
+<li><code>React.memo</code> and <code>useMemo</code> everywhere (overusing is as bad as underusing)</li>
+<li>Optimizations kept without a re-measurement that justifies them</li>
+<li>Several optimizations bundled into one measurement, so no single change can be attributed</li>
+<li>A &quot;win&quot; that required a test to be changed, skipped, or deleted</li>
+<li>The same failed optimization attempted more than once because nobody recorded the first attempt</li>
+</ul>
+<h4>Verification</h4>
+<p>After any performance-related change:</p>
+<ul>
+<li>[ ] Before and after measurements exist (specific numbers)</li>
+<li>[ ] The result was re-measured the same way as the baseline (same command, same conditions)</li>
+<li>[ ] The improvement exceeds run-to-run variance, not just the mean</li>
+<li>[ ] Changes that didn't beat the baseline were reverted, not kept as neutral</li>
+<li>[ ] Attempts are logged, kept and reverted alike, so a dead idea isn't re-run</li>
+<li>[ ] The specific bottleneck is identified and addressed</li>
+<li>[ ] Core Web Vitals are within &quot;Good&quot; thresholds</li>
+<li>[ ] Bundle size hasn't increased significantly</li>
+<li>[ ] No N+1 queries in new data fetching code</li>
+<li>[ ] Any new index is justified by a query plan before and after, and its write cost was considered</li>
+<li>[ ] Any new cache states what it keys on and how it goes stale</li>
+<li>[ ] The measured user-facing metric has a synthetic budget or field monitor that can detect regression</li>
+<li>[ ] Existing tests still pass (optimization didn't break behavior)</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

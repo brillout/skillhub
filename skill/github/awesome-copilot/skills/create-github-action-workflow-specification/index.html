@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>create-github-action-workflow-specification · SkillHub</title>
+    <meta name="description" content="Use it when: you want a CI/CD workflow file described by what it does, so people or agents can maintain it. It does: reads the workflow you name and fills a template: triggers, jobs and dependencies, requirements, inputs and outputs, secrets, constraints, error handling, quality gates and monitoring. You get: a Markdown file at /spec/spec-process-cicd-[workflow-name].md, with a Mermaid diagram of the job flow. Leaves out: syntax, commands and tool versions: the spec describes behavior, not implementation. Unlike create-specification: from the same repo, which writes a spec from a purpose you give, this documents a workflow file that already exists." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=github%2Fawesome-copilot">github/awesome-copilot</a></p>
+      <div class="title-row"><h1>create-github-action-workflow-specification</h1><button type="button" class="save" data-save="skill:github/awesome-copilot/skills/create-github-action-workflow-specification" aria-pressed="false" aria-label="Save create-github-action-workflow-specification" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you want a CI/CD workflow file described by what it does, so people or agents can maintain it</dd></div><div><dt>It does</dt><dd>reads the workflow you name and fills a template: triggers, jobs and dependencies, requirements, inputs and outputs, secrets, constraints, error handling, quality gates and monitoring</dd></div><div><dt>You get</dt><dd>a Markdown file at /spec/spec-process-cicd-[workflow-name].md, with a Mermaid diagram of the job flow</dd></div><div><dt>Leaves out</dt><dd>syntax, commands and tool versions: the spec describes behavior, not implementation</dd></div><div><dt>Unlike create-specification</dt><dd>from the same repo, which writes a spec from a purpose you give, this documents a workflow file that already exists</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>The agent analyzes one GitHub Actions workflow file and writes a specification of its behavior, kept implementation-agnostic, token-efficient and dense with tables. It extracts the workflow&#39;s purpose and maps the job order as a Mermaid graph, using subgraphs once there are five jobs or more. It documents the contracts: environment variables, path and branch triggers, job outputs and artifacts, secrets and variables. Then it captures timeouts, concurrency and permissions, error paths and recovery, quality gates for code quality, security scans and coverage, metrics and alerting, external systems and dependent workflows, audit and security controls, edge cases, validation criteria, and a change process in which the spec is updated before the workflow. Requirements carry IDs such as REQ-, SEC- and PERF-. The template&#39;s front matter fills in DevOps Team as the owner.</p>
+      <p class="muted">Summarizes <a href="https://github.com/github/awesome-copilot/tree/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/create-github-action-workflow-specification">the skill at 797337f</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">github/</span><wbr><span class="word">awesome-copilot</span> <span class="word">--skill</span> <span class="word">create-github-action-workflow-specification</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/github/awesome-copilot --skill create-github-action-workflow-specification">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/github/awesome-copilot/create-github-action-workflow-specification">skills.sh page</a> · <a href="https://github.com/github/awesome-copilot/tree/HEAD/skills/create-github-action-workflow-specification">Source on GitHub</a> · <a href="/?repo=github%2Fawesome-copilot">All skills from github/awesome-copilot</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>10,800 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>40,908 <span class="muted">github/awesome-copilot</span></dd></div><div><dt>First seen</dt><dd>Feb 25, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">49</div>
+      <div class="stat-delta">-8% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 53; week to Sep 27: 69; week to Oct 4: 59; week to Oct 11: 68; week to Oct 18: 44; week to Oct 25: 59; week to Nov 1: 51; week to Nov 8: 49. Use the left and right arrow keys to read each week."
+        data-values="53,69,59,68,44,59,51,49" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,16.2 38.6,6.0 71.1,12.4 103.7,6.6 136.3,21.9 168.9,12.4 201.4,17.5 234.0,18.8" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="18.8" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>53</td></tr><tr><td>Sep 27</td><td>69</td></tr><tr><td>Oct 4</td><td>59</td></tr><tr><td>Oct 11</td><td>68</td></tr><tr><td>Oct 18</td><td>44</td></tr><tr><td>Oct 25</td><td>59</td></tr><tr><td>Nov 1</td><td>51</td></tr><tr><td>Nov 8</td><td>49</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:writing" data-facet="category" title="Articles, docs, internal comms, research write-ups and prose that doesn&#39;t read as generated." href="/?tag=category%3Awriting">category:<wbr>writing</a></div>
+          <p class="tag-meaning">Articles, docs, internal comms, research write-ups and prose that doesn&#39;t read as generated.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:command" data-facet="type" title="A one-shot action you invoke by name, such as turning the conversation into a PRD." href="/?tag=type%3Acommand">type:<wbr>command</a></div>
+          <p class="tag-meaning">A one-shot action you invoke by name, such as turning the conversation into a PRD.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:official" data-facet="by" title="A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates." href="/?tag=by%3Aofficial">by:<wbr>official</a></div>
+          <p class="tag-meaning">A verified publisher on skills.sh, or the company or maintainer behind the product the skill operates.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="ci" data-facet="topic" href="/?tag=ci">ci</a><a class="tag" data-tag="docs-writing" data-facet="topic" href="/?tag=docs-writing">docs-writing</a><a class="tag" data-tag="diagrams" data-facet="topic" href="/?tag=diagrams">diagrams</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:github" data-facet="stack" href="/?tag=stack%3Agithub">stack:<wbr>github</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/github/awesome-copilot/blob/797337f33f73e35d08d82f840e21c4b8c4932d88/skills/create-github-action-workflow-specification/SKILL.md">github/awesome-copilot at 797337f</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: create-github-action-workflow-specification
+description: &#39;Create a formal specification for an existing GitHub Actions CI/CD workflow, optimized for AI consumption and workflow maintenance.&#39;</code></pre></details>
+        <div class="markdown"><h3>Create GitHub Actions Workflow Specification</h3>
+<p>Create a comprehensive specification for the GitHub Actions workflow: <code>${input:WorkflowFile}</code>.</p>
+<p>This specification serves as a specification for the workflow's behavior, requirements, and constraints. It must be implementation-agnostic, focusing on <strong>what</strong> the workflow accomplishes rather than <strong>how</strong> it's implemented.</p>
+<h4>AI-Optimized Requirements</h4>
+<ul>
+<li><strong>Token Efficiency</strong>: Use concise language without sacrificing clarity</li>
+<li><strong>Structured Data</strong>: Leverage tables, lists, and diagrams for dense information</li>
+<li><strong>Semantic Clarity</strong>: Use precise terminology consistently throughout</li>
+<li><strong>Implementation Abstraction</strong>: Avoid specific syntax, commands, or tool versions</li>
+<li><strong>Maintainability</strong>: Design for easy updates as workflow evolves</li>
+</ul>
+<h4>Specification Template</h4>
+<p>Save as: <code>/spec/spec-process-cicd-[workflow-name].md</code></p>
+<pre><code class="language-md">---
+title: CI/CD Workflow Specification - [Workflow Name]
+version: 1.0
+date_created: [YYYY-MM-DD]
+last_updated: [YYYY-MM-DD]
+owner: DevOps Team
+tags: [process, cicd, github-actions, automation, [domain-specific-tags]]
+---
+
+## Workflow Overview
+
+**Purpose**: [One sentence describing workflow's primary goal]
+**Trigger Events**: [List trigger conditions]
+**Target Environments**: [Environment scope]
+
+## Execution Flow Diagram
+
+```mermaid
+graph TD
+    A[Trigger Event] --&gt; B[Job 1]
+    B --&gt; C[Job 2]
+    C --&gt; D[Job 3]
+    D --&gt; E[End]
+    
+    B --&gt; F[Parallel Job]
+    F --&gt; D
+    
+    style A fill:#e1f5fe
+    style E fill:#e8f5e8
+</code></pre>
+<h4>Jobs &amp; Dependencies</h4>
+<table>
+<thead>
+<tr>
+<th>Job Name</th>
+<th>Purpose</th>
+<th>Dependencies</th>
+<th>Execution Context</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>job-1</td>
+<td>[Purpose]</td>
+<td>[Prerequisites]</td>
+<td>[Runner/Environment]</td>
+</tr>
+<tr>
+<td>job-2</td>
+<td>[Purpose]</td>
+<td>job-1</td>
+<td>[Runner/Environment]</td>
+</tr>
+</tbody>
+</table>
+<h4>Requirements Matrix</h4>
+<h5>Functional Requirements</h5>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Requirement</th>
+<th>Priority</th>
+<th>Acceptance Criteria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>REQ-001</td>
+<td>[Requirement]</td>
+<td>High</td>
+<td>[Testable criteria]</td>
+</tr>
+<tr>
+<td>REQ-002</td>
+<td>[Requirement]</td>
+<td>Medium</td>
+<td>[Testable criteria]</td>
+</tr>
+</tbody>
+</table>
+<h5>Security Requirements</h5>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Requirement</th>
+<th>Implementation Constraint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SEC-001</td>
+<td>[Security requirement]</td>
+<td>[Constraint description]</td>
+</tr>
+</tbody>
+</table>
+<h5>Performance Requirements</h5>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Metric</th>
+<th>Target</th>
+<th>Measurement Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PERF-001</td>
+<td>[Metric]</td>
+<td>[Target value]</td>
+<td>[How measured]</td>
+</tr>
+</tbody>
+</table>
+<h4>Input/Output Contracts</h4>
+<h5>Inputs</h5>
+<pre><code class="language-yaml"># Environment Variables
+ENV_VAR_1: string  # Purpose: [description]
+ENV_VAR_2: secret  # Purpose: [description]
+
+# Repository Triggers
+paths: [list of path filters]
+branches: [list of branch patterns]
+</code></pre>
+<h5>Outputs</h5>
+<pre><code class="language-yaml"># Job Outputs
+job_1_output: string  # Description: [purpose]
+build_artifact: file  # Description: [content type]
+</code></pre>
+<h5>Secrets &amp; Variables</h5>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Purpose</th>
+<th>Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Secret</td>
+<td>SECRET_1</td>
+<td>[Purpose]</td>
+<td>Workflow</td>
+</tr>
+<tr>
+<td>Variable</td>
+<td>VAR_1</td>
+<td>[Purpose]</td>
+<td>Repository</td>
+</tr>
+</tbody>
+</table>
+<h4>Execution Constraints</h4>
+<h5>Runtime Constraints</h5>
+<ul>
+<li><strong>Timeout</strong>: [Maximum execution time]</li>
+<li><strong>Concurrency</strong>: [Parallel execution limits]</li>
+<li><strong>Resource Limits</strong>: [Memory/CPU constraints]</li>
+</ul>
+<h5>Environmental Constraints</h5>
+<ul>
+<li><strong>Runner Requirements</strong>: [OS/hardware needs]</li>
+<li><strong>Network Access</strong>: [External connectivity needs]</li>
+<li><strong>Permissions</strong>: [Required access levels]</li>
+</ul>
+<h4>Error Handling Strategy</h4>
+<table>
+<thead>
+<tr>
+<th>Error Type</th>
+<th>Response</th>
+<th>Recovery Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Build Failure</td>
+<td>[Response]</td>
+<td>[Recovery steps]</td>
+</tr>
+<tr>
+<td>Test Failure</td>
+<td>[Response]</td>
+<td>[Recovery steps]</td>
+</tr>
+<tr>
+<td>Deployment Failure</td>
+<td>[Response]</td>
+<td>[Recovery steps]</td>
+</tr>
+</tbody>
+</table>
+<h4>Quality Gates</h4>
+<h5>Gate Definitions</h5>
+<table>
+<thead>
+<tr>
+<th>Gate</th>
+<th>Criteria</th>
+<th>Bypass Conditions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Code Quality</td>
+<td>[Standards]</td>
+<td>[When allowed]</td>
+</tr>
+<tr>
+<td>Security Scan</td>
+<td>[Thresholds]</td>
+<td>[When allowed]</td>
+</tr>
+<tr>
+<td>Test Coverage</td>
+<td>[Percentage]</td>
+<td>[When allowed]</td>
+</tr>
+</tbody>
+</table>
+<h4>Monitoring &amp; Observability</h4>
+<h5>Key Metrics</h5>
+<ul>
+<li><strong>Success Rate</strong>: [Target percentage]</li>
+<li><strong>Execution Time</strong>: [Target duration]</li>
+<li><strong>Resource Usage</strong>: [Monitoring approach]</li>
+</ul>
+<h5>Alerting</h5>
+<table>
+<thead>
+<tr>
+<th>Condition</th>
+<th>Severity</th>
+<th>Notification Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[Condition]</td>
+<td>[Level]</td>
+<td>[Who/Where]</td>
+</tr>
+</tbody>
+</table>
+<h4>Integration Points</h4>
+<h5>External Systems</h5>
+<table>
+<thead>
+<tr>
+<th>System</th>
+<th>Integration Type</th>
+<th>Data Exchange</th>
+<th>SLA Requirements</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[System]</td>
+<td>[Type]</td>
+<td>[Data format]</td>
+<td>[Requirements]</td>
+</tr>
+</tbody>
+</table>
+<h5>Dependent Workflows</h5>
+<table>
+<thead>
+<tr>
+<th>Workflow</th>
+<th>Relationship</th>
+<th>Trigger Mechanism</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[Workflow]</td>
+<td>[Type]</td>
+<td>[How triggered]</td>
+</tr>
+</tbody>
+</table>
+<h4>Compliance &amp; Governance</h4>
+<h5>Audit Requirements</h5>
+<ul>
+<li><strong>Execution Logs</strong>: [Retention policy]</li>
+<li><strong>Approval Gates</strong>: [Required approvals]</li>
+<li><strong>Change Control</strong>: [Update process]</li>
+</ul>
+<h5>Security Controls</h5>
+<ul>
+<li><strong>Access Control</strong>: [Permission model]</li>
+<li><strong>Secret Management</strong>: [Rotation policy]</li>
+<li><strong>Vulnerability Scanning</strong>: [Scan frequency]</li>
+</ul>
+<h4>Edge Cases &amp; Exceptions</h4>
+<h5>Scenario Matrix</h5>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Expected Behavior</th>
+<th>Validation Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[Edge case]</td>
+<td>[Behavior]</td>
+<td>[How to verify]</td>
+</tr>
+</tbody>
+</table>
+<h4>Validation Criteria</h4>
+<h5>Workflow Validation</h5>
+<ul>
+<li><strong>VLD-001</strong>: [Validation rule]</li>
+<li><strong>VLD-002</strong>: [Validation rule]</li>
+</ul>
+<h5>Performance Benchmarks</h5>
+<ul>
+<li><strong>PERF-001</strong>: [Benchmark criteria]</li>
+<li><strong>PERF-002</strong>: [Benchmark criteria]</li>
+</ul>
+<h4>Change Management</h4>
+<h5>Update Process</h5>
+<ol>
+<li><strong>Specification Update</strong>: Modify this document first</li>
+<li><strong>Review &amp; Approval</strong>: [Approval process]</li>
+<li><strong>Implementation</strong>: Apply changes to workflow</li>
+<li><strong>Testing</strong>: [Validation approach]</li>
+<li><strong>Deployment</strong>: [Release process]</li>
+</ol>
+<h5>Version History</h5>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Date</th>
+<th>Changes</th>
+<th>Author</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0</td>
+<td>[Date]</td>
+<td>Initial specification</td>
+<td>[Author]</td>
+</tr>
+</tbody>
+</table>
+<h4>Related Specifications</h4>
+<ul>
+<li>[Link to related workflow specs]</li>
+<li>[Link to infrastructure specs]</li>
+<li>[Link to deployment specs]</li>
+</ul>
+<pre><code>
+## Analysis Instructions
+
+When analyzing the workflow file:
+
+1. **Extract Core Purpose**: Identify the primary business objective
+2. **Map Job Flow**: Create dependency graph showing execution order
+3. **Identify Contracts**: Document inputs, outputs, and interfaces
+4. **Capture Constraints**: Extract timeouts, permissions, and limits
+5. **Define Quality Gates**: Identify validation and approval points
+6. **Document Error Paths**: Map failure scenarios and recovery
+7. **Abstract Implementation**: Focus on behavior, not syntax
+
+## Mermaid Diagram Guidelines
+
+### Flow Types
+- **Sequential**: `A --&gt; B --&gt; C`
+- **Parallel**: `A --&gt; B &amp; A --&gt; C; B --&gt; D &amp; C --&gt; D`
+- **Conditional**: `A --&gt; B{Decision}; B --&gt;|Yes| C; B --&gt;|No| D`
+
+### Styling
+```mermaid
+style TriggerNode fill:#e1f5fe
+style SuccessNode fill:#e8f5e8
+style FailureNode fill:#ffebee
+style ProcessNode fill:#f3e5f5
+</code></pre>
+<h5>Complex Workflows</h5>
+<p>For workflows with 5+ jobs, use subgraphs:</p>
+<pre><code class="language-mermaid">graph TD
+    subgraph &quot;Build Phase&quot;
+        A[Lint] --&gt; B[Test] --&gt; C[Build]
+    end
+    subgraph &quot;Deploy Phase&quot;  
+        D[Staging] --&gt; E[Production]
+    end
+    C --&gt; D
+</code></pre>
+<h4>Token Optimization Strategies</h4>
+<ol>
+<li><strong>Use Tables</strong>: Dense information in structured format</li>
+<li><strong>Abbreviate Consistently</strong>: Define once, use throughout</li>
+<li><strong>Bullet Points</strong>: Avoid prose paragraphs</li>
+<li><strong>Code Blocks</strong>: Structured data over narrative</li>
+<li><strong>Cross-Reference</strong>: Link instead of repeat information</li>
+</ol>
+<p>Focus on creating a specification that serves as both documentation and a template for workflow updates.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

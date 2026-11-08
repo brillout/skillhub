@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>backend-patterns · SkillHub</title>
+    <meta name="description" content="Use it when: you&#039;re building or reviewing API routes and their data access in a Node.js, Express or Next.js backend. It does: gives the agent patterns for REST URLs, repository and service layers, middleware, queries, transactions, caching, errors, auth, rate limits, job queues and logging. You get: server code shaped by those patterns; it adds no steps or files of its own. Examples in: TypeScript with Next.js route handlers, Supabase, Redis, Zod and jsonwebtoken. Unlike: ECC&#039;s api-design, which it leaves the HTTP contract to; this covers the code behind the endpoints." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=affaan-m%2Fecc">affaan-m/ecc</a></p>
+      <div class="title-row"><h1>backend-patterns</h1><button type="button" class="save" data-save="skill:affaan-m/ecc/skills/backend-patterns" aria-pressed="false" aria-label="Save backend-patterns" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>you&#39;re building or reviewing API routes and their data access in a Node.js, Express or Next.js backend</dd></div><div><dt>It does</dt><dd>gives the agent patterns for REST URLs, repository and service layers, middleware, queries, transactions, caching, errors, auth, rate limits, job queues and logging</dd></div><div><dt>You get</dt><dd>server code shaped by those patterns; it adds no steps or files of its own</dd></div><div><dt>Examples in</dt><dd>TypeScript with Next.js route handlers, Supabase, Redis, Zod and jsonwebtoken</dd></div><div><dt>Unlike</dt><dd>ECC&#39;s api-design, which it leaves the HTTP contract to; this covers the code behind the endpoints</dd></div></dl></section>
+      
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A reference of server-side patterns from ECC, each shown as TypeScript code. It starts with resource-based REST URLs and query parameters for filtering and pagination, a repository interface that hides data access, with a Supabase implementation, a service layer for business logic, and middleware that wraps handlers with auth. For the database, it selects only the columns it needs, batch-fetches to avoid N+1 queries, and runs transactions as a Postgres function called through Supabase. It puts a Redis cache in front of a repository and shows the cache-aside pattern, a central error handler that turns API errors and Zod validation failures into responses, retries with exponential backoff, JWT verification, and role-based permission checks that wrap route handlers. Rate limits must use a shared store such as Redis, a gateway or the platform&#39;s limiter, never per-process counters that reset on deploy and split across replicas. It ends with a simple in-process job queue and a structured JSON logger that tags each request with an ID.</p>
+      <p class="muted">Summarizes <a href="https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/backend-patterns">the skill at d2ef268</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">affaan-m/</span><wbr><span class="word">ecc</span> <span class="word">--skill</span> <span class="word">backend-patterns</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/affaan-m/ecc --skill backend-patterns">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/affaan-m/ecc/backend-patterns">skills.sh page</a> · <a href="https://github.com/affaan-m/ecc/tree/HEAD/skills/backend-patterns">Source on GitHub</a> · <a href="/?repo=affaan-m%2Fecc">All skills from affaan-m/ecc</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>7,000 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>299,252 <span class="muted">affaan-m/ecc</span></dd></div><div><dt>First seen</dt><dd>May 19, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">579</div>
+      <div class="stat-delta">+55% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 374; week to Sep 27: 355; week to Oct 4: 245; week to Oct 11: 243; week to Oct 18: 317; week to Oct 25: 530; week to Nov 1: 488; week to Nov 8: 579. Use the left and right arrow keys to read each week."
+        data-values="374,355,245,243,317,530,488,579" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,21.6 38.6,23.0 71.1,31.4 103.7,31.5 136.3,25.9 168.9,9.7 201.4,12.9 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>374</td></tr><tr><td>Sep 27</td><td>355</td></tr><tr><td>Oct 4</td><td>245</td></tr><tr><td>Oct 11</td><td>243</td></tr><tr><td>Oct 18</td><td>317</td></tr><tr><td>Oct 25</td><td>530</td></tr><tr><td>Nov 1</td><td>488</td></tr><tr><td>Nov 8</td><td>579</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:engineering" data-facet="category" title="Test-first work, implementation from specs, git hygiene and scope control." href="/?tag=category%3Aengineering">category:<wbr>engineering</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Test-first work, implementation from specs, git hygiene and scope control.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:guidelines" data-facet="type" title="Knowledge and rules the agent applies while it works: best practices, design principles, API references." href="/?tag=type%3Aguidelines">type:<wbr>guidelines</a></div>
+          <p class="tag-meaning">Knowledge and rules the agent applies while it works: best practices, design principles, API references.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:none" data-facet="effect" title="Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code." href="/?tag=effect%3Anone">effect:<wbr>none</a></div>
+          <p class="tag-meaning">Adds no side effects of its own. It shapes how the agent thinks, writes or reviews. Guidelines and routers are always effect:none, even when the task they support edits code.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="backend" data-facet="topic" href="/?tag=backend">backend</a><a class="tag" data-tag="architecture" data-facet="topic" href="/?tag=architecture">architecture</a><a class="tag" data-tag="databases" data-facet="topic" href="/?tag=databases">databases</a></div>
+          
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Stack</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="stack:typescript" data-facet="stack" href="/?tag=stack%3Atypescript">stack:<wbr>typescript</a><a class="tag" data-tag="stack:node" data-facet="stack" href="/?tag=stack%3Anode">stack:<wbr>node</a><a class="tag" data-tag="stack:nextjs" data-facet="stack" href="/?tag=stack%3Anextjs">stack:<wbr>nextjs</a><a class="tag" data-tag="stack:supabase" data-facet="stack" href="/?tag=stack%3Asupabase">stack:<wbr>supabase</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/affaan-m/ecc/blob/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/backend-patterns/SKILL.md">affaan-m/ecc at d2ef268</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: backend-patterns
+description: Backend architecture patterns, API design, database optimization, and server-side best practices for Node.js, Express, and Next.js API routes. Use when building or reviewing Node.js, Express, or Next.js API routes and their data access.
+metadata:
+  origin: ECC</code></pre></details>
+        <div class="markdown"><h3>Backend Development Patterns</h3>
+<p>Backend architecture patterns and best practices for scalable server-side applications.</p>
+<h4>When to Activate</h4>
+<ul>
+<li>Designing REST or GraphQL API endpoints</li>
+<li>Implementing repository, service, or controller layers</li>
+<li>Optimizing database queries (N+1, indexing, connection pooling)</li>
+<li>Adding caching (Redis, in-memory, HTTP cache headers)</li>
+<li>Setting up background jobs or async processing</li>
+<li>Structuring error handling and validation for APIs</li>
+<li>Building middleware (auth, logging, rate limiting)</li>
+</ul>
+<h4>API Design Patterns</h4>
+<h5>RESTful API Structure</h5>
+<pre><code class="language-typescript">// PASS: Resource-based URLs
+GET    /api/markets                 # List resources
+GET    /api/markets/:id             # Get single resource
+POST   /api/markets                 # Create resource
+PUT    /api/markets/:id             # Replace resource
+PATCH  /api/markets/:id             # Update resource
+DELETE /api/markets/:id             # Delete resource
+
+// PASS: Query parameters for filtering, sorting, pagination
+GET /api/markets?status=active&amp;sort=volume&amp;limit=20&amp;offset=0
+</code></pre>
+<h5>Repository Pattern</h5>
+<pre><code class="language-typescript">// Abstract data access logic
+interface MarketRepository {
+  findAll(filters?: MarketFilters): Promise&lt;Market[]&gt;
+  findById(id: string): Promise&lt;Market | null&gt;
+  create(data: CreateMarketDto): Promise&lt;Market&gt;
+  update(id: string, data: UpdateMarketDto): Promise&lt;Market&gt;
+  delete(id: string): Promise&lt;void&gt;
+}
+
+class SupabaseMarketRepository implements MarketRepository {
+  async findAll(filters?: MarketFilters): Promise&lt;Market[]&gt; {
+    let query = supabase.from('markets').select('*')
+
+    if (filters?.status) {
+      query = query.eq('status', filters.status)
+    }
+
+    if (filters?.limit) {
+      query = query.limit(filters.limit)
+    }
+
+    const { data, error } = await query
+
+    if (error) throw new Error(error.message)
+    return data
+  }
+
+  // Other methods...
+}
+</code></pre>
+<h5>Service Layer Pattern</h5>
+<pre><code class="language-typescript">// Business logic separated from data access
+class MarketService {
+  constructor(private marketRepo: MarketRepository) {}
+
+  async searchMarkets(query: string, limit: number = 10): Promise&lt;Market[]&gt; {
+    // Business logic
+    const embedding = await generateEmbedding(query)
+    const results = await this.vectorSearch(embedding, limit)
+
+    // Fetch full data
+    const markets = await this.marketRepo.findByIds(results.map(r =&gt; r.id))
+
+    // Sort by similarity
+    return markets.sort((a, b) =&gt; {
+      const scoreA = results.find(r =&gt; r.id === a.id)?.score || 0
+      const scoreB = results.find(r =&gt; r.id === b.id)?.score || 0
+      return scoreA - scoreB
+    })
+  }
+
+  private async vectorSearch(embedding: number[], limit: number) {
+    // Vector search implementation
+  }
+}
+</code></pre>
+<h5>Middleware Pattern</h5>
+<pre><code class="language-typescript">// Request/response processing pipeline
+export function withAuth(handler: NextApiHandler): NextApiHandler {
+  return async (req, res) =&gt; {
+    const token = req.headers.authorization?.replace('Bearer ', '')
+
+    if (!token) {
+      return res.status(401).json({ error: 'Unauthorized' })
+    }
+
+    try {
+      const user = await verifyToken(token)
+      req.user = user
+      return handler(req, res)
+    } catch (error) {
+      return res.status(401).json({ error: 'Invalid token' })
+    }
+  }
+}
+
+// Usage
+export default withAuth(async (req, res) =&gt; {
+  // Handler has access to req.user
+})
+</code></pre>
+<h4>Database Patterns</h4>
+<h5>Query Optimization</h5>
+<pre><code class="language-typescript">// PASS: GOOD: Select only needed columns
+const { data } = await supabase
+  .from('markets')
+  .select('id, name, status, volume')
+  .eq('status', 'active')
+  .order('volume', { ascending: false })
+  .limit(10)
+
+// FAIL: BAD: Select everything
+const { data } = await supabase
+  .from('markets')
+  .select('*')
+</code></pre>
+<h5>N+1 Query Prevention</h5>
+<pre><code class="language-typescript">// FAIL: BAD: N+1 query problem
+const markets = await getMarkets()
+for (const market of markets) {
+  market.creator = await getUser(market.creator_id)  // N queries
+}
+
+// PASS: GOOD: Batch fetch
+const markets = await getMarkets()
+const creatorIds = markets.map(m =&gt; m.creator_id)
+const creators = await getUsers(creatorIds)  // 1 query
+const creatorMap = new Map(creators.map(c =&gt; [c.id, c]))
+
+markets.forEach(market =&gt; {
+  market.creator = creatorMap.get(market.creator_id)
+})
+</code></pre>
+<h5>Transaction Pattern</h5>
+<pre><code class="language-typescript">async function createMarketWithPosition(
+  marketData: CreateMarketDto,
+  positionData: CreatePositionDto
+) {
+  // Use Supabase transaction
+  const { data, error } = await supabase.rpc('create_market_with_position', {
+    market_data: marketData,
+    position_data: positionData
+  })
+
+  if (error) throw new Error('Transaction failed')
+  return data
+}
+
+// SQL function in Supabase
+CREATE OR REPLACE FUNCTION create_market_with_position(
+  market_data jsonb,
+  position_data jsonb
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  -- Start transaction automatically
+  INSERT INTO markets VALUES (market_data);
+  INSERT INTO positions VALUES (position_data);
+  RETURN jsonb_build_object('success', true);
+EXCEPTION
+  WHEN OTHERS THEN
+    -- Rollback happens automatically
+    RETURN jsonb_build_object('success', false, 'error', SQLERRM);
+END;
+$$;
+</code></pre>
+<h4>Caching Strategies</h4>
+<h5>Redis Caching Layer</h5>
+<pre><code class="language-typescript">class CachedMarketRepository implements MarketRepository {
+  constructor(
+    private baseRepo: MarketRepository,
+    private redis: RedisClient
+  ) {}
+
+  async findById(id: string): Promise&lt;Market | null&gt; {
+    // Check cache first
+    const cached = await this.redis.get(`market:${id}`)
+
+    if (cached) {
+      return JSON.parse(cached)
+    }
+
+    // Cache miss - fetch from database
+    const market = await this.baseRepo.findById(id)
+
+    if (market) {
+      // Cache for 5 minutes
+      await this.redis.setex(`market:${id}`, 300, JSON.stringify(market))
+    }
+
+    return market
+  }
+
+  async invalidateCache(id: string): Promise&lt;void&gt; {
+    await this.redis.del(`market:${id}`)
+  }
+}
+</code></pre>
+<h5>Cache-Aside Pattern</h5>
+<pre><code class="language-typescript">async function getMarketWithCache(id: string): Promise&lt;Market&gt; {
+  const cacheKey = `market:${id}`
+
+  // Try cache
+  const cached = await redis.get(cacheKey)
+  if (cached) return JSON.parse(cached)
+
+  // Cache miss - fetch from DB
+  const market = await db.markets.findUnique({ where: { id } })
+
+  if (!market) throw new Error('Market not found')
+
+  // Update cache
+  await redis.setex(cacheKey, 300, JSON.stringify(market))
+
+  return market
+}
+</code></pre>
+<h4>Error Handling Patterns</h4>
+<h5>Centralized Error Handler</h5>
+<pre><code class="language-typescript">class ApiError extends Error {
+  constructor(
+    public statusCode: number,
+    public message: string,
+    public isOperational = true
+  ) {
+    super(message)
+    Object.setPrototypeOf(this, ApiError.prototype)
+  }
+}
+
+export function errorHandler(error: unknown, req: Request): Response {
+  if (error instanceof ApiError) {
+    return NextResponse.json({
+      success: false,
+      error: error.message
+    }, { status: error.statusCode })
+  }
+
+  if (error instanceof z.ZodError) {
+    return NextResponse.json({
+      success: false,
+      error: 'Validation failed',
+      details: error.issues
+    }, { status: 400 })
+  }
+
+  // Log unexpected errors
+  console.error('Unexpected error:', error)
+
+  return NextResponse.json({
+    success: false,
+    error: 'Internal server error'
+  }, { status: 500 })
+}
+
+// Usage
+export async function GET(request: Request) {
+  try {
+    const data = await fetchData()
+    return NextResponse.json({ success: true, data })
+  } catch (error) {
+    return errorHandler(error, request)
+  }
+}
+</code></pre>
+<h5>Retry with Exponential Backoff</h5>
+<pre><code class="language-typescript">async function fetchWithRetry&lt;T&gt;(
+  fn: () =&gt; Promise&lt;T&gt;,
+  maxRetries = 3
+): Promise&lt;T&gt; {
+  let lastError: Error
+
+  for (let i = 0; i &lt; maxRetries; i++) {
+    try {
+      return await fn()
+    } catch (error) {
+      lastError = error as Error
+
+      if (i &lt; maxRetries - 1) {
+        // Exponential backoff: 1s, 2s, 4s
+        const delay = Math.pow(2, i) * 1000
+        await new Promise(resolve =&gt; setTimeout(resolve, delay))
+      }
+    }
+  }
+
+  throw lastError!
+}
+
+// Usage
+const data = await fetchWithRetry(() =&gt; fetchFromAPI())
+</code></pre>
+<h4>Authentication &amp; Authorization</h4>
+<h5>JWT Token Validation</h5>
+<pre><code class="language-typescript">import jwt from 'jsonwebtoken'
+
+interface JWTPayload {
+  userId: string
+  email: string
+  role: 'admin' | 'user'
+}
+
+export function verifyToken(token: string): JWTPayload {
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload
+    return payload
+  } catch (error) {
+    throw new ApiError(401, 'Invalid token')
+  }
+}
+
+export async function requireAuth(request: Request) {
+  const token = request.headers.get('authorization')?.replace('Bearer ', '')
+
+  if (!token) {
+    throw new ApiError(401, 'Missing authorization token')
+  }
+
+  return verifyToken(token)
+}
+
+// Usage in API route
+export async function GET(request: Request) {
+  const user = await requireAuth(request)
+
+  const data = await getDataForUser(user.userId)
+
+  return NextResponse.json({ success: true, data })
+}
+</code></pre>
+<h5>Role-Based Access Control</h5>
+<pre><code class="language-typescript">type Permission = 'read' | 'write' | 'delete' | 'admin'
+
+interface User {
+  id: string
+  role: 'admin' | 'moderator' | 'user'
+}
+
+const rolePermissions: Record&lt;User['role'], Permission[]&gt; = {
+  admin: ['read', 'write', 'delete', 'admin'],
+  moderator: ['read', 'write', 'delete'],
+  user: ['read', 'write']
+}
+
+export function hasPermission(user: User, permission: Permission): boolean {
+  return rolePermissions[user.role].includes(permission)
+}
+
+export function requirePermission(permission: Permission) {
+  return (handler: (request: Request, user: User) =&gt; Promise&lt;Response&gt;) =&gt; {
+    return async (request: Request) =&gt; {
+      const user = await requireAuth(request)
+
+      if (!hasPermission(user, permission)) {
+        throw new ApiError(403, 'Insufficient permissions')
+      }
+
+      return handler(request, user)
+    }
+  }
+}
+
+// Usage - HOF wraps the handler
+export const DELETE = requirePermission('delete')(
+  async (request: Request, user: User) =&gt; {
+    // Handler receives authenticated user with verified permission
+    return new Response('Deleted', { status: 200 })
+  }
+)
+</code></pre>
+<h4>Rate Limiting</h4>
+<p>Rate limiting must use a shared store such as Redis, a gateway, or the
+platform's native limiter. Do not use per-process in-memory counters for
+production APIs: they reset on deploy, split across replicas, and fail open in
+serverless or multi-instance environments.</p>
+<p>Keep the backend layer responsible for choosing the integration point and error
+shape; use <code>api-design</code> for the HTTP contract and <code>security-review</code> for abuse
+case review.</p>
+<h4>Background Jobs &amp; Queues</h4>
+<h5>Simple Queue Pattern</h5>
+<pre><code class="language-typescript">class JobQueue&lt;T&gt; {
+  private queue: T[] = []
+  private processing = false
+
+  async add(job: T): Promise&lt;void&gt; {
+    this.queue.push(job)
+
+    if (!this.processing) {
+      this.process()
+    }
+  }
+
+  private async process(): Promise&lt;void&gt; {
+    this.processing = true
+
+    while (this.queue.length &gt; 0) {
+      const job = this.queue.shift()!
+
+      try {
+        await this.execute(job)
+      } catch (error) {
+        console.error('Job failed:', error)
+      }
+    }
+
+    this.processing = false
+  }
+
+  private async execute(job: T): Promise&lt;void&gt; {
+    // Job execution logic
+  }
+}
+
+// Usage for indexing markets
+interface IndexJob {
+  marketId: string
+}
+
+const indexQueue = new JobQueue&lt;IndexJob&gt;()
+
+export async function POST(request: Request) {
+  const { marketId } = await request.json()
+
+  // Add to queue instead of blocking
+  await indexQueue.add({ marketId })
+
+  return NextResponse.json({ success: true, message: 'Job queued' })
+}
+</code></pre>
+<h4>Logging &amp; Monitoring</h4>
+<h5>Structured Logging</h5>
+<pre><code class="language-typescript">interface LogContext {
+  userId?: string
+  requestId?: string
+  method?: string
+  path?: string
+  [key: string]: unknown
+}
+
+class Logger {
+  log(level: 'info' | 'warn' | 'error', message: string, context?: LogContext) {
+    const entry = {
+      timestamp: new Date().toISOString(),
+      level,
+      message,
+      ...context
+    }
+
+    console.log(JSON.stringify(entry))
+  }
+
+  info(message: string, context?: LogContext) {
+    this.log('info', message, context)
+  }
+
+  warn(message: string, context?: LogContext) {
+    this.log('warn', message, context)
+  }
+
+  error(message: string, error: Error, context?: LogContext) {
+    this.log('error', message, {
+      ...context,
+      error: error.message,
+      stack: error.stack
+    })
+  }
+}
+
+const logger = new Logger()
+
+// Usage
+export async function GET(request: Request) {
+  const requestId = crypto.randomUUID()
+
+  logger.info('Fetching markets', {
+    requestId,
+    method: 'GET',
+    path: '/api/markets'
+  })
+
+  try {
+    const markets = await fetchMarkets()
+    return NextResponse.json({ success: true, data: markets })
+  } catch (error) {
+    logger.error('Failed to fetch markets', error as Error, { requestId })
+    return NextResponse.json({ error: 'Internal error' }, { status: 500 })
+  }
+}
+</code></pre>
+<p><strong>Remember</strong>: Backend patterns enable scalable, maintainable server-side applications. Choose patterns that fit your complexity level.</p>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>

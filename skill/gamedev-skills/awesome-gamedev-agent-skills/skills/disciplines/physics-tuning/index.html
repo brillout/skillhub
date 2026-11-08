@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/assets/static/style-da232d78.DGxYhw25.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>physics-tuning · SkillHub</title>
+    <meta name="description" content="Use it when: motion jitters, fast objects pass through walls, stacks explode, or movement feels floaty, sticky or laggy. It does: moves simulation into the fixed physics step, interpolates rendering between ticks, turns on continuous collision for fast bodies, tunes mass, drag and materials, and checks layers and masks. Tunneling means: a fast, small object skipping past a thin collider between two physics steps. You get: physics settings and code changes, checked at low and high frame rates by throwing fast objects at thin walls and shoving stacks. Code examples: GDScript for Godot, with the Unity equivalents in comments." />
+    <link rel="icon" type="image/svg+xml" href="/gem.svg" />
+  </head>
+  <body>
+    <header id="page-head">
+    <div class="brand-head">
+      <a class="brand" href="/">
+        <img src="/gem.svg" alt="" width="28" height="28" />
+        <span>SkillHub</span>
+      </a>
+      <nav class="site-links" aria-label="Site"><a href="/tags/">Tags</a><a href="/about/">About</a><a href="https://github.com/brillout/skillhub">GitHub</a><span id="account" class="account"><a href="/api/auth/login" data-login>Log in</a></span></nav>
+    </div></header>
+    <main id="app">
+    <div class="page skill-page">
+      <p class="crumbs"><a href="/">Skills</a> <span aria-hidden="true">/</span> <a href="/?repo=gamedev-skills%2Fawesome-gamedev-agent-skills">gamedev-skills/awesome-gamedev-agent-skills</a> <span aria-hidden="true">/</span> <a href="/bundle/gamedev-skills/awesome-gamedev-agent-skills/">Gamedev Agent Skills</a></p>
+      <div class="title-row"><h1>physics-tuning</h1><button type="button" class="save" data-save="skill:gamedev-skills/awesome-gamedev-agent-skills/skills/disciplines/physics-tuning" aria-pressed="false" aria-label="Save physics-tuning" title="Save"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3h9a.5.5 0 0 1 .5.5V17l-5-3.6L5 17V3.5a.5.5 0 0 1 .5-.5z" /></svg><span>Save</span></button></div>
+      <section class="at-a-glance" aria-label="At a glance"><dl class="glance"><div><dt>Use it when</dt><dd>motion jitters, fast objects pass through walls, stacks explode, or movement feels floaty, sticky or laggy</dd></div><div><dt>It does</dt><dd>moves simulation into the fixed physics step, interpolates rendering between ticks, turns on continuous collision for fast bodies, tunes mass, drag and materials, and checks layers and masks</dd></div><div><dt>Tunneling means</dt><dd>a fast, small object skipping past a thin collider between two physics steps</dd></div><div><dt>You get</dt><dd>physics settings and code changes, checked at low and high frame rates by throwing fast objects at thin walls and shoving stacks</dd></div><div><dt>Code examples</dt><dd>GDScript for Godot, with the Unity equivalents in comments</dd></div></dl></section>
+      
+    <p class="in-bundle">Skill 10 of 27 in the <a href="/bundle/gamedev-skills/awesome-gamedev-agent-skills/">Gamedev Agent Skills</a> bundle · Before it: <a href="/skill/gamedev-skills/awesome-gamedev-agent-skills/skills/disciplines/shader-programming/">shader-programming</a> · After it: <a href="/skill/gamedev-skills/awesome-gamedev-agent-skills/skills/disciplines/level-design/">level-design</a></p>
+    
+      
+      
+    <section class="tldr" aria-labelledby="tldr">
+      <h2 id="tldr">TLDR</h2>
+      <p>A discipline skill from a game-development collection. Its premise: most bad physics isn&#39;t an engine bug but a mismatch between the fixed-rate simulation and the variable-rate render loop, or untuned settings. Forces, velocities and collision reads go in the physics callback with its fixed step, and rendering interpolates between the last two physics states, preferably with the engine&#39;s built-in interpolation. Tunneling gets continuous collision detection and a speed cap, with the rule that one step&#39;s travel should stay under the thinnest wall. Mass sets weight in collisions, not fall speed, so feel comes from drag, gravity scale and physics materials. Stacks and joints settle with modest mass ratios, more solver iterations and sleeping. Pitfalls include one-sided layer and mask setups, huge time-step spikes after a hitch, teleports smeared by interpolation, and Godot damping that drifts after raising the physics rate. Jump buffering and coyote time are left to input-systems and the platformer skill.</p>
+      <p class="muted">Summarizes <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/tree/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/physics-tuning">the skill at 19d93f9</a>.</p>
+    </section>
+      <div class="details-grid">
+        <div>
+          <div class="install"><code><span class="word">npx</span> <span class="word">skills</span> <span class="word">add</span> <span class="word">https:/</span><wbr><span class="word">/</span><wbr><span class="word">github.com/</span><wbr><span class="word">gamedev-skills/</span><wbr><span class="word">awesome-gamedev-agent-skills</span> <span class="word">--skill</span> <span class="word">physics-tuning</span></code><button type="button" class="copy" data-copy="npx skills add https://github.com/gamedev-skills/awesome-gamedev-agent-skills --skill physics-tuning">Copy</button></div>
+          <p class="links"><a href="https://skills.sh/gamedev-skills/awesome-gamedev-agent-skills/physics-tuning">skills.sh page</a> · <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/tree/HEAD/skills/disciplines/physics-tuning">Source on GitHub</a> · <a href="/?repo=gamedev-skills%2Fawesome-gamedev-agent-skills">All skills from gamedev-skills/awesome-gamedev-agent-skills</a></p>
+          <dl class="facts"><div><dt>Total Downloads</dt><dd>10,200 <span class="muted">on skills.sh, Nov 8, 2026</span></dd></div><div><dt>Repo stars</dt><dd>7,647 <span class="muted">gamedev-skills/awesome-gamedev-agent-skills</span></dd></div><div><dt>First seen</dt><dd>Jun 27, 2026 <span class="muted">on skills.sh</span></dd></div></dl>
+        </div>
+        
+    <figure class="stat">
+      <figcaption class="stat-label">Weekly Downloads</figcaption>
+      <div class="stat-value">1.9K</div>
+      <div class="stat-delta">+400% over 8 weeks · week to Nov 8</div>
+      <div class="spark" tabindex="0" role="group"
+        aria-label="Weekly downloads, week to Sep 20: 388; week to Sep 27: 357; week to Oct 4: 422; week to Oct 11: 428; week to Oct 18: 507; week to Oct 25: 712; week to Nov 1: 1,582; week to Nov 8: 1,940. Use the left and right arrow keys to read each week."
+        data-values="388,357,422,428,507,712,1582,1940" data-weeks="Sep 20|Sep 27|Oct 4|Oct 11|Oct 18|Oct 25|Nov 1|Nov 8">
+        <svg viewBox="0 0 240 56" aria-hidden="true">
+          <line class="spark-base" x1="6" x2="234" y1="50" y2="50" />
+          <polyline class="spark-line" points="6.0,41.2 38.6,41.9 71.1,40.4 103.7,40.3 136.3,38.5 168.9,33.9 201.4,14.1 234.0,6.0" />
+          <line class="spark-cross" y1="0" y2="56" x1="0" x2="0" visibility="hidden" />
+          <circle class="spark-now" r="4" cx="234.0" cy="6.0" />
+          <circle class="spark-hover" r="4" visibility="hidden" />
+        </svg>
+        <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
+      </div>
+      <details class="spark-table">
+        <summary>Weekly values</summary>
+        <table>
+          <thead><tr><th scope="col">Week to</th><th scope="col">Installs</th></tr></thead>
+          <tbody><tr><td>Sep 20</td><td>388</td></tr><tr><td>Sep 27</td><td>357</td></tr><tr><td>Oct 4</td><td>422</td></tr><tr><td>Oct 11</td><td>428</td></tr><tr><td>Oct 18</td><td>507</td></tr><tr><td>Oct 25</td><td>712</td></tr><tr><td>Nov 1</td><td>1,582</td></tr><tr><td>Nov 8</td><td>1,940</td></tr></tbody>
+        </table>
+      </details>
+    </figure>
+      </div>
+      <table class="tag-detail">
+      <tr>
+        <th scope="row">Category</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="category:debugging" data-facet="category" title="Find root causes, review code and test what you built." href="/?tag=category%3Adebugging">category:<wbr>debugging</a><a class="tag" data-tag="category:games" data-facet="category" title="Make games: design, genres, game feel and game-jam workflows, whatever the engine." href="/?tag=category%3Agames">category:<wbr>games</a><a class="tag" data-tag="category:software-engineering" data-facet="category" title="Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills." href="/?tag=category%3Asoftware-engineering">category:<wbr>software-engineering</a></div>
+          <p class="tag-meaning">Find root causes, review code and test what you built.</p><p class="tag-meaning">Make games: design, genres, game feel and game-jam workflows, whatever the engine.</p><p class="tag-meaning">Everything for building software: planning, coding, debugging, design, frameworks, cloud, agents and skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Type</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="type:workflow" data-facet="type" title="A multi-step process the agent follows: interview, debug, run a TDD loop, review." href="/?tag=type%3Aworkflow">type:<wbr>workflow</a></div>
+          <p class="tag-meaning">A multi-step process the agent follows: interview, debug, run a TDD loop, review.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Effect</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="effect:local" data-facet="effect" title="Its own steps create or change files, git state or local tools." href="/?tag=effect%3Alocal">effect:<wbr>local</a></div>
+          <p class="tag-meaning">Its own steps create or change files, git state or local tools.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Needs</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="needs:none" data-facet="needs" title="Instructions only. Works in any agent that supports skills." href="/?tag=needs%3Anone">needs:<wbr>none</a></div>
+          <p class="tag-meaning">Instructions only. Works in any agent that supports skills.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Publisher</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="by:community" data-facet="by" title="Everyone else. Unverified vendor claims default to community." href="/?tag=by%3Acommunity">by:<wbr>community</a></div>
+          <p class="tag-meaning">Everyone else. Unverified vendor claims default to community.</p>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Topics</th>
+        <td>
+          <div class="tags"><a class="tag" data-tag="debugging" data-facet="topic" href="/?tag=debugging">debugging</a></div>
+          
+        </td>
+      </tr></table>
+      <section class="skill-md" aria-labelledby="skill-md">
+        <h2 id="skill-md">SKILL.md</h2>
+        <p class="muted">From <a href="https://github.com/gamedev-skills/awesome-gamedev-agent-skills/blob/19d93f97c9c1ea0f8b306e77aa81e0d3e352d3e9/skills/disciplines/physics-tuning/SKILL.md">gamedev-skills/awesome-gamedev-agent-skills at 19d93f9</a>. Checked daily, last changed Nov 6, 2026.</p>
+        <details class="frontmatter"><summary>Frontmatter</summary><pre><code>name: physics-tuning
+description: &#62;
+  Tune game physics for stable, good-feeling motion — fixed vs variable
+  timestep, render interpolation, mass/gravity/drag, continuous collision
+  detection (CCD) to stop tunneling, fixing jitter, and collision layers/masks.
+  Engine-neutral. Use when the user mentions physics feel, jitter, tunneling,
+  fixed timestep, FixedUpdate, CCD, bouncing/unstable physics, or collision layers.</code></pre></details>
+        <div class="markdown"><h3>Physics tuning</h3>
+<p>Most &quot;bad physics&quot; is not a bug in the engine — it's a mismatch between the
+<strong>fixed-timestep simulation</strong> and the <strong>variable-rate render loop</strong>, or untuned
+mass/drag/CCD/layer settings. This skill covers the engine-neutral knobs that
+make physics stable and responsive; pair it with <code>godot-physics</code> or
+<code>unity-physics</code> for the concrete APIs.</p>
+<h4>When to use</h4>
+<ul>
+<li>Use when motion jitters, objects pass through walls (tunneling), stacks
+explode, or movement feels floaty/sticky/laggy.</li>
+<li>Use to decide what goes in the fixed (physics) step vs the render frame, and
+how to interpolate between them.</li>
+<li>Use to tune gravity, mass, drag, restitution, solver iterations, sleeping, and
+collision layers/masks.</li>
+</ul>
+<p><strong>When <em>not</em> to use:</strong> for an engine's exact physics nodes/components and
+collision callbacks, use <code>godot-physics</code> or <code>unity-physics</code>. For <em>movement
+decisions</em> (when to jump, AI steering) use <code>input-systems</code> and <code>game-ai</code>. For
+platformer jump-feel specifics like coyote time/jump buffering, that's input/
+controller territory — see <code>input-systems</code> and the <code>platformer</code> genre.</p>
+<h4>Core workflow</h4>
+<ol>
+<li><strong>Run physics on a fixed timestep.</strong> Simulate at a constant rate (e.g. 50–60
+Hz). A fixed <code>dt</code> makes the simulation deterministic-ish and stable; a
+variable <code>dt</code> makes integration and collisions inconsistent.</li>
+<li><strong>Put physics work in the physics callback</strong>, not the render frame. Apply
+forces/velocities and read collisions in the fixed step (<code>FixedUpdate</code> /
+<code>_physics_process</code>), using that step's <code>dt</code>.</li>
+<li><strong>Interpolate rendering between physics ticks.</strong> The render frame rate ≠ the
+physics rate, so smoothly interpolate transforms toward the latest physics
+state, or enable the engine's Rigidbody interpolation, to remove visible
+stutter.</li>
+<li><strong>Tune the body, not the scene.</strong> Set mass for relative weight, drag for
+damping, gravity scale per object, and restitution/friction via materials.</li>
+<li><strong>Stop tunneling with CCD</strong> on small/fast bodies; cap maximum velocity.</li>
+<li><strong>Stabilize stacks/joints</strong> with more solver iterations, sane mass ratios, and
+sleeping for resting bodies.</li>
+<li><strong>Verify by feel and stress test.</strong> Play at low and high frame rates; throw
+fast objects at thin walls; stack and shove bodies. Report what you observed.</li>
+</ol>
+<h4>Patterns</h4>
+<h5>1. Fixed timestep for simulation, render interpolation for smoothness</h5>
+<pre><code class="language-gdscript"># Physics callback: runs at the FIXED rate. Use its dt for all integration.
+func _physics_process(dt):                  # Unity: void FixedUpdate()
+    velocity += gravity * dt                # integrate with the FIXED dt
+    move_and_slide()                        # engine resolves collisions this step
+    _prev_pos = _curr_pos; _curr_pos = global_position   # record for interpolation
+
+# Render frame: runs as fast as the display. Interpolate between physics states.
+func _process(_frame_dt):                   # Unity: void Update()
+    var alpha = Engine.get_physics_interpolation_fraction()  # 0..1 within the tick
+    visual.global_position = _prev_pos.lerp(_curr_pos, alpha)
+# RIGHT: integrate in the fixed step, render via interpolation.
+# WRONG: applying forces in _process/Update with frame dt — speed and collisions
+# then depend on frame rate and jitter under load.
+</code></pre>
+<p>Most engines offer this for you: Godot's project setting
+<code>physics/common/physics_interpolation</code> (off by default; it interpolates every
+node, 2D and 3D) and Unity's <code>Rigidbody.interpolation = Interpolate</code>. Prefer the
+built-in before hand-rolling, and never do both on the same node.</p>
+<h5>2. Stop tunneling: CCD + a speed cap</h5>
+<pre><code class="language-gdscript"># Fast, small bodies skip past thin colliders between ticks. Two fixes:
+body.continuous_cd = true            # RigidBody3D bool (RigidBody2D: CCD_MODE_* enum)
+# Unity: rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative (cheap, covers
+# dynamic bodies too) or ContinuousDynamic (fast vs fast); plain Continuous sweeps vs static only.
+# Cap velocity so a single step can't move more than ~one collider thickness.
+const MAX_SPEED := 40.0
+if velocity.length() &gt; MAX_SPEED:
+    velocity = velocity.normalized() * MAX_SPEED
+# Rule of thumb: max_distance_per_step (= speed / physics_hz) should be &lt; the
+# thinnest wall. Raise physics_hz or enable CCD when that fails.
+</code></pre>
+<h5>3. Body tuning: mass, drag, gravity scale, material</h5>
+<pre><code class="language-gdscript"># Mass is RELATIVE weight in collisions; it does NOT change fall speed (gravity
+# accelerates all masses equally). Use drag and gravity_scale to shape feel.
+body.mass = 2.0                      # heavier pushes lighter in collisions
+body.linear_damp = 0.5               # air drag: higher = stops sooner (Unity 6: linearDamping, was drag)
+body.gravity_scale = 1.5             # per-object gravity multiplier (Unity: Rigidbody2D.gravityScale)
+# Bounce/slide come from the physics material, not code:
+material.bounce = 0.2                # restitution 0..1 (Unity: PhysicsMaterial.bounciness)
+material.friction = 0.8              # surface grip
+body.physics_material_override = material
+</code></pre>
+<h5>4. Collision layers and masks (who collides with whom)</h5>
+<pre><code class="language-gdscript"># A body is ON its layer(s) and SCANS the layers in its mask. Both directions of a
+# pair must be configured for them to interact.
+player.collision_layer = LAYER_PLAYER
+player.collision_mask  = LAYER_WORLD | LAYER_ENEMY     # player detects world+enemies
+pickup.collision_layer = LAYER_PICKUP
+pickup.collision_mask  = LAYER_PLAYER                  # pickup only reacts to player
+# Unity equivalent: assign GameObject layers and edit the Physics collision matrix
+# (or Physics.IgnoreLayerCollision). Keep a named layer constant table, not magic numbers.
+</code></pre>
+<h4>Pitfalls</h4>
+<ul>
+<li><strong>Applying forces/movement in the render frame</strong> (<code>Update</code>/<code>_process</code>) makes
+behavior frame-rate dependent — faster PCs run faster, and collisions get
+flaky. Do simulation in the fixed step.</li>
+<li><strong>Visible jitter</strong> even with a fixed step usually means no render
+interpolation: the physics rate and display rate beat against each other.
+Enable interpolation.</li>
+<li><strong>Tunneling</strong> through thin walls: discrete collision misses fast movers. Enable
+CCD, cap speed, thicken walls, or raise the physics rate.</li>
+<li><strong>Expecting heavier objects to fall faster.</strong> Gravity is acceleration; mass
+affects collision response, not fall speed. Use <code>gravity_scale</code>/drag for feel.</li>
+<li><strong>Exploding stacks / jittery joints</strong>: mass ratios too extreme, or too few
+solver iterations. Keep mass ratios modest and raise iteration counts.</li>
+<li><strong>Bodies that never rest</strong> burn CPU and twitch. Enable sleeping and a sensible
+sleep threshold for resting objects.</li>
+<li><strong>One-directional layer setup</strong>: A's mask includes B but B's mask excludes A.
+Detection/collision can need both sides; verify the full matrix.</li>
+<li><strong>Huge <code>dt</code> spikes</strong> (load hitches, breakpoints) blow up integration. Clamp the
+max physics step / substep count so a stall doesn't launch everything (Godot
+<code>physics/common/max_physics_steps_per_frame</code>, Unity <em>Maximum Allowed Timestep</em>).</li>
+<li><strong>Teleports smear across the screen</strong> with interpolation on: the renderer
+blends from the old position. Godot: call <code>reset_physics_interpolation()</code>
+<em>after</em> moving the node. Unity: move interpolated bodies through the
+Rigidbody; a direct <code>transform</code> write is ignored unless followed by
+<code>Physics.SyncTransforms()</code>.</li>
+<li><strong>Feel changes after raising the physics rate</strong>: Godot (GodotPhysics and Jolt
+alike) damps by multiplying velocity by <code>1 - damp / ticks_per_second</code> each
+tick, an approximation that drifts as <code>damp</code> approaches the tick rate (at
+<code>damp &gt;= ticks_per_second</code> the body stops in one tick). Small damping values
+barely change; re-tune large ones after changing <code>physics_ticks_per_second</code>.</li>
+</ul>
+<h4>References</h4>
+<ul>
+<li><code>references/timestep-and-ccd.md</code> — the fixed-timestep accumulator loop,
+interpolation math, substepping, CCD modes, solver/iteration tuning, sleeping,
+and a stability checklist.</li>
+</ul>
+<h4>Related skills</h4>
+<ul>
+<li><code>godot-physics</code>, <code>unity-physics</code> — concrete bodies, colliders, and callbacks.</li>
+<li><code>input-systems</code> — responsive controls, jump buffering, coyote time.</li>
+<li><code>game-ai</code> — agent movement that must agree with the physics step.</li>
+<li><code>platformer</code>, <code>fps-shooter</code> — genres whose feel depends on this tuning.</li>
+</ul>
+</div>
+      </section>
+    </div></main>
+    <script src="/assets/entries/pages_skill_client.CuS7BY-G.js" type="module" async></script>
+  </body>
+</html>
