@@ -8,7 +8,8 @@
  *   red-pink. Dark mode, the header's toggle or else the system's setting, keeps the same order,
  *   near-black, with a lighter garnet. The greys are never tinted blue.
  * - Garnet is for action and emphasis: links, the agent button, the number the list is sorted by,
- *   what you saved. A selected toggle (preset, chip, Show) is filled with ink instead.
+ *   what you saved. A selected toggle (preset, chip, Show) is filled with --selected instead:
+ *   the ink in light mode, a grey in dark mode, where the ink would glare.
  * - Tags are text, their facet prefix quieter than their value. Only safety gets a tint: good,
  *   warn, bad. The facet itself is in the prefix, so it gets no color of its own.
  * - One family, Geologica. Headings and names use its sharpness axis ("SHRP" 100), whose cut
@@ -23,9 +24,10 @@
  * - Avoided on purpose: all-caps labels, meta joined with middle dots, arrows appended to links,
  *   a stack of identical rounded cards (the results are one ruled sheet instead), decorative
  *   shadows and gradients.
- * - Motion. Transitions only, never keyframes, and only for press feedback (scale 0.96), a
- *   button's edge on hover (150ms), the Save and dark mode icons' swaps and the Saved switch's
- *   knob. Other colors change at once, the theme's too.
+ * - Motion. Transitions, and only for press feedback (scale 0.96), a button's edge on hover
+ *   (150ms), the Save and dark mode icons' swaps and the Saved switch's knob. Keyframes only for
+ *   one nudge: a save draws the eye to the Saved switch's count. Other colors change at once, the
+ *   theme's too.
  */
 
 :root {
@@ -46,8 +48,9 @@
   --ink: #1a2142;
   --ink-2: #444e70;
   --ink-3: #5e6888;
-  /* What fills a selected toggle, and its text. */
-  --on-ink: #ffffff;
+  /* What fills a selected toggle (preset, Show, chip, a filter's chip), and its text. */
+  --selected: #1a2142;
+  --on-selected: #ffffff;
   --garnet: #b3175a;
   --garnet-text: #a8124f;
   --rose: #fce3ee;
@@ -94,7 +97,9 @@
   --ink: #e8ebf6;
   --ink-2: #b7bed6;
   --ink-3: #8f98b8;
-  --on-ink: #141416;
+  /* A grey, not the ink, which would glare. */
+  --selected: #4a4a54;
+  --on-selected: #ffffff;
   --garnet: #c42a66;
   --garnet-text: #ff8db8;
   --rose: #3a1a33;
@@ -406,10 +411,88 @@ body:has(.skills-view) {
 }
 
 .saved-switch .n {
+  display: inline-block;
   color: var(--ink-3);
   font-size: 12px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
+}
+
+/*
+ * A click that saves or unsaves draws the eye here, so that you know where to find what you saved
+ * (account-client.ts sets the attributes): the count rolls in from below, or from above when it
+ * drops, and shows in garnet for a moment; on a save, a garnet ring ripples out of the switch and
+ * its bookmark pops. One-off sequences, so keyframes. With reduced motion, only the color.
+ */
+.saved-switch .n[data-bump="up"] {
+  animation:
+    count-up 350ms cubic-bezier(0.2, 0, 0, 1),
+    count-flash 1.4s ease-out;
+}
+
+.saved-switch .n[data-bump="down"] {
+  animation: count-down 350ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.saved-switch[data-pulse] {
+  animation: saved-ripple 700ms ease-out;
+}
+
+.saved-switch[data-pulse] svg {
+  animation: saved-pop 500ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+@keyframes count-up {
+  from {
+    opacity: 0;
+    translate: 0 0.7em;
+  }
+}
+
+@keyframes count-down {
+  from {
+    opacity: 0;
+    translate: 0 -0.7em;
+  }
+}
+
+@keyframes count-flash {
+  from,
+  50% {
+    color: var(--garnet-text);
+    font-weight: 700;
+  }
+}
+
+@keyframes saved-ripple {
+  from {
+    outline: 2px solid var(--garnet);
+    outline-offset: 0;
+  }
+
+  to {
+    outline: 2px solid transparent;
+    outline-offset: 8px;
+  }
+}
+
+@keyframes saved-pop {
+  40% {
+    color: var(--garnet-text);
+    fill-opacity: 1;
+    scale: 1.3;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .saved-switch .n[data-bump] {
+    animation: count-flash 1.4s ease-out;
+  }
+
+  .saved-switch[data-pulse],
+  .saved-switch[data-pulse] svg {
+    animation: none;
+  }
 }
 
 /* The track, and its knob. */
@@ -481,9 +564,9 @@ body:has(.skills-view) {
 }
 
 .preset[aria-pressed="true"] {
-  background: var(--ink);
+  background: var(--selected);
   box-shadow: none;
-  color: var(--on-ink);
+  color: var(--on-selected);
 }
 
 /* Sort by, with its order right of it, as a slider has its range. */
@@ -544,8 +627,8 @@ body:has(.skills-view) {
 }
 
 .show-switch button[aria-pressed="true"] {
-  background: var(--ink);
-  color: var(--on-ink);
+  background: var(--selected);
+  color: var(--on-selected);
   font-weight: 600;
 }
 
@@ -648,10 +731,10 @@ body:has(.skills-view) {
 /* Less room on the side of the ×, which looks further out than the words. */
 .scope-chip {
   padding: 2px 8px 2px 10px;
-  border: 1px solid var(--ink);
+  border: 1px solid var(--selected);
   border-radius: 999px;
-  background: var(--ink);
-  color: var(--on-ink);
+  background: var(--selected);
+  color: var(--on-selected);
   font-size: 14px;
   white-space: nowrap;
   cursor: pointer;
@@ -1074,13 +1157,13 @@ body:has(.skills-view) {
 }
 
 .chip[aria-pressed="true"] {
-  background: var(--ink);
+  background: var(--selected);
   box-shadow: none;
-  color: var(--on-ink);
+  color: var(--on-selected);
 }
 
 .chip[aria-pressed="true"] .n {
-  color: var(--on-ink);
+  color: var(--on-selected);
   opacity: 0.8;
 }
 

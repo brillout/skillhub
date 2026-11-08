@@ -39,14 +39,33 @@ function store() {
 
 function changed(change: AccountChange) {
   store();
-  paint();
+  paint(change === "toggle");
   document.dispatchEvent(new CustomEvent<AccountChange>(ACCOUNT_EVENT, { detail: change }));
 }
 
 /** The API answers: show the buttons and links. */
 const reachable = () => document.documentElement.setAttribute("data-account", "");
 
-function paint() {
+/**
+ * Draw the eye to the Saved switch when a click changes how many you saved, so that you know where
+ * to find them: its count rolls to the new number, and on a save, the switch ripples in garnet.
+ * The animations are in style.css, on [data-bump] and [data-pulse]; reading offsetWidth between
+ * removing and setting them restarts them for a quick second click.
+ */
+function bump(n: HTMLElement, up: boolean) {
+  const row = n.closest<HTMLElement>(".saved-switch");
+  for (const el of [n, row]) {
+    if (!el) continue;
+    delete el.dataset.bump;
+    delete el.dataset.pulse;
+    void el.offsetWidth;
+  }
+  n.dataset.bump = up ? "up" : "down";
+  if (up && row) row.dataset.pulse = "";
+}
+
+/** `animate`: whether a click caused the change, rather than the page's load. */
+function paint(animate = false) {
   const links = document.getElementById("account");
   if (links)
     links.innerHTML = account.user
@@ -59,7 +78,12 @@ function paint() {
     const word = button.querySelector(".save-word");
     if (word) word.textContent = saveLabel(on);
   }
-  for (const n of document.querySelectorAll("[data-saved-count]")) n.textContent = savedCount();
+  for (const n of document.querySelectorAll<HTMLElement>("[data-saved-count]")) {
+    const before = Number(n.textContent) || 0;
+    n.textContent = savedCount();
+    const after = Number(n.textContent) || 0;
+    if (animate && after !== before) bump(n, after > before);
+  }
 }
 
 const post = (path: string, body: unknown) =>
