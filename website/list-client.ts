@@ -89,6 +89,29 @@ function focusSelector(): string | null {
   return el.id ? `#${CSS.escape(el.id)}` : null;
 }
 
+/** The range whose slider's popover is open, if any: one at a time. */
+let open: Prop | null = null;
+function openRange(p: Prop | null) {
+  open = p;
+  for (const range of app.querySelectorAll<HTMLElement>("[data-range-section]")) {
+    const on = range.dataset.rangeSection === p;
+    range.querySelector(".range-pop")?.toggleAttribute("hidden", !on);
+    range.querySelector(".range-pill")?.setAttribute("aria-expanded", String(on));
+  }
+}
+
+// A click elsewhere closes the popover; so does Escape, which puts the focus back on its pill.
+document.addEventListener("click", (event) => {
+  if (open && !(event.target as Element).closest(`[data-range-section="${open}"]`)) openRange(null);
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape" || !open) return;
+  const range = app.querySelector(`[data-range-section="${open}"]`);
+  const inside = range?.contains(document.activeElement);
+  openRange(null);
+  if (inside) range?.querySelector<HTMLElement>(".range-pill")?.focus();
+});
+
 /** The Saved switch isn't re-rendered, so that it can slide: it follows the state instead. */
 const savedSwitch = document.getElementById("saved-switch") as HTMLElement;
 const syncSaved = () => savedSwitch.setAttribute("aria-checked", String(state.saved));
@@ -106,8 +129,8 @@ function syncRanges() {
       input.value = String(range[Number(input.dataset.end)]);
       input.setAttribute("aria-valuetext", rangeLabel(p, range));
     }
-    const label = app.querySelector(`[data-range-label="${p}"]`);
-    if (label) label.textContent = rangeLabel(p, range);
+    for (const label of app.querySelectorAll(`[data-range-label="${p}"]`))
+      label.textContent = rangeLabel(p, range);
     app
       .querySelector(`[data-range-section="${p}"]`)
       ?.classList.toggle("narrowed", isNarrowed(p, range));
@@ -277,6 +300,7 @@ app.addEventListener("click", (event) => {
   else if (d.action === "focus-search") q.focus();
   else if (d.action === "focus-need") need.focus();
   else if (d.action === "order") go({ asc: !state.asc });
+  else if (d.action === "range") openRange(open === d.value ? null : (d.value as Prop));
   else if (d.action === "saved") {
     // It slides at once; the list follows after the next paint.
     savedSwitch.setAttribute("aria-checked", String(!state.saved));

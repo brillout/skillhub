@@ -201,6 +201,7 @@ code {
    small for it to show, nor the segmented Show, whose buttons share one edge. */
 .preset,
 .filters-toggle,
+.range-pill,
 .chip,
 .scope-chip,
 .ask-button,
@@ -213,6 +214,7 @@ code {
 
 .preset:active,
 .filters-toggle:active,
+.range-pill:active,
 .chip:active,
 .scope-chip:active,
 .ask-button:active,
@@ -224,6 +226,7 @@ code {
 @media (prefers-reduced-motion: reduce) {
   .preset:active,
   .filters-toggle:active,
+  .range-pill:active,
   .chip:active,
   .scope-chip:active,
   .ask-button:active,
@@ -810,20 +813,104 @@ body:has(.skills-view) {
   font-weight: 650;
 }
 
-.range h2 {
+/*
+ * Published, Stars and the downloads: a pill each, two a row, with its range. A click opens its
+ * slider in a popover under all the pills, as wide as they are, so that it covers none of them. A
+ * range shows in garnet only while it narrows the list; at its full range it's at rest.
+ */
+.ranges {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 20px;
+}
+
+.range-pill {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--paper);
+  box-shadow: var(--shadow-border);
+  color: var(--ink-3);
+  font-size: 12px;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.range-pill:hover,
+.range-pill[aria-expanded="true"] {
+  box-shadow: var(--shadow-border-hover);
 }
 
 /* It changes as a handle is dragged: digits of one width keep it from jittering. */
-.range output {
+.range-value {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.chevron {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.range-pill[aria-expanded="true"] .chevron {
+  scale: 1 -1;
+}
+
+.range.narrowed .range-pill {
+  box-shadow: 0 0 0 1px var(--garnet);
+}
+
+.range.narrowed .range-value {
+  color: var(--garnet-text);
+}
+
+.range-pop {
+  position: absolute;
+  z-index: 2;
+  top: calc(100% + 6px);
+  right: 0;
+  left: 0;
+  padding: 12px 14px 14px;
+  border-radius: 8px;
+  background: var(--paper);
+  box-shadow:
+    var(--shadow-border),
+    0 8px 24px -6px oklch(0 0 0 / 0.18);
+}
+
+.range-pop-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.range-pop-head [data-range-label] {
   color: var(--ink-3);
   font-weight: 450;
   font-variant-numeric: tabular-nums;
 }
 
-/* A slider shows in garnet only while it narrows the list; at its full range it's at rest. */
-.range.narrowed output {
+.range.narrowed .range-pop-head [data-range-label] {
   color: var(--garnet-text);
   font-weight: 600;
 }

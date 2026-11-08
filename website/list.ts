@@ -950,14 +950,21 @@ export function resultsHtml(st: State, limit = Infinity): string {
     }`;
 }
 
-/** A two-handled slider per property. The client updates them in place while they're dragged. */
+const CHEVRON = `<svg class="chevron" viewBox="0 0 12 12" aria-hidden="true"><path d="m3 4.5 3 3 3-3" /></svg>`;
+
+/**
+ * A pill per property, with its range; a click opens its two-handled slider in a popover under the
+ * pills (see list-client.ts). The client updates both in place while a slider is dragged.
+ */
 export function rangesHtml(st: State): string {
   return PROP_IDS.map((p) => {
     const [lo, hi] = st.ranges[p];
     const last = lastStop(p);
-    const handle = (end: 0 | 1, value: number) =>
-      `<input type="range" min="0" max="${last}" step="1" value="${value}" data-range="${p}" data-end="${end}" aria-label="${PROPS[p].label}, ${end ? "to" : "from"}" aria-valuetext="${rangeLabel(p, [lo, hi])}" />`;
-    return `<section class="facet range${isNarrowed(p, [lo, hi]) ? " narrowed" : ""}" data-range-section="${p}"><h2>${PROPS[p].label} <output data-range-label="${p}">${rangeLabel(p, [lo, hi])}</output></h2><div class="slider" data-slider="${p}" style="--lo: ${lo / last}; --hi: ${hi / last}">${handle(0, lo)}${handle(1, hi)}</div></section>`;
+    const { label } = PROPS[p];
+    const value = `<span data-range-label="${p}">${rangeLabel(p, [lo, hi])}</span>`;
+    const handle = (end: 0 | 1, v: number) =>
+      `<input type="range" min="0" max="${last}" step="1" value="${v}" data-range="${p}" data-end="${end}" aria-label="${label}, ${end ? "to" : "from"}" aria-valuetext="${rangeLabel(p, [lo, hi])}" />`;
+    return `<div class="range${isNarrowed(p, [lo, hi]) ? " narrowed" : ""}" data-range-section="${p}"><button type="button" class="range-pill" data-action="range" data-value="${p}" aria-expanded="false" aria-controls="range-pop-${p}"><span>${label}</span><span class="range-value">${value}${CHEVRON}</span></button><div class="range-pop" id="range-pop-${p}" role="group" aria-label="${label}" hidden><div class="range-pop-head"><span>${label}</span>${value}</div><div class="slider" data-slider="${p}" style="--lo: ${lo / last}; --hi: ${hi / last}">${handle(0, lo)}${handle(1, hi)}</div></div></div>`;
   }).join("");
 }
 
@@ -1026,7 +1033,7 @@ export function listView(st: State, reviewed: number): string {
         ${brandHtml()}
         ${savedSwitchHtml(st)}
         <div id="settings">${settingsHtml(st)}</div>
-        <div id="ranges">${rangesHtml(st)}</div>
+        <div id="ranges" class="ranges">${rangesHtml(st)}</div>
         <div class="tag-search">
           <label for="tag-q" class="sr-only">Search tags</label>
           <input id="tag-q" type="search" placeholder="Search tags" autocomplete="off" spellcheck="false" aria-controls="facets" />
