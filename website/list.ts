@@ -717,42 +717,31 @@ function section(title: string, question: string | null, chips: string): string 
   return `<section class="facet"><h2${question ? ` title="${esc(question)}"` : ""}>${esc(title)}</h2><div class="chips">${chips || `<span class="muted">None</span>`}</div></section>`;
 }
 
-/** Whether a tag is one the tag search asks for: its id, label and description hold each of its words. */
-const tagFits = (tag: string, label: string, tagQ: string) => {
-  const text = `${tag} ${label} ${tagInfo.get(tag) ?? ""}`.toLowerCase();
-  return tagQ
-    .toLowerCase()
-    .split(/\s+/)
-    .every((w) => text.includes(w));
-};
-
-/** A facet's tags, with their counts for the other filters; only those `tagQ` asks for, if given. */
-function tagSection(st: State, facetId: string, tagQ: string): string {
+/** A facet's tags, with their counts for the other filters. */
+function tagSection(st: State, facetId: string): string {
   const facet = facetById.get(facetId);
   if (!facet) return "";
   const n = counts(st, facetId, (s) => tagsOf(s).filter((t) => facetOf(t) === facetId));
   const label = (t: string) => tagLabel(t) ?? t.slice(facetId.length + 1);
-  const shown = (t: string) =>
-    Boolean(n.get(t) || st.tags.includes(t)) && (!tagQ || tagFits(t, label(t), tagQ));
+  const shown = (t: string) => Boolean(n.get(t) || st.tags.includes(t));
   const chip = (t: string) =>
     filterChip("data-tag", t, label(t), n.get(t) ?? 0, st.tags.includes(t), tagInfo.get(t));
   // A parent's values sit indented under it; a value with two parents shows under both.
-  // While searching, a parent shows for its children that match.
   const top = facet.values.map((v) => tagOf(facet, v.id)).filter((t) => !parentsOf(t).length);
   const chips = top
     .map((t) => {
       const children = includedBy(t).filter(shown);
-      return `${shown(t) || (tagQ && children.length) ? chip(t) : ""}${children.length ? `<div class="chips sub">${children.map(chip).join("")}</div>` : ""}`;
+      return `${shown(t) ? chip(t) : ""}${children.length ? `<div class="chips sub">${children.map(chip).join("")}</div>` : ""}`;
     })
     .join("");
-  return tagQ && !chips ? "" : section(facet.name, facet.question, chips);
+  return section(facet.name, facet.question, chips);
 }
 
-/** The tag facets. `tagQ`, the tag search, leaves only the tags it asks for, and the facets with any. */
-export function facetsHtml(st: State, stackExpanded: boolean, tagQ = ""): string {
+/** The tag facets. */
+export function facetsHtml(st: State, stackExpanded: boolean): string {
   const sections: string[] = [];
   for (const f of ["category", "type", "effect", "needs", "by", "flag"])
-    sections.push(tagSection(st, f, tagQ));
+    sections.push(tagSection(st, f));
   // Topics, by group.
   const topic = facetById.get("topic");
   const topicCounts = counts(st, "topic", (s) =>
@@ -762,16 +751,14 @@ export function facetsHtml(st: State, stackExpanded: boolean, tagQ = ""): string
     .map((g) => {
       const chips = g.values
         .filter((v) => topicCounts.get(v) || st.tags.includes(v))
-        .filter((v) => !tagQ || tagFits(v, v, tagQ))
         .map((v) => filterChip("data-tag", v, v, topicCounts.get(v) ?? 0, st.tags.includes(v)))
         .join("");
       return chips ? `<h3 class="group">${esc(g.name)}</h3><div class="chips">${chips}</div>` : "";
     })
     .join("");
-  if (groups || !tagQ)
-    sections.push(
-      `<section class="facet"><h2 title="${esc(topic?.question ?? "")}">Topics</h2>${groups || `<p class="muted">None</p>`}</section>`,
-    );
+  sections.push(
+    `<section class="facet"><h2 title="${esc(topic?.question ?? "")}">Topics</h2>${groups || `<p class="muted">None</p>`}</section>`,
+  );
   // Stack, most used first.
   const stackCounts = counts(st, "stack", (s) =>
     s.agentReview.tags.filter((t) => t.startsWith("stack:")),
@@ -779,28 +766,23 @@ export function facetsHtml(st: State, stackExpanded: boolean, tagQ = ""): string
   const stack = [
     ...stackCounts.keys(),
     ...st.tags.filter((t) => t.startsWith("stack:") && !stackCounts.has(t)),
-  ]
-    .filter((t) => !tagQ || tagFits(t, t.slice(6), tagQ))
-    .sort((a, b) => (stackCounts.get(b) ?? 0) - (stackCounts.get(a) ?? 0) || a.localeCompare(b));
-  // While searching, every matching stack shows.
-  const shown = stackExpanded || tagQ ? stack : stack.slice(0, 16);
-  if (stack.length || !tagQ)
-    sections.push(
-      section(
-        "Stack",
-        facetById.get("stack")?.question ?? null,
-        shown
-          .map((t) =>
-            filterChip("data-tag", t, t.slice(6), stackCounts.get(t) ?? 0, st.tags.includes(t)),
-          )
-          .join("") +
-          (stack.length > 16 && !tagQ
-            ? `<button type="button" class="link-button" data-action="stack">${stackExpanded ? "Show fewer" : `Show all ${stack.length}`}</button>`
-            : ""),
-      ),
-    );
-  const html = sections.join("");
-  return tagQ && !html ? `<p class="muted tag-none">No tag matches “${esc(tagQ)}”.</p>` : html;
+  ].sort((a, b) => (stackCounts.get(b) ?? 0) - (stackCounts.get(a) ?? 0) || a.localeCompare(b));
+  const shown = stackExpanded ? stack : stack.slice(0, 16);
+  sections.push(
+    section(
+      "Stack",
+      facetById.get("stack")?.question ?? null,
+      shown
+        .map((t) =>
+          filterChip("data-tag", t, t.slice(6), stackCounts.get(t) ?? 0, st.tags.includes(t)),
+        )
+        .join("") +
+        (stack.length > 16
+          ? `<button type="button" class="link-button" data-action="stack">${stackExpanded ? "Show fewer" : `Show all ${stack.length}`}</button>`
+          : ""),
+    ),
+  );
+  return sections.join("");
 }
 
 /** Whether filters narrow the list: the search and the agent prompt then look through what they leave. */
@@ -1014,7 +996,7 @@ export function settingsHtml(st: State): string {
 }
 
 /**
- * Atop the sidebar: a switch that shows only what you saved. list-client.ts keeps it in step with
+ * Under Show, the last of the settings: a switch that shows only what you saved. list-client.ts keeps it in step with
  * the state rather than re-rendering it, so that it slides; account-client.ts keeps its count.
  */
 const savedSwitchHtml = (st: State) =>
@@ -1031,13 +1013,9 @@ export function listView(st: State, reviewed: number): string {
     <div class="skills-view">
       <aside id="filters" aria-label="Settings and filters">
         ${brandHtml()}
-        ${savedSwitchHtml(st)}
         <div id="settings">${settingsHtml(st)}</div>
-        <div id="ranges" class="ranges">${rangesHtml(st)}</div>
-        <div class="tag-search">
-          <label for="tag-q" class="sr-only">Search tags</label>
-          <input id="tag-q" type="search" placeholder="Search tags" autocomplete="off" spellcheck="false" aria-controls="facets" />
-        </div>
+        ${savedSwitchHtml(st)}
+        <section id="ranges" class="facet"><h2>Filter</h2><div class="ranges">${rangesHtml(st)}</div></section>
         <div id="facets">${facetsHtml(st, false)}</div>
       </aside>
       <div class="list-main">

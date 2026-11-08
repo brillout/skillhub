@@ -36,11 +36,8 @@ import { ACCOUNT_EVENT, type AccountChange } from "./account-client.ts";
 
 const app = document.getElementById("app") as HTMLElement;
 const q = document.getElementById("q") as HTMLInputElement;
-/** The tag search narrows the facets to the tags it names; it isn't a filter, so it stays out of the URL. */
-const tagQ = document.getElementById("tag-q") as HTMLInputElement;
 let state = parse(location.search);
 let stackExpanded = false;
-let tagQuery = tagQ.value.trim();
 
 /** Whether the next render should bring the top of the list into view: see `go`. */
 let toTop = false;
@@ -166,15 +163,10 @@ function renderFacets() {
     state.ranges,
     state.show,
     stackExpanded,
-    tagQuery,
   ]);
   if (key === lastFacets) return;
   lastFacets = key;
-  (document.getElementById("facets") as HTMLElement).innerHTML = facetsHtml(
-    state,
-    stackExpanded,
-    tagQuery,
-  );
+  (document.getElementById("facets") as HTMLElement).innerHTML = facetsHtml(state, stackExpanded);
 }
 
 /** On narrow screens, the presets stay in view and the Filters button opens the rest. */
@@ -252,11 +244,6 @@ need.addEventListener("keydown", (event) => {
 
 q.addEventListener("input", () => go({ q: q.value }));
 
-tagQ.addEventListener("input", () => {
-  tagQuery = tagQ.value.trim();
-  renderFacets();
-});
-
 app.addEventListener("input", (event) => {
   const el = event.target as HTMLInputElement;
   const p = el.dataset.range as Prop | undefined;
@@ -332,9 +319,8 @@ document.addEventListener(ACCOUNT_EVENT, (event) => {
   renderSoon();
 });
 
-// The page was pre-rendered unfiltered, and without a tag search.
+// The page was pre-rendered unfiltered.
 if (location.search) render();
-else if (tagQuery) renderFacets();
 
 // The TLDRs' prose, which only the search reads, is half the data, so it loads after the page.
 // Until it's in, a search finds fewer skills; once it is, a search under way shows them too.

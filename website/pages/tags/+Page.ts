@@ -16,6 +16,9 @@ export default function Page(): string {
   const n = new Map<string, number>();
   for (const s of data.skills) for (const t of tagsOf(s)) n.set(t, (n.get(t) ?? 0) + 1);
   const tagLink = (t: string) => tagChip(t, skillsLink({ tags: [t] }));
+  // A tag of a cloud, with its count: what the tag search shows or hides.
+  const cloudItem = (t: string) =>
+    `<span class="cloud-item">${tagLink(t)}<span class="n">${n.get(t) ?? 0}</span></span>`;
   const sections = FACET_ORDER.map((id) => facetById.get(id))
     .filter((f): f is Facet => Boolean(f))
     .map((f) => {
@@ -24,14 +27,14 @@ export default function Page(): string {
         body = (f.groups ?? [])
           .map(
             (g) =>
-              `<h3>${esc(g.name)}</h3><p class="cloud">${g.values.map((v) => `${tagLink(v)}<span class="n">${n.get(v) ?? 0}</span>`).join(" ")}</p>`,
+              `<h3>${esc(g.name)}</h3><p class="cloud">${g.values.map(cloudItem).join(" ")}</p>`,
           )
           .join("");
       else if (f.id === "stack")
         body = `<p class="cloud">${f.values
           .map((v) => `stack:${v.id}`)
           .sort((a, b) => (n.get(b) ?? 0) - (n.get(a) ?? 0) || a.localeCompare(b))
-          .map((t) => `${tagLink(t)}<span class="n">${n.get(t) ?? 0}</span>`)
+          .map(cloudItem)
           .join(" ")}</p>`;
       else
         body = `<table class="tag-table"><thead><tr><th scope="col">Tag</th><th scope="col">Skills</th><th scope="col">Meaning</th></tr></thead><tbody>${f.values
@@ -52,7 +55,12 @@ export default function Page(): string {
     <div class="page">
       <h1>Tags</h1>
       <p class="lede">Tags say what area a skill is for, how it works, what it needs, what it can change on its own, who publishes it and what it's about. Faceted tags carry a prefix, such as <code>needs:cli</code>; topics don't. Tags were assigned from each skill's SKILL.md on ${date(data.asOf.tags)}. Pick a tag to list its skills.</p>
+      <div class="tag-search">
+        <label for="tag-q" class="sr-only">Search tags</label>
+        <input id="tag-q" type="search" placeholder="Search tags" autocomplete="off" spellcheck="false" aria-controls="tag-sections" />
+      </div>
       <nav class="toc" aria-label="Facets">${FACET_ORDER.map((id) => `<a href="#facet-${id}">${esc(facetById.get(id)?.name ?? id)}</a>`).join("")}</nav>
-      ${sections}
+      <p id="tag-none" class="muted tag-none" hidden></p>
+      <div id="tag-sections">${sections}</div>
     </div>`;
 }
