@@ -5,8 +5,8 @@
  * - Color. Three light greys with a faint green, darkest to lightest: the skills list's sidebar
  *   (--side), the page (--liner), and white for what lies on it, such as the results, documents,
  *   fields and buttons (--paper). With them, a blue-black --ink and --garnet, the logo's own
- *   red-pink. Dark mode keeps the same order, near-black, with a lighter garnet. The greys are
- *   never tinted blue.
+ *   red-pink. Dark mode, the header's toggle or else the system's setting, keeps the same order,
+ *   near-black, with a lighter garnet. The greys are never tinted blue.
  * - Garnet is for action and emphasis: links, the agent button, the number the list is sorted by,
  *   what you saved. A selected toggle (preset, chip, Show) is filled with ink instead.
  * - Tags are text, their facet prefix quieter than their value. Only safety gets a tint: good,
@@ -24,8 +24,8 @@
  *   a stack of identical rounded cards (the results are one ruled sheet instead), decorative
  *   shadows and gradients.
  * - Motion. Transitions only, never keyframes, and only for press feedback (scale 0.96), a
- *   button's edge on hover (150ms), the Save icon's swap and the Saved switch's knob. Other
- *   colors change at once.
+ *   button's edge on hover (150ms), the Save and dark mode icons' swaps and the Saved switch's
+ *   knob. Other colors change at once, the theme's too.
  */
 
 :root {
@@ -79,42 +79,42 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-    --liner: #141416;
-    --side: #0d0d0f;
-    --paper: #1c1c1f;
-    --paper-2: #242428;
-    --wash: #261d25;
-    --rule: #2e2e33;
-    --rule-strong: #404047;
-    --edge: #6e6e78;
-    --ink: #e8ebf6;
-    --ink-2: #b7bed6;
-    --ink-3: #8f98b8;
-    --on-ink: #141416;
-    --garnet: #c42a66;
-    --garnet-text: #ff8db8;
-    --rose: #3a1a33;
-    --on-garnet: #ffffff;
-    --focus: #ff8db8;
-    --spark-line: #8f98b8;
-    --spark-now: #ff8db8;
-    --spark-base: #404047;
-    --t-plain: #2a2a2f;
-    --t-good: #12352a;
-    --t-good-ink: #9fe3bc;
-    --t-warn: #3b2e10;
-    --t-warn-ink: #f5d58a;
-    --t-bad: #43201a;
-    --t-bad-ink: #ffb4a3;
-    /* Lift doesn't show on a dark page: the ring alone. */
-    --ring: oklch(1 0 0 / 0.08);
-    --shadow-border: 0 0 0 1px var(--ring);
-    --shadow-border-hover: 0 0 0 1px var(--ink-3);
-    --image-outline: oklch(1 0 0 / 0.1);
-  }
+/* Dark mode: the visitor's choice, or else their system's. theme.ts sets <html data-theme>
+   before the page is drawn. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --liner: #141416;
+  --side: #0d0d0f;
+  --paper: #1c1c1f;
+  --paper-2: #242428;
+  --wash: #261d25;
+  --rule: #2e2e33;
+  --rule-strong: #404047;
+  --edge: #6e6e78;
+  --ink: #e8ebf6;
+  --ink-2: #b7bed6;
+  --ink-3: #8f98b8;
+  --on-ink: #141416;
+  --garnet: #c42a66;
+  --garnet-text: #ff8db8;
+  --rose: #3a1a33;
+  --on-garnet: #ffffff;
+  --focus: #ff8db8;
+  --spark-line: #8f98b8;
+  --spark-now: #ff8db8;
+  --spark-base: #404047;
+  --t-plain: #2a2a2f;
+  --t-good: #12352a;
+  --t-good-ink: #9fe3bc;
+  --t-warn: #3b2e10;
+  --t-warn-ink: #f5d58a;
+  --t-bad: #43201a;
+  --t-bad-ink: #ffb4a3;
+  /* Lift doesn't show on a dark page: the ring alone. */
+  --ring: oklch(1 0 0 / 0.08);
+  --shadow-border: 0 0 0 1px var(--ring);
+  --shadow-border-hover: 0 0 0 1px var(--ink-3);
+  --image-outline: oklch(1 0 0 / 0.1);
 }
 
 * {
@@ -2432,6 +2432,61 @@ html:not([data-account]) .account {
   height: 0;
   overflow: hidden;
   visibility: hidden;
+}
+
+/*
+ * Dark mode's toggle, last of the header's links: its icon crosses over to the other, sun or moon,
+ * on a click only (theme.ts sets data-toggled), not when the page loads in its theme. Its icon's
+ * right edge lines up with the links' column.
+ */
+.theme-toggle {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin-right: -7px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  color: var(--garnet-text);
+}
+
+.theme-toggle svg {
+  grid-area: 1 / 1;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+:root[data-theme="dark"] .theme-toggle .moon,
+:root:not([data-theme="dark"]) .theme-toggle .sun {
+  opacity: 0;
+  scale: 0.25;
+  filter: blur(4px);
+}
+
+.theme-toggle[data-toggled] svg {
+  transition-property: opacity, scale, filter;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme="dark"] .theme-toggle .moon,
+  :root:not([data-theme="dark"]) .theme-toggle .sun {
+    scale: none;
+    filter: none;
+  }
 }
 
 /* Its links line up with the site's other links. */

@@ -2,6 +2,7 @@ import { dangerouslySkipEscape, escapeInject } from "vike/server";
 import type { PageContextServer } from "vike/types";
 import { siteHeadHtml } from "../brand.ts";
 import { href } from "../format.ts";
+import { themeScript } from "../theme.ts";
 // Geologica, with its sharpness axis: see the design notes atop style.css.
 import "@fontsource-variable/geologica/shrp.css";
 import "../style.css";
@@ -24,6 +25,7 @@ export function onRenderHtml(pageContext: PageContextServer) {
     <title>${value(title)}</title>
     <meta name="description" content="${value(description)}" />
     <link rel="icon" type="image/svg+xml" href="${href("gem.svg")}" />
+    <script>${dangerouslySkipEscape(themeScript)}</script>
   </head>
   <body>
     ${dangerouslySkipEscape(head)}

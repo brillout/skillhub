@@ -12,6 +12,12 @@ const LINKS = [
   ["about/", "About"],
 ] as const;
 
+/**
+ * Dark mode, on or off: a moon in light mode, a sun in dark. theme.ts handles its clicks and keeps
+ * its aria-pressed.
+ */
+const THEME_TOGGLE = `<button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Dark mode" title="Dark mode"><svg class="moon" viewBox="0 0 20 20" aria-hidden="true"><path d="M17.5 10.66A7.5 7.5 0 1 1 9.34 2.5a5.83 5.83 0 0 0 8.16 8.16z" /></svg><svg class="sun" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.75" /><path d="M10 1.25v1.5M10 17.25v1.5M3.8 3.8l1.06 1.06M15.14 15.14l1.06 1.06M1.25 10h1.5M17.25 10h1.5M3.8 16.2l1.06-1.06M15.14 4.86l1.06-1.06" /></svg></button>`;
+
 /** The site's name, as a link home. */
 export const brandHtml = () =>
   `<a class="brand" href="${href()}"><img src="${href("gem.svg")}" alt="" width="28" height="28" /><span>SkillHub</span></a>`;
@@ -29,6 +35,6 @@ export function siteHeadHtml(current: string): string {
   return `
     <div class="site-head">
       ${current ? brandHtml() : ""}
-      <nav class="site-links" aria-label="Site">${links}<a href="${GITHUB}">GitHub</a><span id="account" class="account"><a href="${href("api/auth/login")}" data-login>Log in</a></span></nav>
+      <nav class="site-links" aria-label="Site">${links}<a href="${GITHUB}">GitHub</a><span id="account" class="account"><a href="${href("api/auth/login")}" data-login>Log in</a></span>${THEME_TOGGLE}</nav>
     </div>`;
 }
