@@ -4,9 +4,10 @@
  * what they saved. Its last answer is kept in localStorage, so that a page shows it at once, before
  * the API answers.
  *
- * The buttons, the switch and the header's links stay hidden until the API has answered once, in
- * this browser: where it doesn't run, such as `vike dev` alone, they'd only lead to errors. See
- * [data-account] in style.css.
+ * The Save buttons and the Saved switch are pre-rendered, as if nobody were logged in, and show at
+ * once: the click handler below makes them work, and paint() shows what you saved. The header's Log
+ * in stays hidden until the API has answered once, in this browser, so that it doesn't flash for
+ * whoever is logged in. See [data-account] in style.css.
  */
 
 import { esc, href } from "./format.ts";

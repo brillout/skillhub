@@ -2317,11 +2317,27 @@ h1 .kind {
 
 /* ------------------------------------------------------------- saving */
 
-/* The Save buttons and the header's Log in show once the site's API has answered (see
-   account-client.ts). Until then they keep their place, so that nothing moves when they show. */
-html:not([data-account]) .save,
-html:not([data-account]) .account,
-html:not([data-account]) .saved-switch {
+/*
+ * The Save buttons and the Saved switch are pre-rendered and show at once; they work once
+ * account-client.ts has loaded. The header's Log in shows once the site's API has answered (see
+ * account-client.ts), so that it doesn't flash for whoever is logged in. Until then it keeps its
+ * place, so that nothing moves when it shows.
+ */
+html:not([data-account]) .account {
+  visibility: hidden;
+}
+
+/* As wide as "Saved", also while it says "Save", so that the button keeps its width once the page
+   knows what you saved. */
+.save-word {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.save-word::after {
+  content: "Saved";
+  height: 0;
+  overflow: hidden;
   visibility: hidden;
 }
 
