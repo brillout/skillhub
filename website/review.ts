@@ -1,7 +1,8 @@
 /**
- * How many skills SkillHub knows of and why it turned some down, for the intro of the skills list
- * and the about page. Only pages import it, and Page is server-only (pages/+config.ts), so
- * crawl.jsonc stays out of the client build. Don't import it from a +client.ts or what it imports.
+ * How many skills SkillHub knows of and why it turned some down, for the header's tagline
+ * and the about page. Only pages and +onRenderHtml.ts import it, which are server-only (see
+ * pages/+config.ts), so crawl.jsonc stays out of the client build. Don't import it from a
+ * +client.ts or what it imports.
  */
 
 import raw from "../data/crawl.jsonc";
@@ -62,6 +63,8 @@ export const review = {
 
 const n = (x: number) => x.toLocaleString("en");
 
-/** The skills list's opening line. */
-export const introHtml = () =>
-  `<header class="intro"><h1>${n(review.listed)} curated skills</h1><a href="${href("about/")}">From ${n(review.reviewed)} reviewed skills</a></header>`;
+/** The header's tagline: on the skills list, its count is the page's h1; elsewhere, the page has its own. */
+export const taglineHtml = (h1: boolean) => {
+  const tag = h1 ? "h1" : "span";
+  return `<div class="tagline"><${tag} class="tagline-count">${n(review.listed)} curated skills</${tag}><a href="${href("about/")}">From ${n(review.reviewed)} reviewed skills</a></div>`;
+};

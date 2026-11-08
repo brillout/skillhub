@@ -1,6 +1,7 @@
 import { dangerouslySkipEscape, escapeInject } from "vike/server";
 import type { PageContextServer } from "vike/types";
-import { brandHtml } from "../brand.ts";
+import { siteHeadHtml } from "../brand.ts";
+import { taglineHtml } from "../review.ts";
 import { href } from "../format.ts";
 // Geologica, with its sharpness axis: see the design notes atop style.css.
 import "@fontsource-variable/geologica/shrp.css";
@@ -12,11 +13,12 @@ export type Page = (pageContext: PageContextServer) => string;
 export function onRenderHtml(pageContext: PageContextServer) {
   const { title, description } = pageContext.config;
   const value = (v: typeof title) => (typeof v === "function" ? v(pageContext) : (v ?? ""));
-  // The skills list has the site's name atop its sidebar; the other pages get it as a header.
+  // Every page gets the header; on the skills list, its tagline is the page's h1.
   const path = pageContext.urlPathname.replace(/^\//, "");
-  const head = path
-    ? `<header id="page-head">${brandHtml(path.endsWith("/") ? path : `${path}/`)}</header>`
-    : "";
+  const head = `<header id="page-head">${siteHeadHtml(
+    path && !path.endsWith("/") ? `${path}/` : path,
+    taglineHtml(!path),
+  )}</header>`;
   const main = (pageContext.Page as Page)(pageContext);
   return escapeInject`<!doctype html>
 <html lang="en">

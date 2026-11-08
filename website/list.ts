@@ -1005,27 +1005,23 @@ export function settingsHtml(st: State): string {
 }
 
 /**
- * The skills list's page. The left sidebar holds the site's name and links, and every setting:
- * presets, sort, sliders and tags. The right side holds what the page is for: `intro`, the two
- * ways to search, and the list.
+ * The skills list's page, under the site's header. The left sidebar holds every setting: presets,
+ * sort, sliders and tags. The right side holds what the page is for: the two ways to search, and
+ * the list.
  */
-export function listView(st: State, intro = "", head = ""): string {
+export function listView(st: State): string {
   return `
     <div class="skills-view">
       <aside id="filters" aria-label="Settings and filters">
-        ${head}
-        <div class="side-body">
-          <div id="settings">${settingsHtml(st)}</div>
-          <div id="ranges">${rangesHtml(st)}</div>
-          <div class="tag-search">
-            <label for="tag-q" class="sr-only">Search tags</label>
-            <input id="tag-q" type="search" placeholder="Search tags" autocomplete="off" spellcheck="false" aria-controls="facets" />
-          </div>
-          <div id="facets">${facetsHtml(st, false)}</div>
+        <div id="settings">${settingsHtml(st)}</div>
+        <div id="ranges">${rangesHtml(st)}</div>
+        <div class="tag-search">
+          <label for="tag-q" class="sr-only">Search tags</label>
+          <input id="tag-q" type="search" placeholder="Search tags" autocomplete="off" spellcheck="false" aria-controls="facets" />
         </div>
+        <div id="facets">${facetsHtml(st, false)}</div>
       </aside>
       <div class="list-main">
-        ${intro}
         <div class="finder">
           <p id="scope" class="scope">${scopeHtml(st)}</p>
           <div class="search-field" data-action="focus-search">
