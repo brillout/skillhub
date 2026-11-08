@@ -1,14 +1,12 @@
 /**
- * How many skills SkillHub knows of and why it turned some down, for the header's tagline
- * and the about page. Only pages and +onRenderHtml.ts import it, which are server-only (see
- * pages/+config.ts), so crawl.jsonc stays out of the client build. Don't import it from a
- * +client.ts or what it imports.
+ * How many skills SkillHub knows of and why it turned some down, for the about page. Only pages
+ * import it, and Page is server-only (pages/+config.ts), so crawl.jsonc stays out of the client
+ * build. Don't import it from a +client.ts or what it imports.
  */
 
 import raw from "../data/crawl.jsonc";
 import { MINIMUMS } from "../scripts/data.ts";
 import type { Crawl } from "../data/types.ts";
-import { href } from "./format.ts";
 import { data } from "./skills.ts";
 
 const crawl = raw as Crawl;
@@ -59,12 +57,4 @@ export const review = {
   under: crawl.unqualified.length,
   minimums: MINIMUMS,
   asOf: data.asOf.installs,
-};
-
-const n = (x: number) => x.toLocaleString("en");
-
-/** The header's tagline: on the skills list, its count is the page's h1; elsewhere, the page has its own. */
-export const taglineHtml = (h1: boolean) => {
-  const tag = h1 ? "h1" : "span";
-  return `<div class="tagline"><${tag} class="tagline-count">${n(review.listed)} curated skills</${tag}><a href="${href("about/")}">From ${n(review.reviewed)} reviewed skills</a></div>`;
 };

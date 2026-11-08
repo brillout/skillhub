@@ -807,14 +807,32 @@ const filtersOn = (st: State) =>
   Boolean(st.saved || st.tags.length || st.repo) ||
   PROP_IDS.some((p) => isNarrowed(p, st.ranges[p]));
 
-/** How many entries there are without any filter, for each of `Show`. */
 /**
- * The search's scope is counted in skills, as the intro counts them, those listed only inside a
- * bundle included, since the search looks through them too; or in bundles, when the list shows
- * only those. Counting the list's rows instead would make it look smaller than SkillHub.
+ * The list and the search's scope are counted in skills, those listed only inside a bundle
+ * included, since the search looks through them too; or in bundles, when the list shows only
+ * those. Counting the list's rows instead would make it look smaller than SkillHub.
  */
 const unitOf = (st: State) => (st.show === "bundles" ? "bundle" : "skill");
-const allOf = (st: State) => (st.show === "bundles" ? data.bundles : data.skills).length;
+
+/** How many skills (or bundles) a state leaves, its search included: for one state at a time. */
+let lastShown: { st: State; n: number } | undefined;
+const shownOf = (st: State) => {
+  if (lastShown?.st !== st)
+    lastShown = {
+      st,
+      n:
+        st.show === "bundles"
+          ? data.bundles.filter((b) => bundlePasses(b, st)).length
+          : data.skills.filter((s) => passes(s, st)).length,
+    };
+  return lastShown.n;
+};
+
+/** The list's heading: how many skills (or bundles) it shows, and a link to how they get here. */
+export function countHtml(st: State): string {
+  const n = shownOf(st);
+  return `${n.toLocaleString("en")} <a href="${href("about/")}">curated ${unitOf(st)}${n === 1 ? "" : "s"}</a>`;
+}
 
 /** The search's scope, for one state at a time: how many skills (or bundles) the filters leave. */
 let lastScope: { st: State; n: number } | undefined;
@@ -854,16 +872,12 @@ function scopeChipsHtml(st: State): string {
 }
 
 /**
- * Above the search and the agent's box, since the filters narrow both: how many skills they look
- * through, the filters as chips, and Clear filters.
+ * Above the search and the agent's box, since the filters narrow both: the filters as chips, and
+ * Clear filters. Nothing without filters: the list's heading says how many skills there are.
  */
 export function scopeHtml(st: State): string {
-  const n = scopeOf(st);
-  const all = allOf(st);
-  const kinds = `${unitOf(st)}${all === 1 ? "" : "s"}`;
-  if (!filtersOn(st))
-    return `<span>Looking through all <strong>${all.toLocaleString("en")}</strong> ${kinds}</span>`;
-  return `<span>Looking through <strong>${n.toLocaleString("en")} of ${all.toLocaleString("en")}</strong> ${kinds}, filtered by</span> ${scopeChipsHtml(st)} <button type="button" class="link-button" data-action="clear">Clear filters</button>`;
+  if (!filtersOn(st)) return "";
+  return `<span>Filtered by</span> ${scopeChipsHtml(st)} <button type="button" class="link-button" data-action="clear">Clear filters</button>`;
 }
 
 /** The prompt's size, its number highlighted, in the line under the agent's box. */
@@ -914,22 +928,9 @@ function savedNote(st: State): string | null {
 
 /** The count, the active filters and the list, of only its first `limit` rows if given. */
 export function resultsHtml(st: State, limit = Infinity): string {
-  const { list, total, bundles } = results(st);
+  const { list } = results(st);
   const repoNote = st.repo ? repoById.get(st.repo) : undefined;
   return `
-    <div class="toolbar">
-      <p id="count" role="status">${
-        // Without a search, the line under the search box gives the count.
-        st.q
-          ? `<strong>${[
-              total - bundles || !bundles ? plural(total - bundles, "skill") : "",
-              bundles ? plural(bundles, "bundle") : "",
-            ]
-              .filter(Boolean)
-              .join(", ")}</strong> <span class="muted">match “${esc(st.q)}”</span>`
-          : ""
-      }</p>
-    </div>
     ${savedNote(st) ?? ""}
     ${repoNote ? `<p class="repo-banner"><a href="https://github.com/${esc(repoNote.id)}">${esc(repoNote.id)}</a>${repoNote.agentReview.description ? ` <span>${esc(repoNote.agentReview.description)}</span>` : ""}</p>` : ""}
     ${
@@ -1038,6 +1039,7 @@ export function listView(st: State): string {
           <p id="search-note" class="search-note">${searchNote(st)}</p>
           <p id="ask-label" class="ask-label" aria-live="polite">${askLabel(st)}</p>
         </div>
+        <h1 id="count" class="list-head" aria-live="polite">${countHtml(st)}</h1>
         <section id="results" aria-label="Skills">${resultsHtml(st)}</section>
       </div>
     </div>`;
