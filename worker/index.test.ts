@@ -821,7 +821,9 @@ describe("saving", () => {
       .run();
     const res = await browser.save(SKILL);
     assert.equal(res.status, 409);
-    assert.deepEqual(await res.json(), { error: "You can save at most 1,000 skills and bundles." });
+    assert.deepEqual(await res.json(), {
+      error: "You can save at most 1,000 skills and bundles. Remove one to save another.",
+    });
     assert.equal(await count("saves"), 1000);
     // What's saved already stays so, without an error.
     assert.equal((await browser.save("skill:seed/skill-7")).status, 200);

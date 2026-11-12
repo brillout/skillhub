@@ -1,4 +1,7 @@
-/** The site's name and its links, in every page's header: the name top left, the links top right. */
+/**
+ * The site's name, its search and its links, in every page's header: the name top left, the
+ * search and the links top right.
+ */
 
 import { href } from "./format.ts";
 import { loginHtml } from "./saves.ts";
@@ -19,6 +22,16 @@ const THEME_TOGGLE = `<button type="button" class="theme-toggle" data-theme-togg
 export const brandHtml = () =>
   `<a class="brand" href="${href()}"><img src="${href("gem.svg")}" alt="" width="28" height="28" /><span>SkillHub</span></a>`;
 
+/**
+ * The search, by the links, where a search is looked for: on every page but the skills list, which
+ * has its own. Someone who lands on a skill's page from a search engine, or on a page not found,
+ * had no search in sight, only the name's link home to it. Its words open the list searched for
+ * them, as the list's own search field would have it (`q`, see list.ts), a script or not. Its
+ * field is a label, so that a click anywhere on it, its icon too, is in the field.
+ */
+const searchHtml = () =>
+  `<form class="head-search" action="${href()}" role="search"><label class="head-field"><svg class="search-icon" viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.5" /><path d="m13 13 4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg><span class="sr-only">Search skills</span><input name="q" type="search" placeholder="Search skills" autocomplete="off" spellcheck="false" /></label></form>`;
+
 /** `current` is the path of the page it's on, such as "tags/", to mark its link; "" for the skills list. */
 export function siteHeadHtml(current: string): string {
   const links = LINKS.map(
@@ -29,7 +42,7 @@ export function siteHeadHtml(current: string): string {
   // fills it in.
   return `
     <div class="site-head">
-      ${brandHtml()}
+      ${brandHtml()}${current ? searchHtml() : ""}
       <nav class="site-links" aria-label="Site">${links}<a href="${GITHUB}">GitHub</a><span id="account" class="account">${loginHtml()}</span>${THEME_TOGGLE}</nav>
     </div>`;
 }

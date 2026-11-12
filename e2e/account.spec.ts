@@ -190,6 +190,37 @@ test("a save lands on the header's Saved link, where the page has no Saved switc
 const skillWords = (page: Page) =>
   skillRow(page).locator(".skill-body :is(.glance dd, .skill-desc)").first();
 
+test.describe("a save the connection drops", () => {
+  // The dropped request, and the console's word for it, which doesn't name it.
+  test.use({ expected: /\/api\/saves\b|net::ERR_FAILED/ });
+
+  test("says so on its button, a removal as a save", async ({ page }) => {
+    await openLoggedIn(page, skillUrl);
+    const save = page.locator(".title-row [data-save]");
+    const word = save.locator(".save-word");
+    const answered = () => page.waitForResponse((res) => res.url().endsWith("/api/saves"));
+    const dropped = () => page.route("**/api/saves", (route) => route.abort());
+
+    await dropped();
+    await save.click();
+    await expect(word).toHaveText("Not saved");
+    await expect(save).toHaveAttribute("aria-pressed", "false");
+
+    await page.unroute("**/api/saves");
+    const done = answered();
+    await save.click();
+    await done;
+    await expect(save).toHaveAttribute("aria-pressed", "true");
+    // A removal that fails went back to Saved without a word, as if the click had missed.
+    await dropped();
+    await save.click();
+    await expect(word).toHaveText("Still saved");
+    await expect(save).toHaveAttribute("aria-pressed", "true");
+    await expect(word).toHaveText("Saved");
+    await page.unroute("**/api/saves");
+  });
+});
+
 test("a preview's own Save saves, and its bookmark lands where it's in sight", async ({ page }) => {
   // Just wide enough for the preview: Show is then on a line of its own, at the left, and the
   // Saved switch under the sheet.

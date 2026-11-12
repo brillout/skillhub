@@ -14,8 +14,8 @@
  * - One family, Geologica. Headings and names use its sharpness axis ("SHRP" 100), whose cut
  *   terminals echo the gem; text stays at 0. Monospace is only for actual code. Sizes keep to
  *   12, 14, 16, 18, 21, 24 and 36px; prose stays under about 70 characters a line.
- * - The one bold shape: the two search fields, cut like an emerald (an octagon). Nothing else
- *   gets that cut. Elsewhere, corner radius follows the role: 8px for sheets, 6px for buttons
+ * - The one bold shape: the search fields, the skills list's two and the header's elsewhere, cut
+ *   like an emerald (an octagon). Nothing else gets that cut. Elsewhere, corner radius follows the role: 8px for sheets, 6px for buttons
  *   and fields, 4px for tags, round for filter chips.
  * - Edges. A button's or a sheet's edge is --shadow-border, a transparent ring with a slight
  *   lift, which suits whatever it sits on. Borders are for structure only: rules between rows,
@@ -344,6 +344,8 @@ body:has(.skills-view) #page-head {
 
 .brand {
   display: flex;
+  /* Whole, beside the header's search, which takes the room left. */
+  flex: none;
   align-items: center;
   gap: 10px;
   width: fit-content;
@@ -382,6 +384,52 @@ body:has(.skills-view) #page-head {
 .site-links a[aria-current="page"] {
   color: var(--ink);
   font-weight: 650;
+}
+
+/*
+ * The header's search, on every page but the skills list (see brand.ts): the list's search field,
+ * emerald cut and all, as it's the same search, at the height of a line of the header. Before the
+ * links, its own margin taking the line's free room. Its rules name .head-search too, to win over
+ * the cut's, further down, which they share with the list's two fields.
+ */
+.head-search {
+  display: flex;
+  flex: 0 1 240px;
+  justify-content: flex-end;
+  min-width: 0;
+  margin-left: auto;
+}
+
+.head-search .head-field {
+  --cut: 8px;
+  flex: 1;
+  gap: 6px;
+  min-width: 0;
+  min-height: 36px;
+  padding: 0 10px 0 12px;
+}
+
+.head-search .search-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* 16px: under it, iOS zooms in on the field. */
+.head-search .head-field input {
+  min-width: 0;
+  padding: 4px 2px;
+  font-size: 16px;
+}
+
+@media (min-width: 601px) and (max-width: 900px) {
+  .head-search {
+    order: 1;
+    flex-basis: 100%;
+  }
+
+  .head-search .head-field {
+    flex: 0 1 240px;
+  }
 }
 
 /* ------------------------------------------------------------- skills view */
@@ -1410,7 +1458,8 @@ body[data-preview-selecting] :is(#page-head, .skills-view > :not(.preview)) {
  * agent's button's, so it nests in its field's corners.
  */
 .search-field,
-.agent-field {
+.agent-field,
+.head-field {
   --cut: 14px;
   --edge-w: 1px;
   position: relative;
@@ -1433,7 +1482,8 @@ body[data-preview-selecting] :is(#page-head, .skills-view > :not(.preview)) {
 }
 
 .search-field::before,
-.agent-field::before {
+.agent-field::before,
+.head-field::before {
   --c: calc(var(--cut) - var(--edge-w) * 0.5858);
   content: "";
   position: absolute;
@@ -1454,7 +1504,8 @@ body[data-preview-selecting] :is(#page-head, .skills-view > :not(.preview)) {
 
 /* The clip-path would cut an outline off: the edge itself shows the focus. */
 .search-field:focus-within,
-.agent-field:focus-within {
+.agent-field:focus-within,
+.head-field:focus-within {
   --edge-w: 2px;
   background: var(--focus);
 }
@@ -1500,7 +1551,8 @@ body[data-preview-selecting] :is(#page-head, .skills-view > :not(.preview)) {
 }
 
 .search-field input,
-.agent-field input {
+.agent-field input,
+.head-field input {
   flex: 1;
   padding: 6px 2px;
   border: 0;
@@ -1541,7 +1593,8 @@ input[type="search"]::-webkit-search-cancel-button:hover {
 
 /* The field shows the focus instead. */
 .search-field input:focus-visible,
-.agent-field input:focus-visible {
+.agent-field input:focus-visible,
+.head-field input:focus-visible {
   outline: none;
 }
 
@@ -4030,6 +4083,12 @@ input[type="search"]::-webkit-search-cancel-button:hover {
   .site-links {
     flex-basis: 100%;
     order: -1;
+  }
+
+  /* The search, where there's one, on the name's line, in the room it leaves. */
+  .head-search {
+    flex: 1 1 0;
+    max-width: 240px;
   }
 
   /* On the narrowest phones, 320px, the links of whoever is logged in were wider than their line:

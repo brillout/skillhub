@@ -234,12 +234,13 @@ function leaveToLogIn() {
 }
 
 /**
- * Says so on an entry's Save buttons, for a moment, when its save didn't go through, as when the
- * connection dropped: the button went from Saved back to Save without a word.
+ * Says so on an entry's Save buttons, for a moment, when its save or its removal didn't go
+ * through, as when the connection dropped: the button went from Saved back to Save without a word,
+ * or back to Saved, as if the click had missed.
  */
-function notSaved(key: string) {
+function notChanged(key: string, saving: boolean) {
   for (const word of document.querySelectorAll(`[data-save="${CSS.escape(key)}"] .save-word`))
-    word.textContent = "Not saved";
+    word.textContent = saving ? "Not saved" : "Still saved";
   setTimeout(() => paint(), 3000);
 }
 
@@ -265,7 +266,7 @@ async function toggle(key: string) {
     leaveToLogIn();
     location.href = loginHref(on ? key : undefined);
   } else if (res?.status === 409) alert((await res.json()).error);
-  else if (on) notSaved(key);
+  else notChanged(key, on);
 }
 
 async function logout() {

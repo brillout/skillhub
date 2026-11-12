@@ -533,9 +533,26 @@ test.describe("a page that doesn't exist", () => {
     expect(response?.status()).toBe(404);
     await ready(page);
     await expect(page.locator("h1")).toHaveText("Page not found");
-    await page.locator("main a").click();
+    await page.getByRole("main").getByRole("link", { name: "Browse the skills" }).click();
     await ready(page);
     await expect(page).toHaveURL("/");
+  });
+
+  test("offers a search for the last part of its address, as for a skill since renamed", async ({
+    page,
+  }) => {
+    await page.goto(`/no-such-owner/${skill.name}/`);
+    await ready(page);
+    const words = skill.name.toLowerCase().replace(/[-_.+]+/g, " ");
+    await page
+      .getByRole("main")
+      .getByRole("link", { name: `search them for “${words}”` })
+      .click();
+    await ready(page);
+    expect(new URL(page.url()).searchParams.get("q")).toBe(words);
+    await expect(
+      list(page).rows.locator(".skill-name").getByText(skill.name, { exact: true }).first(),
+    ).toBeVisible();
   });
 
   test("an address with capitals, as GitHub writes some names, leads to its page", async ({
@@ -634,6 +651,25 @@ test("a bundle's page is at the address its links have, with no redirect on the 
   await ready(page);
   await expect(page).toHaveURL(url);
   await expect(page.locator("h1")).toContainText(named.agentReview.name);
+});
+
+test("every page but the skills list has a search in its header, which leads to the list", async ({
+  page,
+}) => {
+  // The list has its own.
+  await open(page, "/");
+  await expect(page.locator(".head-search")).toHaveCount(0);
+  await open(page, skillUrl);
+  const search = page.getByRole("search").getByRole("searchbox", { name: "Search skills" });
+  // Anywhere on the field is in it, its icon too.
+  await page.locator(".head-field .search-icon").click();
+  await expect(search).toBeFocused();
+  await search.fill(skill.name);
+  await search.press("Enter");
+  await ready(page);
+  expect(new URL(page.url()).searchParams.get("q")).toBe(skill.name);
+  await expect(list(page).search).toHaveValue(skill.name);
+  await expect(list(page).rows.first().locator(".skill-name")).toHaveText(skill.name);
 });
 
 test("the header leads to every page, and marks the one you're on", async ({ page }) => {
