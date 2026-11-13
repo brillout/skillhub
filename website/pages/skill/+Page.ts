@@ -27,7 +27,7 @@ import {
 } from "../../skills.ts";
 import type { Skill, SkillMd } from "../../../data/types.ts";
 import { github } from "../../github.ts";
-import { saveButton, saveKey } from "../../saves.ts";
+import { saveButton, saveKey, thumbsHtml } from "../../saves.ts";
 import { fullBundleById } from "../../server-data.ts";
 import type { Data } from "./+data.ts";
 
@@ -130,7 +130,7 @@ export default function Page(pageContext: PageContextServer): string {
   return `
     <div class="page skill-page">
       ${crumbsHtml(repoKey(s), ...(bundle ? [`<a href="${bundleHref(bundle.id)}">${esc(bundle.agentReview.name)}</a>`] : []))}
-      <div class="title-row"><h1>${esc(s.name)}</h1>${saveButton(saveKey("skill", s.id), s.name)}</div>
+      <div class="title-row"><h1>${esc(s.name)}</h1>${thumbsHtml(saveKey("skill", s.id), s.name)}${saveButton(saveKey("skill", s.id), s.name)}</div>
       ${
         s.agentReview.tldr?.glance.length
           ? `<section class="at-a-glance" aria-label="At a glance">${glanceHtml(s.agentReview.tldr.glance)}</section>`

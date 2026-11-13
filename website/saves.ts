@@ -1,12 +1,15 @@
 /**
- * Saving skills and bundles: the Save buttons, and who's logged in and what they saved, which
- * account-client.ts gets from the Worker (worker/index.ts). Pages pre-render with nobody logged
- * in; in the browser, account-client.ts fills `account` in before the pages' scripts render.
+ * Saving skills and bundles, and giving them a thumbs up or down: the Save buttons and the thumbs
+ * beside them, and who's logged in and what they saved and thought, which account-client.ts gets
+ * from the Worker (worker/index.ts). Pages pre-render with nobody logged in; in the browser,
+ * account-client.ts fills `account` in before the pages' scripts render.
  */
 
 import { esc, href } from "./format.ts";
 
 export type SaveKind = "skill" | "bundle";
+/** A thumbs up or a thumbs down. */
+export type Reaction = "up" | "down";
 /** What the Worker keeps of a save, such as `bundle:obra/superpowers`: a skill and a bundle can have the same id. */
 export const saveKey = (kind: SaveKind, id: string) => `${kind}:${id}`;
 
@@ -19,8 +22,10 @@ export interface Account {
    * saved skill can leave it, such as when its SKILL.md is gone. Elsewhere, every key counts.
    */
   listed?: (key: string) => boolean;
+  /** The thumbs given, by key: one per entry, at most. */
+  reactions: Map<string, Reaction>;
 }
-export const account: Account = { user: null, saved: new Set() };
+export const account: Account = { user: null, saved: new Set(), reactions: new Map() };
 
 /** Where account-client.ts keeps the API's last answer, so that a page shows it at once. */
 export const ACCOUNT_CACHE = "skillhub:account";
@@ -48,15 +53,20 @@ export const LEFT_AT = "skillhub:left-at";
  */
 export const loginHtml = () => `<a href="${href("api/auth/login")}" data-login>Log in</a>`;
 
-/** Log in with GitHub, then back to this page, where it was, with `save` saved. */
-export function loginHref(save?: string): string {
+/**
+ * Log in with GitHub, then back to this page, where it was, having done what the button that asked
+ * to log in does: `save` saved, or the thumb `reaction` given to `react`.
+ */
+export function loginHref(
+  then: { save?: string; react?: string; reaction?: Reaction } = {},
+): string {
   const p = new URLSearchParams({
     return:
       typeof location === "undefined"
         ? href()
         : location.pathname + location.search + location.hash,
   });
-  if (save) p.set("save", save);
+  for (const [name, value] of Object.entries(then)) if (value) p.set(name, value);
   return `${href("api/auth/login")}?${p}`;
 }
 
@@ -91,4 +101,19 @@ export const saveName = (saved: boolean, name: string) => `${saveLabel(saved)} $
 export function saveButton(key: string, name: string): string {
   const on = account.saved.has(key);
   return `<button type="button" class="save" data-save="${esc(key)}" data-name="${esc(name)}" aria-pressed="${on}" aria-label="${esc(saveName(on, name))}" title="${saveLabel(on)}">${ICON}<span class="save-word">${saveLabel(on)}</span></button>`;
+}
+
+const THUMB_WORDS: Record<Reaction, string> = { up: "Thumbs up", down: "Thumbs down" };
+
+/**
+ * A thumbs up and a thumbs down for the entry named `name`, beside its Save button: what you
+ * think of it, one or neither, as `aria-pressed` says. Their icons are in style.css (--thumb), so
+ * that the list, which repeats them in its every row, carries no SVG of them. What each is called
+ * doesn't change with its state, unlike Save's, as its look holds no word.
+ */
+export function thumbsHtml(key: string, name: string): string {
+  const mine = account.reactions.get(key);
+  const button = (r: Reaction) =>
+    `<button type="button" data-react="${r}" aria-pressed="${mine === r}" aria-label="${THUMB_WORDS[r]} for ${esc(name)}" title="${THUMB_WORDS[r]}"></button>`;
+  return `<span class="thumbs" data-thumbs="${esc(key)}">${button("up")}${button("down")}</span>`;
 }

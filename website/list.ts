@@ -51,7 +51,15 @@ import {
 } from "./client-data.ts";
 import { CHECK, CHICK, DOWNLOAD, SAVED, SEARCH, STAR, iconDefsHtml } from "./prop-icons.ts";
 import { plain, sought, terms, type Term } from "./search-terms.ts";
-import { account, bookmarkSvg, loginHref, saveButton, saveKey, savedCount } from "./saves.ts";
+import {
+  account,
+  bookmarkSvg,
+  loginHref,
+  saveButton,
+  saveKey,
+  savedCount,
+  thumbsHtml,
+} from "./saves.ts";
 
 /** A row of the skills list: a skill, or a bundle with its skills inside. */
 type Entry = Skill | Bundle;
@@ -1383,10 +1391,10 @@ export function crowdDefsHtml(): string {
 }
 
 /**
- * A row's link to its page, beside Save, where a click on the row opens its preview rather than
- * its page: on the skills list, on a wide screen (see #preview in style.css). Elsewhere the row
- * itself leads there, and its name. For the pointer alone: the row's name is that link already,
- * for the keyboard and screen readers, to which this one was a second stop in every row, a
+ * A row's link to its page, beside its thumbs and Save, where a click on the row opens its preview
+ * rather than its page: on the skills list, on a wide screen (see #preview in style.css). Elsewhere
+ * the row itself leads there, and its name. For the pointer alone: the row's name is that link
+ * already, for the keyboard and screen readers, to which this one was a second stop in every row, a
  * thousand in the list, each called All details.
  */
 const detailsLink = (page: string) =>
@@ -1418,7 +1426,7 @@ function skillRow(s: Skill, st: State, outside = false): string {
             : ""
         }
       </div>
-      ${detailsLink(skillHref(s.id))}${saveButton(saveKey("skill", s.id), s.name)}
+      ${detailsLink(skillHref(s.id))}${thumbsHtml(saveKey("skill", s.id), s.name)}${saveButton(saveKey("skill", s.id), s.name)}
       </div>
       ${s.agentReview.tldr?.glance.length ? glanceHtml(s.agentReview.tldr.glance, 2) : `<p class="skill-desc">${esc(s.agentReview.description)}</p>`}
       <div class="tags">${tags.map((t) => tagChip(t, outside ? skillsLink({ tags: [t] }) : null, st.tags.includes(t))).join("")}</div>
@@ -1445,7 +1453,7 @@ function bundleRow(b: Bundle, st: State, outside = false): string {
         <span class="kind">Bundle of ${plural(b.agentReview.skills.length, "skill")}</span>
         ${outside ? "" : sourceHtml(b)}
       </div>
-      ${detailsLink(bundleHref(b.id))}${saveButton(saveKey("bundle", b.id), b.agentReview.name)}
+      ${detailsLink(bundleHref(b.id))}${thumbsHtml(saveKey("bundle", b.id), b.agentReview.name)}${saveButton(saveKey("bundle", b.id), b.agentReview.name)}
       </div>
       ${b.agentReview.tldr?.glance.length ? glanceHtml(b.agentReview.tldr.glance, 2) : `<p class="skill-desc">${esc(b.agentReview.description)}</p>`}
       <p class="members">${members.join(", ")}</p>

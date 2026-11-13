@@ -242,6 +242,10 @@ function renderSoon() {
 function focusSelector(): string | null {
   const el = document.activeElement as HTMLElement | null;
   if (!el || el.id === "q" || !app.contains(el)) return null;
+  // A thumb is told from the other rows' by its entry, which its pair carries.
+  const thumbs = el.dataset.react && el.closest<HTMLElement>("[data-thumbs]")?.dataset.thumbs;
+  if (thumbs)
+    return `#results [data-thumbs="${CSS.escape(thumbs)}"] [data-react="${el.dataset.react}"]`;
   for (const attr of [
     "data-tag",
     "data-action",

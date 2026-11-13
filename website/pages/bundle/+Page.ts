@@ -18,7 +18,7 @@ import {
 } from "../../skills.ts";
 import type { ClientSkill as Skill } from "../../client-data.ts";
 import { statTilesHtml } from "../../stat-tiles.ts";
-import { saveButton, saveKey } from "../../saves.ts";
+import { saveButton, saveKey, thumbsHtml } from "../../saves.ts";
 import { copyButton } from "../../copy.ts";
 import type { Bundle } from "../../../data/types.ts";
 import type { Data } from "./+data.ts";
@@ -88,7 +88,7 @@ export default function Page(pageContext: PageContextServer): string {
   return `
     <div class="page skill-page bundle-page">
       ${crumbsHtml(repo)}
-      <div class="title-row"><h1>${esc(b.agentReview.name)} <span class="kind">Bundle of ${plural(b.agentReview.skills.length, "skill")}</span></h1>${saveButton(saveKey("bundle", b.id), b.agentReview.name)}</div>
+      <div class="title-row"><h1>${esc(b.agentReview.name)} <span class="kind">Bundle of ${plural(b.agentReview.skills.length, "skill")}</span></h1>${thumbsHtml(saveKey("bundle", b.id), b.agentReview.name)}${saveButton(saveKey("bundle", b.id), b.agentReview.name)}</div>
       ${
         b.agentReview.tldr?.glance.length
           ? `<section class="at-a-glance" aria-label="At a glance">${glanceHtml(b.agentReview.tldr.glance)}</section>`

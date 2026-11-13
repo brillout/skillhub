@@ -24,9 +24,9 @@
  *   a stack of identical rounded cards (the results are one ruled sheet instead), decorative
  *   shadows and gradients.
  * - Motion. Transitions, and only for press feedback (scale 0.96), a button's edge on hover
- *   (150ms), the Save and dark mode icons' swaps and the Saved switch's knob. Keyframes only for
- *   one nudge: a save draws the eye to the Saved switch's count. Other colors change at once, the
- *   theme's too.
+ *   (150ms), the Save, thumbs and dark mode icons' swaps and the Saved switch's knob. Keyframes
+ *   only for one nudge: a save draws the eye to the Saved switch's count. Other colors change at
+ *   once, the theme's too.
  */
 
 :root {
@@ -72,6 +72,10 @@
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   /* The cross of the search fields' ×: see ::-webkit-search-cancel-button. */
   --cross: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m4 4 8 8m0-8-8 8' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  /* The thumbs' up, outlined and filled, drawn as the bookmark of Save is: see .thumbs. The filled
+     one's cuff stands apart from the hand, which the outlined one's line between them does. */
+  --thumb: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M6 9 9.2 3.6a1.55 1.55 0 0 1 2.85 1.1L11.4 8h4.05a1.6 1.6 0 0 1 1.55 2l-1.45 5.8a1.6 1.6 0 0 1-1.55 1.2H6M6 9H3.5a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5H6M6 9v8' fill='none' stroke='%23000' stroke-width='1.6' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E");
+  --thumb-filled: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' stroke='%23000' stroke-width='1.6' stroke-linejoin='round'%3E%3Cpath d='M7.2 9 9.2 3.6a1.55 1.55 0 0 1 2.85 1.1L11.4 8h4.05a1.6 1.6 0 0 1 1.55 2l-1.45 5.8a1.6 1.6 0 0 1-1.55 1.2H7.2Z'/%3E%3Cpath d='M3.5 9h1.3v8H3.5a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5Z'/%3E%3C/svg%3E");
   /* Edges of buttons and sheets: a ring, a slight lift and some ambient depth. */
   --ring: oklch(0 0 0 / 0.06);
   --shadow-border:
@@ -4588,7 +4592,108 @@ html[data-logged-in]:not([data-account]) .account::before {
   color: var(--garnet-text);
 }
 
-/* A row's name and where it's from, which wrap, with its Save button top right, beside them. */
+/*
+ * The thumbs up and down, beside Save: one button of two halves, the line between them, as tall as
+ * Save. The one you gave is filled, in garnet, as what you saved is, and so is the pair's edge.
+ * Their icons are masks in the button's color (--thumb), the down one turned over; as for Save, the
+ * outlined and the filled one lie one on the other, and a click cross-fades them.
+ */
+.thumbs {
+  display: inline-flex;
+  flex: none;
+  border-radius: 6px;
+  background: var(--paper);
+  box-shadow: var(--shadow-border);
+}
+
+.thumbs button {
+  display: grid;
+  place-items: center;
+  padding: 6px 9px;
+  border: 0;
+  border-radius: 6px 0 0 6px;
+  background: none;
+  color: var(--ink-2);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.thumbs button + button {
+  border-left: 1px solid var(--rule);
+  border-radius: 0 6px 6px 0;
+}
+
+/* A line of Save's words high, for the same height. */
+.thumbs button::before,
+.thumbs button::after {
+  content: "";
+  grid-area: 1 / 1;
+  width: 16px;
+  height: 1lh;
+  background: currentColor;
+  -webkit-mask: var(--thumb) center / 16px no-repeat;
+  mask: var(--thumb) center / 16px no-repeat;
+}
+
+.thumbs button::after {
+  -webkit-mask-image: var(--thumb-filled);
+  mask-image: var(--thumb-filled);
+}
+
+.thumbs [data-react="down"]::before,
+.thumbs [data-react="down"]::after {
+  rotate: 180deg;
+}
+
+.thumbs [aria-pressed="true"]::before,
+.thumbs button:not([aria-pressed="true"])::after {
+  opacity: 0;
+  scale: 0.25;
+  filter: blur(4px);
+}
+
+/* Only a click animates them, not the page's load: account-client.ts sets data-toggled. */
+.thumbs [data-toggled]::before,
+.thumbs [data-toggled]::after {
+  transition-property: opacity, scale, filter;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thumbs [aria-pressed="true"]::before,
+  .thumbs button:not([aria-pressed="true"])::after {
+    scale: none;
+    filter: none;
+  }
+}
+
+/* As Save's, for a pointer only. */
+@media (hover: hover) {
+  .thumbs:has(button:hover) {
+    box-shadow: 0 0 0 1px var(--garnet);
+  }
+
+  .thumbs button:hover {
+    color: var(--garnet-text);
+  }
+}
+
+.thumbs:has([aria-pressed="true"]) {
+  box-shadow: 0 0 0 1px var(--garnet);
+}
+
+.thumbs:has([aria-pressed="true"]) button + button {
+  border-left-color: var(--garnet);
+}
+
+.thumbs [aria-pressed="true"] {
+  background: var(--rose);
+  color: var(--garnet-text);
+}
+
+/* A row's name and where it's from, which wrap, with its thumbs and Save button top right, beside
+   them. */
 .row-head {
   display: flex;
   align-items: flex-start;
@@ -4601,12 +4706,19 @@ html[data-logged-in]:not([data-account]) .account::before {
 }
 
 /* Centered on the name's line, 27px tall, without making it taller. */
-.row-head .save {
+.row-head :is(.save, .thumbs) {
   margin: -3px 0;
 }
 
-/* A page's name, which wraps, with its Save button top right, beside it, as in a row of the list:
-   under a long name that took the whole line, the button was on a line of its own, at the left. */
+/* Closer to Save than to the row's name, as All details is to them. */
+.row-head .thumbs,
+.title-row .thumbs {
+  margin-right: -8px;
+}
+
+/* A page's name, which wraps, with its thumbs and Save button top right, beside it, as in a row of
+   the list: under a long name that took the whole line, the button was on a line of its own, at the
+   left. */
 .title-row {
   display: flex;
   align-items: flex-start;
@@ -4622,14 +4734,15 @@ html[data-logged-in]:not([data-account]) .account::before {
   overflow-wrap: break-word;
 }
 
-/* Centered on the name's first line: 41px tall, the button 33px. */
-.title-row .save {
+/* Centered on the name's first line: 41px tall, the buttons 33px. */
+.title-row :is(.save, .thumbs) {
   margin-top: 4px;
 }
 
-/* On a phone the name's line is 28px, shorter than the button, which mustn't make it taller. */
+/* On a phone the name's line is 28px, shorter than the buttons, which mustn't make it taller. */
 @media (max-width: 900px) {
-  .title-row .save {
-    margin: -3px 0;
+  .title-row :is(.save, .thumbs) {
+    margin-top: -3px;
+    margin-bottom: -3px;
   }
 }

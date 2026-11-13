@@ -2,7 +2,7 @@
  * SkillHub's server: a Cloudflare Worker. Cloudflare serves the pre-rendered site
  * (website/dist/client) itself, without running this; it runs for /api/* only (`run_worker_first`
  * in ../wrangler.jsonc). It logs people in with GitHub and keeps the skills and bundles they save,
- * in D1: see ./migrations/.
+ * and their thumbs up and down on them, in D1: see ./migrations/.
  *
  * Logging in: /api/auth/login sends you to GitHub, which sends you back to /api/auth/callback. Of
  * your GitHub account, only its id, login and avatar are kept; GitHub's access token is dropped at
@@ -34,7 +34,9 @@ const SESSION_DAYS = 365;
 /** The cookie that carries the OAuth `state`, and what to do once logged in, from /api/auth/login to the callback. */
 const PENDING = "login";
 const MAX_SAVES = 1000;
+const MAX_REACTIONS = 1000;
 const KINDS = ["skill", "bundle"];
+const REACTIONS = ["up", "down"];
 /** The ids of data/skills.jsonc, such as `vercel-labs/skills/skills/find-skills`, with room to spare. */
 const ID = /^[\w.@-]+(\/[\w.@-]+)*$/;
 const TEST_USER: User = { id: 0, login: "test-user", avatar_url: "/gem.svg" };
@@ -48,6 +50,8 @@ export default {
           return await me(request, env);
         case "POST /api/saves":
           return await save(request, env);
+        case "POST /api/reactions":
+          return await react(request, env);
         case "GET /api/auth/login":
           return await login(request, env);
         case "GET /api/auth/callback":
@@ -66,18 +70,31 @@ export default {
 
 // ------------------------------------------------------------------- the API
 
-/** Who's logged in, and what they saved, as keys such as `skill:<id>` (see website/saves.ts). */
+/**
+ * Who's logged in, what they saved, as keys such as `skill:<id>` (see website/saves.ts), and their
+ * thumbs, as `{ [key]: "up" | "down" }`.
+ */
 async function me(request: Request, env: Env): Promise<Response> {
   const user = await currentUser(request, env);
-  if (!user) return json({ user: null, saved: [] });
-  const { results } = await env.DB.prepare(
-    "SELECT kind, entry_id FROM saves WHERE user_id = ? ORDER BY created_at",
-  )
-    .bind(user.id)
-    .all<{ kind: string; entry_id: string }>();
+  if (!user) return json({ user: null, saved: [], reactions: {} });
+  const [saves, reactions] = await env.DB.batch<{
+    kind: string;
+    entry_id: string;
+    reaction: string;
+  }>([
+    env.DB.prepare("SELECT kind, entry_id FROM saves WHERE user_id = ? ORDER BY created_at").bind(
+      user.id,
+    ),
+    env.DB.prepare("SELECT kind, entry_id, reaction FROM reactions WHERE user_id = ?").bind(
+      user.id,
+    ),
+  ]);
   return json({
     user: { login: user.login, avatar: user.avatar_url },
-    saved: results.map((r) => `${r.kind}:${r.entry_id}`),
+    saved: saves.results.map((r) => `${r.kind}:${r.entry_id}`),
+    reactions: Object.fromEntries(
+      reactions.results.map((r) => [`${r.kind}:${r.entry_id}`, r.reaction]),
+    ),
   });
 }
 
@@ -123,6 +140,64 @@ async function addSave(env: Env, userId: number, { kind, id }: Entry): Promise<b
   );
 }
 
+/**
+ * Gives `{ key, reaction }` a thumbs up or down, `reaction` "up" or "down", or takes it back:
+ * `reaction` null.
+ */
+async function react(request: Request, env: Env): Promise<Response> {
+  const refused = refuseCrossSite(request);
+  if (refused) return refused;
+  const user = await currentUser(request, env);
+  if (!user) return json({ error: "Not logged in" }, 401);
+  const body = (await request.json().catch(() => null)) as {
+    key?: unknown;
+    reaction?: unknown;
+  } | null;
+  const entry = parseKey(body?.key);
+  const reaction = body?.reaction;
+  if (!entry || !(reaction === null || isReaction(reaction)))
+    return json({ error: "Bad request" }, 400);
+  if (reaction === null)
+    await env.DB.prepare("DELETE FROM reactions WHERE user_id = ? AND kind = ? AND entry_id = ?")
+      .bind(user.id, entry.kind, entry.id)
+      .run();
+  else if (!(await addReaction(env, user.id, entry, reaction)))
+    return json(
+      {
+        error: `You can give a thumbs up or down to at most ${MAX_REACTIONS.toLocaleString("en")} skills and bundles.`,
+      },
+      409,
+    );
+  return json({ ok: true });
+}
+
+const isReaction = (reaction: unknown): reaction is string =>
+  typeof reaction === "string" && REACTIONS.includes(reaction);
+
+/**
+ * Whether the entry has the reaction now: false when the user is at MAX_REACTIONS. Turning a thumb
+ * to the other one takes no more room, also at the cap.
+ */
+async function addReaction(
+  env: Env,
+  userId: number,
+  { kind, id }: Entry,
+  reaction: string,
+): Promise<boolean> {
+  // The count is in the same statement, as for saves: see addSave.
+  const { meta } = await env.DB.prepare(
+    `INSERT INTO reactions (user_id, kind, entry_id, reaction, created_at)
+     SELECT ?1, ?2, ?3, ?4, ?5
+     WHERE (SELECT COUNT(*) FROM reactions WHERE user_id = ?1) < ?6
+       OR EXISTS (SELECT 1 FROM reactions WHERE user_id = ?1 AND kind = ?2 AND entry_id = ?3)
+     ON CONFLICT (user_id, kind, entry_id) DO UPDATE
+       SET reaction = excluded.reaction, created_at = excluded.created_at`,
+  )
+    .bind(userId, kind, id, reaction, Date.now(), MAX_REACTIONS)
+    .run();
+  return meta.changes > 0;
+}
+
 type Entry = { kind: string; id: string };
 function parseKey(key: unknown): Entry | null {
   if (typeof key !== "string" || key.length > 300) return null;
@@ -133,13 +208,19 @@ function parseKey(key: unknown): Entry | null {
 
 // ------------------------------------------------------------------- logging in
 
-/** `?return=` is the page to go back to, `?save=` a key to save once logged in: the Save button that asked to log in. */
+/**
+ * `?return=` is the page to go back to. What to do once logged in, for the button that asked to
+ * log in: `?save=` a key to save, the Save button's, or `?react=` a key and `?reaction=` the thumb
+ * to give it, "up" or "down".
+ */
 async function login(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
   const pending: Pending = {
     state: token(),
     back: backTo(url.searchParams.get("return"), url),
     save: url.searchParams.get("save"),
+    react: url.searchParams.get("react"),
+    reaction: url.searchParams.get("reaction"),
   };
   if (env.DEV_LOGIN === "1") return loggedIn(request, env, TEST_USER, pending);
   const github = new URL("https://github.com/login/oauth/authorize");
@@ -154,6 +235,9 @@ interface Pending {
   state: string;
   back: string;
   save: string | null;
+  /** Optional: a login started before reactions existed has neither. */
+  react?: string | null;
+  reaction?: string | null;
 }
 
 async function callback(request: Request, env: Env): Promise<Response> {
@@ -191,7 +275,10 @@ async function callback(request: Request, env: Env): Promise<Response> {
   return loggedIn(request, env, { id, login, avatar_url }, pending, clear);
 }
 
-/** Records the user, starts their session, makes the save they asked for, and goes back to their page. */
+/**
+ * Records the user, starts their session, makes the save or gives the thumb they asked for, and
+ * goes back to their page.
+ */
 async function loggedIn(
   request: Request,
   env: Env,
@@ -215,6 +302,9 @@ async function loggedIn(
   ]);
   const entry = parseKey(pending.save);
   if (entry) await addSave(env, user.id, entry);
+  const reacted = parseKey(pending.react);
+  if (reacted && isReaction(pending.reaction))
+    await addReaction(env, user.id, reacted, pending.reaction);
   return redirect(
     backTo(pending.back, new URL(request.url)),
     cookie(request, SESSION, session, (SESSION_DAYS * DAY) / 1000),

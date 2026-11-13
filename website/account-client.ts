@@ -1,13 +1,14 @@
 /**
- * Every page's login and saves, in the browser: the header's Log in, or its link to what you saved
- * and Log out, the Save buttons, and the count on the skills list's Saved switch. The Worker's
- * /api/me says who's logged in and what they saved. Its last answer is kept in localStorage, so
- * that a page shows it at once, before the API answers.
+ * Every page's login, saves and thumbs, in the browser: the header's Log in, or its link to what
+ * you saved and Log out, the Save buttons and the thumbs beside them, and the count on the skills
+ * list's Saved switch. The Worker's /api/me says who's logged in and what they saved and thought.
+ * Its last answer is kept in localStorage, so that a page shows it at once, before the API answers.
  *
- * The Save buttons, the Saved switch and the header's Log in are pre-rendered, as if nobody were
- * logged in, and show at once: the click handler below makes them work, and paint() shows who's
- * logged in and what they saved. For whoever the last answer said was logged in, Log in stays
- * hidden until paint() replaces it, so that it doesn't flash: see loggedInScript in saves.ts.
+ * The Save buttons, the thumbs, the Saved switch and the header's Log in are pre-rendered, as if
+ * nobody were logged in, and show at once: the click handler below makes them work, and paint()
+ * shows who's logged in and what they saved and thought. For whoever the last answer said was
+ * logged in, Log in stays hidden until paint() replaces it, so that it doesn't flash: see
+ * loggedInScript in saves.ts.
  */
 
 import { esc, href } from "./format.ts";
@@ -22,30 +23,40 @@ import {
   saveName,
   savedCount,
   type Account,
+  type Reaction,
 } from "./saves.ts";
 
 /**
  * Fired on `document` when `account` changes: its `detail` is "load" when the API told who's
- * logged in and what they saved, "toggle" when a Save button was clicked.
+ * logged in and what they saved, "toggle" when a Save button was clicked, "react" when a thumb was.
  */
 export const ACCOUNT_EVENT = "skillhub:account";
-export type AccountChange = "load" | "toggle";
+export type AccountChange = "load" | "toggle" | "react";
 
 interface Me {
   user: Account["user"];
   saved: string[];
+  /** Missing from what a page kept before there were thumbs. */
+  reactions?: Record<string, Reaction>;
 }
+
+const LOGGED_OUT: Me = { user: null, saved: [], reactions: {} };
 
 function apply(me: Me) {
   account.user = me.user;
   account.saved = new Set(me.saved);
+  account.reactions = new Map(Object.entries(me.reactions ?? {}));
 }
 
 function store() {
   try {
     localStorage.setItem(
       ACCOUNT_CACHE,
-      JSON.stringify({ user: account.user, saved: [...account.saved] }),
+      JSON.stringify({
+        user: account.user,
+        saved: [...account.saved],
+        reactions: Object.fromEntries(account.reactions),
+      } satisfies Me),
     );
   } catch {}
 }
@@ -205,6 +216,13 @@ function paint(animate = false) {
     const word = button.querySelector(".save-word");
     if (word) word.textContent = saveLabel(on);
   }
+  for (const button of document.querySelectorAll<HTMLElement>("[data-react]")) {
+    const key = button.closest<HTMLElement>("[data-thumbs]")?.dataset.thumbs ?? "";
+    button.setAttribute(
+      "aria-pressed",
+      String(account.reactions.get(key) === button.dataset.react),
+    );
+  }
   for (const n of document.querySelectorAll<HTMLElement>("[data-saved-count]")) {
     const before = Number(n.textContent) || 0;
     const after = Number(savedCount()) || 0;
@@ -246,7 +264,7 @@ function notSaved(key: string) {
 async function toggle(key: string) {
   if (!account.user) {
     leaveToLogIn();
-    location.href = loginHref(key);
+    location.href = loginHref({ save: key });
     return;
   }
   const on = !account.saved.has(key);
@@ -260,17 +278,47 @@ async function toggle(key: string) {
   changed("toggle");
   if (res?.status === 401) {
     // The session ended: log in again, and save on the way back.
-    apply({ user: null, saved: [] });
+    apply(LOGGED_OUT);
     store();
     leaveToLogIn();
-    location.href = loginHref(on ? key : undefined);
+    location.href = loginHref({ save: on ? key : undefined });
   } else if (res?.status === 409) alert((await res.json()).error);
   else if (on) notSaved(key);
 }
 
+/**
+ * A click on a thumb: gives it, in place of the other one, or takes it back when it was given
+ * already. Logged out, it logs in first, and gives it on the way back.
+ */
+async function react(key: string, clicked: Reaction) {
+  if (!account.user) {
+    leaveToLogIn();
+    location.href = loginHref({ react: key, reaction: clicked });
+    return;
+  }
+  const before = account.reactions.get(key) ?? null;
+  const after = before === clicked ? null : clicked;
+  const set = (r: Reaction | null) =>
+    r ? account.reactions.set(key, r) : account.reactions.delete(key);
+  // The thumbs show their new state at once, and go back if the Worker refuses it.
+  set(after);
+  changed("react");
+  const res = await post("api/reactions", { key, reaction: after }).catch(() => null);
+  if (res?.ok) return;
+  set(before);
+  changed("react");
+  if (res?.status === 401) {
+    // The session ended: log in again, and give the thumb on the way back.
+    apply(LOGGED_OUT);
+    store();
+    leaveToLogIn();
+    location.href = loginHref(after ? { react: key, reaction: after } : {});
+  } else if (res?.status === 409) alert((await res.json()).error);
+}
+
 async function logout() {
   await post("api/auth/logout", {}).catch(() => null);
-  apply({ user: null, saved: [] });
+  apply(LOGGED_OUT);
   changed("load");
 }
 
@@ -282,7 +330,17 @@ document.addEventListener("click", (event) => {
     login.href = loginHref();
     leaveToLogIn();
   } else if (el.closest("[data-logout]")) void logout();
-  else {
+  else if (el.closest("[data-react]")) {
+    const thumb = el.closest<HTMLElement>("[data-react]")!;
+    const key = thumb.closest<HTMLElement>("[data-thumbs]")?.dataset.thumbs;
+    if (!key) return;
+    // Their icons animate from now on, the one given and the one it replaces, as Save's do.
+    for (const button of document.querySelectorAll<HTMLElement>(
+      `[data-thumbs="${CSS.escape(key)}"] [data-react]`,
+    ))
+      button.dataset.toggled = "";
+    void react(key, thumb.dataset.react as Reaction);
+  } else {
     const clicked = el.closest<HTMLElement>("[data-save]");
     const key = clicked?.dataset.save;
     if (!clicked || !key) return;
