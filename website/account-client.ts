@@ -45,6 +45,13 @@ interface Me {
   reactedAt?: Record<string, number>;
 }
 
+const pendingSaves = new Set<string>();
+const pendingReactions = new Set<string>();
+let endingSession = false;
+let loggedOut = false;
+let initialFetchComplete = false;
+const initialSavesChanged = new Set<string>();
+const initialReactionsChanged = new Set<string>();
 const LOGGED_OUT: Me = { user: null, saved: [], reactions: {}, savedAt: {}, reactedAt: {} };
 
 function apply(me: Me) {
@@ -218,7 +225,15 @@ export function showsSaved(on: boolean) {
 function paint(animate = false) {
   paintLinks();
   for (const button of document.querySelectorAll<HTMLElement>("[data-save]")) {
-    const on = account.saved.has(button.dataset.save ?? "");
+    const key = button.dataset.save ?? "";
+    const on = account.saved.has(key);
+    if (pendingSaves.has(key)) {
+      button.setAttribute("aria-disabled", "true");
+      button.setAttribute("aria-busy", "true");
+    } else {
+      button.removeAttribute("aria-disabled");
+      button.removeAttribute("aria-busy");
+    }
     button.setAttribute("aria-pressed", String(on));
     button.setAttribute("aria-label", saveName(on, button.dataset.name ?? ""));
     button.title = saveTitle(button.dataset.save ?? "");
@@ -227,6 +242,13 @@ function paint(animate = false) {
   }
   for (const button of document.querySelectorAll<HTMLElement>("[data-react]")) {
     const key = button.closest<HTMLElement>("[data-thumbs]")?.dataset.thumbs ?? "";
+    if (pendingReactions.has(key)) {
+      button.setAttribute("aria-disabled", "true");
+      button.setAttribute("aria-busy", "true");
+    } else {
+      button.removeAttribute("aria-disabled");
+      button.removeAttribute("aria-busy");
+    }
     button.setAttribute(
       "aria-pressed",
       String(account.reactions.get(key) === button.dataset.react),
@@ -251,6 +273,7 @@ const post = (path: string, body: unknown) =>
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
+    signal: path === "api/auth/logout" ? undefined : AbortSignal.timeout(15_000),
   });
 
 /** Notes that the tab leaves this page to log in: see LOGIN_FROM in saves.ts. */
@@ -272,6 +295,7 @@ function notSaved(key: string) {
 }
 
 async function toggle(key: string) {
+  if (pendingSaves.has(key)) return;
   if (!account.user) {
     leaveToLogIn();
     location.href = loginHref({ save: key });
@@ -289,27 +313,45 @@ async function toggle(key: string) {
       account.savedAt.delete(key);
     }
   };
-  // The button shows its new state at once, and goes back if the Worker refuses it.
+  // Don't accept a second write for this item until the first is confirmed.
+  pendingSaves.add(key);
+  if (!initialFetchComplete) initialSavesChanged.add(key);
   set(on);
   changed("toggle");
   const res = await post("api/saves", { key, saved: on }).catch(() => null);
+  const error = res?.status === 409 ? await res.json().catch(() => null) : null;
+  pendingSaves.delete(key);
+  paint();
+  if (loggedOut) return;
+  if (!account.user) {
+    if (res?.status === 401 && !endingSession)
+      notice("Your session expired. Log in and try your action again.", "session");
+    return;
+  }
   if (res?.ok) {
     clearNotice(key);
     return;
   }
   set(!on, at);
   changed("toggle");
+  if (endingSession) return;
   if (res?.status === 401) {
-    // The session ended: log in again, and save on the way back.
     apply(LOGGED_OUT);
-    store();
-    leaveToLogIn();
-    location.href = loginHref({ save: on ? key : undefined });
-  } else if (res?.status === 409) notice((await res.json()).error, key);
-  else {
+    changed("load");
+    notice("Your session expired. Log in and try your action again.", "session");
+  } else if (res?.status === 409) {
+    notice(
+      typeof error?.error === "string" ? error.error : "Couldn't update this save. Try again.",
+      key,
+    );
+  } else {
     if (on) notSaved(key);
     notice(
-      on ? "Couldn't save this item. Try again." : "Couldn't remove this save. Try again.",
+      !res
+        ? "Couldn't confirm this change. Reload to check before trying again."
+        : on
+          ? "Couldn't save this item. Try again."
+          : "Couldn't remove this save. Try again.",
       key,
     );
   }
@@ -320,6 +362,7 @@ async function toggle(key: string) {
  * already. Logged out, it logs in first, and gives it on the way back.
  */
 async function react(key: string, clicked: Reaction) {
+  if (pendingReactions.has(key)) return;
   if (!account.user) {
     leaveToLogIn();
     location.href = loginHref({ react: key, reaction: clicked });
@@ -339,26 +382,42 @@ async function react(key: string, clicked: Reaction) {
       account.reactedAt.delete(key);
     }
   };
-  // The thumbs show their new state at once, and go back if the Worker refuses it.
+  // Both thumbs represent one value, so wait for this write before accepting another.
+  pendingReactions.add(key);
+  if (!initialFetchComplete) initialReactionsChanged.add(key);
   set(after);
   changed("react");
   const res = await post("api/reactions", { key, reaction: after }).catch(() => null);
+  const error = res?.status === 409 ? await res.json().catch(() => null) : null;
+  pendingReactions.delete(key);
+  paint();
+  if (loggedOut) return;
+  if (!account.user) {
+    if (res?.status === 401 && !endingSession)
+      notice("Your session expired. Log in and try your action again.", "session");
+    return;
+  }
   if (res?.ok) {
     clearNotice(action);
     return;
   }
   set(before, beforeAt);
   changed("react");
+  if (endingSession) return;
   if (res?.status === 401) {
-    // The session ended: log in again, and give the thumb on the way back.
     apply(LOGGED_OUT);
-    store();
-    leaveToLogIn();
-    location.href = loginHref(after ? { react: key, reaction: after } : {});
-  } else if (res?.status === 409) notice((await res.json()).error, action);
-  else
+    changed("load");
+    notice("Your session expired. Log in and try your action again.", "session");
+  } else if (res?.status === 409) {
     notice(
-      `Couldn't ${after ? "save" : "remove"} your thumbs ${after ?? before}. Try again.`,
+      typeof error?.error === "string" ? error.error : "Couldn't update your thumb. Try again.",
+      action,
+    );
+  } else
+    notice(
+      res
+        ? `Couldn't ${after ? "save" : "remove"} your thumbs ${after ?? before}. Try again.`
+        : "Couldn't confirm this change. Reload to check before trying again.",
       action,
     );
 }
@@ -378,12 +437,15 @@ document.addEventListener("pointerover", (event) => {
 });
 
 async function logout() {
+  endingSession = true;
   const res = await post("api/auth/logout", {}).catch(() => null);
   if (!res?.ok) {
-    notice("Couldn't log out. Check your connection and try again.", "logout");
+    endingSession = false;
+    notice("Couldn't confirm log out. Reload to check before trying again.", "logout");
     return;
   }
   clearNotice("logout");
+  loggedOut = true;
   apply(LOGGED_OUT);
   changed("load");
 }
@@ -399,7 +461,7 @@ document.addEventListener("click", (event) => {
   else if (el.closest("[data-react]")) {
     const thumb = el.closest<HTMLElement>("[data-react]")!;
     const key = thumb.closest<HTMLElement>("[data-thumbs]")?.dataset.thumbs;
-    if (!key) return;
+    if (!key || pendingReactions.has(key)) return;
     // Their icons animate from now on, the one given and the one it replaces, as Save's do.
     for (const button of document.querySelectorAll<HTMLElement>(
       `[data-thumbs="${CSS.escape(key)}"] [data-react]`,
@@ -409,7 +471,7 @@ document.addEventListener("click", (event) => {
   } else {
     const clicked = el.closest<HTMLElement>("[data-save]");
     const key = clicked?.dataset.save;
-    if (!clicked || !key) return;
+    if (!clicked || !key || pendingSaves.has(key)) return;
     // Its icon animates from now on, unlike when the page's load sets what's saved.
     for (const button of document.querySelectorAll<HTMLElement>(`[data-save="${CSS.escape(key)}"]`))
       button.dataset.toggled = "";
@@ -430,9 +492,46 @@ try {
 void fetch(href("api/me"))
   .then((res) => (res.ok ? (res.json() as Promise<Me>) : null))
   .then((me) => {
-    if (!me) return;
+    initialFetchComplete = true;
+    if (!me || endingSession || loggedOut) return;
     reachable();
+    // The response may be an older snapshot than an action made from cached account data.
+    const sameUser = me.user && account.user?.login === me.user.login;
+    const saved = new Map(
+      [...initialSavesChanged].map((key) => [
+        key,
+        {
+          on: account.saved.has(key),
+          at: account.savedAt.get(key),
+        },
+      ]),
+    );
+    const reacted = new Map(
+      [...initialReactionsChanged].map((key) => [
+        key,
+        {
+          value: account.reactions.get(key),
+          at: account.reactedAt.get(key),
+        },
+      ]),
+    );
     apply(me);
+    if (sameUser) {
+      for (const [key, state] of saved) {
+        if (state.on) account.saved.add(key);
+        else account.saved.delete(key);
+        if (state.at !== undefined) account.savedAt.set(key, state.at);
+        else account.savedAt.delete(key);
+      }
+      for (const [key, state] of reacted) {
+        if (state.value) account.reactions.set(key, state.value);
+        else account.reactions.delete(key);
+        if (state.at !== undefined) account.reactedAt.set(key, state.at);
+        else account.reactedAt.delete(key);
+      }
+    }
     changed("load");
   })
-  .catch(() => {});
+  .catch(() => {
+    initialFetchComplete = true;
+  });

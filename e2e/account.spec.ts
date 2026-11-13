@@ -734,7 +734,7 @@ test.describe("when an account request fails", () => {
       route.fulfill({ status: 503, body: "Unavailable" }),
     );
     await logout(page).click();
-    await expect(page.getByRole("status")).toContainText("Couldn't log out");
+    await expect(page.getByRole("status")).toContainText("Couldn't confirm log out");
     await expect(logout(page)).toBeVisible();
     expect((await (await page.request.get("/api/me")).json()).user).not.toBeNull();
     await page.unroute("**/api/auth/logout");
@@ -824,5 +824,186 @@ test.describe("at the thumbs limit", () => {
     await page.getByRole("button", { name: "Dismiss notification" }).click();
     await expect(page.getByRole("status")).toHaveCount(0);
     await expect(up).toBeFocused();
+  });
+});
+
+test.describe("while account requests are pending", () => {
+  test.use({
+    expected:
+      /HTTP (401|503):.*\/api\/(auth\/logout|saves|reactions)|console error: Failed to load resource: the server responded with a status of (401|503)/,
+  });
+
+  test("a second click waits for the first save, and can be made afterward", async ({ page }) => {
+    await openLoggedIn(page, skillUrl);
+    const save = page.locator(".title-row [data-save]");
+    let release = () => {};
+    const held = new Promise<void>((resolve) => (release = resolve));
+    let arrived = () => {};
+    const first = new Promise<void>((resolve) => (arrived = resolve));
+    let requests = 0;
+    await page.route("**/api/saves", async (route) => {
+      if (++requests === 1) {
+        arrived();
+        await held;
+      }
+      await route.continue();
+    });
+    await save.click();
+    await first;
+    await expect(save).toHaveAttribute("aria-disabled", "true");
+    await expect(save).toHaveAttribute("aria-busy", "true");
+    // Even a dispatched click cannot start an out-of-order request.
+    await save.dispatchEvent("click");
+    expect(requests).toBe(1);
+    const answered = page.waitForResponse((res) => res.url().endsWith("/api/saves"));
+    release();
+    await answered;
+    await expect(save).not.toHaveAttribute("aria-disabled");
+    const removed = page.waitForResponse((res) => res.url().endsWith("/api/saves"));
+    await save.click();
+    await removed;
+    await page.reload();
+    await ready(page);
+    await accountLoaded(page);
+    await expect(save).toHaveAttribute("aria-pressed", "false");
+  });
+
+  test("an older account snapshot does not erase a click made while it loads", async ({ page }) => {
+    await openLoggedIn(page, skillUrl);
+    let release = () => {};
+    const held = new Promise<void>((resolve) => (release = resolve));
+    let arrived = () => {};
+    const first = new Promise<void>((resolve) => (arrived = resolve));
+    await page.route("**/api/me", async (route) => {
+      const snapshot = await route.fetch();
+      arrived();
+      await held;
+      await route.fulfill({ response: snapshot });
+    });
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await ready(page);
+    await first;
+    const save = page.locator(".title-row [data-save]");
+    const saved = page.waitForResponse((res) => res.url().endsWith("/api/saves") && res.ok());
+    await save.click();
+    await saved;
+    await page.evaluate(() => {
+      document.addEventListener("skillhub:account", (event) => {
+        if ((event as CustomEvent).detail === "load")
+          document.documentElement.dataset.testAccountLoaded = "";
+      });
+    });
+    release();
+    await page.locator("html[data-test-account-loaded]").waitFor();
+    await expect(save).toHaveAttribute("aria-pressed", "true");
+    await page.unroute("**/api/me");
+    await page.reload();
+    await ready(page);
+    await accountLoaded(page);
+    await expect(save).toHaveAttribute("aria-pressed", "true");
+  });
+
+  test("a failed save rolls back even while logout is pending and fails", async ({ page }) => {
+    await openLoggedIn(page, skillUrl);
+    const save = page.locator(".title-row [data-save]");
+    let releaseSave = () => {},
+      releaseLogout = () => {};
+    const saveHold = new Promise<void>((resolve) => (releaseSave = resolve));
+    const logoutHold = new Promise<void>((resolve) => (releaseLogout = resolve));
+    let sawSave = () => {},
+      sawLogout = () => {};
+    const saveSeen = new Promise<void>((resolve) => (sawSave = resolve));
+    const logoutSeen = new Promise<void>((resolve) => (sawLogout = resolve));
+    await page.route("**/api/saves", async (route) => {
+      sawSave();
+      await saveHold;
+      await route.fulfill({ status: 503, body: "Unavailable" });
+    });
+    await page.route("**/api/auth/logout", async (route) => {
+      sawLogout();
+      await logoutHold;
+      await route.fulfill({ status: 503, body: "Unavailable" });
+    });
+    await save.click();
+    await saveSeen;
+    await logout(page).click();
+    await logoutSeen;
+    releaseSave();
+    await expect(save).toHaveAttribute("aria-pressed", "false");
+    releaseLogout();
+    await expect(page.getByRole("status")).toContainText("Couldn't confirm log out");
+    await expect(logout(page)).toBeVisible();
+  });
+
+  test("an expired session explains that the action must be retried", async ({ page }) => {
+    await openLoggedIn(page, skillUrl);
+    const save = page.locator(".title-row [data-save]");
+    const kept = page.waitForResponse((res) => res.url().endsWith("/api/saves") && res.ok());
+    await save.click();
+    await kept;
+    await page.route("**/api/saves", (route) => route.fulfill({ status: 401, body: "Expired" }));
+    await save.click();
+    await expect(page.getByRole("status")).toContainText("session expired");
+    await expect(page.getByRole("status")).toContainText("Log in and try your action again");
+    await expect(login(page)).toBeVisible();
+    expect((await (await page.request.get("/api/me")).json()).saved).toHaveLength(1);
+  });
+});
+
+test.describe("account response edge cases", () => {
+  test.use({
+    expected:
+      /HTTP (401|409):.*\/api\/(saves|reactions)|console error: Failed to load resource: the server responded with a status of (401|409)/,
+  });
+  test("a stale cached login still reports an expired action after the account response", async ({
+    page,
+  }) => {
+    await openLoggedIn(page, skillUrl);
+    let releaseMe = () => {},
+      releaseSave = () => {};
+    const meHold = new Promise<void>((resolve) => (releaseMe = resolve));
+    const saveHold = new Promise<void>((resolve) => (releaseSave = resolve));
+    let sawMe = () => {},
+      sawSave = () => {};
+    const meSeen = new Promise<void>((resolve) => (sawMe = resolve));
+    const saveSeen = new Promise<void>((resolve) => (sawSave = resolve));
+    await page.route("**/api/me", async (route) => {
+      sawMe();
+      await meHold;
+      await route.fulfill({
+        json: { user: null, saved: [], reactions: {}, savedAt: {}, reactedAt: {} },
+      });
+    });
+    await page.route("**/api/saves", async (route) => {
+      sawSave();
+      await saveHold;
+      await route.fulfill({ status: 401, body: "Expired" });
+    });
+    await page.reload({ waitUntil: "domcontentloaded" });
+    await ready(page);
+    await meSeen;
+    await page.locator(".title-row [data-save]").click();
+    await saveSeen;
+    releaseMe();
+    await expect(login(page)).toBeVisible();
+    releaseSave();
+    await expect(page.getByRole("status")).toContainText("session expired");
+    await expect(page.getByRole("status")).toContainText("try your action again");
+  });
+  test("a malformed limit response is explained and the thumb can be retried", async ({ page }) => {
+    await openLoggedIn(page, skillUrl);
+    const up = thumb(page.locator(".title-row"), "up");
+    await page.route("**/api/reactions", (route) =>
+      route.fulfill({ status: 409, body: "bad JSON" }),
+    );
+    await up.click();
+    await expect(page.getByRole("status")).toContainText("Couldn't update your thumb");
+    await expect(up).toHaveAttribute("aria-pressed", "false");
+    await page.unroute("**/api/reactions");
+    const saved = page.waitForResponse((res) => res.url().endsWith("/api/reactions") && res.ok());
+    await up.click();
+    await saved;
+    await expect(up).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByRole("status")).toHaveCount(0);
   });
 });
