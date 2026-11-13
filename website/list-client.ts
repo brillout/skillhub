@@ -678,8 +678,9 @@ need.addEventListener("focus", fitNeed);
 need.addEventListener("input", fitNeed);
 
 // A press in the agent's box, but on its words, leaves the focus where it is. Taken off the words,
-// as by a press on the button, it would shrink the box to one line under the pointer, before the
-// click: which would land on whatever is there then. The click focuses the words: see focus-need.
+// as by a press on the button, it would shrink the box, if empty, to one line under the pointer,
+// before the click: which would land on whatever is there then. The click focuses the words: see
+// focus-need.
 need.parentElement!.addEventListener("mousedown", (event) => {
   if (event.target !== need) event.preventDefault();
 });

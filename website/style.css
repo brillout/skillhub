@@ -1560,9 +1560,10 @@ input[type="search"]::-webkit-search-cancel-button:hover {
 
 /*
  * A text box like the search's, told apart by its icon and its button. Its top keeps to the
- * search's, since it grows downwards: with the focus, it's a prompt box, as an agent's, three lines
- * high and growing with what's typed, up to ten (see list-client.ts), with the button under the
- * words, at the right. The search's line stays under the search: see .finder's areas.
+ * search's, since it grows downwards: with the focus, or words in it, it's a prompt box, as an
+ * agent's, three lines high and growing with what's typed, up to ten (see list-client.ts), with the
+ * button under the words, at the right. Empty and without the focus, one line again. The search's
+ * line stays under the search: see .finder's areas.
  */
 .agent-field {
   grid-area: agent;
@@ -1571,18 +1572,18 @@ input[type="search"]::-webkit-search-cancel-button:hover {
   padding: 6px 6px 6px 18px;
 }
 
-.agent-field:focus-within {
+.agent-field:is(:focus-within, :has(textarea:not(:placeholder-shown))) {
   flex-wrap: wrap;
   align-items: flex-start;
   padding-top: 10px;
 }
 
 /* On the first line. */
-.agent-field:focus-within .ask-icon {
+.agent-field:is(:focus-within, :has(textarea:not(:placeholder-shown))) .ask-icon {
   margin-top: 8px;
 }
 
-.agent-field:focus-within textarea {
+.agent-field:is(:focus-within, :has(textarea:not(:placeholder-shown))) textarea {
   flex-basis: calc(100% - 28px);
   height: var(--need-height, 84px);
   min-height: 84px;
@@ -1591,7 +1592,7 @@ input[type="search"]::-webkit-search-cancel-button:hover {
   overflow-y: auto;
 }
 
-.agent-field:focus-within .ask-button {
+.agent-field:is(:focus-within, :has(textarea:not(:placeholder-shown))) .ask-button {
   margin-left: auto;
 }
 

@@ -1003,7 +1003,9 @@ test("Find with your agent copies a prompt with the list and the need", async ({
   expect(prompt.trimEnd().endsWith("review my pull requests")).toBe(true);
 });
 
-test("the agent's box is a prompt box of a few lines while it has the focus", async ({ page }) => {
+test("the agent's box is a prompt box of a few lines while it has the focus or words", async ({
+  page,
+}) => {
   await open(page, "/?show=bundles");
   const need = page.locator("#need");
   const height = async () =>
@@ -1027,11 +1029,18 @@ test("the agent's box is a prompt box of a few lines while it has the focus", as
   expect(await height()).toBeGreaterThan(focused);
   expect(await need.evaluate((el) => el.scrollHeight > el.clientHeight)).toBe(true);
 
-  // A press on the button leaves the focus in the box, which so doesn't shrink under the pointer.
+  // Elsewhere, it stays a prompt box while it holds words.
+  await page.locator("#q").focus();
+  expect(await height()).toBeGreaterThan(focused);
+
+  // Empty, a press on the button leaves the focus in the box, which so doesn't shrink under the
+  // pointer.
+  await need.fill("");
   await page.locator(".ask-button").click();
   await expect(need).toBeFocused();
+  expect(await height()).toBe(focused);
 
-  // Elsewhere, one line again.
+  // Empty and elsewhere, one line again.
   await page.locator("#q").focus();
   expect(await height()).toBe(oneLine);
 });
