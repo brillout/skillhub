@@ -244,28 +244,39 @@ test("Rising & new keeps the settings on one line, and the list where it is", as
   expect(await top("#results")).toBe(list);
 });
 
-test.describe("on a laptop's screen, 1,280px wide", () => {
-  test.use({ viewport: { width: 1280, height: 800 } });
+/*
+ * Where the settings' line holds Show: on a 1,280px screen with Rising, the list's default, and on
+ * a 1,366px one with every preset. Show's thumbs, beside the Saved switch, took the room a 1,280px
+ * screen had for Rising & new and Top: see .settings-line in style.css.
+ */
+for (const [width, presets] of [
+  [1280, []],
+  [1366, ["rising-new", "top", "new"]],
+] as const)
+  test.describe(`on a laptop's screen, ${width.toLocaleString("en")}px wide`, () => {
+    test.use({ viewport: { width, height: 800 } });
 
-  test("the settings are on one line, with Rising & new and Top too", async ({ page }) => {
-    const top = async (selector: string) => (await page.locator(selector).boundingBox())?.y;
-    await open(page, "/");
-    // Show's first button is the one word, Both: at its full length, Show was on a second line.
-    await expect(page.locator('[data-show="all"]')).toHaveText("Both");
-    await expect(page.locator('[data-show="all"]')).toHaveAccessibleName(
-      "Both: skills and bundles",
-    );
-    expect(await top(".show-group")).toBe(await top(".preset-group"));
-    // Show's thumbs take no room of the line's: they're on Show's label's line.
-    expect(await top("#thumbs-filter")).toBe(await top("#show-label"));
+    test(`the settings are on one line, with ${["Rising", ...presets].join(", ")}`, async ({
+      page,
+    }) => {
+      const top = async (selector: string) => (await page.locator(selector).boundingBox())?.y;
+      await open(page, "/");
+      // Show's first button is the one word, Both: at its full length, Show was on a second line.
+      await expect(page.locator('[data-show="all"]')).toHaveText("Both");
+      await expect(page.locator('[data-show="all"]')).toHaveAccessibleName(
+        "Both: skills and bundles",
+      );
+      expect(await top(".show-group")).toBe(await top(".preset-group"));
+      // Show's thumbs are beside the Saved switch.
+      expect(await top("#thumbs-filter")).toBe(await top("#saved-switch"));
 
-    for (const id of ["rising-new", "top"]) {
-      await page.locator(`[data-preset="${id}"]`).click();
-      await settled(page);
-      expect(await top(".show-group"), id).toBe(await top(".preset-group"));
-    }
+      for (const id of presets) {
+        await page.locator(`[data-preset="${id}"]`).click();
+        await settled(page);
+        expect(await top(".show-group"), id).toBe(await top(".preset-group"));
+      }
+    });
   });
-});
 
 test.describe("on a tablet, 768px wide", () => {
   test.use({ viewport: { width: 768, height: 900 } });

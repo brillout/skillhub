@@ -424,10 +424,12 @@ body:has(.skills-view) #page-head {
  * tags' left edge to the cards' right edge. Presets' and Sort by's keep their width: a number
  * filter's pill gets longer as its range narrows the list, and were the tiles before it to give
  * way, the pill and the slider under it would move while a handle is dragged. Where the view is too
- * narrow for one line, Show goes onto a second: under about 1,200px, or 1,250px with Rising & new
- * and 1,240px with New, whose Age says its range, "≤ 3 months" and "≤ 1 month", which leaves a
- * 1,280px screen its one line; or on a wider one while several filters narrow the list, whose pills
- * get longer, even as Age's and Stars' stay short (see .range-word).
+ * narrow for one line, Show goes onto a second: under about 1,275px, or 1,325px with Rising & new,
+ * 1,320px with New, whose Age says its range, "≤ 3 months" and "≤ 1 month", and 1,310px with Top,
+ * which leaves a 1,280px screen its one line with Rising, the default, and a 1,366px one with every
+ * preset; or on a wider one while several filters narrow the list, whose pills get longer, even as
+ * Age's and Stars' stay short (see .range-word). Show's thumbs, beside the Saved switch, took some
+ * 80px of it: a 1,280px screen had its one line with every preset before.
  */
 .settings-line {
   display: flex;
@@ -529,49 +531,20 @@ body:has(.skills-view) #page-head {
   justify-content: center;
 }
 
-/*
- * Show: its label over the Saved switch, and its thumbs, which show only what you gave one, at the
- * end of the label's line, over Both, Skills and Bundles, as Sort by's order is on its. Beside the
- * Saved switch they took the room a 1,280px screen has for Show on the line of every setting.
- */
-.show-group {
-  grid-template-columns: auto auto;
-  grid-template-areas: "label thumbs" "saved show";
-  justify-content: start;
-  align-items: center;
-}
-
 .show-row {
-  display: contents;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.show-group h2 {
-  grid-area: label;
-}
-
-.saved-switch {
-  grid-area: saved;
-}
-
-#show {
-  grid-area: show;
-}
-
-/* As tall and as round as Sort by's order. */
+/* Show's thumbs, which show only what you gave one, beside the Saved switch: as tall as every
+   control of the settings' line, each half square. */
 #thumbs-filter {
-  grid-area: thumbs;
-  justify-self: end;
-  height: 22px;
-  border-radius: 4px;
+  height: 36px;
 }
 
 #thumbs-filter button {
-  padding: 0 7px;
-  border-radius: 4px 0 0 4px;
-}
-
-#thumbs-filter button + button {
-  border-radius: 0 4px 4px 0;
+  padding: 0 10px;
 }
 
 /*
@@ -3879,35 +3852,15 @@ input[type="search"]::-webkit-search-cancel-button:hover {
     width: auto;
   }
 
-  /* Show's thumbs beside the Saved switch, in view with it, as tall as it; Show's label and
-     buttons, behind the Filters button, over and under them. */
-  .show-group {
+  /* Show's thumbs beside the Saved switch, in view with it; Show's buttons under them. */
+  .show-row {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas: "saved thumbs";
     gap: 8px;
   }
 
-  .settings-line.shown .show-group {
-    grid-template-areas: "label label" "saved thumbs" "show show";
-  }
-
-  .show-group h2 {
-    margin-bottom: 0;
-  }
-
-  #thumbs-filter {
-    height: 36px;
-    border-radius: 6px;
-  }
-
-  #thumbs-filter button {
-    padding: 0 10px;
-    border-radius: 6px 0 0 6px;
-  }
-
-  #thumbs-filter button + button {
-    border-radius: 0 6px 6px 0;
+  .show-row > #show {
+    grid-column: 1 / -1;
   }
 
   /* The presets, the Filters button, the Saved switch and Show's thumbs stay in view; the button
