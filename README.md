@@ -6,4 +6,4 @@ Browse skills: https://skillhub.build
 
 ## For maintainers
 
-Agent skill to review skills: [review-skills](.agents/skills/review-skills/SKILL.md)
+Agent skill to review skills: [`review-skills`](.agents/skills/review-skills/SKILL.md)
