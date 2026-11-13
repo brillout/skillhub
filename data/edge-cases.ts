@@ -67,6 +67,20 @@ const SKILL_CASES = {
   "unknown-first-seen": (s) => {
     s["skills.sh"].firstSeen = null;
   },
+  /**
+   * A whitelisted author's skill that skills.sh doesn't list yet, as until someone installs it: it
+   * has no numbers there, nor a page.
+   */
+  unlisted: (s) => {
+    const sh = s["skills.sh"];
+    s["skills.sh"] = {
+      ...sh,
+      installs: null,
+      weeklyInstalls: null,
+      firstSeen: null,
+      unlisted: true,
+    };
+  },
   /** As when GitHub never answered for its repo. */
   "unknown-stars": (_s, repo) => {
     repo.stars = null;

@@ -256,14 +256,31 @@ class Browser {
   /** Gives the browser a cookie, such as another browser's, or one the Worker never set. */
   setCookie = (name: string, value: string, path = "/") => this.#cookies.set(name, { value, path });
 
-  /** What /api/me says: who's logged in, and what they saved. */
-  me = async () => (await this.get("/api/me")).json() as Promise<Me>;
+  /** What /api/me says: who's logged in, what they saved and their thumbs; when, `times` says. */
+  me = async (): Promise<Me> => {
+    const { savedAt, reactedAt, ...me } = (await (await this.get("/api/me")).json()) as Me & Times;
+    return me;
+  };
+  /** When each was saved and given its thumb, by key, as /api/me says. */
+  times = async (): Promise<Times> => {
+    const { savedAt, reactedAt } = (await (await this.get("/api/me")).json()) as Times;
+    return { savedAt, reactedAt };
+  };
   save = (key: string, saved = true) => this.post("/api/saves", { key, saved });
+  react = (key: string, reaction: "up" | "down" | null = "up") =>
+    this.post("/api/reactions", { key, reaction });
 }
 interface Me {
   user: { login: string; avatar: string } | null;
   saved: string[];
+  reactions: Record<string, string>;
 }
+interface Times {
+  savedAt: Record<string, number>;
+  reactedAt: Record<string, number>;
+}
+/** What /api/me says to a browser nobody's logged in in, but `times`. */
+const NOBODY: Me = { user: null, saved: [], reactions: {} };
 
 /** The cookies a response sets, by name. */
 function setCookies(res: { headers: { getSetCookie(): string[] } }) {
@@ -286,9 +303,13 @@ function setCookies(res: { headers: { getSetCookie(): string[] } }) {
  */
 async function logIn(
   browser: Browser,
-  { as = OCTOCAT, from = "/", save }: { as?: Account; from?: string; save?: string } = {},
+  {
+    as = OCTOCAT,
+    from = "/",
+    ...then
+  }: { as?: Account; from?: string; save?: string; react?: string; reaction?: string } = {},
 ) {
-  const query = new URLSearchParams({ return: from, ...(save ? { save } : {}) });
+  const query = new URLSearchParams({ return: from, ...then });
   const toGitHub = await browser.get(`/api/auth/login?${query}`);
   return browser.get(github.approve(toGitHub.headers.get("Location"), as));
 }
@@ -322,7 +343,8 @@ before(async () => {
 after(() => worker.mf.dispose());
 beforeEach(async () => {
   github.reset();
-  for (const table of ["saves", "sessions", "users"]) await db.exec(`DELETE FROM ${table}`);
+  for (const table of ["saves", "reactions", "sessions", "users"])
+    await db.exec(`DELETE FROM ${table}`);
 });
 afterEach(() => assert.deepEqual(logged.splice(0), [], "the Worker logged an error"));
 
@@ -330,7 +352,7 @@ describe("who's logged in", () => {
   test("nobody, in a browser that never logged in", async () => {
     const res = await new Browser(worker).get("/api/me");
     assert.equal(res.status, 200);
-    assert.deepEqual(await res.json(), { user: null, saved: [] });
+    assert.deepEqual(await res.json(), { ...NOBODY, savedAt: {}, reactedAt: {} });
     // Who's logged in changes: no cache may keep an answer.
     assert.equal(res.headers.get("Cache-Control"), "no-store");
   });
@@ -338,7 +360,7 @@ describe("who's logged in", () => {
   test("nobody, with a session the Worker never started", async () => {
     const browser = new Browser(worker);
     browser.setCookie("session", "made-up");
-    assert.deepEqual(await browser.me(), { user: null, saved: [] });
+    assert.deepEqual(await browser.me(), NOBODY);
   });
 
   test("nobody, once the session is past its year", async () => {
@@ -349,7 +371,7 @@ describe("who's logged in", () => {
       .prepare("UPDATE sessions SET expires_at = ?")
       .bind(Date.now() - 1)
       .run();
-    assert.deepEqual(await browser.me(), { user: null, saved: [] });
+    assert.deepEqual(await browser.me(), NOBODY);
   });
 
   test("still the person, beside a cookie that isn't the Worker's and doesn't decode", async () => {
@@ -377,6 +399,8 @@ describe("logging in with GitHub", () => {
       state: to.searchParams.get("state"),
       back: "/about/",
       save: null,
+      react: null,
+      reaction: null,
     });
     // Only the callback gets it, no script can read it, and it doesn't outlive the login.
     assert.deepEqual(login.attributes, [
@@ -426,6 +450,7 @@ describe("logging in with GitHub", () => {
     assert.deepEqual(await browser.me(), {
       user: { login: "octocat", avatar: OCTOCAT.avatar_url },
       saved: [],
+      reactions: {},
     });
   });
 
@@ -473,12 +498,34 @@ describe("logging in with GitHub", () => {
     assert.deepEqual((await browser.me()).saved, [BUNDLE]);
   });
 
+  test("the thumb that asked to log in is given", async () => {
+    const browser = new Browser(worker);
+    const res = await logIn(browser, { from: "/?q=pdf", react: SKILL, reaction: "down" });
+    assert.equal(res.headers.get("Location"), "/?q=pdf");
+    assert.deepEqual((await browser.me()).reactions, { [SKILL]: "down" });
+  });
+
+  test("a thumb that isn't one, or for no skill's or bundle's key, is left out, and the login goes on", async () => {
+    for (const then of [
+      { react: SKILL, reaction: "sideways" },
+      { react: SKILL },
+      { react: "skill:<script>", reaction: "up" },
+      { reaction: "up" },
+    ]) {
+      const browser = new Browser(worker);
+      await logIn(browser, then);
+      assert.equal((await browser.me()).user?.login, "octocat", JSON.stringify(then));
+    }
+    assert.equal(await count("reactions"), 0);
+  });
+
   test("a save that's no skill's or bundle's key is left out, and the login goes on", async () => {
     const browser = new Browser(worker);
     await logIn(browser, { save: "skill:<script>" });
     assert.deepEqual(await browser.me(), {
       user: { login: "octocat", avatar: OCTOCAT.avatar_url },
       saved: [],
+      reactions: {},
     });
   });
 
@@ -494,6 +541,7 @@ describe("logging in with GitHub", () => {
     const renamed = {
       user: { login: "octocat-renamed", avatar: "https://a.test/new" },
       saved: [SKILL],
+      reactions: {},
     };
     assert.deepEqual(await phone.me(), renamed);
     // The first browser stays logged in, as the same person.
@@ -513,6 +561,7 @@ describe("logging in with GitHub", () => {
     assert.deepEqual(await hubot.me(), {
       user: { login: "hubot", avatar: HUBOT.avatar_url },
       saved: [BUNDLE],
+      reactions: {},
     });
   });
 
@@ -552,7 +601,7 @@ describe("a login that doesn't go through leaves the person logged out, on their
     const cookies = setCookies(res);
     assert.deepEqual(Object.keys(cookies), ["login"]);
     assert.ok(cookies.login.attributes.includes("Max-Age=0"));
-    assert.deepEqual(await browser.me(), { user: null, saved: [] });
+    assert.deepEqual(await browser.me(), NOBODY);
     assert.equal(await count("users"), 0);
     assert.equal(await count("sessions"), 0);
   }
@@ -836,6 +885,154 @@ describe("saving", () => {
   });
 });
 
+describe("thumbs up and down", () => {
+  let browser: Browser;
+  beforeEach(async () => {
+    browser = new Browser(worker);
+    await logIn(browser);
+  });
+
+  test("a thumb for a skill and one for a bundle, then neither", async () => {
+    for (const [key, reaction] of [
+      [SKILL, "up"],
+      [BUNDLE, "down"],
+    ] as const) {
+      const res = await browser.react(key, reaction);
+      assert.equal(res.status, 200);
+      assert.deepEqual(await res.json(), { ok: true });
+      assert.equal(res.headers.get("Cache-Control"), "no-store");
+    }
+    assert.deepEqual((await browser.me()).reactions, { [SKILL]: "up", [BUNDLE]: "down" });
+    assert.equal((await browser.react(SKILL, null)).status, 200);
+    assert.deepEqual((await browser.me()).reactions, { [BUNDLE]: "down" });
+    assert.equal((await browser.react(BUNDLE, null)).status, 200);
+    assert.deepEqual((await browser.me()).reactions, {});
+  });
+
+  test("say when each was given, as saves do", async () => {
+    const before = Date.now();
+    await browser.save(SKILL);
+    await browser.react(BUNDLE, "up");
+    const first = await browser.times();
+    assert.deepEqual(Object.keys(first.savedAt), [SKILL]);
+    assert.deepEqual(Object.keys(first.reactedAt), [BUNDLE]);
+    for (const at of [first.savedAt[SKILL], first.reactedAt[BUNDLE]])
+      assert.ok(at >= before && at <= Date.now(), String(at));
+
+    // Turned over, a thumb is given anew; saved again, a save keeps its time.
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    await browser.react(BUNDLE, "down");
+    await browser.save(SKILL);
+    const then = await browser.times();
+    assert.ok(then.reactedAt[BUNDLE] > first.reactedAt[BUNDLE]);
+    assert.equal(then.savedAt[SKILL], first.savedAt[SKILL]);
+
+    // Taken back, neither has one.
+    await browser.react(BUNDLE, null);
+    await browser.save(SKILL, false);
+    assert.deepEqual(await browser.times(), { savedAt: {}, reactedAt: {} });
+  });
+
+  test("the other thumb replaces the first; the same one twice is one", async () => {
+    await browser.react(SKILL, "up");
+    await browser.react(SKILL, "up");
+    assert.deepEqual((await browser.me()).reactions, { [SKILL]: "up" });
+    await browser.react(SKILL, "down");
+    assert.deepEqual((await browser.me()).reactions, { [SKILL]: "down" });
+    assert.equal(await count("reactions"), 1);
+    // Taking back what isn't given is fine.
+    assert.equal((await browser.react(BUNDLE, null)).status, 200);
+  });
+
+  test("are apart from saves, and a skill and a bundle of one id have one each", async () => {
+    await browser.save(SKILL);
+    await browser.react("skill:obra/superpowers", "up");
+    await browser.react("bundle:obra/superpowers", "down");
+    assert.deepEqual(await browser.me(), {
+      user: { login: "octocat", avatar: OCTOCAT.avatar_url },
+      saved: [SKILL],
+      reactions: { "skill:obra/superpowers": "up", "bundle:obra/superpowers": "down" },
+    });
+    await browser.save(SKILL, false);
+    assert.equal(await count("reactions"), 2);
+  });
+
+  test("two people each have their own", async () => {
+    const hubot = new Browser(worker);
+    await logIn(hubot, { as: HUBOT });
+    await browser.react(SKILL, "up");
+    await hubot.react(SKILL, "down");
+    assert.deepEqual((await browser.me()).reactions, { [SKILL]: "up" });
+    assert.deepEqual((await hubot.me()).reactions, { [SKILL]: "down" });
+  });
+
+  const bad: [what: string, body: unknown][] = [
+    ["a kind the site doesn't have", { key: "repo:vercel-labs/skills", reaction: "up" }],
+    ["an id with markup", { key: "skill:<script>alert(1)</script>", reaction: "up" }],
+    ["a key longer than any skill's", { key: `skill:${"a".repeat(300)}`, reaction: "up" }],
+    ["no key", { reaction: "up" }],
+    ["a thumb that isn't one", { key: SKILL, reaction: "sideways" }],
+    ["a thumb in capitals", { key: SKILL, reaction: "UP" }],
+    ["a thumb that isn't text", { key: SKILL, reaction: true }],
+    ["no thumb", { key: SKILL }],
+    ["a list", [SKILL]],
+    ["nothing", null],
+  ];
+  for (const [what, body] of bad)
+    test(`refuses ${what}`, async () => {
+      const res = await browser.post("/api/reactions", body);
+      assert.equal(res.status, 400);
+      assert.deepEqual(await res.json(), { error: "Bad request" });
+      assert.equal(await count("reactions"), 0);
+    });
+
+  test("refuses someone who isn't logged in", async () => {
+    const res = await new Browser(worker).react(SKILL);
+    assert.equal(res.status, 401);
+    assert.deepEqual(await res.json(), { error: "Not logged in" });
+    assert.equal(await count("reactions"), 0);
+  });
+
+  test("refuses another site, which could otherwise give a thumb on the person's behalf", async () => {
+    const fromElsewhere: Record<string, string>[] = [
+      { "Sec-Fetch-Site": "cross-site" },
+      { "Sec-Fetch-Site": "", "Content-Type": "text/plain" },
+    ];
+    for (const headers of fromElsewhere) {
+      const res = await browser.post("/api/reactions", { key: SKILL, reaction: "up" }, headers);
+      assert.equal(res.status, 403, JSON.stringify(headers));
+    }
+    assert.equal(await count("reactions"), 0);
+  });
+
+  test("stops at a thousand, and says so; turning a thumb over still works there", async () => {
+    await db
+      .prepare(
+        `WITH RECURSIVE n (i) AS (SELECT 1 UNION ALL SELECT i + 1 FROM n WHERE i < 1000)
+         INSERT INTO reactions SELECT ?, 'skill', 'seed/skill-' || i, 'up', i FROM n`,
+      )
+      .bind(OCTOCAT.id)
+      .run();
+    const res = await browser.react(SKILL);
+    assert.equal(res.status, 409);
+    assert.deepEqual(await res.json(), {
+      error: "You can give a thumbs up or down to at most 1,000 skills and bundles.",
+    });
+    assert.equal(await count("reactions"), 1000);
+    // A thumb given already turns to the other one, and takes no more room.
+    assert.equal((await browser.react("skill:seed/skill-7", "down")).status, 200);
+    assert.equal((await browser.me()).reactions["skill:seed/skill-7"], "down");
+    // Room made is room to give one.
+    assert.equal((await browser.react("skill:seed/skill-7", null)).status, 200);
+    assert.equal((await browser.react(SKILL)).status, 200);
+    assert.equal(await count("reactions"), 1000);
+    // Someone else's don't count.
+    const hubot = new Browser(worker);
+    await logIn(hubot, { as: HUBOT });
+    assert.equal((await hubot.react(SKILL)).status, 200);
+  });
+});
+
 describe("logging out", () => {
   test("ends the session, in this browser only", async () => {
     const laptop = new Browser(worker);
@@ -849,11 +1046,11 @@ describe("logging out", () => {
     assert.equal(res.status, 204);
     assert.deepEqual(setCookies(res).session.attributes.slice(0, 2), ["Path=/", "Max-Age=0"]);
     assert.equal(laptop.cookie("session"), undefined);
-    assert.deepEqual(await laptop.me(), { user: null, saved: [] });
+    assert.deepEqual(await laptop.me(), NOBODY);
     // The session is gone, not just its cookie: whoever kept the token gets nowhere with it.
     const thief = new Browser(worker);
     thief.setCookie("session", token);
-    assert.deepEqual(await thief.me(), { user: null, saved: [] });
+    assert.deepEqual(await thief.me(), NOBODY);
     // The other browser stays logged in, and the saves stay theirs.
     assert.deepEqual((await phone.me()).saved, [SKILL]);
   });
@@ -878,6 +1075,7 @@ describe("everything else", () => {
       ["GET", "/api/"],
       ["GET", "/api/nothing"],
       ["GET", "/api/saves"],
+      ["GET", "/api/reactions"],
       ["POST", "/api/me"],
       ["GET", "/api/auth/logout"],
       ["POST", "/api/auth/login"],
@@ -930,6 +1128,7 @@ describe("local dev's test login", () => {
     assert.deepEqual(await browser.me(), {
       user: { login: "test-user", avatar: "/gem.svg" },
       saved: [SKILL],
+      reactions: {},
     });
     assert.equal(github.asked.length, 0);
   });

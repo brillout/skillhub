@@ -4,7 +4,8 @@
  * MINIMUMS.installs, and every skill of the WHITELISTED_AUTHORS.
  *
  * It reads the top 600, which skills.sh embeds in its home page (its robots.txt keeps scripts off
- * its API), skills.sh's sitemap, and the whitelisted authors' pages on skills.sh, then:
+ * its API), skills.sh's sitemap, and the whitelisted authors' pages on skills.sh and repos on
+ * GitHub, then:
  * - gives every approved skill (skills.jsonc) its installs and weekly installs: from the top 600,
  *   or for a skill outside it, from its own skills.sh page, which also gives a missing first-seen
  *   date;
@@ -15,8 +16,10 @@
  * - reads the page of every other skill of the sitemap, in its order, until UNDER_IN_A_ROW skills
  *   in a row are under MINIMUMS.installs, and records those that reach it the same way, or
  *   refreshes them once recorded;
- * - reads the page of every skill skills.sh lists for a whitelisted author, and records it whatever
- *   its installs: it qualifies whatever the minimums.
+ * - reads the page of every skill skills.sh lists for a whitelisted author, or that has a SKILL.md
+ *   in one of their GitHub repos (when GITHUB_TOKEN is set), and records it whatever its installs:
+ *   it qualifies whatever the minimums. skills.sh lists a skill only once someone installs it, so
+ *   one it doesn't list yet is recorded with no numbers, as `unlisted`.
  *
  * A skill outside all three keeps its state and its last numbers. An agent approves or disqualifies
  * the qualified skills with the add-skill skill.
@@ -36,8 +39,9 @@ import {
 } from "./data.ts";
 import { MINIMUMS, UNDER_IN_A_ROW, WHITELISTED_AUTHORS } from "../data/params.ts";
 import { get, pool } from "./fetch.ts";
-import type { Crawled } from "../data/types.ts";
+import type { Crawled, SkillsSh } from "../data/types.ts";
 import { bundleRepo, github } from "../website/github.ts";
+import { nameInSkillMd } from "../website/markdown.ts";
 
 const today = new Date().toISOString().slice(0, 10);
 const errors: string[] = [];
@@ -150,9 +154,13 @@ async function readSkillPage(url: string): Promise<Page | null> {
   // A stat is a label and its value: <span>Installs</span></div><div …>26.5K</div>.
   const stat = (label: string) =>
     new RegExp(`>${label}</span></div><div[^>]*>([^<]+)</div>`).exec(html)?.[1].trim();
-  // Every skill's page has its install command: one without it is a page that changed.
-  if (!/"command":"npx skills add /.test(payloadOf(html)))
+  // Every skill's page has its install command: one without it is a page that changed, or the page
+  // skills.sh answers with, as HTTP 200, for a skill it doesn't list, which it keeps out of search
+  // engines ("polish isn't available in this repository").
+  if (!/"command":"npx skills add /.test(payloadOf(html))) {
+    if (/<meta name="robots" content="noindex/.test(html)) return null;
     throw new Error(`${url}: no install command in the page; did the page change?`);
+  }
   const weekly = /aria-label="Weekly installs: ([^"]+)"/.exec(html)?.[1];
   return {
     installs: count(stat("Installs")),
@@ -197,6 +205,81 @@ async function authorSkills(owner: string): Promise<string[]> {
   return skills;
 }
 
+/** What GitHub's API answers at `path`, with the token. */
+async function githubApi<T>(path: string, token: string): Promise<T | null> {
+  const headers = { authorization: `Bearer ${token}`, accept: "application/vnd.github+json" };
+  const json = await get(`https://api.github.com/${path}`, headers);
+  return json === null ? null : (JSON.parse(json) as T);
+}
+
+/** A skill's name, as skills.sh ends its page with it: the Agent Skills spec has it lowercase. */
+const SKILL_NAME = /^[a-z0-9][a-z0-9._-]*$/i;
+
+/**
+ * Every skill in a GitHub owner's repos, as the skills.sh page it has or will have once someone
+ * installs it: https://skills.sh/owner/repo/name, with the `name` of its SKILL.md's frontmatter.
+ * That's anywhere in the repo, as the skills CLI looks, but in node_modules. Forks and archived
+ * repos are left out: their skills are someone else's, or retired. So are the copies of skills
+ * installed from other repos, which the skills CLI notes in the repo's skills-lock.json. One API
+ * request per repo, for its tree; the SKILL.md files come from raw.githubusercontent.com.
+ */
+async function repoSkills(owner: string, token: string): Promise<string[]> {
+  interface GitHubRepo {
+    full_name: string;
+    default_branch: string;
+    fork: boolean;
+    archived: boolean;
+  }
+  const repos: GitHubRepo[] = [];
+  for (let page = 1; ; page++) {
+    const batch = await githubApi<GitHubRepo[]>(
+      `users/${owner}/repos?type=owner&per_page=100&page=${page}`,
+      token,
+    );
+    if (batch === null) throw new Error(`no GitHub user ${owner}`);
+    repos.push(...batch.filter((r) => !r.fork && !r.archived));
+    if (batch.length < 100) break;
+  }
+  const skills: string[] = [];
+  await pool(repos, 4, async ({ full_name: repo, default_branch: branch }) => {
+    const raw = (path: string) =>
+      get(
+        `https://raw.githubusercontent.com/${repo}/${encodeURIComponent(branch)}/${encodeURI(path)}`,
+      );
+    let tree;
+    try {
+      tree = await githubApi<{ tree: { path: string; type: string }[]; truncated: boolean }>(
+        `repos/${repo}/git/trees/${encodeURIComponent(branch)}?recursive=1`,
+        token,
+      );
+    } catch (error) {
+      if (/HTTP 409$/.test(message(error))) return; // An empty repo.
+      throw error;
+    }
+    if (!tree) throw new Error(`${repo}: no tree at ${branch}`);
+    if (tree.truncated) throw new Error(`${repo}: its tree is too big for one request`);
+    const blobs = tree.tree.filter((e) => e.type === "blob").map((e) => e.path);
+    const installed = new Set<string>();
+    if (blobs.includes("skills-lock.json")) {
+      const lock = JSON.parse((await raw("skills-lock.json")) ?? "{}") as {
+        skills?: Record<string, { source?: string }>;
+      };
+      for (const [name, { source }] of Object.entries(lock.skills ?? {}))
+        if (source?.toLowerCase() !== repo.toLowerCase()) installed.add(name.toLowerCase());
+    }
+    const files = blobs.filter(
+      (path) => /(^|\/)SKILL\.md$/.test(path) && !/(^|\/)node_modules\//.test(path),
+    );
+    for (const path of files) {
+      const name = nameInSkillMd((await raw(path)) ?? "");
+      if (!name || installed.has(name.toLowerCase())) continue;
+      if (SKILL_NAME.test(name)) skills.push(`https://skills.sh/${repo}/${name}`);
+      else console.log(`  skipped ${repo}/${path}: its name, "${name}", isn't one skills.sh takes`);
+    }
+  });
+  return skills;
+}
+
 /** The skill pages of skills.sh's sitemap, as https://skills.sh/owner/repo/skill, in its order. */
 async function sitemapSkills(): Promise<string[]> {
   const index = (await get("https://www.skills.sh/sitemap.xml")) ?? "";
@@ -214,6 +297,18 @@ async function sitemapSkills(): Promise<string[]> {
   return urls;
 }
 
+/**
+ * Give a skill's listing what its own skills.sh page says, or no numbers, as `unlisted`, when
+ * skills.sh doesn't list it. A first-seen date never changes, once known.
+ */
+function updateListing(sh: SkillsSh, page: Page | null) {
+  sh.installs = page?.installs ?? null;
+  sh.weeklyInstalls = page?.weeklyInstalls ?? null;
+  sh.firstSeen ??= page?.firstSeen ?? null;
+  if (page) delete sh.unlisted;
+  else sh.unlisted = true;
+}
+
 // ------------------------------------------------------------------- approved skills
 
 const data = readData();
@@ -222,7 +317,8 @@ const board = await topSkills();
 const onBoard = new Map(board.map((e) => [pageKey(pageOf(e)), e]));
 
 // A first-seen date never changes, so a skill's page is only read when it's outside the top 600
-// or has none.
+// or has none. A whitelisted author's skill is listed whether skills.sh lists it or not, as with
+// one it doesn't list yet; any other that skills.sh drops is an error.
 let fromPages = 0;
 await pool(data.skills, 4, async (skill) => {
   const sh = skill["skills.sh"];
@@ -230,6 +326,7 @@ await pool(data.skills, 4, async (skill) => {
   if (entry) {
     sh.installs = entry.installs;
     sh.weeklyInstalls = entry.weeklyInstalls;
+    delete sh.unlisted;
     if (sh.firstSeen) return;
   }
   const page = await skillPage(sh.url).catch((error: unknown) => {
@@ -237,18 +334,11 @@ await pool(data.skills, 4, async (skill) => {
     return undefined;
   });
   if (page === undefined) return;
-  if (page === null) {
+  if (page === null && !whitelisted(github(skill).repo))
     errors.push(`${skill.id}: ${sh.url} is gone from skills.sh`);
-    sh.installs = null;
-    sh.weeklyInstalls = null;
-    return;
-  }
-  fromPages++;
-  if (!entry) {
-    sh.installs = page.installs;
-    sh.weeklyInstalls = page.weeklyInstalls;
-  }
-  sh.firstSeen ??= page.firstSeen;
+  if (page) fromPages++;
+  if (entry) sh.firstSeen ??= page?.firstSeen ?? null;
+  else updateListing(sh, page);
 });
 data.asOf.installs = today;
 
@@ -313,9 +403,10 @@ let visited = 0;
 
 /**
  * Read a skill of the sitemap or of a whitelisted author: whether it reaches MINIMUMS.installs, or
- * null when unknown. It's recorded when it does, or when its author is whitelisted.
+ * null when unknown. It's recorded when it does, or when its author is whitelisted. One found in a
+ * whitelisted author's repo (`inRepo`) is recorded even when skills.sh doesn't list it.
  */
-async function visit(url: string, failed = unread): Promise<boolean | null> {
+async function visit(url: string, failed = unread, inRepo = false): Promise<boolean | null> {
   const key = pageKey(url);
   if (onBoard.has(key) || approved.has(key)) return true;
   if (disqualified.has(key)) return null;
@@ -323,8 +414,8 @@ async function visit(url: string, failed = unread): Promise<boolean | null> {
     failed.push(`${url}: ${message(error)}`);
     return undefined;
   });
-  if (!page) return null;
-  const reaches = (page.installs ?? 0) >= MINIMUMS.installs;
+  if (page === undefined || (page === null && !inRepo)) return null;
+  const reaches = (page?.installs ?? 0) >= MINIMUMS.installs;
   const [owner, repo, name] = url.replace("https://skills.sh/", "").split("/");
   let c = recorded.get(key);
   if (!c) {
@@ -332,19 +423,18 @@ async function visit(url: string, failed = unread): Promise<boolean | null> {
     c = {
       name,
       repo: `${owner}/${repo}`,
-      official: page.official,
+      official: false,
       stars: null,
       seen: today,
-      "skills.sh": { url, installs: null, weeklyInstalls: null, firstSeen: page.firstSeen },
+      "skills.sh": { url, installs: null, weeklyInstalls: null, firstSeen: null },
     };
     recorded.set(key, c);
-    added.push(`recorded ${url}`);
+    added.push(`recorded ${url}${page ? "" : ", which skills.sh doesn't list yet"}`);
   }
   visited++;
-  c.official = page.official;
+  c.official = page?.official ?? false;
   c.seen = today;
-  c["skills.sh"].installs = page.installs;
-  c["skills.sh"].weeklyInstalls = page.weeklyInstalls;
+  updateListing(c["skills.sh"], page);
   return reaches;
 }
 
@@ -366,26 +456,35 @@ const fromSitemap = visited;
 
 // ------------------------------------------------------------------- whitelisted authors
 
-// Every skill a whitelisted author has on skills.sh lands in crawl.jsonc too, whatever its
-// installs, and qualifies (see passes()). They're a few dozen pages, so each one that doesn't read
+// Every skill a whitelisted author has lands in crawl.jsonc too, whatever its installs, and
+// qualifies (see passes()): those skills.sh lists, and those in their GitHub repos, which skills.sh
+// lists only once someone installs them. They're a few dozen pages, so each one that doesn't read
 // is an error, as for the top 600.
-const authorUrls: string[] = [];
+const token = process.env.GITHUB_TOKEN;
+/** Their skills' pages, by pageKey: as skills.sh spells them, or as their repos do. */
+const authorUrls = new Map<string, string>();
+/** The pageKeys of their skills found in their repos. */
+const inRepos = new Set<string>();
 for (const owner of WHITELISTED_AUTHORS) {
-  const urls = await authorSkills(owner).catch((error: unknown) => {
+  const failed = (error: unknown) => {
     errors.push(`${owner}: ${message(error)}`);
     return [];
-  });
-  authorUrls.push(...urls);
+  };
+  for (const url of await authorSkills(owner).catch(failed)) authorUrls.set(pageKey(url), url);
+  if (!token) continue;
+  for (const url of await repoSkills(owner, token).catch(failed)) {
+    if (!authorUrls.has(pageKey(url))) authorUrls.set(pageKey(url), url);
+    inRepos.add(pageKey(url));
+  }
 }
-await pool(authorUrls, 4, async (url) => {
-  await visit(url, errors);
+await pool([...authorUrls.values()], 4, async (url) => {
+  await visit(url, errors, inRepos.has(pageKey(url)));
 });
 
 // ------------------------------------------------------------------- stars
 
 // For the repos of approved skills and bundles, and of the qualified and unqualified skills the
 // crawl just saw, in the top 600, down the sitemap or by a whitelisted author.
-const token = process.env.GITHUB_TOKEN;
 const seenToday = [...recorded.values()].filter((c) => c.seen === today);
 const repos = new Set([
   ...data.skills.map((s) => github(s).repo),
@@ -411,7 +510,10 @@ if (token) {
   for (const repo of data.repos) repo.stars = stars.get(repo.id) ?? repo.stars;
   // The repos that failed keep their stars for a day: the run fails, which says so.
   if (stars.size) data.asOf.stars = today;
-} else console.log("GITHUB_TOKEN isn't set, so the stars weren't refreshed.");
+} else
+  console.log(
+    `GITHUB_TOKEN isn't set, so the stars weren't refreshed, nor the repos of ${WHITELISTED_AUTHORS.join(", ")} read.`,
+  );
 for (const c of seenToday) c.stars = stars.get(c.repo) ?? c.stars;
 
 // ------------------------------------------------------------------- states
@@ -434,7 +536,7 @@ writeData(data);
 writeCrawl(crawl);
 
 console.log(
-  `Crawled the skills.sh top ${board.length}, ${fromSitemap} skills further down its sitemap, whose first ${depth} it read${unread.length ? ` (${unread.length} pages didn't)` : ""}, and the ${authorUrls.length} skills of ${WHITELISTED_AUTHORS.join(", ")}: refreshed ${data.skills.length} approved skills (${fromPages} from their own page)${stars.size ? ` and the stars of ${stars.size} repos` : ""}. crawl.jsonc: ${crawl.qualified.length} qualified (${newlyQualified.length} new), ${crawl.unqualified.length} unqualified, ${crawl.disqualified.length} disqualified.`,
+  `Crawled the skills.sh top ${board.length}, ${fromSitemap} skills further down its sitemap, whose first ${depth} it read${unread.length ? ` (${unread.length} pages didn't)` : ""}, and the ${authorUrls.size} skills of ${WHITELISTED_AUTHORS.join(", ")} on skills.sh and in their repos (${inRepos.size}): refreshed ${data.skills.length} approved skills (${fromPages} from their own page)${stars.size ? ` and the stars of ${stars.size} repos` : ""}. crawl.jsonc: ${crawl.qualified.length} qualified (${newlyQualified.length} new), ${crawl.unqualified.length} unqualified, ${crawl.disqualified.length} disqualified.`,
 );
 for (const line of added) console.log(`  ${line}`);
 for (const c of newlyQualified) console.log(`  qualified ${c["skills.sh"].url}`);

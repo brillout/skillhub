@@ -337,7 +337,7 @@
         },
         "skills.sh": {
           "$ref": "#/definitions/SkillsSh",
-          "description": "Its listing on skills.sh.\n\nSource: its crawl.jsonc entry, which the agent that approves the skill copies; scripts/crawl.ts then keeps its numbers current."
+          "description": "Its listing on skills.sh, or for a whitelisted author's skill skills.sh doesn't list yet, the listing it will have, `unlisted`.\n\nSource: its crawl.jsonc entry, which the agent that approves the skill copies; scripts/crawl.ts then keeps its numbers current."
         },
         "skillMd": {
           "$ref": "#/definitions/SkillMd",
@@ -350,18 +350,23 @@
       },
       "required": ["id", "name", "skills.sh", "agentReview"],
       "additionalProperties": false,
-      "description": "A skill on GitHub that skills.sh lists. SkillHub lists no other skills."
+      "description": "A skill on GitHub that skills.sh lists, or a whitelisted author's (`WHITELISTED_AUTHORS` of ./params.ts), which skills.sh may not list yet. SkillHub lists no other skills."
     },
     "SkillsSh": {
       "type": "object",
       "properties": {
         "url": {
           "type": "string",
-          "description": "The skill's page on skills.sh.\n\nSource: scripts/crawl.ts, when it records the skill: `pageOf()` builds it from the `source` and `skillId` of its leaderboard entry, `sitemapSkills()` takes it from skills.sh's sitemap, or `authorSkills()` from a whitelisted author's repo pages there, such as https://www.skills.sh/mattpocock/skills."
+          "description": "The skill's page on skills.sh, or for one it doesn't list yet (`unlisted`), the page it will have once someone installs the skill: https://skills.sh/<repo>/<name>.\n\nSource: scripts/crawl.ts, when it records the skill: `pageOf()` builds it from the `source` and `skillId` of its leaderboard entry, `sitemapSkills()` takes it from skills.sh's sitemap, `authorSkills()` from a whitelisted author's repo pages there, such as https://www.skills.sh/mattpocock/skills, or `repoSkills()` builds it from a SKILL.md in a whitelisted author's GitHub repo: the repo and the `name` of its frontmatter."
+        },
+        "unlisted": {
+          "type": "boolean",
+          "const": true,
+          "description": "Set while skills.sh doesn't list the skill: its `url` is a page skills.sh doesn't have, and its numbers are null. skills.sh lists a skill once someone installs it with the skills CLI, so a whitelisted author's new skill starts unlisted. Left out once skills.sh lists it.\n\nSource: scripts/crawl.ts, daily while it sees the skill: when skills.sh answers the skill's page with its \"isn't available\" page, which it keeps out of search engines (`noindex`)."
         },
         "installs": {
           "type": ["number", "null"],
-          "description": "All-time installs, or null when unknown: exact for a skill in the skills.sh all-time top 600, rounded to three digits (such as 26.5K) for a skill outside it. A skill of crawl.jsonc the crawl no longer sees keeps its last number.\n\nSource: scraped from skills.sh's HTML, with no skills.sh API, by scripts/crawl.ts, which .github/workflows/crawl.yml runs daily. For a skill in the top 600, `topSkills()` fetches the HTML of https://www.skills.sh/ and parses the leaderboard JSON that the page's Next.js payload embeds (its `self.__next_f.push(…)` scripts, the `initialSkills` object of the all-time view). For a skill outside it, an approved one, one of the skills of https://www.skills.sh/sitemap.xml it reads or one of a whitelisted author, `skillPage()` fetches the HTML of the skill's skills.sh page and matches the \"Installs\" stat in its markup with a regex, such as \"26.5K\"; null when skills.sh no longer has the page."
+          "description": "All-time installs, or null when unknown: exact for a skill in the skills.sh all-time top 600, rounded to three digits (such as 26.5K) for a skill outside it. A skill of crawl.jsonc the crawl no longer sees keeps its last number.\n\nSource: scraped from skills.sh's HTML, with no skills.sh API, by scripts/crawl.ts, which .github/workflows/crawl.yml runs daily. For a skill in the top 600, `topSkills()` fetches the HTML of https://www.skills.sh/ and parses the leaderboard JSON that the page's Next.js payload embeds (its `self.__next_f.push(…)` scripts, the `initialSkills` object of the all-time view). For a skill outside it, an approved one, one of the skills of https://www.skills.sh/sitemap.xml it reads or one of a whitelisted author, `skillPage()` fetches the HTML of the skill's skills.sh page and matches the \"Installs\" stat in its markup with a regex, such as \"26.5K\"; null when skills.sh doesn't have the page, no longer or not yet (`unlisted`)."
         },
         "weeklyInstalls": {
           "anyOf": [
@@ -379,7 +384,7 @@
         },
         "firstSeen": {
           "type": ["string", "null"],
-          "description": "When skills.sh first saw the skill (YYYY-MM-DD), or null when unknown. It never changes.\n\nSource: scraped from skills.sh's HTML by scripts/crawl.ts. `skillPage()` fetches the HTML of the skill's skills.sh page and matches its \"First Seen\" stat with a regex, such as \"Jan 22, 2026\", or for a recent skill \"10 days ago\", counted back from the day of the crawl. The leaderboard doesn't give it. It does so once: when the crawl records the skill in crawl.jsonc, or for an approved skill that has none."
+          "description": "When skills.sh first saw the skill (YYYY-MM-DD), or null when unknown. It never changes.\n\nSource: scraped from skills.sh's HTML by scripts/crawl.ts. `skillPage()` fetches the HTML of the skill's skills.sh page and matches its \"First Seen\" stat with a regex, such as \"Jan 22, 2026\", or for a recent skill \"10 days ago\", counted back from the day of the crawl. The leaderboard doesn't give it. It does so once: when the crawl records the skill in crawl.jsonc, or for a skill that has none, such as one skills.sh didn't list then."
         }
       },
       "required": ["url", "installs", "weeklyInstalls", "firstSeen"],

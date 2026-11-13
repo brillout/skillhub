@@ -24,9 +24,9 @@
  *   a stack of identical rounded cards (the results are one ruled sheet instead), decorative
  *   shadows and gradients.
  * - Motion. Transitions, and only for press feedback (scale 0.96), a button's edge on hover
- *   (150ms), the Save and dark mode icons' swaps and the Saved switch's knob. Keyframes only for
- *   one nudge: a save draws the eye to the Saved switch's count. Other colors change at once, the
- *   theme's too.
+ *   (150ms), the Save, thumbs and dark mode icons' swaps and the Saved switch's knob. Keyframes
+ *   only for one nudge: a save draws the eye to the Saved switch's count. Other colors change at
+ *   once, the theme's too.
  */
 
 :root {
@@ -72,6 +72,10 @@
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   /* The cross of the search fields' ×: see ::-webkit-search-cancel-button. */
   --cross: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m4 4 8 8m0-8-8 8' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  /* The thumbs' up, outlined and filled, drawn as the bookmark of Save is: see .thumbs. The filled
+     one's cuff stands apart from the hand, which the outlined one's line between them does. */
+  --thumb: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M6 9 9.2 3.6a1.55 1.55 0 0 1 2.85 1.1L11.4 8h4.05a1.6 1.6 0 0 1 1.55 2l-1.45 5.8a1.6 1.6 0 0 1-1.55 1.2H6M6 9H3.5a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5H6M6 9v8' fill='none' stroke='%23000' stroke-width='1.6' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E");
+  --thumb-filled: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' stroke='%23000' stroke-width='1.6' stroke-linejoin='round'%3E%3Cpath d='M7.2 9 9.2 3.6a1.55 1.55 0 0 1 2.85 1.1L11.4 8h4.05a1.6 1.6 0 0 1 1.55 2l-1.45 5.8a1.6 1.6 0 0 1-1.55 1.2H7.2Z'/%3E%3Cpath d='M3.5 9h1.3v8H3.5a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .5-.5Z'/%3E%3C/svg%3E");
   /* Edges of buttons and sheets: a ring, a slight lift and some ambient depth. */
   --ring: oklch(0 0 0 / 0.06);
   --shadow-border:
@@ -196,7 +200,8 @@ a {
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
   color: inherit;
 }
@@ -419,10 +424,12 @@ body:has(.skills-view) #page-head {
  * tags' left edge to the cards' right edge. Presets' and Sort by's keep their width: a number
  * filter's pill gets longer as its range narrows the list, and were the tiles before it to give
  * way, the pill and the slider under it would move while a handle is dragged. Where the view is too
- * narrow for one line, Show goes onto a second: under about 1,200px, or 1,250px with Rising & new
- * and 1,240px with New, whose Age says its range, "≤ 3 months" and "≤ 1 month", which leaves a
- * 1,280px screen its one line; or on a wider one while several filters narrow the list, whose pills
- * get longer, even as Age's and Stars' stay short (see .range-word).
+ * narrow for one line, Show goes onto a second: under about 1,275px, or 1,325px with Rising & new,
+ * 1,320px with New, whose Age says its range, "≤ 3 months" and "≤ 1 month", and 1,310px with Top,
+ * which leaves a 1,280px screen its one line with Rising, the default, and a 1,366px one with every
+ * preset; or on a wider one while several filters narrow the list, whose pills get longer, even as
+ * Age's and Stars' stay short (see .range-word). Show's thumbs, beside the Saved switch, took some
+ * 80px of it: a 1,280px screen had its one line with every preset before.
  */
 .settings-line {
   display: flex;
@@ -528,6 +535,16 @@ body:has(.skills-view) #page-head {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+/* Show's thumbs, which show only what you gave one, beside the Saved switch: as tall as every
+   control of the settings' line, each half square. */
+#thumbs-filter {
+  height: 36px;
+}
+
+#thumbs-filter button {
+  padding: 0 10px;
 }
 
 /*
@@ -1397,6 +1414,7 @@ body[data-preview-selecting] :is(#page-head, .skills-view > :not(.preview)) {
   grid-template-columns: minmax(0, 1fr) 380px;
   grid-template-areas:
     "agent field"
+    "agent note"
     "label note";
   gap: 0 16px;
   margin-bottom: 24px;
@@ -1499,14 +1517,16 @@ body[data-preview-selecting] :is(#page-head, .skills-view > :not(.preview)) {
   color: var(--on-garnet);
 }
 
+/* The words have the size of an agent's own prompt box, and the least at which a phone doesn't zoom
+   in on the box it focuses. */
 .search-field input,
-.agent-field input {
+.agent-field textarea {
   flex: 1;
   padding: 6px 2px;
   border: 0;
   background: none;
   color: var(--ink);
-  font-size: 18px;
+  font-size: 16px;
   text-overflow: ellipsis;
 }
 
@@ -1535,21 +1555,57 @@ input[type="search"]::-webkit-search-cancel-button:hover {
   background: var(--ink);
 }
 
-.agent-field input {
+/* One line, as the search, until it has the focus. */
+.agent-field textarea {
   min-width: 0;
+  height: 36px;
+  line-height: 24px;
+  resize: none;
+  overflow: hidden;
 }
 
 /* The field shows the focus instead. */
 .search-field input:focus-visible,
-.agent-field input:focus-visible {
+.agent-field textarea:focus-visible {
   outline: none;
 }
 
-/* A text box like the search's, told apart by its icon and its button. */
+/*
+ * A text box like the search's, told apart by its icon and its button. Its top keeps to the
+ * search's, since it grows downwards: with the focus, or words in it, it's a prompt box, as an
+ * agent's, three lines high and growing with what's typed, up to ten (see list-client.ts), with the
+ * button under the words, at the right. Empty and without the focus, one line again. The search's
+ * line stays under the search: see .finder's areas.
+ */
 .agent-field {
   grid-area: agent;
+  align-self: start;
   gap: 8px;
   padding: 6px 6px 6px 18px;
+}
+
+.agent-field:is(:focus-within, :has(textarea:not(:placeholder-shown))) {
+  flex-wrap: wrap;
+  align-items: flex-start;
+  padding-top: 10px;
+}
+
+/* On the first line. */
+.agent-field:is(:focus-within, :has(textarea:not(:placeholder-shown))) .ask-icon {
+  margin-top: 8px;
+}
+
+.agent-field:is(:focus-within, :has(textarea:not(:placeholder-shown))) textarea {
+  flex-basis: calc(100% - 28px);
+  height: var(--need-height, 84px);
+  min-height: 84px;
+  max-height: 252px;
+  padding-right: 12px;
+  overflow-y: auto;
+}
+
+.agent-field:is(:focus-within, :has(textarea:not(:placeholder-shown))) .ask-button {
+  margin-left: auto;
 }
 
 .ask-icon {
@@ -3796,13 +3852,19 @@ input[type="search"]::-webkit-search-cancel-button:hover {
     width: auto;
   }
 
+  /* Show's thumbs beside the Saved switch, in view with it; Show's buttons under them. */
   .show-row {
     display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 8px;
   }
 
-  /* The presets, the Filters button and the Saved switch stay in view; the button opens the rest
-     of the settings. */
+  .show-row > #show {
+    grid-column: 1 / -1;
+  }
+
+  /* The presets, the Filters button, the Saved switch and Show's thumbs stay in view; the button
+     opens the rest of the settings. */
   .settings-line .filters-toggle {
     margin-top: 12px;
   }
@@ -3940,11 +4002,6 @@ input[type="search"]::-webkit-search-cancel-button:hover {
     --cut: 12px;
   }
 
-  .search-field input,
-  .agent-field input {
-    font-size: 16px;
-  }
-
   .agent-field {
     padding: 6px 6px 6px 16px;
   }
@@ -4047,7 +4104,7 @@ input[type="search"]::-webkit-search-cancel-button:hover {
     flex-wrap: wrap;
   }
 
-  .agent-field input {
+  .agent-field textarea {
     flex-basis: calc(100% - 40px);
   }
 
@@ -4625,7 +4682,109 @@ html[data-logged-in]:not([data-account]) .account::before {
   color: var(--garnet-text);
 }
 
-/* A row's name and where it's from, which wrap, with its Save button top right, beside them. */
+/*
+ * The thumbs up and down, beside Save: one button of two halves, the line between them, as tall as
+ * Save. The one you gave is filled, in garnet, as what you saved is, and so is the pair's edge.
+ * Their icons are masks in the button's color (--thumb), the down one turned over; as for Save, the
+ * outlined and the filled one lie one on the other, and a click cross-fades them.
+ */
+.thumbs {
+  display: inline-flex;
+  flex: none;
+  border-radius: 6px;
+  background: var(--paper);
+  box-shadow: var(--shadow-border);
+}
+
+.thumbs button {
+  display: grid;
+  place-items: center;
+  padding: 6px 9px;
+  border: 0;
+  border-radius: 6px 0 0 6px;
+  background: none;
+  color: var(--ink-2);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.thumbs button + button {
+  border-left: 1px solid var(--rule);
+  border-radius: 0 6px 6px 0;
+}
+
+/* A line of Save's words high, for the same height. */
+.thumbs button::before,
+.thumbs button::after {
+  content: "";
+  grid-area: 1 / 1;
+  width: 16px;
+  height: 1lh;
+  background: currentColor;
+  -webkit-mask: var(--thumb) center / 16px no-repeat;
+  mask: var(--thumb) center / 16px no-repeat;
+}
+
+.thumbs button::after {
+  -webkit-mask-image: var(--thumb-filled);
+  mask-image: var(--thumb-filled);
+}
+
+/* The rows' and Show's: see thumbsFilterHtml in list.ts. */
+.thumbs :is([data-react="down"], [data-value="down"])::before,
+.thumbs :is([data-react="down"], [data-value="down"])::after {
+  rotate: 180deg;
+}
+
+.thumbs [aria-pressed="true"]::before,
+.thumbs button:not([aria-pressed="true"])::after {
+  opacity: 0;
+  scale: 0.25;
+  filter: blur(4px);
+}
+
+/* Only a click animates them, not the page's load: account-client.ts sets data-toggled. */
+.thumbs [data-toggled]::before,
+.thumbs [data-toggled]::after {
+  transition-property: opacity, scale, filter;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thumbs [aria-pressed="true"]::before,
+  .thumbs button:not([aria-pressed="true"])::after {
+    scale: none;
+    filter: none;
+  }
+}
+
+/* As Save's, for a pointer only. */
+@media (hover: hover) {
+  .thumbs:has(button:hover) {
+    box-shadow: 0 0 0 1px var(--garnet);
+  }
+
+  .thumbs button:hover {
+    color: var(--garnet-text);
+  }
+}
+
+.thumbs:has([aria-pressed="true"]) {
+  box-shadow: 0 0 0 1px var(--garnet);
+}
+
+.thumbs:has([aria-pressed="true"]) button + button {
+  border-left-color: var(--garnet);
+}
+
+.thumbs [aria-pressed="true"] {
+  background: var(--rose);
+  color: var(--garnet-text);
+}
+
+/* A row's name and where it's from, which wrap, with its thumbs and Save button top right, beside
+   them. */
 .row-head {
   display: flex;
   align-items: flex-start;
@@ -4638,12 +4797,19 @@ html[data-logged-in]:not([data-account]) .account::before {
 }
 
 /* Centered on the name's line, 27px tall, without making it taller. */
-.row-head .save {
+.row-head :is(.save, .thumbs) {
   margin: -3px 0;
 }
 
-/* A page's name, which wraps, with its Save button top right, beside it, as in a row of the list:
-   under a long name that took the whole line, the button was on a line of its own, at the left. */
+/* Closer to Save than to the row's name, as All details is to them. */
+.row-head .thumbs,
+.title-row .thumbs {
+  margin-right: -8px;
+}
+
+/* A page's name, which wraps, with its thumbs and Save button top right, beside it, as in a row of
+   the list: under a long name that took the whole line, the button was on a line of its own, at the
+   left. */
 .title-row {
   display: flex;
   align-items: flex-start;
@@ -4659,14 +4825,15 @@ html[data-logged-in]:not([data-account]) .account::before {
   overflow-wrap: break-word;
 }
 
-/* Centered on the name's first line: 41px tall, the button 33px. */
-.title-row .save {
+/* Centered on the name's first line: 41px tall, the buttons 33px. */
+.title-row :is(.save, .thumbs) {
   margin-top: 4px;
 }
 
-/* On a phone the name's line is 28px, shorter than the button, which mustn't make it taller. */
+/* On a phone the name's line is 28px, shorter than the buttons, which mustn't make it taller. */
 @media (max-width: 900px) {
-  .title-row .save {
-    margin: -3px 0;
+  .title-row :is(.save, .thumbs) {
+    margin-top: -3px;
+    margin-bottom: -3px;
   }
 }

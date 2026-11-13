@@ -54,7 +54,7 @@ import {
   type Previewed,
 } from "./preview-client.ts";
 import { ACCOUNT_EVENT, showsSaved, type AccountChange } from "./account-client.ts";
-import { LEFT_AT, LOGIN_FROM, account, savedCount } from "./saves.ts";
+import { LEFT_AT, LOGIN_FROM, account, savedCount, type Reaction } from "./saves.ts";
 
 // The Saved switch counts only what's still listed, as the list does; account-client.ts may have
 // counted before this script ran.
@@ -242,6 +242,10 @@ function renderSoon() {
 function focusSelector(): string | null {
   const el = document.activeElement as HTMLElement | null;
   if (!el || el.id === "q" || !app.contains(el)) return null;
+  // A thumb is told from the other rows' by its entry, which its pair carries.
+  const thumbs = el.dataset.react && el.closest<HTMLElement>("[data-thumbs]")?.dataset.thumbs;
+  if (thumbs)
+    return `#results [data-thumbs="${CSS.escape(thumbs)}"] [data-react="${el.dataset.react}"]`;
   for (const attr of [
     "data-tag",
     "data-action",
@@ -390,11 +394,19 @@ app.addEventListener("keydown", (event) => {
 
 /**
  * The Saved switch isn't re-rendered, so that it can slide: it follows the state instead. And so
- * does the header's Saved link, which leads to this list with the switch on.
+ * does the header's Saved link, which leads to this list with the switch on, and Show's thumbs,
+ * whose icons cross-fade.
  */
 const savedSwitch = document.getElementById("saved-switch") as HTMLElement;
+const thumbsFilter = [
+  ...document.querySelectorAll<HTMLElement>('#thumbs-filter [data-action="thumbs"]'),
+];
+const syncThumbs = (on: Reaction | null) => {
+  for (const b of thumbsFilter) b.setAttribute("aria-pressed", String(b.dataset.value === on));
+};
 function syncSaved() {
   savedSwitch.setAttribute("aria-checked", String(state.saved));
+  syncThumbs(state.thumbs);
   showsSaved(state.saved);
 }
 
@@ -467,7 +479,15 @@ const siteTitle = document.title;
 
 /** What the list holds, whatever its order: its search and its filters. */
 const scopeKey = () =>
-  JSON.stringify([state.saved, state.tags, state.repo, state.ranges, state.show, state.q]);
+  JSON.stringify([
+    state.saved,
+    state.thumbs,
+    state.tags,
+    state.repo,
+    state.ranges,
+    state.show,
+    state.q,
+  ]);
 
 function renderScope() {
   const key = scopeKey();
@@ -491,6 +511,7 @@ function renderScope() {
 function renderFacets() {
   const key = JSON.stringify([
     state.saved,
+    state.thumbs,
     state.q,
     state.tags,
     state.repo,
@@ -598,7 +619,7 @@ function render(whole = false) {
 }
 
 /** The agent's box: what you need, in your own words. */
-const need = document.getElementById("need") as HTMLInputElement;
+const need = document.getElementById("need") as HTMLTextAreaElement;
 const askLine = document.getElementById("ask-label") as HTMLElement;
 let askTimer: ReturnType<typeof setTimeout> | undefined;
 /** The search and filters the line was last said about: see scopeKey. */
@@ -655,8 +676,30 @@ function sayOn(link: HTMLElement | undefined, words: string) {
   }, 5000);
 }
 
+// Enter asks, as it did when the box was one line; Shift+Enter starts a new line.
 need.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") ask();
+  if (event.key !== "Enter" || event.shiftKey || event.isComposing) return;
+  event.preventDefault();
+  ask();
+});
+
+/**
+ * With the focus, the agent's box grows with its words, between the heights style.css gives it: the
+ * height to fit them is their scrollHeight once the box is at its least.
+ */
+function fitNeed() {
+  need.style.setProperty("--need-height", "0px");
+  need.style.setProperty("--need-height", `${need.scrollHeight}px`);
+}
+need.addEventListener("focus", fitNeed);
+need.addEventListener("input", fitNeed);
+
+// A press in the agent's box, but on its words, leaves the focus where it is. Taken off the words,
+// as by a press on the button, it would shrink the box, if empty, to one line under the pointer,
+// before the click: which would land on whatever is there then. The click focuses the words: see
+// focus-need.
+need.parentElement!.addEventListener("mousedown", (event) => {
+  if (event.target !== need) event.preventDefault();
 });
 
 q.addEventListener("input", () => go({ q: q.value }, true));
@@ -809,10 +852,12 @@ app.addEventListener("click", (event) => {
   } else if (d.remove) {
     const v = d.value ?? "";
     if (d.remove === "saved") go({ saved: false });
+    else if (d.remove === "thumbs") go({ thumbs: null });
     else if (d.remove === "tag") go({ tags: state.tags.filter((t) => t !== v) });
     else if (d.remove === "repo") go({ repo: null });
     else if (d.remove === "range") go({ ranges: { ...state.ranges, [v]: fullRange() } });
-  } else if (d.action === "clear") go({ saved: false, tags: [], repo: null, ranges: fullRanges() });
+  } else if (d.action === "clear")
+    go({ saved: false, thumbs: null, tags: [], repo: null, ranges: fullRanges() });
   else if (d.action === "ask") ask(el);
   else if (d.action === "focus-search") q.focus();
   else if (d.action === "focus-need") need.focus();
@@ -822,6 +867,12 @@ app.addEventListener("click", (event) => {
     // It slides at once; the list follows after the next paint.
     savedSwitch.setAttribute("aria-checked", String(!state.saved));
     go({ saved: !state.saved });
+  } else if (d.action === "thumbs") {
+    // One or neither: a second click shows everything again. Its icons cross-fade at once.
+    const on = state.thumbs === d.value ? null : (d.value as Reaction);
+    for (const b of thumbsFilter) b.dataset.toggled = "";
+    syncThumbs(on);
+    go({ thumbs: on });
   } else if (d.action === "stack") {
     noteClicked(el, '#facets [data-action="stack"]');
     stackExpanded = !stackExpanded;
@@ -849,11 +900,13 @@ app.addEventListener("click", (event) => {
 });
 
 /**
- * Once the API says what you saved, the list of what you saved follows. A click on a Save button
- * only changes the button: unsaving leaves the row in the list, where a second click saves it back.
+ * Once the API says what you saved and gave a thumb, the list of what's yours follows. A click on a
+ * Save button or a thumb only changes the button: unsaving leaves the row in the list, where a
+ * second click saves it back.
  */
 document.addEventListener(ACCOUNT_EVENT, (event) => {
-  if (state.saved && (event as CustomEvent<AccountChange>).detail === "load") refresh();
+  const yours = state.saved || state.thumbs !== null;
+  if (yours && (event as CustomEvent<AccountChange>).detail === "load") refresh();
 });
 
 // What was typed in the search before this script ran, on a slow connection, is searched for:

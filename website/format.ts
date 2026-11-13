@@ -104,5 +104,30 @@ export function age(day: string, asOf: string): string {
   return plural(years < 5 ? Math.floor(years * 10) / 10 : Math.floor(years), "year");
 }
 
+const relative = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+/** The viewer's own day, as for what they did: unlike `date`, not UTC's. */
+const ownDate = new Intl.DateTimeFormat("en", { month: "short", day: "numeric", year: "numeric" });
+const UNITS: [unit: Intl.RelativeTimeFormatUnit, ms: number, below: number][] = [
+  ["minute", 60_000, 60],
+  ["hour", 3_600_000, 24],
+  ["day", 86_400_000, 7],
+  ["week", 604_800_000, 5],
+  ["month", 2_629_800_000, 12],
+  ["year", 31_557_600_000, Infinity],
+];
+
+/**
+ * When something was done, a time in milliseconds, for a person: "just now", "5 minutes ago",
+ * "3 hours ago"; from a day on, with its date, "yesterday (Nov 12, 2026)", "3 weeks ago (Oct 23,
+ * 2026)".
+ */
+export function ago(at: number, now = Date.now()): string {
+  const ms = Math.max(0, now - at);
+  if (ms < 60_000) return "just now";
+  const [unit, size] = UNITS.find(([, size, below]) => ms < size * below) as (typeof UNITS)[number];
+  const words = relative.format(-Math.max(1, Math.round(ms / size)), unit);
+  return ms < 86_400_000 ? words : `${words} (${ownDate.format(at)})`;
+}
+
 /** A path on this site, under the base it's served from (`/` at https://skillhub.build). */
 export const href = (path = "") => `${import.meta.env.BASE_URL}${path}`;

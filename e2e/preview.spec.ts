@@ -217,8 +217,10 @@ test("a row's own buttons, a selection in it, and Ctrl leave its preview closed"
   await row.locator(".skill-name").focus();
   await page.keyboard.press("Tab");
   await expect(row.locator(".repo-link")).toBeFocused();
-  await page.keyboard.press("Tab");
-  await expect(row.locator("[data-save]")).toBeFocused();
+  for (const next of ['[data-react="up"]', '[data-react="down"]', "[data-save]"]) {
+    await page.keyboard.press("Tab");
+    await expect(row.locator(next)).toBeFocused();
+  }
   await details.click();
   await expect(page).toHaveURL(skillUrl);
 });

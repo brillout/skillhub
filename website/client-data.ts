@@ -28,7 +28,7 @@ import type {
 const STRIPPED = {
   data: ["$schema"],
   skill: ["skillMd"],
-  skillsSh: ["url"],
+  skillsSh: ["url", "unlisted"],
   /** A skill's or a bundle's agentReview. */
   review: ["model", "effort"],
   tldr: ["text", "permalink"],

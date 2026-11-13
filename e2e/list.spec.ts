@@ -244,26 +244,39 @@ test("Rising & new keeps the settings on one line, and the list where it is", as
   expect(await top("#results")).toBe(list);
 });
 
-test.describe("on a laptop's screen, 1,280px wide", () => {
-  test.use({ viewport: { width: 1280, height: 800 } });
+/*
+ * Where the settings' line holds Show: on a 1,280px screen with Rising, the list's default, and on
+ * a 1,366px one with every preset. Show's thumbs, beside the Saved switch, took the room a 1,280px
+ * screen had for Rising & new and Top: see .settings-line in style.css.
+ */
+for (const [width, presets] of [
+  [1280, []],
+  [1366, ["rising-new", "top", "new"]],
+] as const)
+  test.describe(`on a laptop's screen, ${width.toLocaleString("en")}px wide`, () => {
+    test.use({ viewport: { width, height: 800 } });
 
-  test("the settings are on one line, with Rising & new and Top too", async ({ page }) => {
-    const top = async (selector: string) => (await page.locator(selector).boundingBox())?.y;
-    await open(page, "/");
-    // Show's first button is the one word, Both: at its full length, Show was on a second line.
-    await expect(page.locator('[data-show="all"]')).toHaveText("Both");
-    await expect(page.locator('[data-show="all"]')).toHaveAccessibleName(
-      "Both: skills and bundles",
-    );
-    expect(await top(".show-group")).toBe(await top(".preset-group"));
+    test(`the settings are on one line, with ${["Rising", ...presets].join(", ")}`, async ({
+      page,
+    }) => {
+      const top = async (selector: string) => (await page.locator(selector).boundingBox())?.y;
+      await open(page, "/");
+      // Show's first button is the one word, Both: at its full length, Show was on a second line.
+      await expect(page.locator('[data-show="all"]')).toHaveText("Both");
+      await expect(page.locator('[data-show="all"]')).toHaveAccessibleName(
+        "Both: skills and bundles",
+      );
+      expect(await top(".show-group")).toBe(await top(".preset-group"));
+      // Show's thumbs are beside the Saved switch.
+      expect(await top("#thumbs-filter")).toBe(await top("#saved-switch"));
 
-    for (const id of ["rising-new", "top"]) {
-      await page.locator(`[data-preset="${id}"]`).click();
-      await settled(page);
-      expect(await top(".show-group"), id).toBe(await top(".preset-group"));
-    }
+      for (const id of presets) {
+        await page.locator(`[data-preset="${id}"]`).click();
+        await settled(page);
+        expect(await top(".show-group"), id).toBe(await top(".preset-group"));
+      }
+    });
   });
-});
 
 test.describe("on a tablet, 768px wide", () => {
   test.use({ viewport: { width: 768, height: 900 } });
@@ -1001,4 +1014,46 @@ test("Find with your agent copies a prompt with the list and the need", async ({
   expect(prompt).toContain(`# Catalog (${rows} entries)`);
   expect(prompt).toContain("narrowed to: tag type:workflow");
   expect(prompt.trimEnd().endsWith("review my pull requests")).toBe(true);
+});
+
+test("the agent's box is a prompt box of a few lines while it has the focus or words", async ({
+  page,
+}) => {
+  await open(page, "/?show=bundles");
+  const need = page.locator("#need");
+  const height = async () =>
+    ((await page.locator(".agent-field").boundingBox()) as { height: number }).height;
+  const oneLine = await height();
+  await need.click();
+  const focused = await height();
+  expect(focused).toBeGreaterThan(oneLine * 2);
+
+  // Enter asks, rather than start a line.
+  await need.fill("review my pull requests");
+  await need.press("Enter");
+  await expect(page.locator("#ask-label")).toContainText("copied to your clipboard");
+  await expect(need).toHaveValue("review my pull requests");
+  const prompt = await page.evaluate(() => navigator.clipboard.readText());
+  expect(prompt.trimEnd().endsWith("review my pull requests")).toBe(true);
+
+  // Shift+Enter starts one. The box grows with the lines, up to ten, then scrolls.
+  for (let i = 0; i < 12; i++) await need.press("Shift+Enter");
+  await expect(need).toHaveValue(`review my pull requests${"\n".repeat(12)}`);
+  expect(await height()).toBeGreaterThan(focused);
+  expect(await need.evaluate((el) => el.scrollHeight > el.clientHeight)).toBe(true);
+
+  // Elsewhere, it stays a prompt box while it holds words.
+  await page.locator("#q").focus();
+  expect(await height()).toBeGreaterThan(focused);
+
+  // Empty, a press on the button leaves the focus in the box, which so doesn't shrink under the
+  // pointer.
+  await need.fill("");
+  await page.locator(".ask-button").click();
+  await expect(need).toBeFocused();
+  expect(await height()).toBe(focused);
+
+  // Empty and elsewhere, one line again.
+  await page.locator("#q").focus();
+  expect(await height()).toBe(oneLine);
 });

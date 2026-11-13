@@ -11,7 +11,7 @@ import { approvedPages, pageKey, readCrawl, readData, readJsonc, tldrProblems } 
 import { generate, SCHEMAS, TYPES, undocumented } from "./schema.ts";
 import { nameInSkillMd } from "../website/markdown.ts";
 import { copyPath } from "../website/skill-md.ts";
-import type { Facet } from "../data/types.ts";
+import type { Facet, SkillsSh } from "../data/types.ts";
 import { bundlePage, bundleRepo, github, repoPage, skillPage } from "../website/github.ts";
 
 const root = new URL("../", import.meta.url);
@@ -65,6 +65,18 @@ for (const f of data.facets)
 /** A skill's page on skills.sh: the repo it comes from on GitHub, then the skill. */
 const SKILL_PAGE = /^https:\/\/skills\.sh\/[^/.]+\/[^/]+\/[^/]+$/;
 
+/** What's wrong with the numbers of a skill's listing on skills.sh, if anything. */
+function listingProblems(sh: SkillsSh): string[] {
+  const problems: string[] = [];
+  if (sh.weeklyInstalls && sh.weeklyInstalls.length !== 8)
+    problems.push("weeklyInstalls must have 8 weeks");
+  if (sh.unlisted !== undefined && sh.unlisted !== true)
+    problems.push("unlisted is true or left out");
+  else if (sh.unlisted && (sh.installs !== null || sh.weeklyInstalls !== null))
+    problems.push("an unlisted skill has no installs on skills.sh: they must be null");
+  return problems;
+}
+
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 const COUNTS: Record<Facet["count"], (n: number) => boolean> = {
@@ -100,16 +112,18 @@ for (const skill of data.skills) {
   if (!skill.agentReview.description) fail(at, "missing description");
   for (const t of skill.agentReview.tags)
     if (parents.has(t)) fail(at, `${t} comes with the tags it includes; don't tag it directly`);
-  // SkillHub only lists skills that are on GitHub and on skills.sh.
+  // SkillHub only lists skills that are on GitHub and on skills.sh, but for a whitelisted author's,
+  // which skills.sh may not list yet: its skills.sh field is then `unlisted`, at the page it'll have.
   const gh = github(skill);
   if (gh.repo.split("/")[0].includes("."))
     fail(at, "not on GitHub: the id must be owner/repo/path/to/dir");
   if (!repos.has(gh.repo)) fail(at, `repo "${gh.repo}" has no entry in repos`);
   if (!skill["skills.sh"]) fail(at, "not on skills.sh");
-  else if (!SKILL_PAGE.test(skill["skills.sh"].url))
-    fail(at, "the skills.sh url must be its page there, https://skills.sh/owner/repo/skill");
-  const weekly = skill["skills.sh"]?.weeklyInstalls;
-  if (weekly && weekly.length !== 8) fail(at, "weeklyInstalls must have 8 weeks");
+  else {
+    if (!SKILL_PAGE.test(skill["skills.sh"].url))
+      fail(at, "the skills.sh url must be its page there, https://skills.sh/owner/repo/skill");
+    for (const problem of listingProblems(skill["skills.sh"])) fail(at, problem);
+  }
 
   const copy = existsSync(new URL(copyPath(skill), root));
   if (skill.skillMd && !copy) fail(at, `no copy at ${copyPath(skill)}; run pnpm run sync`);
@@ -231,8 +245,7 @@ for (const [name, list] of [
       fail(at, "the url must be a skill's page on skills.sh, https://skills.sh/owner/repo/skill");
     state(at, url, name);
     if (!c.name || !c.repo || !c.seen) fail(at, "needs a name, a repo and the day it was seen");
-    const weekly = c["skills.sh"].weeklyInstalls;
-    if (weekly && weekly.length !== 8) fail(at, "weeklyInstalls must have 8 weeks");
+    for (const problem of listingProblems(c["skills.sh"])) fail(at, problem);
   }
 for (const { url, reason } of crawl.disqualified) {
   const at = `disqualified ${url}`;

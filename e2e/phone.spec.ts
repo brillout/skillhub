@@ -255,9 +255,10 @@ test("the list's settings and tags open from their buttons", async ({ page }) =>
   const filters = page.locator(".filters-toggle");
   const tagsToggle = page.locator(".tags-toggle");
 
-  // The presets and the Saved switch stay in view.
+  // The presets, the Saved switch and Show's thumbs, beside it, stay in view.
   await expect(page.locator("#presets")).toBeVisible();
   await expect(page.locator("#saved-switch")).toBeVisible();
+  await expect(page.locator("#thumbs-filter")).toBeVisible();
   await expect(settings).toBeHidden();
   await expect(tags).toBeHidden();
 

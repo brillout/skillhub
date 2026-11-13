@@ -1,12 +1,13 @@
 /**
- * Logging in and saving. The servers of `pnpm dev` and `pnpm preview` log in as a test user
- * instead of with GitHub: see DEV_LOGIN in worker/index.ts. There's only the one, so these tests
- * run in order, and each starts from nothing saved and nobody logged in.
+ * Logging in, saving, and the thumbs up and down. The servers of `pnpm dev` and `pnpm preview`
+ * log in as a test user instead of with GitHub: see DEV_LOGIN in worker/index.ts. There's only the
+ * one, so these tests run in order, and each starts from nothing saved, no thumb given and nobody
+ * logged in.
  */
 
 import AxeBuilder from "@axe-core/playwright";
-import type { Page } from "@playwright/test";
-import { skill, skillUrl } from "./data.ts";
+import type { Locator, Page } from "@playwright/test";
+import { bundle, onlyInBundle, skill, skillUrl } from "./data.ts";
 import { accountLoaded, expect, list, open, ready, settled, test } from "./fixtures.ts";
 
 /** A short list, which the test skill's row heads: see fixtures.ts for why not the whole list. */
@@ -16,8 +17,13 @@ test.describe.configure({ mode: "default" });
 
 test.beforeEach(async ({ page }) => {
   await page.request.get("/api/auth/login", { maxRedirects: 0 });
-  const { saved } = (await (await page.request.get("/api/me")).json()) as { saved: string[] };
+  const { saved, reactions } = (await (await page.request.get("/api/me")).json()) as {
+    saved: string[];
+    reactions: Record<string, string>;
+  };
   for (const key of saved) await page.request.post("/api/saves", { data: { key, saved: false } });
+  for (const key of Object.keys(reactions))
+    await page.request.post("/api/reactions", { data: { key, reaction: null } });
   await page.request.post("/api/auth/logout", { data: {} });
 });
 
@@ -28,6 +34,13 @@ const savedLink = (page: Page) => page.locator("#account .saved-link");
 const savedCount = (page: Page) => page.locator("[data-saved-count]");
 /** The test skill's row. */
 const skillRow = (page: Page) => list(page).rows.first();
+/** The thumb up or down of a row, a preview or a page's title. */
+const thumb = (scope: Locator, reaction: "up" | "down") =>
+  scope.locator(`[data-react="${reaction}"]`);
+/** The thumbs the API says the test user gave. */
+const reactions = async (page: Page) =>
+  ((await (await page.request.get("/api/me")).json()) as { reactions: Record<string, string> })
+    .reactions;
 
 /** Opens a page and logs in from its header. */
 async function openLoggedIn(page: Page, path: string) {
@@ -249,10 +262,16 @@ for (const scheme of ["light", "dark"] as const)
     test("the list of what you saved passes axe", async ({ page }) => {
       await openLoggedIn(page, LIST);
       await skillRow(page).locator("[data-save]").click();
+      await thumb(skillRow(page), "up").click();
       await expect(savedCount(page)).toHaveText("1");
       await page.locator("#saved-switch").click();
       await settled(page);
       await expect(savedLink(page)).toHaveAttribute("aria-current", "page");
+      await expect(thumb(skillRow(page), "up")).toHaveAttribute("aria-pressed", "true");
+      // And Show's thumbs up, on.
+      await page.locator('#thumbs-filter [data-value="up"]').click();
+      await settled(page);
+      await expect(list(page).rows).toHaveCount(1);
       // The animations of a save, which tint what they're on, are over.
       await page.evaluate(() => Promise.all(document.getAnimations().map((a) => a.finished)));
       const { violations } = await new AxeBuilder({ page }).analyze();
@@ -445,6 +464,168 @@ test("Save, logged out, logs you in and saves", async ({ page }) => {
   await expect(savedCount(page)).toHaveText("1");
 });
 
+test("a thumb says what you think of a skill: the other replaces it, a second click takes it back", async ({
+  page,
+}) => {
+  await openLoggedIn(page, skillUrl);
+  const head = page.locator(".title-row");
+  const [up, down] = [thumb(head, "up"), thumb(head, "down")];
+  const key = (await head.locator("[data-thumbs]").getAttribute("data-thumbs")) as string;
+  await expect(up).toHaveAccessibleName(`Thumbs up for ${skill.name}`);
+  await expect(down).toHaveAccessibleName(`Thumbs down for ${skill.name}`);
+  const answered = () => page.waitForResponse((res) => res.url().endsWith("/api/reactions"));
+
+  let kept = answered();
+  await expect(up).toHaveAttribute("title", "Thumbs up");
+  await up.click();
+  await expect(up).toHaveAttribute("aria-pressed", "true");
+  await expect(down).toHaveAttribute("aria-pressed", "false");
+  // Its tooltip says when it was given.
+  await expect(up).toHaveAttribute("title", "You gave it a thumbs up just now");
+  await kept;
+  kept = answered();
+  await down.click();
+  await expect(up).toHaveAttribute("aria-pressed", "false");
+  await expect(up).toHaveAttribute("title", "Thumbs up");
+  await expect(down).toHaveAttribute("aria-pressed", "true");
+  await kept;
+  expect(await reactions(page)).toEqual({ [key]: "down" });
+  // As the API says, on the page's next load; and so does Save's, of when it was saved.
+  const save = page.locator(".title-row [data-save]");
+  await save.click();
+  await expect(save).toHaveAttribute("title", "Saved just now");
+  await page.reload();
+  await ready(page);
+  await accountLoaded(page);
+  await expect(down).toHaveAttribute("title", "You gave it a thumbs down just now");
+  await expect(save).toHaveAttribute("title", "Saved just now");
+  await save.click();
+  await expect(save).toHaveAttribute("title", "Save");
+
+  // Its row in the list says so too, where a second click takes it back.
+  await open(page, LIST);
+  await accountLoaded(page);
+  const row = thumb(skillRow(page), "down");
+  await expect(row).toHaveAttribute("aria-pressed", "true");
+  kept = answered();
+  await row.click();
+  await expect(row).toHaveAttribute("aria-pressed", "false");
+  await expect(thumb(skillRow(page), "up")).toHaveAttribute("aria-pressed", "false");
+  await kept;
+  expect(await reactions(page)).toEqual({});
+});
+
+test("a row's thumb doesn't open its preview, and a preview's thumbs are its row's", async ({
+  page,
+}) => {
+  await openLoggedIn(page, LIST);
+  const sheet = page.locator("#preview");
+  await thumb(skillRow(page), "up").click();
+  await expect(thumb(skillRow(page), "up")).toHaveAttribute("aria-pressed", "true");
+  await expect(sheet).toBeHidden();
+
+  await skillWords(page).click();
+  await expect(sheet).toBeVisible();
+  await expect(thumb(sheet, "up")).toHaveAttribute("aria-pressed", "true");
+  await thumb(sheet, "down").click();
+  await expect(thumb(sheet, "down")).toHaveAttribute("aria-pressed", "true");
+  await expect(thumb(skillRow(page), "down")).toHaveAttribute("aria-pressed", "true");
+  await expect(thumb(skillRow(page), "up")).toHaveAttribute("aria-pressed", "false");
+  await expect(sheet.locator("h2")).toHaveText(skill.name);
+});
+
+test("a thumb, logged out, logs you in and gives it", async ({ page }) => {
+  await open(page, LIST);
+  await accountLoaded(page);
+  const key = (await skillRow(page).locator("[data-thumbs]").getAttribute("data-thumbs")) as string;
+  await thumb(skillRow(page), "down").click();
+  await ready(page);
+  await expect(page).toHaveURL(LIST);
+  await expect(logout(page)).toBeVisible();
+  await expect(thumb(skillRow(page), "down")).toHaveAttribute("aria-pressed", "true");
+  expect(await reactions(page)).toEqual({ [key]: "down" });
+  // And saves nothing.
+  await expect(savedCount(page)).toHaveText("");
+});
+
+test("Show's thumbs list only what you gave that thumb, one at a time, the last given first", async ({
+  page,
+}) => {
+  await openLoggedIn(page, "/");
+  const give = async (key: string, reaction: string) => {
+    await page.request.post("/api/reactions", { data: { key, reaction } });
+    // Each at a time of its own, which is in milliseconds, for the order they were given in.
+    await page.waitForTimeout(5);
+  };
+  await give(`skill:${skill.id}`, "up");
+  // A skill that's only listed in its bundle's row: what's yours is listed on its own.
+  await give(`skill:${onlyInBundle.skill.id}`, "up");
+  await give(`bundle:${bundle.id}`, "down");
+  const answered = page.waitForResponse((res) => res.url().endsWith("/api/me"));
+  await page.reload();
+  await answered;
+  await ready(page);
+
+  const filter = (reaction: "up" | "down") =>
+    page.locator(`#thumbs-filter [data-value="${reaction}"]`);
+  const names = () => list(page).rows.locator(".skill-name").allTextContents();
+  const chip = list(page).scope.locator('[data-remove="thumbs"]');
+  await filter("up").click();
+  await settled(page);
+  await expect(page).toHaveURL("/?thumbs=up");
+  await expect(filter("up")).toHaveAttribute("aria-pressed", "true");
+  // Sorted by Recent, as the list of what you saved is by Recently saved: the last given first.
+  await expect(page.locator("#sort")).toHaveAccessibleName("Sort by Recent thumbs up");
+  await expect.poll(names).toEqual([onlyInBundle.skill.name, skill.name]);
+  await page.locator('[data-order="asc"]').click();
+  await settled(page);
+  await expect.poll(names).toEqual([skill.name, onlyInBundle.skill.name]);
+  await page.locator('[data-order="desc"]').click();
+  await settled(page);
+  await expect(chip).toHaveAccessibleName("Remove filter Thumbs up");
+  await expect(page).toHaveTitle("Thumbs up · SkillHub");
+
+  // The other one takes its place.
+  await filter("down").click();
+  await settled(page);
+  await expect(page).toHaveURL("/?thumbs=down");
+  await expect(filter("up")).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator("#sort")).toHaveAccessibleName("Sort by Recent thumbs down");
+  await expect.poll(names).toEqual([bundle.agentReview.name]);
+  // A thumb taken back only changes the button, as Save does: the row stays, for a second click.
+  const row = thumb(list(page).rows.first(), "down");
+  await row.click();
+  await expect(row).toHaveAttribute("aria-pressed", "false");
+  await expect(list(page).rows).toHaveCount(1);
+
+  // A second click shows everything again, and so does the filter's chip.
+  await filter("down").click();
+  await settled(page);
+  await expect(page).toHaveURL("/");
+  await expect(filter("down")).toHaveAttribute("aria-pressed", "false");
+  // Recent goes with the thumbs.
+  await expect(page.locator("#sort")).toHaveAccessibleName("Sort by Weekly Growth");
+  await open(page, "/?thumbs=up");
+  await accountLoaded(page);
+  await chip.click();
+  await settled(page);
+  await expect(page).toHaveURL("/");
+  await expect(filter("up")).toHaveAttribute("aria-pressed", "false");
+});
+
+test("Show's thumbs, logged out or with none given, say so", async ({ page }) => {
+  await open(page, "/?thumbs=up");
+  await accountLoaded(page);
+  const { empty } = list(page);
+  await expect(empty).toContainText("to see what you gave a thumbs up.");
+  await empty.getByRole("link", { name: "Log in with GitHub" }).click();
+  await ready(page);
+  await accountLoaded(page);
+  await settled(page);
+  await expect(page).toHaveURL("/?thumbs=up");
+  await expect(empty).toContainText("No thumbs up yet.");
+});
+
 test("Save, logged out, down a list, comes back to where the list was", async ({ page }) => {
   await open(page, "/?show=bundles");
   await accountLoaded(page);
@@ -492,11 +673,14 @@ test("the Saved list, logged out, asks to log in", async ({ page }) => {
   await expect(empty).toContainText("Nothing saved yet.");
 });
 
-test("Log out brings Log in back, and forgets what's saved", async ({ page }) => {
+test("Log out brings Log in back, and forgets what's saved and the thumbs", async ({ page }) => {
   await openLoggedIn(page, LIST);
   const save = skillRow(page).locator("[data-save]");
   await save.click();
   await expect(savedCount(page)).toHaveText("1");
+  const up = thumb(skillRow(page), "up");
+  await up.click();
+  await expect(up).toHaveAttribute("aria-pressed", "true");
 
   await logout(page).focus();
   await page.keyboard.press("Enter");
@@ -504,6 +688,7 @@ test("Log out brings Log in back, and forgets what's saved", async ({ page }) =>
   // The keyboard is on what took Log out's place, rather than back at the page's top.
   await expect(login(page)).toBeFocused();
   await expect(save).toHaveAttribute("aria-pressed", "false");
+  await expect(up).toHaveAttribute("aria-pressed", "false");
   await expect(savedCount(page)).toHaveText("");
 });
 
@@ -511,7 +696,9 @@ test("the API refuses what isn't a logged-in page's own request", async ({ page 
   const post = (data: unknown, headers?: Record<string, string>) =>
     page.request.post("/api/saves", { data, headers });
   const key = "skill:some/repo/skill";
+  const react = (data: unknown) => page.request.post("/api/reactions", { data });
   expect((await post({ key, saved: true })).status(), "not logged in").toBe(401);
+  expect((await react({ key, reaction: "up" })).status(), "a thumb, not logged in").toBe(401);
 
   await page.request.get("/api/auth/login", { maxRedirects: 0 });
   expect((await post({ key, saved: true })).status(), "logged in").toBe(200);
@@ -519,6 +706,7 @@ test("the API refuses what isn't a logged-in page's own request", async ({ page 
   expect((await post({ key, saved: "yes" })).status(), "not a boolean").toBe(400);
   expect((await post({ key, saved: true }, { "Sec-Fetch-Site": "cross-site" })).status()).toBe(403);
   expect((await post("key=x", { "Content-Type": "text/plain" })).status(), "a form").toBe(403);
+  expect((await react({ key, reaction: "sideways" })).status(), "not a thumb").toBe(400);
   expect((await page.request.get("/api/nope")).status()).toBe(404);
   // A cookie that doesn't decode, as another script may set, doesn't get in the way.
   const odd = await page.request.get("/api/me", { headers: { Cookie: "other=%E0%A4%A" } });

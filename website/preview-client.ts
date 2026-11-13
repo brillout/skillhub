@@ -19,7 +19,7 @@
 
 import { age, commandHtml, esc, plural } from "./format.ts";
 import { copyButton, mountCopyButtons } from "./copy.ts";
-import { saveButton, saveKey } from "./saves.ts";
+import { saveButton, saveKey, thumbsHtml } from "./saves.ts";
 import {
   aloneLine,
   bundleHref,
@@ -162,6 +162,7 @@ function paneHtml(e: Entry): string {
         <p class="skill-source"><a class="repo-link" href="${repoHref(repoKey(e))}">${esc(repoKey(e))}</a></p>
       </div>
       <a class="details" href="${pageOf(e)}">All details</a>
+      ${thumbsHtml(saveKey(isBundle(e) ? "bundle" : "skill", e.id), nameOf(e))}
       ${saveButton(saveKey(isBundle(e) ? "bundle" : "skill", e.id), nameOf(e))}
       <button type="button" class="preview-close" data-close-preview aria-label="Close the preview">${CROSS}</button>
     </div>
