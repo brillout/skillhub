@@ -71,30 +71,33 @@ export default {
 // ------------------------------------------------------------------- the API
 
 /**
- * Who's logged in, what they saved, as keys such as `skill:<id>` (see website/saves.ts), and their
- * thumbs, as `{ [key]: "up" | "down" }`.
+ * Who's logged in, what they saved, as keys such as `skill:<id>` (see website/saves.ts), in the
+ * order they saved it, and their thumbs, as `{ [key]: "up" | "down" }`. And when, by key, in
+ * milliseconds: `savedAt` and `reactedAt`, which the buttons' tooltips say.
  */
 async function me(request: Request, env: Env): Promise<Response> {
   const user = await currentUser(request, env);
-  if (!user) return json({ user: null, saved: [], reactions: {} });
+  if (!user) return json({ user: null, saved: [], savedAt: {}, reactions: {}, reactedAt: {} });
   const [saves, reactions] = await env.DB.batch<{
     kind: string;
     entry_id: string;
     reaction: string;
+    created_at: number;
   }>([
-    env.DB.prepare("SELECT kind, entry_id FROM saves WHERE user_id = ? ORDER BY created_at").bind(
-      user.id,
-    ),
-    env.DB.prepare("SELECT kind, entry_id, reaction FROM reactions WHERE user_id = ?").bind(
-      user.id,
-    ),
+    env.DB.prepare(
+      "SELECT kind, entry_id, created_at FROM saves WHERE user_id = ? ORDER BY created_at",
+    ).bind(user.id),
+    env.DB.prepare(
+      "SELECT kind, entry_id, reaction, created_at FROM reactions WHERE user_id = ?",
+    ).bind(user.id),
   ]);
+  const key = (r: { kind: string; entry_id: string }) => `${r.kind}:${r.entry_id}`;
   return json({
     user: { login: user.login, avatar: user.avatar_url },
-    saved: saves.results.map((r) => `${r.kind}:${r.entry_id}`),
-    reactions: Object.fromEntries(
-      reactions.results.map((r) => [`${r.kind}:${r.entry_id}`, r.reaction]),
-    ),
+    saved: saves.results.map(key),
+    savedAt: Object.fromEntries(saves.results.map((r) => [key(r), r.created_at])),
+    reactions: Object.fromEntries(reactions.results.map((r) => [key(r), r.reaction])),
+    reactedAt: Object.fromEntries(reactions.results.map((r) => [key(r), r.created_at])),
   });
 }
 

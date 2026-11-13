@@ -476,18 +476,31 @@ test("a thumb says what you think of a skill: the other replaces it, a second cl
   const answered = () => page.waitForResponse((res) => res.url().endsWith("/api/reactions"));
 
   let kept = answered();
+  await expect(up).toHaveAttribute("title", "Thumbs up");
   await up.click();
   await expect(up).toHaveAttribute("aria-pressed", "true");
   await expect(down).toHaveAttribute("aria-pressed", "false");
+  // Its tooltip says when it was given.
+  await expect(up).toHaveAttribute("title", "You gave it a thumbs up just now");
   await kept;
   kept = answered();
   await down.click();
   await expect(up).toHaveAttribute("aria-pressed", "false");
+  await expect(up).toHaveAttribute("title", "Thumbs up");
   await expect(down).toHaveAttribute("aria-pressed", "true");
   await kept;
   expect(await reactions(page)).toEqual({ [key]: "down" });
-  // A thumb isn't a save.
-  await expect(page.locator(".title-row [data-save]")).toHaveAttribute("aria-pressed", "false");
+  // As the API says, on the page's next load; and so does Save's, of when it was saved.
+  const save = page.locator(".title-row [data-save]");
+  await save.click();
+  await expect(save).toHaveAttribute("title", "Saved just now");
+  await page.reload();
+  await ready(page);
+  await accountLoaded(page);
+  await expect(down).toHaveAttribute("title", "You gave it a thumbs down just now");
+  await expect(save).toHaveAttribute("title", "Saved just now");
+  await save.click();
+  await expect(save).toHaveAttribute("title", "Save");
 
   // Its row in the list says so too, where a second click takes it back.
   await open(page, LIST);
@@ -535,10 +548,15 @@ test("a thumb, logged out, logs you in and gives it", async ({ page }) => {
   await expect(savedCount(page)).toHaveText("");
 });
 
-test("Show's thumbs list only what you gave that thumb, one at a time", async ({ page }) => {
+test("Show's thumbs list only what you gave that thumb, one at a time, the last given first", async ({
+  page,
+}) => {
   await openLoggedIn(page, "/");
-  const give = (key: string, reaction: string) =>
-    page.request.post("/api/reactions", { data: { key, reaction } });
+  const give = async (key: string, reaction: string) => {
+    await page.request.post("/api/reactions", { data: { key, reaction } });
+    // Each at a time of its own, which is in milliseconds, for the order they were given in.
+    await page.waitForTimeout(5);
+  };
   await give(`skill:${skill.id}`, "up");
   // A skill that's only listed in its bundle's row: what's yours is listed on its own.
   await give(`skill:${onlyInBundle.skill.id}`, "up");
@@ -550,13 +568,20 @@ test("Show's thumbs list only what you gave that thumb, one at a time", async ({
 
   const filter = (reaction: "up" | "down") =>
     page.locator(`#thumbs-filter [data-value="${reaction}"]`);
-  const names = async () => (await list(page).rows.locator(".skill-name").allTextContents()).sort();
+  const names = () => list(page).rows.locator(".skill-name").allTextContents();
   const chip = list(page).scope.locator('[data-remove="thumbs"]');
   await filter("up").click();
   await settled(page);
   await expect(page).toHaveURL("/?thumbs=up");
   await expect(filter("up")).toHaveAttribute("aria-pressed", "true");
-  await expect.poll(names).toEqual([skill.name, onlyInBundle.skill.name].sort());
+  // Sorted by Recent, as the list of what you saved is by Recently saved: the last given first.
+  await expect(page.locator("#sort")).toHaveAccessibleName("Sort by Recent thumbs up");
+  await expect.poll(names).toEqual([onlyInBundle.skill.name, skill.name]);
+  await page.locator('[data-order="asc"]').click();
+  await settled(page);
+  await expect.poll(names).toEqual([skill.name, onlyInBundle.skill.name]);
+  await page.locator('[data-order="desc"]').click();
+  await settled(page);
   await expect(chip).toHaveAccessibleName("Remove filter Thumbs up");
   await expect(page).toHaveTitle("Thumbs up · SkillHub");
 
@@ -565,6 +590,7 @@ test("Show's thumbs list only what you gave that thumb, one at a time", async ({
   await settled(page);
   await expect(page).toHaveURL("/?thumbs=down");
   await expect(filter("up")).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator("#sort")).toHaveAccessibleName("Sort by Recent thumbs down");
   await expect.poll(names).toEqual([bundle.agentReview.name]);
   // A thumb taken back only changes the button, as Save does: the row stays, for a second click.
   const row = thumb(list(page).rows.first(), "down");
@@ -577,6 +603,8 @@ test("Show's thumbs list only what you gave that thumb, one at a time", async ({
   await settled(page);
   await expect(page).toHaveURL("/");
   await expect(filter("down")).toHaveAttribute("aria-pressed", "false");
+  // Recent goes with the thumbs.
+  await expect(page.locator("#sort")).toHaveAccessibleName("Sort by Weekly Growth");
   await open(page, "/?thumbs=up");
   await accountLoaded(page);
   await chip.click();

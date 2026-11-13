@@ -5,7 +5,7 @@
  * account-client.ts fills `account` in before the pages' scripts render.
  */
 
-import { esc, href } from "./format.ts";
+import { ago, esc, href } from "./format.ts";
 
 export type SaveKind = "skill" | "bundle";
 /** A thumbs up or a thumbs down. */
@@ -24,8 +24,17 @@ export interface Account {
   listed?: (key: string) => boolean;
   /** The thumbs given, by key: one per entry, at most. */
   reactions: Map<string, Reaction>;
+  /** When each was saved, and given its thumb, by key: milliseconds, as the API says. */
+  savedAt: Map<string, number>;
+  reactedAt: Map<string, number>;
 }
-export const account: Account = { user: null, saved: new Set(), reactions: new Map() };
+export const account: Account = {
+  user: null,
+  saved: new Set(),
+  reactions: new Map(),
+  savedAt: new Map(),
+  reactedAt: new Map(),
+};
 
 /** Where account-client.ts keeps the API's last answer, so that a page shows it at once. */
 export const ACCOUNT_CACHE = "skillhub:account";
@@ -97,13 +106,33 @@ export const saveLabel = (saved: boolean) => (saved ? "Saved" : "Save");
  */
 export const saveName = (saved: boolean, name: string) => `${saveLabel(saved)} ${name}`;
 
+/**
+ * A Save button's tooltip: its word, and when it was saved, such as "Saved 3 days ago (Nov 10,
+ * 2026)". As of when it's shown: account-client.ts says it again as the pointer comes onto it.
+ */
+export function saveTitle(key: string): string {
+  const at = account.saved.has(key) ? account.savedAt.get(key) : undefined;
+  return at === undefined ? saveLabel(account.saved.has(key)) : `Saved ${ago(at)}`;
+}
+
 /** A Save button for the entry named `name`: its icon and its word. */
 export function saveButton(key: string, name: string): string {
   const on = account.saved.has(key);
-  return `<button type="button" class="save" data-save="${esc(key)}" data-name="${esc(name)}" aria-pressed="${on}" aria-label="${esc(saveName(on, name))}" title="${saveLabel(on)}">${ICON}<span class="save-word">${saveLabel(on)}</span></button>`;
+  return `<button type="button" class="save" data-save="${esc(key)}" data-name="${esc(name)}" aria-pressed="${on}" aria-label="${esc(saveName(on, name))}" title="${esc(saveTitle(key))}">${ICON}<span class="save-word">${saveLabel(on)}</span></button>`;
 }
 
 export const THUMB_WORDS: Record<Reaction, string> = { up: "Thumbs up", down: "Thumbs down" };
+
+/**
+ * A thumb's tooltip: its words, and, for the one given, when, such as "You gave it a thumbs up 3
+ * days ago (Nov 10, 2026)". As of when it's shown, as saveTitle's.
+ */
+export function thumbTitle(key: string, r: Reaction): string {
+  const at = account.reactions.get(key) === r ? account.reactedAt.get(key) : undefined;
+  return at === undefined
+    ? THUMB_WORDS[r]
+    : `You gave it ${r === "up" ? "a thumbs up" : "a thumbs down"} ${ago(at)}`;
+}
 
 /**
  * A thumbs up and a thumbs down for the entry named `name`, beside its Save button: what you
@@ -114,6 +143,6 @@ export const THUMB_WORDS: Record<Reaction, string> = { up: "Thumbs up", down: "T
 export function thumbsHtml(key: string, name: string): string {
   const mine = account.reactions.get(key);
   const button = (r: Reaction) =>
-    `<button type="button" data-react="${r}" aria-pressed="${mine === r}" aria-label="${THUMB_WORDS[r]} for ${esc(name)}" title="${THUMB_WORDS[r]}"></button>`;
+    `<button type="button" data-react="${r}" aria-pressed="${mine === r}" aria-label="${THUMB_WORDS[r]} for ${esc(name)}" title="${esc(thumbTitle(key, r))}"></button>`;
   return `<span class="thumbs" data-thumbs="${esc(key)}">${button("up")}${button("down")}</span>`;
 }

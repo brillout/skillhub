@@ -21,7 +21,9 @@ import {
   loginHtml,
   saveLabel,
   saveName,
+  saveTitle,
   savedCount,
+  thumbTitle,
   type Account,
   type Reaction,
 } from "./saves.ts";
@@ -36,16 +38,20 @@ export type AccountChange = "load" | "toggle" | "react";
 interface Me {
   user: Account["user"];
   saved: string[];
-  /** Missing from what a page kept before there were thumbs. */
+  /** Missing from what a page kept before there were thumbs, and before it kept the times. */
   reactions?: Record<string, Reaction>;
+  savedAt?: Record<string, number>;
+  reactedAt?: Record<string, number>;
 }
 
-const LOGGED_OUT: Me = { user: null, saved: [], reactions: {} };
+const LOGGED_OUT: Me = { user: null, saved: [], reactions: {}, savedAt: {}, reactedAt: {} };
 
 function apply(me: Me) {
   account.user = me.user;
   account.saved = new Set(me.saved);
   account.reactions = new Map(Object.entries(me.reactions ?? {}));
+  account.savedAt = new Map(Object.entries(me.savedAt ?? {}));
+  account.reactedAt = new Map(Object.entries(me.reactedAt ?? {}));
 }
 
 function store() {
@@ -56,6 +62,8 @@ function store() {
         user: account.user,
         saved: [...account.saved],
         reactions: Object.fromEntries(account.reactions),
+        savedAt: Object.fromEntries(account.savedAt),
+        reactedAt: Object.fromEntries(account.reactedAt),
       } satisfies Me),
     );
   } catch {}
@@ -212,7 +220,7 @@ function paint(animate = false) {
     const on = account.saved.has(button.dataset.save ?? "");
     button.setAttribute("aria-pressed", String(on));
     button.setAttribute("aria-label", saveName(on, button.dataset.name ?? ""));
-    button.title = saveLabel(on);
+    button.title = saveTitle(button.dataset.save ?? "");
     const word = button.querySelector(".save-word");
     if (word) word.textContent = saveLabel(on);
   }
@@ -222,6 +230,7 @@ function paint(animate = false) {
       "aria-pressed",
       String(account.reactions.get(key) === button.dataset.react),
     );
+    button.title = thumbTitle(key, button.dataset.react as Reaction);
   }
   for (const n of document.querySelectorAll<HTMLElement>("[data-saved-count]")) {
     const before = Number(n.textContent) || 0;
@@ -268,13 +277,23 @@ async function toggle(key: string) {
     return;
   }
   const on = !account.saved.has(key);
-  const set = (saved: boolean) => (saved ? account.saved.add(key) : account.saved.delete(key));
+  const at = account.savedAt.get(key);
+  /** `time`: when it was saved, now unless given. */
+  const set = (saved: boolean, time = Date.now()) => {
+    if (saved) {
+      account.saved.add(key);
+      account.savedAt.set(key, time);
+    } else {
+      account.saved.delete(key);
+      account.savedAt.delete(key);
+    }
+  };
   // The button shows its new state at once, and goes back if the Worker refuses it.
   set(on);
   changed("toggle");
   const res = await post("api/saves", { key, saved: on }).catch(() => null);
   if (res?.ok) return;
-  set(!on);
+  set(!on, at);
   changed("toggle");
   if (res?.status === 401) {
     // The session ended: log in again, and save on the way back.
@@ -297,15 +316,24 @@ async function react(key: string, clicked: Reaction) {
     return;
   }
   const before = account.reactions.get(key) ?? null;
+  const beforeAt = account.reactedAt.get(key);
   const after = before === clicked ? null : clicked;
-  const set = (r: Reaction | null) =>
-    r ? account.reactions.set(key, r) : account.reactions.delete(key);
+  /** `time`: when it was given, now unless given. */
+  const set = (r: Reaction | null, time = Date.now()) => {
+    if (r) {
+      account.reactions.set(key, r);
+      account.reactedAt.set(key, time);
+    } else {
+      account.reactions.delete(key);
+      account.reactedAt.delete(key);
+    }
+  };
   // The thumbs show their new state at once, and go back if the Worker refuses it.
   set(after);
   changed("react");
   const res = await post("api/reactions", { key, reaction: after }).catch(() => null);
   if (res?.ok) return;
-  set(before);
+  set(before, beforeAt);
   changed("react");
   if (res?.status === 401) {
     // The session ended: log in again, and give the thumb on the way back.
@@ -315,6 +343,20 @@ async function react(key: string, clicked: Reaction) {
     location.href = loginHref(after ? { react: key, reaction: after } : {});
   } else if (res?.status === 409) alert((await res.json()).error);
 }
+
+/**
+ * The tooltips of the Save buttons and the thumbs say how long ago, as of when they show: said
+ * again as the pointer comes onto one, ahead of its tooltip, a page left open says "just now" no
+ * more an hour later.
+ */
+document.addEventListener("pointerover", (event) => {
+  const el = event.target instanceof Element ? event.target : null;
+  const save = el?.closest<HTMLElement>("[data-save]");
+  if (save) save.title = saveTitle(save.dataset.save ?? "");
+  const thumb = el?.closest<HTMLElement>("[data-react]");
+  const key = thumb?.closest<HTMLElement>("[data-thumbs]")?.dataset.thumbs;
+  if (thumb && key) thumb.title = thumbTitle(key, thumb.dataset.react as Reaction);
+});
 
 async function logout() {
   await post("api/auth/logout", {}).catch(() => null);

@@ -49,7 +49,16 @@ import {
   type ClientSkill as Skill,
   type SearchWords,
 } from "./client-data.ts";
-import { CHECK, CHICK, DOWNLOAD, SAVED, SEARCH, STAR, iconDefsHtml } from "./prop-icons.ts";
+import {
+  CHECK,
+  CHICK,
+  DOWNLOAD,
+  SAVED,
+  SEARCH,
+  STAR,
+  THUMB_ICONS,
+  iconDefsHtml,
+} from "./prop-icons.ts";
 import { plain, sought, terms, type Term } from "./search-terms.ts";
 import {
   account,
@@ -534,9 +543,10 @@ export function rangeLabel(p: Prop, [lo, hi]: Range): string {
 /**
  * A number to sort by; "growth", how fast the weekly downloads grow (a sort only: it can be
  * negative or infinite, so it gets no slider); "match", how well the entry matches the search,
- * for when there is one; or "saved", when you saved it, for when the list shows only what you saved.
+ * for when there is one; "saved", when you saved it, for when the list shows only what you saved;
+ * or "thumbs", when you gave it its thumb, for when it shows only what you gave that thumb.
  */
-export type Sort = Prop | "growth" | "match" | "saved";
+export type Sort = Prop | "growth" | "match" | "saved" | "thumbs";
 const GROWTH = {
   label: "Weekly Growth",
   icon: DOWNLOAD,
@@ -549,10 +559,11 @@ const GROWTH = {
 };
 /**
  * The sort unless another is picked: a search's is best match; the list of what you saved is
- * Recently saved, the last saved first, unless it's searched; otherwise the list is Rising, by growth.
+ * Recently saved, the last saved first, unless it's searched, and the list of what you gave a
+ * thumb is Recent, the last given first; otherwise the list is Rising, by growth.
  */
-export const defaultSort = ({ q, saved }: Pick<State, "q" | "saved">): Sort =>
-  q.trim() ? "match" : saved ? "saved" : "growth";
+export const defaultSort = ({ q, saved, thumbs }: Pick<State, "q" | "saved" | "thumbs">): Sort =>
+  q.trim() ? "match" : saved ? "saved" : thumbs ? "thumbs" : "growth";
 /**
  * The search as it's looked for: what the box holds, without the spaces around it. A box that only
  * holds spaces isn't a search: it neither narrows the list nor sorts it by best match.
@@ -615,6 +626,7 @@ export function parse(search: string): State {
   const p = new URLSearchParams(search);
   const sort = p.get("sort") as Sort | null;
   const q = p.get("q") ?? "";
+  const thumbs = (["up", "down"] as const).find((v) => v === p.get("thumbs")) ?? null;
   // A repo as the data spells it, however the link does: ?repo=Anthropics/Skills is anthropics/skills.
   const repo = p.get("repo");
   const ranges = fullRanges();
@@ -644,14 +656,15 @@ export function parse(search: string): State {
       (Object.hasOwn(PROPS, sort) ||
         sort === "growth" ||
         (sort === "match" && q.trim()) ||
-        (sort === "saved" && p.has("saved")))
+        (sort === "saved" && p.has("saved")) ||
+        (sort === "thumbs" && thumbs))
         ? sort
-        : defaultSort({ q, saved: p.has("saved") }),
+        : defaultSort({ q, saved: p.has("saved"), thumbs }),
     asc: p.get("order") === "asc",
     ranges,
     show: (["skills", "bundles"] as const).find((v) => v === p.get("show")) ?? "all",
     saved: p.has("saved"),
-    thumbs: (["up", "down"] as const).find((v) => v === p.get("thumbs")) ?? null,
+    thumbs,
   };
 }
 /** The query string for a state, empty for the default view. */
@@ -682,8 +695,9 @@ export function query(s: State): string {
 export const fresh = (): State => parse("");
 /**
  * `prev` with `patch` applied. The sort, while at its default, follows the default for the new
- * search and Saved switch: best match while there's a search, Recently saved while the switch is
- * on (see defaultSort). Best match goes with the search, and Recently saved with the switch.
+ * search, Saved switch and thumbs: best match while there's a search, Recently saved while the
+ * switch is on, Recent while a thumb is (see defaultSort). Best match goes with the search,
+ * Recently saved with the switch, and Recent with the thumb.
  */
 export function patched(prev: State, patch: Partial<State>): State {
   const next = { ...prev, ...patch };
@@ -693,6 +707,7 @@ export function patched(prev: State, patch: Partial<State>): State {
   if (next.sort === "match") next.asc = false;
   if (next.sort === "match" && !term(next)) next.sort = defaultSort(next);
   if (next.sort === "saved" && !next.saved) next.sort = defaultSort(next);
+  if (next.sort === "thumbs" && !next.thumbs) next.sort = defaultSort(next);
   return next;
 }
 /**
@@ -990,12 +1005,16 @@ function order(sort: Sort, asc: boolean, q: string) {
   // When it was saved, as its place among what's saved: the API lists them in the order they were
   // saved, and a click on Save adds to the end (see account-client.ts).
   const savedAt = new Map(sort === "saved" ? [...account.saved].map((k, i) => [k, i]) : []);
+  const keyOf = (e: Entry) => saveKey(isBundle(e) ? "bundle" : "skill", e.id);
   const value = (e: Entry): Value | null =>
     sort === "growth"
       ? growthOf(e)
       : sort === "saved"
-        ? (savedAt.get(saveKey(isBundle(e) ? "bundle" : "skill", e.id)) ?? null)
-        : PROPS[sort as Prop].of(e);
+        ? (savedAt.get(keyOf(e)) ?? null)
+        : // When its thumb was given: the API says, and a click on a thumb gives it now.
+          sort === "thumbs"
+          ? (account.reactedAt.get(keyOf(e)) ?? null)
+          : PROPS[sort as Prop].of(e);
   return (a: Entry, b: Entry) =>
     (sort === "match"
       ? matchScore(b, q) - matchScore(a, q)
@@ -2042,35 +2061,50 @@ export const presetsHtml = (st: State) =>
     .join("");
 
 /**
- * Sort by: its menu and its order. Re-rendered with the list, since a search adds Best match, and
- * the Saved switch Recently saved. The sort is a menu of its own, rather than a <select>, to show
- * each option's icon: see list-client.ts for its keys.
+ * Sort by: its menu and its order. Re-rendered with the list, since a search adds Best match, the
+ * Saved switch Recently saved, and Show's thumbs Recent, with the thumb's icon. The sort is a menu
+ * of its own, rather than a <select>, to show each option's icon: see list-client.ts for its keys.
  */
 export function sortHtml(st: State): string {
-  // The sorts, each with its icon: Best match only while searching, Recently saved only while the
-  // list shows only what you saved.
-  const sorts: [Sort, string, string][] = [
-    ...(term(st) ? [["match", SEARCH, "Best match"] as [Sort, string, string]] : []),
-    ...(st.saved ? [["saved", SAVED, "Recently saved"] as [Sort, string, string]] : []),
-    ...PROP_IDS.map((p): [Sort, string, string] => [p, PROPS[p].icon, PROPS[p].label]),
+  // The sorts, each with its icon and its name, and what a screen reader adds to the name, which
+  // the icon says to the eye: Best match only while searching, Recently saved only while the list
+  // shows only what you saved, and Recent only while it shows only what you gave a thumb.
+  type Option = [Sort, icon: string, label: string, spoken?: string];
+  const sorts: Option[] = [
+    ...(term(st) ? [["match", SEARCH, "Best match"] as Option] : []),
+    ...(st.saved ? [["saved", SAVED, "Recently saved"] as Option] : []),
+    ...(st.thumbs
+      ? [
+          [
+            "thumbs",
+            THUMB_ICONS[st.thumbs],
+            "Recent",
+            THUMB_WORDS[st.thumbs].toLowerCase(),
+          ] as Option,
+        ]
+      : []),
+    ...PROP_IDS.map((p): Option => [p, PROPS[p].icon, PROPS[p].label]),
     ["growth", GROWTH.icon, GROWTH.label],
   ];
   const current = sorts.find(([id]) => id === st.sort) ?? sorts[0];
+  const spoken = (words?: string) => (words ? `<span class="sr-only"> ${words}</span>` : "");
   // The button keeps the room for the longest name, so that picking another sort doesn't resize it.
   const longest = sorts.reduce((a, [, , label]) => (label.length > a.length ? label : a), "");
   const options = sorts
     .map(
-      ([id, icon, label]) =>
-        `<li role="option" id="sort-${id}" data-sort="${id}" aria-selected="${id === st.sort}" tabindex="-1">${icon}<span>${label}</span>${id === st.sort ? CHECK : ""}</li>`,
+      ([id, icon, label, words]) =>
+        `<li role="option" id="sort-${id}" data-sort="${id}" aria-selected="${id === st.sort}" tabindex="-1">${icon}<span>${label}${spoken(words)}</span>${id === st.sort ? CHECK : ""}</li>`,
     )
     .join("");
   // The order: both directions as arrows, the current one pressed, their words in their labels.
   const [down, up] =
     st.sort === "saved"
       ? ["Last saved first", "First saved first"]
-      : st.sort !== "match" && st.sort !== "growth" && PROPS[st.sort].date
-        ? ["Newest first", "Oldest first"]
-        : ["Highest first", "Lowest first"];
+      : st.sort === "thumbs"
+        ? ["Last given first", "First given first"]
+        : st.sort !== "match" && st.sort !== "growth" && PROPS[st.sort].date
+          ? ["Newest first", "Oldest first"]
+          : ["Highest first", "Lowest first"];
   const direction = (asc: boolean, arrow: string, words: string) =>
     `<button type="button" data-order="${asc ? "asc" : "desc"}" aria-pressed="${st.asc === asc}" aria-label="${words}" title="${words}">${arrow}</button>`;
   const order =
@@ -2080,7 +2114,7 @@ export function sortHtml(st: State): string {
   return `
     <div class="sort-head"><h2 id="sort-label">Sort by</h2>${order}</div>
     <div class="sort-menu">
-      <button type="button" class="sort-button" id="sort" data-action="sort-menu" aria-haspopup="listbox" aria-expanded="false" aria-controls="sort-options" aria-labelledby="sort-label sort">${current[1]}<span data-longest="${longest}">${current[2]}</span>${CHEVRON}</button>
+      <button type="button" class="sort-button" id="sort" data-action="sort-menu" aria-haspopup="listbox" aria-expanded="false" aria-controls="sort-options" aria-labelledby="sort-label sort">${current[1]}<span data-longest="${longest}">${current[2]}</span>${spoken(current[3])}${CHEVRON}</button>
       <ul class="sort-options" id="sort-options" role="listbox" aria-labelledby="sort-label" hidden>${options}</ul>
     </div>`;
 }

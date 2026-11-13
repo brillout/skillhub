@@ -256,8 +256,16 @@ class Browser {
   /** Gives the browser a cookie, such as another browser's, or one the Worker never set. */
   setCookie = (name: string, value: string, path = "/") => this.#cookies.set(name, { value, path });
 
-  /** What /api/me says: who's logged in, and what they saved. */
-  me = async () => (await this.get("/api/me")).json() as Promise<Me>;
+  /** What /api/me says: who's logged in, what they saved and their thumbs; when, `times` says. */
+  me = async (): Promise<Me> => {
+    const { savedAt, reactedAt, ...me } = (await (await this.get("/api/me")).json()) as Me & Times;
+    return me;
+  };
+  /** When each was saved and given its thumb, by key, as /api/me says. */
+  times = async (): Promise<Times> => {
+    const { savedAt, reactedAt } = (await (await this.get("/api/me")).json()) as Times;
+    return { savedAt, reactedAt };
+  };
   save = (key: string, saved = true) => this.post("/api/saves", { key, saved });
   react = (key: string, reaction: "up" | "down" | null = "up") =>
     this.post("/api/reactions", { key, reaction });
@@ -267,7 +275,11 @@ interface Me {
   saved: string[];
   reactions: Record<string, string>;
 }
-/** What /api/me says to a browser nobody's logged in in. */
+interface Times {
+  savedAt: Record<string, number>;
+  reactedAt: Record<string, number>;
+}
+/** What /api/me says to a browser nobody's logged in in, but `times`. */
 const NOBODY: Me = { user: null, saved: [], reactions: {} };
 
 /** The cookies a response sets, by name. */
@@ -340,7 +352,7 @@ describe("who's logged in", () => {
   test("nobody, in a browser that never logged in", async () => {
     const res = await new Browser(worker).get("/api/me");
     assert.equal(res.status, 200);
-    assert.deepEqual(await res.json(), NOBODY);
+    assert.deepEqual(await res.json(), { ...NOBODY, savedAt: {}, reactedAt: {} });
     // Who's logged in changes: no cache may keep an answer.
     assert.equal(res.headers.get("Cache-Control"), "no-store");
   });
@@ -895,6 +907,30 @@ describe("thumbs up and down", () => {
     assert.deepEqual((await browser.me()).reactions, { [BUNDLE]: "down" });
     assert.equal((await browser.react(BUNDLE, null)).status, 200);
     assert.deepEqual((await browser.me()).reactions, {});
+  });
+
+  test("say when each was given, as saves do", async () => {
+    const before = Date.now();
+    await browser.save(SKILL);
+    await browser.react(BUNDLE, "up");
+    const first = await browser.times();
+    assert.deepEqual(Object.keys(first.savedAt), [SKILL]);
+    assert.deepEqual(Object.keys(first.reactedAt), [BUNDLE]);
+    for (const at of [first.savedAt[SKILL], first.reactedAt[BUNDLE]])
+      assert.ok(at >= before && at <= Date.now(), String(at));
+
+    // Turned over, a thumb is given anew; saved again, a save keeps its time.
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    await browser.react(BUNDLE, "down");
+    await browser.save(SKILL);
+    const then = await browser.times();
+    assert.ok(then.reactedAt[BUNDLE] > first.reactedAt[BUNDLE]);
+    assert.equal(then.savedAt[SKILL], first.savedAt[SKILL]);
+
+    // Taken back, neither has one.
+    await browser.react(BUNDLE, null);
+    await browser.save(SKILL, false);
+    assert.deepEqual(await browser.times(), { savedAt: {}, reactedAt: {} });
   });
 
   test("the other thumb replaces the first; the same one twice is one", async () => {
