@@ -20,6 +20,8 @@ import {
   taskListUrl,
   wideCodeUrl,
 } from "./data.ts";
+import { readFileSync } from "node:fs";
+import { readCrawl, root } from "../scripts/data.ts";
 import { bundlePage, bundleRepo } from "../website/github.ts";
 import { expect, list, n, open, ready, test } from "./fixtures.ts";
 
@@ -456,6 +458,22 @@ test("the about page counts what the site lists, and explains each row", async (
   await listed.locator(".tip-i").click();
   await page.mouse.move(0, 0);
   await expect(tip).toBeHidden();
+});
+
+test("the about page's count of skills waiting for an agent review leads to them", async ({
+  page,
+}) => {
+  await open(page, "/about/");
+  const waiting = page.locator(".breakdown tr", {
+    has: page.getByRole("button", { name: "About Waiting for agent review", exact: true }),
+  });
+  const link = waiting.locator(".num a");
+  await expect(link).toHaveText(n(readCrawl().qualified.length));
+  // To the line of the repo's file where they start.
+  const { pathname, hash } = new URL((await link.getAttribute("href")) as string);
+  const [, file] = pathname.split("/blob/main/");
+  const line = readFileSync(`${root}${file}`, "utf8").split("\n")[Number(hash.slice(2)) - 1];
+  expect(line).toMatch(/^\s*"qualified": \[/);
 });
 
 test("the about page shows one explanation at a time", async ({ page }) => {
