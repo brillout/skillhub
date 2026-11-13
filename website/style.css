@@ -200,7 +200,8 @@ a {
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
   color: inherit;
 }
@@ -1401,6 +1402,7 @@ body[data-preview-selecting] :is(#page-head, .skills-view > :not(.preview)) {
   grid-template-columns: minmax(0, 1fr) 380px;
   grid-template-areas:
     "agent field"
+    "agent note"
     "label note";
   gap: 0 16px;
   margin-bottom: 24px;
@@ -1503,14 +1505,16 @@ body[data-preview-selecting] :is(#page-head, .skills-view > :not(.preview)) {
   color: var(--on-garnet);
 }
 
+/* The words have the size of an agent's own prompt box, and the least at which a phone doesn't zoom
+   in on the box it focuses. */
 .search-field input,
-.agent-field input {
+.agent-field textarea {
   flex: 1;
   padding: 6px 2px;
   border: 0;
   background: none;
   color: var(--ink);
-  font-size: 18px;
+  font-size: 16px;
   text-overflow: ellipsis;
 }
 
@@ -1539,21 +1543,56 @@ input[type="search"]::-webkit-search-cancel-button:hover {
   background: var(--ink);
 }
 
-.agent-field input {
+/* One line, as the search, until it has the focus. */
+.agent-field textarea {
   min-width: 0;
+  height: 36px;
+  line-height: 24px;
+  resize: none;
+  overflow: hidden;
 }
 
 /* The field shows the focus instead. */
 .search-field input:focus-visible,
-.agent-field input:focus-visible {
+.agent-field textarea:focus-visible {
   outline: none;
 }
 
-/* A text box like the search's, told apart by its icon and its button. */
+/*
+ * A text box like the search's, told apart by its icon and its button. Its top keeps to the
+ * search's, since it grows downwards: with the focus, it's a prompt box, as an agent's, three lines
+ * high and growing with what's typed, up to ten (see list-client.ts), with the button under the
+ * words, at the right. The search's line stays under the search: see .finder's areas.
+ */
 .agent-field {
   grid-area: agent;
+  align-self: start;
   gap: 8px;
   padding: 6px 6px 6px 18px;
+}
+
+.agent-field:focus-within {
+  flex-wrap: wrap;
+  align-items: flex-start;
+  padding-top: 10px;
+}
+
+/* On the first line. */
+.agent-field:focus-within .ask-icon {
+  margin-top: 8px;
+}
+
+.agent-field:focus-within textarea {
+  flex-basis: calc(100% - 28px);
+  height: var(--need-height, 84px);
+  min-height: 84px;
+  max-height: 252px;
+  padding-right: 12px;
+  overflow-y: auto;
+}
+
+.agent-field:focus-within .ask-button {
+  margin-left: auto;
 }
 
 .ask-icon {
@@ -3944,11 +3983,6 @@ input[type="search"]::-webkit-search-cancel-button:hover {
     --cut: 12px;
   }
 
-  .search-field input,
-  .agent-field input {
-    font-size: 16px;
-  }
-
   .agent-field {
     padding: 6px 6px 6px 16px;
   }
@@ -4051,7 +4085,7 @@ input[type="search"]::-webkit-search-cancel-button:hover {
     flex-wrap: wrap;
   }
 
-  .agent-field input {
+  .agent-field textarea {
     flex-basis: calc(100% - 40px);
   }
 

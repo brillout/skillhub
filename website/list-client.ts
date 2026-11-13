@@ -602,7 +602,7 @@ function render(whole = false) {
 }
 
 /** The agent's box: what you need, in your own words. */
-const need = document.getElementById("need") as HTMLInputElement;
+const need = document.getElementById("need") as HTMLTextAreaElement;
 const askLine = document.getElementById("ask-label") as HTMLElement;
 let askTimer: ReturnType<typeof setTimeout> | undefined;
 /** The search and filters the line was last said about: see scopeKey. */
@@ -659,8 +659,29 @@ function sayOn(link: HTMLElement | undefined, words: string) {
   }, 5000);
 }
 
+// Enter asks, as it did when the box was one line; Shift+Enter starts a new line.
 need.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") ask();
+  if (event.key !== "Enter" || event.shiftKey || event.isComposing) return;
+  event.preventDefault();
+  ask();
+});
+
+/**
+ * With the focus, the agent's box grows with its words, between the heights style.css gives it: the
+ * height to fit them is their scrollHeight once the box is at its least.
+ */
+function fitNeed() {
+  need.style.setProperty("--need-height", "0px");
+  need.style.setProperty("--need-height", `${need.scrollHeight}px`);
+}
+need.addEventListener("focus", fitNeed);
+need.addEventListener("input", fitNeed);
+
+// A press in the agent's box, but on its words, leaves the focus where it is. Taken off the words,
+// as by a press on the button, it would shrink the box to one line under the pointer, before the
+// click: which would land on whatever is there then. The click focuses the words: see focus-need.
+need.parentElement!.addEventListener("mousedown", (event) => {
+  if (event.target !== need) event.preventDefault();
 });
 
 q.addEventListener("input", () => go({ q: q.value }, true));

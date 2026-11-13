@@ -1002,3 +1002,36 @@ test("Find with your agent copies a prompt with the list and the need", async ({
   expect(prompt).toContain("narrowed to: tag type:workflow");
   expect(prompt.trimEnd().endsWith("review my pull requests")).toBe(true);
 });
+
+test("the agent's box is a prompt box of a few lines while it has the focus", async ({ page }) => {
+  await open(page, "/?show=bundles");
+  const need = page.locator("#need");
+  const height = async () =>
+    ((await page.locator(".agent-field").boundingBox()) as { height: number }).height;
+  const oneLine = await height();
+  await need.click();
+  const focused = await height();
+  expect(focused).toBeGreaterThan(oneLine * 2);
+
+  // Enter asks, rather than start a line.
+  await need.fill("review my pull requests");
+  await need.press("Enter");
+  await expect(page.locator("#ask-label")).toContainText("copied to your clipboard");
+  await expect(need).toHaveValue("review my pull requests");
+  const prompt = await page.evaluate(() => navigator.clipboard.readText());
+  expect(prompt.trimEnd().endsWith("review my pull requests")).toBe(true);
+
+  // Shift+Enter starts one. The box grows with the lines, up to ten, then scrolls.
+  for (let i = 0; i < 12; i++) await need.press("Shift+Enter");
+  await expect(need).toHaveValue(`review my pull requests${"\n".repeat(12)}`);
+  expect(await height()).toBeGreaterThan(focused);
+  expect(await need.evaluate((el) => el.scrollHeight > el.clientHeight)).toBe(true);
+
+  // A press on the button leaves the focus in the box, which so doesn't shrink under the pointer.
+  await page.locator(".ask-button").click();
+  await expect(need).toBeFocused();
+
+  // Elsewhere, one line again.
+  await page.locator("#q").focus();
+  expect(await height()).toBe(oneLine);
+});

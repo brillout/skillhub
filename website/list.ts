@@ -2107,7 +2107,7 @@ export function listView(
           <div class="agent-field" data-action="focus-need">
             <svg class="ask-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 6.5V4M2 11v3M18 11v3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /><rect x="4" y="6.5" width="12" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.5" /><circle cx="10" cy="3" r="1.25" fill="currentColor" /><circle cx="7.75" cy="10.75" r="1.25" fill="currentColor" /><circle cx="12.25" cy="10.75" r="1.25" fill="currentColor" /><path d="M8.5 13.75h3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
             <label for="need" class="sr-only">What you need, for your agent</label>
-            <input id="need" type="text" placeholder="Describe what you need" autocomplete="off" aria-describedby="ask-label scope" />
+            <textarea id="need" rows="1" placeholder="Describe what you need" autocomplete="off" aria-describedby="ask-label scope"></textarea>
             <button type="button" class="ask-button" data-action="ask">Find with your agent</button>
           </div>
           <div class="search-field" data-action="focus-search">
