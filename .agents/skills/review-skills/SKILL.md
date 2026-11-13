@@ -1,9 +1,13 @@
 ---
-name: add-skill
-description: Approve or disqualify the qualified skills in SkillHub's crawl.jsonc, add a skill to skills.jsonc, or retag one, including whether it belongs to a bundle. Use when asked to work through the qualified skills (the queue), to add, approve, disqualify (skip), tag, retag or review skills, or to record a bundle of skills.
+name: review-skills
+description: Review the skills SkillHub knows of. Approve or disqualify the qualified skills in crawl.jsonc, add a skill to skills.jsonc, tag or retag one, record a bundle of skills, and write or refresh the TLDRs of skills and bundles, the summaries the site shows people browsing skills. Use when asked to work through the qualified skills (the queue), to add, approve, disqualify (skip), tag, retag or review skills, to record a bundle, or to write, update or review TLDRs, such as catching up on the skills whose SKILL.md has drifted most from its TLDR.
 ---
 
-# Skills and their states
+# Review skills
+
+Reviewing a skill is deciding whether the site lists it and writing what the site says about it: its tags, its bundle and its TLDR, all in its `agentReview`.
+
+## Skills and their states
 
 Every skill SkillHub knows of has one state, under its skills.sh page:
 
@@ -55,7 +59,7 @@ A **whitelisted author**'s skill (`WHITELISTED_AUTHORS` in `data/params.ts`) is 
 5. Set `asOf.tags` in `data/skills.jsonc` to today's date: the tags page says when the tags were last assigned.
 6. Check whether it belongs to a bundle (below).
 7. Run `pnpm run check`, which rejects tags outside the vocabulary, then commit and push to `main`.
-8. Write its TLDR with the write-tldr skill.
+8. Write its TLDR (below).
 
 ## Bundles
 
@@ -66,6 +70,79 @@ A bundle is skills of one repo meant to be installed and used together, such as 
 - Its `skills` come in the order they're used. A skill is in one bundle at most, and only an approved skill can be in one.
 - Mark a skill `standalone` when someone would install it alone and get something out of it, with no other skill of the bundle. One that loads another skill of the bundle, uses its files, or only works on another's output isn't, and gets a `note` saying what it needs. A soft mention, such as suggesting another skill for the next step, doesn't count.
 - Give a standalone skill `listedOutsideBundle`: whether the skills list also shows it on a row of its own, besides its bundle's row. Ask whether people would want it without the rest of the bundle. `true` when it serves a wider audience than the bundle, such as `tdd` in an engineering-workflow bundle: its own row is a real discovery. `false` when whoever would want it would want the bundle too: a skill for the bundle's niche, such as `save-systems` in a game-dev bundle, or one of a family of siblings that only differ in what they cover, such as game genres, CTF categories or variants of one output style. `false` too for the skill the bundle is named after, such as `caveman` in Caveman: the bundle's row already is its row. Decide per skill: a bundle can hold both. A bundle's skills get installed together and rise together, so a whole family of rows would flood the list.
-- Give it a one-sentence `description`, its `install` commands from the repo's README, each with a `label` saying where it works, and a TLDR, with the write-tldr skill.
+- Give it a one-sentence `description`, its `install` commands from the repo's README, each with a `label` saying where it works, and a TLDR (below).
 
 Skills that are `listedOutsideBundle` keep a row of their own in the skills list; the others are only listed inside their bundle's row.
+
+## TLDRs
+
+A TLDR explains a skill, or a bundle of skills, to a person browsing the site, so they can tell at a glance what it is and whether they want it. It's written from the skill's SKILL.md and records a permalink to the version it summarizes. Until a skill has one, the site shows its one-line `description` instead.
+
+### 1. Pick what to write
+
+Start from an up-to-date checkout of `main`. Then list the skills and bundles whose TLDR is missing or behind:
+
+```bash
+pnpm run tldr 20    # the 20 with the largest skew: skew, id, the copies to read
+```
+
+The skew is how many words the SKILL.md gained or lost since its TLDR was written, or its whole word count when there's no TLDR yet. Only approved skills, the ones in `data/skills.jsonc`, get a TLDR: disqualified ones get no agent data.
+
+### 2. Read
+
+- **A skill:** its copy, `data/skill-snapshots/<id>.md`. Write from the body. The frontmatter `description` is a trigger for agents, not a summary for people. When the body sends the agent to other files of the skill for the substance, read them on GitHub at the commit in the skill's `skillMd.version`.
+- **A bundle:** the copies of all its skills, in the order its entry in `bundles` lists them, and the repo's README for how they fit together.
+- **Its neighbours:** the other skills of its repo, and skills with the same topic tags, so you can say how it differs.
+
+For a refresh, read what changed since the TLDR's permalink, and keep what still holds.
+
+### 3. Write
+
+A TLDR has two parts:
+
+- **`glance`**: short labelled facts that place the skill at a glance. The skills list shows the first two, the skill's page shows them all, so put the most telling first. Suggested labels, none required, and invent your own when none fits: **Use it when**, **It does**, **You get**, **Unlike**, **Part of**, **Also called**, **Needs**, **Keeps**, **Runs**, **Works with**. Skip **Part of** for a skill in one of the `bundles`: its page and its entry already say so.
+- **`text`**: prose that explains what the skill does, for a full picture of it. No fixed structure. A bundle's text says how its skills work together.
+
+There are no minimums, only limits, which `pnpm run tldr` and `pnpm run check` enforce: at most 8 glance items, 4 words per label, 30 words per glance item and 200 words of text. Never pad to fill them.
+
+The site shows each glance item as "Label: Text.", adding the colon and the full stop itself. So each item stands on its own after its label:
+
+- Start it with a capital letter, unless it starts with a name written in lowercase, such as a command (`uv`), a file (`report.md`) or a skill (`grill-me`).
+- Don't end it with a full stop. A "?" or "!" that belongs to it stays.
+- Don't continue the label's sentence. An **Unlike X** item says, as a sentence of its own, what X does and how this skill differs, such as "That one drives a browser for one task; this one keeps what it learned as a skill you can rerun", not "which drives a browser for one task, it keeps…". Name X in the label, not a bare **Unlike**.
+
+How to write them:
+
+1. Use plain words. Explain any term the skill coins, such as "fragments", "beats" or "grounding", and don't just restate the skill's name.
+2. Say what you end up with: a file, a plan, a draft, a reply style.
+3. Say where it fits in its workflow, and how it differs from a close neighbour. One **Unlike X** item can do a lot.
+4. Mention practical facts that change the decision: it only runs when called (`disable-model-invocation` in its frontmatter), it stays on until stopped, it needs a CLI, it writes a file.
+5. Only state what the SKILL.md says or shows. Don't guess at behavior.
+
+For example, writing-fragments' frontmatter says "Writing, explore: mine raw fragments, no structure yet." Its TLDR says:
+
+- **Use it when:** You want to write an essay or article but don't know its shape yet.
+- **It does:** Interviews you and saves every usable line, anecdote and idea to one Markdown file.
+- **You get:** A file of raw notes, with no outline.
+- **Runs:** Only when you call it.
+
+> This is the exploring half of Matt Pocock's writing workflow. You say what you'd like to write about, and the agent keeps asking: what you noticed, what happened, what you meant by a phrase you used. Anything that might survive into the final piece goes into one Markdown file […]
+
+### 4. Test it on a cold reader
+
+Someone who has never heard of the skill should understand it from the TLDR alone. If you can start a subagent, give it only the glance and the text, with no other context, and ask what the skill does, what you end up with, and when you'd use it. Compare its answer with the SKILL.md, and rewrite whatever it got wrong or vague. Without subagents, reread the TLDR as that stranger would.
+
+### 5. Save
+
+```bash
+pnpm run tldr <id> --model "<your model, such as Claude Opus 5.5>" --effort <your effort: low, medium, high, xhigh, max, or unknown> <<'EOF'
+{"glance": [{"label": "Use it when", "text": "…"}], "text": "…"}
+EOF
+```
+
+This checks the limits, records the permalink, resets the skew to 0, and records your model and effort as the review's `model` and `effort`. The permalink points to:
+
+- **A skill:** its directory on GitHub at the commit its copy was taken from.
+- **A bundle:** its repo at the current commit. Setting it fails when a skill's copy doesn't match that commit; then run `pnpm run sync <repo>`, reread what changed, and try again.
+
+Then run `pnpm run check`, and commit and push to `main`. To see the result, `pnpm run dev` serves the site at http://localhost:3000, with each skill at `/<owner>/<repo>/<name>/` and each bundle at `/bundle/<id>/`, with a slash for its id's `@`.

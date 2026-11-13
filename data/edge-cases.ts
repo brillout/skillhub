@@ -2,8 +2,9 @@
  * The edge cases: a catalog of some twenty entries, with one for each state the pages handle but
  * that the real data has no example of on most days, such as a skill without a TLDR, or with
  * unknown installs. Nobody sees how the pages take those, and no test does, until one goes live:
- * a skill is without a TLDR and without a copy of its SKILL.md from the add-skill skill to the
- * next sync, and skills.sh drops a skill's numbers when it drops its page.
+ * a skill is without a TLDR and without a copy of its SKILL.md from its approval, with the
+ * review-skills skill, to the next sync, and skills.sh drops a skill's numbers when it drops its
+ * page.
  *
  * `SKILLHUB_DATA=edge-cases` has `pnpm dev`, `pnpm build`, `pnpm preview` and `pnpm check:site` work
  * on this catalog instead of the real one, beside it: see `siteOf`. The end-to-end walk covers it,
@@ -45,7 +46,7 @@ export const LIVE = "https://skillhub.build";
 
 /** What each case takes from a skill that lacks nothing, or from its repo. */
 const SKILL_CASES = {
-  /** As from the add-skill skill to the write-tldr skill: its description stands in. */
+  /** As from a skill's approval to its TLDR: its description stands in. */
   "no-tldr": (s) => {
     delete s.agentReview.tldr;
   },
@@ -53,7 +54,7 @@ const SKILL_CASES = {
   "empty-glance": (s) => {
     if (s.agentReview.tldr) s.agentReview.tldr.glance = [];
   },
-  /** As from the add-skill skill to the next sync. */
+  /** As from a skill's approval to the next sync. */
   "no-skill-md-copy": (s) => {
     delete s.skillMd;
   },

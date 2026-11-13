@@ -19,7 +19,7 @@
           "items": {
             "$ref": "#/definitions/Crawled"
           },
-          "description": "At the minimums (`MINIMUMS` in ./params.ts) or above, or by a whitelisted author (`WHITELISTED_AUTHORS` there), most installed first: waiting for an agent to approve or disqualify them, with the add-skill skill.\n\nSource: scripts/crawl.ts sorts every skill it saw that day, in the top 600, down the sitemap or by a whitelisted author, into `qualified` or `unqualified`, with `passes()` of scripts/data.ts; a skill it didn't see keeps its state."
+          "description": "At the minimums (`MINIMUMS` in ./params.ts) or above, or by a whitelisted author (`WHITELISTED_AUTHORS` there), most installed first: waiting for an agent to approve or disqualify them, with the review-skills skill.\n\nSource: scripts/crawl.ts sorts every skill it saw that day, in the top 600, down the sitemap or by a whitelisted author, into `qualified` or `unqualified`, with `passes()` of scripts/data.ts; a skill it didn't see keeps its state."
         },
         "unqualified": {
           "type": "array",
@@ -33,7 +33,7 @@
           "items": {
             "$ref": "#/definitions/Disqualified"
           },
-          "description": "Not to be shown, each with why, and with no agent data: no tags, no TLDR, no copy of its SKILL.md.\n\nSource: scripts/crawl.ts adds the skills of the top 600 that aren't on GitHub, scripts/sync.ts the approved skills whose SKILL.md is gone from their repo, and an agent, with the add-skill skill, the qualified skills it turns down."
+          "description": "Not to be shown, each with why, and with no agent data: no tags, no TLDR, no copy of its SKILL.md.\n\nSource: scripts/crawl.ts adds the skills of the top 600 that aren't on GitHub, scripts/sync.ts the approved skills whose SKILL.md is gone from their repo, and an agent, with the review-skills skill, the qualified skills it turns down."
         }
       },
       "required": ["$schema", "asOf", "qualified", "unqualified", "disqualified"],
@@ -132,7 +132,7 @@
           "properties": {
             "agentReview": {
               "$ref": "#/definitions/DisqualifyReview",
-              "description": "Why an agent turned it down, and which agent.\n\nSource: the agent that reviews the qualified skill, with the add-skill skill."
+              "description": "Why an agent turned it down, and which agent.\n\nSource: the agent that reviews the qualified skill, with the review-skills skill."
             }
           },
           "required": ["agentReview"],
@@ -143,7 +143,7 @@
           "properties": {
             "goneFromRepo": {
               "type": "string",
-              "description": "The day its SKILL.md was found gone from its repo's HEAD, YYYY-MM-DD.\n\nSource: scripts/sync.ts, for an approved skill; and the agent working through the qualified skills, with the add-skill skill, for a qualified one."
+              "description": "The day its SKILL.md was found gone from its repo's HEAD, YYYY-MM-DD.\n\nSource: scripts/sync.ts, for an approved skill; and the agent working through the qualified skills, with the review-skills skill, for a qualified one."
             }
           },
           "required": ["goneFromRepo"],

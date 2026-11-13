@@ -40,7 +40,7 @@ pnpm dev:stop        # stop every one running in this checkout, from anywhere
 
 ## The edge cases: states today's data has no example of
 
-The pages handle states that the real data lacks on most days, so neither the eye nor a test of the real site sees them: a skill without a TLDR, with a TLDR that has no glance, without a copy of its SKILL.md, with unknown installs, weekly installs, first-seen date or stars, one flagged `republished`, a bundle without a TLDR, and a bundle whose skills have no numbers. Some go live unreviewed, such as a skill between the add-skill and write-tldr skills.
+The pages handle states that the real data lacks on most days, so neither the eye nor a test of the real site sees them: a skill without a TLDR, with a TLDR that has no glance, without a copy of its SKILL.md, with unknown installs, weekly installs, first-seen date or stars, one flagged `republished`, a bundle without a TLDR, and a bundle whose skills have no numbers. Some go live unreviewed, such as a skill approved but without its TLDR yet.
 
 `SKILLHUB_DATA=edge-cases` puts a second site beside the real one, whose catalog of some twenty entries has one for each of those states, named after it, such as `no-tldr`:
 

@@ -23,7 +23,7 @@
             },
             "tags": {
               "type": "string",
-              "description": "When the tags were last assigned, which the tags page shows.\n\nSource: the agent that tags or retags a skill, with the add-skill skill, sets it to that day."
+              "description": "When the tags were last assigned, which the tags page shows.\n\nSource: the agent that tags or retags a skill, with the review-skills skill, sets it to that day."
             }
           },
           "required": ["installs", "stars", "tags"],
@@ -150,7 +150,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "GitHub `owner/name`: its page is https://github.com/<id>.\n\nSource: the agent that approves the repo's first skill, with the add-skill skill."
+          "description": "GitHub `owner/name`: its page is https://github.com/<id>.\n\nSource: the agent that approves the repo's first skill, with the review-skills skill."
         },
         "stars": {
           "type": ["number", "null"],
@@ -158,7 +158,7 @@
         },
         "agentReview": {
           "$ref": "#/definitions/RepoReview",
-          "description": "What an agent wrote about the repo: everything else is collected by scripts.\n\nSource: the agent that approves the repo's first skill, with the add-skill skill."
+          "description": "What an agent wrote about the repo: everything else is collected by scripts.\n\nSource: the agent that approves the repo's first skill, with the review-skills skill."
         }
       },
       "required": ["id", "stars", "agentReview"],
@@ -198,7 +198,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "The GitHub repo, `owner/name`, or `owner/name@part` for one of several bundles in a repo.\n\nSource: the agent that records the bundle, with the add-skill skill."
+          "description": "The GitHub repo, `owner/name`, or `owner/name@part` for one of several bundles in a repo.\n\nSource: the agent that records the bundle, with the review-skills skill."
         },
         "skew": {
           "type": "number",
@@ -206,7 +206,7 @@
         },
         "agentReview": {
           "$ref": "#/definitions/BundleReview",
-          "description": "What an agent wrote about the bundle: all of it but its id and skew.\n\nSource: the agent that records the bundle, with the add-skill skill; and an agent with the write-tldr skill, which sets its TLDR with `pnpm run tldr`."
+          "description": "What an agent wrote about the bundle: all of it but its id and skew.\n\nSource: the agent that records the bundle, with the review-skills skill, which sets its TLDR with `pnpm run tldr`."
         }
       },
       "required": ["id", "skew", "agentReview"],
@@ -329,7 +329,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique: where the skill's SKILL.md lives, as the GitHub repo and the directory inside it, `owner/name/path/to/dir` (just `owner/name` for a SKILL.md at the root). The repo has an entry in `repos`.\n\nSource: the agent that approves the skill, with the add-skill skill, from where its SKILL.md is on GitHub."
+          "description": "Unique: where the skill's SKILL.md lives, as the GitHub repo and the directory inside it, `owner/name/path/to/dir` (just `owner/name` for a SKILL.md at the root). The repo has an entry in `repos`.\n\nSource: the agent that approves the skill, with the review-skills skill, from where its SKILL.md is on GitHub."
         },
         "name": {
           "type": "string",
@@ -345,7 +345,7 @@
         },
         "agentReview": {
           "$ref": "#/definitions/SkillReview",
-          "description": "What an agent wrote about the skill: everything else is collected by scripts.\n\nSource: the agent that approves the skill, with the add-skill skill, which writes its description, tags and note; and an agent with the write-tldr skill, which sets its TLDR with `pnpm run tldr`."
+          "description": "What an agent wrote about the skill: everything else is collected by scripts.\n\nSource: the agent that approves the skill, with the review-skills skill, which writes its description, tags and note, and sets its TLDR with `pnpm run tldr`."
         }
       },
       "required": ["id", "name", "skills.sh", "agentReview"],

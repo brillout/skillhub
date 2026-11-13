@@ -69,7 +69,7 @@ const longDate = new Intl.DateTimeFormat("en", {
 export const date = (iso: string) => longDate.format(new Date(`${iso}T00:00:00Z`));
 /**
  * A TLDR's glance item, shown after its label and a colon ("Use it when: You want…."): with a full
- * stop, unless it ends in its own "?" or "!". See the write-tldr skill.
+ * stop, unless it ends in its own "?" or "!". See the review-skills skill.
  */
 export const glanceEnd = (text: string) => (/[.!?]$/.test(text) ? text : `${text}.`);
 /** The day `n` days before a day, both YYYY-MM-DD. */

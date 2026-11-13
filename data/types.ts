@@ -28,7 +28,8 @@ export interface Data {
     /**
      * When the tags were last assigned, which the tags page shows.
      *
-     * Source: the agent that tags or retags a skill, with the add-skill skill, sets it to that day.
+     * Source: the agent that tags or retags a skill, with the review-skills skill, sets it to that
+     * day.
      */
     tags: string;
   };
@@ -63,7 +64,7 @@ export interface Crawl {
   /**
    * At the minimums (`MINIMUMS` in ./params.ts) or above, or by a whitelisted author
    * (`WHITELISTED_AUTHORS` there), most installed first: waiting for an agent to approve or
-   * disqualify them, with the add-skill skill.
+   * disqualify them, with the review-skills skill.
    *
    * Source: scripts/crawl.ts sorts every skill it saw that day, in the top 600, down the sitemap or
    * by a whitelisted author, into `qualified` or `unqualified`, with `passes()` of scripts/data.ts; a skill it
@@ -81,8 +82,8 @@ export interface Crawl {
    * SKILL.md.
    *
    * Source: scripts/crawl.ts adds the skills of the top 600 that aren't on GitHub, scripts/sync.ts
-   * the approved skills whose SKILL.md is gone from their repo, and an agent, with the add-skill
-   * skill, the qualified skills it turns down.
+   * the approved skills whose SKILL.md is gone from their repo, and an agent, with the
+   * review-skills skill, the qualified skills it turns down.
    */
   disqualified: Disqualified[];
 }
@@ -151,7 +152,7 @@ export type DisqualifiedReason =
       /**
        * Why an agent turned it down, and which agent.
        *
-       * Source: the agent that reviews the qualified skill, with the add-skill skill.
+       * Source: the agent that reviews the qualified skill, with the review-skills skill.
        */
       agentReview: DisqualifyReview;
     }
@@ -160,7 +161,7 @@ export type DisqualifiedReason =
        * The day its SKILL.md was found gone from its repo's HEAD, YYYY-MM-DD.
        *
        * Source: scripts/sync.ts, for an approved skill; and the agent working through the
-       * qualified skills, with the add-skill skill, for a qualified one.
+       * qualified skills, with the review-skills skill, for a qualified one.
        */
       goneFromRepo: string;
     }
@@ -215,7 +216,7 @@ export interface Repo {
   /**
    * GitHub `owner/name`: its page is https://github.com/<id>.
    *
-   * Source: the agent that approves the repo's first skill, with the add-skill skill.
+   * Source: the agent that approves the repo's first skill, with the review-skills skill.
    */
   id: string;
   /**
@@ -229,7 +230,7 @@ export interface Repo {
   /**
    * What an agent wrote about the repo: everything else is collected by scripts.
    *
-   * Source: the agent that approves the repo's first skill, with the add-skill skill.
+   * Source: the agent that approves the repo's first skill, with the review-skills skill.
    */
   agentReview: RepoReview;
 }
@@ -279,8 +280,8 @@ export interface Skill {
    * `owner/name/path/to/dir` (just `owner/name` for a SKILL.md at the root). The repo has an
    * entry in `repos`.
    *
-   * Source: the agent that approves the skill, with the add-skill skill, from where its SKILL.md
-   * is on GitHub.
+   * Source: the agent that approves the skill, with the review-skills skill, from where its
+   * SKILL.md is on GitHub.
    */
   id: string;
   /**
@@ -311,9 +312,8 @@ export interface Skill {
   /**
    * What an agent wrote about the skill: everything else is collected by scripts.
    *
-   * Source: the agent that approves the skill, with the add-skill skill, which writes its
-   * description, tags and note; and an agent with the write-tldr skill, which sets its TLDR with
-   * `pnpm run tldr`.
+   * Source: the agent that approves the skill, with the review-skills skill, which writes its
+   * description, tags and note, and sets its TLDR with `pnpm run tldr`.
    */
   agentReview: SkillReview;
 }
@@ -337,7 +337,7 @@ export interface Bundle {
   /**
    * The GitHub repo, `owner/name`, or `owner/name@part` for one of several bundles in a repo.
    *
-   * Source: the agent that records the bundle, with the add-skill skill.
+   * Source: the agent that records the bundle, with the review-skills skill.
    */
   id: string;
   /**
@@ -353,8 +353,8 @@ export interface Bundle {
   /**
    * What an agent wrote about the bundle: all of it but its id and skew.
    *
-   * Source: the agent that records the bundle, with the add-skill skill; and an agent with the
-   * write-tldr skill, which sets its TLDR with `pnpm run tldr`.
+   * Source: the agent that records the bundle, with the review-skills skill, which sets its TLDR
+   * with `pnpm run tldr`.
    */
   agentReview: BundleReview;
 }

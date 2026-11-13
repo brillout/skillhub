@@ -22,7 +22,7 @@
  *   it doesn't list yet is recorded with no numbers, as `unlisted`.
  *
  * A skill outside all three keeps its state and its last numbers. An agent approves or disqualifies
- * the qualified skills with the add-skill skill.
+ * the qualified skills with the review-skills skill.
  *
  * Run: pnpm run crawl
  */
