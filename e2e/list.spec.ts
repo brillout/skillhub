@@ -16,6 +16,24 @@ import {
 
 const all = `${n(data.skills.length)} skills`;
 
+test.describe("when the search data fails to load", () => {
+  test.use({ expected: /Failed to load resource|request failed:.*ERR_FAILED/ });
+  test("explains how to recover", async ({ page }) => {
+    test.setTimeout(60_000);
+    await page.route("**/assets/chunks/*.js", async (route) => {
+      const response = await route.fetch();
+      const body = await response.text();
+      // The prose is a separate module with skills and bundles, rather than the list's own data.
+      if (/^var \w+=\{skills:\{/.test(body) && body.includes("bundles:")) {
+        await route.abort();
+      } else await route.fulfill({ response });
+    });
+    await page.goto("/");
+    await expect(page.getByRole("status")).toContainText("results may be incomplete", { timeout: 60_000 });
+    await expect(page.getByRole("status")).toContainText("Reload the page");
+  });
+});
+
 /** A name with an accent on its first vowel, as someone may type it: "résumé" for "resume". */
 const accented = (name: string) =>
   name.replace(/[aeiou]/, (vowel) => "áéíóú"["aeiou".indexOf(vowel)]);
