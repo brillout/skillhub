@@ -12,6 +12,7 @@
  */
 
 import { esc, href } from "./format.ts";
+import { clearNotice, notice } from "./notice.ts";
 import {
   ACCOUNT_CACHE,
   LOGIN_FROM,
@@ -292,7 +293,10 @@ async function toggle(key: string) {
   set(on);
   changed("toggle");
   const res = await post("api/saves", { key, saved: on }).catch(() => null);
-  if (res?.ok) return;
+  if (res?.ok) {
+    clearNotice(key);
+    return;
+  }
   set(!on, at);
   changed("toggle");
   if (res?.status === 401) {
@@ -301,8 +305,14 @@ async function toggle(key: string) {
     store();
     leaveToLogIn();
     location.href = loginHref({ save: on ? key : undefined });
-  } else if (res?.status === 409) alert((await res.json()).error);
-  else if (on) notSaved(key);
+  } else if (res?.status === 409) notice((await res.json()).error, key);
+  else {
+    if (on) notSaved(key);
+    notice(
+      on ? "Couldn't save this item. Try again." : "Couldn't remove this save. Try again.",
+      key,
+    );
+  }
 }
 
 /**
@@ -359,7 +369,12 @@ document.addEventListener("pointerover", (event) => {
 });
 
 async function logout() {
-  await post("api/auth/logout", {}).catch(() => null);
+  const res = await post("api/auth/logout", {}).catch(() => null);
+  if (!res?.ok) {
+    notice("Couldn't log out. Check your connection and try again.", "logout");
+    return;
+  }
+  clearNotice("logout");
   apply(LOGGED_OUT);
   changed("load");
 }

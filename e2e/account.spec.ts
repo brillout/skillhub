@@ -721,3 +721,49 @@ test("the API refuses what isn't a logged-in page's own request", async ({ page 
   // Nothing stays saved for the test user, whose site may be a `pnpm dev` left running.
   expect((await post({ key, saved: false })).status(), "unsaved").toBe(200);
 });
+
+test.describe("when an account request fails", () => {
+  test.use({
+    expected:
+      /HTTP 503:.*\/api\/(auth\/logout|saves)|console error: Failed to load resource: the server responded with a status of 503/,
+  });
+
+  test("a failed logout keeps the session visible and offers another try", async ({ page }) => {
+    await openLoggedIn(page, skillUrl);
+    await page.route("**/api/auth/logout", (route) =>
+      route.fulfill({ status: 503, body: "Unavailable" }),
+    );
+    await logout(page).click();
+    await expect(page.getByRole("status")).toContainText("Couldn't log out");
+    await expect(logout(page)).toBeVisible();
+    expect((await (await page.request.get("/api/me")).json()).user).not.toBeNull();
+    await page.unroute("**/api/auth/logout");
+    await logout(page).click();
+    await expect(login(page)).toBeVisible();
+    expect((await (await page.request.get("/api/me")).json()).user).toBeNull();
+    await expect(page.getByRole("status")).toHaveCount(0);
+  });
+
+  test("a failed removal keeps the save and explains why it came back", async ({ page }) => {
+    await openLoggedIn(page, skillUrl);
+    const save = page.locator("[data-save]").first();
+    await save.click();
+    await expect(save).toHaveAttribute("aria-pressed", "true");
+    await expect
+      .poll(async () => (await (await page.request.get("/api/me")).json()).saved.length)
+      .toBe(1);
+    await page.route("**/api/saves", (route) =>
+      route.fulfill({ status: 503, body: "Unavailable" }),
+    );
+    await save.click();
+    await expect(page.getByRole("status")).toContainText("Couldn't remove this save");
+    await expect(save).toHaveAttribute("aria-pressed", "true");
+    await page.unroute("**/api/saves");
+    await save.click();
+    await expect(save).toHaveAttribute("aria-pressed", "false");
+    await expect
+      .poll(async () => (await (await page.request.get("/api/me")).json()).saved.length)
+      .toBe(0);
+    await expect(page.getByRole("status")).toHaveCount(0);
+  });
+});

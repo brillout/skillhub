@@ -739,3 +739,25 @@ test("the files named after their content may be kept by the browser for good", 
   const again = await page.request.get("/about/");
   expect(again.headers()["cache-control"] ?? "").not.toContain("immutable");
 });
+
+test("a refused install copy explains how to copy manually, and can be retried", async ({
+  page,
+}) => {
+  await open(page, skillUrl);
+  await page.evaluate(() => {
+    Object.defineProperty(navigator.clipboard, "writeText", {
+      configurable: true,
+      value: () => Promise.reject(new DOMException("Denied", "NotAllowedError")),
+    });
+  });
+  await page.locator(".install .copy").click();
+  await expect(page.getByRole("status")).toContainText("Select the command and copy it manually");
+  await expect(page.locator(".install .copy")).not.toHaveAttribute("data-copied");
+  await page.getByRole("button", { name: "Dismiss notification" }).click();
+  await expect(page.getByRole("status")).toHaveCount(0);
+  await page.evaluate(() => {
+    delete (navigator.clipboard as unknown as Record<string, unknown>).writeText;
+  });
+  await page.locator(".install .copy").click();
+  await expect(page.locator(".install .copy")).toHaveAttribute("data-copied", "");
+});
