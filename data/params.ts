@@ -7,10 +7,10 @@
 export const MINIMUMS = { installs: 5000, stars: 100 };
 
 /**
- * GitHub owners whose every skill SkillHub lists: the crawl records all their skills, on skills.sh
- * and in their GitHub repos, which skills.sh lists only once someone installs them, whatever their
- * installs, and they qualify whatever the minimums. An agent still reviews each one, with the
- * add-skill skill, which says the few reasons that disqualify them.
+ * GitHub owners whose every skill SkillHub lists: the crawl records all their skills on skills.sh,
+ * and those beside them in their GitHub repos, which skills.sh lists only once someone installs
+ * them, whatever their installs, and they qualify whatever the minimums. An agent still reviews
+ * each one, with the add-skill skill, which says the few reasons that disqualify them.
  */
 export const WHITELISTED_AUTHORS = ["mattpocock", "brillout"];
 

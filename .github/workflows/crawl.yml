@@ -1,7 +1,7 @@
 # Once a day, crawl skills.sh and GitHub: refresh the numbers and record the skills of the
 # skills.sh top 600, those further down its sitemap that reach the minimums, and every skill of the
-# whitelisted authors, on skills.sh or in their GitHub repos, in data/crawl.jsonc, then commit to
-# the default branch and redeploy the site.
+# whitelisted authors, on skills.sh or beside those in their repos, in data/crawl.jsonc, then
+# commit to the default branch and redeploy the site.
 # Approving or disqualifying the qualified skills is an agent's job, with the add-skill skill.
 name: Crawl skills.sh
 
@@ -36,7 +36,7 @@ jobs:
         # `shell: bash` sets pipefail, so the script's failures fail the step through tee.
         shell: bash
         env:
-          # For the GitHub stars, and the whitelisted authors' repos: one API request each.
+          # For the GitHub stars, and the trees of the whitelisted authors' repos on skills.sh.
           GITHUB_TOKEN: ${{ github.token }}
         run: pnpm --silent run crawl | tee "$RUNNER_TEMP/summary.txt"
       - name: Validate the data
