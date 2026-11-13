@@ -26,10 +26,11 @@ import { root } from "./data.ts";
 
 /**
  * The narrowest screen of each form the layout takes, where a page has the least room: a small
- * phone's 360px, then the widths from which the header is on one line, the tags are beside the
- * list, and a row's numbers are beside its words. See the media queries of website/style.css.
+ * phone's 360px, then the widths from which a row's repo is beside its name, the header is on one
+ * line, the tags are beside the list, a row's numbers are beside its words, and its repo beside
+ * its name there too. See the media queries of website/style.css.
  */
-const WIDTHS = [360, 601, 901, 1151];
+const WIDTHS = [360, 481, 601, 901, 1151, 1231];
 /** How many pages are open at once. */
 const TABS = 6;
 

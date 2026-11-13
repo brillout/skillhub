@@ -53,14 +53,14 @@ export const KINDS: Record<Repo["agentReview"]["kind"], string> = {
 /**
  * A repo's stars, and how many skills and bundles it has on the site: each a fact of its own, which
  * a line breaks between, not inside (see .fact in style.css). A fact's dot is its own, at its end,
- * so that a line ends on it: between two facts, it started the next line on some phones.
+ * so that a line ends on it: between two facts, it started the next line on some phones. Its skills
+ * are the ones listed here, and say so: under a repo's own "86 agent skills for iOS", "1 skill"
+ * read as a count of the repo's.
  */
 export function numbersHtml({ repo, bundles, skills }: Listing): string {
   return [
-    repo.stars === null
-      ? ""
-      : `${repo.stars.toLocaleString("en")} stars on GitHub, ${date(data.asOf.stars)}`,
-    plural(skills.length, "skill"),
+    repo.stars === null ? "" : `${plural(repo.stars, "star")} on GitHub, ${date(data.asOf.stars)}`,
+    `${plural(skills.length, "skill")} listed here`,
     bundles.length ? plural(bundles.length, "bundle") : "",
   ]
     .filter(Boolean)

@@ -135,7 +135,9 @@ export function renderSkillMd(
       if (!task || state.tokens[i + 1].type !== "paragraph_open") return;
       text.content = text.content.slice(task[0].length);
       const box = new state.Token("html_inline", "", 0);
-      box.content = `<input type="checkbox" disabled${task[1] === " " ? "" : " checked"} /> `;
+      // No space after it: its margin is the gap (see li.task in style.css), and with both its
+      // first line started 4px right of the lines under it.
+      box.content = `<input type="checkbox" disabled${task[1] === " " ? "" : " checked"} />`;
       inline.children?.unshift(box);
       token.attrJoin("class", "task");
     });

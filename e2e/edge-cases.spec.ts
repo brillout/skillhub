@@ -8,9 +8,17 @@
 
 import AxeBuilder from "@axe-core/playwright";
 import type { Locator, Page } from "@playwright/test";
-import { edgeCases, siteOf, type BundleCase, type SkillCase } from "../data/edge-cases.ts";
+import {
+  FIRST_SEEN_DAYS,
+  TOOK_OFF_WEEKS,
+  edgeCases,
+  siteOf,
+  type BundleCase,
+  type SkillCase,
+} from "../data/edge-cases.ts";
 import { readData } from "../scripts/data.ts";
-import { bundlePage, github, repoPage, skillPage } from "../website/github.ts";
+import { age, date, daysBefore } from "../website/format.ts";
+import { bundlePage, github, ownerPage, repoPage, skillPage } from "../website/github.ts";
 import { expect, list, open, searchable, settled, test } from "./fixtures.ts";
 
 test.use({ baseURL: `http://localhost:${siteOf(true).port}` });
@@ -69,7 +77,7 @@ const NUMBERS: { row: string; tile: string; param: string; range: string; lackin
     lacking: "unknown-weekly-installs",
   },
   { row: "Age", tile: "Age", param: "published", range: "..7d", lacking: "unknown-first-seen" },
-  { row: "Stars", tile: "Repo stars", param: "stars", range: "10..", lacking: "unknown-stars" },
+  { row: "Stars", tile: "Repo Stars", param: "stars", range: "10..", lacking: "unknown-stars" },
 ];
 
 test("the list has a row for every case, named after it", async ({ page }) => {
@@ -199,7 +207,7 @@ test("a skill skills.sh doesn't list yet has no link there, and only its repo's 
   await open(page, skillUrl("unlisted"));
   await expect(skillsSh(page)).toHaveCount(0);
   await expect(page.locator(".get .links a", { hasText: "Source on GitHub" })).toHaveCount(1);
-  await expect(page.locator(".stat-tiles .stat-label")).toHaveText([/Repo stars/]);
+  await expect(page.locator(".stat-tiles .stat-label")).toHaveText([/Repo Stars/]);
 });
 
 test.describe("a number that's unknown", () => {
@@ -255,7 +263,7 @@ test.describe("a number that's unknown", () => {
     page,
   }) => {
     await open(page, `/${repoPage(github(skills["unknown-stars"]).repo)}/`);
-    await expect(page.locator(".listing-page > .muted")).toHaveText("1 skill");
+    await expect(page.locator(".listing-page > .muted")).toHaveText("1 skill listed here");
   });
 });
 
@@ -293,10 +301,86 @@ test("a republished skill is marked in its row, and its page says what that mean
     .find((f) => f.id === "flag")
     ?.values?.find((v) => v.id === "republished");
   await expect(page.locator(".tag-detail")).toContainText(flag?.description ?? "");
+  // And up the page, before its command and its numbers, whose ranking it says to distrust: as
+  // its preview does. Among its tags alone, it came after them.
+  const caution = page.locator(".skill-page > .note", { hasText: flag?.description ?? "" });
+  await expect(caution).toHaveCount(1);
+  const top = async (selector: string) =>
+    ((await page.locator(selector).first().boundingBox()) as { y: number }).y;
+  expect(await top(".skill-page > .note")).toBeLessThan(await top(".get"));
   // Its tag leads to the list of such skills.
   await page.locator('.tag-detail [data-tag="flag:republished"]').click();
   await expect(page).toHaveURL("/?tag=flag%3Arepublished");
   await expect(list(page).rows).toHaveCount(1);
+});
+
+test("one of something is said in the singular: a repo's star, a week's download", async ({
+  page,
+}) => {
+  // "1 stars on GitHub", on its repo's page and on its owner's.
+  const { repo } = github(skills["one-star"]);
+  for (const url of [`/${repoPage(repo)}/`, `/${ownerPage(repo)}/`]) {
+    await open(page, url);
+    await expect(page.locator(".listing-page .fact").first()).toHaveText(/^1 star on GitHub,/);
+  }
+
+  // "1 downloads", in the trend's tooltip, of the first of its weeks.
+  await open(page, skillUrl("one-download-week"));
+  await page.locator(".spark").focus();
+  await page.keyboard.press("Home");
+  await expect(page.locator(".spark-tip strong")).toHaveText("1 download");
+  await page.keyboard.press("End");
+  await expect(page.locator(".spark-tip strong")).toHaveText(/^[\d,]+ downloads$/);
+});
+
+test.describe("a skill with a week of almost no installs, then thousands a week again", () => {
+  const asOf = data.asOf.installs;
+  /** A skill's Age: on its tile, where it says since when, and in its row. */
+  const ageOf = async (page: Page, name: SkillCase) => {
+    await open(page, skillUrl(name));
+    const tile = page.locator(".stat", {
+      has: page.locator(".stat-name", { hasText: /^Age$/ }),
+    });
+    const shown = {
+      tile: await tile.locator(".stat-value").innerText(),
+      since: (await tile.locator(".stat-label .muted").innerText()).replace(/^published /, ""),
+      why: await tile.locator("[title]").getAttribute("title"),
+      row: "",
+    };
+    await open(page, "/");
+    shown.row = (await number(row(page, name), "Age").textContent()) ?? "";
+    return shown;
+  };
+
+  test("took off that week, when it was almost unused until then: its age counts from it", async ({
+    page,
+  }) => {
+    const day = daysBefore(asOf, TOOK_OFF_WEEKS * 7);
+    const shown = await ageOf(page, "took-off");
+    expect(shown.tile).toBe(age(day, asOf));
+    expect(shown.row).toBe(age(day, asOf));
+    expect(shown.since).toBe(date(day));
+    expect(shown.why).toContain("the week it took off");
+  });
+
+  test("keeps its age when it got thousands a week before it: it only had a bad week", async ({
+    page,
+  }) => {
+    // It was as new as the one that took off, beside its total of 200,000 downloads, "Newer than"
+    // nearly every skill, and listed under Rising & new.
+    const day = daysBefore(asOf, FIRST_SEEN_DAYS);
+    const shown = await ageOf(page, "bad-week");
+    expect(shown.tile).toBe(age(day, asOf));
+    expect(shown.row).toBe(age(day, asOf));
+    expect(shown.since).toBe(date(day));
+    expect(shown.why).not.toContain("took off");
+
+    // Open on the full list: the preset is one of its presets, which narrows it to the new skills.
+    await page.locator('[data-preset="rising-new"]').click();
+    await settled(page);
+    await expect(row(page, "took-off")).toHaveCount(1);
+    await expect(row(page, "bad-week")).toHaveCount(0);
+  });
 });
 
 /** A row's words, a click on which opens its preview. */

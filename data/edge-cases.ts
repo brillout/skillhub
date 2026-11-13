@@ -44,7 +44,19 @@ export const siteOf = (edgeCases = EDGE_CASES) =>
  */
 export const LIVE = "https://skillhub.build";
 
-/** What each case takes from a skill that lacks nothing, or from its repo. */
+/**
+ * For the took-off and the bad-week cases: how many weeks of thousands of installs follow their
+ * week of almost none, and how many days ago skills.sh first saw them.
+ */
+export const TOOK_OFF_WEEKS = 3;
+export const FIRST_SEEN_DAYS = 210;
+const daysBefore = (day: string, n: number) =>
+  new Date(Date.parse(`${day}T00:00:00Z`) - n * 86_400_000).toISOString().slice(0, 10);
+
+/**
+ * What each case takes from a skill that lacks nothing, or from its repo, or what it sets of them.
+ * `asOf` is the day the installs are from.
+ */
 const SKILL_CASES = {
   /** As from a skill's approval to its TLDR: its description stands in. */
   "no-tldr": (s) => {
@@ -90,7 +102,41 @@ const SKILL_CASES = {
   republished: (s) => {
     s.agentReview.tags.push("flag:republished");
   },
-} satisfies Record<string, (skill: Skill, repo: Repo) => void>;
+  /** One of something, which is said in the singular: a repo's one star, as a new repo has. */
+  "one-star": (_s, repo) => {
+    repo.stars = 1;
+  },
+  /** And a week's one download, as a skill hardly anyone uses has. */
+  "one-download-week": (s) => {
+    const weekly = s["skills.sh"].weeklyInstalls;
+    if (weekly) weekly[0] = 1;
+  },
+  /**
+   * Almost unused for months, then thousands of installs a week, since TOOK_OFF_WEEKS weeks: it took
+   * off then, which its age counts from. See tookOffOf in website/skills.ts.
+   */
+  "took-off": (s, _repo, asOf) => {
+    s["skills.sh"] = {
+      ...s["skills.sh"],
+      installs: 21_090,
+      weeklyInstalls: [5, 5, 5, 5, 5, 6000, 7000, 8000],
+      firstSeen: daysBefore(asOf, FIRST_SEEN_DAYS),
+    };
+  },
+  /**
+   * Thousands of installs a week since skills.sh first saw it, as many months ago, but for one week
+   * of almost none, TOOK_OFF_WEEKS weeks ago too: a bad week, after which it didn't take off. It
+   * keeps its age.
+   */
+  "bad-week": (s, _repo, asOf) => {
+    s["skills.sh"] = {
+      ...s["skills.sh"],
+      installs: 200_000,
+      weeklyInstalls: [6000, 6000, 6000, 6000, 5, 6000, 7000, 8000],
+      firstSeen: daysBefore(asOf, FIRST_SEEN_DAYS),
+    };
+  },
+} satisfies Record<string, (skill: Skill, repo: Repo, asOf: string) => void>;
 
 /** What each case takes from a bundle that lacks nothing, from its skills, or from its repo. */
 const BUNDLE_CASES = {
@@ -182,7 +228,7 @@ export function edgeCases(real: Data): {
   const skillOf = {} as Record<SkillCase, Skill>;
   skillCases.forEach((name, i) => {
     const s = skills[i];
-    SKILL_CASES[name](s, repoById.get(github(s).repo) as Repo);
+    SKILL_CASES[name](s, repoById.get(github(s).repo) as Repo, all.asOf.installs);
     s.name = name;
     skillOf[name] = s;
   });

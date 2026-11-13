@@ -4,20 +4,28 @@ import {
   anchorsUrl,
   bundle,
   bundleUrl,
+  codeInTldr,
   commentUrl,
   data,
   flagsBundleUrl,
   fromAHandful,
+  headingsUrl,
   insideWord,
   joinedBundleUrl,
+  longDescriptionUrls,
   longFrontmatterUrl,
+  longTaskUrl,
   onlyInBundle,
   owner,
+  quotedFact,
   repo,
+  respelledOwner,
   skill,
   skillUrl,
   stackTags,
+  tableThenUrl,
   taskListUrl,
+  unendedRepo,
   wideCodeUrl,
 } from "./data.ts";
 import { readCrawl } from "../scripts/data.ts";
@@ -82,6 +90,62 @@ test("a skill's page: its name, numbers, install command and SKILL.md", async ({
   await expect(list(page).scope.locator('[data-remove="tag"]')).toHaveCount(1);
 });
 
+test("a description too long for a link's card ends there on a sentence, or on a word and its dots", async ({
+  page,
+}) => {
+  // A page's HTML has its quotes and its ampersands escaped, each as several letters.
+  const unescaped = (text: string) =>
+    text
+      .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
+      .replace(/&(quot|apos|lt|gt);/g, (_, name: "quot" | "apos" | "lt" | "gt") => {
+        return { quot: '"', apos: "'", lt: "<", gt: ">" }[name];
+      })
+      .replace(/&amp;/g, "&");
+  const meta = (html: string, tag: string) =>
+    unescaped(
+      new RegExp(`<meta (?:name|property)="${tag}" content="([^"]*)"`).exec(html)?.[1] ?? "",
+    );
+  let cut = 0;
+  for (const url of longDescriptionUrls) {
+    const html = await (await page.request.get(url)).text();
+    const described = meta(html, "description");
+    const onCard = meta(html, "og:description");
+    expect(onCard, url).not.toBe("");
+    if (onCard === described) continue;
+    cut++;
+    expect(onCard.length, url).toBeLessThanOrEqual(300);
+    expect(described.startsWith(onCard.replace(/…$/, "")), url).toBe(true);
+    // Not on a full stop and its dots, "skills.…", nor on the label of a fact it has no room
+    // for, "Entry point:…": on its last whole sentence, or on a word's end.
+    expect(onCard, url).toMatch(/[.!?]$|[^\s.,;:!?]…$/);
+  }
+  expect(cut).toBeGreaterThan(0);
+});
+
+test("a glance's fact that ends on what someone says gets no full stop after its quote", async ({
+  page,
+}) => {
+  test.skip(!quotedFact, "no glance's fact ends on a quoted sentence today");
+  if (!quotedFact) return;
+  await open(page, quotedFact.url);
+  // As it's written: with the full stop every other fact gets, `"how do I do X?"` read `X?".`
+  const fact = page.locator(".at-a-glance dd").filter({ hasText: quotedFact.text });
+  await expect(fact).toHaveText(quotedFact.text);
+});
+
+test("what a TLDR sets between backticks is code, and the backticks are gone", async ({ page }) => {
+  test.skip(!codeInTldr, "no TLDR sets code between backticks today");
+  if (!codeInTldr) return;
+  await open(page, codeInTldr.url);
+  const tldr = page.locator(".tldr");
+  await expect(tldr.locator("code").first()).toHaveText(codeInTldr.code);
+  await expect(tldr).not.toContainText("`");
+  await expect(page.locator(".at-a-glance")).not.toContainText("`");
+  // Nor in the page's description, where there's no code to tell from its words.
+  const description = page.locator('meta[name="description"]');
+  expect(await description.getAttribute("content")).not.toContain("`");
+});
+
 test("a skill's numbers are level from one tile to the one beside it", async ({ page }) => {
   await open(page, skillUrl);
   // Two tiles a row: Weekly Downloads, whose trend is on its number's own line, then Total
@@ -138,7 +202,7 @@ test("a skill that only works inside its bundle is installed with it", async ({ 
   await expect(page.locator(".install code")).toHaveText(command);
   await expect(page.locator(".install code")).not.toHaveText(new RegExp(`--skill ${member.name}$`));
   await expect(page.locator(".install-label")).toHaveText(
-    `Installs ${whole.agentReview.name}, the bundle it works in. ${label}`,
+    `${label}: installs ${whole.agentReview.name}, the bundle it works in.`,
   );
   await page.locator(".install .copy").click();
   expect(await clipboard(page)).toBe(command);
@@ -160,6 +224,10 @@ test("a SKILL.md's frontmatter wraps, its comments are hidden and its tasks have
   expect(await pre.evaluate((el) => el.scrollWidth - el.clientWidth)).toBe(0);
   // The disclosure is as wide as its word, not as the page.
   expect((await page.locator(".frontmatter summary").boundingBox())?.width).toBeLessThan(200);
+  // Its letters are its box's, as a code block's are: made smaller once more for being code, they
+  // were the smallest of the page.
+  const size = (el: Element) => getComputedStyle(el).fontSize;
+  expect(await pre.locator("code").evaluate(size)).toBe(await pre.evaluate(size));
 
   // An HTML comment, which GitHub hides, showed as text.
   await open(page, commentUrl);
@@ -173,6 +241,69 @@ test("a SKILL.md's frontmatter wraps, its comments are hidden and its tasks have
   await expect(tasks.first().locator('input[type="checkbox"]')).toBeDisabled();
   for (const text of (await tasks.allInnerTexts()).slice(0, 20))
     expect(text).not.toMatch(/^\[[ xX]\]/);
+});
+
+test("a SKILL.md's table keeps its distance from the rule or the table under it", async ({
+  page,
+}) => {
+  // A table had no margin of its own: a rule under it was half as far as from a paragraph, and
+  // two tables touched.
+  await open(page, tableThenUrl);
+  const gaps = await page.locator(".skill-md .markdown table").evaluateAll((tables) =>
+    tables.flatMap((table) => {
+      const next = table.nextElementSibling;
+      return next && /^(HR|TABLE)$/.test(next.tagName)
+        ? [next.getBoundingClientRect().top - table.getBoundingClientRect().bottom]
+        : [];
+    }),
+  );
+  expect(gaps).not.toHaveLength(0);
+  expect(Math.min(...gaps)).toBeGreaterThanOrEqual(16);
+});
+
+test("a SKILL.md's headings are written alike, the smaller ones no bolder than the first", async ({
+  page,
+}) => {
+  // Its first level had the site's own weight and letters, the ones under it the browser's bold:
+  // a sub-heading stood out more than the heading over it.
+  await open(page, headingsUrl);
+  const written = await page
+    .locator(".skill-md .markdown :is(h3, h4, h5, h6)")
+    .evaluateAll((headings) =>
+      headings.map((heading) => {
+        const { fontWeight, fontVariationSettings } = getComputedStyle(heading);
+        return { level: heading.tagName, written: `${fontWeight} ${fontVariationSettings}` };
+      }),
+    );
+  expect(new Set(written.map((heading) => heading.level)).size).toBeGreaterThanOrEqual(3);
+  expect([...new Set(written.map((heading) => heading.written))]).toHaveLength(1);
+});
+
+test("a SKILL.md's task too long for a line goes on under its own start", async ({ page }) => {
+  // Its first line started a space further right than the next ones, after its box.
+  await open(page, longTaskUrl);
+  const starts = await page.locator(".skill-md .markdown li.task").evaluateAll((tasks) =>
+    tasks.flatMap((task) => {
+      const words = [...task.childNodes].find(
+        (node) => node.nodeType === Node.TEXT_NODE && (node.textContent ?? "").trim(),
+      );
+      if (!words) return [];
+      const range = document.createRange();
+      range.selectNodeContents(words);
+      // From its first letter: the space before it is what moved the first line.
+      range.setStart(words, (words.textContent ?? "").search(/\S/));
+      // A line's start is its leftmost box: one box per line of the words.
+      const lines = new Map<number, number>();
+      for (const box of range.getClientRects()) {
+        const top = Math.round(box.top);
+        lines.set(top, Math.min(lines.get(top) ?? Infinity, box.left));
+      }
+      const lefts = [...lines.values()];
+      return lefts.length > 1 ? [Math.max(...lefts) - Math.min(...lefts)] : [];
+    }),
+  );
+  expect(starts).not.toHaveLength(0);
+  expect(Math.max(...starts)).toBeLessThan(0.5);
 });
 
 test("a SKILL.md's links to its own headings lead to them", async ({ page }) => {
@@ -204,6 +335,16 @@ test("a bundle's page: its skills in order, and how to install them", async ({ p
   await expect(page.locator("h1 .kind")).toHaveText(`Bundle of ${skills.length} skills`);
   const names = skills.map(({ id }) => data.skills.find((s) => s.id === id)?.name ?? "");
   await expect(page.locator(".bundle-skills .skill-name")).toHaveText(names);
+  // Each skill's number is on its name's line: it was 2px higher, in a line of its own height.
+  const off = await page.locator(".bundle-skills > li").evaluateAll((items) =>
+    items.slice(0, 5).map((item) => {
+      const number = getComputedStyle(item, "::before");
+      const name = (item.querySelector(".skill-name") as Element).getClientRects()[0];
+      const middle = Number.parseFloat(number.top) + Number.parseFloat(number.lineHeight) / 2;
+      return Math.abs(middle - (name.top + name.height / 2 - item.getBoundingClientRect().top));
+    }),
+  );
+  expect(Math.max(...off)).toBeLessThan(0.5);
 
   await expect(page.locator(".install")).toHaveCount(install.length);
   await page.locator(".install .copy").first().click();
@@ -297,6 +438,56 @@ test("an owner's page lists every repo of theirs", async ({ page }) => {
   await expect(page.locator("h1")).toHaveText(new RegExp(`^${owner.url.slice(1, -1)}$`, "i"));
   await expect(page.locator("main section")).toHaveCount(owner.repos);
   await expect(page.locator(".skill-list > li")).toHaveCount(owner.rows);
+  // The skills counted are the ones listed here, which may be few of a repo's own.
+  await expect(page.locator(".lede")).toContainText(/^[\d,]+ skills? listed here, from /);
+});
+
+test("a repo's or a bundle's kind is a box as tall as its line, beside a name of any size", async ({
+  page,
+}) => {
+  // Inline, it was as tall as its letters: 15px beside a repo's name on its owner's page, 18px
+  // beside a page's name, 22px in a row.
+  const kinds = (url: string) =>
+    open(page, url).then(() =>
+      page.locator(".kind").evaluateAll((all) =>
+        all.map((kind) => {
+          // A row off the screen isn't laid out.
+          const row = kind.closest<HTMLElement>(".skill-list > li");
+          if (row) row.style.contentVisibility = "visible";
+          const where = kind.closest("h1, h2")?.tagName ?? (row ? "row" : "");
+          const line = Number.parseFloat(getComputedStyle(kind).lineHeight);
+          return { where, off: Math.abs(kind.getBoundingClientRect().height - line) };
+        }),
+      ),
+    );
+  const all = [...(await kinds(owner.url)), ...(await kinds(repo.url))];
+  expect(new Set(all.map((kind) => kind.where))).toEqual(new Set(["H1", "H2", "row"]));
+  expect(Math.max(...all.map((kind) => kind.off))).toBeLessThan(0.5);
+});
+
+test("an owner is spelled one way, on the way to their page as on it", async ({ page }) => {
+  test.skip(!respelledOwner, "no owner's repos spell them in two ways today");
+  if (!respelledOwner) return;
+  // Each repo's crumbs spelled its own id's: agricidaniel led to the page of AgriciDaniel.
+  await open(page, respelledOwner.url);
+  const spelled = await page.locator("h1").innerText();
+  for (const url of respelledOwner.repos) {
+    await open(page, url);
+    await expect(page.locator(".crumbs a").nth(1)).toHaveText(spelled);
+    // And on the page of a skill of the repo.
+    await page.locator(".skill-list > li h3 a").first().click();
+    await ready(page);
+    await expect(page.locator(".crumbs a").nth(1)).toHaveText(spelled);
+  }
+});
+
+test("a repo's description ends with a full stop, where GitHub's own has none", async ({
+  page,
+}) => {
+  test.skip(!unendedRepo, "every repo's description ends with a full stop today");
+  if (!unendedRepo) return;
+  await open(page, unendedRepo.url);
+  await expect(page.locator(".lede")).toHaveText(`${unendedRepo.text}.`);
 });
 
 test("the tags page: its search narrows it, and a tag leads to the list", async ({ page }) => {
@@ -362,6 +553,8 @@ test("the tags page keeps its search in its address, for a link and for the way 
   const shown = page.locator(".tag-table tbody tr:visible, .cloud-item:visible");
   await input.fill("security");
   await expect(page).toHaveURL("/tags/?q=security");
+  // And in its title, for a tab, a bookmark or the history to tell it from the whole page.
+  await expect(page).toHaveTitle("“security” · Tags · SkillHub");
   const found = await shown.count();
   expect(found).toBeGreaterThan(0);
 
@@ -379,6 +572,78 @@ test("the tags page keeps its search in its address, for a link and for the way 
   await expect(page.locator("#tag-none")).toHaveText("No tag matches “zzzqqq”.");
   await input.fill("");
   await expect(page).toHaveURL("/tags/");
+  await expect(page).toHaveTitle("Tags · SkillHub");
+});
+
+test("a link to the tags page with a search shows no tag until its script has narrowed them", async ({
+  page,
+}) => {
+  // The page's scripts, held back, as on a slow connection: under an empty box, every tag showed
+  // meanwhile, then the page snapped to the few the search finds.
+  const held: import("@playwright/test").Route[] = [];
+  let released = false;
+  await page.route("**/*", (route) => {
+    if (released || route.request().resourceType() !== "script") return route.continue();
+    held.push(route);
+  });
+  await page.goto("/tags/?q=security", { waitUntil: "commit" });
+  await expect(page.locator("#tag-q")).toHaveValue("security");
+  await expect(page.locator("html[data-pending]")).toHaveCount(1);
+  await expect(page.locator("#tag-sections")).toBeHidden();
+  await expect(page.locator(".toc")).toBeHidden();
+
+  released = true;
+  await Promise.all(held.map((route) => route.continue()));
+  await ready(page);
+  await expect(page.locator("html[data-pending]")).toHaveCount(0);
+  await expect(page.locator("#tag-sections")).toBeVisible();
+  const shown = page.locator(".tag-table tbody tr:visible, .cloud-item:visible");
+  expect(await shown.count()).toBeGreaterThan(0);
+  expect(await shown.count()).toBeLessThan(stackTags.size);
+});
+
+test("the way back within the tags page, from a facet's link, brings back the search it had", async ({
+  page,
+}) => {
+  await open(page, "/tags/");
+  const input = page.locator("#tag-q");
+  const shown = page.locator(".tag-table tbody tr:visible, .cloud-item:visible");
+  await input.fill("security");
+  const found = await shown.count();
+  // A facet's link makes an entry in the browser's history, with the search of that moment.
+  await page.locator(".toc a:visible").first().click();
+  await input.fill("design");
+  await expect(page).toHaveURL(/\/tags\/\?q=design#facet-/);
+  // The address went back to it, and the box and the tags stayed on what was typed since.
+  await page.goBack();
+  await expect(page).toHaveURL("/tags/?q=security");
+  await expect(input).toHaveValue("security");
+  await expect(shown).toHaveCount(found);
+});
+
+test("the tags a parent includes follow it in its table, in the order it names them", async ({
+  page,
+}) => {
+  await open(page, "/tags/");
+  const parent = page
+    .locator(".tag-table tbody tr")
+    .filter({ has: page.locator(".includes") })
+    .first();
+  const tagsOf = (tags: Element[]) => tags.map((tag) => (tag as HTMLElement).dataset.tag);
+  const included = await parent.locator(".includes .tag").evaluateAll(tagsOf);
+  expect(included.length).toBeGreaterThan(1);
+  // In the data's order they came in another one than the line just over them, and than the
+  // skills list's tags.
+  const under = await parent.locator("xpath=following-sibling::tr/td[1]//a").evaluateAll(tagsOf);
+  expect(under.slice(0, included.length)).toEqual(included);
+});
+
+test("a tag of the tags page is as tall among a facet's many as in a table", async ({ page }) => {
+  await open(page, "/tags/");
+  const height = async (selector: string) =>
+    ((await page.locator(selector).first().boundingBox()) as { height: number }).height;
+  // Inline, a topic's or a stack's was as tall as its letters, which touched its edges.
+  expect(await height(".cloud .tag")).toBe(await height(".tag-table td:first-child .tag"));
 });
 
 test("the tags page's tables line up, whatever their tags and whatever the search hides", async ({
@@ -469,10 +734,16 @@ test("the about page's count of skills waiting for an agent review leads to them
   });
   const link = waiting.locator(".num a");
   await expect(link).toHaveText(n(qualified.length));
+  // A digit wide at times, such as 0: with the room around it to click or tap.
+  const box = (await link.boundingBox()) as { width: number; height: number };
+  expect(box.width).toBeGreaterThanOrEqual(24);
+  expect(box.height).toBeGreaterThanOrEqual(24);
   await link.click();
   await ready(page);
   await expect(page).toHaveURL("/queue/");
   await expect(page.locator("h1")).toHaveText("Waiting for agent review");
+  // What waits here, also while nothing does: the page then said that and nothing else.
+  await expect(page.locator(".lede")).toContainText("the minimum installs and stars");
   // Each of them, in crawl.jsonc's order, most downloaded first: a listed one links to its
   // skills.sh page, which an unlisted one doesn't have yet, and each to its repo.
   const rows = page.locator(".queue-table tbody tr");
@@ -516,6 +787,74 @@ test("the about page shows one explanation at a time", async ({ page }) => {
   await rows.nth(6).locator("td").first().hover();
   await expect(tipOf(1)).toBeVisible();
   await expect(shown).toHaveCount(1);
+
+  // Wherever the keyboard is on its row: on its number, where that's a link, as the Waiting row's
+  // to the queue, a pinned one showed with it, the two over each other.
+  await page.mouse.move(0, 0);
+  await page.keyboard.press("Escape");
+  await rows.nth(0).locator(".tip-i").focus();
+  await page.keyboard.press("Enter");
+  await expect(tipOf(0)).toBeVisible();
+  const link = rows.nth(1).locator(".num a");
+  await page.keyboard.press("Tab");
+  await page.keyboard.press("Tab");
+  await expect(link).toBeFocused();
+  await expect(tipOf(1)).toBeVisible();
+  await expect(shown).toHaveCount(1);
+});
+
+/** A row's explanation, once the pointer is on the row: its box, and how far its arrow is from the row's number. */
+async function explanationOf(page: import("@playwright/test").Page, row: number) {
+  const tr = page.locator(".breakdown tr").nth(row);
+  await tr.locator("td").first().hover();
+  await expect(tr.locator(".tip-text")).toBeVisible();
+  return tr.evaluate((el) => {
+    const tip = el.querySelector(".tip-text") as HTMLElement;
+    const box = tip.getBoundingClientRect();
+    // The number's own letters: its cell is wider, and holds the explanation too.
+    const number = document.createRange();
+    number.selectNodeContents((el.querySelector(".num") as Element).firstChild as Node);
+    const digits = number.getBoundingClientRect();
+    // The arrow is a square of 8px, turned: its middle is 4px under its top.
+    const arrowTop = Number.parseFloat(getComputedStyle(tip, "::after").top);
+    return {
+      bottom: box.bottom,
+      // How far down the explanation its arrow is: 11px, and further once it's lifted.
+      arrowTop,
+      arrowOff: box.top + arrowTop + 4 - (digits.top + digits.height / 2),
+      rowBottom: el.getBoundingClientRect().bottom,
+    };
+  });
+}
+
+test("an explanation of the about page's table points at its row's number", async ({ page }) => {
+  await open(page, "/about/");
+  const rows = await page.locator(".breakdown tr").count();
+  // Whatever the row's own padding: hung from the row's top, the arrow was 5px over the number on
+  // the rows with the most of it, and 7 on By script.
+  for (let row = 0; row < rows; row++)
+    expect(Math.abs((await explanationOf(page, row)).arrowOff), `row ${row}`).toBeLessThan(2);
+});
+
+test.describe("in a laptop's window, 650px tall", () => {
+  test.use({ viewport: { width: 1366, height: 650 } });
+
+  test("an explanation of a row near the window's bottom is lifted into it", async ({ page }) => {
+    await open(page, "/about/");
+    const rows = await page.locator(".breakdown tr").count();
+    let lifted = 0;
+    for (let row = 0; row < rows; row++) {
+      const tip = await explanationOf(page, row);
+      // A row the window cuts itself is the page's to scroll to.
+      if (tip.rowBottom > 650) continue;
+      // Hung down from its row, the last rows' were cut by the window, some by half their words.
+      expect(tip.bottom, `row ${row}`).toBeLessThanOrEqual(650);
+      // And its arrow is still on its row.
+      expect(Math.abs(tip.arrowOff), `row ${row}`).toBeLessThan(2);
+      if (tip.arrowTop > 12) lifted++;
+    }
+    expect(lifted).toBeGreaterThan(0);
+  });
 });
 
 test("About explanations dismiss with Escape under the pointer and keep keyboard focus", async ({
@@ -671,9 +1010,11 @@ test.describe("a page that doesn't exist", () => {
     await page.goto("/No-Such/Page%2c%20Here/");
     await expect(page).toHaveURL("/no-such/page%2C%20here/");
     await staysPut(page, urls);
-    expect(urls.map((url) => new URL(url).pathname)).toEqual([
+    // Between the two, Cloudflare's own redirect, to /No-Such/Page%2C%20Here/: not on Vike's dev
+    // server, which answers the address as it's written. Either way the lowercase one comes once.
+    const paths = urls.map((url) => new URL(url).pathname);
+    expect(paths.filter((path) => path !== "/No-Such/Page%2C%20Here/")).toEqual([
       "/No-Such/Page%2c%20Here/",
-      "/No-Such/Page%2C%20Here/",
       "/no-such/page%2C%20here/",
     ]);
   });

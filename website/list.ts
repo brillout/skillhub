@@ -3,7 +3,19 @@
  * as a link, and its HTML. The page is pre-rendered unfiltered; its client script re-renders it.
  */
 
-import { age, compact, date, daysBefore, esc, href, number, percent, plural } from "./format.ts";
+import {
+  age,
+  compact,
+  date,
+  daysBefore,
+  esc,
+  glanceEnd,
+  href,
+  number,
+  percent,
+  plural,
+  textHtml,
+} from "./format.ts";
 import {
   CAUTION,
   FACET_ORDER,
@@ -336,10 +348,12 @@ export const PROPS: Record<Prop, PropInfo> = {
       const tookOff = publishedOf(e) !== firstSeenOf(e);
       if (isBundle(e))
         return tookOff
-          ? `Published ${on}, the earliest of its skills: when skills.sh first saw one, or the week one took off after getting under ${compact(GROWTH_BASE_MIN)} installs a week`
+          ? `Published ${on}, the earliest of its skills: when skills.sh first saw one, or the week one took off, after a week of under ${compact(GROWTH_BASE_MIN)} installs`
           : `Published ${on}, when skills.sh first saw one of its skills`;
       return tookOff
-        ? `Published ${on}, the week it took off on skills.sh: skills.sh first saw it ${date(firstSeenOf(e) as string)}, but it got under ${compact(GROWTH_BASE_MIN)} installs a week until then`
+        ? // What tookOffOf checks, no more: "under 100 installs a week until then" was said of
+          // skills that had got several hundred a week since they were first seen.
+          `Published ${on}, the week it took off on skills.sh: skills.sh first saw it ${date(firstSeenOf(e) as string)}, but until then it got under ${compact(GROWTH_MIN)} installs a week, and under ${compact(GROWTH_BASE_MIN)} the week before`
         : `Published ${on}, when skills.sh first saw it`;
     },
     // Below and above every date, so that the full range takes them all in. The ends' ages place an
@@ -1294,6 +1308,10 @@ ${need.trim() || "I'll tell you in my next message."}`;
 
 // ------------------------------------------------------------------- pieces
 
+/**
+ * A tag's chip in the tags' column: its name, and how many skills have it, written as the page's
+ * other counts are, 1,012: bare, the first to pass a thousand would read 1012 beside "1,246 skills".
+ */
 function filterChip(
   attr: string,
   value: string,
@@ -1304,7 +1322,7 @@ function filterChip(
 ): string {
   return `<button type="button" class="chip" ${attr}="${esc(value)}" aria-pressed="${pressed}"${
     title ? ` title="${esc(title)}"` : ""
-  }><span>${esc(label)}</span><span class="n">${n}</span></button>`;
+  }><span>${esc(label)}</span><span class="n">${number(n)}</span></button>`;
 }
 
 /**
@@ -1458,6 +1476,15 @@ const sourceHtml = (e: Entry) =>
   `<span class="skill-source"><a class="repo-link" href="${repoHref(repoKey(e))}">${esc(repoKey(e))}</a></span>`;
 
 /**
+ * What follows a row's name: what it is, where it's from, the bundle it's part of. In one box, which
+ * the page looks through where the name's line has the room for them, and which goes under the name
+ * and the row's buttons, as wide as the row, where it doesn't: see .skill-meta in style.css. ""
+ * when there's none of them, such as a skill's row on its repo's page.
+ */
+const metaHtml = (...parts: string[]) =>
+  parts.some(Boolean) ? `<div class="skill-meta">${parts.join("")}</div>` : "";
+
+/**
  * A skill's row. `outside` is for a row outside the skills list, on a page about its repo: its tags
  * link to the list, filtered by them, rather than toggling its filters, and it doesn't repeat the repo.
  */
@@ -1473,15 +1500,16 @@ function skillRow(s: Skill, st: State, outside = false): string {
       <div class="row-head">
       <div class="skill-head">
         <h3><a class="skill-name" href="${skillHref(s.id)}">${esc(s.name)}</a></h3>
-        ${outside ? "" : sourceHtml(s)}${
+        ${metaHtml(
+          outside ? "" : sourceHtml(s),
           place
             ? `<span class="skill-source">${place.standalone ? "Part of" : "Only works as part of"} <a href="${bundleHref(place.bundle.id)}">${esc(place.bundle.agentReview.name)}</a></span>`
-            : ""
-        }
+            : "",
+        )}
       </div>
       ${detailsLink(skillHref(s.id))}${thumbsHtml(saveKey("skill", s.id), s.name)}${saveButton(saveKey("skill", s.id), s.name)}
       </div>
-      ${s.agentReview.tldr?.glance.length ? glanceHtml(s.agentReview.tldr.glance, 2) : `<p class="skill-desc">${esc(s.agentReview.description)}</p>`}
+      ${s.agentReview.tldr?.glance.length ? glanceHtml(s.agentReview.tldr.glance, 2) : `<p class="skill-desc">${textHtml(s.agentReview.description)}</p>`}
       <div class="tags">${tags.map((t) => tagChip(t, outside ? skillsLink({ tags: [t] }) : null, st.tags.includes(t))).join("")}</div>
       </div>
       ${propsHtml(s, st)}
@@ -1503,12 +1531,14 @@ function bundleRow(b: Bundle, st: State, outside = false): string {
       <div class="row-head">
       <div class="skill-head">
         <h3><a class="skill-name" href="${bundleHref(b.id)}">${esc(b.agentReview.name)}</a></h3>
-        <span class="kind">Bundle of ${plural(b.agentReview.skills.length, "skill")}</span>
-        ${outside ? "" : sourceHtml(b)}
+        ${metaHtml(
+          `<span class="kind">Bundle of ${plural(b.agentReview.skills.length, "skill")}</span>`,
+          outside ? "" : sourceHtml(b),
+        )}
       </div>
       ${detailsLink(bundleHref(b.id))}${thumbsHtml(saveKey("bundle", b.id), b.agentReview.name)}${saveButton(saveKey("bundle", b.id), b.agentReview.name)}
       </div>
-      ${b.agentReview.tldr?.glance.length ? glanceHtml(b.agentReview.tldr.glance, 2) : `<p class="skill-desc">${esc(b.agentReview.description)}</p>`}
+      ${b.agentReview.tldr?.glance.length ? glanceHtml(b.agentReview.tldr.glance, 2) : `<p class="skill-desc">${textHtml(b.agentReview.description)}</p>`}
       <p class="members">${members.join(", ")}</p>
       </div>
       ${propsHtml(b, st)}
@@ -1596,6 +1626,9 @@ function facetSections(st: State, stackExpanded: boolean): string {
   ].sort((a, b) => (stackCounts.get(b) ?? 0) - (stackCounts.get(a) ?? 0) || a.localeCompare(b));
   for (const t of stack) listed.add(t);
   const shown = stackExpanded ? stack : stack.slice(0, 16);
+  // Show all, on a line of its own (see .chips-more in style.css), so that it starts where Show
+  // fewer does. After the last tag, on its line, it was wherever that tag ended: once clicked, the
+  // pointer was on a tag, such as zustand, and a second click, to close them, filtered by it.
   sections.push(
     section(
       "Stack",
@@ -1606,7 +1639,7 @@ function facetSections(st: State, stackExpanded: boolean): string {
         )
         .join("") +
         (stack.length > 16
-          ? `<button type="button" class="link-button" data-action="stack">${stackExpanded ? "Show fewer" : `Show all ${stack.length}`}</button>`
+          ? `<span class="chips-more"><button type="button" class="link-button" data-action="stack">${stackExpanded ? "Show fewer" : `Show all ${stack.length}`}</button></span>`
           : ""),
     ),
   );
@@ -1636,7 +1669,7 @@ function foundChip(t: string, n: number, pressed: boolean): string {
   const title = [tagInfo.get(t), pressed ? "" : "Filters by this tag in place of the search."]
     .filter(Boolean)
     .join(" ");
-  return `<button type="button" class="chip" data-tag="${esc(t)}" data-replaces-search aria-pressed="${pressed}" title="${esc(title)}"><span>${name}</span><span class="n">${n}</span></button>`;
+  return `<button type="button" class="chip" data-tag="${esc(t)}" data-replaces-search aria-pressed="${pressed}" title="${esc(title)}"><span>${name}</span><span class="n">${number(n)}</span></button>`;
 }
 
 /**
@@ -1939,7 +1972,7 @@ export function resultsHtml(st: State, limit = Infinity): string {
   const repoNote = st.repo ? repoById.get(st.repo) : undefined;
   return `
     ${savedNote(st) ?? ""}
-    ${repoNote ? `<p class="repo-banner"><a href="${repoHref(repoNote.id)}">${esc(repoNote.id)}</a>${repoNote.agentReview.description ? ` <span>${esc(repoNote.agentReview.description)}</span>` : ""}</p>` : ""}
+    ${repoNote ? `<p class="repo-banner"><a href="${repoHref(repoNote.id)}">${esc(repoNote.id)}</a>${repoNote.agentReview.description ? ` <span>${esc(glanceEnd(repoNote.agentReview.description))}</span>` : ""}</p>` : ""}
     ${
       savedNote(st) !== null
         ? ""

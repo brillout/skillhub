@@ -1,5 +1,5 @@
 import type { PageContextServer } from "vike/types";
-import { age, commandHtml, compact, date, esc, plural } from "../../format.ts";
+import { age, commandHtml, compact, date, esc, plural, textHtml } from "../../format.ts";
 import {
   aloneLine,
   crumbsHtml,
@@ -75,8 +75,8 @@ function skills(b: Bundle): string {
           ${standalone ? "" : `<span class="kind">Only in the bundle</span>`}
           ${installs === null ? "" : `<span class="metric"><strong>${compact(installs)}</strong> total downloads</span>`}
         </div>
-        <p class="skill-desc">${esc(s.agentReview.description)}</p>
-        ${note ? `<p class="member-note">${esc(note)}</p>` : ""}
+        <p class="skill-desc">${textHtml(s.agentReview.description)}</p>
+        ${note ? `<p class="member-note">${textHtml(note)}</p>` : ""}
       </li>`;
   });
   return `<ol class="bundle-skills">${items.join("")}</ol>`;
@@ -88,11 +88,11 @@ export default function Page(pageContext: PageContextServer): string {
   return `
     <div class="page skill-page bundle-page">
       ${crumbsHtml(repo)}
-      <div class="title-row"><h1>${esc(b.agentReview.name)} <span class="kind">Bundle of ${plural(b.agentReview.skills.length, "skill")}</span></h1>${thumbsHtml(saveKey("bundle", b.id), b.agentReview.name)}${saveButton(saveKey("bundle", b.id), b.agentReview.name)}</div>
+      <div class="title-row"><h1>${esc(b.agentReview.name)} <span class="kind">Bundle of ${plural(b.agentReview.skills.length, "skill")}</span></h1><div class="title-actions">${thumbsHtml(saveKey("bundle", b.id), b.agentReview.name)}${saveButton(saveKey("bundle", b.id), b.agentReview.name)}</div></div>
       ${
         b.agentReview.tldr?.glance.length
           ? `<section class="at-a-glance" aria-label="At a glance">${glanceHtml(b.agentReview.tldr.glance)}</section>`
-          : `<p class="lede">${esc(b.agentReview.description)}</p>`
+          : `<p class="lede">${textHtml(b.agentReview.description)}</p>`
       }
       ${b.agentReview.tldr ? tldrHtml(b.agentReview.tldr, "the repo", b.skew) : ""}
       <div class="get">

@@ -1,7 +1,7 @@
 /** The data behind every page, ../data/skills.jsonc, and what the pages derive from it. */
 
 import raw from "../data/skills.jsonc";
-import { daysBefore, esc, glanceEnd, href, plural } from "./format.ts";
+import { daysBefore, esc, glanceEnd, href, plural, textHtml } from "./format.ts";
 import type { Facet, Tldr } from "../data/types.ts";
 // The browser runs this file, in the skills list, so it types the data as the browser's copy, which
 // leaves some fields out: reading one here doesn't type-check. Pages get them from server-data.ts.
@@ -106,12 +106,13 @@ export const weekOf = (e: Skill | Bundle): number | null => {
  * What each number is called where it's on a tile of its own: on a skill's or a bundle's page (see
  * stat-tiles.ts) and in its preview in the skills list (see preview-client.ts). One name each, for
  * both: the preview said "Weekly downloads" where the page it previews says "Weekly Downloads".
- * The stars are the repo's, which the rows say with their tooltip.
+ * Each written as a name, its words in capitals, the stars' too: "Repo stars" stood beside "Total
+ * Downloads". The stars are the repo's, which the rows say with their tooltip.
  */
 export const NUMBER_LABELS = {
   week: "Weekly Downloads",
   downloads: "Total Downloads",
-  stars: "Repo stars",
+  stars: "Repo Stars",
   published: "Age",
 } as const;
 
@@ -148,17 +149,27 @@ export const growthOf = (e: Skill | Bundle): number | null => {
  * week in its latest 2 weeks, as growthOf counts them, and that dormant week came after skills.sh
  * first saw it (else it's just a new skill's first, partial week). So a skill with GROWTH_MIN a week
  * but no growth, for such a week among its last GROWTH_WEEKS, took off or was first seen in the
- * last GROWTH_WEEKS weeks: it shows under Rising & new instead.
+ * last GROWTH_WEEKS weeks, and shows under Rising & new instead; or it had a few bad weeks.
+ *
+ * Almost unused, as far as its total tells: until that day it got fewer than GROWTH_MIN installs a
+ * week on average, since skills.sh first saw it. One that got many more only had bad weeks, as the
+ * eleven skills of RigorPilot did: 12K to 16K a week for six months, three weeks of 50, then 10K
+ * again. Counted as taking off, they were "5 weeks" old beside 356K total downloads, newer than 97%
+ * of the skills, and listed under Rising & new. Such a skill keeps its date, and has no growth.
  */
 export const tookOffOf = (s: Skill): string | null => {
-  const { weeklyInstalls: weekly, firstSeen } = s["skills.sh"];
+  const { weeklyInstalls: weekly, firstSeen, installs } = s["skills.sh"];
   if (!weekly || !firstSeen) return null;
   if ((weekly[weekly.length - 1] + weekly[weekly.length - 2]) / 2 < GROWTH_MIN) return null;
   const since = weekly.findLastIndex((n) => n < GROWTH_BASE_MIN) + 1;
   if (since === 0 || since === weekly.length) return null;
   // The last week is the one to data.asOf.installs.
   const day = daysBefore(data.asOf.installs, (weekly.length - since) * 7);
-  return daysBefore(day, 7) >= firstSeen ? day : null;
+  if (daysBefore(day, 7) < firstSeen) return null;
+  // What it got until that day: its total, without the weeks since. An unknown total tells nothing.
+  const before = (installs ?? 0) - weekly.slice(since).reduce((a, b) => a + b, 0);
+  const weeks = (Date.parse(day) - Date.parse(firstSeen)) / (7 * 86_400_000);
+  return before / weeks < GROWTH_MIN ? day : null;
 };
 
 /**
@@ -173,6 +184,21 @@ export const publishedOf = (e: Skill | Bundle): string | null =>
 /** Compare for a descending sort, unknown values last. */
 export const desc = (a: number | null, b: number | null) => (b ?? -1) - (a ?? -1);
 
+/**
+ * An owner as the site spells them: as their most starred repo with a skill here does. The ids
+ * spell some owners two ways, such as AgriciDaniel and agricidaniel, which get one page (see
+ * github.ts): each repo's crumbs spelled its own, so the way to that page read otherwise than the
+ * page's name.
+ */
+const ownerNames = new Map<string, string>();
+{
+  const listed = new Set(data.skills.map(repoKey));
+  for (const r of data.repos.filter((r) => listed.has(r.id)).sort((a, b) => desc(a.stars, b.stars)))
+    if (!ownerNames.has(ownerPage(r.id))) ownerNames.set(ownerPage(r.id), r.id.split("/")[0]);
+}
+/** The owner of a repo (`owner/name`), as the site spells them. */
+export const ownerName = (repo: string) => ownerNames.get(ownerPage(repo)) ?? repo.split("/")[0];
+
 /** A page (see github.ts) as URL path segments. */
 export const idPath = (page: string) => page.split("/").map(encodeURIComponent).join("/");
 /** The page of a repo's owner, from the repo (`owner/name`): see ownerPage(). */
@@ -186,10 +212,10 @@ export const bundleHref = (id: string) => href(`${idPath(bundlePage({ id }))}/`)
 
 /** The crumbs atop a page inside a repo (`owner/name`): the list, its owner, the repo, then `more`. */
 export function crumbsHtml(repo: string, ...more: string[]): string {
-  const [owner, name] = repo.split("/");
+  const name = repo.split("/")[1];
   const links = [
     `<a href="${href()}">Skills</a>`,
-    `<a href="${ownerHref(repo)}">${esc(owner)}</a>`,
+    `<a href="${ownerHref(repo)}">${esc(ownerName(repo))}</a>`,
     `<a href="${repoHref(repo)}">${esc(name)}</a>`,
     ...more,
   ];
@@ -200,7 +226,10 @@ export function crumbsHtml(repo: string, ...more: string[]): string {
 export function glanceHtml(glance: Tldr["glance"], max = glance.length): string {
   const items = glance
     .slice(0, max)
-    .map(({ label, text }) => `<div><dt>${esc(label)}:</dt><dd>${esc(glanceEnd(text))}</dd></div>`);
+    .map(
+      ({ label, text }) =>
+        `<div><dt>${esc(label)}:</dt><dd>${textHtml(glanceEnd(text))}</dd></div>`,
+    );
   return `<dl class="glance">${items.join("")}</dl>`;
 }
 
@@ -266,7 +295,7 @@ export function tldrHtml(tldr: Tldr, what: string, skew: number): string {
       <h2 id="tldr">TL;DR</h2>
       ${tldr.text
         .split(/\n\s*\n/)
-        .map((p) => `<p>${esc(p)}</p>`)
+        .map((p) => `<p>${textHtml(p)}</p>`)
         .join("")}
       <p class="muted">Summarizes <a href="${esc(tldr.permalink)}">${esc(what)} at ${short(commit)}</a>.${
         skew

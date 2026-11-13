@@ -7,7 +7,7 @@
 import type { Locator, Page } from "@playwright/test";
 import { bundle, bundleUrl, onlyInBundle, repo, skill, skillUrl, smallRepo } from "./data.ts";
 import { skillPage } from "../website/github.ts";
-import { expect, list, open, ready, searchable, settled, test } from "./fixtures.ts";
+import { expect, list, open, ready, rowHeads, searchable, settled, test } from "./fixtures.ts";
 
 const preview = (page: Page) => page.locator("#preview");
 /** The name the preview shows: of the row it's about. */
@@ -408,6 +408,9 @@ test("a preview read down keeps its name and its × in sight, and the next one s
   page,
 }) => {
   await open(page, SEVERAL);
+  // With the TLDRs' prose, which comes after the page: until it's in, a preview can be as short as
+  // the window, with nothing for the wheel to scroll, and this failed where the prose came late.
+  await searchable(page);
   const { rows } = list(page);
   await wordsOf(rows.nth(0)).click();
   await expect(preview(page)).toBeVisible();
@@ -572,7 +575,7 @@ test("the preview of a skill that only works inside its bundle installs the bund
   await expect(only).toContainText(why);
   const get = preview(page).locator("[data-get]");
   await expect(get.locator(".install-label")).toContainText(
-    `Installs ${of.agentReview.name}, the bundle it works in.`,
+    `installs ${of.agentReview.name}, the bundle it works in.`,
   );
   await get.getByRole("button", { name: "Copy" }).click();
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(
@@ -681,6 +684,23 @@ test("a repo's rows open their pages", async ({ page }) => {
   await expect.poll(() => cursorOf(row)).toBe("pointer");
   await wordsOf(row).click();
   await expect(page).toHaveURL(href as string);
+});
+
+test.describe("in a window 1,160px wide, just wide enough for the preview", () => {
+  test.use({ viewport: { width: 1160, height: 800 } });
+
+  test("what follows a row's name goes under its name and its buttons, as wide as the row", async ({
+    page,
+  }) => {
+    // The bundles, whose names are followed by the most: what they are, then their repo.
+    await open(page, "/?show=bundles");
+    await expect(list(page).rows.first().locator(".details")).toBeVisible();
+    const heads = await rowHeads(page);
+    expect(heads.length).toBeGreaterThan(20);
+    // In the name's column, which All details and the buttons leave a third of the row, a repo
+    // broke in two or three, beside half a row of nothing.
+    expect(heads.filter((head) => head.repoWidth <= head.width && head.repoLines > 1)).toEqual([]);
+  });
 });
 
 test.describe("in a window 1,100px wide, too narrow for the preview", () => {

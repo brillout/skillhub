@@ -1,9 +1,10 @@
 import type { PageContextServer } from "vike/types";
-import { age, commandHtml, date, esc } from "../../format.ts";
+import { age, commandHtml, date, esc, textHtml } from "../../format.ts";
 import { skillsLink } from "../../list.ts";
 import { statTilesHtml } from "../../stat-tiles.ts";
 import { copyButton } from "../../copy.ts";
 import {
+  CAUTION,
   FACET_ORDER,
   bundleHref,
   bundleOf,
@@ -102,7 +103,7 @@ function inBundle(s: Skill): string {
   const note = fullBundleById.get(bundle.id)?.agentReview.skills[index]?.note;
   return `
     ${inBundleHtml(s)}
-    ${standalone ? "" : `<p class="note" data-only-in-bundle>Only works inside its bundle: ${esc(note ?? "")} Install <a href="${bundleHref(bundle.id)}">${esc(bundle.agentReview.name)}</a> instead.</p>`}`;
+    ${standalone ? "" : `<p class="note" data-only-in-bundle>Only works inside its bundle: ${textHtml(note ?? "")} Install <a href="${bundleHref(bundle.id)}">${esc(bundle.agentReview.name)}</a> instead.</p>`}`;
 }
 
 export default function Page(pageContext: PageContextServer): string {
@@ -123,22 +124,27 @@ export default function Page(pageContext: PageContextServer): string {
   const with_ = whole ? whole.agentReview.install[0] : undefined;
   const get =
     whole && with_
-      ? `<p class="install-label">Installs <a href="${bundleHref(whole.id)}">${esc(whole.agentReview.name)}</a>, the bundle it works in. ${esc(with_.label)}</p>
+      ? `<p class="install-label">${esc(with_.label)}: installs <a href="${bundleHref(whole.id)}">${esc(whole.agentReview.name)}</a>, the bundle it works in.</p>
         <div class="install"><code>${commandHtml(with_.command)}</code>${copyButton(with_.command)}</div>`
       : `<div class="install"><code>${commandHtml(installCommand(s))}</code>${copyButton(installCommand(s))}</div>`;
   if (whole && whole.agentReview.install.length > 1)
     links.unshift(`<a href="${bundleHref(whole.id)}">Other ways to install it</a>`);
+  // What calls for a look before installing, such as a republished skill's flag, which says to
+  // distrust its ranking: up here, before its command and its numbers, as its preview has it and as
+  // its row says down its left edge. In the tags' table alone, it came after them all.
+  const cautions = s.agentReview.tags.filter((t) => CAUTION.includes(t) && tagInfo.has(t));
   return `
     <div class="page skill-page">
       ${crumbsHtml(repoKey(s), ...(bundle ? [`<a href="${bundleHref(bundle.id)}">${esc(bundle.agentReview.name)}</a>`] : []))}
-      <div class="title-row"><h1>${esc(s.name)}</h1>${thumbsHtml(saveKey("skill", s.id), s.name)}${saveButton(saveKey("skill", s.id), s.name)}</div>
+      <div class="title-row"><h1>${esc(s.name)}</h1><div class="title-actions">${thumbsHtml(saveKey("skill", s.id), s.name)}${saveButton(saveKey("skill", s.id), s.name)}</div></div>
       ${
         s.agentReview.tldr?.glance.length
           ? `<section class="at-a-glance" aria-label="At a glance">${glanceHtml(s.agentReview.tldr.glance)}</section>`
-          : `<p class="lede">${esc(s.agentReview.description)}</p>`
+          : `<p class="lede">${textHtml(s.agentReview.description)}</p>`
       }
       ${inBundle(s)}
-      ${s.agentReview.note ? `<p class="note">${esc(s.agentReview.note)}</p>` : ""}
+      ${cautions.map((t) => `<p class="note">${esc(tagInfo.get(t) ?? "")}</p>`).join("")}
+      ${s.agentReview.note ? `<p class="note">${textHtml(s.agentReview.note)}</p>` : ""}
       ${s.agentReview.tldr ? tldrHtml(s.agentReview.tldr, "the skill", s.skillMd?.skew ?? 0) : ""}
       <div class="get">
         ${get}

@@ -17,7 +17,7 @@
  * many presses as the list has links. See "the keyboard", further down.
  */
 
-import { age, commandHtml, esc, plural } from "./format.ts";
+import { age, commandHtml, esc, plural, textHtml } from "./format.ts";
 import { copyButton, mountCopyButtons } from "./copy.ts";
 import { saveButton, saveKey, thumbsHtml } from "./saves.ts";
 import {
@@ -120,7 +120,7 @@ const CROSS = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8m0-8
 function proseHtml(e: Entry): string {
   const text = prose && (isBundle(e) ? prose.bundles : prose.skills)[e.id];
   if (!text) return "";
-  const paragraphs = text.split(/\n\s*\n/).map((p) => `<p>${esc(p)}</p>`);
+  const paragraphs = text.split(/\n\s*\n/).map((p) => `<p>${textHtml(p)}</p>`);
   return `<section class="preview-part"><h3>TL;DR</h3>${paragraphs.join("")}</section>`;
 }
 
@@ -166,11 +166,11 @@ function paneHtml(e: Entry): string {
       ${saveButton(saveKey(isBundle(e) ? "bundle" : "skill", e.id), nameOf(e))}
       <button type="button" class="preview-close" data-close-preview aria-label="Close the preview">${CROSS}</button>
     </div>
-    ${review.tldr?.glance.length ? glanceHtml(review.tldr.glance) : `<p class="skill-desc">${esc(review.description)}</p>`}
+    ${review.tldr?.glance.length ? glanceHtml(review.tldr.glance) : `<p class="skill-desc">${textHtml(review.description)}</p>`}
     ${isBundle(e) ? "" : inBundleHtml(e)}
     ${only ? `<div data-only>${parts?.only || onlyInBundle(place.bundle)}</div>` : ""}
     ${cautions.map((t) => `<p class="note">${esc(tagInfo.get(t) ?? "")}</p>`).join("")}
-    ${note ? `<p class="note">${esc(note)}</p>` : ""}
+    ${note ? `<p class="note">${textHtml(note)}</p>` : ""}
     ${statsHtml(e)}
     ${install}
     <div data-prose>${proseHtml(e)}</div>

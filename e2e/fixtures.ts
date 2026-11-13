@@ -90,11 +90,42 @@ export const list = (page: Page) => ({
   sortedValues: page.locator("#results .skill-list > li .props > .on .prop-value"),
 });
 
+/**
+ * How the heads of a list's first rows are laid out, a row's name with what follows it and its
+ * buttons: the head's width, its name's, and its repo's, with whether the repo is on one line.
+ * Of the first rows only, which it has the browser draw: a row off the screen isn't laid out.
+ */
+export const rowHeads = (page: Page, rows = 60) =>
+  page.locator("#results .skill-list > li").evaluateAll(
+    (all, n) =>
+      all.slice(0, n).flatMap((row) => {
+        (row as HTMLElement).style.contentVisibility = "visible";
+        const head = row.querySelector(".row-head");
+        const repo = row.querySelector(".row-head .repo-link");
+        if (!head || !repo) return [];
+        // An inline box has a rectangle for each line it's on.
+        const lines = [...repo.getClientRects()];
+        return [
+          {
+            name: row.querySelector(".skill-name")?.textContent ?? "",
+            width: head.getBoundingClientRect().width,
+            nameWidth: (row.querySelector(".row-head h3") as Element).getBoundingClientRect().width,
+            repoWidth: lines.reduce((sum, line) => sum + line.width, 0),
+            repoLines: lines.length,
+          },
+        ];
+      }),
+    rows,
+  );
+
 /** A row's number as the list shows it, such as 12.6K or 3.5M, back as a number; NaN for an unknown one, shown as a dash. */
 export function fromCompact(text: string): number {
   const m = /^([\d.]+)([KM]?)$/.exec(text.trim());
   return m ? Number(m[1]) * { "": 1, K: 1e3, M: 1e6 }[m[2] as "" | "K" | "M"] : Number.NaN;
 }
+
+/** A count as a tag's chip writes it, such as 1,012, back as a number. */
+export const fromCount = (text: string) => Number(text.replace(/,/g, ""));
 
 /** 1190 as the site writes it: 1,190. */
 export const n = (count: number) => count.toLocaleString("en");

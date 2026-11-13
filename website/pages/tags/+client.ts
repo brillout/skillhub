@@ -10,6 +10,8 @@ import { plain, sought, terms, type Term } from "../../search-terms.ts";
 
 const input = document.getElementById("tag-q") as HTMLInputElement;
 const none = document.getElementById("tag-none") as HTMLElement;
+/** The page's own title, which it has while it shows every tag: see `search`. */
+const pageTitle = document.title;
 
 /**
  * Whether a table's row, or a cloud's tag, has each word: in its text, or in its tag's meaning. A
@@ -53,6 +55,10 @@ function search() {
   }
   none.hidden = any;
   none.textContent = any ? "" : `No tag matches “${input.value.trim()}”.`;
+  // The title says what the page is narrowed to, as the skills list's does (see titleOf in
+  // list.ts): a tab, a bookmark or the history couldn't tell /tags/?q=git from the whole page.
+  const typed = input.value.trim();
+  document.title = typed ? `“${typed}” · ${pageTitle}` : pageTitle;
 }
 
 /**
@@ -71,5 +77,17 @@ const asked = new URLSearchParams(location.search).get("q");
 if (asked !== null) input.value = asked;
 // Or what the browser put back by itself.
 if (input.value) search();
+// The tags were hidden until now, if the page's link has a search: see PENDING_SCRIPT in +Page.ts.
+delete document.documentElement.dataset.pending;
+
+// The way back within the page, from one of its facets' links, which each make an entry in the
+// browser's history: to the search that entry's address has. Without this the address went back
+// to ?q=git while the box and the tags stayed on what was typed since.
+addEventListener("popstate", () => {
+  const back = new URLSearchParams(location.search).get("q") ?? "";
+  if (back === input.value.trim()) return;
+  input.value = back;
+  search();
+});
 
 ready();

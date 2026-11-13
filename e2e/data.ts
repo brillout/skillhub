@@ -82,6 +82,16 @@ export const commentUrl = skillWhoseSkillMd(
 );
 /** The page of a skill whose SKILL.md has a task list, `- [ ] to do`. */
 export const taskListUrl = skillWhoseSkillMd((html) => html.includes('class="task"'));
+/** The page of a skill whose SKILL.md has a task of words alone, too long for a line of any screen. */
+export const longTaskUrl = skillWhoseSkillMd((html) =>
+  /<li class="task"><input[^>]*>[^<]{240,}<\/li>/.test(html),
+);
+/** The page of a skill whose SKILL.md has a table right before a rule, or before another table. */
+export const tableThenUrl = skillWhoseSkillMd((html) => /<\/table>\s*<(hr|table)\b/.test(html));
+/** The page of a skill whose SKILL.md has headings of three levels, which its page shows as h3 to h5. */
+export const headingsUrl = skillWhoseSkillMd((html) =>
+  ["<h3", "<h4", "<h5"].every((heading) => html.includes(heading)),
+);
 
 /**
  * A skill that only works inside its bundle, and the bundle: of those bundles, the first with more
@@ -114,6 +124,36 @@ export const fromAHandful = data.skills
   )
   .map((s) => `/${skillPage(s)}/`)[0] as string | undefined;
 
+/**
+ * A skill whose TLDR sets code apart between backticks, such as `npm install`, with the first of it,
+ * if there's one today: one whose glance does too, where there's one, as the page's description is
+ * made of its glance.
+ */
+export const codeInTldr = (() => {
+  const code = (text: string | undefined) => /`([^`\n]+)`/.exec(text ?? "")?.[1];
+  const found = mostInstalled
+    .filter((s) => code(s.agentReview.tldr?.text))
+    .toSorted((a, b) => {
+      const inGlance = (s: typeof a) =>
+        Number((s.agentReview.tldr?.glance ?? []).some((fact) => code(fact.text)));
+      return inGlance(b) - inGlance(a);
+    })[0];
+  return found
+    ? { url: `/${skillPage(found)}/`, code: code(found.agentReview.tldr?.text) as string }
+    : undefined;
+})();
+
+/**
+ * A glance's fact that ends on what someone says, its question mark or full stop before the closing
+ * quote, such as `You ask "how do I do X?"`, with its skill's page, if there's one today.
+ */
+export const quotedFact = (() => {
+  for (const s of mostInstalled)
+    for (const { text } of s.agentReview.tldr?.glance ?? [])
+      if (/[.!?]["”]$/.test(text) && !text.includes("`")) return { url: `/${skillPage(s)}/`, text };
+  return undefined;
+})();
+
 /** The page of the skill whose glance has the most of something, which a phone's width has to take. */
 function skillWhoseGlanceHasMost(of: (fact: { label: string; text: string }) => number): string {
   const most = (s: (typeof data.skills)[number]) =>
@@ -129,6 +169,15 @@ export const longLabelUrl = skillWhoseGlanceHasMost((fact) => fact.label.length)
 export const longWordUrl = skillWhoseGlanceHasMost((fact) =>
   Math.max(...fact.text.split(/[\s-]+/).map((word) => word.length)),
 );
+
+/**
+ * The page of the skill whose name has the longest word, such as microinteractions: on most days
+ * too long for what a phone's title has beside its buttons.
+ */
+export const longNameUrl = (() => {
+  const longest = (name: string) => Math.max(...name.split(/[\s-]+/).map((word) => word.length));
+  return `/${skillPage(data.skills.toSorted((a, b) => longest(b.name) - longest(a.name))[0])}/`;
+})();
 
 /** The stack tags the skills have: stack is the one facet whose values aren't a closed list. */
 export const stackTags = new Set(
@@ -258,6 +307,46 @@ export const smallOwnerUrl = `/${ownerPage(smallRepo.repo)}/`;
 
 /** The repo with the longest name, whose chip, in a list filtered to it, is longer than a phone's line. */
 export const longRepo = listings.toSorted((a, b) => b.repo.length - a.repo.length)[0];
+
+/**
+ * An owner whose repos' ids spell them in more than one way, such as AgriciDaniel and agricidaniel,
+ * if there's one today: their page, and their repos'.
+ */
+export const respelledOwner = (() => {
+  for (const l of listings) {
+    const theirs = listings.filter((other) => ownerPage(other.repo) === ownerPage(l.repo));
+    if (new Set(theirs.map((other) => other.repo.split("/")[0])).size > 1)
+      return { url: `/${ownerPage(l.repo)}/`, repos: theirs.map((other) => other.url) };
+  }
+  return undefined;
+})();
+
+/**
+ * A repo whose description, GitHub's own, has no full stop at its end, if there's one today, with
+ * the description.
+ */
+export const unendedRepo = (() => {
+  for (const l of listings) {
+    const text = data.repos.find((r) => r.id === l.repo)?.agentReview.description;
+    if (text && /[\p{L}\p{N}]$/u.test(text)) return { url: l.url, text };
+  }
+  return undefined;
+})();
+
+/**
+ * The pages whose description is the longest of their kind, a skill's and a bundle's: longer than
+ * a card has the room for, where their links are shared.
+ */
+export const longDescriptionUrls = (() => {
+  const length = (tldr: { glance: { label: string; text: string }[] } | undefined) =>
+    (tldr?.glance ?? []).reduce((n, fact) => n + fact.label.length + fact.text.length + 4, 0);
+  const longest = <E extends { agentReview: { tldr?: Parameters<typeof length>[0] } }>(of: E[]) =>
+    of.toSorted((a, b) => length(b.agentReview.tldr) - length(a.agentReview.tldr)).slice(0, 12);
+  return [
+    ...longest(data.skills).map((s) => `/${skillPage(s)}/`),
+    ...longest(data.bundles).map((b) => `/${bundlePage(b)}/`),
+  ];
+})();
 
 /** Its owner, whose page lists every repo of theirs: however their name is spelled, as GitHub ignores case. */
 const theirs = listings.filter((l) => ownerPage(l.repo) === ownerPage(repo.repo));

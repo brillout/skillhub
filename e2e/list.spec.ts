@@ -1,10 +1,11 @@
 /** The skills list: its search, its settings and its tags, which all live in the URL. */
 
 import type { Page, Route } from "@playwright/test";
-import { data, listedRows, longTag, meaningTag, repo, skill } from "./data.ts";
+import { data, listedRows, longTag, meaningTag, repo, skill, stackTags } from "./data.ts";
 import {
   expect,
   fromCompact,
+  fromCount,
   list,
   n,
   open,
@@ -19,18 +20,25 @@ const all = `${n(data.skills.length)} skills`;
 test.describe("when the search data fails to load", () => {
   test.use({ expected: /Failed to load resource|request failed:.*ERR_FAILED/ });
   test("explains how to recover", async ({ page }) => {
-    test.setTimeout(60_000);
+    // The built site names the prose's file after its content, as it does its other chunks: it's
+    // the module with skills and bundles, rather than the list's own data.
     await page.route("**/assets/chunks/*.js", async (route) => {
       const response = await route.fetch();
       const body = await response.text();
-      // The prose is a separate module with skills and bundles, rather than the list's own data.
       if (/^var \w+=\{skills:\{/.test(body) && body.includes("bundles:")) {
         await route.abort();
       } else await route.fulfill({ response });
     });
-    await page.goto("/");
-    await expect(page.getByRole("status")).toContainText("results may be incomplete", { timeout: 60_000 });
-    await expect(page.getByRole("status")).toContainText("Reload the page");
+    // Vike's dev server serves it under its own name, …/data/skills.jsonc?import&prose: without
+    // this, the walk against `pnpm dev` waited a minute for a failure that never came.
+    await page.route(/\/skills\.jsonc\?.*\bprose\b/, (route) => route.abort());
+    // On a short list, and by its id: looked for by its role on the whole list, some 90,000
+    // elements, each try described the page (see fixtures.ts), half a minute in all on `pnpm dev`.
+    await page.goto("/?show=bundles");
+    const notice = page.locator("#action-notice");
+    await expect(notice).toHaveAttribute("role", "status");
+    await expect(notice).toContainText("results may be incomplete");
+    await expect(notice).toContainText("Reload the page");
   });
 });
 
@@ -753,13 +761,33 @@ test("Show switches between skills, bundles and both", async ({ page }) => {
   await expect(rows).toHaveCount(listedRows);
 });
 
+test("Show all, under the stack's tags, is where Show fewer then is, under the pointer", async ({
+  page,
+}) => {
+  test.skip(stackTags.size <= 16, "the stack has too few tags to hide any today");
+  await open(page, "/");
+  const more = page.locator('#facets [data-action="stack"]');
+  await more.scrollIntoViewIfNeeded();
+  const box = (await more.boundingBox()) as { x: number; y: number; width: number; height: number };
+  const spot = [box.x + box.width / 2, box.y + box.height / 2] as const;
+  await page.mouse.click(...spot);
+  await settled(page);
+  await expect(more).toHaveText("Show fewer");
+  // A second click where the first was: after the last tag, on its line, the button had moved
+  // away, and the click was on a tag, which it filtered the list by.
+  await page.mouse.click(...spot);
+  await settled(page);
+  await expect(more).toHaveText(`Show all ${stackTags.size}`);
+  await expect(page).toHaveURL("/");
+});
+
 test("a tag narrows the list to as many skills as it says", async ({ page }) => {
   await open(page, "/");
   const { count, rows, scope } = list(page);
   const first = page.locator("#facets .chip[data-tag]").first();
   const tag = (await first.getAttribute("data-tag")) as string;
   const chip = page.locator(`#facets .chip[data-tag="${tag}"]`);
-  const says = Number(await chip.locator(".n").innerText());
+  const says = fromCount(await chip.locator(".n").innerText());
 
   await chip.click();
   await settled(page);
@@ -802,7 +830,7 @@ test("the search finds tags too, one of which takes its place once picked", asyn
   // The tags of the skills it finds follow, under their own count.
   await expect(page.locator(".tags-of")).toContainText(` of the ${await count.innerText()}`);
 
-  const says = Number(await chip.locator(".n").innerText());
+  const says = fromCount(await chip.locator(".n").innerText());
   await chip.click();
   await settled(page);
   await expect(page).toHaveURL(`/?tag=${encodeURIComponent(meaningTag.tag)}`);
@@ -859,7 +887,7 @@ test("with a search on, a tag still narrows the list to as many as it says", asy
       await chip.click();
       await settled(page);
       await expect(list(page).count, `${view}, ${tag}`).toHaveText(
-        new RegExp(`^${n(Number(says))} (skill|bundle)s?$`),
+        new RegExp(`^${n(fromCount(says))} (skill|bundle)s?$`),
       );
       await chip.click();
       await settled(page);

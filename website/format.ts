@@ -69,9 +69,26 @@ const longDate = new Intl.DateTimeFormat("en", {
 export const date = (iso: string) => longDate.format(new Date(`${iso}T00:00:00Z`));
 /**
  * A TLDR's glance item, shown after its label and a colon ("Use it when: You want…."): with a full
- * stop, unless it ends in its own "?" or "!". See the review-skills skill.
+ * stop, unless it ends in its own "?" or "!". See the review-skills skill. Its own also when a
+ * quote or a bracket closes after it: one that ends on what someone says, `"how do I do X?"`, read
+ * `X?".`, and `"…plan is required."` ended in two full stops with a quote between them. And a
+ * repo's description, which GitHub's own often leaves without one: one in sixteen had none here,
+ * above the others' full stops.
  */
-export const glanceEnd = (text: string) => (/[.!?]$/.test(text) ? text : `${text}.`);
+export const glanceEnd = (text: string) => (/[.!?…]["”’')\]]*$/.test(text) ? text : `${text}.`);
+
+/**
+ * What an agent wrote about a skill, its TLDR, description or note, escaped, as the pages show it:
+ * what it put between two backticks, a command, a flag or a file, is code, in the code's own
+ * letters (see code.said in style.css). Shown as written, the backticks stood in the sentence,
+ * "adding `-o` to save a file", as on a page that failed to render its Markdown. Nothing else of
+ * Markdown is read: these are sentences, not documents.
+ */
+export const textHtml = (text: string) =>
+  esc(text).replace(/`([^`\n]+)`/g, `<code class="said">$1</code>`);
+
+/** The same without the backticks, for where there's no code to set apart: a page's description. */
+export const plainText = (text: string) => text.replace(/`([^`\n]+)`/g, "$1");
 /** The day `n` days before a day, both YYYY-MM-DD. */
 export const daysBefore = (day: string, n: number) =>
   new Date(Date.parse(`${day}T00:00:00Z`) - n * 86_400_000).toISOString().slice(0, 10);

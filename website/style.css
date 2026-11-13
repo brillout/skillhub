@@ -239,6 +239,17 @@ code {
   font-size: 0.875em;
 }
 
+/*
+ * Code in what an agent wrote about a skill, in its TLDR or its note (see textHtml in format.ts):
+ * on a tint of its own ink, as a SKILL.md's code is on grey, so that it reads on whatever it lies
+ * on, the page, a row's sheet or a note's amber.
+ */
+code.said {
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: color-mix(in srgb, currentColor 8%, transparent);
+}
+
 /* What's hidden stays hidden, whatever its class displays it as: left to the browser, a class's
    `display` wins over the attribute's, and the Tags page's search hid nothing of a tag that's an
    inline-block. */
@@ -479,9 +490,10 @@ body:has(.skills-view) #page-head {
  * A link to a filtered list opens on the unfiltered one, as pre-rendered, until the list's script
  * has rendered what the link asks for (see PENDING_SCRIPT in list.ts): the settings and the list
  * are hidden until then, rather than shown wrong. Shown anyway after a few seconds, should the
- * script never come.
+ * script never come. And so are the Tags page's facets and their links, for a link with a search,
+ * /tags/?q=git, which its script narrows them to (see PENDING_SCRIPT in pages/tags/+Page.ts).
  */
-[data-pending] :is(#settings, .skills-view, #ask-label, #search-note) {
+[data-pending] :is(#settings, .skills-view, #ask-label, #search-note, .toc, #tag-sections) {
   visibility: hidden;
   animation: 0s 6s forwards pending;
 }
@@ -2137,6 +2149,12 @@ input[type="search"]::-webkit-search-cancel-button:hover {
   min-width: 0;
 }
 
+/* Under a facet's tags, what shows the rest of them, Stack's Show all: on a line of its own, from
+   the tags' left edge, open or closed (see facetSections in list.ts). */
+.chips-more {
+  flex-basis: 100%;
+}
+
 /* The values a parent includes, under it. */
 .chips.sub {
   flex-basis: 100%;
@@ -3222,14 +3240,21 @@ input[type="search"]::-webkit-search-cancel-button:hover {
   text-align: right;
 }
 
+/* The queue's last numbers, its stars, end where the table and its rules do: with the gap the
+   other columns have after them, they stopped 12px short of it. */
+.queue-table :is(th, td):last-child {
+  padding-right: 0;
+}
+
 .breakdown {
   min-width: min(100%, 360px);
   border-collapse: collapse;
   font-size: 14px;
 }
 
+/* A row's top padding has a name, --pad, as its tooltip is placed from it: see .tip-text. */
 .breakdown td {
-  padding: 6px 0;
+  padding: var(--pad, 6px) 0 6px;
 }
 
 .breakdown td.num {
@@ -3282,13 +3307,16 @@ input[type="search"]::-webkit-search-cancel-button:hover {
 }
 
 /* The disqualified skills' two kinds and their reasons, close together. */
+.breakdown :is(.d3, .d4) {
+  --pad: 2px;
+}
+
 .breakdown :is(.d3, .d4) td {
-  padding-top: 2px;
   padding-bottom: 2px;
 }
 
-.breakdown .d4 + .d3 td {
-  padding-top: 8px;
+.breakdown .d4 + .d3 {
+  --pad: 8px;
 }
 
 .breakdown .d4 td {
@@ -3335,6 +3363,13 @@ input[type="search"]::-webkit-search-cancel-button:hover {
 
 .breakdown td.num {
   position: relative;
+}
+
+/* A row's number that leads somewhere, the Waiting row's to the queue: a digit wide at times, 9px
+   by 18, it takes a tap from the cell's height and 8px on its sides. */
+.breakdown td.num a {
+  margin: 0 -8px;
+  padding: 6px 8px;
 }
 
 /* The button is 24px to be easy to tap, its circle 14px. */
@@ -3418,8 +3453,15 @@ input[type="search"]::-webkit-search-cancel-button:hover {
 }
 
 @media (min-width: 1024px) {
+  /*
+   * Its arrow is level with the row's number: 5px over the row's words, whatever the row's own
+   * padding, 2, 6 or 8px. Hung from the row's top, the arrow pointed over the number on the rows
+   * with more than the least of it, by 5px on Crawled and 7 on By script. And lifted by as much as
+   * the window's bottom would cut of it, --lift (see pages/about/+client.ts), its arrow staying
+   * on its row: in a laptop's window the last rows' were cut by up to half.
+   */
   .tip-text {
-    top: -4px;
+    top: calc(var(--pad, 6px) - 5px - var(--lift, 0px));
     right: auto;
     left: calc(100% + 12px);
     width: max-content;
@@ -3440,7 +3482,7 @@ input[type="search"]::-webkit-search-cancel-button:hover {
   .tip-text::after {
     content: "";
     position: absolute;
-    top: 11px;
+    top: calc(11px + var(--lift, 0px));
     left: -5px;
     width: 8px;
     height: 8px;
@@ -3466,6 +3508,12 @@ input[type="search"]::-webkit-search-cancel-button:hover {
   color: var(--garnet-text);
 }
 
+/* The keyboard's ring around the [i]'s circle, 14px, not around its button, 24px to be easy to
+   tap: that far out it crossed the last letter of its label, the s of Copies. */
+.tip-i:focus-visible {
+  outline-offset: -3px;
+}
+
 @media (hover: hover) {
   .breakdown tr:hover .tip-text {
     display: block;
@@ -3479,12 +3527,12 @@ input[type="search"]::-webkit-search-cancel-button:hover {
 /*
  * One at a time: the keyboard's row's, or else the pointer's row's, over a pinned one, which is
  * back once the pointer leaves the table. Each on its own terms, the pinned one and the pointer's
- * showed together, one over the other's words.
+ * showed together, one over the other's words. The keyboard's row is the one it's anywhere on, its
+ * [i] or its number's link, as the Waiting row's: with the [i] alone counted, that link's row
+ * showed its own beside a pinned one.
  */
-.breakdown:has(tr:not(.tip-dismissed) .tip-i:focus-visible) tr:not(:focus-within) .tip-text,
-.breakdown:not(:has(tr:not(.tip-dismissed) .tip-i:focus-visible)):has(tr:hover)
-  tr:not(:hover)
-  .tip-text,
+.breakdown:has(tr:not(.tip-dismissed) :focus-visible) tr:not(:focus-within) .tip-text,
+.breakdown:not(:has(tr:not(.tip-dismissed) :focus-visible)):has(tr:hover) tr:not(:hover) .tip-text,
 .breakdown tr.tip-dismissed .tip-text {
   display: none;
 }
@@ -3513,9 +3561,28 @@ input[type="search"]::-webkit-search-cancel-button:hover {
   line-height: 2.2;
 }
 
+/*
+ * A group of topics is under its name, and apart from the group before it: its name was 26px over
+ * its own tags and 23px under the last group's, as much the one's as the other's. The tags' first
+ * line has room of its own over it, so the name's margin is all there is between them.
+ */
+h3 + .cloud {
+  margin-top: 0;
+}
+
+.cloud + h3 {
+  margin-top: 28px;
+}
+
 /* A tag and its count go to the next line whole: broken after its prefix or at a hyphen, a tag's
    two halves looked like two tags. It only breaks when it's wider than the page. */
 .cloud-item {
+  display: inline-block;
+}
+
+/* As tall as a tag is everywhere else, 22px: inline, its box was as tall as its letters, 17px,
+   which touched its edges, and so was what a finger had of it to tap. */
+.cloud .tag {
   display: inline-block;
 }
 
@@ -3525,7 +3592,10 @@ input[type="search"]::-webkit-search-cancel-button:hover {
   font-size: 12px;
 }
 
+/* What it holds out of sight, as the queue's .queue-long on a phone, scrolls with it: placed from
+   the page instead, off a table wider than the screen, it widened the page itself. */
 .table-scroll {
+  position: relative;
   overflow-x: auto;
 }
 
@@ -3672,6 +3742,13 @@ input[type="search"]::-webkit-search-cancel-button:hover {
   color: var(--ink);
 }
 
+/* One weight and one cut for every level: its first, an h3 here, had the page's 600 and the cut
+   terminals, and the ones under it the browser's bold without them, heavier than their own title. */
+.markdown :is(h3, h4, h5, h6) {
+  font-weight: 600;
+  font-variation-settings: "SHRP" 100;
+}
+
 .page .markdown h3 {
   font-size: 21px;
 }
@@ -3709,7 +3786,10 @@ input[type="search"]::-webkit-search-cancel-button:hover {
   overflow-wrap: anywhere;
 }
 
-.markdown pre code {
+/* Code in a block is as large as its block, 14px, the frontmatter's too: at code's own 0.875em
+   it was 12.25px, smaller than the code under it. */
+.markdown pre code,
+.frontmatter pre code {
   font-size: inherit;
 }
 
@@ -3732,8 +3812,11 @@ input[type="search"]::-webkit-search-cancel-button:hover {
   background: var(--paper-2);
 }
 
+/* As far from what's around it as a paragraph is: with no margin of its own, a table that ends a
+   SKILL.md stood 9px from the sheet's edge, and two in a row touched. */
 .markdown table {
   display: block;
+  margin: 16px 0;
   overflow-x: auto;
   border-collapse: collapse;
   font-size: 14px;
@@ -4239,7 +4322,10 @@ input[type="search"]::-webkit-search-cancel-button:hover {
 
 /* ------------------------------------------------------------- bundles */
 
+/* A box of its own, as tall as its line says, 22px: inline, as beside a page's or a repo's name, it
+   was as tall as its letters, 15 to 18px, which nearly touched its edges. */
 .kind {
+  display: inline-block;
   padding: 0 8px;
   border-radius: 4px;
   background: var(--rose);
@@ -4324,10 +4410,12 @@ h1 .kind {
   counter-increment: step;
 }
 
-/* The skills are used in this order, so they're numbered. */
+/* The skills are used in this order, so they're numbered: each number on its name's line, 27px
+   tall from 15px down, where the name's baseline puts it. On a shorter line of its own from the
+   row's padding, it stood 2px over the name. */
 .bundle-skills li::before {
   position: absolute;
-  top: 14px;
+  top: 15px;
   left: 0;
   width: 26px;
   color: var(--ink-3);
@@ -4335,7 +4423,7 @@ h1 .kind {
   font-size: 18px;
   font-variant-numeric: tabular-nums;
   font-variation-settings: "SHRP" 100;
-  line-height: 1.35;
+  line-height: 27px;
   text-align: right;
 }
 
@@ -4426,8 +4514,12 @@ html[data-logged-in]:not([data-account]) .account::before {
   cursor: pointer;
 }
 
-.theme-toggle:hover {
-  color: var(--garnet-text);
+/* A pointer's, not a finger's, which stays "on" what it last tapped: once tapped, the icon was
+   garnet for as long as the page was open, as if it said something of the theme. */
+@media (hover: hover) {
+  .theme-toggle:hover {
+    color: var(--garnet-text);
+  }
 }
 
 .theme-toggle svg {
@@ -4850,11 +4942,130 @@ html[data-logged-in]:not([data-account]) .account::before {
   margin-right: -8px;
 }
 
-/* A page's name, which wraps, with its thumbs and Save button top right, beside it, as in a row of
-   the list: under a long name that took the whole line, the button was on a line of its own, at the
-   left. */
+/* What follows a row's name, its kind, its repo and its bundle (see metaHtml in list.ts): in the
+   name's line where they fit, as if they had no box of their own. */
+.skill-meta {
+  display: contents;
+}
+
+/*
+ * Where the buttons leave the name less than half the row, only the name shares their line: what
+ * follows it goes under both, as wide as the row. Kept to the name's column, 150px of a phone's
+ * 326, half the repos broke in two, "github/awesome-" over "copilot", of which all but one fit the
+ * row. Wider, the repo fits beside most names, and under them it would be one more line a row.
+ */
+@media (max-width: 480px) {
+  .row-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 4px 16px;
+  }
+
+  .row-head .skill-head {
+    display: contents;
+  }
+
+  .row-head h3 {
+    grid-area: 1 / 1;
+  }
+
+  .row-head .thumbs {
+    grid-area: 1 / 2;
+  }
+
+  .row-head .save {
+    grid-area: 1 / 3;
+  }
+
+  .row-head .skill-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 14px;
+    grid-area: 2 / 1 / auto / -1;
+  }
+
+  /*
+   * And Save is its bookmark alone, as the thumbs beside it are their hands: its word took 49px
+   * more of the name's line, on which two names in five broke, "landing-" over "page-design"; one
+   * in eight still does. As tall as with its word, and still called Save or Saved to a screen
+   * reader. On a skill's page, whose name is alone on its line, it keeps its word.
+   */
+  .row-head .save {
+    padding: 6px 9px;
+  }
+
+  .row-head .save-icon {
+    align-content: center;
+    height: 1lh;
+  }
+
+  .row-head .save-word {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/*
+ * As on a phone, in a window just wide enough for a row's numbers beside its words and All details
+ * beside its thumbs: the name had 158px of the words' 436 at 1,151px, where a third of the repos
+ * broke, and a bundle's name, its kind and its repo took six lines beside half a row of nothing.
+ * Only on the skills list, whose rows have All details: a repo's page has the room.
+ */
+@media (min-width: 1151px) and (max-width: 1230px) {
+  .skills-view .row-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
+    gap: 4px 16px;
+  }
+
+  .skills-view .row-head .skill-head {
+    display: contents;
+  }
+
+  .skills-view .row-head h3 {
+    grid-area: 1 / 1;
+  }
+
+  .skills-view .row-head .details {
+    grid-area: 1 / 2;
+  }
+
+  .skills-view .row-head .thumbs {
+    grid-area: 1 / 3;
+  }
+
+  .skills-view .row-head .save {
+    grid-area: 1 / 4;
+  }
+
+  .skills-view .row-head .skill-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 14px;
+    grid-area: 2 / 1 / auto / -1;
+  }
+}
+
+/*
+ * A page's name, which wraps, with its thumbs and Save button top right, beside it, as in a row of
+ * the list: under a long name that took the whole line, the button was on a line of its own, at the
+ * left.
+ *
+ * Beside them the name keeps its longest word whole, which is what its least width is, no wider
+ * than the page: a name with a word too long for what the buttons leave, 182px on a phone, takes
+ * the line, and they go under it, still at the right. Squeezed into what they left, it broke inside
+ * the word, "implementatio" over "n": on 16 skills' pages at 390px, 90 at 360px, and two in five
+ * at 320px.
+ */
 .title-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
@@ -4863,9 +5074,17 @@ html[data-logged-in]:not([data-account]) .account::before {
 
 .page .title-row h1 {
   flex: 1;
-  min-width: 0;
+  max-width: 100%;
   margin: 0;
   overflow-wrap: break-word;
+}
+
+/* Its buttons, together: where the name takes the line they go under it as one, at the right. */
+.title-actions {
+  display: flex;
+  flex: none;
+  gap: 16px;
+  margin-left: auto;
 }
 
 /* Centered on the name's first line: 41px tall, the buttons 33px. */

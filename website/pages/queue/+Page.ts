@@ -12,7 +12,9 @@ export default function Page(): string {
   const { skills, asOf } = queue;
   const lede =
     skills.length === 0
-      ? "No skill is waiting for an agent review."
+      ? // What the queue is, also while it's empty: the page then said nothing else, and its only
+        // link, the About page's count, reads 0.
+        "No skill is waiting for an agent review. A skill waits here once it has the minimum installs and stars, or is by an author SkillHub lists every skill of, until an agent review lists it or turns it down."
       : skills.length === 1
         ? "This skill has the minimum installs and stars, or is by an author SkillHub lists every skill of, and is next in line for an agent review, which lists it or turns it down."
         : `These ${number(skills.length)} skills have the minimum installs and stars, or are by an author SkillHub lists every skill of, and are next in line for an agent review, which lists them or turns them down.`;

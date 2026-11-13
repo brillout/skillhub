@@ -51,11 +51,20 @@ export function onRenderHtml(pageContext: PageContextServer) {
 /** A page's title on its card: without the site's name after it, which the card has of its own. */
 const cardTitle = (title: string) => title.replace(/ · SkillHub$/, "");
 /**
- * A page's description on its card: its start, up to a word's end, where it's longer than the
- * 300 characters a card has the room for. A bundle's runs to a thousand.
+ * A page's description on its card, where it's longer than the 300 characters a card has the room
+ * for, as a bundle's, which runs to a thousand: its sentences that fit whole, where they fill half
+ * of it, or else its start, up to a word's end. Cut at a word's end whatever came before, it
+ * ended on a full stop and its dots, "skills.…", or on the label of a fact it had no room for,
+ * "Entry point:…".
  */
-const cardText = (text: string) =>
-  text.length <= 300 ? text : `${text.slice(0, 300).replace(/\s+\S*$/, "")}…`;
+function cardText(text: string): string {
+  if (text.length <= 300) return text;
+  const start = text.slice(0, 300);
+  const whole = Math.max(...[". ", "? ", "! "].map((end) => start.lastIndexOf(end)));
+  return whole >= 150
+    ? start.slice(0, whole + 1)
+    : `${start.replace(/\s+\S*$/, "").replace(/[.,;:]+$/, "")}…`;
+}
 
 /**
  * Vike preloads every font file the stylesheets name: Geologica's six subsets, some 110 KB, of

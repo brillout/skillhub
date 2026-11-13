@@ -4,7 +4,7 @@
  * under the tile (see trendTableHtml), so the tooltip never gates a value.
  */
 
-import { percent } from "./format.ts";
+import { percent, plural } from "./format.ts";
 
 const W = 240;
 const H = 56;
@@ -104,7 +104,7 @@ export function mountSparklines(root: ParentNode): void {
       marker.setAttribute("cy", y(values[active]).toFixed(1));
       marker.setAttribute("visibility", "visible");
       // Downloads, as its tile calls them, and as the sparkline's own label does.
-      value.textContent = `${values[active].toLocaleString("en")} downloads`;
+      value.textContent = plural(values[active], "download");
       week.textContent = `week to ${weeks[active]}`;
       tip.hidden = false;
     };

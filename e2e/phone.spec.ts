@@ -5,6 +5,7 @@ import {
   bundleUrl,
   data,
   longLabelUrl,
+  longNameUrl,
   longRepo,
   longWordUrl,
   owner,
@@ -12,7 +13,7 @@ import {
   skill,
   skillUrl,
 } from "./data.ts";
-import { expect, list, n, open, settled, test } from "./fixtures.ts";
+import { expect, list, n, open, rowHeads, searchable, settled, test } from "./fixtures.ts";
 
 const all = `${n(data.skills.length)} skills`;
 const WIDTH = 390;
@@ -46,6 +47,40 @@ test("a glance's facts keep most of the line, however long a label is", async ({
       (dl.querySelector("dd") as Element).getBoundingClientRect().width,
     ]);
   expect(text).toBeGreaterThan(glance / 2);
+});
+
+test("a page's name keeps its words whole: its buttons go under one that needs their line", async ({
+  page,
+}) => {
+  // Beside its thumbs and Save, a name had half the line: a word longer than that broke inside,
+  // "implementatio" over "n", though the page is wide enough for it.
+  await open(page, longNameUrl);
+  const title = page.locator(".title-row");
+  const broken = await title.evaluate((row) => {
+    const name = row.querySelector("h1") as HTMLElement;
+    const words: string[] = [];
+    const texts = document.createTreeWalker(name, NodeFilter.SHOW_TEXT);
+    for (let text = texts.nextNode(); text; text = texts.nextNode()) {
+      // A line breaks at a space, and after a hyphen.
+      for (const word of (text.textContent ?? "").matchAll(/[^\s-]+-?/g)) {
+        const range = document.createRange();
+        range.setStart(text, word.index);
+        range.setEnd(text, word.index + word[0].length);
+        const boxes = [...range.getClientRects()];
+        const lines = new Set(boxes.map((box) => Math.round(box.top))).size;
+        const width = boxes.reduce((sum, box) => sum + box.width, 0);
+        // Whole, unless it's wider than the page itself.
+        if (lines > 1 && width <= row.clientWidth) words.push(word[0]);
+      }
+    }
+    return words;
+  });
+  expect(broken).toEqual([]);
+  // Its buttons are still at the page's right edge, both on the screen.
+  const row = (await title.boundingBox()) as { x: number; width: number };
+  const save = (await title.locator("[data-save]").boundingBox()) as { x: number; width: number };
+  expect(Math.abs(save.x + save.width - (row.x + row.width))).toBeLessThan(1);
+  await expect(title.locator(".thumbs")).toBeInViewport({ ratio: 1 });
 });
 
 test("a trend's tooltip stays on the screen, at its last week too", async ({ page }) => {
@@ -249,6 +284,40 @@ test("the agent's button is under its box, as wide as it", async ({ page }) => {
   expect(button.width).toBeGreaterThan(field.width * 0.9);
 });
 
+test("a row's name has most of its line, and its repo the row's width, under its buttons", async ({
+  page,
+}) => {
+  await open(page, "/");
+  const heads = await rowHeads(page);
+  expect(heads.length).toBeGreaterThan(20);
+  // Beside the buttons too, the repo had the name's column, less than half the row: one in two
+  // broke in two there, "github/awesome-" over "copilot", of which nearly all fit the row.
+  expect(heads.filter((head) => head.repoWidth <= head.width && head.repoLines > 1)).toEqual([]);
+  for (const head of heads) expect(head.nameWidth, head.name).toBeGreaterThan(head.width / 2);
+});
+
+test("a row's Save is its bookmark alone, as tall as its thumbs, and still called Save", async ({
+  page,
+}) => {
+  await open(page, `/?q=${encodeURIComponent(skill.name)}`);
+  // A search's list is rendered again once the TLDRs' prose is in: its rows are then new ones.
+  await searchable(page);
+  const row = list(page).rows.first();
+  const box = async (selector: string) =>
+    (await row.locator(selector).boundingBox()) as { width: number; height: number };
+  await expect(row.locator(".save")).toHaveAccessibleName(`Save ${skill.name}`);
+  const [save, word, thumbs] = [await box(".save"), await box(".save-word"), await box(".thumbs")];
+  expect(word.width).toBeLessThanOrEqual(1);
+  expect(save.height).toBe(thumbs.height);
+  expect(save.width).toBeLessThan(thumbs.width);
+
+  // On its page, where the name is alone on its line, it keeps its word.
+  await open(page, skillUrl);
+  await expect(page.locator(".title-row .save-word")).toHaveText("Save");
+  const onPage = (await page.locator(".title-row .save-word").boundingBox()) as { width: number };
+  expect(onPage.width).toBeGreaterThan(20);
+});
+
 test("the list's settings and tags open from their buttons", async ({ page }) => {
   await open(page, "/");
   const settings = page.locator("#sort-group");
@@ -320,6 +389,8 @@ test("what's tapped among the open tags stays under the finger", async ({ page }
   await page.locator(".tags-toggle").click();
   const top = (selector: string) =>
     page.locator(selector).evaluate((el) => el.getBoundingClientRect().top);
+  const left = (selector: string) =>
+    page.locator(selector).evaluate((el) => el.getBoundingClientRect().left);
 
   // A tag far down them, a stack's: the tags over it change with it, some going, and it went up
   // out of the screen with what was under them.
@@ -336,10 +407,13 @@ test("what's tapped among the open tags stays under the finger", async ({ page }
 
   // And the button that shows every stack tag, then fewer: it left the screen amid the list.
   const stack = '#facets [data-action="stack"]';
+  const closedAt = await left(stack);
   await page.locator(stack).click();
   await settled(page);
   await page.locator(stack).scrollIntoViewIfNeeded();
   await expect(page.locator(stack)).toHaveText("Show fewer");
+  // Nor sideways: after the last tag, on its line, a second tap on the same spot was on a tag.
+  expect(Math.abs((await left(stack)) - closedAt)).toBeLessThan(2);
   before = await top(stack);
   await page.locator(stack).click();
   await settled(page);
