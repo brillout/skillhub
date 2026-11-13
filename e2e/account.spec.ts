@@ -7,7 +7,7 @@
 
 import AxeBuilder from "@axe-core/playwright";
 import type { Locator, Page } from "@playwright/test";
-import { skill, skillUrl } from "./data.ts";
+import { bundle, onlyInBundle, skill, skillUrl } from "./data.ts";
 import { accountLoaded, expect, list, open, ready, settled, test } from "./fixtures.ts";
 
 /** A short list, which the test skill's row heads: see fixtures.ts for why not the whole list. */
@@ -268,6 +268,10 @@ for (const scheme of ["light", "dark"] as const)
       await settled(page);
       await expect(savedLink(page)).toHaveAttribute("aria-current", "page");
       await expect(thumb(skillRow(page), "up")).toHaveAttribute("aria-pressed", "true");
+      // And Show's thumbs up, on.
+      await page.locator('#thumbs-filter [data-value="up"]').click();
+      await settled(page);
+      await expect(list(page).rows).toHaveCount(1);
       // The animations of a save, which tint what they're on, are over.
       await page.evaluate(() => Promise.all(document.getAnimations().map((a) => a.finished)));
       const { violations } = await new AxeBuilder({ page }).analyze();
@@ -529,6 +533,69 @@ test("a thumb, logged out, logs you in and gives it", async ({ page }) => {
   expect(await reactions(page)).toEqual({ [key]: "down" });
   // And saves nothing.
   await expect(savedCount(page)).toHaveText("");
+});
+
+test("Show's thumbs list only what you gave that thumb, one at a time", async ({ page }) => {
+  await openLoggedIn(page, "/");
+  const give = (key: string, reaction: string) =>
+    page.request.post("/api/reactions", { data: { key, reaction } });
+  await give(`skill:${skill.id}`, "up");
+  // A skill that's only listed in its bundle's row: what's yours is listed on its own.
+  await give(`skill:${onlyInBundle.skill.id}`, "up");
+  await give(`bundle:${bundle.id}`, "down");
+  const answered = page.waitForResponse((res) => res.url().endsWith("/api/me"));
+  await page.reload();
+  await answered;
+  await ready(page);
+
+  const filter = (reaction: "up" | "down") =>
+    page.locator(`#thumbs-filter [data-value="${reaction}"]`);
+  const names = async () => (await list(page).rows.locator(".skill-name").allTextContents()).sort();
+  const chip = list(page).scope.locator('[data-remove="thumbs"]');
+  await filter("up").click();
+  await settled(page);
+  await expect(page).toHaveURL("/?thumbs=up");
+  await expect(filter("up")).toHaveAttribute("aria-pressed", "true");
+  await expect.poll(names).toEqual([skill.name, onlyInBundle.skill.name].sort());
+  await expect(chip).toHaveAccessibleName("Remove filter Thumbs up");
+  await expect(page).toHaveTitle("Thumbs up · SkillHub");
+
+  // The other one takes its place.
+  await filter("down").click();
+  await settled(page);
+  await expect(page).toHaveURL("/?thumbs=down");
+  await expect(filter("up")).toHaveAttribute("aria-pressed", "false");
+  await expect.poll(names).toEqual([bundle.agentReview.name]);
+  // A thumb taken back only changes the button, as Save does: the row stays, for a second click.
+  const row = thumb(list(page).rows.first(), "down");
+  await row.click();
+  await expect(row).toHaveAttribute("aria-pressed", "false");
+  await expect(list(page).rows).toHaveCount(1);
+
+  // A second click shows everything again, and so does the filter's chip.
+  await filter("down").click();
+  await settled(page);
+  await expect(page).toHaveURL("/");
+  await expect(filter("down")).toHaveAttribute("aria-pressed", "false");
+  await open(page, "/?thumbs=up");
+  await accountLoaded(page);
+  await chip.click();
+  await settled(page);
+  await expect(page).toHaveURL("/");
+  await expect(filter("up")).toHaveAttribute("aria-pressed", "false");
+});
+
+test("Show's thumbs, logged out or with none given, say so", async ({ page }) => {
+  await open(page, "/?thumbs=up");
+  await accountLoaded(page);
+  const { empty } = list(page);
+  await expect(empty).toContainText("to see what you gave a thumbs up.");
+  await empty.getByRole("link", { name: "Log in with GitHub" }).click();
+  await ready(page);
+  await accountLoaded(page);
+  await settled(page);
+  await expect(page).toHaveURL("/?thumbs=up");
+  await expect(empty).toContainText("No thumbs up yet.");
 });
 
 test("Save, logged out, down a list, comes back to where the list was", async ({ page }) => {

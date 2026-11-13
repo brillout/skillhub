@@ -256,6 +256,8 @@ test.describe("on a laptop's screen, 1,280px wide", () => {
       "Both: skills and bundles",
     );
     expect(await top(".show-group")).toBe(await top(".preset-group"));
+    // Show's thumbs take no room of the line's: they're on Show's label's line.
+    expect(await top("#thumbs-filter")).toBe(await top("#show-label"));
 
     for (const id of ["rising-new", "top"]) {
       await page.locator(`[data-preset="${id}"]`).click();

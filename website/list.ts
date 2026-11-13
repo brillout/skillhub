@@ -59,6 +59,8 @@ import {
   saveKey,
   savedCount,
   thumbsHtml,
+  THUMB_WORDS,
+  type Reaction,
 } from "./saves.ts";
 
 /** A row of the skills list: a skill, or a bundle with its skills inside. */
@@ -583,7 +585,12 @@ export interface State {
   show: Show;
   /** Only what the logged-in person saved: the Saved switch. */
   saved: boolean;
+  /** Only what the logged-in person gave this thumb: Show's thumbs. */
+  thumbs: Reaction | null;
 }
+
+/** As in "what you gave a thumbs up". */
+const THUMB_ONE: Record<Reaction, string> = { up: "a thumbs up", down: "a thumbs down" };
 
 /**
  * What the list shows: bundles and the skills listedOutsideBundle ("all"), every skill, those only
@@ -644,6 +651,7 @@ export function parse(search: string): State {
     ranges,
     show: (["skills", "bundles"] as const).find((v) => v === p.get("show")) ?? "all",
     saved: p.has("saved"),
+    thumbs: (["up", "down"] as const).find((v) => v === p.get("thumbs")) ?? null,
   };
 }
 /** The query string for a state, empty for the default view. */
@@ -665,6 +673,7 @@ export function query(s: State): string {
       );
   }
   if (s.show !== "all") p.set("show", s.show);
+  if (s.thumbs) p.set("thumbs", s.thumbs);
   // ?saved rather than ?saved=
   const q = p.toString().replace(/^saved=(&|$)/, "saved$1");
   return q ? `?${q}` : "";
@@ -849,7 +858,7 @@ function matchScore(e: Entry, q: string): number {
 /** Within a facet a skill needs any selected value; across facets it needs all of them. `skip` leaves one facet out, for its counts. */
 function passes(s: Skill, st: State, skip: string | null = null): boolean {
   if (st.repo && repoKey(s) !== st.repo) return false;
-  if (st.saved && !account.saved.has(saveKey("skill", s.id))) return false;
+  if (!isYours(saveKey("skill", s.id), st)) return false;
   if (!inRanges(rangedBy(s, st), st)) return false;
   const selected = new Map<string, string[]>();
   for (const t of st.tags) selected.set(facetOf(t), [...(selected.get(facetOf(t)) ?? []), t]);
@@ -887,21 +896,35 @@ const rangedBy = (s: Skill, st: State): Entry =>
   (!listsAlone(s, st) && bundleOf.get(s.id)?.bundle) || s;
 
 /**
+ * Whether the list shows only what's yours: what you saved (the Saved switch), what you gave a
+ * thumb (Show's thumbs), or both. Each is about the entry itself: a saved bundle is one entry, not
+ * its skills.
+ */
+const onlyYours = (st: State) => st.saved || st.thumbs !== null;
+/** Whether the entry of `key` is among what the list shows of yours, when it shows only that. */
+const isYours = (key: string, st: State) =>
+  (!st.saved || account.saved.has(key)) && (!st.thumbs || account.reactions.get(key) === st.thumbs);
+
+/**
  * Whether the list shows the skill on its own row. With bundles, a skill that isn't
- * listedOutsideBundle is only listed in its bundle's row; but what you saved is listed, whatever
+ * listedOutsideBundle is only listed in its bundle's row; but what's yours is listed, whatever
  * it is.
  */
 const listsAlone = (s: Skill, st: State) =>
-  st.show === "skills" || st.saved || listedOutsideBundle(s);
+  st.show === "skills" || onlyYours(st) || listedOutsideBundle(s);
 
 /**
  * The filters about a bundle's skills: tags and the search. The sliders' ranges, and whether it's
- * saved, are about the bundle itself.
+ * yours, are about the bundle itself.
  */
-const skillFilters = (st: State): State => ({ ...st, ranges: fullRanges(), saved: false });
-/** Whether the bundle is saved, when the list shows only what's saved. */
-const savedBundle = (b: Bundle, st: State) =>
-  !st.saved || account.saved.has(saveKey("bundle", b.id));
+const skillFilters = (st: State): State => ({
+  ...st,
+  ranges: fullRanges(),
+  saved: false,
+  thumbs: null,
+});
+/** Whether the bundle is yours, when the list shows only what's yours. */
+const yourBundle = (b: Bundle, st: State) => isYours(saveKey("bundle", b.id), st);
 
 /**
  * The skills through which a bundle matches the tags and search: those that match them, or, when
@@ -930,13 +953,13 @@ function matchedByItself(b: Bundle, st: State): Skill[] {
  * pass the filters and the search, and those of a bundle that a search only finds by the bundle's
  * own name or words, which its row then shows as matching too. The list's count and the sliders'
  * histograms count these, and the tags' counts go by them (see counts), so that a search for a
- * bundle's name doesn't show its row under "0 skills" and no tags. Not with Saved on, where a saved
- * bundle counts as a bundle, not as its skills (see savedBundlesHtml), nor when the list shows no
- * bundle.
+ * bundle's name doesn't show its row under "0 skills" and no tags. Not with Saved or a thumb on,
+ * where a bundle of yours counts as a bundle, not as its skills (see savedBundlesHtml), nor when
+ * the list shows no bundle.
  */
 function shownSkills(st: State): Skill[] {
   const shown = data.skills.filter((s) => passes(s, st));
-  if (!term(st) || st.saved || st.show === "skills") return shown;
+  if (!term(st) || onlyYours(st) || st.show === "skills") return shown;
   const seen = new Set(shown);
   for (const b of data.bundles)
     if (inRanges(b, st))
@@ -950,7 +973,7 @@ function shownSkills(st: State): Skill[] {
 
 /** A bundle is in its sliders' ranges by its own numbers, and matches the tags and search through any of its skills. */
 const bundlePasses = (b: Bundle, st: State) =>
-  savedBundle(b, st) && inRanges(b, st) && matchedThrough(b, st).length > 0;
+  yourBundle(b, st) && inRanges(b, st) && matchedThrough(b, st).length > 0;
 
 const isFiltered = (st: State) =>
   Boolean(term(st) || st.tags.length || st.repo) || PROP_IDS.some((p) => isNarrowed(st.ranges[p]));
@@ -1026,7 +1049,7 @@ function counts(st: State, facet: string, valuesOf: (s: Skill) => string[]): Map
     // A bundle has a value through any skill the search finds, or through any skill at all when
     // the search finds the bundle itself.
     for (const b of data.bundles)
-      if (savedBundle(b, st) && inRanges(b, st)) {
+      if (yourBundle(b, st) && inRanges(b, st)) {
         const through = itself(b) ? unsearched : rest;
         add(
           skillsOf(b)
@@ -1038,7 +1061,7 @@ function counts(st: State, facet: string, valuesOf: (s: Skill) => string[]): Map
   }
   for (const s of data.skills) if (passes(s, st, facet)) add(valuesOf(s));
   // As in shownSkills: only a search brings in a bundle's skills through the bundle itself.
-  if (!term(st) || st.saved || st.show === "skills") return n;
+  if (!term(st) || onlyYours(st) || st.show === "skills") return n;
   for (const b of data.bundles) {
     if (!inRanges(b, st) || !itself(b)) continue;
     const skills = skillsOf(b);
@@ -1156,6 +1179,7 @@ function histograms(st: State): Histograms {
 function filtersText(st: State): string[] {
   const parts = st.tags.map((t) => `tag ${t}`);
   if (term(st)) parts.unshift(`the search "${term(st)}"`);
+  if (st.thumbs) parts.unshift(`the ones I gave ${THUMB_ONE[st.thumbs]}`);
   if (st.saved) parts.unshift("the ones I saved");
   if (st.repo) parts.push(`from ${st.repo}`);
   for (const p of PROP_IDS)
@@ -1623,7 +1647,8 @@ export function facetsHtml(st: State, stackExpanded: boolean): string {
 
 /** Whether filters narrow the list: the search and the agent prompt then look through what they leave. */
 const filtersOn = (st: State) =>
-  Boolean(st.saved || st.tags.length || st.repo) || PROP_IDS.some((p) => isNarrowed(st.ranges[p]));
+  Boolean(onlyYours(st) || st.tags.length || st.repo) ||
+  PROP_IDS.some((p) => isNarrowed(st.ranges[p]));
 
 /**
  * The list and the search's scope are counted in skills, those listed only inside a bundle
@@ -1652,13 +1677,13 @@ export function countHtml(st: State): string {
 }
 
 /**
- * What you saved is counted as you saved it: a saved bundle is one more entry, not its skills,
- * which the skills' count leaves out unless you saved them too. So, with Saved on and the list
- * showing skills and bundles, the counts add " and 1 bundle", and they add up to the Saved
- * switch's. `search`: whether to count only those the search finds.
+ * What's yours is counted as you saved it or gave it a thumb: a saved bundle is one more entry, not
+ * its skills, which the skills' count leaves out unless you saved them too. So, with Saved or a
+ * thumb on and the list showing skills and bundles, the counts add " and 1 bundle", and they add up
+ * to the Saved switch's. `search`: whether to count only those the search finds.
  */
 function savedBundlesHtml(st: State, search: boolean, badge = (s: string) => s): string {
-  if (!st.saved || st.show !== "all") return "";
+  if (!onlyYours(st) || st.show !== "all") return "";
   const rest = search ? st : { ...st, q: "" };
   const n = data.bundles.filter((b) => bundlePasses(b, rest)).length;
   return n ? ` and ${badge(number(n))} bundle${n === 1 ? "" : "s"}` : "";
@@ -1712,6 +1737,7 @@ export function searchNote(st: State): string {
 function filtersOf(st: State): { kind: string; value: string; label: string }[] {
   const filters: { kind: string; value: string; label: string }[] = [];
   if (st.saved) filters.push({ kind: "saved", value: "", label: "Saved" });
+  if (st.thumbs) filters.push({ kind: "thumbs", value: "", label: THUMB_WORDS[st.thumbs] });
   for (const t of st.tags) filters.push({ kind: "tag", value: t, label: t });
   if (st.repo) filters.push({ kind: "repo", value: st.repo, label: `from ${st.repo}` });
   for (const p of PROP_IDS)
@@ -1833,14 +1859,21 @@ export function rowsHtml(st: State, from: number, to: number): string {
 /** How many rows `st` lists. */
 export const rowCount = (st: State) => results(st).list.length;
 
-/** Instead of the list of what you saved: logged out, or nothing saved yet. */
+/** Instead of the list of what's yours: logged out, or nothing saved, or no such thumb, yet. */
 function savedNote(st: State): string | null {
-  if (!st.saved) return null;
-  if (!account.user)
-    return `<p class="empty"><a href="${esc(loginHref())}" data-login>Log in with GitHub</a> to see what you saved.</p>`;
+  if (!onlyYours(st)) return null;
+  if (!account.user) {
+    const what = [
+      ...(st.saved ? ["saved"] : []),
+      ...(st.thumbs ? [`gave ${THUMB_ONE[st.thumbs]}`] : []),
+    ].join(" and ");
+    return `<p class="empty"><a href="${esc(loginHref())}" data-login>Log in with GitHub</a> to see what you ${what}.</p>`;
+  }
   // Nothing that's still listed, as the Saved switch counts: a saved skill can leave the list.
-  if (![...account.saved].some(isListed))
+  if (st.saved && ![...account.saved].some(isListed))
     return `<p class="empty">Nothing saved yet. Each skill and bundle has a Save button, here in the list and on its page.</p>`;
+  if (st.thumbs && ![...account.reactions].some(([k, r]) => r === st.thumbs && isListed(k)))
+    return `<p class="empty">No ${THUMB_WORDS[st.thumbs].toLowerCase()} yet. Each skill and bundle has a thumbs up and a thumbs down beside its Save button, here in the list and on its page.</p>`;
   return null;
 }
 
@@ -2067,6 +2100,23 @@ export const showHtml = (st: State) =>
   ).join("");
 
 /**
+ * Beside the Saved switch: a thumbs up and a thumbs down, as the rows' are (see thumbsHtml in
+ * saves.ts), which show only what you gave that thumb, one or neither, as `aria-pressed` says. A
+ * second click shows everything again. Not the rows' `data-react`: a click here gives no thumb.
+ * list-client.ts keeps them in step with the state rather than re-rendering them, so that their
+ * icons cross-fade, as the rows' do.
+ */
+export const thumbsFilterHtml = (st: State) =>
+  `<div id="thumbs-filter" class="thumbs" role="group" aria-label="Your thumbs">${(
+    ["up", "down"] as const
+  )
+    .map(
+      (r) =>
+        `<button type="button" data-action="thumbs" data-value="${r}" aria-pressed="${st.thumbs === r}" aria-label="Only ${THUMB_WORDS[r].toLowerCase()}" title="Show only what you gave ${THUMB_ONE[r]}"></button>`,
+    )
+    .join("")}</div>`;
+
+/**
  * Before Show's buttons: a switch that shows only what you saved. list-client.ts keeps it in step
  * with the state rather than re-rendering it, so that it slides; account-client.ts keeps its count.
  * On narrow screens, it stays in view while the Filters button hides the rest of the line.
@@ -2135,6 +2185,7 @@ export function listView(
             <h2 id="show-label">Show</h2>
             <div class="show-row">
               ${savedSwitchHtml(st)}
+              ${thumbsFilterHtml(st)}
               <div id="show" class="show-switch" role="group" aria-labelledby="show-label">${showHtml(st)}</div>
             </div>
           </section>

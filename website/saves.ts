@@ -103,7 +103,7 @@ export function saveButton(key: string, name: string): string {
   return `<button type="button" class="save" data-save="${esc(key)}" data-name="${esc(name)}" aria-pressed="${on}" aria-label="${esc(saveName(on, name))}" title="${saveLabel(on)}">${ICON}<span class="save-word">${saveLabel(on)}</span></button>`;
 }
 
-const THUMB_WORDS: Record<Reaction, string> = { up: "Thumbs up", down: "Thumbs down" };
+export const THUMB_WORDS: Record<Reaction, string> = { up: "Thumbs up", down: "Thumbs down" };
 
 /**
  * A thumbs up and a thumbs down for the entry named `name`, beside its Save button: what you

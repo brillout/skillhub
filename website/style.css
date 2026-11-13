@@ -529,10 +529,49 @@ body:has(.skills-view) #page-head {
   justify-content: center;
 }
 
-.show-row {
-  display: flex;
+/*
+ * Show: its label over the Saved switch, and its thumbs, which show only what you gave one, at the
+ * end of the label's line, over Both, Skills and Bundles, as Sort by's order is on its. Beside the
+ * Saved switch they took the room a 1,280px screen has for Show on the line of every setting.
+ */
+.show-group {
+  grid-template-columns: auto auto;
+  grid-template-areas: "label thumbs" "saved show";
+  justify-content: start;
   align-items: center;
-  gap: 6px;
+}
+
+.show-row {
+  display: contents;
+}
+
+.show-group h2 {
+  grid-area: label;
+}
+
+.saved-switch {
+  grid-area: saved;
+}
+
+#show {
+  grid-area: show;
+}
+
+/* As tall and as round as Sort by's order. */
+#thumbs-filter {
+  grid-area: thumbs;
+  justify-self: end;
+  height: 22px;
+  border-radius: 4px;
+}
+
+#thumbs-filter button {
+  padding: 0 7px;
+  border-radius: 4px 0 0 4px;
+}
+
+#thumbs-filter button + button {
+  border-radius: 0 4px 4px 0;
 }
 
 /*
@@ -3840,13 +3879,39 @@ input[type="search"]::-webkit-search-cancel-button:hover {
     width: auto;
   }
 
-  .show-row {
+  /* Show's thumbs beside the Saved switch, in view with it, as tall as it; Show's label and
+     buttons, behind the Filters button, over and under them. */
+  .show-group {
     display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "saved thumbs";
     gap: 8px;
   }
 
-  /* The presets, the Filters button and the Saved switch stay in view; the button opens the rest
-     of the settings. */
+  .settings-line.shown .show-group {
+    grid-template-areas: "label label" "saved thumbs" "show show";
+  }
+
+  .show-group h2 {
+    margin-bottom: 0;
+  }
+
+  #thumbs-filter {
+    height: 36px;
+    border-radius: 6px;
+  }
+
+  #thumbs-filter button {
+    padding: 0 10px;
+    border-radius: 6px 0 0 6px;
+  }
+
+  #thumbs-filter button + button {
+    border-radius: 0 6px 6px 0;
+  }
+
+  /* The presets, the Filters button, the Saved switch and Show's thumbs stay in view; the button
+     opens the rest of the settings. */
   .settings-line .filters-toggle {
     margin-top: 12px;
   }
@@ -4675,8 +4740,9 @@ html[data-logged-in]:not([data-account]) .account::before {
   mask-image: var(--thumb-filled);
 }
 
-.thumbs [data-react="down"]::before,
-.thumbs [data-react="down"]::after {
+/* The rows' and Show's: see thumbsFilterHtml in list.ts. */
+.thumbs :is([data-react="down"], [data-value="down"])::before,
+.thumbs :is([data-react="down"], [data-value="down"])::after {
   rotate: 180deg;
 }
 

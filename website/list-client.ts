@@ -54,7 +54,7 @@ import {
   type Previewed,
 } from "./preview-client.ts";
 import { ACCOUNT_EVENT, showsSaved, type AccountChange } from "./account-client.ts";
-import { LEFT_AT, LOGIN_FROM, account, savedCount } from "./saves.ts";
+import { LEFT_AT, LOGIN_FROM, account, savedCount, type Reaction } from "./saves.ts";
 
 // The Saved switch counts only what's still listed, as the list does; account-client.ts may have
 // counted before this script ran.
@@ -394,11 +394,19 @@ app.addEventListener("keydown", (event) => {
 
 /**
  * The Saved switch isn't re-rendered, so that it can slide: it follows the state instead. And so
- * does the header's Saved link, which leads to this list with the switch on.
+ * does the header's Saved link, which leads to this list with the switch on, and Show's thumbs,
+ * whose icons cross-fade.
  */
 const savedSwitch = document.getElementById("saved-switch") as HTMLElement;
+const thumbsFilter = [
+  ...document.querySelectorAll<HTMLElement>('#thumbs-filter [data-action="thumbs"]'),
+];
+const syncThumbs = (on: Reaction | null) => {
+  for (const b of thumbsFilter) b.setAttribute("aria-pressed", String(b.dataset.value === on));
+};
 function syncSaved() {
   savedSwitch.setAttribute("aria-checked", String(state.saved));
+  syncThumbs(state.thumbs);
   showsSaved(state.saved);
 }
 
@@ -471,7 +479,15 @@ const siteTitle = document.title;
 
 /** What the list holds, whatever its order: its search and its filters. */
 const scopeKey = () =>
-  JSON.stringify([state.saved, state.tags, state.repo, state.ranges, state.show, state.q]);
+  JSON.stringify([
+    state.saved,
+    state.thumbs,
+    state.tags,
+    state.repo,
+    state.ranges,
+    state.show,
+    state.q,
+  ]);
 
 function renderScope() {
   const key = scopeKey();
@@ -495,6 +511,7 @@ function renderScope() {
 function renderFacets() {
   const key = JSON.stringify([
     state.saved,
+    state.thumbs,
     state.q,
     state.tags,
     state.repo,
@@ -835,10 +852,12 @@ app.addEventListener("click", (event) => {
   } else if (d.remove) {
     const v = d.value ?? "";
     if (d.remove === "saved") go({ saved: false });
+    else if (d.remove === "thumbs") go({ thumbs: null });
     else if (d.remove === "tag") go({ tags: state.tags.filter((t) => t !== v) });
     else if (d.remove === "repo") go({ repo: null });
     else if (d.remove === "range") go({ ranges: { ...state.ranges, [v]: fullRange() } });
-  } else if (d.action === "clear") go({ saved: false, tags: [], repo: null, ranges: fullRanges() });
+  } else if (d.action === "clear")
+    go({ saved: false, thumbs: null, tags: [], repo: null, ranges: fullRanges() });
   else if (d.action === "ask") ask(el);
   else if (d.action === "focus-search") q.focus();
   else if (d.action === "focus-need") need.focus();
@@ -848,6 +867,12 @@ app.addEventListener("click", (event) => {
     // It slides at once; the list follows after the next paint.
     savedSwitch.setAttribute("aria-checked", String(!state.saved));
     go({ saved: !state.saved });
+  } else if (d.action === "thumbs") {
+    // One or neither: a second click shows everything again. Its icons cross-fade at once.
+    const on = state.thumbs === d.value ? null : (d.value as Reaction);
+    for (const b of thumbsFilter) b.dataset.toggled = "";
+    syncThumbs(on);
+    go({ thumbs: on });
   } else if (d.action === "stack") {
     noteClicked(el, '#facets [data-action="stack"]');
     stackExpanded = !stackExpanded;
@@ -875,11 +900,13 @@ app.addEventListener("click", (event) => {
 });
 
 /**
- * Once the API says what you saved, the list of what you saved follows. A click on a Save button
- * only changes the button: unsaving leaves the row in the list, where a second click saves it back.
+ * Once the API says what you saved and gave a thumb, the list of what's yours follows. A click on a
+ * Save button or a thumb only changes the button: unsaving leaves the row in the list, where a
+ * second click saves it back.
  */
 document.addEventListener(ACCOUNT_EVENT, (event) => {
-  if (state.saved && (event as CustomEvent<AccountChange>).detail === "load") refresh();
+  const yours = state.saved || state.thumbs !== null;
+  if (yours && (event as CustomEvent<AccountChange>).detail === "load") refresh();
 });
 
 // What was typed in the search before this script ran, on a slow connection, is searched for:
