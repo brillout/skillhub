@@ -180,6 +180,48 @@ test("a link with what the list doesn't have opens on what it has", async ({ pag
   await expect(rows).not.toHaveCount(0);
 });
 
+test("oversized number filters in a link leave the list usable", async ({ page }) => {
+  await open(page, "/?published=1000000000d..&stars=9007199254740992..&show=bundles");
+  await expect(list(page).rows).toHaveCount(data.bundles.length);
+  await expect(list(page).scope.locator("[data-remove]")).toHaveCount(0);
+  await expect(page.locator('[data-range-label="published"]').first()).toHaveText("Any");
+  await expect(page.locator('[data-range-label="stars"]').first()).toHaveText("Any");
+});
+
+test("an age with a thousands separator keeps its whole amount", async ({ page }) => {
+  await open(page, "/?show=bundles");
+  await page.locator('.range-pill[data-value="published"]').click();
+  const newer = page.locator("#range-pop-published").getByLabel("Newer than");
+  for (const amount of ["1,000d", "1,000"]) {
+    await newer.fill(amount);
+    await settled(page);
+    await expect(page).toHaveURL("/?published=1000d..&show=bundles");
+    await expect(page.locator('[data-range-label="published"]').first()).toHaveText("≤ 1,000 days");
+  }
+  // Commas between units still separate parts of an age.
+  await newer.fill("1w, 2d");
+  await settled(page);
+  await expect(page).toHaveURL("/?published=9d..&show=bundles");
+});
+
+test("oversized typed amounts explain the error and keep the previous range", async ({ page }) => {
+  await open(page, "/?published=30d..&stars=100..&show=bundles");
+  const before = await list(page).count.textContent();
+  for (const [prop, label, invalid] of [
+    ["published", "Newer than", "1000000000d"],
+    ["stars", "At least", "9007199254740992"],
+  ]) {
+    await page.locator(`.range-pill[data-value="${prop}"]`).click();
+    const pop = page.locator(`#range-pop-${prop}`);
+    await pop.getByLabel(label).fill(invalid);
+    await expect(pop.getByLabel(label)).toHaveAttribute("aria-invalid", "true");
+    await expect(pop.locator(".range-error")).toBeVisible();
+    await expect(page).toHaveURL("/?published=30d..&stars=100..&show=bundles");
+    await expect(list(page).count).toHaveText(before as string);
+    await page.keyboard.press("Escape");
+  }
+});
+
 test("the presets set the sort, the Age range and the Weekly Downloads range", async ({ page }) => {
   await open(page, "/");
   const preset = (id: string) => page.locator(`[data-preset="${id}"]`);
@@ -904,12 +946,34 @@ test("the list is where you left it after a skill's page, and after a reload", a
   for (let i = 0; i < 20; i++) await page.mouse.wheel(0, 700);
   // The list notes its place once the page has stopped scrolling.
   await page.waitForFunction(() => history.state?.at);
-  const left = await place();
-  expect(left.top).toBeLessThan(1);
+  const selected = await place();
+  expect(selected.top).toBeLessThan(1);
 
-  await page.locator(`#results .skill-name[href="${left.next}"]`).first().click();
-  await expect(page).toHaveURL(left.next as string);
+  // A wheel can still be finishing, and clicking the next row can scroll its link into view.
+  // Measure where the visitor actually leaves, independently of the app's saved history state.
+  await page.evaluate(() => {
+    addEventListener(
+      "pagehide",
+      () => {
+        const rows = [...document.querySelectorAll("#results .skill-list > li")];
+        const at = rows.findIndex((row) => row.getBoundingClientRect().bottom > 1);
+        sessionStorage.setItem(
+          "test:left",
+          JSON.stringify({
+            row: rows[at]?.querySelector(".skill-name")?.getAttribute("href"),
+            top: Math.round(rows[at]?.getBoundingClientRect().top ?? 0),
+          }),
+        );
+      },
+      { once: true },
+    );
+  });
+
+  await page.locator(`#results .skill-name[href="${selected.next}"]`).first().click();
+  await expect(page).toHaveURL(selected.next as string);
   await ready(page);
+  const left = await page.evaluate(() => JSON.parse(sessionStorage.getItem("test:left")!));
+  expect(left.row).toBeTruthy();
   await page.goBack();
   await back(left);
 

@@ -12,6 +12,13 @@ const closeTips = (except?: Element | null) => {
     if (row !== except) row.classList.remove("open");
 };
 
+// Hover and focus can outlive a dismissal. Keep that row's explanation closed until the
+// visitor enters it again or explicitly asks to open it, without taking the keyboard's place.
+for (const row of document.querySelectorAll(".breakdown tr")) {
+  for (const event of ["pointerenter", "focusin"])
+    row.addEventListener(event, () => row.classList.remove("tip-dismissed"));
+}
+
 /**
  * Where the pointer is a finger, which doesn't hover: a tap anywhere on a row opens its tooltip,
  * as a pointer on the row does elsewhere, and a tap on the tooltip closes it.
@@ -23,18 +30,14 @@ document.addEventListener("click", (event) => {
   const button = target.closest<HTMLElement>(".tip-i");
   const row = (button ?? (finger.matches ? target : null))?.closest(".breakdown tr") ?? null;
   closeTips(row);
-  // A second click or tap closes it, which takes the focus off the button too: where a click gives
-  // it the focus, as in Chrome, the focus alone kept the tooltip open. Not the keyboard's, whose
-  // focus is its place in the page: `detail` is 0 for a click made with Enter or Space.
-  if (row && !row.classList.toggle("open") && event.detail > 0)
-    row.querySelector<HTMLElement>(".tip-i")?.blur();
+  if (row) row.classList.toggle("tip-dismissed", !row.classList.toggle("open"));
 });
 
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
   closeTips();
-  if (document.activeElement?.classList.contains("tip-i"))
-    (document.activeElement as HTMLElement).blur();
+  for (const row of document.querySelectorAll(".breakdown tr:is(:hover, :focus-within)"))
+    row.classList.add("tip-dismissed");
 });
 
 ready();
