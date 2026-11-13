@@ -1,5 +1,9 @@
 # SkillHub
 
-https://skillhub.build
+## For users
 
-An agent reviews every skill on the site with the [review-skills](.agents/skills/review-skills/SKILL.md) skill: it approves or disqualifies it, tags it, and writes its TLDR.
+Browse skills: https://skillhub.build
+
+## For maintainers
+
+Agent skill to review skills: [review-skills](.agents/skills/review-skills/SKILL.md)
