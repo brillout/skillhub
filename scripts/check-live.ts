@@ -123,7 +123,27 @@ async function assets(): Promise<Check[]> {
   ]);
 }
 
-const LOGGED_OUT = JSON.stringify({ user: null, saved: [] });
+/**
+ * What /api/me answers nobody: no user, and nothing saved, nor anything else that's a user's, such
+ * as their thumbs and when they gave them. Each such field is empty, however many /api/me has: a
+ * field added to it, such as `reactions`, needn't be added here.
+ */
+function loggedOut(body: string): boolean {
+  let me: unknown;
+  try {
+    me = JSON.parse(body);
+  } catch {
+    return false;
+  }
+  if (typeof me !== "object" || me === null || !("user" in me) || !("saved" in me)) return false;
+  const { user, ...rest } = me as Record<string, unknown>;
+  return (
+    user === null &&
+    Object.values(rest).every(
+      (value) => typeof value === "object" && value !== null && Object.keys(value).length === 0,
+    )
+  );
+}
 
 const CHECKS: Check[] = [
   ...PAGES.map(page),
@@ -159,7 +179,7 @@ const CHECKS: Check[] = [
       if (res.status !== 200) return `answers ${res.status}`;
       if (res.headers.get("Cache-Control") !== "no-store") return "may be kept by a cache";
       const body = await res.text();
-      return body === LOGGED_OUT ? null : `answers ${body.slice(0, 200)}`;
+      return loggedOut(body) ? null : `answers ${body.slice(0, 200)}`;
     },
   ],
   [
@@ -169,7 +189,7 @@ const CHECKS: Check[] = [
       const res = await get("/api/me", { Cookie: "session=the-live-check-has-none" });
       if (res.status !== 200) return `answers ${res.status}: the Worker can't read its database`;
       const body = await res.text();
-      return body === LOGGED_OUT ? null : `answers ${body.slice(0, 200)}`;
+      return loggedOut(body) ? null : `answers ${body.slice(0, 200)}`;
     },
   ],
   [
