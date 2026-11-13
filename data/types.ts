@@ -46,7 +46,7 @@ export interface Data {
  * The shape of data/crawl.jsonc: every skill the crawl has seen that isn't approved (the approved
  * ones are in skills.jsonc), keyed by its skills.sh page: those of the skills.sh all-time top 600,
  * those further down skills.sh's sitemap that reach `MINIMUMS.installs`, and all those of the
- * `WHITELISTED_AUTHORS` of ./params.ts. The two
+ * `WHITELISTED_AUTHORS` of ./params.ts, on skills.sh or in their GitHub repos. The two
  * files are cumulative: a skill that lands in either never leaves them, only its state changes.
  * Unlike skills.jsonc, crawl.jsonc takes any skill, such as one a website publishes.
  */
@@ -97,7 +97,8 @@ export interface Crawled {
    *
    * Source: scraped by scripts/crawl.ts when it records the skill: `topSkills()` takes `name`
    * from the leaderboard JSON in the HTML of https://www.skills.sh/; for a skill found down the
-   * sitemap or by a whitelisted author, it's the end of the skill's page there.
+   * sitemap or by a whitelisted author, it's the end of the skill's page there, which for one found
+   * in their repos, `repoSkills()`, is the `name` of its SKILL.md's frontmatter.
    */
   name: string;
   /**
@@ -110,7 +111,7 @@ export interface Crawled {
    */
   repo: string;
   /**
-   * Whether skills.sh shows its publisher as verified.
+   * Whether skills.sh shows its publisher as verified: false while skills.sh doesn't list it.
    *
    * Source: scraped by scripts/crawl.ts, daily while it sees the skill: the `isOfficial` of its
    * leaderboard entry, or for any other skill, whether the HTML of its skills.sh page
@@ -267,7 +268,10 @@ export interface RepoReview extends ReviewAuthor {
   note?: string;
 }
 
-/** A skill on GitHub that skills.sh lists. SkillHub lists no other skills. */
+/**
+ * A skill on GitHub that skills.sh lists, or a whitelisted author's (`WHITELISTED_AUTHORS` of
+ * ./params.ts), which skills.sh may not list yet. SkillHub lists no other skills.
+ */
 export interface Skill {
   /**
    * Unique: where the skill's SKILL.md lives, as the GitHub repo and the directory inside it,
@@ -287,7 +291,8 @@ export interface Skill {
    */
   name: string;
   /**
-   * Its listing on skills.sh.
+   * Its listing on skills.sh, or for a whitelisted author's skill skills.sh doesn't list yet, the
+   * listing it will have, `unlisted`.
    *
    * Source: its crawl.jsonc entry, which the agent that approves the skill copies; scripts/crawl.ts
    * then keeps its numbers current.
@@ -442,14 +447,25 @@ export interface SkillMd {
 
 export interface SkillsSh {
   /**
-   * The skill's page on skills.sh.
+   * The skill's page on skills.sh, or for one it doesn't list yet (`unlisted`), the page it will
+   * have once someone installs the skill: https://skills.sh/<repo>/<name>.
    *
    * Source: scripts/crawl.ts, when it records the skill: `pageOf()` builds it from the `source`
    * and `skillId` of its leaderboard entry, `sitemapSkills()` takes it from skills.sh's sitemap,
-   * or `authorSkills()` from a whitelisted author's repo pages there, such as
-   * https://www.skills.sh/mattpocock/skills.
+   * `authorSkills()` from a whitelisted author's repo pages there, such as
+   * https://www.skills.sh/mattpocock/skills, or `repoSkills()` builds it from a SKILL.md in a
+   * whitelisted author's GitHub repo: the repo and the `name` of its frontmatter.
    */
   url: string;
+  /**
+   * Set while skills.sh doesn't list the skill: its `url` is a page skills.sh doesn't have, and
+   * its numbers are null. skills.sh lists a skill once someone installs it with the skills CLI, so
+   * a whitelisted author's new skill starts unlisted. Left out once skills.sh lists it.
+   *
+   * Source: scripts/crawl.ts, daily while it sees the skill: when skills.sh answers the skill's
+   * page with its "isn't available" page, which it keeps out of search engines (`noindex`).
+   */
+  unlisted?: true;
   /**
    * All-time installs, or null when unknown: exact for a skill in the skills.sh all-time top 600,
    * rounded to three digits (such as 26.5K) for a skill outside it. A skill of crawl.jsonc the
@@ -462,7 +478,7 @@ export interface SkillsSh {
    * view). For a skill outside it, an approved one, one of the skills of
    * https://www.skills.sh/sitemap.xml it reads or one of a whitelisted author, `skillPage()` fetches the HTML of the skill's skills.sh page
    * and matches the "Installs" stat in its markup with a regex, such as "26.5K"; null when
-   * skills.sh no longer has the page.
+   * skills.sh doesn't have the page, no longer or not yet (`unlisted`).
    */
   installs: number | null;
   /**
@@ -482,7 +498,7 @@ export interface SkillsSh {
    * the skill's skills.sh page and matches its "First Seen" stat with a regex, such as "Jan 22,
    * 2026", or for a recent skill "10 days ago", counted back from the day of the crawl. The
    * leaderboard doesn't give it. It does so once: when the crawl records the skill in
-   * crawl.jsonc, or for an approved skill that has none.
+   * crawl.jsonc, or for a skill that has none, such as one skills.sh didn't list then.
    */
   firstSeen: string | null;
 }

@@ -111,7 +111,8 @@ export default function Page(pageContext: PageContextServer): string {
   const sh = s["skills.sh"];
   const state = s.skillMd;
   const links = [
-    `<a href="${esc(sh.url)}">skills.sh page</a>`,
+    // A skill skills.sh doesn't list yet has no page there.
+    ...(sh.unlisted ? [] : [`<a href="${esc(sh.url)}">skills.sh page</a>`]),
     `<a href="https://github.com/${esc(gh.repo)}${gh.dir ? `/tree/HEAD/${esc(encodeURI(gh.dir))}` : ""}">Source on GitHub</a>`,
     `<a href="${repoHref(repoKey(s))}">All skills from ${esc(repoKey(s))}</a>`,
   ];

@@ -190,6 +190,18 @@ test("a skill without a copy of its SKILL.md says so", async ({ page }) => {
   await expect(page.locator(".stat-tiles .stat")).toHaveCount(NUMBERS.length);
 });
 
+test("a skill skills.sh doesn't list yet has no link there, and only its repo's stars", async ({
+  page,
+}) => {
+  const skillsSh = (p: Page) => p.locator(".get .links a", { hasText: "skills.sh" });
+  await open(page, skillUrl("no-tldr"));
+  await expect(skillsSh(page)).toHaveCount(1);
+  await open(page, skillUrl("unlisted"));
+  await expect(skillsSh(page)).toHaveCount(0);
+  await expect(page.locator(".get .links a", { hasText: "Source on GitHub" })).toHaveCount(1);
+  await expect(page.locator(".stat-tiles .stat-label")).toHaveText([/Repo stars/]);
+});
+
 test.describe("a number that's unknown", () => {
   test("is a dash in its row, beside the numbers that are known", async ({ page }) => {
     await open(page, "/");

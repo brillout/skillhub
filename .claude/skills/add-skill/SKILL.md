@@ -8,7 +8,7 @@ description: Approve or disqualify the qualified skills in SkillHub's crawl.json
 Every skill SkillHub knows of has one state, under its skills.sh page:
 
 - **Approved:** shown on the site, with tags, a TLDR and a copy of its SKILL.md. In `data/skills.jsonc`.
-- **Qualified:** in the skills.sh all-time top 600, or further down skills.sh's sitemap, at the minimums or above (`MINIMUMS` in `data/params.ts`: all-time installs, and its repo's GitHub stars), or by a whitelisted author (`WHITELISTED_AUTHORS` in `data/params.ts`) whatever its numbers, waiting for an agent to approve or disqualify it. In `data/crawl.jsonc`.
+- **Qualified:** in the skills.sh all-time top 600, or further down skills.sh's sitemap, at the minimums or above (`MINIMUMS` in `data/params.ts`: all-time installs, and its repo's GitHub stars), or by a whitelisted author (`WHITELISTED_AUTHORS` in `data/params.ts`) whatever its numbers, waiting for an agent to approve or disqualify it. In `data/crawl.jsonc`. A whitelisted author's skill can be there before skills.sh lists it, which it does once someone installs it: the crawl also finds their skills in their GitHub repos, and records one skills.sh doesn't list yet as `unlisted`, with no numbers, under the page skills.sh will give it.
 - **Unqualified:** found by the crawl, but under the minimums. In `data/crawl.jsonc`.
 - **Disqualified:** not shown, with its `reason`, and no other agent data: no tags, no TLDR, no copy. In `data/crawl.jsonc`.
 
@@ -42,7 +42,7 @@ A **whitelisted author**'s skill (`WHITELISTED_AUTHORS` in `data/params.ts`) is 
 
 ## Approve a skill, or retag one
 
-1. Add its entry to `skills` in `data/skills.jsonc`, and take it out of `data/crawl.jsonc`. SkillHub only shows skills that are on GitHub and on skills.sh: its `id` is where its SKILL.md lives on GitHub, as `Skill` in `data/types.ts` describes, and its `skills.sh` field comes from its entry in crawl.jsonc, and what you write about it, its description, tags and note, goes in its `agentReview`, with your `model` (such as "Claude Opus 5.5") and `effort` (low, medium, high, xhigh or max, or null when you don't know it). Its repo needs an entry in `repos`, with your `agentReview` of it, and its `stars` from the crawl.jsonc entry. Whenever you change any part of an `agentReview`, such as retagging a skill, set its `model` and `effort` to yours.
+1. Add its entry to `skills` in `data/skills.jsonc`, and take it out of `data/crawl.jsonc`. SkillHub only shows skills that are on GitHub and on skills.sh, or by a whitelisted author, `unlisted` or not: its `id` is where its SKILL.md lives on GitHub, as `Skill` in `data/types.ts` describes, and its `skills.sh` field comes from its entry in crawl.jsonc, and what you write about it, its description, tags and note, goes in its `agentReview`, with your `model` (such as "Claude Opus 5.5") and `effort` (low, medium, high, xhigh or max, or null when you don't know it). Its repo needs an entry in `repos`, with your `agentReview` of it, and its `stars` from the crawl.jsonc entry. Whenever you change any part of an `agentReview`, such as retagging a skill, set its `model` and `effort` to yours.
 2. Run `pnpm run sync <id>` to save a copy of its SKILL.md in `data/skill-snapshots/`.
 3. Read that copy, not only the skill's one-line description, and tag it. Tag values and their meanings are under `facets` in `data/skills.jsonc`.
    1. Give it every `category:` that fits. Don't add a parent such as `category:software-engineering`: it comes with the categories it `includes`.
