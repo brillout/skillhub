@@ -44,6 +44,7 @@ import {
   type State,
 } from "./list.ts";
 import { href } from "./format.ts";
+import { notice } from "./notice.ts";
 import { searchWords } from "./client-data.ts";
 import {
   hidePreview,
@@ -927,10 +928,17 @@ delete document.documentElement.dataset.pending;
 // The TLDRs' prose, which only the search and the rows' previews read, is half the data, so it
 // loads after the page. Until it's in, a search finds fewer skills; once it is, a search under way
 // shows them too.
-void import("../data/skills.jsonc?prose").then(({ default: prose }) => {
-  addSearchWords(searchWords(prose));
-  setPreviewProse(prose);
-  // For whoever drives the page: from now on, a search finds what it will always find. See ready.ts.
-  document.documentElement.setAttribute("data-search-words", "");
-  if (state.q.trim()) refresh();
-});
+void import("../data/skills.jsonc?prose").then(
+  ({ default: prose }) => {
+    addSearchWords(searchWords(prose));
+    setPreviewProse(prose);
+    // For whoever drives the page: from now on, a search finds what it will always find. See ready.ts.
+    document.documentElement.setAttribute("data-search-words", "");
+    if (state.q.trim()) refresh();
+  },
+  () =>
+    notice(
+      "Some search data didn't load, so results may be incomplete. Reload the page to try again.",
+      "search-data",
+    ),
+);
