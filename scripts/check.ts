@@ -91,7 +91,7 @@ const COUNTS: Record<Facet["count"], (n: number) => boolean> = {
  * The site's own pages that an owner's page, /owner/, or a page under it would land on, such as
  * /tags/: an owner by one of these names gets no pages. See ownerPage() of website/github.ts.
  */
-const ROUTES = ["bundle", "api", "tags", "about"];
+const ROUTES = ["bundle", "api", "tags", "about", "queue"];
 
 /** Whose each repo's and skill's page is: they're lowercase, so two that differ in case clash. */
 const pages = new Map<string, string>();

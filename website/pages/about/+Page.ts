@@ -1,6 +1,6 @@
-import { date, href } from "../../format.ts";
+import { date, href, plural } from "../../format.ts";
 import { review } from "../../review.ts";
-import { GITHUB, GROWTH_BASE_MIN, GROWTH_MIN, GROWTH_WEEKS } from "../../skills.ts";
+import { GROWTH_BASE_MIN, GROWTH_MIN, GROWTH_WEEKS } from "../../skills.ts";
 
 const n = (x: number) => x.toLocaleString("en");
 
@@ -21,12 +21,6 @@ interface Row {
   /** Where its number leads, and what a screen reader calls that link: the number alone says little. */
   link?: { href: string; name: string };
 }
-
-/**
- * The queue on GitHub: the qualified skills, at the top of crawl.jsonc. writeCrawl() of
- * scripts/data.ts always writes "$schema" and "asOf" first, so `qualified` starts on line 4.
- */
-const QUEUE = `${GITHUB}/blob/main/data/crawl.jsonc#L4`;
 
 /**
  * About: how skills get on SkillHub, with the numbers of the latest crawl and agent reviews. It
@@ -61,8 +55,8 @@ export default function Page(): string {
       noBar: true,
       count: review.waiting,
       link: {
-        href: QUEUE,
-        name: `${n(review.waiting)} waiting for agent review: the queue on GitHub`,
+        href: href("queue/"),
+        name: `${plural(review.waiting, "skill")} waiting for agent review`,
       },
       tip: "It has the minimum installs and stars, or it's by an author SkillHub lists every skill of, and is next in line for an agent review.",
     },

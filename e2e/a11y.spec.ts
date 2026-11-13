@@ -22,6 +22,7 @@ const PAGES: [name: string, url: string][] = [
   ["an owner's page", smallOwnerUrl],
   ["the tags page", "/tags/"],
   ["the about page", "/about/"],
+  ["the queue page", "/queue/"],
 ];
 
 /** A list and the entry to preview in it: a skill, and a bundle. */

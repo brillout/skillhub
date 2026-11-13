@@ -56,6 +56,7 @@ const PAGES = [
   ...new Set([
     "/",
     "/about/",
+    "/queue/",
     "/tags/",
     `/${skillPage(skill)}/`,
     `/${repoPage(github(skill).repo)}/`,

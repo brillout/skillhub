@@ -20,8 +20,7 @@ import {
   taskListUrl,
   wideCodeUrl,
 } from "./data.ts";
-import { readFileSync } from "node:fs";
-import { readCrawl, root } from "../scripts/data.ts";
+import { readCrawl } from "../scripts/data.ts";
 import { bundlePage, bundleRepo } from "../website/github.ts";
 import { expect, list, n, open, ready, test } from "./fixtures.ts";
 
@@ -463,17 +462,31 @@ test("the about page counts what the site lists, and explains each row", async (
 test("the about page's count of skills waiting for an agent review leads to them", async ({
   page,
 }) => {
+  const { qualified } = readCrawl();
   await open(page, "/about/");
   const waiting = page.locator(".breakdown tr", {
     has: page.getByRole("button", { name: "About Waiting for agent review", exact: true }),
   });
   const link = waiting.locator(".num a");
-  await expect(link).toHaveText(n(readCrawl().qualified.length));
-  // To the line of the repo's file where they start.
-  const { pathname, hash } = new URL((await link.getAttribute("href")) as string);
-  const [, file] = pathname.split("/blob/main/");
-  const line = readFileSync(`${root}${file}`, "utf8").split("\n")[Number(hash.slice(2)) - 1];
-  expect(line).toMatch(/^\s*"qualified": \[/);
+  await expect(link).toHaveText(n(qualified.length));
+  await link.click();
+  await ready(page);
+  await expect(page).toHaveURL("/queue/");
+  await expect(page.locator("h1")).toHaveText("Waiting for agent review");
+  // Each of them, in crawl.jsonc's order, most downloaded first: a listed one links to its
+  // skills.sh page, which an unlisted one doesn't have yet, and each to its repo.
+  const rows = page.locator(".queue-table tbody tr");
+  await expect(rows).toHaveCount(qualified.length);
+  for (const [i, skill] of qualified.entries()) {
+    const name = rows.nth(i).locator(".queue-name");
+    await expect(name).toContainText(skill.name);
+    if (skill["skills.sh"].unlisted) await expect(name.locator("a")).toHaveCount(0);
+    else await expect(name.locator("a")).toHaveAttribute("href", skill["skills.sh"].url);
+    await expect(rows.nth(i).locator(".queue-repo")).toHaveAttribute(
+      "href",
+      `https://github.com/${skill.repo}`,
+    );
+  }
 });
 
 test("the about page shows one explanation at a time", async ({ page }) => {
@@ -775,7 +788,16 @@ test("search engines are sent to a sitemap of every page", async ({ page }) => {
   const listed = [...(await sitemap.text()).matchAll(/<loc>([^<]*)<\/loc>/g)].map(([, loc]) => loc);
   expect(new Set(listed).size).toBe(listed.length);
   // A page of each kind, at the address it's live at.
-  for (const path of ["/", "/about/", "/tags/", skillUrl, bundleUrl, repo.url, owner.url])
+  for (const path of [
+    "/",
+    "/about/",
+    "/queue/",
+    "/tags/",
+    skillUrl,
+    bundleUrl,
+    repo.url,
+    owner.url,
+  ])
     expect(listed).toContain(`https://skillhub.build${path}`);
   // And every skill and bundle: each has a page.
   expect(listed.length).toBeGreaterThan(data.skills.length + data.bundles.length);

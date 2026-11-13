@@ -1,7 +1,8 @@
 /**
- * How many skills SkillHub knows of and why it turned some down, for the about page. Only pages
- * import it, and Page is server-only (pages/+config.ts), so crawl.jsonc stays out of the client
- * build. Don't import it from a +client.ts or what it imports.
+ * How many skills SkillHub knows of and why it turned some down, for the about page, and the
+ * skills waiting for an agent review, for the queue page. Only pages import it, and Page is
+ * server-only (pages/+config.ts), so crawl.jsonc stays out of the client build. Don't import it
+ * from a +client.ts or what it imports.
  */
 
 import raw from "../data/crawl.jsonc";
@@ -63,3 +64,6 @@ export const review = {
   minimums: MINIMUMS,
   asOf: data.asOf.installs,
 };
+
+/** The skills waiting for an agent review, most installed first, as of the crawl's day. */
+export const queue = { skills: crawl.qualified, asOf: crawl.asOf };

@@ -30,6 +30,7 @@ for (const [name, url] of [
   ["an owner's page", owner.url],
   ["the tags page", "/tags/"],
   ["the about page", "/about/"],
+  ["the queue page", "/queue/"],
 ])
   test(`${name} fits the screen's width`, async ({ page }) => {
     await open(page, url);
