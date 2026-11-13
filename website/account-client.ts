@@ -326,6 +326,7 @@ async function react(key: string, clicked: Reaction) {
     return;
   }
   const before = account.reactions.get(key) ?? null;
+  const action = `reaction:${key}`;
   const beforeAt = account.reactedAt.get(key);
   const after = before === clicked ? null : clicked;
   /** `time`: when it was given, now unless given. */
@@ -342,7 +343,10 @@ async function react(key: string, clicked: Reaction) {
   set(after);
   changed("react");
   const res = await post("api/reactions", { key, reaction: after }).catch(() => null);
-  if (res?.ok) return;
+  if (res?.ok) {
+    clearNotice(action);
+    return;
+  }
   set(before, beforeAt);
   changed("react");
   if (res?.status === 401) {
@@ -351,7 +355,12 @@ async function react(key: string, clicked: Reaction) {
     store();
     leaveToLogIn();
     location.href = loginHref(after ? { react: key, reaction: after } : {});
-  } else if (res?.status === 409) alert((await res.json()).error);
+  } else if (res?.status === 409) notice((await res.json()).error, action);
+  else
+    notice(
+      `Couldn't ${after ? "save" : "remove"} your thumbs ${after ?? before}. Try again.`,
+      action,
+    );
 }
 
 /**

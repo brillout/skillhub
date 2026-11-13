@@ -505,6 +505,46 @@ test("the about page shows one explanation at a time", async ({ page }) => {
   await expect(shown).toHaveCount(1);
 });
 
+test("About explanations dismiss with Escape under the pointer and keep keyboard focus", async ({
+  page,
+}) => {
+  await open(page, "/about/");
+  const rows = page.locator(".breakdown tr");
+  const row = rows.nth(3);
+  const button = row.locator(".tip-i");
+  const tip = row.locator(".tip-text");
+
+  await row.locator("td").first().hover();
+  await expect(tip).toBeVisible();
+  // Escape must dismiss the words even when the pointer stays on the row that showed them.
+  await page.keyboard.press("Escape");
+  await expect(tip).toBeHidden();
+  await page.mouse.move(0, 0);
+  await row.locator("td").first().hover();
+  await expect(tip).toBeVisible();
+
+  await button.focus();
+  await page.keyboard.press("Tab");
+  await page.keyboard.press("Shift+Tab");
+  await page.keyboard.press("Escape");
+  await expect(tip).toBeHidden();
+  await expect(button).toBeFocused();
+  // Keeping the dismissed button's focus must not suppress the pointer's next explanation.
+  await rows.nth(4).locator("td").first().hover();
+  await expect(rows.nth(4).locator(".tip-text")).toBeVisible();
+  await expect(button).toBeFocused();
+  // Tab goes on from the dismissed explanation, and opens the next one.
+  await page.keyboard.press("Tab");
+  await expect(rows.nth(4).locator(".tip-i")).toBeFocused();
+  await expect(rows.nth(4).locator(".tip-text")).toBeVisible();
+
+  // Two explicit clicks also close a pinned explanation, despite hover and focus.
+  await button.click();
+  await expect(tip).toBeVisible();
+  await button.click();
+  await expect(tip).toBeHidden();
+});
+
 test.describe("in a window 960px wide, where an explanation goes under its row", () => {
   test.use({ viewport: { width: 960, height: 900 } });
 
@@ -538,7 +578,7 @@ test("the list's tagline and the about page give the same number of reviewed ski
   // innerText leaves out the row's hidden tooltip, which is in the same cell.
   const reviewed = (await row.locator(".num").innerText()).trim();
   expect(reviewed).toMatch(/^[\d,]+$/);
-  await expect(page.locator(".lede")).toContainText(`a review of the ${reviewed} `);
+  await expect(page.locator(".lede")).toContainText(`selected from ${reviewed} reviewed skills`);
   await open(page, "/");
   await expect(page.locator(".list-sub")).toContainText(`from ${reviewed} reviewed skills`);
 });

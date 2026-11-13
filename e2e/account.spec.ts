@@ -725,7 +725,7 @@ test("the API refuses what isn't a logged-in page's own request", async ({ page 
 test.describe("when an account request fails", () => {
   test.use({
     expected:
-      /HTTP 503:.*\/api\/(auth\/logout|saves)|console error: Failed to load resource: the server responded with a status of 503/,
+      /HTTP 503:.*\/api\/(auth\/logout|saves|reactions)|console error: Failed to load resource: the server responded with a status of 503/,
   });
 
   test("a failed logout keeps the session visible and offers another try", async ({ page }) => {
@@ -765,5 +765,64 @@ test.describe("when an account request fails", () => {
       .poll(async () => (await (await page.request.get("/api/me")).json()).saved.length)
       .toBe(0);
     await expect(page.getByRole("status")).toHaveCount(0);
+  });
+
+  for (const removing of [false, true])
+    test(`a failed thumb ${removing ? "removal" : "addition"} explains the rollback and allows a retry`, async ({
+      page,
+    }) => {
+      await openLoggedIn(page, skillUrl);
+      const up = thumb(page.locator(".title-row"), "up");
+      const key = (await page.locator(".title-row [data-thumbs]").getAttribute("data-thumbs"))!;
+      if (removing) {
+        const saved = page.waitForResponse((res) => res.url().endsWith("/api/reactions"));
+        await up.click();
+        await saved;
+      }
+      await page.route("**/api/reactions", (route) =>
+        route.fulfill({ status: 503, body: "Unavailable" }),
+      );
+      await up.click();
+      await expect(page.getByRole("status")).toContainText(
+        removing ? "Couldn't remove your thumbs up" : "Couldn't save your thumbs up",
+      );
+      await expect(up).toHaveAttribute("aria-pressed", String(removing));
+      expect(await reactions(page)).toEqual(removing ? { [key]: "up" } : {});
+
+      await page.unroute("**/api/reactions");
+      const retried = page.waitForResponse((res) => res.url().endsWith("/api/reactions"));
+      await up.click();
+      await retried;
+      await expect(up).toHaveAttribute("aria-pressed", String(!removing));
+      expect(await reactions(page)).toEqual(removing ? {} : { [key]: "up" });
+      await expect(page.getByRole("status")).toHaveCount(0);
+    });
+});
+
+test.describe("at the thumbs limit", () => {
+  test.use({
+    expected:
+      /HTTP 409:.*\/api\/reactions|console error: Failed to load resource: the server responded with a status of 409/,
+  });
+
+  test("a refused thumb explains the limit without a blocking dialog", async ({ page }) => {
+    await openLoggedIn(page, skillUrl);
+    const up = thumb(page.locator(".title-row"), "up");
+    const message = "You can give a thumbs up or down to at most 1,000 skills and bundles.";
+    const dialogs: string[] = [];
+    page.on("dialog", async (dialog) => {
+      dialogs.push(dialog.message());
+      await dialog.dismiss();
+    });
+    await page.route("**/api/reactions", (route) =>
+      route.fulfill({ status: 409, json: { error: message } }),
+    );
+    await up.click();
+    await expect(page.getByRole("status")).toContainText(message);
+    expect(dialogs).toEqual([]);
+    await expect(up).toHaveAttribute("aria-pressed", "false");
+    await page.getByRole("button", { name: "Dismiss notification" }).click();
+    await expect(page.getByRole("status")).toHaveCount(0);
+    await expect(up).toBeFocused();
   });
 });

@@ -52,7 +52,7 @@ export default function Page(): string {
       emoji: "🔍",
       noBar: true,
       count: review.crawled,
-      tip: "Every skill SkillHub found on skills.sh: reviewed, or waiting for an agent review.",
+      tip: "Every skill SkillHub found on skills.sh or in the GitHub repos it follows: reviewed, or waiting for an agent review.",
     },
     {
       label: "Waiting for agent review",
@@ -180,7 +180,7 @@ export default function Page(): string {
   return `
     <div class="page about">
       <h1>How skills get here</h1>
-      <p class="lede">SkillHub lists <span class="badge">${n(review.listed)}</span> agent skills, selected from a review of the <span class="badge">${n(review.reviewed)}</span> <a href="https://skills.sh">most downloaded skills</a>.</p>
+      <p class="lede">SkillHub lists <span class="badge">${n(review.listed)}</span> agent skills, selected from <span class="badge">${n(review.reviewed)}</span> reviewed skills found on <a href="https://skills.sh">skills.sh</a> and GitHub.</p>
       <div class="breakdown-box">
         <table class="breakdown">
           <tbody>${rows.map(row).join("")}</tbody>

@@ -89,6 +89,9 @@ const quiet = (tag: string) => tag === "by:community" || facetOf(tag) === "categ
  * the filter was named Published, and links to it still work.
  */
 const AGES = [365, 90, 60, 30, 21, 14, 7, 6, 5, 4, 3, 2, 1];
+/** Dates are compared as YYYY-MM-DD strings: an age must still fit that format. */
+const MAX_AGE_DAYS =
+  (Date.parse(`${data.asOf.installs}T00:00:00Z`) - Date.parse("0000-01-01T00:00:00Z")) / 86_400_000;
 /** The stops named under the Age slider's histogram: 1 year is a step from 3 months, too close for both. */
 const AGE_MARKS = [90, 30, 7, 1];
 /** An age's units, largest first: a month is 30 days and a year 365, as a row's age says them. */
@@ -457,7 +460,8 @@ export const fieldText = (p: Prop, n: number | null) =>
 export function parseCount(text: string): number | null {
   const m = text.replace(/[,\s_]/g, "").match(/^(\d+(?:\.\d+)?)([km])?$/i);
   if (!m) return null;
-  return Math.round(Number(m[1]) * (m[2] ? (m[2].toLowerCase() === "k" ? 1e3 : 1e6) : 1));
+  const n = Math.round(Number(m[1]) * (m[2] ? (m[2].toLowerCase() === "k" ? 1e3 : 1e6) : 1));
+  return Number.isSafeInteger(n) ? n : null;
 }
 /** The words a typed age's units go by, and their days: a bare number is days. */
 const AGE_WORD_DAYS: Record<string, number> = {
@@ -488,12 +492,15 @@ export function parseAge(text: string): number | null {
   let parts = 0;
   const rest = text
     .toLowerCase()
+    // As in counts, a comma between digits groups an amount: 1,000d isn't 1d + 0d.
+    .replace(/(?<=\d),(?=\d)/g, "")
     .replace(/(\d+(?:\.\d+)?)\s*([a-z]*)/g, (_, n: string, unit: string) => {
       parts++;
       days += Object.hasOwn(AGE_WORD_DAYS, unit) ? Number(n) * AGE_WORD_DAYS[unit] : Number.NaN;
       return "";
     });
-  if (!parts || rest.replace(/[\s,+]|and/g, "") || !(days >= 1)) return null;
+  if (!parts || rest.replace(/[\s,+]|and/g, "") || !(days >= 1 && days <= MAX_AGE_DAYS))
+    return null;
   return Math.round(days);
 }
 /** What each field of a slider's popover sets, and some of what it takes, for its placeholder. */
@@ -638,7 +645,10 @@ export function parse(search: string): State {
     if (param === null) continue;
     const [lo, hi] = param.split("..").map((key) => {
       const m = key.match(PROPS[prop].date ? /^(\d+)d$/ : /^(\d+)$/);
-      return m && Number(m[1]) > 0 ? Number(m[1]) : null;
+      const n = m ? Number(m[1]) : 0;
+      return Number.isSafeInteger(n) && n > 0 && (!PROPS[prop].date || n <= MAX_AGE_DAYS)
+        ? n
+        : null;
     });
     // An upper bound on the wrong side of the lower one, which the fields don't let through, is none.
     ranges[prop] = [lo ?? null, hi ?? null];

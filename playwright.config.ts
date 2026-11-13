@@ -8,7 +8,7 @@
  * found or started the same way, on its own port.
  */
 
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { defineConfig } from "@playwright/test";
 import { siteOf } from "./data/edge-cases.ts";
 
@@ -17,8 +17,13 @@ import { siteOf } from "./data/edge-cases.ts";
  * Playwright may not look for. Elsewhere: `pnpm exec playwright install chromium`, once.
  */
 const CLOUD_CHROMIUM = "/opt/pw-browsers/chromium";
+const GPU_FLAGS = "/etc/devnet/chrome-gpu-flags";
 /** How to launch the browser, here and wherever else this repo drives one: scripts/check-widths.ts. */
-export const launchOptions = existsSync(CLOUD_CHROMIUM) ? { executablePath: CLOUD_CHROMIUM } : {};
+export const launchOptions = existsSync(GPU_FLAGS)
+  ? { channel: "chrome", args: readFileSync(GPU_FLAGS, "utf8").trim().split(/\s+/) }
+  : existsSync(CLOUD_CHROMIUM)
+    ? { executablePath: CLOUD_CHROMIUM }
+    : {};
 
 export default defineConfig({
   testDir: "e2e",
