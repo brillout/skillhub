@@ -2,7 +2,7 @@
   - Discover: no specific goal beyond discovering new skills
   - Search: user has a specific wish and wants to find a matching skill
 - Always push directly to `main`, don't create PRs
-  - Test a change to the site before pushing it: see the test-site skill, `.claude/skills/test-site/SKILL.md`
+  - Test a change to the site before pushing it: see the test-site skill, `.agents/skills/test-site/SKILL.md`
 - Zero documentation for humans for now (there is only one maintainer for now, no need to write docs for humans for now)
   - That said, documentation that is useful for agents is good (e.g. a comment that explains non-obvious code)
 - This is a PoC with zero users
