@@ -193,7 +193,11 @@ export interface Facet {
     id: string;
     /** A name for chips, when the id alone isn't one. */
     label?: string;
-    /** What it means: for people browsing, and for agents tagging skills. */
+    /**
+     * What it means: for people browsing, and for agents tagging skills. A skill's page shows it
+     * alone, under the tag, so it says what it means without another value's: "Everyone else" was
+     * all a skill's page said of its publisher.
+     */
     description?: string;
     /**
      * Makes the value a parent of these values of the same facet: skills don't carry it, they
@@ -264,7 +268,10 @@ export interface ReviewAuthor {
 export interface RepoReview extends ReviewAuthor {
   /** `skills`: exists to ship skills. `project`: a product that also ships a skill. `index`: a curated list or catalog. */
   kind: "skills" | "project" | "index";
-  /** The repo in one line, such as its GitHub description, or null when it has none. */
+  /**
+   * The repo in one line, such as its GitHub description, in full, or null when it has none. Not as
+   * a page that cuts it short gives it, with an ellipsis: `pnpm run check` rejects one.
+   */
   description: string | null;
   /** Something to know about the repo, such as where its star count comes from. */
   note?: string;

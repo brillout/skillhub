@@ -25,6 +25,13 @@ const repos = new Set<string>();
 for (const repo of data.repos) {
   if (repos.has(repo.id)) fail(repo.id, "duplicate repo");
   repos.add(repo.id);
+  // Its GitHub description as copied from a page that cut it short, such as a search's results: a
+  // repo's page showed "…business analytics for online…" as what the repo says of itself.
+  if (/(…|\.\.\.)$/.test(repo.agentReview.description ?? ""))
+    fail(
+      `repo ${repo.id}`,
+      "its description ends with an ellipsis: it was cut off where it was copied from, so write it in full",
+    );
 }
 
 // Every review says which model wrote it, and with which effort when that was recorded.
