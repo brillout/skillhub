@@ -36,7 +36,10 @@ export interface Term {
   w: string;
   /** The word and its other spellings: a text has the word when it holds one of them. */
   forms: string[];
-  /** Whether a word of a text starts with one of them, or with the name the word is the ".js" of. */
+  /**
+   * Whether a word of a text starts with one of them, or with the name the word is the ".js" of,
+   * or is the tag's word the word is another name of (see ALIASES).
+   */
   start: RegExp;
 }
 
@@ -64,6 +67,25 @@ function spellings(word: string): string[] {
 const libraryOf = (word: string) => /^(.{2,}?)\.?js$/.exec(word)?.[1];
 
 /**
+ * Other names of what a tag names, each with the tag's: golang is go, k8s is kubernetes. A tag is
+ * found by them too, by its whole word: "golang" starts no word of stack:go, and "go" alone starts
+ * google-ads's as well. Only for a tag, as `libraryOf`: anywhere in a skill's words, "go" would
+ * find them all. A name with no tag for it, on some day, finds nothing more.
+ */
+export const ALIASES: Record<string, string> = {
+  gcp: "google-cloud",
+  golang: "go",
+  js: "javascript",
+  k8s: "kubernetes",
+  postgresql: "postgres",
+  reactnative: "react-native",
+  "shadcn/ui": "shadcn",
+  socketio: "socket-io",
+  tailwindcss: "tailwind",
+  ts: "typescript",
+};
+
+/**
  * The words of a search, as `sought` gives it: plurals cut back so they match the singular too
  * ("resumes" finds "resume", "strategies" finds "strategy").
  */
@@ -82,11 +104,14 @@ export function terms(phrase: string): Term[] {
         const spelled = spellings(word);
         const forms = spelled.length > 1 ? spelled : [singular(word)];
         const library = libraryOf(word);
-        const starts = library ? [...forms, library] : forms;
+        const starts = (library ? [...forms, library] : forms).map(escaped);
+        // The tag's word whole, not what starts with it.
+        if (Object.hasOwn(ALIASES, word))
+          starts.push(`${escaped(ALIASES[word])}(?![\\p{L}\\p{N}])`);
         return {
           w: forms[0],
           forms,
-          start: new RegExp(`(^|[^\\p{L}\\p{N}])(?:${starts.map(escaped).join("|")})`, "u"),
+          start: new RegExp(`(^|[^\\p{L}\\p{N}])(?:${starts.join("|")})`, "u"),
         };
       })
   );

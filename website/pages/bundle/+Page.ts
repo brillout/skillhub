@@ -98,8 +98,8 @@ export default function Page(pageContext: PageContextServer): string {
       <div class="get" id="install">
           ${b.agentReview.install
             .map(
-              ({ label, command }) =>
-                `<p class="install-label">${esc(label)}</p><div class="install"><code>${commandHtml(command)}</code>${copyButton(command)}</div>`,
+              ({ label, command }, i) =>
+                `<p class="install-label" id="install-${i + 1}">${esc(label)}</p><div class="install"><code>${commandHtml(command)}</code>${copyButton(command, `install-${i + 1}`)}</div>`,
             )
             .join("")}
           <p class="links"><a href="https://github.com/${esc(repo)}">Source on GitHub</a><a href="${repoHref(repo)}">All skills from ${esc(repo)}</a></p>

@@ -188,10 +188,13 @@ function backTo(at: Place) {
  */
 history.scrollRestoration = "manual";
 const here = () => location.pathname + location.search;
-/** Where the list was left, and the preview that was open, if any. */
-type Left = { at?: Place; preview?: Previewed | null };
+/** Where the list was left, the preview that was open, if any, and what the agent's box held. */
+type Left = { at?: Place; preview?: Previewed | null; need?: string };
 const note = () => {
-  const left: Left = { at: place(), preview: previewed() };
+  // What was typed for the agent comes back with the page too: the browser, told not to complete
+  // the box, doesn't keep it, and a look at a skill's page lost a need of several lines.
+  const typed = (document.getElementById("need") as HTMLTextAreaElement | null)?.value;
+  const left: Left = { at: place(), preview: previewed(), ...(typed ? { need: typed } : {}) };
   history.replaceState(left, "");
   // And for the tab, should it be leaving to log in: see `leftToLogIn`.
   try {
@@ -979,6 +982,11 @@ delete document.documentElement.dataset.pending;
 const left = (history.state as Left | null)?.at ? (history.state as Left) : leftToLogIn();
 if (left?.at) backTo(left.at);
 if (left?.preview) previewAgain(left.preview);
+// What the agent's box held, with the lines it takes: see `note`.
+if (left?.need && !need.value) {
+  need.value = left.need;
+  fitNeed();
+}
 
 // The TLDRs' prose, which only the search and the rows' previews read, is half the data, so it
 // loads after the page. Until it's in, a search finds fewer skills; once it is, a search under way

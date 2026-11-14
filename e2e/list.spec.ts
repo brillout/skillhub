@@ -10,6 +10,7 @@ import {
   repo,
   respelledTags,
   skill,
+  skillUrl,
   stackTags,
 } from "./data.ts";
 import {
@@ -1324,4 +1325,30 @@ test("the agent's box is a prompt box of a few lines while it has the focus or w
   // Empty and elsewhere, one line again.
   await page.locator("#q").focus();
   expect(await height()).toBe(oneLine);
+});
+
+test("what was typed for the agent comes back with the page, from a skill's page and on a reload", async ({
+  page,
+}) => {
+  // A short list: see fixtures.ts.
+  await open(page, `/?q=${encodeURIComponent(skill.name)}`);
+  const need = page.locator("#need");
+  const words = "A skill to review pull requests.\nIn a monorepo, with pnpm.";
+  await need.fill(words);
+  const height = () => need.evaluate((box) => box.getBoundingClientRect().height);
+  const lines = await height();
+  // The browser is told not to complete the box, so it doesn't keep it: back from a skill's page,
+  // the box was empty, and the need to type again.
+  await page.locator("#q").focus();
+  await page.goto(skillUrl);
+  await ready(page);
+  await page.goBack();
+  await ready(page);
+  await expect(need).toHaveValue(words);
+  // With the room for its lines, as it was left.
+  await need.focus();
+  expect(await height()).toBe(lines);
+  await page.reload();
+  await ready(page);
+  await expect(need).toHaveValue(words);
 });

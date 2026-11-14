@@ -14,6 +14,7 @@ import {
   skillPage,
 } from "../website/github.ts";
 import { renderSkillMd } from "../website/markdown.ts";
+import { ALIASES } from "../website/search-terms.ts";
 import { copyPath } from "../website/skill-md.ts";
 
 export const data = readData();
@@ -198,8 +199,8 @@ export const stackTags = new Set(
 /**
  * Stack tags as people write their names, each with the tag: a name with a dot where the tag has
  * none or a hyphen, as next.js for stack:nextjs and socket.io for stack:socket-io; a sign where the
- * tag spells it out, c++ for stack:cpp; and a library's name with its ".js", as vue.js for
- * stack:vue. Those of them there's a tag for today.
+ * tag spells it out, c++ for stack:cpp; a library's name with its ".js", as vue.js for stack:vue;
+ * and another name of the same thing, as golang for stack:go. Those of them there's a tag for today.
  */
 export const respelledTags = (() => {
   const names = [...stackTags].map((tag) => tag.slice("stack:".length));
@@ -232,7 +233,14 @@ export const respelledTags = (() => {
       .slice(0, 1)
       .map((name): [string, string] => [`${name}.js`, name]),
   ];
-  return spelled.flatMap(([typed, name]) => (name ? [{ typed, tag: `stack:${name}` }] : []));
+  // golang for stack:go, k8s for stack:kubernetes: another name of what the tag names.
+  const aliased = Object.entries(ALIASES).map(([typed, name]): [string, string | undefined] => [
+    typed,
+    names.find((n) => n === name),
+  ]);
+  return [...spelled, ...aliased].flatMap(([typed, name]) =>
+    name ? [{ typed, tag: `stack:${name}` }] : [],
+  );
 })();
 
 /**
@@ -326,6 +334,22 @@ const most = (count: (b: (typeof data.bundles)[number]) => number) =>
   `/${bundlePage(data.bundles.toSorted((a, b) => count(b) - count(a))[0])}/`;
 /** The page of the bundle whose install commands join the most commands with &&. */
 export const joinedBundleUrl = most((b) => installWords(b).filter((w) => w === "&&").length);
+/**
+ * The page of the bundle whose install commands have the longest command before a && or a pipe: on
+ * most days longer than a line of the command's box, so it wraps inside, before what joins it to
+ * the next.
+ */
+export const longJoinedBundleUrl = most((b) =>
+  Math.max(
+    0,
+    ...b.agentReview.install.flatMap(({ command }) =>
+      command
+        .split(/ (?:&&|\|\|?|;) /)
+        .slice(0, -1)
+        .map((c) => c.length),
+    ),
+  ),
+);
 /**
  * The page of the bundle whose install commands have the longest word with an @ inside and no
  * slash, such as a plugin's `name@marketplace`: on most days longer than a line of a phone's

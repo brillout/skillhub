@@ -61,6 +61,13 @@ export default {
       }
     } catch (error) {
       console.error(error);
+      // Logging in is the tab's own navigation, not a script's request: back to the page it
+      // started from, logged out, as when GitHub says no. An error's JSON was all the tab showed.
+      if (request.method === "GET" && url.pathname.startsWith("/api/auth/"))
+        return redirect(
+          backTo(startedFrom(request, url), url),
+          cookie(request, PENDING, "", 0, "/api/auth"),
+        );
       return json({ error: "Server error" }, 500);
     }
     if (url.pathname.startsWith("/api/")) return json({ error: "Not found" }, 404);
@@ -212,15 +219,45 @@ function parseKey(key: unknown): Entry | null {
 // ------------------------------------------------------------------- logging in
 
 /**
- * `?return=` is the page to go back to. What to do once logged in, for the button that asked to
- * log in: `?save=` a key to save, the Save button's, or `?react=` a key and `?reaction=` the thumb
- * to give it, "up" or "down".
+ * The page a link to /api/auth/login was on, from its Referer, for a link without `?return=`: the
+ * header's Log in is one until the page's script gives it its page (see loginHtml in
+ * website/saves.ts), and a click before that, on a slow connection, came back to the home page.
+ */
+function cameFrom(request: Request, url: URL): string | null {
+  try {
+    const from = new URL(request.headers.get("Referer") ?? "");
+    // One of the site's own pages: the browser says so, or else its address does. In `pnpm dev`
+    // only the browser can tell: the Worker is behind the site's server there, on another port.
+    const own =
+      request.headers.get("Sec-Fetch-Site") === "same-origin" || from.origin === url.origin;
+    return own && !from.pathname.startsWith("/api/") ? from.pathname + from.search : null;
+  } catch {
+    return null;
+  }
+}
+
+/** The page a login started from, for one that fails on the way: see the `catch` of `fetch`. */
+function startedFrom(request: Request, url: URL): string | null {
+  if (url.pathname === "/api/auth/login")
+    return url.searchParams.get("return") ?? cameFrom(request, url);
+  try {
+    const pending = JSON.parse(cookies(request).get(PENDING) ?? "null") as Pending | null;
+    return pending?.back ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * `?return=` is the page to go back to; without it, the page the link was on. What to do once
+ * logged in, for the button that asked to log in: `?save=` a key to save, the Save button's, or
+ * `?react=` a key and `?reaction=` the thumb to give it, "up" or "down".
  */
 async function login(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
   const pending: Pending = {
     state: token(),
-    back: backTo(url.searchParams.get("return"), url),
+    back: backTo(url.searchParams.get("return") ?? cameFrom(request, url), url),
     save: url.searchParams.get("save"),
     react: url.searchParams.get("react"),
     reaction: url.searchParams.get("reaction"),

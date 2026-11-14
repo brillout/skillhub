@@ -142,6 +142,20 @@ async function staysPut(page: Page) {
   expect(Math.abs((await left()) - before)).toBeLessThan(1);
 }
 
+test("Log in, clicked before the page's script ran, still comes back to the page", async ({
+  browser,
+  baseURL,
+}) => {
+  // The header's link names its page only once the script gave it to it: until then, as on a slow
+  // connection, logging in came back to the home page. The server now asks where the link was.
+  const context = await browser.newContext({ baseURL, javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto("/about/");
+  await login(page).click();
+  await expect(page).toHaveURL("/about/");
+  await context.close();
+});
+
 test("the header's Saved link leads from a skill's page to what you saved", async ({ page }) => {
   // Nobody's logged in: there's nothing of theirs to lead to.
   await open(page, skillUrl);
@@ -924,6 +938,37 @@ test("a tab left open follows what another does: a save, then a log out", async 
   await expect(login(other)).toBeVisible();
   await expect(list(other).rows).toHaveCount(0);
   await other.close();
+});
+
+test("a second click on Save is sent once the first is answered", async ({ page }) => {
+  await openLoggedIn(page, LIST);
+  // The first save takes its time, as on a slow connection.
+  const sent: boolean[] = [];
+  let answer = () => {};
+  const held = new Promise<void>((resolve) => {
+    answer = resolve;
+  });
+  await page.route("**/api/saves", async (route) => {
+    sent.push((route.request().postDataJSON() as { saved: boolean }).saved);
+    if (sent.length === 1) await held;
+    await route.continue();
+  });
+  const save = skillRow(page).locator("[data-save]");
+  await save.click();
+  await save.click();
+  await expect(save).toHaveAttribute("aria-pressed", "false");
+  // Sent at once, the second, which takes the save back, could reach the Worker before the first:
+  // the skill then stayed saved, under a button that said it wasn't.
+  await page.waitForTimeout(300);
+  expect(sent).toEqual([true]);
+  answer();
+  await expect.poll(() => sent).toEqual([true, false]);
+  await expect
+    .poll(
+      async () => ((await (await page.request.get("/api/me")).json()) as { saved: string[] }).saved,
+    )
+    .toEqual([]);
+  await expect(save).toHaveAttribute("aria-pressed", "false");
 });
 
 test("the page you come back to from logging in doesn't say Log in while the API answers", async ({

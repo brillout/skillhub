@@ -25,6 +25,9 @@ const fits = (el: HTMLElement, words: Term[], groups: boolean) => {
   const facet = el.closest(".facet-doc")?.querySelector("h2");
   const text = plain(
     [
+      // The tag by itself: in the element's text its count comes right after it, "stack:go13",
+      // where its last word isn't whole, as another name of it asks for (see ALIASES).
+      el.querySelector<HTMLElement>("[data-tag]")?.dataset.tag,
       el.textContent,
       el.querySelector<HTMLElement>(".tag")?.title,
       group?.tagName === "H3" ? group.textContent : "",

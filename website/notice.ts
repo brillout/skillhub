@@ -47,6 +47,24 @@ export function notice(message: string, action: string) {
   });
 }
 
+/**
+ * Says a message to assistive technology alone, such as that a command was copied: for what the
+ * page only shows for a moment, in a place that isn't read out.
+ */
+export function say(message: string) {
+  const said =
+    document.getElementById("said") ??
+    document.body.appendChild(
+      Object.assign(document.createElement("div"), { id: "said", className: "sr-only" }),
+    );
+  said.setAttribute("role", "status");
+  // Emptied, then filled once that's taken: the same words a second time are read out again.
+  said.textContent = "";
+  requestAnimationFrame(() => {
+    said.textContent = message;
+  });
+}
+
 /** A successful retry makes its earlier error obsolete. */
 export function clearNotice(action: string) {
   const box = document.getElementById("action-notice");

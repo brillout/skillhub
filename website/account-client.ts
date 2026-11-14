@@ -278,6 +278,22 @@ const post = (path: string, body: unknown) =>
     keepalive: true,
   });
 
+/**
+ * An entry's requests one at a time, in the order of its clicks: sent at once, the request of a
+ * second click, which takes the first back, could reach the Worker before the first's, which then
+ * had the last word, and the page showed otherwise until it was loaded again.
+ */
+const sending = new Map<string, Promise<unknown>>();
+function inOrder(entry: string, send: () => Promise<Response>): Promise<Response> {
+  const sent = (sending.get(entry) ?? Promise.resolve()).then(send);
+  // Whatever became of it, the next one follows.
+  sending.set(
+    entry,
+    sent.catch(() => {}),
+  );
+  return sent;
+}
+
 /** An entry's name, as its Save button has it, for a notice to say what it's about. */
 const nameOf = (key: string) =>
   document.querySelector<HTMLElement>(`[data-save="${CSS.escape(key)}"]`)?.dataset.name ??
@@ -322,7 +338,7 @@ async function toggle(key: string) {
   // The button shows its new state at once, and goes back if the Worker refuses it.
   set(on);
   changed("toggle");
-  const res = await post("api/saves", { key, saved: on }).catch(() => null);
+  const res = await inOrder(key, () => post("api/saves", { key, saved: on })).catch(() => null);
   if (res?.ok) {
     clearNotice(key);
     return;
@@ -375,7 +391,9 @@ async function react(key: string, clicked: Reaction) {
   // The thumbs show their new state at once, and go back if the Worker refuses it.
   set(after);
   changed("react");
-  const res = await post("api/reactions", { key, reaction: after }).catch(() => null);
+  const res = await inOrder(action, () => post("api/reactions", { key, reaction: after })).catch(
+    () => null,
+  );
   if (res?.ok) {
     clearNotice(action);
     return;

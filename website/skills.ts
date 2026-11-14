@@ -210,7 +210,11 @@ export const skillHref = (id: string) => href(`${idPath(skillPage(skillById.get(
 /** The bundle's page: see bundlePage(). */
 export const bundleHref = (id: string) => href(`${idPath(bundlePage({ id }))}/`);
 
-/** The crumbs atop a page inside a repo (`owner/name`): the list, its owner, the repo, then `more`. */
+/**
+ * The crumbs atop a page inside a repo (`owner/name`): the list, its owner, the repo, then `more`,
+ * such as a skill's bundle, which says it's one: named after its repo, as many are, it read as the
+ * repo twice, "text-to-cad / text-to-cad".
+ */
 export function crumbsHtml(repo: string, ...more: string[]): string {
   const name = repo.split("/")[1];
   const links = [

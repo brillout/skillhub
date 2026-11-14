@@ -143,7 +143,7 @@ export default function Page(pageContext: PageContextServer): string {
   const cautions = s.agentReview.tags.filter((t) => CAUTION.includes(t) && tagInfo.has(t));
   return `
     <div class="page skill-page">
-      ${crumbsHtml(repoKey(s), ...(bundle ? [`<a href="${bundleHref(bundle.id)}">${esc(bundle.agentReview.name)}</a>`] : []))}
+      ${crumbsHtml(repoKey(s), ...(bundle ? [`<a href="${bundleHref(bundle.id)}">${esc(bundle.agentReview.name)}</a> bundle`] : []))}
       <div class="title-row"><h1>${esc(s.name)}</h1><div class="title-actions">${thumbsHtml(saveKey("skill", s.id), s.name)}${saveButton(saveKey("skill", s.id), s.name)}</div></div>
       ${
         s.agentReview.tldr?.glance.length

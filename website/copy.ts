@@ -1,9 +1,13 @@
 import { esc } from "./format.ts";
-import { clearNotice, notice } from "./notice.ts";
+import { clearNotice, notice, say } from "./notice.ts";
 
-/** A button that copies `text`, such as an install command. It says Copied for a moment after. */
-export const copyButton = (text: string) =>
-  `<button type="button" class="copy" data-copy="${esc(text)}"><span>Copy</span><span>Copied</span></button>`;
+/**
+ * A button that copies `text`, such as an install command. It says Copied for a moment after.
+ * `about` is the id of what says which command it copies, where a page has several: a bundle's
+ * page had up to six buttons that all read out as "Copy".
+ */
+export const copyButton = (text: string, about?: string) =>
+  `<button type="button" class="copy" data-copy="${esc(text)}"${about ? ` aria-describedby="${about}"` : ""}><span>Copy</span><span>Copied</span></button>`;
 
 /** Wires every copy button: `[data-copied]` shows Copied instead of Copy, see style.css. */
 export function mountCopyButtons() {
@@ -18,6 +22,8 @@ export function mountCopyButtons() {
       () => {
         clearNotice("copy");
         button.dataset.copied = "";
+        // The button shows it for a moment, in place of its name: that isn't read out.
+        say("Copied to your clipboard.");
         clearTimeout(timers.get(button));
         timers.set(
           button,

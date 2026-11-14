@@ -93,6 +93,12 @@ export function mountSparklines(root: ParentNode): void {
     if (!svg || !cross || !marker || !tip || !value || !week || values.length < 2) continue;
     const { x, y } = geometry(values);
     let active = values.length - 1;
+    // What cuts the tooltip off over the line: the window's top, or that of the box the trend
+    // scrolls in, such as a row's preview.
+    let scroller = el.parentElement;
+    while (scroller && !/auto|scroll|hidden/.test(getComputedStyle(scroller).overflowY))
+      scroller = scroller.parentElement;
+    const ceiling = () => Math.max(0, scroller?.getBoundingClientRect().top ?? 0);
 
     const show = (i: number) => {
       active = Math.max(0, Math.min(values.length - 1, i));
@@ -107,6 +113,10 @@ export function mountSparklines(root: ParentNode): void {
       value.textContent = plural(values[active], "download");
       week.textContent = `week to ${weeks[active]}`;
       tip.hidden = false;
+      // Under the line where there's no room over it: a trend scrolled to the window's top had its
+      // tooltip cut off there.
+      tip.classList.remove("below");
+      tip.classList.toggle("below", tip.getBoundingClientRect().top < ceiling());
     };
     const hide = () => {
       cross.setAttribute("visibility", "hidden");
@@ -135,7 +145,12 @@ export function mountSparklines(root: ParentNode): void {
       if (step) show(active + step);
       else if (event.key === "Home") show(0);
       else if (event.key === "End") show(values.length - 1);
-      else return;
+      else if (event.key === "Escape" && !tip.hidden) {
+        // Out of the way of what it covers, while the focus stays: the arrow keys bring it back.
+        // The tooltip's alone while it shows: a row's preview closes on the next Escape.
+        hide();
+        event.stopPropagation();
+      } else return;
       event.preventDefault();
     });
   }

@@ -682,6 +682,28 @@ describe("a login that doesn't go through leaves the person logged out, on their
     assert.equal(github.asked.length, 2);
   });
 
+  test("the database failing as the person comes back", async () => {
+    const browser = new Browser(worker);
+    const back = github.approve(await start(browser));
+    await db.exec("ALTER TABLE sessions RENAME TO sessions_gone");
+    try {
+      const res = await browser.get(back);
+      // Their page, as for the other failures: an error's JSON was all their tab then showed.
+      assert.equal(res.status, 302);
+      assert.equal(res.headers.get("Location"), "/tags/");
+      const cookies = setCookies(res);
+      assert.deepEqual(Object.keys(cookies), ["login"]);
+      assert.ok(cookies.login.attributes.includes("Max-Age=0"));
+      await until(() => logged.length > 0);
+      assert.match(logged.splice(0).join("\n"), /no such table: sessions/);
+    } finally {
+      await db.exec("ALTER TABLE sessions_gone RENAME TO sessions");
+    }
+    assert.deepEqual(await browser.me(), NOBODY);
+    assert.equal(await count("users"), 0);
+    assert.equal(await count("sessions"), 0);
+  });
+
   test("a token GitHub takes back at once", async () => {
     const browser = new Browser(worker);
     const back = github.approve(await start(browser));
@@ -734,6 +756,54 @@ describe("the page to go back to is one of the site's", () => {
     const toGitHub = await browser.get("/api/auth/login");
     const res = await browser.get(github.approve(toGitHub.headers.get("Location")));
     assert.equal(res.headers.get("Location"), "/");
+  });
+
+  test("with no page given, from a page of the site: that page", async () => {
+    // The header's Log in, clicked before the page's script gave it its page: the home page it was.
+    const browser = new Browser(worker);
+    const toGitHub = await browser.fetch("/api/auth/login", {
+      headers: { Referer: `${SITE}/tags/?q=react` },
+    });
+    const res = await browser.get(github.approve(toGitHub.headers.get("Location")));
+    assert.equal(res.headers.get("Location"), "/tags/?q=react");
+    assert.equal((await browser.me()).user?.login, "octocat");
+  });
+
+  test("with no page given, from a page the browser says is the site's: that page", async () => {
+    // As in `pnpm dev`, where the Worker is behind the site's server, on another port.
+    const browser = new Browser(worker);
+    const toGitHub = await browser.fetch("/api/auth/login", {
+      headers: { Referer: "http://localhost:3000/about/", "Sec-Fetch-Site": "same-origin" },
+    });
+    const res = await browser.get(github.approve(toGitHub.headers.get("Location")));
+    assert.equal(res.headers.get("Location"), "/about/");
+  });
+
+  test("with no page given, from elsewhere: the home page", async () => {
+    // Another site's page, the API's own address, and what isn't an address.
+    const elsewhere: [from: string, site: string][] = [
+      ["https://evil.example/tags/", "cross-site"],
+      ["https://evil.example/tags/", ""],
+      [`${SITE}/api/auth/login`, "same-origin"],
+      ["/tags/", "same-origin"],
+    ];
+    for (const [from, site] of elsewhere) {
+      const browser = new Browser(worker);
+      const toGitHub = await browser.fetch("/api/auth/login", {
+        headers: { Referer: from, ...(site ? { "Sec-Fetch-Site": site } : {}) },
+      });
+      const res = await browser.get(github.approve(toGitHub.headers.get("Location")));
+      assert.equal(res.headers.get("Location"), "/", `${from} ${site}`);
+    }
+  });
+
+  test("the page given, rather than the one the link was on", async () => {
+    const browser = new Browser(worker);
+    const toGitHub = await browser.fetch("/api/auth/login?return=/about/", {
+      headers: { Referer: `${SITE}/tags/` },
+    });
+    const res = await browser.get(github.approve(toGitHub.headers.get("Location")));
+    assert.equal(res.headers.get("Location"), "/about/");
   });
 });
 

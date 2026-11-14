@@ -2740,14 +2740,19 @@ input[type="search"]::-webkit-search-cancel-button:hover {
 /* ------------------------------------------------------------- skill details */
 
 /* As far from what's above it as the page's other blocks: without a top margin, it hugged the
-   glance, whose own bottom margin is a few pixels. Two notes in a row stay closer. */
+   glance, whose own bottom margin is a few pixels. Two notes in a row stay closer. As wide as the
+   cards under it, its words no wider than a paragraph's: as a paragraph of the page, its box ended
+   77px short of theirs. */
 .note {
-  max-width: 72ch;
   margin: 16px 0 12px;
-  padding: 10px 14px;
+  padding: 10px max(14px, 100% - 68ch + 14px) 10px 14px;
   border-radius: 6px;
   background: var(--t-warn);
   color: var(--t-warn-ink);
+}
+
+.page .note {
+  max-width: none;
 }
 
 .note + .note {
@@ -3087,6 +3092,12 @@ input[type="search"]::-webkit-search-cancel-button:hover {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   pointer-events: none;
+}
+
+/* Where there's no room over the line, at the window's top: see `show` in sparkline.ts. */
+.spark-tip.below {
+  top: calc(100% + 6px);
+  bottom: auto;
 }
 
 .spark-tip strong {
@@ -3725,6 +3736,8 @@ h3 + .cloud {
 .page .tldr h2 {
   margin: 0 0 8px;
   font-size: 16px;
+  /* A link to it shows its card whole: 16px over the card, whose padding is over the heading. */
+  scroll-margin-top: 35px;
 }
 
 .tldr p {

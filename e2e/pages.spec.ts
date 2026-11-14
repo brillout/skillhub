@@ -13,6 +13,7 @@ import {
   hiddenDirUrl,
   insideWord,
   joinedBundleUrl,
+  longJoinedBundleUrl,
   longDescriptionUrls,
   longFrontmatterUrl,
   longTaskUrl,
@@ -201,6 +202,17 @@ test("a skill that only works inside its bundle is installed with it", async ({ 
   const [{ label, command }] = whole.agentReview.install;
   await open(page, url);
   await expect(page.locator(".note").first()).toContainText("Only works inside its bundle");
+  // The way to it says that its last stop is a bundle: named after its repo, it read as the repo twice.
+  await expect(page.locator(".crumbs")).toContainText(`/ ${whole.agentReview.name} bundle`);
+  // Its note ends where the cards under it do: its box was 77px short of theirs.
+  const right = async (selector: string) => {
+    const box = (await page.locator(selector).first().boundingBox()) as {
+      x: number;
+      width: number;
+    };
+    return box.x + box.width;
+  };
+  expect(Math.abs((await right(".note")) - (await right(".get")))).toBeLessThan(0.5);
   // Its page says to install the bundle instead: its one command installed the skill alone.
   await expect(page.locator(".install")).toHaveCount(1);
   await expect(page.locator(".install code")).toHaveText(command);
@@ -429,6 +441,79 @@ test("where an install command of several wraps, each of its commands starts a l
   expect(text).toContain(" && ");
   await joined.locator(".copy").click();
   expect(await clipboard(page)).toBe(text);
+  // Said too, for who can't see the button change; and each Copy says which command it copies,
+  // where a page has several: they all read out as "Copy".
+  await expect(page.locator("#said")).toHaveText("Copied to your clipboard.");
+  const label = await joined.evaluate((install) => install.previousElementSibling?.textContent);
+  await expect(joined.locator(".copy")).toHaveAccessibleDescription(label as string);
+});
+
+test("a link to a skill's TL;DR shows its card whole", async ({ page }) => {
+  // The card's top was cut off, by under 3px: the link scrolls to the heading inside the card.
+  await open(page, `${skillUrl}#tldr`);
+  const card = page.locator("section.tldr");
+  await expect(card.locator("h2")).toBeInViewport();
+  expect(((await card.boundingBox()) as { y: number }).y).toBeGreaterThanOrEqual(0);
+});
+
+test("a trend's tooltip opens under its line where there's no room over it, and Escape puts it away", async ({
+  page,
+}) => {
+  await open(page, skillUrl);
+  const spark = page.locator(".spark").first();
+  const tip = page.locator(".spark-tip").first();
+  const read = async () => {
+    const box = (await spark.boundingBox()) as {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+    };
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 2 });
+    await expect(tip).toBeVisible();
+    return [box, (await tip.boundingBox()) as { y: number; height: number }] as const;
+  };
+  // With room over the line, it's over it.
+  const [line, over] = await read();
+  expect(over.y + over.height).toBeLessThanOrEqual(line.y);
+  // Scrolled to the window's top, it was cut off there: it's under the line, whole.
+  await page.mouse.move(0, 0);
+  await spark.evaluate((el) => scrollBy(0, el.getBoundingClientRect().top - 20));
+  const [atTop, under] = await read();
+  expect(under.y).toBeGreaterThanOrEqual(atTop.y + atTop.height);
+  // Escape puts it away while the keyboard stays on the line, whose arrow keys bring it back.
+  await page.mouse.move(0, 0);
+  await spark.focus();
+  await expect(tip).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(tip).toBeHidden();
+  await expect(spark).toBeFocused();
+  await page.keyboard.press("ArrowLeft");
+  await expect(tip).toBeVisible();
+});
+
+test("what joins two commands of an install command is never alone on a line", async ({ page }) => {
+  // After a command too long for a line, which wraps inside, its && had a line of its own, and so
+  // had the `bash` a long `curl` is piped to: what joins starts the next command's line.
+  await open(page, longJoinedBundleUrl);
+  const lone = await page.locator(".install code").evaluateAll((codes) =>
+    codes.flatMap((code) => {
+      const words = [...code.querySelectorAll(".word")].map((word) => ({
+        text: word.textContent ?? "",
+        top: Math.round(word.getBoundingClientRect().top),
+      }));
+      return words
+        .filter(
+          ({ text, top }, i) =>
+            /^(&&|\|\|?|;)$/.test(text) &&
+            // Alone, or last on its line with the command it joins on the next.
+            words[i + 1]?.top !== top,
+        )
+        .map(({ text }) => `${text} in: ${code.textContent}`);
+    }),
+  );
+  expect(lone).toEqual([]);
+  await expect(page.locator(".install code .cmd").first()).toBeVisible();
 });
 
 test("a bundle's page says which of its skills work alone: all, some or none", async ({ page }) => {

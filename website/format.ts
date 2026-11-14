@@ -8,8 +8,10 @@ export const esc = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt
  * that a plugin's `name@marketplace` too long for a phone's line shows whole: it was cut off at
  * its box's edge, which scrolled. What reads together stays together where a line has room for it
  * (see .install code in style.css):
- * - a command of several joined by &&, with what joins it to the next: `codex plugin marketplace
- *   add a/b && codex plugin add b@a` broke inside its second command, which now starts a line;
+ * - a command of several joined by &&, with what joins it to the one before: `codex plugin
+ *   marketplace add a/b && codex plugin add b@a` broke inside its second command, which now starts
+ *   a line, its && first. Not last on the line before: a command too long for a line wraps inside,
+ *   and its && was left on a line of its own, as was the `bash` a long `curl` is piped to;
  * - a flag and what it's set to, `--skill grill-me`: a bundle's command names a skill per flag,
  *   and its lines ended on a flag, with the skill on the next.
  */
@@ -21,11 +23,11 @@ export function commandHtml(command: string): string {
       .map((part) => `<span class="word">${esc(part)}</span>`)
       .join("<wbr>");
   const joins = (w: string) => /^(&&|\|\|?|;)$/.test(w);
-  // The commands, each with what joins it to the next.
+  // The commands, each with what joins it to the one before.
   const commands: string[][] = [[]];
   for (const w of command.split(" ")) {
-    commands[commands.length - 1].push(w);
     if (joins(w)) commands.push([]);
+    commands[commands.length - 1].push(w);
   }
   const html = commands
     .filter((words) => words.length)
@@ -48,9 +50,9 @@ export function commandHtml(command: string): string {
       }
       return out.join(" ");
     });
-  return html.length > 1
-    ? html.map((c) => `<span class="cmd">${c}</span>`).join(" ")
-    : html.join(" ");
+  // The first starts the first line, so it's whole wherever it fits, as it is: left to wrap as
+  // text, one too long for a line shares its last line with the next, if that one fits there.
+  return html.map((c, i) => (i ? `<span class="cmd">${c}</span>` : c)).join(" ");
 }
 
 /** 3.5M, 907K, 54.5K, 812 */
