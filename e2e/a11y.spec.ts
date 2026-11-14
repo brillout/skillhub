@@ -11,7 +11,17 @@ import AxeBuilder from "@axe-core/playwright";
 import { bundleUrl, skill, skillUrl, smallOwnerUrl, smallRepo, wideCodeUrl } from "./data.ts";
 import { expect, open, test } from "./fixtures.ts";
 
-const PAGES: [name: string, url: string][] = [
+/**
+ * The queue's rows between its first 25 and its last 25, which the test takes out of the page
+ * before axe reads it: the queue can hold thousands, such as after the minimums went down, and
+ * 1,927 of them took axe 21 s of a test's 30. Its rows are alike, but for the unlisted skills'
+ * ones, which come last. Taken out, not excluded: axe checks every element against each excluded
+ * one, which with 7,362 rows outlasted the test too.
+ */
+const QUEUE_MIDDLE = ".queue-table tbody tr:nth-child(n+26):nth-last-child(n+26)";
+
+/** The pages, each with what to take out of it before axe reads it, if anything. */
+const PAGES: [name: string, url: string, drop?: string][] = [
   // A short list with every part of the long one: skills with tags of every tint, a chip to remove
   // the filter, a pressed tag, and a bundle with the skills that don't match greyed out.
   ["a filtered list", "/?tag=flag%3Adual-use"],
@@ -22,7 +32,7 @@ const PAGES: [name: string, url: string][] = [
   ["an owner's page", smallOwnerUrl],
   ["the tags page", "/tags/"],
   ["the about page", "/about/"],
-  ["the queue page", "/queue/"],
+  ["the queue page", "/queue/", QUEUE_MIDDLE],
 ];
 
 /** A list and the entry to preview in it: a skill, and a bundle. */
@@ -35,9 +45,10 @@ for (const scheme of ["light", "dark"] as const)
   test.describe(`in ${scheme}`, () => {
     test.use({ colorScheme: scheme });
 
-    for (const [name, url] of PAGES)
+    for (const [name, url, drop] of PAGES)
       test(`${name} passes axe`, async ({ page }) => {
         await open(page, url);
+        if (drop) await page.locator(drop).evaluateAll((all) => all.forEach((el) => el.remove()));
         const { violations } = await new AxeBuilder({ page }).exclude(".markdown").analyze();
         if (await page.locator(".skill-md").count()) {
           const inSkillMd = new AxeBuilder({ page }).include(".skill-md");

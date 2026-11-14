@@ -917,16 +917,26 @@ test("the about page's count of skills waiting for an agent review leads to them
   // skills.sh page, which an unlisted one doesn't have yet, and each to its repo.
   const rows = page.locator(".queue-table tbody tr");
   await expect(rows).toHaveCount(qualified.length);
-  for (const [i, skill] of qualified.entries()) {
-    const name = rows.nth(i).locator(".queue-name");
-    await expect(name).toContainText(skill.name);
-    if (skill["skills.sh"].unlisted) await expect(name.locator("a")).toHaveCount(0);
-    else await expect(name.locator("a")).toHaveAttribute("href", skill["skills.sh"].url);
-    await expect(rows.nth(i).locator(".queue-repo")).toHaveAttribute(
-      "href",
-      `https://github.com/${skill.repo}`,
-    );
-  }
+  // Read at once and compared in one `expect`, not row by row: the queue can hold thousands of
+  // rows, such as after the minimums went down. An `expect` on the page is a round trip to the
+  // browser, and three a row outlasted the test's time at the 1,185th of 1,927 rows; even off the
+  // page, 22,000 of them took 24 s.
+  const shown = await rows.evaluateAll((all) =>
+    all.map((row, i) => ({
+      row: i + 1,
+      name: row.querySelector(".queue-name")?.textContent ?? "",
+      page: row.querySelector(".queue-name a")?.getAttribute("href") ?? null,
+      repo: row.querySelector(".queue-repo")?.getAttribute("href") ?? null,
+    })),
+  );
+  const wrong = shown.filter(({ name, page, repo }, i) => {
+    const skill = qualified[i];
+    const itsPage = skill["skills.sh"].unlisted ? null : skill["skills.sh"].url;
+    const itsRepo = `https://github.com/${skill.repo}`;
+    return !name.includes(skill.name) || page !== itsPage || repo !== itsRepo;
+  });
+  // How many rows are wrong, and the first of them: all of them could run to thousands of lines.
+  expect({ wrong: wrong.length, first: wrong.slice(0, 5) }).toEqual({ wrong: 0, first: [] });
   // A row's two links, each a line of text tall, are far enough apart for a finger to tell them
   // apart: 24px from middle to middle. They were 21px.
   const listed = rows.filter({ has: page.locator(".queue-name a") }).first();

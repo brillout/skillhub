@@ -4,7 +4,7 @@
  */
 
 /** What a skill of the top 600 needs to qualify: all-time installs, and its GitHub repo's stars. */
-export const MINIMUMS = { installs: 5000, stars: 100 };
+export const MINIMUMS = { installs: 3000, stars: 100 };
 
 /**
  * GitHub owners whose every skill SkillHub lists: the crawl records all their skills on skills.sh,
