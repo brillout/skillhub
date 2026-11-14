@@ -21,6 +21,8 @@ import {
   isListed,
   tokensHtml,
   tokensOf,
+  LARGE_PROMPT,
+  largeHint,
   fullRanges,
   patched,
   presetPatch,
@@ -656,8 +658,13 @@ function ask(from?: HTMLElement) {
   };
   if (!navigator.clipboard) return refused();
   navigator.clipboard.writeText(prompt).then(() => {
+    // Not "ready to use with any AI" when it's more than some take: see LARGE_PROMPT in list.ts.
+    const tokens = tokensOf(prompt);
+    const copied = `Prompt of ${tokensHtml(tokens)} copied to your clipboard`;
     flash(
-      `Prompt of ${tokensHtml(tokensOf(prompt))} copied to your clipboard, ready to use with any AI.`,
+      tokens >= LARGE_PROMPT
+        ? `${copied}.${largeHint(tokens, "Too much for your agent? Narrow the list and copy again.")}`
+        : `${copied}, ready to use with any AI.`,
     );
     sayOn(from, "Prompt copied: paste it into your agent");
   }, refused);

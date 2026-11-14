@@ -20,6 +20,7 @@ import {
   quotedFact,
   repo,
   respelledOwner,
+  respelledTags,
   skill,
   skillUrl,
   stackTags,
@@ -543,6 +544,23 @@ test("the tags page: its search narrows it, and a tag leads to the list", async 
   await tag.click();
   await ready(page);
   await expect(page).toHaveURL(`/?tag=${encodeURIComponent(name)}`);
+});
+
+test("the tags page finds a tag by its name as people write it, as next.js or c++", async ({
+  page,
+}) => {
+  test.skip(respelledTags.length === 0, "no tag is written otherwise than its name today");
+  // A tag's name is letters, digits and hyphens: stack:nextjs, stack:cpp. Typed as the thing is
+  // called, the page said no tag matches.
+  await open(page, "/tags/");
+  for (const { typed, tag } of respelledTags) {
+    await page.locator("#tag-q").fill(typed);
+    await expect(
+      page.locator(`#tag-sections .cloud-item a[data-tag="${tag}"]`),
+      typed,
+    ).toBeVisible();
+    await expect(page.locator("#tag-none"), typed).toBeHidden();
+  }
 });
 
 test("the tags page keeps its search in its address, for a link and for the way back", async ({

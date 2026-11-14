@@ -1,7 +1,16 @@
 /** The skills list: its search, its settings and its tags, which all live in the URL. */
 
 import type { Page, Route } from "@playwright/test";
-import { data, listedRows, longTag, meaningTag, repo, skill, stackTags } from "./data.ts";
+import {
+  data,
+  listedRows,
+  longTag,
+  meaningTag,
+  repo,
+  respelledTags,
+  skill,
+  stackTags,
+} from "./data.ts";
 import {
   expect,
   fromCompact,
@@ -843,6 +852,29 @@ test("the search finds tags too, one of which takes its place once picked", asyn
   );
 });
 
+test("the search finds a tag by its name as people write it, and the skills that have it", async ({
+  page,
+}) => {
+  test.skip(respelledTags.length === 0, "no tag is written otherwise than its name today");
+  await open(page, "/");
+  await searchable(page);
+  const { count, rows, search } = list(page);
+  for (const { typed, tag } of respelledTags) {
+    // next.js for stack:nextjs, c++ for stack:cpp: the search offered no tag for them.
+    await search.fill(typed);
+    await settled(page);
+    const chip = page.locator(`#found-tags .chip[data-tag="${tag}"]`);
+    await expect(chip, typed).toBeVisible();
+    // And the list has the tag's skills, at least: with vue.js it offered stack:vue beside
+    // "0 skills".
+    const tagged = data.skills.filter((s) => s.agentReview.tags.includes(tag)).length;
+    expect(fromCount((await count.innerText()).split(" ")[0]), typed).toBeGreaterThanOrEqual(
+      tagged,
+    );
+    await expect(rows, typed).not.toHaveCount(0);
+  }
+});
+
 test("a tag the search finds, too long for a line of the tags' column, breaks after its facet", async ({
   page,
 }) => {
@@ -1124,6 +1156,32 @@ test("Find with your agent copies a prompt with the list and the need", async ({
   expect(prompt).toContain(`# Catalog (${rows} entries)`);
   expect(prompt).toContain("narrowed to: tag type:workflow");
   expect(prompt.trimEnd().endsWith("review my pull requests")).toBe(true);
+});
+
+test("a prompt too large for some agents says to narrow the list, before the click and after it", async ({
+  page,
+}) => {
+  await open(page, "/");
+  const label = page.locator("#ask-label");
+  // The whole list's prompt: its size is the first number the line gives.
+  const tokens = fromCompact(await label.locator(".badge").first().innerText());
+  test.skip(tokens < 100_000, "the whole list's prompt isn't a large one today");
+  await expect(label).toContainText("Too much for some agents: narrow the list first.");
+
+  // Once copied, it isn't "ready to use with any AI", as the line said of all 212K tokens of it.
+  const settings = async () => ((await page.locator("#settings").boundingBox()) as { y: number }).y;
+  const before = await settings();
+  await page.locator(".ask-button").click();
+  await expect(label).toHaveText(
+    /^Prompt of [\d.]+[KM]? tokens copied to your clipboard\. Too much for your agent\? Narrow the list and copy again\.$/,
+  );
+  // The line keeps its room meanwhile: what's under it stays where it is.
+  expect(await settings()).toBe(before);
+
+  // A narrowed list's prompt is small enough to go without the hint.
+  await open(page, "/?tag=type%3Aworkflow&show=bundles");
+  await expect(label).toContainText("Copies a prompt of");
+  await expect(label).not.toContainText("Too much");
 });
 
 test("the agent's box is a prompt box of a few lines while it has the focus or words", async ({

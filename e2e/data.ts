@@ -185,6 +185,39 @@ export const stackTags = new Set(
 );
 
 /**
+ * Stack tags as people write their names, each with the tag: a name with a dot where the tag has
+ * none or a hyphen, as next.js for stack:nextjs and socket.io for stack:socket-io; a sign where the
+ * tag spells it out, c++ for stack:cpp; and a library's name with its ".js", as vue.js for
+ * stack:vue. Those of them there's a tag for today.
+ */
+export const respelledTags = (() => {
+  const names = [...stackTags].map((tag) => tag.slice("stack:".length));
+  const spelled: [typed: string, name: string | undefined][] = [
+    // nextjs, as next.js
+    ...names
+      .filter((name) => /^[a-z0-9]{2,}js$/.test(name))
+      .slice(0, 1)
+      .map((name): [string, string] => [`${name.slice(0, -2)}.js`, name]),
+    // socket-io, as socket.io
+    ...names
+      .filter((name) => /^[a-z0-9]+-[a-z0-9]+$/.test(name))
+      .slice(0, 1)
+      .map((name): [string, string] => [name.replace("-", "."), name]),
+    ["c++", names.find((name) => name === "cpp")],
+    ["c#", names.find((name) => name === "csharp")],
+    // vue, as vue.js: a name no other tag starts with, so that it finds that tag alone
+    ...names
+      .filter(
+        (name) =>
+          /^[a-z]{3,}[a-rt-z]$/.test(name) && names.filter((n) => n.startsWith(name)).length === 1,
+      )
+      .slice(0, 1)
+      .map((name): [string, string] => [`${name}.js`, name]),
+  ];
+  return spelled.flatMap(([typed, name]) => (name ? [{ typed, tag: `stack:${name}` }] : []));
+})();
+
+/**
  * A tag the search finds only by its meaning: of the facets' values that skills carry and that have
  * a meaning, the most carried, with the longest word of its meaning that its name doesn't hold.
  */

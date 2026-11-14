@@ -760,6 +760,8 @@ let prose = searchWords(proseOf(data));
 /** What the search looks in, and with what weight it ranks: see `index`. */
 let searchText = new Map<string, string>();
 let bundleText = new Map<string, string>();
+/** A skill's tags and their labels, in which a word of the search may start one: see `matches`. */
+let tagText = new Map<string, string>();
 let skillFields = new Map<string, Fields>();
 let bundleFields = new Map<string, Fields>();
 /**
@@ -793,7 +795,15 @@ function read(q: string): Sought {
   return (lastSought = { q, words: terms(phrase), phrase });
 }
 const words = (q: string) => read(q).words;
-const matches = (text: string, q: string) => words(q).every(({ w }) => text.includes(w));
+/**
+ * Whether a text has each word of the search: one of its spellings anywhere in it, or the start of
+ * a word of `names`, a skill's tags. The second is how a tag is found (see tagScore), so the skills
+ * of a tag the search finds are found with it: "vue.js" offered stack:vue beside "0 skills".
+ */
+const matches = (text: string, q: string, names = "") =>
+  words(q).every(
+    ({ forms, start }) => forms.some((form) => text.includes(form)) || start.test(names),
+  );
 
 /**
  * For sorting a search by best match: each word of it scores where it appears, a name the most,
@@ -821,6 +831,12 @@ function index() {
         .filter(Boolean)
         .map((text) => plain(text as string))
         .join(" "),
+    ]),
+  );
+  tagText = new Map(
+    data.skills.map((s) => [
+      s.id,
+      plain([...tagsOf(s), ...tagsOf(s).map(tagLabel)].filter(Boolean).join(" ")),
     ]),
   );
   bundleText = new Map(
@@ -872,8 +888,14 @@ function score(f: Fields, q: string): number {
   const { words, phrase } = read(q);
   return (
     words.reduce(
-      (n, { w, start }) =>
-        n + Math.max(0, ...f.map(([t, wt]) => (start.test(t) ? wt : t.includes(w) ? wt / 4 : 0))),
+      (n, { forms, start }) =>
+        n +
+        Math.max(
+          0,
+          ...f.map(([t, wt]) =>
+            start.test(t) ? wt : forms.some((form) => t.includes(form)) ? wt / 4 : 0,
+          ),
+        ),
       0,
     ) + (phrase && name.includes(phrase) ? 4 : 0)
   );
@@ -903,7 +925,7 @@ function passes(s: Skill, st: State, skip: string | null = null): boolean {
   for (const t of st.tags) selected.set(facetOf(t), [...(selected.get(facetOf(t)) ?? []), t]);
   for (const [facet, tags] of selected)
     if (facet !== skip && !tags.some((t) => tagsOf(s).includes(t))) return false;
-  return !term(st) || matches(searchText.get(s.id) ?? "", st.q);
+  return !term(st) || matches(searchText.get(s.id) ?? "", st.q, tagText.get(s.id));
 }
 
 /**
@@ -1864,20 +1886,33 @@ export const tokensHtml = (tokens: number) =>
 const badgeHtml = (text: string) => `<span class="badge">${esc(text)}</span>`;
 
 /**
+ * From how many tokens a prompt is large: more than some agents take in one message, or than
+ * leaves them the room to answer, as windows of 128K and 200K tokens are common. The line under
+ * the agent's box then says how to get a smaller one, before the click and after it (see `ask`
+ * in list-client.ts): it gave the whole list's 212K tokens as "ready to use with any AI".
+ */
+export const LARGE_PROMPT = 100_000;
+/** What the line adds for a large prompt, kept whole on a line of its own: see .ask-hint in style.css. */
+export const largeHint = (tokens: number, hint: string) =>
+  tokens >= LARGE_PROMPT ? ` <span class="ask-hint">${hint}</span>` : "";
+
+/**
  * Under the agent's box: what Find with your agent copies, the list below, and its size. When the
  * search finds nothing, that's what the filters leave: see askState.
  */
 export function askLabel(st: State): string {
   if (!askable(st)) return "The list below is empty: there's nothing to copy.";
   const of = askState(st);
-  const copies = `Copies a prompt of ${tokensHtml(promptTokens(st))} to your clipboard that includes the TL;DR of`;
+  const tokens = promptTokens(st);
+  const copies = `Copies a prompt of ${tokensHtml(tokens)} to your clipboard that includes the TL;DR of`;
+  const hint = largeHint(tokens, "Too much for some agents: narrow the list first.");
   if (of !== st)
     return filtersOn(of)
-      ? `${copies} the ${shownCountHtml(of)} the filters leave.`
-      : `${copies} all ${shownCountHtml(of)}.`;
+      ? `${copies} the ${shownCountHtml(of)} the filters leave.${hint}`
+      : `${copies} all ${shownCountHtml(of)}.${hint}`;
   // "the", not "these": it reads right for one, too, as in "the 1 skill below".
   const which = filtersOn(st) || term(st) ? "the" : "all";
-  return `${copies} ${which} ${shownCountHtml(st)} below.`;
+  return `${copies} ${which} ${shownCountHtml(st)} below.${hint}`;
 }
 
 /**
