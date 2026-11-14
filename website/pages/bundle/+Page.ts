@@ -73,7 +73,7 @@ function skills(b: Bundle): string {
         <div class="skill-head">
           <h3><a class="skill-name" href="${skillHref(id)}">${esc(s.name)}</a></h3>
           ${standalone ? "" : `<span class="kind">Only in the bundle</span>`}
-          ${installs === null ? "" : `<span class="metric"><strong>${compact(installs)}</strong> total downloads</span>`}
+          ${installs === null ? "" : `<span class="metric"><strong>${compact(installs)}</strong> total download${installs === 1 ? "" : "s"}</span>`}
         </div>
         <p class="skill-desc">${textHtml(s.agentReview.description)}</p>
         ${note ? `<p class="member-note">${textHtml(note)}</p>` : ""}
@@ -95,7 +95,7 @@ export default function Page(pageContext: PageContextServer): string {
           : `<p class="lede">${textHtml(b.agentReview.description)}</p>`
       }
       ${b.agentReview.tldr ? tldrHtml(b.agentReview.tldr, "the repo", b.skew) : ""}
-      <div class="get">
+      <div class="get" id="install">
           ${b.agentReview.install
             .map(
               ({ label, command }) =>

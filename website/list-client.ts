@@ -91,17 +91,37 @@ let clicked: { selector: string; top: number } | null = null;
 const noteClicked = (el: HTMLElement, selector: string) => {
   if (el.closest("#facets")) clicked = { selector, top: el.getBoundingClientRect().top };
 };
-/** Scrolls what the tags scroll with, their own column or else the page, to put it back. */
+/** The facet that was given room over it to keep a clicked tag in place: see `stay`. */
+let roomOver: HTMLElement | null = null;
+/**
+ * Scrolls what the tags scroll with, their own column or else the page, to put it back.
+ *
+ * At its own top the column has nothing to scroll back by: a tag picked there went up with what
+ * the tags over it lost, 33px for one row of them, so the pointer was on the next tag, and a second
+ * click, to take the pick back, picked that one too. The tag's facet then gets as much room over
+ * it, until the pointer leaves the tags.
+ */
 function stay() {
   const was = clicked;
   clicked = null;
-  const el = was && document.querySelector(was.selector);
+  const el = was && document.querySelector<HTMLElement>(was.selector);
   if (!was || !el) return;
   const by = el.getBoundingClientRect().top - was.top;
   const column = document.getElementById("filters") as HTMLElement;
-  if (getComputedStyle(column).overflowY === "visible") scrollBy(0, by);
-  else column.scrollTop += by;
+  if (getComputedStyle(column).overflowY === "visible") return scrollBy(0, by);
+  column.scrollTop += by;
+  const short = was.top - el.getBoundingClientRect().top;
+  const facet = el.closest<HTMLElement>(".facet");
+  if (short < 0.5 || !facet) return;
+  facet.style.marginTop = `${Number.parseFloat(getComputedStyle(facet).marginTop) + short}px`;
+  roomOver = facet;
 }
+// A finger leaves with every tap: its tag keeps its place until the tags are rendered again.
+document.getElementById("filters")?.addEventListener("pointerleave", (event) => {
+  if (event.pointerType !== "mouse") return;
+  roomOver?.style.removeProperty("margin-top");
+  roomOver = null;
+});
 
 /**
  * Whether every change the next render is for came as it was typed or dragged, a search, an amount
@@ -710,6 +730,32 @@ need.parentElement!.addEventListener("mousedown", (event) => {
   if (event.target !== need) event.preventDefault();
 });
 
+/**
+ * And a press outside the box, while it's empty and has the focus, leaves it as tall until the
+ * press is over (see .held in style.css). The press takes its focus, which shrank it to one line
+ * at once: everything under it moved up 96px before the release, which then landed on something
+ * else, so the click did nothing, on a preset, a filter, a tag, the Saved switch, a row. The first
+ * click after a look at the box was lost.
+ */
+document.addEventListener(
+  "pointerdown",
+  (event) => {
+    const field = need.parentElement as HTMLElement;
+    if (document.activeElement !== need || need.value || field.contains(event.target as Node))
+      return;
+    field.classList.add("held");
+    const over = () => {
+      removeEventListener("pointerup", over, true);
+      removeEventListener("pointercancel", over, true);
+      // Once the click the release makes is through, which comes right after it.
+      setTimeout(() => field.classList.remove("held"));
+    };
+    addEventListener("pointerup", over, true);
+    addEventListener("pointercancel", over, true);
+  },
+  true,
+);
+
 q.addEventListener("input", () => go({ q: q.value }, true));
 
 /**
@@ -926,11 +972,13 @@ if ("typed" in q.dataset && q.value !== state.q) {
 // The page was pre-rendered unfiltered, and hidden until now if its link asks for another list, or
 // if it's returned to, to be put back where it was.
 if (location.search) render(true);
+// Shown from here, before the preview is put back, which takes the keyboard's focus when it had it:
+// what's hidden can't, so after a reload the sheet was back and Space scrolled the list under it.
+delete document.documentElement.dataset.pending;
 // A Save in a row's preview, logged out, logs in on the way: back with the preview, now saved.
 const left = (history.state as Left | null)?.at ? (history.state as Left) : leftToLogIn();
 if (left?.at) backTo(left.at);
 if (left?.preview) previewAgain(left.preview);
-delete document.documentElement.dataset.pending;
 
 // The TLDRs' prose, which only the search and the rows' previews read, is half the data, so it
 // loads after the page. Until it's in, a search finds fewer skills; once it is, a search under way

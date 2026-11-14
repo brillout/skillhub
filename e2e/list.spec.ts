@@ -2,6 +2,7 @@
 
 import type { Page, Route } from "@playwright/test";
 import {
+  apostropheName,
   data,
   listedRows,
   longTag,
@@ -107,6 +108,28 @@ test("the search narrows the list as you type, best match first", async ({ page 
   await settled(page);
   await expect(page).toHaveURL("/");
   await expect(page.locator("#sort")).toContainText("Weekly Growth");
+});
+
+test("a word of a search starts a word of a tag, or isn't found in it", async ({ page }) => {
+  await open(page, "/");
+  await searchable(page);
+  const { count, search } = list(page);
+  // Inside every skill's "category:" tags: found anywhere in them, it found every skill, as "go"
+  // did, and "ui" most of them, by "type:guidelines".
+  await search.fill("ategor");
+  await settled(page);
+  await expect(count).not.toHaveText(all);
+
+  // An apostrophe as a phone types it, curly, finds what a straight one does.
+  if (apostropheName) {
+    await search.fill(apostropheName);
+    await settled(page);
+    const straight = await count.innerText();
+    expect(straight).not.toBe("0 skills");
+    await search.fill(apostropheName.replace("'", "’"));
+    await settled(page);
+    await expect(count).toHaveText(straight);
+  }
 });
 
 test("a search that finds nothing says so, and offers the agent", async ({ page }) => {
@@ -790,6 +813,45 @@ test("Show all, under the stack's tags, is where Show fewer then is, under the p
   await expect(page).toHaveURL("/");
 });
 
+test("a tag picked while the tags' column is at its top stays under the pointer", async ({
+  page,
+}) => {
+  await open(page, "/");
+  // The list at the window's top, as after a look at the first rows: the tags' column is then
+  // pinned beside it, at its own top, with nothing to scroll back by.
+  await page.mouse.move(900, 500);
+  await page.mouse.wheel(0, 381);
+  const chips = page.locator("#skill-tags .chip");
+  // A tag whose picking takes a row of tags away over it: the first, of those in view, that would
+  // move. It went up by that row, and a second click, to take it back, picked the tag under it.
+  const at = async (tag: string) =>
+    (await page.locator(`#skill-tags .chip[data-tag="${tag}"]`).boundingBox()) as {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+    };
+  const inView = await chips.evaluateAll((all) =>
+    all
+      .filter((chip) => {
+        const box = chip.getBoundingClientRect();
+        return box.top > 0 && box.bottom < innerHeight;
+      })
+      .map((chip) => (chip as HTMLElement).dataset.tag as string),
+  );
+  // The types, in view under the categories on this screen, whose rows they thin out.
+  for (const tag of inView.filter((t) => t.startsWith("type:")).slice(0, 2)) {
+    const before = await at(tag);
+    await page.mouse.click(before.x + before.width / 2, before.y + before.height / 2);
+    await settled(page);
+    expect(Math.abs((await at(tag)).y - before.y), tag).toBeLessThan(1);
+    // The same spot again takes the tag back, and no other.
+    await page.mouse.click(before.x + before.width / 2, before.y + before.height / 2);
+    await settled(page);
+    await expect(page).toHaveURL("/");
+  }
+});
+
 test("a tag narrows the list to as many skills as it says", async ({ page }) => {
   await open(page, "/");
   const { count, rows, scope } = list(page);
@@ -1182,6 +1244,44 @@ test("a prompt too large for some agents says to narrow the list, before the cli
   await open(page, "/?tag=type%3Aworkflow&show=bundles");
   await expect(label).toContainText("Copies a prompt of");
   await expect(label).not.toContainText("Too much");
+});
+
+test("a click right after a look at the agent's box isn't lost", async ({ page }) => {
+  // The box is three lines tall with the focus, and one again without: a press under it took its
+  // focus, everything moved up under the pointer, and the release landed on something else.
+  await open(page, "/?show=bundles");
+  await page.locator("#need").click();
+  const top = page.locator('[data-preset="top"]');
+  await top.click();
+  await settled(page);
+  await expect(top).toHaveAttribute("aria-pressed", "true");
+  // The box is one line again once the press is over.
+  await expect(page.locator(".agent-field.held")).toHaveCount(0);
+});
+
+test.describe("in a window 1,032px wide, whose line under the agent's box just fits", () => {
+  test.use({ viewport: { width: 1032, height: 800 } });
+
+  test("the hint for a large prompt is on a line of its own, under the whole of the line before", async ({
+    page,
+  }) => {
+    await open(page, "/");
+    const label = page.locator("#ask-label");
+    test.skip(!(await label.locator(".ask-hint").count()), "the whole list's prompt isn't large");
+    // "below." went down to the hint's line, which then started "below. Too much for…".
+    const lines = await label.evaluate((el) => {
+      const hint = el.querySelector(".ask-hint") as HTMLElement;
+      const before = document.createRange();
+      before.setStart(el, 0);
+      before.setEndBefore(hint);
+      const boxes = [...before.getClientRects()];
+      return {
+        before: Math.max(...boxes.map((box) => box.bottom)),
+        hint: hint.getBoundingClientRect().top,
+      };
+    });
+    expect(lines.hint).toBeGreaterThanOrEqual(lines.before - 1);
+  });
 });
 
 test("the agent's box is a prompt box of a few lines while it has the focus or words", async ({

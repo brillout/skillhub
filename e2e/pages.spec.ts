@@ -10,6 +10,7 @@ import {
   flagsBundleUrl,
   fromAHandful,
   headingsUrl,
+  hiddenDirUrl,
   insideWord,
   joinedBundleUrl,
   longDescriptionUrls,
@@ -27,8 +28,10 @@ import {
   tableThenUrl,
   taskListUrl,
   unendedRepo,
+  unusedTag,
   wideCodeUrl,
 } from "./data.ts";
+import { MINIMUMS } from "../data/params.ts";
 import { readCrawl } from "../scripts/data.ts";
 import { bundlePage, bundleRepo } from "../website/github.ts";
 import { expect, list, n, open, ready, test } from "./fixtures.ts";
@@ -202,15 +205,36 @@ test("a skill that only works inside its bundle is installed with it", async ({ 
   await expect(page.locator(".install")).toHaveCount(1);
   await expect(page.locator(".install code")).toHaveText(command);
   await expect(page.locator(".install code")).not.toHaveText(new RegExp(`--skill ${member.name}$`));
+  // What it installs, then where, each a sentence: after a label with a colon of its own,
+  // ": installs …" ran on.
   await expect(page.locator(".install-label")).toHaveText(
-    `${label}: installs ${whole.agentReview.name}, the bundle it works in.`,
+    `Installs ${whole.agentReview.name}, the bundle it works in. ${label}${/[.!?]$/.test(label) ? "" : "."}`,
   );
   await page.locator(".install .copy").click();
   expect(await clipboard(page)).toBe(command);
   const others = page.locator(".links a", { hasText: "Other ways to install it" });
   await expect(others).toHaveCount(whole.agentReview.install.length > 1 ? 1 : 0);
+  if (whole.agentReview.install.length > 1) {
+    // To the bundle's commands, not to its page's top, a screen or two over them.
+    await others.click();
+    await ready(page);
+    await expect(page).toHaveURL(`/${bundlePage(whole)}/#install`);
+    await expect(page.locator(".install").first()).toBeInViewport();
+    await page.goBack();
+    await ready(page);
+  }
   await page.locator(".install-label a").click();
   await expect(page).toHaveURL(`/${bundlePage(whole)}/`);
+});
+
+test("a skill in a hidden directory of its repo shows its SKILL.md", async ({ page }) => {
+  test.skip(!hiddenDirUrl, "no skill is in a hidden directory today");
+  if (!hiddenDirUrl) return;
+  // Such as .claude/skills/<name>: the build skipped hidden directories, so forty skills' pages
+  // said "No copy of its SKILL.md yet." beside a TL;DR that says how far the copy has moved.
+  await open(page, hiddenDirUrl);
+  await expect(page.locator(".skill-md .markdown")).not.toBeEmpty();
+  await expect(page.locator(".skill-md")).not.toContainText("No copy of its SKILL.md yet");
 });
 
 test("a SKILL.md's frontmatter wraps, its comments are hidden and its tasks have boxes", async ({
@@ -240,6 +264,10 @@ test("a SKILL.md's frontmatter wraps, its comments are hidden and its tasks have
   const tasks = page.locator(".skill-md .markdown li.task");
   await expect(tasks).not.toHaveCount(0);
   await expect(tasks.first().locator('input[type="checkbox"]')).toBeDisabled();
+  // Each named for a screen reader, as GitHub names its own: a hundred "checkbox, dimmed" otherwise.
+  await expect(tasks.first().locator('input[type="checkbox"]')).toHaveAccessibleName(
+    /^(Completed|Incomplete) task$/,
+  );
   for (const text of (await tasks.allInnerTexts()).slice(0, 20))
     expect(text).not.toMatch(/^\[[ xX]\]/);
 });
@@ -563,6 +591,32 @@ test("the tags page finds a tag by its name as people write it, as next.js or c+
   }
 });
 
+test("the tags page finds tags by the names over them, their facet's and their group's", async ({
+  page,
+}) => {
+  await open(page, "/tags/");
+  const input = page.locator("#tag-q");
+  const shown = page.locator(".cloud-item:visible");
+  const topics = data.facets.find((f) => f.id === "topic");
+  // "Topics" found nothing: topics have no prefix, so nothing of theirs said the word.
+  await input.fill(topics?.name ?? "");
+  await expect(shown).toHaveCount(topics?.values?.length ?? 0);
+  const group = topics?.groups?.[0];
+  if (group) {
+    await input.fill(group.name);
+    await expect(shown).toHaveCount(group.values.length);
+  }
+});
+
+test("a tag that no skill has isn't a link to an empty list", async ({ page }) => {
+  test.skip(!unusedTag, "every tag of the vocabulary has a skill today");
+  await open(page, "/tags/");
+  // It led to "0 skills", and a column of facets that each said None.
+  const chip = page.locator(`#tag-sections [data-tag="${unusedTag}"]`).first();
+  await expect(chip).toBeVisible();
+  expect(await chip.evaluate((el) => el.tagName)).toBe("SPAN");
+});
+
 test("the tags page keeps its search in its address, for a link and for the way back", async ({
   page,
 }) => {
@@ -700,6 +754,15 @@ test("a link to a part of a page leaves some air over its heading", async ({ pag
 test.describe("on a tablet, 768px wide", () => {
   test.use({ viewport: { width: 768, height: 900 } });
 
+  test("a skill's numbers are two tiles a line, as on a wider screen", async ({ page }) => {
+    // One a line from 900px down, each as wide as the page, though two fit at a phone's width each.
+    await open(page, skillUrl);
+    const tiles = page.locator(".stat-tiles .stat");
+    const [first, second] = [await tiles.nth(0).boundingBox(), await tiles.nth(1).boundingBox()];
+    expect(first?.y).toBe(second?.y);
+    expect(second?.x).toBeGreaterThan(first?.x ?? 0);
+  });
+
   test("the tags page's tables have the room for whole tags", async ({ page }) => {
     await open(page, "/tags/");
     const tags = page.locator(".tag-table td:first-child .tag");
@@ -761,7 +824,10 @@ test("the about page's count of skills waiting for an agent review leads to them
   await expect(page).toHaveURL("/queue/");
   await expect(page.locator("h1")).toHaveText("Waiting for agent review");
   // What waits here, also while nothing does: the page then said that and nothing else.
-  await expect(page.locator(".lede")).toContainText("the minimum installs and stars");
+  // With the minimums in numbers, which "the minimum installs and stars" left to the About page.
+  await expect(page.locator(".lede")).toContainText(
+    `at least ${n(MINIMUMS.installs)} installs and ${n(MINIMUMS.stars)} stars`,
+  );
   // Each of them, in crawl.jsonc's order, most downloaded first: a listed one links to its
   // skills.sh page, which an unlisted one doesn't have yet, and each to its repo.
   const rows = page.locator(".queue-table tbody tr");
@@ -774,6 +840,18 @@ test("the about page's count of skills waiting for an agent review leads to them
     await expect(rows.nth(i).locator(".queue-repo")).toHaveAttribute(
       "href",
       `https://github.com/${skill.repo}`,
+    );
+  }
+  // A row's two links, each a line of text tall, are far enough apart for a finger to tell them
+  // apart: 24px from middle to middle. They were 21px.
+  const listed = rows.filter({ has: page.locator(".queue-name a") }).first();
+  if (await listed.count()) {
+    const middle = async (selector: string) => {
+      const box = (await listed.locator(selector).boundingBox()) as { y: number; height: number };
+      return box.y + box.height / 2;
+    };
+    expect((await middle(".queue-repo")) - (await middle(".queue-name a"))).toBeGreaterThanOrEqual(
+      24,
     );
   }
 });
@@ -961,6 +1039,8 @@ test.describe("a page that doesn't exist", () => {
     expect(response?.status()).toBe(404);
     await ready(page);
     await expect(page.locator("h1")).toHaveText("Page not found");
+    // The tab says what the page says: it said "Not found".
+    await expect(page).toHaveTitle("Page not found · SkillHub");
     await page.locator("main a").click();
     await ready(page);
     await expect(page).toHaveURL("/");

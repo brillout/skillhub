@@ -18,28 +18,53 @@ const pageTitle = document.title;
  * word has to start one of theirs, as in the skills list's search for tags: anywhere in a word,
  * "git" found flag:dual-use, by "legitimate", and "ui" a dozen tags, by "build" and "guidelines".
  */
-const fits = (el: HTMLElement, words: Term[]) => {
-  const text = plain(`${el.textContent} ${el.querySelector<HTMLElement>(".tag")?.title ?? ""}`);
+const fits = (el: HTMLElement, words: Term[], groups: boolean) => {
+  // And in its facet's name, which the page says over it: "Topics" found nothing, as topics have
+  // no prefix to say it. With `groups`, in its topic group's name too: see `search`.
+  const group = groups ? el.closest(".cloud")?.previousElementSibling : null;
+  const facet = el.closest(".facet-doc")?.querySelector("h2");
+  const text = plain(
+    [
+      el.textContent,
+      el.querySelector<HTMLElement>(".tag")?.title,
+      group?.tagName === "H3" ? group.textContent : "",
+      facet?.textContent,
+    ].join(" "),
+  );
   return words.every(({ start }) => start.test(text));
 };
 
 /** Hide what doesn't fit; whether anything in `els` is left. */
-function show(els: Iterable<HTMLElement>, words: Term[]): boolean {
+function show(els: Iterable<HTMLElement>, words: Term[], groups: boolean): boolean {
   let any = false;
   for (const el of els) {
-    el.hidden = !fits(el, words);
+    el.hidden = !fits(el, words, groups);
     any ||= !el.hidden;
   }
   return any;
 }
 
+/**
+ * Narrows the page to what the search finds. A group of topics is found by its name, "Engineering
+ * process", only when no tag is found by its own words: "security" would otherwise bring the whole
+ * group that's named after it, deployment and observability with it.
+ */
 function search() {
+  if (!narrow(false)) narrow(true);
+}
+
+/** Hides what doesn't fit, looking in the topic groups' names too with `groups`; whether any tag is left. */
+function narrow(groups: boolean): boolean {
   const words = terms(sought(input.value));
   let any = false;
   for (const section of document.querySelectorAll<HTMLElement>(".facet-doc")) {
-    let inSection = show(section.querySelectorAll<HTMLElement>(".tag-table tbody tr"), words);
+    let inSection = show(
+      section.querySelectorAll<HTMLElement>(".tag-table tbody tr"),
+      words,
+      groups,
+    );
     for (const cloud of section.querySelectorAll<HTMLElement>(".cloud")) {
-      const inCloud = show(cloud.querySelectorAll<HTMLElement>(".cloud-item"), words);
+      const inCloud = show(cloud.querySelectorAll<HTMLElement>(".cloud-item"), words, groups);
       cloud.hidden = !inCloud;
       // A topic group's name goes with its tags.
       const name = cloud.previousElementSibling;
@@ -59,6 +84,7 @@ function search() {
   // list.ts): a tab, a bookmark or the history couldn't tell /tags/?q=git from the whole page.
   const typed = input.value.trim();
   document.title = typed ? `“${typed}” · ${pageTitle}` : pageTitle;
+  return any;
 }
 
 /**

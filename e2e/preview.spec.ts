@@ -575,7 +575,7 @@ test("the preview of a skill that only works inside its bundle installs the bund
   await expect(only).toContainText(why);
   const get = preview(page).locator("[data-get]");
   await expect(get.locator(".install-label")).toContainText(
-    `installs ${of.agentReview.name}, the bundle it works in.`,
+    `Installs ${of.agentReview.name}, the bundle it works in.`,
   );
   await get.getByRole("button", { name: "Copy" }).click();
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(

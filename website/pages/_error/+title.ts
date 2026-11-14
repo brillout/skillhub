@@ -1,1 +1,1 @@
-export default "Not found · SkillHub";
+export default "Page not found · SkillHub";

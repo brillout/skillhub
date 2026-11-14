@@ -7,13 +7,16 @@
 
 /**
  * A text as the search compares it: in lowercase and without accents, so that "résumé" finds
- * "resume", and the other way around. Both what's searched for and what's looked in.
+ * "resume", and the other way around. Both what's searched for and what's looked in. And with a
+ * straight apostrophe for a curly one, which a phone's keyboard types: "addy’s" found nothing of
+ * the 25 skills "addy's" finds.
  */
 export const plain = (text: string) =>
   text
     .toLowerCase()
     .normalize("NFD")
-    .replace(/\p{M}+/gu, "");
+    .replace(/\p{M}+/gu, "")
+    .replace(/[‘’]/g, "'");
 
 /**
  * What's searched for, plain, and without its double quotes, straight or curly: a search in quotes,
@@ -54,11 +57,11 @@ function spellings(word: string): string[] {
 }
 
 /**
- * The name a word is the ".js" of, as people write a library's: vue.js is vue, node.js is node.
- * Only for where a word has to start one of a text's, as in a tag: anywhere in a skill's words,
- * "next" would find every skill that says what comes next.
+ * The name a word is the ".js" of, as people write a library's: vue.js is vue, node.js is node,
+ * with or without its dot, vuejs, nodejs. Only for where a word has to start one of a text's, as
+ * in a tag: anywhere in a skill's words, "next" would find every skill that says what comes next.
  */
-const libraryOf = (word: string) => /^(.{2,})\.js$/.exec(word)?.[1];
+const libraryOf = (word: string) => /^(.{2,}?)\.?js$/.exec(word)?.[1];
 
 /**
  * The words of a search, as `sought` gives it: plurals cut back so they match the singular too
@@ -68,19 +71,23 @@ export function terms(phrase: string): Term[] {
   const singular = (w: string) =>
     w.length < 4 ? w : w.endsWith("ies") ? w.slice(0, -3) : /[^s]s$/.test(w) ? w.slice(0, -1) : w;
   const escaped = (w: string) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return phrase
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((word) => {
-      // A plural is cut back in a word spelled one way only: the s of ".js" isn't one.
-      const spelled = spellings(word);
-      const forms = spelled.length > 1 ? spelled : [singular(word)];
-      const library = libraryOf(word);
-      const starts = library ? [...forms, library] : forms;
-      return {
-        w: forms[0],
-        forms,
-        start: new RegExp(`(^|[^\\p{L}\\p{N}])(?:${starts.map(escaped).join("|")})`, "u"),
-      };
-    });
+  return (
+    phrase
+      // "next js" is next.js, written in two words: the second, alone, starts no tag's word.
+      .replace(/(\S)\s+js(?=\s|$)/g, "$1.js")
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((word) => {
+        // A plural is cut back in a word spelled one way only: the s of ".js" isn't one.
+        const spelled = spellings(word);
+        const forms = spelled.length > 1 ? spelled : [singular(word)];
+        const library = libraryOf(word);
+        const starts = library ? [...forms, library] : forms;
+        return {
+          w: forms[0],
+          forms,
+          start: new RegExp(`(^|[^\\p{L}\\p{N}])(?:${starts.map(escaped).join("|")})`, "u"),
+        };
+      })
+  );
 }

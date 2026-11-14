@@ -1,5 +1,5 @@
 import type { PageContextServer } from "vike/types";
-import { age, commandHtml, date, esc, textHtml } from "../../format.ts";
+import { age, commandHtml, date, esc, glanceEnd, textHtml } from "../../format.ts";
 import { skillsLink } from "../../list.ts";
 import { statTilesHtml } from "../../stat-tiles.ts";
 import { copyButton } from "../../copy.ts";
@@ -67,7 +67,13 @@ function tiles(s: Skill): string {
     {
       p: "published",
       label: NUMBER_LABELS.published,
-      from: published ? `published ${date(published)}` : "",
+      // The day it took off isn't the day it was published, which its tooltip alone told: see
+      // tookOffOf in skills.ts.
+      from: !published
+        ? ""
+        : sh.firstSeen && published !== sh.firstSeen
+          ? `took off ${date(published)}, first seen ${date(sh.firstSeen)}`
+          : `published ${date(published)}`,
       shown: published ? age(published, data.asOf.installs) : "",
     },
   ]);
@@ -124,11 +130,13 @@ export default function Page(pageContext: PageContextServer): string {
   const with_ = whole ? whole.agentReview.install[0] : undefined;
   const get =
     whole && with_
-      ? `<p class="install-label">${esc(with_.label)}: installs <a href="${bundleHref(whole.id)}">${esc(whole.agentReview.name)}</a>, the bundle it works in.</p>
+      ? // What it installs first, then where: after a label that has its own colon or semicolon,
+        // as one in two has, ": installs …" ran on, "…headless Chromium: installs Claude SEO".
+        `<p class="install-label">Installs <a href="${bundleHref(whole.id)}">${esc(whole.agentReview.name)}</a>, the bundle it works in. ${esc(glanceEnd(with_.label))}</p>
         <div class="install"><code>${commandHtml(with_.command)}</code>${copyButton(with_.command)}</div>`
       : `<div class="install"><code>${commandHtml(installCommand(s))}</code>${copyButton(installCommand(s))}</div>`;
   if (whole && whole.agentReview.install.length > 1)
-    links.unshift(`<a href="${bundleHref(whole.id)}">Other ways to install it</a>`);
+    links.unshift(`<a href="${bundleHref(whole.id)}#install">Other ways to install it</a>`);
   // What calls for a look before installing, such as a republished skill's flag, which says to
   // distrust its ranking: up here, before its command and its numbers, as its preview has it and as
   // its row says down its left edge. In the tags' table alone, it came after them all.
@@ -151,6 +159,12 @@ export default function Page(pageContext: PageContextServer): string {
         <p class="links">${links.join("")}</p>
       </div>
       ${tiles(s)}
+      ${
+        // Why its only number is its repo's stars: its page showed that one tile and no word.
+        sh.unlisted
+          ? `<p class="muted unlisted">Not on skills.sh yet, so it has no downloads to show.</p>`
+          : ""
+      }
       ${tagTable(s)}
       <section class="skill-md" aria-labelledby="skill-md">
         <h2 id="skill-md">SKILL.md</h2>

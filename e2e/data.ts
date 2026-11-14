@@ -80,6 +80,17 @@ export const longFrontmatterUrl = skillWhoseSkillMd((_html, text) =>
 export const commentUrl = skillWhoseSkillMd(
   (html, text) => /^<!--.*-->$/m.test(text) && !html.includes("&lt;!--"),
 );
+/**
+ * The page of a skill in a hidden directory of its repo, such as .claude/skills/<name>, whose copy
+ * is on the disk: the most installed one, if there's one today.
+ */
+export const hiddenDirUrl = (() => {
+  const found = mostInstalled.find(
+    (s) => /\/\.[^/]+\//.test(s.id) && s.skillMd && existsSync(`${root}${copyPath(s)}`),
+  );
+  return found ? `/${skillPage(found)}/` : undefined;
+})();
+
 /** The page of a skill whose SKILL.md has a task list, `- [ ] to do`. */
 export const taskListUrl = skillWhoseSkillMd((html) => html.includes('class="task"'));
 /** The page of a skill whose SKILL.md has a task of words alone, too long for a line of any screen. */
@@ -192,7 +203,14 @@ export const stackTags = new Set(
  */
 export const respelledTags = (() => {
   const names = [...stackTags].map((tag) => tag.slice("stack:".length));
+  const alone = names.filter(
+    (name) =>
+      /^[a-z]{3,}[a-rt-z]$/.test(name) && names.filter((n) => n.startsWith(name)).length === 1,
+  );
   const spelled: [typed: string, name: string | undefined][] = [
+    // vue, as vuejs and as "vue js"
+    ...alone.slice(0, 1).map((name): [string, string] => [`${name}js`, name]),
+    ...alone.slice(0, 1).map((name): [string, string] => [`${name} js`, name]),
     // nextjs, as next.js
     ...names
       .filter((name) => /^[a-z0-9]{2,}js$/.test(name))
@@ -363,6 +381,26 @@ export const unendedRepo = (() => {
     const text = data.repos.find((r) => r.id === l.repo)?.agentReview.description;
     if (text && /[\p{L}\p{N}]$/u.test(text)) return { url: l.url, text };
   }
+  return undefined;
+})();
+
+/** The page of the skill with the longest name: on a phone, longer than a line beside its buttons. */
+export const longNameUrl2 = `/${skillPage(data.skills.toSorted((a, b) => b.name.length - a.name.length)[0])}/`;
+
+/** An entry's name with an apostrophe, such as "Addy's Agent Skills", if there's one today. */
+export const apostropheName = [
+  ...data.bundles.map((b) => b.agentReview.name),
+  ...data.skills.map((s) => s.name),
+].find((name) => name.includes("'"));
+
+/** A tag of the vocabulary that no skill has today, if there's one: a flag nothing calls for, say. */
+export const unusedTag = (() => {
+  const carried = new Set(data.skills.flatMap((s) => s.agentReview.tags));
+  for (const f of data.facets)
+    for (const v of f.values ?? []) {
+      const tag = f.prefix === false ? v.id : `${f.id}:${v.id}`;
+      if (!v.includes && !carried.has(tag)) return tag;
+    }
   return undefined;
 })();
 

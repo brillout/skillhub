@@ -142,7 +142,14 @@ export function ago(at: number, now = Date.now()): string {
   const ms = Math.max(0, now - at);
   if (ms < 60_000) return "just now";
   const [unit, size] = UNITS.find(([, size, below]) => ms < size * below) as (typeof UNITS)[number];
-  const words = relative.format(-Math.max(1, Math.round(ms / size)), unit);
+  // Days are the calendar's, the viewer's, as the date beside them is: by hours alone, 33 of them
+  // rounded to one day, "yesterday (Nov 12, 2026)", on Nov 14.
+  const midnight = (time: number) => new Date(time).setHours(0, 0, 0, 0);
+  const n =
+    unit === "day"
+      ? Math.round((midnight(now) - midnight(at)) / 86_400_000)
+      : Math.round(ms / size);
+  const words = relative.format(-Math.max(1, n), unit);
   return ms < 86_400_000 ? words : `${words} (${ownDate.format(at)})`;
 }
 

@@ -137,7 +137,10 @@ export function renderSkillMd(
       const box = new state.Token("html_inline", "", 0);
       // No space after it: its margin is the gap (see li.task in style.css), and with both its
       // first line started 4px right of the lines under it.
-      box.content = `<input type="checkbox" disabled${task[1] === " " ? "" : " checked"} />`;
+      // Named, as GitHub names its own: a box without a name is "checkbox, dimmed" to a screen
+      // reader, a hundred times down a launch checklist.
+      const done = task[1] !== " ";
+      box.content = `<input type="checkbox" disabled${done ? " checked" : ""} aria-label="${done ? "Completed" : "Incomplete"} task" />`;
       inline.children?.unshift(box);
       token.attrJoin("class", "task");
     });

@@ -27,6 +27,8 @@ export interface Account {
   /** When each was saved, and given its thumb, by key: milliseconds, as the API says. */
   savedAt: Map<string, number>;
   reactedAt: Map<string, number>;
+  /** Whether the page knows who's logged in, if anyone: not while it's pre-rendered, nor before the API's answer or the one kept. */
+  known?: boolean;
 }
 export const account: Account = {
   user: null,
@@ -40,13 +42,6 @@ export const account: Account = {
 export const ACCOUNT_CACHE = "skillhub:account";
 
 /**
- * Inline in every page's <head>: marks <html data-logged-in> when the last answer said someone was
- * logged in, before the page is drawn, so that the pre-rendered Log in doesn't flash for them (see
- * [data-logged-in] in style.css). Whoever isn't logged in sees Log in at once.
- */
-export const loggedInScript = `try { if (JSON.parse(localStorage.getItem(${JSON.stringify(ACCOUNT_CACHE)}) || "null")?.user) document.documentElement.dataset.loggedIn = ""; } catch {}`;
-
-/**
  * Kept for the tab while it's away logging in: the page it left for it, and when. And where the
  * skills list was scrolled to as it was left, which it notes whenever it's left. The list comes
  * back from logging in as a new page, with no place noted in the browser's history: it opens where
@@ -55,6 +50,27 @@ export const loggedInScript = `try { if (JSON.parse(localStorage.getItem(${JSON.
  */
 export const LOGIN_FROM = "skillhub:login-from";
 export const LEFT_AT = "skillhub:left-at";
+
+/** How long after leaving a page to log in a page counts as the way back from it, in milliseconds. */
+const LOGIN_BACK = 5 * 60_000;
+
+/**
+ * Inline in every page's <head>: marks <html data-logged-in> when the last answer said someone was
+ * logged in, before the page is drawn, so that the pre-rendered Log in doesn't flash for them (see
+ * [data-logged-in] in style.css). Whoever isn't logged in sees Log in at once.
+ *
+ * And on the way back from logging in (see LOGIN_FROM), which the last answer knows nothing of
+ * yet: the page said Log in for as long as the API took to say who had just logged in, most of a
+ * second on the list, then its links jumped 110px to make room for them. It's marked
+ * data-login-back too, for account-client.ts not to show that last answer meanwhile.
+ */
+export const loggedInScript = `try {
+  const kept = JSON.parse(localStorage.getItem(${JSON.stringify(ACCOUNT_CACHE)}) || "null");
+  const from = JSON.parse(sessionStorage.getItem(${JSON.stringify(LOGIN_FROM)}) || "null");
+  const back = !kept?.user && from && Date.now() - from.time < ${LOGIN_BACK};
+  if (kept?.user || back) document.documentElement.dataset.loggedIn = "";
+  if (back) document.documentElement.dataset.loginBack = "";
+} catch {}`;
 
 /**
  * The header's Log in, as every page is pre-rendered with (brand.ts), and as account-client.ts puts
@@ -112,8 +128,17 @@ export const saveName = (saved: boolean, name: string) => `${saveLabel(saved)} $
  */
 export function saveTitle(key: string): string {
   const at = account.saved.has(key) ? account.savedAt.get(key) : undefined;
-  return at === undefined ? saveLabel(account.saved.has(key)) : `Saved ${ago(at)}`;
+  return at === undefined
+    ? `${saveLabel(account.saved.has(key))}${loginFirst()}`
+    : `Saved ${ago(at)}`;
 }
+
+/**
+ * What a Save button's and a thumb's tooltips add for whoever isn't logged in: a click leaves for
+ * GitHub's login first, then saves on the way back, which nothing said before the page was gone.
+ * Once the page knows nobody's logged in, so not in the pre-rendered rows, three buttons each.
+ */
+const loginFirst = () => (account.known && !account.user ? " (logs in with GitHub first)" : "");
 
 /** A Save button for the entry named `name`: its icon and its word. */
 export function saveButton(key: string, name: string): string {
@@ -130,7 +155,7 @@ export const THUMB_WORDS: Record<Reaction, string> = { up: "Thumbs up", down: "T
 export function thumbTitle(key: string, r: Reaction): string {
   const at = account.reactions.get(key) === r ? account.reactedAt.get(key) : undefined;
   return at === undefined
-    ? THUMB_WORDS[r]
+    ? `${THUMB_WORDS[r]}${loginFirst()}`
     : `You gave it ${r === "up" ? "a thumbs up" : "a thumbs down"} ${ago(at)}`;
 }
 

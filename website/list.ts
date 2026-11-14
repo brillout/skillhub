@@ -771,6 +771,13 @@ let bundleFields = new Map<string, Fields>();
  */
 let scores: { q: string; of: Map<Entry, number> } | undefined;
 
+/**
+ * Whether each skill has the search under way, worked out once (see `has`): the facets' counts ask
+ * it of every skill once a facet, some fifteen times for each letter typed, a quarter of the
+ * letter's render. `index` empties it, as the texts it looks in change.
+ */
+let found: { q: string; of: Map<string, boolean> } | undefined;
+
 /** Adds the TLDRs' words to what the search looks in. */
 export function addSearchWords(words: SearchWords) {
   prose = words;
@@ -805,6 +812,17 @@ const matches = (text: string, q: string, names = "") =>
     ({ forms, start }) => forms.some((form) => text.includes(form)) || start.test(names),
   );
 
+/** Whether a skill has the search: its words, each in its text or at the start of one of its tags'. */
+function has(s: Skill, q: string): boolean {
+  if (found?.q !== q) found = { q, of: new Map() };
+  let yes = found.of.get(s.id);
+  if (yes === undefined) {
+    yes = matches(searchText.get(s.id) ?? "", q, tagText.get(s.id));
+    found.of.set(s.id, yes);
+  }
+  return yes;
+}
+
 /**
  * For sorting a search by best match: each word of it scores where it appears, a name the most,
  * then the description, the TLDR's glance and the tags, the repo, and last the TLDR's text and the
@@ -815,6 +833,7 @@ const fields = (parts: [string | null | undefined, number][]): Fields =>
   parts.filter((p): p is [string, number] => Boolean(p[0])).map(([t, w]) => [plain(t), w]);
 function index() {
   scores = undefined;
+  found = undefined;
   searchText = new Map(
     data.skills.map((s) => [
       s.id,
@@ -825,8 +844,9 @@ function index() {
         prose.skills[s.id],
         repoKey(s),
         s.agentReview.note,
-        ...tagsOf(s),
-        ...tagsOf(s).map(tagLabel),
+        // Not its tags, in which a word has to start one (see tagText and `matches`): looked for
+        // anywhere in them, "go" found every skill, by the "category:" of its tags, and "ui" most
+        // of them, by "type:guidelines".
       ]
         .filter(Boolean)
         .map((text) => plain(text as string))
@@ -925,7 +945,7 @@ function passes(s: Skill, st: State, skip: string | null = null): boolean {
   for (const t of st.tags) selected.set(facetOf(t), [...(selected.get(facetOf(t)) ?? []), t]);
   for (const [facet, tags] of selected)
     if (facet !== skip && !tags.some((t) => tagsOf(s).includes(t))) return false;
-  return !term(st) || matches(searchText.get(s.id) ?? "", st.q, tagText.get(s.id));
+  return !term(st) || has(s, st.q);
 }
 
 /**
@@ -1110,9 +1130,9 @@ function counts(st: State, facet: string, valuesOf: (s: Skill) => string[]): Map
   const rest = skillFilters(st);
   const unsearched = { ...rest, q: "" };
   const itself = (b: Bundle) => Boolean(term(st)) && matches(bundleText.get(b.id) ?? "", st.q);
-  if (st.show === "bundles") {
-    // A bundle has a value through any skill the search finds, or through any skill at all when
-    // the search finds the bundle itself.
+  // A bundle has a value through any skill the search finds, or through any skill at all when
+  // the search finds the bundle itself.
+  const addBundles = () => {
     for (const b of data.bundles)
       if (yourBundle(b, st) && inRanges(b, st)) {
         const through = itself(b) ? unsearched : rest;
@@ -1122,9 +1142,16 @@ function counts(st: State, facet: string, valuesOf: (s: Skill) => string[]): Map
             .flatMap(valuesOf),
         );
       }
+  };
+  if (st.show === "bundles") {
+    addBundles();
     return n;
   }
   for (const s of data.skills) if (passes(s, st, facet)) add(valuesOf(s));
+  // What's yours is counted as its entries are, a bundle of yours as one of them beside the skills
+  // (see savedBundlesHtml): with a bundle saved and none of its skills, the Saved list had its
+  // row under "0 tags", and the tag picked to keep it said 0.
+  if (onlyYours(st) && st.show === "all") addBundles();
   // As in shownSkills: only a search brings in a bundle's skills through the bundle itself.
   if (!term(st) || onlyYours(st) || st.show === "skills") return n;
   for (const b of data.bundles) {

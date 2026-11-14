@@ -208,6 +208,10 @@ test("a skill skills.sh doesn't list yet has no link there, and only its repo's 
   await expect(skillsSh(page)).toHaveCount(0);
   await expect(page.locator(".get .links a", { hasText: "Source on GitHub" })).toHaveCount(1);
   await expect(page.locator(".stat-tiles .stat-label")).toHaveText([/Repo Stars/]);
+  // And a word on why that's its only number: it showed the one tile and nothing else.
+  await expect(page.locator(".unlisted")).toHaveText(
+    "Not on skills.sh yet, so it has no downloads to show.",
+  );
 });
 
 test.describe("a number that's unknown", () => {
@@ -343,7 +347,7 @@ test.describe("a skill with a week of almost no installs, then thousands a week 
     });
     const shown = {
       tile: await tile.locator(".stat-value").innerText(),
-      since: (await tile.locator(".stat-label .muted").innerText()).replace(/^published /, ""),
+      since: await tile.locator(".stat-label .muted").innerText(),
       why: await tile.locator("[title]").getAttribute("title"),
       row: "",
     };
@@ -359,7 +363,11 @@ test.describe("a skill with a week of almost no installs, then thousands a week 
     const shown = await ageOf(page, "took-off");
     expect(shown.tile).toBe(age(day, asOf));
     expect(shown.row).toBe(age(day, asOf));
-    expect(shown.since).toBe(date(day));
+    // Said as what it is, with the day skills.sh first saw it: "published", it gave the day it
+    // took off as the day it came out, which its tooltip alone set right.
+    expect(shown.since).toBe(
+      `took off ${date(day)}, first seen ${date(daysBefore(asOf, FIRST_SEEN_DAYS))}`,
+    );
     expect(shown.why).toContain("the week it took off");
   });
 
@@ -372,7 +380,7 @@ test.describe("a skill with a week of almost no installs, then thousands a week 
     const shown = await ageOf(page, "bad-week");
     expect(shown.tile).toBe(age(day, asOf));
     expect(shown.row).toBe(age(day, asOf));
-    expect(shown.since).toBe(date(day));
+    expect(shown.since).toBe(`published ${date(day)}`);
     expect(shown.why).not.toContain("took off");
 
     // Open on the full list: the preset is one of its presets, which narrows it to the new skills.

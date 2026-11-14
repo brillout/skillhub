@@ -216,7 +216,7 @@ textarea {
  * a heading stood against its top, its letters at the edge, and a button's focus ring was cut by
  * it. In :where(), so that whatever says its own margin, as the list's count does, keeps it.
  */
-:where(h2, h3, h4, h5, h6, section)[id] {
+:where(h2, h3, h4, h5, h6, section, .get)[id] {
   scroll-margin-top: 16px;
 }
 
@@ -989,12 +989,22 @@ body[data-preview-selecting] :is(#page-head, .skills-view > :not(.preview)) {
   transition: fill-opacity 150ms ease-out;
 }
 
+/*
+ * How many you saved, in the room the switch keeps between its word and its knob, whether there's
+ * a count or not: a digit's width, taken from the gaps beside it. Added to the switch, the first
+ * save made it 8px wider, which sent Show to a second line in a window 1,273 to 1,280px wide: the
+ * list dropped 84px from under the pointer that had just saved, and on every load with something
+ * saved. A second digit still widens it.
+ */
 .saved-switch .n {
   display: inline-block;
+  min-width: 8px;
+  margin: 0 -4px;
   color: var(--ink-3);
   font-size: 12px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
+  text-align: center;
 }
 
 /*
@@ -1586,8 +1596,9 @@ input[type="search"]::-webkit-search-cancel-button:hover {
  * A text box like the search's, told apart by its icon and its button. Its top keeps to the
  * search's, since it grows downwards: with the focus, or words in it, it's a prompt box, as an
  * agent's, three lines high and growing with what's typed, up to ten (see list-client.ts), with the
- * button under the words, at the right. Empty and without the focus, one line again. The search's
- * line stays under the search: see .finder's areas.
+ * button under the words, at the right. Empty and without the focus, one line again, once a press
+ * that took its focus is over (.held: see list-client.ts). The search's line stays under the
+ * search: see .finder's areas.
  */
 .agent-field {
   grid-area: agent;
@@ -1596,18 +1607,18 @@ input[type="search"]::-webkit-search-cancel-button:hover {
   padding: 6px 6px 6px 18px;
 }
 
-.agent-field:is(:focus-within, :has(textarea:not(:placeholder-shown))) {
+.agent-field:is(:focus-within, .held, :has(textarea:not(:placeholder-shown))) {
   flex-wrap: wrap;
   align-items: flex-start;
   padding-top: 10px;
 }
 
 /* On the first line. */
-.agent-field:is(:focus-within, :has(textarea:not(:placeholder-shown))) .ask-icon {
+.agent-field:is(:focus-within, .held, :has(textarea:not(:placeholder-shown))) .ask-icon {
   margin-top: 8px;
 }
 
-.agent-field:is(:focus-within, :has(textarea:not(:placeholder-shown))) textarea {
+.agent-field:is(:focus-within, .held, :has(textarea:not(:placeholder-shown))) textarea {
   flex-basis: calc(100% - 28px);
   height: var(--need-height, 84px);
   min-height: 84px;
@@ -1616,7 +1627,7 @@ input[type="search"]::-webkit-search-cancel-button:hover {
   overflow-y: auto;
 }
 
-.agent-field:is(:focus-within, :has(textarea:not(:placeholder-shown))) .ask-button {
+.agent-field:is(:focus-within, .held, :has(textarea:not(:placeholder-shown))) .ask-button {
   margin-left: auto;
 }
 
@@ -1710,10 +1721,12 @@ input[type="search"]::-webkit-search-cancel-button:hover {
   visibility: hidden;
 }
 
-/* What the line adds for a prompt too large for some agents (see LARGE_PROMPT in list.ts): whole
-   on a line of its own where it doesn't fit after the rest, rather than its last words alone. */
+/* What the line adds for a prompt too large for some agents (see LARGE_PROMPT in list.ts): on a
+   line of its own. After the rest, where it fit, its last words went alone onto the next line;
+   and as a box in the line, the browser, which balances a paragraph's last lines, took it for a
+   last word and sent "below." down to it, at the widths where the rest just fit one line. */
 .ask-hint {
-  display: inline-block;
+  display: block;
 }
 
 /* A number in the line under a box: how many skills the search and the prompt look through, or the
@@ -2860,6 +2873,14 @@ input[type="search"]::-webkit-search-cancel-button:hover {
   box-shadow: var(--shadow-border);
 }
 
+/* One tile a line where two would each be narrower than a phone's one: from 900px down they
+   were, each as wide as the page, with bars 34px wide, though two fit at 360px each on a tablet. */
+@media (max-width: 700px) {
+  .stat-tiles {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 /*
  * The tiles of a line share their rows: label, number, words and chart, weekly values. Each laid
  * out by itself, a label on two lines, such as a bundle's "Weekly Downloads · systematic-debugging,
@@ -3453,8 +3474,10 @@ input[type="search"]::-webkit-search-cancel-button:hover {
     --indent: 36px;
   }
 
+  /* A reason, which has no emoji, starts where its parent's label does, after that one's emoji:
+     half a step in, it started 12px left of it, "Tool docs" before the "By agent" it's under. */
   .breakdown .d4 {
-    --indent: 48px;
+    --indent: 60px;
   }
 }
 
@@ -3603,6 +3626,10 @@ h3 + .cloud {
 .table-scroll {
   position: relative;
   overflow-x: auto;
+  /* Room for the focus ring of a link at the table's left edge, which what scrolls cuts at its
+     own edge: the queue's names and repos had theirs cut on the left. */
+  margin-inline: -4px;
+  padding-inline: 4px;
 }
 
 .repo-table td:first-child {
@@ -3617,10 +3644,17 @@ h3 + .cloud {
   overflow-wrap: break-word;
 }
 
+/* The repo, a link of its own under the skill's: 4px further from it, so that the two, each a
+   line of text tall, are 24px apart from middle to middle, for a finger to tell them apart. And
+   it breaks anywhere when even its longest word, an owner's name, is wider than the column on a
+   phone, rather than push the stars off the screen. */
 .queue-repo {
+  display: inline-block;
+  margin-top: 4px;
   color: var(--ink-3);
   font-size: 13px;
   text-decoration: none;
+  overflow-wrap: anywhere;
 }
 
 .queue-repo:hover {
@@ -4151,10 +4185,6 @@ h3 + .cloud {
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-  }
-
-  .stat-tiles {
-    grid-template-columns: minmax(0, 1fr);
   }
 
   .metric {
@@ -5103,5 +5133,23 @@ html[data-logged-in]:not([data-account]) .account::before {
   .title-row :is(.save, .thumbs) {
     margin-top: -3px;
     margin-bottom: -3px;
+  }
+}
+
+@media (max-width: 480px) {
+  /*
+   * A page's name has the line to itself unless it fits on one beside its buttons, which then go
+   * under it, at the right: a name of several short words, each of which fits what the buttons
+   * leave, 182px, stacked up to seven lines high in it, beside as much of nothing under them.
+   */
+  .page .title-row h1 {
+    flex-basis: auto;
+  }
+
+  /* The tags' table's first column is as wide as its longest word, Publisher, not a fixed 112px
+     of a phone's 288: category:software-engineering then keeps its line. */
+  .tag-detail th {
+    width: 1%;
+    white-space: nowrap;
   }
 }

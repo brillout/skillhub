@@ -1,5 +1,5 @@
 import { compact, date, esc, href, number } from "../../format.ts";
-import { queue } from "../../review.ts";
+import { queue, review } from "../../review.ts";
 
 /** A number of the table, or a dash where skills.sh doesn't have it: an unlisted skill's. */
 const num = (n: number | null) => (n === null ? "—" : compact(n));
@@ -10,14 +10,16 @@ const num = (n: number | null) => (n === null ? "—" : compact(n));
  */
 export default function Page(): string {
   const { skills, asOf } = queue;
+  // The minimums, in numbers: "the minimum installs and stars" left which ones to the About page.
+  const minimums = `at least ${number(review.minimums.installs)} installs and ${number(review.minimums.stars)} stars`;
   const lede =
     skills.length === 0
       ? // What the queue is, also while it's empty: the page then said nothing else, and its only
         // link, the About page's count, reads 0.
-        "No skill is waiting for an agent review. A skill waits here once it has the minimum installs and stars, or is by an author SkillHub lists every skill of, until an agent review lists it or turns it down."
+        `No skill is waiting for an agent review. A skill waits here once it has ${minimums}, or is by an author SkillHub lists every skill of, until an agent review lists it or turns it down.`
       : skills.length === 1
-        ? "This skill has the minimum installs and stars, or is by an author SkillHub lists every skill of, and is next in line for an agent review, which lists it or turns it down."
-        : `These ${number(skills.length)} skills have the minimum installs and stars, or are by an author SkillHub lists every skill of, and are next in line for an agent review, which lists them or turns them down.`;
+        ? `This skill has ${minimums}, or is by an author SkillHub lists every skill of, and is next in line for an agent review, which lists it or turns it down.`
+        : `These ${number(skills.length)} skills have ${minimums}, or are by an author SkillHub lists every skill of, and are next in line for an agent review, which lists them or turns them down.`;
   const rows = skills
     .map(({ name, repo, stars, "skills.sh": sh }) => {
       const weekly = sh.weeklyInstalls?.at(-1) ?? null;

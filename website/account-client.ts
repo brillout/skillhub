@@ -77,7 +77,10 @@ function changed(change: AccountChange) {
 }
 
 /** The API answers: show the buttons and links. */
-const reachable = () => document.documentElement.setAttribute("data-account", "");
+const reachable = () => {
+  account.known = true;
+  document.documentElement.setAttribute("data-account", "");
+};
 
 /** The header's Saved link, among the account's links: see paintLinks. */
 const SAVED_LINK = ".saved-link";
@@ -120,6 +123,8 @@ function pulseLink() {
  * land, and so does the header's link, which then shows it took it.
  */
 let landing: Promise<void> | null = null;
+/** The bookmark's flight, for a save that fails to take it down: see `ground`. */
+let flying: Animation | null = null;
 
 function fly(from: Element) {
   const place = savedPlace();
@@ -151,12 +156,27 @@ function fly(from: Element) {
     ],
     { duration: 750, easing: "cubic-bezier(0.45, 0, 0.25, 1)" },
   );
-  landing = flight.finished.then(() => {
-    icon.remove();
-    landing = null;
-    landed();
-  });
+  flying = flight;
+  landing = flight.finished
+    .then(
+      () => true,
+      // Taken down: its save didn't go through.
+      () => false,
+    )
+    .then((arrived) => {
+      icon.remove();
+      landing = null;
+      flying = null;
+      if (arrived) landed();
+    });
 }
+
+/**
+ * Takes the flying bookmark down, with what its landing shows: its save failed. It flew on for
+ * most of a second over a button that already said so, and the Saved switch flashed and rippled
+ * for a save it never got.
+ */
+const ground = () => flying?.cancel();
 
 /**
  * Draw the eye to the Saved switch when a click changes how many you saved, so that you know where
@@ -241,17 +261,27 @@ function paint(animate = false) {
     else
       void (landing ?? Promise.resolve()).then(() => {
         n.textContent = savedCount();
-        bump(n, after > before);
+        // As it is by now: a save that failed meanwhile left it as it was.
+        const now = Number(savedCount()) || 0;
+        if (now !== before) bump(n, now > before);
       });
   }
 }
 
+// `keepalive`: a save or a thumb given just before leaving the page, as by a click on a link, still
+// reaches the Worker. Without it the browser dropped the request with the page, without a word.
 const post = (path: string, body: unknown) =>
   fetch(href(path), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
+    keepalive: true,
   });
+
+/** An entry's name, as its Save button has it, for a notice to say what it's about. */
+const nameOf = (key: string) =>
+  document.querySelector<HTMLElement>(`[data-save="${CSS.escape(key)}"]`)?.dataset.name ??
+  "this item";
 
 /** Notes that the tab leaves this page to log in: see LOGIN_FROM in saves.ts. */
 function leaveToLogIn() {
@@ -297,6 +327,7 @@ async function toggle(key: string) {
     clearNotice(key);
     return;
   }
+  ground();
   set(!on, at);
   changed("toggle");
   if (res?.status === 401) {
@@ -309,7 +340,9 @@ async function toggle(key: string) {
   else {
     if (on) notSaved(key);
     notice(
-      on ? "Couldn't save this item. Try again." : "Couldn't remove this save. Try again.",
+      on
+        ? `Couldn't save ${nameOf(key)}. Try again.`
+        : `Couldn't remove ${nameOf(key)} from what you saved. Try again.`,
       key,
     );
   }
@@ -358,7 +391,9 @@ async function react(key: string, clicked: Reaction) {
   } else if (res?.status === 409) notice((await res.json()).error, action);
   else
     notice(
-      `Couldn't ${after ? "save" : "remove"} your thumbs ${after ?? before}. Try again.`,
+      after
+        ? `Couldn't give ${nameOf(key)} your thumbs ${after}. Try again.`
+        : `Couldn't take back your thumbs ${before} for ${nameOf(key)}. Try again.`,
       action,
     );
 }
@@ -418,21 +453,45 @@ document.addEventListener("click", (event) => {
   }
 });
 
-try {
-  const cached = localStorage.getItem(ACCOUNT_CACHE);
-  if (cached) {
+/** Shows the API's last answer, as kept, until its next one. */
+function showKept() {
+  try {
+    const cached = localStorage.getItem(ACCOUNT_CACHE);
+    if (!cached) return;
     apply(JSON.parse(cached));
     reachable();
     paint();
-  }
-} catch {}
+  } catch {}
+}
+
+// Not on the way back from logging in, when what was kept says nobody's logged in, which the API
+// is about to say otherwise: see loggedInScript in saves.ts. Unless it doesn't answer.
+const back = document.documentElement.dataset.loginBack !== undefined;
+if (!back) showKept();
 
 void fetch(href("api/me"))
   .then((res) => (res.ok ? (res.json() as Promise<Me>) : null))
   .then((me) => {
-    if (!me) return;
+    if (!me) return back ? showKept() : undefined;
     reachable();
     apply(me);
     changed("load");
   })
-  .catch(() => {});
+  .catch(() => {
+    if (back) showKept();
+  });
+
+// What another tab did, a save, a thumb, a log in or out, shows here too, as the theme it's
+// switched to does (see theme.ts): the tabs share what's kept of the API's last answer. A tab
+// left open went on saying Log out after another had logged out, and Save for what was saved.
+addEventListener("storage", (event) => {
+  if (event.key !== ACCOUNT_CACHE || !event.newValue) return;
+  try {
+    apply(JSON.parse(event.newValue));
+  } catch {
+    return;
+  }
+  reachable();
+  paint();
+  document.dispatchEvent(new CustomEvent<AccountChange>(ACCOUNT_EVENT, { detail: "load" }));
+});

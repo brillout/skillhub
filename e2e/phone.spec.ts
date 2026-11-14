@@ -6,6 +6,7 @@ import {
   data,
   longLabelUrl,
   longNameUrl,
+  longNameUrl2,
   longRepo,
   longWordUrl,
   owner,
@@ -81,6 +82,50 @@ test("a page's name keeps its words whole: its buttons go under one that needs t
   const save = (await title.locator("[data-save]").boundingBox()) as { x: number; width: number };
   expect(Math.abs(save.x + save.width - (row.x + row.width))).toBeLessThan(1);
   await expect(title.locator(".thumbs")).toBeInViewport({ ratio: 1 });
+});
+
+test("a page's long name takes the line, its buttons under it, rather than stack beside them", async ({
+  page,
+}) => {
+  // A name of several short words, each of which fits the half of the line the buttons leave:
+  // it stacked there five lines high, seven on a small phone, beside nothing.
+  await open(page, longNameUrl2);
+  const title = page.locator(".title-row");
+  const name = (await title.locator("h1").boundingBox()) as {
+    y: number;
+    height: number;
+    width: number;
+  };
+  const row = (await title.boundingBox()) as { width: number };
+  const buttons = (await title.locator(".title-actions").boundingBox()) as { y: number };
+  expect(name.width).toBeGreaterThan(row.width - 2);
+  expect(buttons.y).toBeGreaterThanOrEqual(name.y + name.height - 1);
+});
+
+test("a reason of the about page's table starts no further left than the label it's under", async ({
+  page,
+}) => {
+  await open(page, "/about/");
+  // Where each label's words start: a reason, which has no emoji, started 12px left of its
+  // parent's, "Tool docs" before the "By agent" over it.
+  const starts = await page.locator(".breakdown tr").evaluateAll((rows) =>
+    rows.map((row) => {
+      const cell = row.querySelector("td") as HTMLElement;
+      const label = [...cell.childNodes].find(
+        (node) => node.nodeType === Node.TEXT_NODE && node.textContent?.trim(),
+      ) as Text;
+      const range = document.createRange();
+      range.selectNodeContents(label);
+      return {
+        depth: Number(row.className.replace(/\D/g, "")),
+        left: range.getClientRects()[0].left,
+      };
+    }),
+  );
+  starts.forEach((row, i) => {
+    const parent = starts.slice(0, i).findLast((above) => above.depth < row.depth);
+    if (parent) expect(row.left, `row ${i}`).toBeGreaterThanOrEqual(parent.left - 0.5);
+  });
 });
 
 test("a trend's tooltip stays on the screen, at its last week too", async ({ page }) => {

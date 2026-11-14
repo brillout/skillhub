@@ -50,6 +50,23 @@ async function openLoggedIn(page: Page, path: string) {
   await expect(logout(page)).toBeVisible();
 }
 
+test("logged out, Save and the thumbs say that a click logs in first", async ({ page }) => {
+  // A click left for GitHub's login without a word: the tooltips said only "Save" and "Thumbs up".
+  await open(page, skillUrl);
+  await accountLoaded(page);
+  const title = page.locator(".title-row");
+  await expect(title.locator("[data-save]")).toHaveAttribute(
+    "title",
+    "Save (logs in with GitHub first)",
+  );
+  await expect(thumb(title, "up")).toHaveAttribute(
+    "title",
+    "Thumbs up (logs in with GitHub first)",
+  );
+  // What they're called doesn't change: a screen reader hears where the click leads from the link.
+  await expect(title.locator("[data-save]")).toHaveAccessibleName(`Save ${skill.name}`);
+});
+
 test("Log in comes back to the page you were on, its filters included", async ({ page }) => {
   await openLoggedIn(page, "/?show=bundles");
   await expect(page).toHaveURL("/?show=bundles");
@@ -370,12 +387,45 @@ test("a saved bundle counts as a bundle, not as its skills", async ({ page }) =>
   await expect(list(page).count).toHaveText("0 skills and 1 bundle");
   await expect(list(page).rows).toHaveCount(1);
 
+  // The tags' column counts it too, by its skills' tags, as with Show on bundles: it said "0 tags"
+  // and "No tags: the list is empty." beside the bundle's row, and a tag picked there counted 0.
+  await expect(page.locator("#facets .tags-count")).toHaveText(/^[1-9][\d,]* tags$/);
+  const chip = page.locator("#tag-facets .chip").first();
+  await expect(chip.locator(".n")).toHaveText("1");
+  await chip.click();
+  await settled(page);
+  await expect(list(page).rows).toHaveCount(1);
+  await expect(page.locator('#tag-facets .chip[aria-pressed="true"] .n')).toHaveText("1");
+  await page.locator('#scope [data-action="clear"]').click();
+  await page.locator("#saved-switch").click();
+  await settled(page);
+  await expect(list(page).count).toHaveText("0 skills and 1 bundle");
+
   // A search that finds nothing in it counts what you saved the same way.
   await list(page).search.fill("zzzqqqxxx");
   await settled(page);
   await expect(list(page).empty).toContainText(
     "among the 0 skills and 1 bundle the filters leave.",
   );
+});
+
+test.describe("in a window 1,280px wide, whose settings just fit one line", () => {
+  test.use({ viewport: { width: 1280, height: 800 } });
+
+  test("the first save leaves the settings on their line, and the list where it is", async ({
+    page,
+  }) => {
+    // The Saved switch grew by its count's digit, which sent Show to a line of its own: the list
+    // dropped 84px from under the pointer that had just saved, and again on every load.
+    // On a short list: see fixtures.ts for why not the whole one.
+    await openLoggedIn(page, "/?show=bundles");
+    const top = async () => ((await page.locator("#results").boundingBox()) as { y: number }).y;
+    const before = await top();
+    const save = list(page).rows.first().locator("[data-save]");
+    await save.click();
+    await expect(savedCount(page)).toHaveText("1");
+    expect(await top()).toBe(before);
+  });
 });
 
 test("the Saved list is sorted by Recently saved, the last saved first", async ({ page }) => {
@@ -756,7 +806,9 @@ test.describe("when an account request fails", () => {
       route.fulfill({ status: 503, body: "Unavailable" }),
     );
     await save.click();
-    await expect(page.getByRole("status")).toContainText("Couldn't remove this save");
+    await expect(page.getByRole("status")).toContainText(
+      `Couldn't remove ${skill.name} from what you saved`,
+    );
     await expect(save).toHaveAttribute("aria-pressed", "true");
     await page.unroute("**/api/saves");
     await save.click();
@@ -765,6 +817,31 @@ test.describe("when an account request fails", () => {
       .poll(async () => (await (await page.request.get("/api/me")).json()).saved.length)
       .toBe(0);
     await expect(page.getByRole("status")).toHaveCount(0);
+  });
+
+  test("a save that fails says which, without the show of a save that went through", async ({
+    page,
+  }) => {
+    await openLoggedIn(page, LIST);
+    await page.route("**/api/saves", (route) =>
+      route.fulfill({ status: 503, body: "Unavailable" }),
+    );
+    const save = skillRow(page).locator("[data-save]");
+    await save.click();
+    // By its name: "this item" named nothing, on a list of a thousand.
+    await expect(page.getByRole("status")).toContainText(`Couldn't save ${skill.name}`);
+    await expect(save).toHaveAttribute("aria-pressed", "false");
+    // The bookmark that flies to the Saved switch is taken down, and the switch isn't told of a
+    // save: it flashed and rippled most of a second after its button had said "Not saved".
+    await expect(page.locator(".save-flight")).toHaveCount(0);
+    await expect(savedCount(page)).toHaveText("");
+    await expect(page.locator("#saved-switch")).not.toHaveAttribute("data-pulse", /.*/);
+
+    // Escape closes the notice, whose × is the page's last stop for Tab, and the button it was
+    // about keeps the keyboard.
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("status")).toHaveCount(0);
+    await expect(save).toBeFocused();
   });
 
   for (const removing of [false, true])
@@ -784,7 +861,9 @@ test.describe("when an account request fails", () => {
       );
       await up.click();
       await expect(page.getByRole("status")).toContainText(
-        removing ? "Couldn't remove your thumbs up" : "Couldn't save your thumbs up",
+        removing
+          ? `Couldn't take back your thumbs up for ${skill.name}`
+          : `Couldn't give ${skill.name} your thumbs up`,
       );
       await expect(up).toHaveAttribute("aria-pressed", String(removing));
       expect(await reactions(page)).toEqual(removing ? { [key]: "up" } : {});
@@ -825,4 +904,48 @@ test.describe("at the thumbs limit", () => {
     await expect(page.getByRole("status")).toHaveCount(0);
     await expect(up).toBeFocused();
   });
+});
+
+test("a tab left open follows what another does: a save, then a log out", async ({ page }) => {
+  await openLoggedIn(page, LIST);
+  // A second tab, on the list of what's saved: empty for now.
+  const other = await page.context().newPage();
+  await open(other, "/?saved");
+  await accountLoaded(other);
+  await expect(list(other).rows).toHaveCount(0);
+
+  // It went on saying "Nothing saved yet." until it was reloaded.
+  await skillRow(page).locator("[data-save]").click();
+  await expect(list(other).rows).toHaveCount(1);
+  await expect(savedCount(other)).toHaveText("1");
+
+  // And on saying Log out, with what was saved, after the first tab had logged out.
+  await logout(page).click();
+  await expect(login(other)).toBeVisible();
+  await expect(list(other).rows).toHaveCount(0);
+  await other.close();
+});
+
+test("the page you come back to from logging in doesn't say Log in while the API answers", async ({
+  page,
+}) => {
+  await open(page, "/about/");
+  await accountLoaded(page);
+  // The API takes its time to say who's logged in, as on a slow connection.
+  await page.route("**/api/me", async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await route.continue();
+  });
+  const tags = () =>
+    page.locator('#page-head a[href$="/tags/"]').evaluate((a) => a.getBoundingClientRect().x);
+  await login(page).click();
+  await page.waitForURL("/about/");
+  await expect(page.locator("html[data-ready]")).toHaveCount(1);
+  // Until then the page said Log in, as to nobody; then its links jumped 110px to the left, to
+  // make room for Saved and Log out.
+  await expect(page.locator("html[data-account]")).toHaveCount(0);
+  await expect(login(page)).toBeHidden();
+  const meanwhile = await tags();
+  await expect(logout(page)).toBeVisible();
+  expect(Math.abs((await tags()) - meanwhile)).toBeLessThan(1);
 });

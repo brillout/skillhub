@@ -1,5 +1,28 @@
+/**
+ * Escape closes the notice, before anything else it would close, a row's preview or an explanation:
+ * its × is the page's last stop for Tab, a few thousand presses from a row of the skills list.
+ * Listened for from the first notice on, in the browser: pages that render on the server import
+ * this file too.
+ */
+let listening = false;
+function closeOnEscape() {
+  if (listening) return;
+  listening = true;
+  document.addEventListener(
+    "keydown",
+    (event) => {
+      const box = document.getElementById("action-notice");
+      if (event.key !== "Escape" || !box) return;
+      event.stopPropagation();
+      box.querySelector("button")?.click();
+    },
+    true,
+  );
+}
+
 /** Persistent feedback for an action that didn't complete; dismissible by mouse or keyboard. */
 export function notice(message: string, action: string) {
+  closeOnEscape();
   document.getElementById("action-notice")?.remove();
   const box = document.createElement("div");
   box.id = "action-notice";

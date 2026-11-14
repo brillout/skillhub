@@ -69,7 +69,17 @@ function rowsOf(f: Facet): NonNullable<Facet["values"]> {
 export default function Page(): string {
   const n = new Map<string, number>();
   for (const s of data.skills) for (const t of tagsOf(s)) n.set(t, (n.get(t) ?? 0) + 1);
-  const tagLink = (t: string) => tagChip(t, skillsLink({ tags: [t] }));
+  // To the list of its skills; a tag none has, such as a flag nothing calls for today, is its
+  // chip alone: its link led to "0 skills" and a column of facets saying None.
+  const tagLink = (t: string) => {
+    const chip = tagChip(t, skillsLink({ tags: [t] }));
+    return n.get(t)
+      ? chip
+      : chip
+          .replace(/^<a /, "<span ")
+          .replace(/ href="[^"]*"/, "")
+          .replace(/<\/a>$/, "</span>");
+  };
   // A tag of a cloud, with its count: what the tag search shows or hides.
   const cloudItem = (t: string) =>
     `<span class="cloud-item">${tagLink(t)}<span class="n">${number(n.get(t) ?? 0)}</span></span>`;

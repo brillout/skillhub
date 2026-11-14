@@ -4,10 +4,13 @@ import { renderSkillMd } from "../../markdown.ts";
 import { fullSkillByPage } from "../../server-data.ts";
 import { github } from "../../github.ts";
 
-// The copy of every SKILL.md, read at build time.
+// The copy of every SKILL.md, read at build time. `exhaustive`: a skill's directory can be a hidden
+// one, such as .claude/skills/<name>, which the glob skips otherwise. Forty skills' pages said "No
+// copy of its SKILL.md yet.", under a TL;DR that says how far that copy has moved since.
 const copies = import.meta.glob<string>("../../../data/skill-snapshots/**/*.md", {
   query: "?raw",
   import: "default",
+  exhaustive: true,
 });
 
 export type Data = Awaited<ReturnType<typeof data>>;
@@ -18,6 +21,10 @@ export async function data(pageContext: PageContextServer) {
   if (!skill) throw render(404);
   const { id } = skill;
   const load = copies[`../../../data/skill-snapshots/${id}.md`];
+  // A copy the sync recorded and the build can't find is the build's to fail on: shown as a skill
+  // without a copy, it went unseen, as the tests read the copies from the disk.
+  if (skill.skillMd && !load)
+    throw new Error(`No copy of ${id}'s SKILL.md among the build's files.`);
   const gh = github(skill);
   const commit = skill.skillMd?.version;
   // Relative links and images point into the skill's directory, at the commit the copy is from.
