@@ -16,7 +16,7 @@ Every skill SkillHub knows of has one state, under its skills.sh page:
 - **Unqualified:** found by the crawl, but under the minimums. In `data/crawl.jsonc`.
 - **Disqualified:** not shown, with its `reason`, and no other agent data: no tags, no TLDR, no copy. In `data/crawl.jsonc`.
 
-The daily crawl (`pnpm run crawl`) records new skills and moves them between qualified and unqualified. The daily sync disqualifies an approved skill whose SKILL.md is gone from its repo. The two files are cumulative: a skill never leaves them, only its state changes, and `pnpm run check` fails when a skill has two states. `Crawl` in `data/types.ts` describes crawl.jsonc.
+The daily crawl (`pnpm run crawl`) records new skills and moves them between qualified and unqualified. The daily sync disqualifies an approved skill whose SKILL.md is gone from its repo, unless that would leave its bundle fewer than two skills, as when a repo moves all its skills: the sync then leaves them as they are and fails, naming the bundle, until someone moves the bundle to where its skills are now, or removes it. The two files are cumulative: a skill never leaves them, only its state changes, and `pnpm run check` fails when a skill has two states. `Crawl` in `data/types.ts` describes crawl.jsonc.
 
 Both files are JSONC and may hold comments, which the scripts keep. Edit them in place, or in code with `readData`/`writeData` and `readCrawl`/`writeCrawl` of `scripts/data.ts`; `JSON.parse` and `JSON.stringify` would drop the comments.
 

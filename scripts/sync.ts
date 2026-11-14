@@ -131,11 +131,37 @@ await pool(skills, 8, (skill) =>
   }),
 );
 
-// Disqualify the skills gone from their repo, and take them out of their bundles.
-if (gone.length) {
-  const crawl = readCrawl();
+/**
+ * The skills gone from their repo that stay as they are all the same: those whose going would leave
+ * their bundle fewer than two skills, which isn't a bundle. A repo that moves its skills, as
+ * bmad-method did for its next version, would lose its bundle, and all an agent wrote about it and
+ * its skills, to a change of address. So they wait for someone to move the bundle to where its
+ * skills are now, or to remove it, and the run fails, which says so. Disqualified with the others,
+ * they left a bundle of no skill, which the data's check refuses: nothing that synced was kept,
+ * that day and every day after.
+ */
+function held(): Set<string> {
   const ids = new Set(gone.map((s) => s.id));
-  for (const skill of gone) {
+  const kept = new Set<string>();
+  for (const bundle of data.bundles) {
+    const its = bundle.agentReview.skills.map(({ id }) => id);
+    const going = its.filter((id) => ids.has(id));
+    if (!going.length || its.length - going.length >= 2) continue;
+    for (const id of going) kept.add(id);
+    errors.push(
+      `bundle ${bundle.id}: ${going.length} of its ${its.length} skills are gone from the repo, which would leave it fewer than two: move it to where they are now, or remove it`,
+    );
+  }
+  return kept;
+}
+
+// Disqualify the skills gone from their repo, and take them out of their bundles.
+const waiting = held();
+const disqualified = gone.filter((s) => !waiting.has(s.id));
+if (disqualified.length) {
+  const crawl = readCrawl();
+  const ids = new Set(disqualified.map((s) => s.id));
+  for (const skill of disqualified) {
     crawl.disqualified.push({
       url: skill["skills.sh"].url,
       reason: { goneFromRepo: today },
@@ -174,9 +200,9 @@ if (!only.length) {
 writeData(data);
 
 console.log(
-  `Checked ${skills.length} skills: ${changed.size} changed, ${gone.length} gone from their repo and disqualified, ${errors.length} failed.`,
+  `Checked ${skills.length} skills: ${changed.size} changed, ${disqualified.length} gone from their repo and disqualified, ${errors.length} failed.`,
 );
 for (const id of changed) console.log(`  changed ${id}`);
-for (const skill of gone) console.log(`  disqualified ${skill.id}: gone from its repo`);
+for (const skill of disqualified) console.log(`  disqualified ${skill.id}: gone from its repo`);
 for (const e of errors) console.error(`  failed ${e}`);
 if (errors.length) process.exit(1);
