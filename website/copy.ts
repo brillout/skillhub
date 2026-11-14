@@ -4,7 +4,7 @@ import { clearNotice, notice, say } from "./notice.ts";
 /**
  * A button that copies `text`, such as an install command. It says Copied for a moment after.
  * `about` is the id of what says which command it copies, where a page has several: a bundle's
- * page had up to six buttons that all read out as "Copy".
+ * page has up to ten, which all read out as "Copy".
  */
 export const copyButton = (text: string, about?: string) =>
   `<button type="button" class="copy" data-copy="${esc(text)}"${about ? ` aria-describedby="${about}"` : ""}><span>Copy</span><span>Copied</span></button>`;
