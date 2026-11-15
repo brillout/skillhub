@@ -83952,10 +83952,28 @@
       "skillMd": {
         "version": "a582c51ee29d0f35e6ac321340796f77d43da733",
         "updated": "2026-11-15",
-        "skew": 284
+        "skew": 0
       },
       "agentReview": {
         "description": "Writes conventional commit messages the way Sentry does, one coherent change per commit, and moves off main or master onto a feature branch first.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You want commits made the way Sentry's engineers make them"
+            },
+            {
+              "label": "It does",
+              "text": "Moves you off main or master onto a feature branch, then commits one coherent change with a conventional commit message"
+            },
+            {
+              "label": "You get",
+              "text": "A commit whose message follows those rules, with an optional scope and ! for a breaking change"
+            }
+          ],
+          "text": "From Sentry's skills for its own engineers, shared publicly, commit handles every request to commit or draft a commit message. If you're on main or master, it creates a feature branch first unless you explicitly asked to commit there, and checks again before committing. It commits one coherent change at a time, small enough to review on its own, and writes the message in the conventional-commit format, type, optional scope, then a summary, with an exclamation mark before the colon for a breaking change, following Sentry's rules: an imperative, capitalized subject of 70 characters or fewer, Sentry's own types such as ref and meta, Fixes or Refs footers for issues, and no customer names or personal data.",
+          "permalink": "https://github.com/getsentry/skills/tree/a582c51ee29d0f35e6ac321340796f77d43da733/skills/commit"
+        },
         "tags": [
           "category:engineering",
           "type:command",
@@ -83981,10 +83999,32 @@
       "skillMd": {
         "version": "a582c51ee29d0f35e6ac321340796f77d43da733",
         "updated": "2026-11-15",
-        "skew": 722
+        "skew": 0
       },
       "agentReview": {
         "description": "Keeps working a pull request until its actionable CI checks pass and high and medium review feedback is addressed, then reports what needs a human.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "Your pull request has failing CI or open review comments and you want an agent to keep at it until it's ready"
+            },
+            {
+              "label": "It does",
+              "text": "Fetches the PR's checks and review feedback with bundled scripts, fixes actionable failures and high and medium comments, and repeats"
+            },
+            {
+              "label": "You get",
+              "text": "A PR whose actionable checks pass, plus a report of what needs a human: approvals, draft status, merging"
+            },
+            {
+              "label": "Needs",
+              "text": "An authenticated gh CLI and uv"
+            }
+          ],
+          "text": "From Sentry's skills for its own engineers, iterate-pr drives a pull request toward ready. Its scripts summarize the PR's checks into failed, pending, actionable and waiting-on-a-human groups, and gather review feedback. Its script sorts review comments by priority: it fixes the actionable CI failures and the high and medium ones, asks you which low-priority comments to address, pushes, and loops until nothing actionable is left, handing back to you after two failed attempts at the same failure. It deliberately stops at gates that belong to people, such as a required approval, marking a draft ready, or merging, and reports them instead of acting.",
+          "permalink": "https://github.com/getsentry/skills/tree/a582c51ee29d0f35e6ac321340796f77d43da733/skills/iterate-pr"
+        },
         "tags": [
           "category:engineering",
           "category:debugging",
@@ -84013,10 +84053,32 @@
       "skillMd": {
         "version": "a582c51ee29d0f35e6ac321340796f77d43da733",
         "updated": "2026-11-15",
-        "skew": 776
+        "skew": 0
       },
       "agentReview": {
         "description": "Writes or refreshes a pull request's title and description as a cover note for reviewers, from the full diff, rather than a changelog or file list.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You're opening a pull request, or its title and description no longer match the change"
+            },
+            {
+              "label": "It does",
+              "text": "Reads the branch, commits and full diff against the base, then writes the title and body as a cover note for reviewers"
+            },
+            {
+              "label": "You get",
+              "text": "A new draft PR, or an updated one, whose description explains the change for review rather than listing every file"
+            },
+            {
+              "label": "Needs",
+              "text": "An authenticated gh CLI"
+            }
+          ],
+          "text": "From Sentry's skills for its own engineers, pr-writer writes the part of a pull request reviewers read first. It inspects the current branch, the working tree, any existing PR, the base branch, the commits and the full diff; with no PR yet, it prepares a first one against the default branch. The description it writes is a cover note: what changed and why, what to look at, and what reviewers need to know, rather than a template, a validation log or a summary of every file. If you're on main or master it creates a feature branch first, and with gh it opens a new PR as a draft or updates the existing one.",
+          "permalink": "https://github.com/getsentry/skills/tree/a582c51ee29d0f35e6ac321340796f77d43da733/skills/pr-writer"
+        },
         "tags": [
           "category:engineering",
           "category:writing",
@@ -84027,7 +84089,7 @@
           "stack:github",
           "git",
           "code-review",
-          "docs-writing"
+          "writing"
         ],
         "model": "Claude Opus 5.5",
         "effort": "xhigh"
@@ -84045,14 +84107,32 @@
       "skillMd": {
         "version": "a582c51ee29d0f35e6ac321340796f77d43da733",
         "updated": "2026-11-15",
-        "skew": 1212
+        "skew": 0
       },
       "agentReview": {
         "description": "Detects a repo's stack and services and recommends Claude Code settings.json permissions for the read-only commands it needs.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You're setting up Claude Code in a repo and want to stop approving the same safe commands over and over"
+            },
+            {
+              "label": "It does",
+              "text": "Detects the repo's languages, frameworks and services from its files, then works out which read-only commands Claude Code needs"
+            },
+            {
+              "label": "You get",
+              "text": "Recommended settings.json permissions, documentation domains to fetch and MCP suggestions, printed for you to merge"
+            }
+          ],
+          "text": "From Sentry's skills for its own engineers, this skill tailors Claude Code's permission rules to a repository. It detects the stack, from indicator files such as package.json, and the services the project integrates with, reading dependency files for frameworks. It then recommends allowing only read-only commands, such as listing, searching and status checks with the project's tools, never commands that install, build, run, write or delete. It adds documentation sites the agent may fetch, suggests .mcp.json entries for services such as Sentry and Linear, and, in a Sentry project, permissions for Sentry's skills. It prints the JSON with instructions for merging it; it doesn't edit settings.json itself.",
+          "permalink": "https://github.com/getsentry/skills/tree/a582c51ee29d0f35e6ac321340796f77d43da733/skills/claude-settings-audit"
+        },
         "tags": [
           "category:agents",
-          "type:setup",
-          "effect:local",
+          "type:workflow",
+          "effect:none",
           "needs:claude-code",
           "by:official",
           "stack:claude-code",
@@ -84075,10 +84155,28 @@
       "skillMd": {
         "version": "a582c51ee29d0f35e6ac321340796f77d43da733",
         "updated": "2026-11-15",
-        "skew": 383
+        "skew": 0
       },
       "agentReview": {
         "description": "Creates a git branch named by Sentry's conventions from a description of the work or the current diff.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You want a new git branch named the way Sentry's engineers name them"
+            },
+            {
+              "label": "It does",
+              "text": "Works out what the branch is for from your description or the current diff, then creates it with a conventional name"
+            },
+            {
+              "label": "You get",
+              "text": "A new branch named like feat/add-user-export, created without questions unless you ask to choose the name"
+            }
+          ],
+          "text": "From Sentry's skills for its own engineers, create-branch creates a git branch following Sentry's naming convention, <type>/<short-description>, such as feat/add-user-export. It takes the description of the work from your request or, without one, from the uncommitted and staged changes, derives a short name in that format, and creates the branch. It stays non-interactive unless you explicitly ask to pick the name yourself.",
+          "permalink": "https://github.com/getsentry/skills/tree/a582c51ee29d0f35e6ac321340796f77d43da733/skills/create-branch"
+        },
         "tags": [
           "category:engineering",
           "type:command",
@@ -84087,35 +84185,6 @@
           "by:official",
           "stack:git",
           "git"
-        ],
-        "model": "Claude Opus 5.5",
-        "effort": "xhigh"
-      }
-    },
-    {
-      "id": "getsentry/skills/skills/gh-review-requests",
-      "name": "gh-review-requests",
-      "skills.sh": {
-        "url": "https://skills.sh/getsentry/skills/gh-review-requests",
-        "installs": 4400,
-        "weeklyInstalls": [37, 23, 334, 26, 41, 46, 67, 41],
-        "firstSeen": "2026-02-20"
-      },
-      "skillMd": {
-        "version": "a582c51ee29d0f35e6ac321340796f77d43da733",
-        "updated": "2026-11-15",
-        "skew": 344
-      },
-      "agentReview": {
-        "description": "Lists your unread GitHub notifications for open pull requests whose review is requested from a given team.",
-        "tags": [
-          "category:engineering",
-          "type:tool",
-          "effect:none",
-          "needs:cli",
-          "by:official",
-          "stack:github",
-          "code-review"
         ],
         "model": "Claude Opus 5.5",
         "effort": "xhigh"
@@ -84133,10 +84202,32 @@
       "skillMd": {
         "version": "a582c51ee29d0f35e6ac321340796f77d43da733",
         "updated": "2026-11-15",
-        "skew": 1368
+        "skew": 0
       },
       "agentReview": {
         "description": "Scans an agent skill before you adopt it for prompt injection, malicious code, excessive permissions, exposed secrets and supply-chain risks.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You're about to install an agent skill and want to know whether it's safe"
+            },
+            {
+              "label": "It does",
+              "text": "Runs a static scanner over the skill, then judges each finding's intent and filters false positives"
+            },
+            {
+              "label": "You get",
+              "text": "A security report by severity, ending in a verdict: safe to install, install with caution, or don't install"
+            },
+            {
+              "label": "Needs",
+              "text": "uv, to run the bundled scanner"
+            }
+          ],
+          "text": "From Sentry's skills for its own engineers, skill-scanner checks a skill before you adopt it. Its bundled script scans the skill's files for deterministic patterns, such as instructions that try to override the agent, suspicious code, broad permission requests and hard-coded secrets, and returns JSON with findings, URLs and severity counts. The agent then judges each finding in context and filters out false positives, and reviews the instructions itself: whether the description matches what the skill really does, whether it tampers with the agent's configuration or memory, and whether it asks for more than it needs. The report ends with a verdict: safe to install, install with caution, or do not install.",
+          "permalink": "https://github.com/getsentry/skills/tree/a582c51ee29d0f35e6ac321340796f77d43da733/skills/skill-scanner"
+        },
         "tags": [
           "category:security",
           "category:skill-tools",
@@ -84163,18 +84254,39 @@
       "skillMd": {
         "version": "62ca1eb865ddc08daad6a23e64f1418b928df7d0",
         "updated": "2026-11-15",
-        "skew": 2905
+        "skew": 0
       },
       "agentReview": {
         "description": "Audits a design against Dieter Rams' ten principles of good design, scores each with evidence, and hands off a plan to build, refine or redesign it.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You want a design judged against a recognized standard before refining or rebuilding it"
+            },
+            {
+              "label": "It does",
+              "text": "Scores the design on each of Dieter Rams' ten principles of good design, with evidence, and decides: new, refine or redesign"
+            },
+            {
+              "label": "You get",
+              "text": "Evidence-backed scores, a verdict and a ready-made /make-plan prompt for the work"
+            },
+            {
+              "label": "Doesn't",
+              "text": "Write implementation code"
+            }
+          ],
+          "text": "From the claude-mem plugin's collection of skills, design-is audits an existing design, a UI, a page or a product surface, against the ten principles of the designer Dieter Rams, such as good design is innovative, useful, understandable and as little design as possible. It sends four or five subagents to gather evidence in parallel, then goes through the principles in order and scores each from 0 to 3 with at least one piece of evidence: a file and line, a screenshot region, a copy excerpt or a measured value. From the scores it decides on a verdict, new when there's no real design yet, refine, or redesign, writes everything to a DESIGN-IS-<date>/ folder, and writes a handoff prompt for the plugin's make-plan skill. It isn't meant for routine code reviews or copy edits.",
+          "permalink": "https://github.com/thedotmack/claude-mem/tree/62ca1eb865ddc08daad6a23e64f1418b928df7d0/plugin/skills/design-is"
+        },
         "tags": [
           "category:design",
           "type:workflow",
-          "effect:none",
-          "needs:none",
+          "effect:local",
+          "needs:subagents",
           "by:community",
           "design",
-          "code-review",
           "planning"
         ],
         "model": "Claude Opus 5.5",
@@ -84193,10 +84305,32 @@
       "skillMd": {
         "version": "62ca1eb865ddc08daad6a23e64f1418b928df7d0",
         "updated": "2026-11-15",
-        "skew": 2047
+        "skew": 0
       },
       "agentReview": {
         "description": "Writes a week-by-week series of narrative chapters from a project's whole claude-mem history, one per week it covers.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You want the story of a project told week by week, from everything claude-mem recorded about it"
+            },
+            {
+              "label": "It does",
+              "text": "Splits the project's claude-mem timeline by calendar week and writes one narrative chapter per week, in order"
+            },
+            {
+              "label": "You get",
+              "text": "A serial digest in docs/timeline-weeks/, one chapter per week with activity"
+            },
+            {
+              "label": "Needs",
+              "text": "claude-mem installed, with its worker running and history recorded"
+            }
+          ],
+          "text": "From the claude-mem plugin's collection of skills, weekly-digests turns the project history that claude-mem, a memory plugin for coding agents, has recorded into a series of chapters. Unlike the plugin's timeline-report, which writes one long report, it splits the timeline into ISO weeks and writes one digest per week, with one chapter for each week that had activity, saved in the repo's docs/timeline-weeks/ folder. Subagents write the chapters one after another, each handed a short summary of the week before, so the story carries on.",
+          "permalink": "https://github.com/thedotmack/claude-mem/tree/62ca1eb865ddc08daad6a23e64f1418b928df7d0/plugin/skills/weekly-digests"
+        },
         "tags": [
           "category:agents",
           "category:writing",
@@ -84226,13 +84360,34 @@
       "skillMd": {
         "version": "62ca1eb865ddc08daad6a23e64f1418b928df7d0",
         "updated": "2026-11-15",
-        "skew": 2558
+        "skew": 0
       },
       "agentReview": {
         "description": "Clusters a GitHub issue backlog by shared root cause into a few plan issues, links the duplicates to them, and turns the backlog into a roadmap.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "A repository has a large issue backlog in which many issues are symptoms of the same few defects"
+            },
+            {
+              "label": "It does",
+              "text": "Groups issues by the fix they share, opens a plan issue per group, and closes the individual issues, pointing them to it"
+            },
+            {
+              "label": "You get",
+              "text": "A short list of plan issues that works as a roadmap, and focused pull requests that close whole groups"
+            },
+            {
+              "label": "Needs",
+              "text": "An authenticated gh CLI"
+            }
+          ],
+          "text": "From the claude-mem plugin's collection of skills, oh-my-issues treats issues as symptom data and the architectural defect behind them as the unit of work. It's meant for repos with 20 or more open issues that look like duplicates or platform-specific versions of the same bug. It clusters issues that share a single fix, gives each cluster one canonical home, a plan issue describing the fix and a test matrix, and closes each individual issue as not planned, with a standard comment pointing to its plan, so only the plan issues stay open. It also leaves a routing note on every open pull request and closes ones that are superseded or junk. New bugs get triaged against the existing plans, and a focused pull request can then resolve a whole cluster. The author's point is that this compounds: fixes retire whole families of symptoms, and the test matrix keeps them from returning.",
+          "permalink": "https://github.com/thedotmack/claude-mem/tree/62ca1eb865ddc08daad6a23e64f1418b928df7d0/plugin/skills/oh-my-issues"
+        },
         "tags": [
           "category:engineering",
-          "category:planning",
           "type:workflow",
           "effect:remote",
           "needs:cli",
@@ -84259,19 +84414,39 @@
       "skillMd": {
         "version": "62ca1eb865ddc08daad6a23e64f1418b928df7d0",
         "updated": "2026-11-15",
-        "skew": 1063
+        "skew": 0
       },
       "agentReview": {
         "description": "Runs a standup between agents, one per git worktree or PR, in a shared chat file, so they agree how to merge their work into one worktree.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "Your recent work is spread across several git worktrees, branches or PRs and needs reconciling"
+            },
+            {
+              "label": "It does",
+              "text": "Has one agent per worktree or PR talk in a shared chat file, in rounds, to agree how the work should be merged"
+            },
+            {
+              "label": "You get",
+              "text": "One consolidated plan for merging the work into a single worktree; the chat itself commits nothing"
+            }
+          ],
+          "text": "From the claude-mem plugin's collection of skills, standup makes the agent a facilitator. Each of your recently active git worktrees, and any pull requests you pick, joins a shared Markdown chat as its own agent, by default in ~/.claude-mem/STANDUP.md, whose header holds the goal. The agents speak in rounds, comparing what each branch changed,. The room is read-only: agents decide how the merge should go, but nobody commits or merges inside it. The facilitator carries the outcome back to you, and the merges themselves are done afterwards by the plugin's do skill, in one consolidated worktree.",
+          "permalink": "https://github.com/thedotmack/claude-mem/tree/62ca1eb865ddc08daad6a23e64f1418b928df7d0/plugin/skills/standup"
+        },
         "tags": [
           "category:agents",
+          "category:engineering",
           "type:workflow",
           "effect:local",
           "needs:subagents",
           "needs:cli",
           "by:community",
           "multi-agent",
-          "git"
+          "git",
+          "stack:git"
         ],
         "model": "Claude Opus 5.5",
         "effort": "xhigh"
@@ -84289,10 +84464,24 @@
       "skillMd": {
         "version": "62ca1eb865ddc08daad6a23e64f1418b928df7d0",
         "updated": "2026-11-15",
-        "skew": 42
+        "skew": 0
       },
       "agentReview": {
         "description": "Asks the agent to explain the technical thing it just said in plain words: who, what, where, why and when.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "Something technical in the conversation went over your head"
+            },
+            {
+              "label": "It does",
+              "text": "Asks it to explain the who, what, where, why and when of it, in plain words"
+            }
+          ],
+          "text": "A one-line prompt from the claude-mem plugin's skills. It tells the agent that what it said sounds very technical and asks for the who, what, where, why and when of it, so you get the same thing again in plain words.",
+          "permalink": "https://github.com/thedotmack/claude-mem/tree/62ca1eb865ddc08daad6a23e64f1418b928df7d0/plugin/skills/what-the"
+        },
         "tags": [
           "category:output-style",
           "type:command",
@@ -84317,19 +84506,38 @@
       "skillMd": {
         "version": "a1fc303b274ed06c32d405ba5a6db00ded6e5663",
         "updated": "2026-11-15",
-        "skew": 2090
+        "skew": 0
       },
       "agentReview": {
         "description": "Writes the engineering record of a fixed bug: root cause, mechanism, fix, validation and how it slipped through, refusing until the fix is validated.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "A bug has been fixed and the fix validated, and you want the root cause written down"
+            },
+            {
+              "label": "It does",
+              "text": "Writes the engineering record: the root cause, the mechanism, the fix, how it was validated and how the bug slipped through"
+            },
+            {
+              "label": "You get",
+              "text": "A post-mortem for other engineers and your future self, posted as a Jira comment once you approve"
+            }
+          ],
+          "text": "From thananon's 9arm-skills, post-mortem writes the canonical engineering record of a bug fix, after debugging has landed a real fix, for other engineers and for whoever will have forgotten the details later. It covers the root cause, the mechanism by which it caused the failure, the fix, how the fix was validated and how the bug got past existing checks. It needs four things before drafting, a reliable reproduction, a known root cause, the fix and its validation, and refuses otherwise, since a post-mortem of a hypothesis misleads. Once you sign off, it posts the post-mortem as a Jira comment by default. It can offer to write one after a debugging session lands a fix. For a version for leadership, it offers the same repo's management-talk.",
+          "permalink": "https://github.com/thananon/9arm-skills/tree/a1fc303b274ed06c32d405ba5a6db00ded6e5663/skills/engineering/post-mortem"
+        },
         "tags": [
           "category:debugging",
           "category:writing",
           "type:workflow",
-          "effect:local",
-          "needs:none",
+          "effect:remote",
+          "needs:issue-tracker",
           "by:community",
           "debugging",
-          "docs-writing"
+          "docs-writing",
+          "stack:jira"
         ],
         "model": "Claude Opus 5.5",
         "effort": "xhigh"
@@ -84347,10 +84555,28 @@
       "skillMd": {
         "version": "a1fc303b274ed06c32d405ba5a6db00ded6e5663",
         "updated": "2026-11-15",
-        "skew": 2016
+        "skew": 0
       },
       "agentReview": {
         "description": "Rewrites engineering updates for leadership, PMs or release managers, shaped for the channel: a Jira comment, Slack post, email or talking points.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "Engineering news needs to go up to leadership, across to product or release, or into a non-engineering meeting"
+            },
+            {
+              "label": "It does",
+              "text": "Rewrites the content for that audience and shapes it for the channel: a Jira comment, Slack post, standup note, email or talking points"
+            },
+            {
+              "label": "You get",
+              "text": "A draft for you to post, with the jargon translated and the length right for the channel; it posts to Jira only if you ask"
+            }
+          ],
+          "text": "From thananon's 9arm-skills, management-talk translates engineer-to-engineer content, such as a post-mortem or a status update, for VPs, directors, PMs, release managers and executives. It follows the same audience rules as a written status report, explaining impact rather than implementation and removing code identifiers while keeping product names, Jira keys, PR numbers and terms that matter, but shapes the result for where it goes: a Jira comment, a Slack post, an async standup note, an email or talking points for a meeting. It pairs with the same repo's post-mortem skill, which writes the engineering record first.",
+          "permalink": "https://github.com/thananon/9arm-skills/tree/a1fc303b274ed06c32d405ba5a6db00ded6e5663/skills/productivity/management-talk"
+        },
         "tags": [
           "category:writing",
           "category:business",
