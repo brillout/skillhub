@@ -6794,7 +6794,7 @@
     },
     {
       "id": "cursor/plugins@pstack",
-      "skew": 2289,
+      "skew": 0,
       "agentReview": {
         "name": "pstack",
         "description": "Lauren Tan's agent workflows for rigorous engineering: explain code, trace why it's built that way, design and stress-test with several models, and write plainly.",
@@ -6806,27 +6806,27 @@
             },
             {
               "label": "It does",
-              "text": "Runs multi-model workflows that explain, design, attack and check changes, plus writing rules and short engineering principles the workflows cite"
+              "text": "Runs multi-model workflows that explain, design, attack and check changes, plus recall, reflection, writing rules and one-rule principle skills"
             },
             {
               "label": "Entry point",
-              "text": "poteto-mode, not listed here, matches a task to one of its 23 playbooks and calls these skills as the steps need them"
+              "text": "poteto-mode, not listed here, matches a task to one of its 23 playbooks, step-by-step recipes for kinds of work, and calls these skills as the steps need them"
             },
             {
               "label": "Works with",
-              "text": "Cursor, where it's built; Claude Code gets a generated copy that skips Cursor-only steps and runs the Grok roles on the session model"
+              "text": "Cursor, where it's built; Claude Code installs a generated copy, run as /pstack:<name>, that skips Cursor-only steps"
             },
             {
               "label": "Models",
-              "text": "One per role, set with /setup-pstack; by default Claude Opus for judgment and prose, Grok for code and for the explorers of how and why"
+              "text": "One per role, set with setup-pstack; by default Claude Opus 5.5 for most work, Claude Fable 5.2 for the hardest changes"
             },
             {
               "label": "Runs",
               "text": "Each skill only when called, by you or by another pstack skill"
             }
           ],
-          "text": "pstack is the plugin Lauren Tan (poteto) uses to ship code at Cursor, aimed at writing less code of higher quality. how explains what code does through read-only explorer subagents, and why digs through git, PRs and each connected evidence source for the reasons behind it. architect grounds a design with both, has arena sketch it, then writes the code against the chosen sketch. arena has several models attempt the same task, picks a base and grafts in the best of the rest. interrogate reuses arena's fan-out so adversaries try to break a change, keeping only findings a run proves, and blast-radius proves the one fact a risky-looking change is safe because of. create-verification-skill writes a project skill that drives your app the way a user does, and show-me-your-work keeps an audited log of the decisions in long unattended runs. technical-writing and unslop hold the prose rules for docs, PR descriptions and replies. The eighteen principle skills are one rule each, such as fix root causes or build the lever, which poteto-mode indexes and the other skills cite. The plugin's 30 other skills, among them poteto-mode, setup-pstack and swarm, and its two subagents aren't listed here.",
-          "permalink": "https://github.com/cursor/plugins/tree/6e359ce0aba9e927914d8a940510aa2ef66a8f23"
+          "text": "pstack is the plugin Lauren Tan (poteto) uses to ship code at Cursor, aimed at writing less code of higher quality. The how skill explains what code does, and the why skill digs up the reasons behind it; teach turns both into a plain explanation, and recall rebuilds where your work stands. architect grounds a design, then has the arena skill sketch it with several models; interrogate has adversaries try to break a change, and blast-radius proves why a risky-looking change is safe. figure-it-out designs a playbook for work nothing else fits, swarm fans a task out to parallel workers, and tdd fixes bugs test-first. create-verification-skill writes a skill that drives your app like a user, and maintain-verification-skill keeps it current. show-me-your-work logs decisions in long runs, reflect and automate-me turn sessions into skill edits, technical-writing and unslop hold the prose rules, no-comments removes comments that excuse weak code, and bro restates jargon plainly. The 21 principle skills are one rule each, which poteto-mode indexes and the others cite, and setup-pstack picks the models. The plugin's 16 other skills, poteto-mode among them, and its two subagents aren't listed here.",
+          "permalink": "https://github.com/cursor/plugins/tree/bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7"
         },
         "skills": [
           {
@@ -7522,22 +7522,26 @@
           "glance": [
             {
               "label": "Use it when",
-              "text": "You want each phase of a change handled by its own skill, with decisions and progress kept in files rather than in the chat"
+              "text": "You want each phase of a change, from idea to merged and documented code, handled by its own skill, with the state kept in files"
             },
             {
               "label": "It does",
-              "text": "architect settles a decision that's hard to undo as a build spec, develop builds the feature from it, and debug proves and fixes a bug's root cause"
+              "text": "scope plans, audit writes AGENTS.md, architect writes specs, develop builds, check and test prove it works, document writes PR and release text, sync updates AGENTS.md and the plan"
             },
             {
               "label": "You get",
-              "text": "Numbered specs in docs/specs/, the code, the feature's progress ticked in the workflow's scope file, and a regression test for each bug fixed"
+              "text": "A plan in docs/scope/, numbered specs in docs/specs/, AGENTS.md files, tests, review findings, and PR or release text"
             },
             {
-              "label": "Also installed",
-              "text": "The workflow's six other skills, which SkillHub doesn't list: scope, audit, check, test, document and sync; installing the repo adds all nine"
+              "label": "Depth",
+              "text": "Prototype, Alpha, Beta or GA, picked in scope, sets how much checking follows each build"
+            },
+            {
+              "label": "Runs",
+              "text": "Each skill only when you call it; debug whenever something breaks"
             }
           ],
-          "text": "JS Mastery's workflow takes a change from a vague idea to shipped code with one skill per phase, and keeps its state in files, a scope, specs and AGENTS.md, so the work survives across sessions and teammates. architect is the design step: it infers what the repo shows, asks only what you alone know, recommends each choice with a runner-up, and writes a numbered spec. develop is the build step: it reads the spec and AGENTS.md, builds the UI, the backend or both, and marks the feature in progress in the scope. When a choice that's hard to undo, such as an auth approach, has no spec, develop stops and sends you to architect, or, if you say so, builds on an assumption it records for architect to ratify later. debug runs whenever something breaks: it reproduces the bug, tests one hypothesis at a time until the cause is proven, makes the smallest fix and writes a regression test or leaves it to the workflow's test skill. architect also works alone, and a small change can go straight to develop. The README's full loop is scope, audit, architect, develop, check, test, document and sync.",
+          "text": "JS Mastery's workflow takes a change from a vague idea to shipped, verified, documented code with one skill per phase, and keeps its state in files that outlast a session. The repo's README gives the full loop as scope, audit, architect, develop, check verify, test, check review, document and sync, but you run only what a change needs. scope turns an idea into a living plan of coarse features and recommends a depth: Prototype stops after develop, Alpha adds check verify, Beta adds test, and GA adds check review, a read by a second model, and document. audit writes the AGENTS.md files the others read. architect settles a decision that's hard to undo as a numbered spec whose acceptance criteria are the contract. develop builds from it, and stops to send you to architect when a decision is still open, or records an assumption for later. check verify drives the real app against the criteria, test writes tests tagged with them, check review gets a second model's read, document writes the PR or release text, and sync ticks the plan and updates AGENTS.md. debug proves and fixes a bug's root cause at any point.",
           "permalink": "https://github.com/jsmastery-pro/skills/tree/43b69e44c9ca905fe3a3418ccdf4102255e20d40"
         },
         "skills": [
@@ -7670,10 +7674,32 @@
     },
     {
       "id": "affaan-m/ecc@taste",
-      "skew": 6531,
+      "skew": 0,
       "agentReview": {
         "name": "ECC TasteForge video",
         "description": "ECC's measure-then-apply video pipeline: distill reference footage into a style pack, then generate or gather takes and grade and cut them to it.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You want new or existing footage to match the look and cutting rhythm of reference clips, by measurement rather than prompting"
+            },
+            {
+              "label": "It does",
+              "text": "Three skills: taste-distillation measures references into a style pack, taste-application grades and cuts footage to it, and tasteforge-video runs the offline engine"
+            },
+            {
+              "label": "You get",
+              "text": "Style packs, a color lookup table (LUT) plus a cutting rhythm,, finished cuts, and editable timelines for Resolve, Premiere or Final Cut"
+            },
+            {
+              "label": "Needs",
+              "text": "Python and its packages; an account with fal, a paid AI service, only for vision-model specs and generated takes"
+            }
+          ],
+          "text": "TasteForge, a video pipeline in ECC (Everything Claude Code, a large skill collection), rests on one measured finding: prompts can't deliver a color grade, but a measured grade applied afterwards can. So a generative model supplies content, motion and framing, and a style pack supplies the look. taste-distillation is the first half: it measures reference clips into a pack, a 3D LUT, a shot-length distribution, hero stills, overlay plates and a spec for the model, and works alone if all you want is a LUT. taste-application is the second: it generates takes on fal without color words, or uses footage you have, then grades, cuts at the measured rhythm, composites, and checks the result against the reference. tasteforge-video documents the offline engine both rely on, for a taste interview, pack validation, cut planning and EDL or FCPXML export, and refuses any step that would call a provider.",
+          "permalink": "https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b"
+        },
         "skills": [
           {
             "id": "affaan-m/ecc/skills/taste-distillation",
@@ -75853,7 +75879,7 @@
             },
             {
               "label": "Runs",
-              "text": "Only when you call it; maintain-verification-skill, which comes with pstack but isn't listed here, keeps the map current as the app changes"
+              "text": "Only when you call it; pstack's maintain-verification-skill keeps the map current as the app changes"
             }
           ],
           "text": "It answers from the repo, asking you only what it can't observe: what a user touches (web UI, CLI, desktop or mobile app, API, library), the documented dev command with its ports, env vars, seed data and auth, any existing harness, and whether two instances can run side by side. If the app doesn't build or start, it fixes that or reports it first. The generated skill is written for an agent reading it cold: launch from an empty data folder until the app is actually usable, a read-only \"doctor\" check of whether the instance is worth driving, such as the right build on a port it owns, a drive recipe with the repo's real selectors and commands, proof standards (the real user path, the action and its result, side effects such as files or rows), and a cleanup that kills only what it started and keeps the evidence. Each feature file says how a user reaches it, how to drive it and what end state proves it; a journey the seed data can't satisfy is reported as failing, never weakened. If it proved the skill in a stand-in, such as a container, it lists the steps still unverified.",
@@ -75871,7 +75897,7 @@
           "skill-authoring"
         ],
         "model": "Claude Opus 5.5",
-        "effort": null
+        "effort": "xhigh"
       }
     },
     {
@@ -77171,7 +77197,7 @@
               "text": "An existing project, unless this run is the scaffold step, and subagents for cheap read-only code mapping and doc lookups"
             }
           ],
-          "text": "develop is the build step of JS Mastery's workflow, which keeps its state in files: a scope of features and their checkboxes in docs/scope/, numbered specs in docs/specs/ and conventions in AGENTS.md. Its rule is that it implements decisions and never makes them. Before writing code it lists every value the feature must produce or show; one whose source the spec doesn't name, such as a database column or a prior decision, counts as an open decision, however small. It then sorts the work into a UI track, a logic track (data layer, services, API, integrations) or both, reads only this feature's spec and the nearest AGENTS.md, and has a read-only subagent map the code to touch. It resumes at the first unticked task, applies database migrations and confirms the schema is live, and deletes the code it replaces. If the spec proves wrong partway, it stops and sends you back to architect. It marks the feature done only for a prototype; otherwise it leaves it in progress for the workflow's check and test skills, which SkillHub doesn't list, to close. It writes in plain words with no dashes or hyphens.",
+          "text": "develop is the build step of JS Mastery's workflow, which keeps its state in files: a scope of features and their checkboxes in docs/scope/, numbered specs in docs/specs/ and conventions in AGENTS.md. Its rule is that it implements decisions and never makes them. Before writing code it lists every value the feature must produce or show; one whose source the spec doesn't name, such as a database column or a prior decision, counts as an open decision, however small. It then sorts the work into a UI track, a logic track (data layer, services, API, integrations) or both, reads only this feature's spec and the nearest AGENTS.md, and has a read-only subagent map the code to touch. It resumes at the first unticked task, applies database migrations and confirms the schema is live, and deletes the code it replaces. If the spec proves wrong partway, it stops and sends you back to architect. It marks the feature done only for a prototype; otherwise it leaves it in progress for the workflow's check and test skills to close. It writes in plain words with no dashes or hyphens.",
           "permalink": "https://github.com/jsmastery-pro/skills/tree/43b69e44c9ca905fe3a3418ccdf4102255e20d40/skills/develop"
         },
         "tags": [
@@ -77184,7 +77210,7 @@
           "requirements"
         ],
         "model": "Claude Opus 5.5",
-        "effort": null
+        "effort": "xhigh"
       }
     },
     {
@@ -78300,10 +78326,32 @@
       "skillMd": {
         "version": "43b69e44c9ca905fe3a3418ccdf4102255e20d40",
         "updated": "2026-11-15",
-        "skew": 1778
+        "skew": 0
       },
       "agentReview": {
         "description": "Turns a product idea into a living, coarse feature plan in docs/scope/, and reconciles it with what shipped each time you run it again.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You're starting a product, or its next slice, and want a feature plan that stays current as you ship"
+            },
+            {
+              "label": "It does",
+              "text": "Asks about the business, product and launch, then splits the idea into ordered, coarse features, each saying what done means"
+            },
+            {
+              "label": "You get",
+              "text": "docs/scope/scope.md: a table and a checklist per feature, which the workflow's other skills tick off"
+            },
+            {
+              "label": "Runs again",
+              "text": "With no argument, to show where things stand and reconcile the plan with what shipped"
+            }
+          ],
+          "text": "scope is the planning step of JS Mastery's workflow: it decides what to build and in what order, never how. On a new idea it asks rounds of up to four questions, each with options and one recommended answer, about the business, the product and going to market. Then it writes a short plan: features grouped by phase, each with a one-line intent, a \"Done when\" line and checkboxes pointing at the next command, such as /architect for a feature that needs a decision first. It never picks a tool or library; a feature that implies one is marked as needing a spec. It also recommends a depth, Prototype, Alpha, Beta or GA, which sets how much checking each feature gets after it's built. On an existing codebase it lists the features that already exist. Run it bare later and it opens with where things stand: the branch, features by status and where each one in progress left off, then reconciles what shipped, flags work with no plan row and queues the next slice. /scope <feature> adds a single row, and a large plan splits into one file per area.",
+          "permalink": "https://github.com/jsmastery-pro/skills/tree/43b69e44c9ca905fe3a3418ccdf4102255e20d40/skills/scope"
+        },
         "tags": [
           "category:planning",
           "type:workflow",
@@ -78330,10 +78378,32 @@
       "skillMd": {
         "version": "43b69e44c9ca905fe3a3418ccdf4102255e20d40",
         "updated": "2026-11-15",
-        "skew": 1961
+        "skew": 0
       },
       "agentReview": {
         "description": "Writes the AGENTS.md context files, root and per area, that agents read, from your answers on a new project or a scan of an existing one.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You want every agent working in a repo to share its conventions, whether the project is brand new or years old"
+            },
+            {
+              "label": "It does",
+              "text": "On a new project, asks your coding standards; on an existing one, scans the code and writes down what it finds"
+            },
+            {
+              "label": "You get",
+              "text": "A root AGENTS.md, AGENTS.md files for areas with conventions of their own, and one-line CLAUDE.md pointers to them"
+            },
+            {
+              "label": "Never",
+              "text": "Overwrites an existing AGENTS.md; it adds only what's missing, and asks first"
+            }
+          ],
+          "text": "audit writes the context files the rest of JS Mastery's workflow reads, in AGENTS.md, the file most coding agents load, with CLAUDE.md reduced to a line that imports it. It first works out which situation it's in. On a new project, ideally right after the stack is chosen and scaffolded, it asks multiple-choice questions about your coding standards, offers four style presets and seeds a root AGENTS.md. On an existing codebase with no context file, it scans the whole repo without asking and writes a short root file, plus nested ones for areas with real conventions of their own. Given a path, such as /audit src/auth, it documents just that area. When an AGENTS.md exists, it fills only the gaps, with your permission, and a CLAUDE.md that holds content is moved into AGENTS.md if you agree. In a monorepo each workspace gets a light stub, filled in when you audit it. If it can't tell new from existing, it asks. A large scan can go to a cheap read-only subagent, but the main agent does all the writing.",
+          "permalink": "https://github.com/jsmastery-pro/skills/tree/43b69e44c9ca905fe3a3418ccdf4102255e20d40/skills/audit"
+        },
         "tags": [
           "category:agents",
           "type:setup",
@@ -78360,10 +78430,36 @@
       "skillMd": {
         "version": "43b69e44c9ca905fe3a3418ccdf4102255e20d40",
         "updated": "2026-11-15",
-        "skew": 687
+        "skew": 0
       },
       "agentReview": {
         "description": "Gates a change before merge: verify runs the real app against the spec's acceptance criteria, and review has a different model read the diff.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "A change is built and you want proof it works, then a second opinion before the pull request"
+            },
+            {
+              "label": "It does",
+              "text": "verify runs the real app and checks each acceptance criterion in the spec under docs/specs/; review has a different model read the diff"
+            },
+            {
+              "label": "You get",
+              "text": "A pass, fail or blocked verdict per behavior, and findings ranked by severity in docs/reviews/"
+            },
+            {
+              "label": "Never",
+              "text": "Edits code; failures are sent to the workflow's debug or develop skills"
+            },
+            {
+              "label": "Needs",
+              "text": "Subagents, for the different-model review; a browser tool or MCP, to drive a web app in verify"
+            }
+          ],
+          "text": "check is the gate before merge in JS Mastery's engineering workflow, a set of skills with one per phase of a change. It has two modes, /check verify and /check review; a plain /check asks which, or both. verify starts the app and exercises the change the way a user would. For a web app it drives the route through a browser automation MCP or the agent's own browser, or falls back to HTTP requests and a boot check, and it checks every acceptance criterion and every screen the spec promised. When it can't use a tool it needs, such as a browser or a database connection, the behaviors that depended on it are marked blocked, not passed: \"looks right in the code\" doesn't count. review spawns a reviewer on a different Claude model than the one that wrote the code, since a model reviewing its own output shares its blind spots, and writes findings ranked by harm to docs/reviews/. You can pick the reviewer, as in /check review with opus, or limit it to uncommitted changes. Typically verify follows develop, and review comes just before a pull request.",
+          "permalink": "https://github.com/jsmastery-pro/skills/tree/43b69e44c9ca905fe3a3418ccdf4102255e20d40/skills/check"
+        },
         "tags": [
           "category:debugging",
           "type:workflow",
@@ -78390,10 +78486,32 @@
       "skillMd": {
         "version": "43b69e44c9ca905fe3a3418ccdf4102255e20d40",
         "updated": "2026-11-15",
-        "skew": 2792
+        "skew": 0
       },
       "agentReview": {
         "description": "Writes a test suite for your uncommitted changes, picking a strategy per file and tracing tests to the spec's acceptance criteria.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You've just built or changed something and want tests for it before you commit"
+            },
+            {
+              "label": "It does",
+              "text": "Sorts each uncommitted file by kind, writes unit, component, integration or end-to-end tests to match, and can run them"
+            },
+            {
+              "label": "You get",
+              "text": "Test files, each tagged with the spec's acceptance criterion it covers when there is a spec, and a list of what couldn't be automated"
+            },
+            {
+              "label": "Asks",
+              "text": "Your test framework once, saved to test-preferences.json, and on every run whether to run the suite"
+            }
+          ],
+          "text": "test writes the tests your changed code deserves: what callers rely on, not lines for a coverage number. Its scope is every uncommitted source file that isn't a test, config or style file, or the last commit if nothing is uncommitted. It sorts each file from its path, as logic, component, page, API route or CLI, and picks a strategy for each: unit tests, rendered component tests with interaction and accessibility checks, integration tests that call the handler, or end-to-end tests for pages and flows. On the first run it detects the stack, asks which framework to use, offers to install it and saves the choice. With a spec from the architect skill of JS Mastery's workflow, each acceptance criterion that can be automated gets a test tagged with it, and the rest are left for check verify's manual step. Over 15 files, it asks how to focus. If you have it run the suite, it fixes its own test mistakes but never changes application code to make a test pass: a test failing on broken code is reported as a bug. On green, it ticks the feature in the scope and offers to mark it done.",
+          "permalink": "https://github.com/jsmastery-pro/skills/tree/43b69e44c9ca905fe3a3418ccdf4102255e20d40/skills/test"
+        },
         "tags": [
           "category:debugging",
           "type:workflow",
@@ -78419,10 +78537,32 @@
       "skillMd": {
         "version": "43b69e44c9ca905fe3a3418ccdf4102255e20d40",
         "updated": "2026-11-15",
-        "skew": 1544
+        "skew": 0
       },
       "agentReview": {
         "description": "Writes a PR description, changelog entry, release note or postmortem from the real commits and diff.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You need a PR description, changelog entry, release note or postmortem, based on what actually changed"
+            },
+            {
+              "label": "It does",
+              "text": "Reads the commits and diff, or for a postmortem your account of the incident, and writes for that document's reader"
+            },
+            {
+              "label": "You get",
+              "text": "PR text in chat, or applied with gh; a CHANGELOG.md entry; docs/releases/<version>.md; or docs/postmortems/<date>-<slug>.md"
+            },
+            {
+              "label": "Never",
+              "text": "Invents a change, a cause or a timeline entry that its sources don't show"
+            }
+          ],
+          "text": "document is the technical writer of JS Mastery's engineering workflow. Name the type, /document pr, changelog, release-note or postmortem, or let it infer one, such as a pull request for a branch ahead of main, and confirm. It gathers the commits and changed files against the base branch, or between the last two tags for a release note, and asks for a version and range when there are no tags. A PR body is always shown in chat; if GitHub's gh CLI is installed and the repo has a remote, it offers to open the pull request or update the existing one, and asks before running gh or pushing. A changelog entry follows the file's existing format, or Keep a Changelog for a new file. For a postmortem it asks you what broke, when, the impact, how it was noticed and the fix, since git doesn't hold that, and it never adds a cause you didn't give. It ticks the feature's Document it box in the scope and doesn't commit.",
+          "permalink": "https://github.com/jsmastery-pro/skills/tree/43b69e44c9ca905fe3a3418ccdf4102255e20d40/skills/document"
+        },
         "tags": [
           "category:writing",
           "type:command",
@@ -78448,10 +78588,32 @@
       "skillMd": {
         "version": "43b69e44c9ca905fe3a3418ccdf4102255e20d40",
         "updated": "2026-11-15",
-        "skew": 2328
+        "skew": 0
       },
       "agentReview": {
         "description": "After a change, updates AGENTS.md, ticks finished work in the scope and flags specs the change made stale.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "A change is finished, around merge, and the project's context files and plan should catch up with it"
+            },
+            {
+              "label": "It does",
+              "text": "Reads the diff, adds lines to the AGENTS.md files it touches, ticks verified work in the scope and updates spec status lines"
+            },
+            {
+              "label": "You get",
+              "text": "Small edits, each listed in its report, plus flags for stale specs and areas that need a fresh audit"
+            },
+            {
+              "label": "Never",
+              "text": "Rewrites curated prose or a spec's content; it flags them instead"
+            }
+          ],
+          "text": "sync closes the loop on a change in JS Mastery's engineering workflow, a set of skills with one per phase. It first warns if your branch is behind, since a teammate may already have synced. It takes the change set, uncommitted changes on the main branch or everything since the branch point, and ignores docs, tests and lock files when reading it, keeping dependency manifests to spot new tools; if nothing durable changed, it stops. Otherwise it updates the nearest AGENTS.md for each changed file, creates a nested AGENTS.md only for an area that's entirely new in this change, and adds a pointer to design.md when the change sets up a design system. In the scope, the workflow's feature plan in docs/scope/, it ticks any sub-task it can verify from code, tests or docs and moves the feature's status on, and it updates each linked spec's status line to match. It won't create or restructure the root AGENTS.md, or document an older area it has only seen a slice of; for those it tells you to run audit. Specs the change made stale, and specs built on an assumed decision, are flagged for architect.",
+          "permalink": "https://github.com/jsmastery-pro/skills/tree/43b69e44c9ca905fe3a3418ccdf4102255e20d40/skills/sync"
+        },
         "tags": [
           "category:agents",
           "type:workflow",
@@ -78478,10 +78640,32 @@
       "skillMd": {
         "version": "bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7",
         "updated": "2026-11-15",
-        "skew": 296
+        "skew": 0
       },
       "agentReview": {
         "description": "Encodes the domain in a data structure, such as a state machine or a lookup table, instead of conditionals scattered across files.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You're writing stateful logic, or code keeps growing if/else chains and re-checking the same data's shape in several files"
+            },
+            {
+              "label": "It does",
+              "text": "Has the agent pick a data structure that fits the domain, such as a state machine, a typed model, a lookup table or a reducer"
+            },
+            {
+              "label": "Warning sign",
+              "text": "A new feature adds one more branch to a chain, or a second boolean must stay in sync with the first"
+            },
+            {
+              "label": "Runs",
+              "text": "Only when you call it, or when another pstack skill cites it"
+            }
+          ],
+          "text": "One of pstack's principle skills: a single rule the agent applies while it writes. Encode the real domain in a data structure rather than scattering it across conditionals, so invalid states can't be represented and branches disappear. Choosing the structure while writing is cheap; recovering it later looks like a refactor and gets put off. It lists what to reach for: a state machine instead of scattered booleans or phase checks, a typed model instead of loose parameters, a map, registry or discriminated union instead of branches spread over files, a reducer or event model instead of ad hoc changes to state, and modules organized around one body of domain knowledge rather than steps such as load, validate and save. It also warns against forcing it: when the code is clear, local and unlikely to grow, boring code wins, and an abstraction that adds indirection without removing branches, duplicated rules or invalid states doesn't earn its place.",
+          "permalink": "https://github.com/cursor/plugins/tree/bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7/pstack/skills/principle-model-the-domain"
+        },
         "tags": [
           "category:engineering",
           "type:guidelines",
@@ -78508,10 +78692,28 @@
       "skillMd": {
         "version": "bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7",
         "updated": "2026-11-15",
-        "skew": 136
+        "skew": 0
       },
       "agentReview": {
         "description": "In planned rewrites and migrations, converges on the target design and accepts scoped, reversible breakage rather than temporary compatibility code.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You're doing a planned rewrite or migration with explicit phases"
+            },
+            {
+              "label": "It does",
+              "text": "Has the agent aim straight for the target design and accept planned, scoped, reversible breakage on the way"
+            },
+            {
+              "label": "Instead of",
+              "text": "Temporary compatibility code that keeps every intermediate step working and then lingers as debt"
+            }
+          ],
+          "text": "A short pstack principle skill for rewrites and migrations. Keeping every intermediate step fully stable usually means writing compatibility code that outlives the migration. This rule flips the priority: optimize for an end state you can verify, and allow intermediate breakage when it's planned, scoped and reversible. Its guardrails keep that honest: use it only for planned work with explicit phase boundaries, say where breakage is acceptable, keep strong checks on the areas you're actively touching, and require full static and runtime verification when the plan is complete.",
+          "permalink": "https://github.com/cursor/plugins/tree/bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7/pstack/skills/principle-outcome-oriented-execution"
+        },
         "tags": [
           "category:engineering",
           "type:guidelines",
@@ -78537,10 +78739,28 @@
       "skillMd": {
         "version": "bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7",
         "updated": "2026-11-15",
-        "skew": 280
+        "skew": 0
       },
       "agentReview": {
         "description": "Breaks multi-step work into small units that each end in a checked state, and stacks commits so the sequence proves itself to a reviewer.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "Work has many steps, such as a sweep, a migration or a run of similar edits, or you're stacking commits and PRs"
+            },
+            {
+              "label": "It does",
+              "text": "Has the agent check each small change before starting the next, and order commits so that they prove the work"
+            },
+            {
+              "label": "You get",
+              "text": "Breaks caught at the change that caused them, and a history a reviewer can replay, such as a failing test followed by its fix"
+            }
+          ],
+          "text": "A pstack principle skill about order. Split work into small units that each end in a state you can check, and don't move on until the current one passes: a known-good state, one change, the check, then the next, starting from an up-to-date main branch so each check measures against the real baseline. A break found at the unit that caused it is cheap to locate; one found after a batch is buried under the work built on it. The same idea shapes delivery: stack commits and PRs so each lands on its own and the sequence reads as an argument, such as the failing test first and the fix on top, a removal before the reshape, or a baseline capture before the change. It pairs with pstack's principles on proving changes work and on building tools that make each check cheap.",
+          "permalink": "https://github.com/cursor/plugins/tree/bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7/pstack/skills/principle-sequence-verifiable-units"
+        },
         "tags": [
           "category:engineering",
           "type:guidelines",
@@ -78567,10 +78787,32 @@
       "skillMd": {
         "version": "bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7",
         "updated": "2026-11-15",
-        "skew": 765
+        "skew": 0
       },
       "agentReview": {
         "description": "Keeps a project's verification skill honest: reads every feature from source, drives each one live, and ships one PR of proven corrections.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "Your project has a verification skill with a feature map, and the app has changed since it was written"
+            },
+            {
+              "label": "It does",
+              "text": "Has one subagent per feature explain it from source, then drives every feature live and fixes the skill wherever it drifted"
+            },
+            {
+              "label": "You get",
+              "text": "A verdict, clean (nothing to fix), changed (corrections shipped) or blocked,, and at most one PR of proven corrections to the verification skill"
+            },
+            {
+              "label": "Never",
+              "text": "Edits your app's code; real regressions are reported to you instead"
+            }
+          ],
+          "text": "A verification skill tells agents how to launch your app and drive each feature the way a user does; pstack's create-verification-skill writes one, and this skill keeps it honest as the app changes. It finds the skill, usually under .cursor/skills/verify-*/, and tidies its feature map, the list of files describing each feature. Then one read-only subagent per feature explains from source how that feature works, flags likely drift with citations and returns a recipe for checking it live. The live pass is required even when the source looks clean: the main agent drives every feature at least once, health-checking the app before each drive and after anything surprising, keeping the evidence and cleaning up what it started. Wrong descriptions get fixed; working behavior its driving scripts can't reach gets a script fix, driven again before it ships; broken app behavior is reported, not documented away. A feature it can't reach must name its prerequisite, such as a login or an operating system.",
+          "permalink": "https://github.com/cursor/plugins/tree/bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7/pstack/skills/maintain-verification-skill"
+        },
         "tags": [
           "category:debugging",
           "category:skill-tools",
@@ -78598,10 +78840,32 @@
       "skillMd": {
         "version": "bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7",
         "updated": "2026-11-15",
-        "skew": 653
+        "skew": 0
       },
       "agentReview": {
         "description": "Designs an auditable playbook for a large or ambiguous change, then runs it as a hypothesis loop with a decision log.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "A big migration or ambitious multi-part change fits no existing playbook, and you'll review it after stepping away"
+            },
+            {
+              "label": "It does",
+              "text": "Frames a testable definition of done, designs a phase-by-phase playbook, then runs each step as an experiment"
+            },
+            {
+              "label": "You get",
+              "text": "The playbook it designed, a decision log, what's verified against the definition of done and what's still open"
+            },
+            {
+              "label": "Rigor",
+              "text": "Scaled to the task: decisions that are hard to undo, and wide-reaching changes, get more checkpoints and written records"
+            }
+          ],
+          "text": "When no playbook fits, figure-it-out designs one, and its first deliverable is the workflow, not code. It frames the task: a definition of done that a check can prove or disprove, the scope in rough units and effort, and a level of rigor biased high, and it presents these and the tradeoffs before a long run. Then it splits the work into small units that can each land alone, riskiest unknown first, builds the checks that will measure progress and records a baseline before changing anything, sends decisions that are hard to undo to pstack's architect skill, and fans out to parallel workers only where pieces don't touch, each in its own worktree. Each unit is an experiment: a hypothesis, the smallest change, a measurement on the real result, then keep or revert. Results are VERIFIED, NOT VERIFIED or INCONCLUSIVE, and inconclusive isn't a pass. The decision log, kept with pstack's show-me-your-work skill and usually committed, is what lets you trust the work when you come back.",
+          "permalink": "https://github.com/cursor/plugins/tree/bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7/pstack/skills/figure-it-out"
+        },
         "tags": [
           "category:planning",
           "category:engineering",
@@ -78629,10 +78893,32 @@
       "skillMd": {
         "version": "bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7",
         "updated": "2026-11-15",
-        "skew": 1214
+        "skew": 0
       },
       "agentReview": {
         "description": "Picks the model and reasoning budget for each pstack role and writes them to a Cursor rule.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You've installed pstack and want to choose which models its roles run on, and how hard they think"
+            },
+            {
+              "label": "It does",
+              "text": "Finds the models you can use, asks for a reasoning budget, maps every role and confirms the choices with you"
+            },
+            {
+              "label": "You get",
+              "text": "A rule file new sessions read: ~/.cursor/rules/pstack-models.mdc in Cursor, ~/.claude/rules/pstack-models.md in Claude Code"
+            },
+            {
+              "label": "Runs",
+              "text": "When you call it, and again whenever you want to change the choices"
+            }
+          ],
+          "text": "pstack's skills hand work to subagents in roles such as writing code, writing prose, judging, the hardest changes, the reviewers in its multi-model panels, and parallel workers, and this skill sets the model for each. It lists the model names you can actually pass to a subagent, or asks you to paste them, and never writes one it hasn't confirmed. You pick a budget, unlimited, large, medium or small, which moves every role's reasoning effort up or down from the defaults: Claude Opus 5.5 for most roles, Claude Fable 5.2 for the hardest changes, and one runner each on Fable, Opus and Gemini for the panels. It shows every role and lets you change any, including inherit-parent, which runs a role on your chat's own model. Re-running keeps the choices you made and replaces outdated defaults. Afterwards it offers once to generate a verification skill, or a formal verification skill, if the project has none.",
+          "permalink": "https://github.com/cursor/plugins/tree/bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7/pstack/skills/setup-pstack"
+        },
         "tags": [
           "category:agents",
           "type:setup",
@@ -78659,10 +78945,32 @@
       "skillMd": {
         "version": "bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7",
         "updated": "2026-11-15",
-        "skew": 715
+        "skew": 0
       },
       "agentReview": {
         "description": "Mines the current chat for lasting lessons with three reviewer subagents and turns each into a proposed edit to an existing skill.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "A session taught you something you don't want the next agent to have to relearn"
+            },
+            {
+              "label": "It does",
+              "text": "Three reviewer subagents read the chat through different lenses, and a fourth sorts their findings into accepted, rejected and backlog"
+            },
+            {
+              "label": "You get",
+              "text": "Proposed edits to existing skills, applied only once you approve, and backlog items filed to your team's tracker"
+            },
+            {
+              "label": "Runs",
+              "text": "Only when you say reflect"
+            }
+          ],
+          "text": "reflect turns a session's lessons into changes to the skills your agents use. It finds this conversation's transcript, looking only in the current workspace, then runs three reviewers on it in parallel: one on judgment, one on tooling and one looking for unexpected angles, on the models your pstack setup names. A synthesizer checks their citations and returns accepted, rejected and backlog lists; anything a lint rule, script or runtime check would enforce more reliably moves to the backlog. It shows you the lists and waits, since a skill change affects every future agent, and you pick which edits to apply. Small edits it makes itself; bigger ones and new skills go through Cursor's built-in create-skill. It never edits a skill inside the installed plugin's own folder, copying it to your skills folder first, and never opens a PR. Backlog items go to your team's tracker without waiting. It ends with the edits applied, the issues filed and the findings it rejected.",
+          "permalink": "https://github.com/cursor/plugins/tree/bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7/pstack/skills/reflect"
+        },
         "tags": [
           "category:skill-tools",
           "category:agents",
@@ -78693,10 +79001,28 @@
       "skillMd": {
         "version": "bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7",
         "updated": "2026-11-15",
-        "skew": 40
+        "skew": 0
       },
       "agentReview": {
         "description": "Restates the agent's last message in plain words, without jargon.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "The agent's last reply was full of jargon or hard to follow"
+            },
+            {
+              "label": "It does",
+              "text": "Restates that reply more simply and concisely, like one person talking to another"
+            },
+            {
+              "label": "Runs",
+              "text": "Only when you call it, as /bro"
+            }
+          ],
+          "text": "bro is a one-sentence command from pstack, Lauren Tan's plugin of engineering skills. Call it after a reply you couldn't follow, and the agent says the same thing again without jargon, more simply and concisely, in plain conversational language. It changes nothing else, and later replies go back to normal.",
+          "permalink": "https://github.com/cursor/plugins/tree/bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7/pstack/skills/bro"
+        },
         "tags": [
           "category:output-style",
           "type:command",
@@ -78721,10 +79047,32 @@
       "skillMd": {
         "version": "bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7",
         "updated": "2026-11-15",
-        "skew": 1074
+        "skew": 0
       },
       "agentReview": {
         "description": "Turns how you work, mined from your recent chats and a few questions, into a personal -mode skill that agents follow.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You want agents to work the way you do without restating your preferences in every chat"
+            },
+            {
+              "label": "It does",
+              "text": "Has parallel subagents read a few weeks of your chats, asks you a few questions, then drafts the skill with you"
+            },
+            {
+              "label": "You get",
+              "text": "A personal skill such as jay-mode, committed on a branch with a pull request, which agents follow when you call it"
+            },
+            {
+              "label": "If you have one",
+              "text": "It updates your existing personal skill from the chats since its last edit"
+            }
+          ],
+          "text": "automate-me turns your working conventions into a skill named after you, such as jay-mode, or updates the one you already have. It reads only the current workspace's chat transcripts, divided between parallel subagents, looking for patterns: how long you like replies, how you delegate, what done means to you, your code and prose rules, and how you handle commits and pull requests. A pattern has to show up in at least two of those portions to count. Then it asks one or two multiple-choice questions and one open question, groups the findings into sections such as response style, autonomy, verification and process, and drafts the skill with Cursor's built-in create-skill, following the shape of poteto-mode, pstack's own entry-point skill, but not its content, and pstack's unslop rules for the prose. You iterate on the draft until it reads like you. It works in a separate worktree, commits, opens a pull request and never pushes to main.",
+          "permalink": "https://github.com/cursor/plugins/tree/bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7/pstack/skills/automate-me"
+        },
         "tags": [
           "category:skill-tools",
           "type:workflow",
@@ -78752,10 +79100,36 @@
       "skillMd": {
         "version": "bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7",
         "updated": "2026-11-15",
-        "skew": 862
+        "skew": 0
       },
       "agentReview": {
         "description": "Rebuilds your recent working context from your chats, git, PRs, tickets and other shared records, and hands back a short brief with the next move.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You're starting or resuming work and want to know where a topic stands, or what you've been working on"
+            },
+            {
+              "label": "It does",
+              "text": "Has parallel subagents mine your recent agent chats and sweep git, PRs, tickets, chat and error tracking, then checks it all against live state"
+            },
+            {
+              "label": "You get",
+              "text": "A brief: up to five summary bullets, each thread tagged merged, open, in flight or reverted, recurring problems and one next move"
+            },
+            {
+              "label": "Needs",
+              "text": "git and gh; your issue tracker, chat and error tracking connected through MCP for the wider sweep"
+            },
+            {
+              "label": "Scope",
+              "text": "The current workspace's last 7 days by default, stated back to you before it searches"
+            }
+          ],
+          "text": "recall rebuilds your working context from two records. Your own chat history holds what you did and decided. The shared record, meaning source control, the issue tracker, chat channels, docs and error tracking, holds what happened around the same code, such as symptoms users keep reporting and fixes that shipped and got reverted. It pins the scope first, then sends cheap, fast subagents through slices of your transcripts, newest first, each returning goals, decisions, open threads and artifacts, citing the chat they came from. Whenever the topic names a feature, file or bug, one investigator per source connected through MCP asks what's been tried and what users still report; a source that isn't connected is skipped and named. It then checks the PRs, branches and tickets it found with git and gh. The brief stays on topic, cites every finding, and ends with the single most useful next action.",
+          "permalink": "https://github.com/cursor/plugins/tree/bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7/pstack/skills/recall"
+        },
         "tags": [
           "category:agents",
           "type:workflow",
@@ -78784,10 +79158,32 @@
       "skillMd": {
         "version": "bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7",
         "updated": "2026-11-15",
-        "skew": 971
+        "skew": 0
       },
       "agentReview": {
         "description": "Explains a change or subsystem plainly, building on what the how and why skills find.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You want to really understand a change, a subsystem or a piece of code, not just get a summary"
+            },
+            {
+              "label": "It does",
+              "text": "Runs pstack's how and why skills, then weaves what they find into one plain explanation at your pace"
+            },
+            {
+              "label": "You get",
+              "text": "A short answer first, deeper layers when you ask, and diagrams that build the picture one part at a time"
+            },
+            {
+              "label": "Never",
+              "text": "Changes anything; the goal is that you understand it"
+            }
+          ],
+          "text": "teach explains what a thing is, how it works and why it's built that way. It reads from the conversation why you're asking, whether you're about to change it, reviewing it, debugging it or new to it, rather than quizzing you, and picks the few things you should walk away understanding. It runs pstack's how skill for the mechanics and its why skill for the reasons, in parallel for a whole subsystem, and keeps why's statements of how sure it is, since they're findings too. It opens with a plain definition and the thing's common name, ties it to your case, then builds up: the problem each part solves and how it actually works. It gives the smallest complete answer first and stops, adding layers when you ask, with no quizzes. For anything with three or more moving parts it draws a series of diagrams, each adding one part, in mermaid, or, with an image-generation tool, as whiteboard-style pictures for spatial ideas such as layout or scrolling.",
+          "permalink": "https://github.com/cursor/plugins/tree/bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7/pstack/skills/teach"
+        },
         "tags": [
           "category:engineering",
           "type:workflow",
@@ -78814,10 +79210,32 @@
       "skillMd": {
         "version": "bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7",
         "updated": "2026-11-15",
-        "skew": 402
+        "skew": 0
       },
       "agentReview": {
         "description": "Has a comment-hunting subagent flag code comments, then deletes the dead ones, fixes what they excused and offers checks for the constraints they claim.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "Code has comments that excuse it, apologize for it or warn people off touching it, and you'd rather the code explained itself"
+            },
+            {
+              "label": "It does",
+              "text": "Spawns a comment-hunting subagent, vets its verdicts, deletes dead comments and fixes the root causes they papered over"
+            },
+            {
+              "label": "You get",
+              "text": "Fewer comments, fixes for what they excused, offers to turn claimed constraints into types, tests or lint rules, and a report"
+            },
+            {
+              "label": "Runs",
+              "text": "Only when you call it, on the files you name or the current diff"
+            }
+          ],
+          "text": "no-comments hands your files, or the current diff against main, to Comment Sicko, a subagent that ships with pstack and marks each comment kill or keep. The main agent then checks the report: it rejects the subagent's own edits to application code, changes outside the scope and misjudged deletions, and keeps a comment only if it's about something you can't change, and it traces thin \"do not remove\" comments, or runs pstack's why skill on them, before accepting. A rejected report gets one rerun with the failure named. Simple findings are fixed directly, by deleting a dead path, dropping a parameter or using the real API, and a fix that needs a new shape goes to pstack's architect skill for a sketch first. Workarounds a comment excused are removed with the smallest root-cause fix inside the scope. A constraint comment, such as \"talk to X before changing\", gets an offer to encode it as a type, runtime check, test or lint rule, applied only once you approve.",
+          "permalink": "https://github.com/cursor/plugins/tree/bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7/pstack/skills/no-comments"
+        },
         "tags": [
           "category:engineering",
           "type:command",
@@ -78845,10 +79263,32 @@
       "skillMd": {
         "version": "bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7",
         "updated": "2026-11-15",
-        "skew": 489
+        "skew": 0
       },
       "agentReview": {
         "description": "Fixes a bug test-first when a cheap test exists: a failing regression test, the smallest fix, then the test passing.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You ask for TDD or a regression test, or a bug has an obvious, cheap test to write"
+            },
+            {
+              "label": "It does",
+              "text": "Writes the smallest test that fails because of the bug, confirms why it fails, fixes the bug and reruns the test"
+            },
+            {
+              "label": "You get",
+              "text": "The fix, plus the failing-before and passing-after runs as evidence"
+            },
+            {
+              "label": "Skips",
+              "text": "The test when it would need heavy setup, brittle mocks or slow infrastructure, using the closest useful check instead"
+            }
+          ],
+          "text": "pstack's tdd is test-first bug fixing, applied only when it's cheap. The agent pins down the intended behavior, the current behavior and the smallest reproduction, picks the narrowest kind of test already used for that code, and writes a focused test of the intended behavior rather than one that mirrors the implementation. It runs the test before fixing and makes sure it fails for the right reason, then makes the smallest change to the code and reruns it. When a good test isn't practical, it uses the closest check it can run instead, such as a script, a reproduction command, browser automation or a log assertion: adding no test is better than adding a bad one that mostly tests mocks or depends on timing. It never changes a test to match a wrong implementation or weakens an assertion without reason, and it reports the evidence, not just the outcome.",
+          "permalink": "https://github.com/cursor/plugins/tree/bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7/pstack/skills/tdd"
+        },
         "tags": [
           "category:engineering",
           "category:debugging",
@@ -78876,10 +79316,36 @@
       "skillMd": {
         "version": "bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7",
         "updated": "2026-11-15",
-        "skew": 458
+        "skew": 0
       },
       "agentReview": {
         "description": "Fans a task out to parallel cloud workers, as slices or as a race, and merges their results into one report.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "A task splits into parallel slices, or you want several workers racing on the same brief"
+            },
+            {
+              "label": "It does",
+              "text": "States a done condition, spawns all the workers at once as background cloud agents, then gathers their verdicts"
+            },
+            {
+              "label": "You get",
+              "text": "One report in the chat: a result table, one line per issue, and any gaps or workers that dropped out"
+            },
+            {
+              "label": "Needs",
+              "text": "Cursor's cloud agents, or subagents in the adapted copy that pstack's Claude Code plugin installs"
+            },
+            {
+              "label": "Shapes",
+              "text": "Slices for coverage, or a race decided by the first to pass, a full ranking, or the best result, chosen before spawning"
+            }
+          ],
+          "text": "swarm fans one task out to N workers and returns one combined report. It first states what done means and what each worker must return, then picks the shape: separate slices, a race on identical briefs, or both, and for a race declares how the winner is chosen. The worker model comes from your pstack setup. All workers start in one message as background cloud agents, or locally when one needs your computer, each with a brief that stands alone: its goal, scope, how to verify and what to report, PASS, ISSUES or BLOCKED with evidence. Workers that measure commits must record exactly which commits and how; a result missing that is rerun once, then recorded as a gap, and a gap never counts as a pass. A worker that drops out is noted and the rest carry on. It never pastes raw worker output into the report.",
+          "permalink": "https://github.com/cursor/plugins/tree/bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7/pstack/skills/swarm"
+        },
         "tags": [
           "category:agents",
           "type:workflow",
@@ -78906,10 +79372,32 @@
       "skillMd": {
         "version": "bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7",
         "updated": "2026-11-15",
-        "skew": 331
+        "skew": 0
       },
       "agentReview": {
         "description": "Makes a PR easier to review by tidying its commit history and description, without changing what the code does.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "A pull request is hard to review: noisy commits, a stale description, or mechanical and logic changes mixed together"
+            },
+            {
+              "label": "It does",
+              "text": "Inspects the PR, proposes a plan, then regroups the commits and rewrites the description, checking the code didn't change"
+            },
+            {
+              "label": "You get",
+              "text": "Commits in dependency order, a TL;DR that matches the diff, and notes pointing reviewers to the core and risky files"
+            },
+            {
+              "label": "Asks",
+              "text": "Before rewriting history or force-pushing"
+            }
+          ],
+          "text": "From Cursor's team kit, its in-house set of skills, this skill makes a pull request quicker to understand without changing what the code does. It finds the PR from a URL or the current branch, then checks its commits, diff size, changed paths, generated files and description for problems: noisy history, unrelated changes, missing tests, no clear place to start. It proposes a plan and rewrites history only if you agree. Before rewriting it records a fingerprint of the original code, regroups the commits in dependency order: schema or generated APIs, core logic, wiring, UI, then tests, and afterwards confirms the code is identical, refusing to push if it isn't. When you'd rather not rewrite history, it improves the description instead: a TL;DR that matches the diff, core files separated from generated ones, and risky changes, migration order, rollout and tests called out. A PR too big to fix with notes gets a recommendation to split it. It doesn't bypass git hooks unless you ask.",
+          "permalink": "https://github.com/cursor/plugins/tree/bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7/cursor-team-kit/skills/make-pr-easy-to-review"
+        },
         "tags": [
           "category:engineering",
           "type:workflow",
@@ -78936,10 +79424,28 @@
       "skillMd": {
         "version": "d2ef2680594f9a17526a6e1a2e18b3d242c5d17b",
         "updated": "2026-11-15",
-        "skew": 589
+        "skew": 0
       },
       "agentReview": {
         "description": "Guides adding a first machine-learning feature to a codebase that has none, from checking whether a simple rule would do to a baseline model behind a fallback.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You want to add a first machine-learning feature, such as recommendations or forecasting, to an app that has none"
+            },
+            {
+              "label": "It does",
+              "text": "Walks five phases: framing, data readiness, decoupling, a baseline model, and the handoff to ongoing ML operations"
+            },
+            {
+              "label": "You get",
+              "text": "A data contract to approve, the model behind an API or service with a fallback and a feature flag, and a reproducible training script"
+            }
+          ],
+          "text": "A methodology for bringing ML into an ordinary codebase without letting it tangle the business logic. The agent first asks whether a simple rule, such as a regex or a sort, would solve the problem faster, what business metric the model should move, and what a bad prediction costs. Then it audits where the training data lives, drafts a data contract, a schema of the features the model needs, for you to approve, and checks the data split doesn't leak future information into training. Before any training loop, it writes the boundary: the model behind an API endpoint or service class, a hardcoded fallback when it's slow or fails, and a feature flag to roll it out or back. The first model is deliberately simple, such as a logistic regression, with fixed seeds, tests for the data transforms and an evaluation script against the baseline. Experiment tracking, drift detection and an evaluation step in CI come last, through mle-workflow, another skill of ECC (Everything Claude Code).",
+          "permalink": "https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/ml-adoption-playbook"
+        },
         "tags": [
           "category:engineering",
           "category:science",
@@ -78967,10 +79473,32 @@
       "skillMd": {
         "version": "d2ef2680594f9a17526a6e1a2e18b3d242c5d17b",
         "updated": "2026-11-15",
-        "skew": 894
+        "skew": 0
       },
       "agentReview": {
         "description": "A Claude Code Stop hook that blocks finishing a complex task until your learning notes were updated that day, and blocks on critically low disk space.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You want Claude Code mechanically stopped from finishing a big task until it has written down what it learned"
+            },
+            {
+              "label": "It does",
+              "text": "Installs a Stop hook that checks your learning files' timestamps, your free disk space and the transcript for excuses"
+            },
+            {
+              "label": "Blocks",
+              "text": "A task of three or more edits when the growth log or three learning files weren't touched today, and any stop under 15 GB of disk"
+            },
+            {
+              "label": "Needs",
+              "text": "Claude Code, Python 3.8+, and learning files in the project's Claude Code memory folder"
+            }
+          ],
+          "text": "delivery-gate is a deterministic quality gate: a Python script you copy to ~/.claude/scripts and register as a Stop hook in ~/.claude/settings.json. Each time Claude tries to finish, it counts the session's edits; a task of three or more counts as complex. It then checks five learning files in the project's memory folder, a growth log, a decision log, an output index, a skill ratings tracker and a tools inventory, for changes made today. On a complex task, it blocks the stop and asks what was learned when the growth log, or three or more of the files, weren't updated today. It also warns when the transcript's last messages contain excuses such as \"skip tests for now\", but never blocks on them, and it reminds, warns, then blocks as free disk space drops below 50, 30 and 15 GB. It blocks a given stop only once, so a condition the agent can't fix can't trap the session. It checks that the files were touched, not what they say; growth-log, another skill of ECC (Everything Claude Code), covers what to write.",
+          "permalink": "https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/delivery-gate"
+        },
         "tags": [
           "category:agents",
           "type:setup",
@@ -78998,10 +79526,28 @@
       "skillMd": {
         "version": "d2ef2680594f9a17526a6e1a2e18b3d242c5d17b",
         "updated": "2026-11-15",
-        "skew": 1102
+        "skew": 0
       },
       "agentReview": {
         "description": "Writes learning-log entries that capture the pattern, root cause and warning signal behind a task, rather than a diary of what happened.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You've finished a task that involved debugging, rework or a non-obvious decision, and want to keep the lesson"
+            },
+            {
+              "label": "It does",
+              "text": "Turns what happened into a short entry: the root cause, a \"next time I will…\" rule and the signal that this pattern is back"
+            },
+            {
+              "label": "You get",
+              "text": "Entries of four to eight sentences in your notes, merged into an existing entry when the root cause is the same"
+            }
+          ],
+          "text": "Most learning logs read like diaries, \"fixed a bug in X\", and teach nothing next time. growth-log writes entries that capture the pattern instead. It skips trivial changes, prefers failures over achievements since they teach more, and asks why until it reaches the root cause, then generalizes it to a class of problem and phrases it as \"next time I see this signal, I will do that\". Before writing, it searches existing entries: a new symptom of a known root cause is added to that entry rather than duplicated. Each entry follows one template, context, root cause, the transferable pattern with its signal, and related entries, and is one of four types: failure, methodology, pattern discovery or capability change. It works with any notes, Markdown files, Notion or Obsidian. It pairs with ECC's delivery-gate hook, which blocks a complex task until the log was updated.",
+          "permalink": "https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/growth-log"
+        },
         "tags": [
           "category:writing",
           "category:agents",
@@ -79030,10 +79576,32 @@
       "skillMd": {
         "version": "d2ef2680594f9a17526a6e1a2e18b3d242c5d17b",
         "updated": "2026-11-15",
-        "skew": 1291
+        "skew": 0
       },
       "agentReview": {
         "description": "Opens a plan or HTML artifact in a local browser page where you annotate elements, chat and approve or request changes.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You'd rather point at what to change in a plan or design than describe it in a message"
+            },
+            {
+              "label": "It does",
+              "text": "Opens the plan or HTML artifact in your browser, where you highlight parts, chat with the agent and approve or request changes"
+            },
+            {
+              "label": "You get",
+              "text": "A review loop: each comment reaches the agent, which revises the file live and replies in the page until you approve"
+            },
+            {
+              "label": "Needs",
+              "text": "The ecc-plan-canvas command from the ecc-universal npm package of ECC (Everything Claude Code)"
+            }
+          ],
+          "text": "plan-canvas replaces typing \"yes, proceed\" to a plan with a review page. The agent runs ecc-plan-canvas open on a local Markdown or HTML file, often a plan from ECC's /plan, and a small server on your machine shows it in your browser with an annotation layer and a chat panel. Then the agent waits, ideally as a background task, for your feedback: a chat message, an annotation tied to the exact element or passage you highlighted, or a verdict. It answers every message in the page, edits the file, which reloads live, and keeps listening; approve means the plan is confirmed and it starts implementing. Flows, architectures and state machines in a plan are written as Mermaid diagrams, which the page draws. If the agent stops listening, a hook holds its turn open until queued feedback is delivered. It works in any agent that can run a shell command.",
+          "permalink": "https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/plan-canvas"
+        },
         "tags": [
           "category:planning",
           "type:tool",
@@ -79060,10 +79628,28 @@
       "skillMd": {
         "version": "d2ef2680594f9a17526a6e1a2e18b3d242c5d17b",
         "updated": "2026-11-15",
-        "skew": 2009
+        "skew": 0
       },
       "agentReview": {
         "description": "Helps design an agent loop around a goal a machine can check, or review one for spinning, gaming its checks or running a wrong answer to the end.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You're about to hand a repeating task to an agent loop, or worry an existing loop spins, cheats or finishes the wrong job"
+            },
+            {
+              "label": "It does",
+              "text": "Designs a loop step by step, starting with whether to build it at all, or reviews one against five common failures"
+            },
+            {
+              "label": "You get",
+              "text": "A goal a machine can check, with limits on what the loop may not do, a loop type, roles and a retry cap"
+            }
+          ],
+          "text": "An agent loop repeats a task until a check says it's done, and this skill is about getting that check right. It first asks whether the loop should exist: the task repeats often, weekly or more, verification can be automated, the budget can take it, and the agent can run things and see results. Then it defines a goal a script can judge yes or no, alongside what the loop must not do, such as delete or weaken tests, a retry cap that escalates to you, and ideally a comparison against an outside reference rather than its own assertions. It picks a loop type, one that stops at the goal or one that keeps maintaining a state, and a skeleton: plan, build and an independent judge that the builder can't overrule. The review checklist catches vague goals, a judge that grades its own work, missing limits, clarifications left to runtime and stale memory files. The final call, such as merging, always stays with a human.",
+          "permalink": "https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/loop-design-check"
+        },
         "tags": [
           "category:agents",
           "type:workflow",
@@ -79091,10 +79677,28 @@
       "skillMd": {
         "version": "d2ef2680594f9a17526a6e1a2e18b3d242c5d17b",
         "updated": "2026-11-15",
-        "skew": 1373
+        "skew": 0
       },
       "agentReview": {
         "description": "Coordinates frontend and backend, or two services, through one machine-checkable contract that both sides generate from and verify against.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "Frontend and backend, or two services, are built in parallel and keep drifting on field names, nulls, enums or error shapes"
+            },
+            {
+              "label": "It does",
+              "text": "Has both sides work from one contract, such as an OpenAPI file, generate types from it and verify real responses against it"
+            },
+            {
+              "label": "You get",
+              "text": "One authoritative contract per boundary, generated consumer types, provider checks and a protocol for changing the contract"
+            }
+          ],
+          "text": "contract-first governs how a boundary changes between two pieces of software: the consumer, which calls an API or reads events, and the provider, which serves them. Pick one version-controlled artifact per boundary, OpenAPI for HTTP, AsyncAPI for events, Protocol Buffers for RPC or JSON Schema for payloads, and stop keeping the same shape in a wiki, a mock file and the provider code. The agent starts from what each consumer must do, not from database rows, and writes the smallest contract that covers it: required and optional fields, nullability, enums, errors and versioning rules. Consumers generate types and mocks from it, so they can build before the provider is done; the provider proves its real serialized responses, including errors, empty lists and sandbox or mock modes, match the same file. Before merge, both sides must pass against the contract. A change starts with the contract, is reviewed by everyone affected, then flows into the code, never the other way round. It also treats contract text as data and runs generators without network or secrets.",
+          "permalink": "https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/contract-first"
+        },
         "tags": [
           "category:engineering",
           "type:workflow",
@@ -79122,10 +79726,32 @@
       "skillMd": {
         "version": "d2ef2680594f9a17526a6e1a2e18b3d242c5d17b",
         "updated": "2026-11-15",
-        "skew": 1135
+        "skew": 0
       },
       "agentReview": {
         "description": "Saves and searches shared context and handoffs between agents such as Claude Code, Codex and Cursor in ECC's local Memory Vault.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "One agent, such as Claude Code, should pick up work another, such as Codex or Cursor, started"
+            },
+            {
+              "label": "It does",
+              "text": "Searches, saves and hands off context as Markdown memories in a vault on your machine, through the CLI or MCP server of ECC (Everything Claude Code, a large skill collection)"
+            },
+            {
+              "label": "You get",
+              "text": "Project, team and personal memories plus handoff notes stating the objective, evidence, open questions and next step"
+            },
+            {
+              "label": "Needs",
+              "text": "ECC's ecc-universal npm package installed globally"
+            }
+          ],
+          "text": "unified-memory makes ECC's Memory Vault the shared layer between coding agents. Memories are plain Markdown files in three scopes: project, stored in the repo but ignored by git, team, meant to be reviewed and committed, and personal, in your home folder and only searched when asked. Before saving, the agent searches for an existing memory; new ones are passed through standard input so they don't show up in the process list, and are always marked unreviewed. A handoff names the objective and current state, the evidence and tests already run, the files involved, unresolved questions and the next action. The skill treats recall as evidence, not truth: the agent must check a recalled decision or claim against the repo or issue tracker, tell an empty search from an incomplete one, and never widen the scope to get around a denied lookup. A recalled note never authorizes sending, access or release. The vault isn't a task tracker or secret store.",
+          "permalink": "https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/unified-memory"
+        },
         "tags": [
           "category:agents",
           "type:tool",
@@ -79153,10 +79779,28 @@
       "skillMd": {
         "version": "d2ef2680594f9a17526a6e1a2e18b3d242c5d17b",
         "updated": "2026-11-15",
-        "skew": 369
+        "skew": 0
       },
       "agentReview": {
         "description": "Opens a command in a visible WezTerm window from an exact argument list, after a dry-run plan you can inspect.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "An agent needs to open an interactive command, such as an SSH session or a dev server, in a terminal window you can see"
+            },
+            {
+              "label": "It does",
+              "text": "Builds a launch plan from the program and its exact arguments, shows it as a dry run, then opens a WezTerm window on request"
+            },
+            {
+              "label": "Needs",
+              "text": "Node.js and WezTerm, the only terminal it supports"
+            }
+          ],
+          "text": "terminal-opener launches a command in a visible terminal window without ever building a shell string, so arguments can't be reinterpreted by a shell. Its bundled script takes one executable and its argument list after --. By default it only plans: with --json it shows the executable, arguments, working directory and how it would launch, and --detect checks that WezTerm is available. --launch, which the agent uses only after you ask for a real window and the arguments have been reviewed, opens a new WezTerm window, falling back to a separate WezTerm process when WezTerm's background server isn't running, and reports why. A --recover mode skips your terminal configuration when that gets in the way. The launched program inherits the caller's whole environment, secrets included, so start it from a shell that holds no secrets you wouldn't give that program.",
+          "permalink": "https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/terminal-opener"
+        },
         "tags": [
           "category:engineering",
           "type:tool",
@@ -79183,10 +79827,28 @@
       "skillMd": {
         "version": "d2ef2680594f9a17526a6e1a2e18b3d242c5d17b",
         "updated": "2026-11-15",
-        "skew": 1337
+        "skew": 0
       },
       "agentReview": {
         "description": "Gives a project's existing docs four roles, rules, map, status and history, and points the agent's instruction file to them.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "A long-lived project's docs have drifted from the code, agents keep rediscovering the same things, or deleted files keep coming back"
+            },
+            {
+              "label": "It does",
+              "text": "Maps your existing docs to four roles: rules (its constitution), map, status and history, and links them from the agent's instruction file"
+            },
+            {
+              "label": "You get",
+              "text": "One home document per fact, a short AGENTS.md or CLAUDE.md pointing to them, and update rules for each kind of change"
+            }
+          ],
+          "text": "Documentation usually rots before code does. This skill gives a project's docs four roles that don't overlap: the constitution, rules agents and contributors must follow; the map, what exists and where; the status, current health, blockers and a delete-zone of things intentionally removed; and the history, lasting decisions and why something was removed. It starts with an inventory and reuses what you have, a README, architecture notes, a roadmap, decision records (ADRs), proposing a new section or file only when a role is truly missing, and asking before adding a top-level file. Each fact lives in one document that the others link to. The agent's instruction file stays short and points to the map, status and recent history, and the skill won't claim docs are read automatically unless a hook makes it so. Linked docs count as evidence to verify against code and git, not instructions. Each change updates only the role it affects; routine fixes are left to git history.",
+          "permalink": "https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/living-docs-governance"
+        },
         "tags": [
           "category:engineering",
           "type:workflow",
@@ -79214,10 +79876,28 @@
       "skillMd": {
         "version": "d2ef2680594f9a17526a6e1a2e18b3d242c5d17b",
         "updated": "2026-11-15",
-        "skew": 1342
+        "skew": 0
       },
       "agentReview": {
         "description": "Runs a PM, an architect, a developer and a QA engineer as parallel subagents on one proposal and sums up where they disagree.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You're shaping a feature or proposal and want a PM's, an architect's, a developer's and QA's concerns at once"
+            },
+            {
+              "label": "It does",
+              "text": "Runs the four roles as parallel subagents on one problem statement, then writes a synthesis that names where they disagree"
+            },
+            {
+              "label": "You get",
+              "text": "Four short role responses and a synthesis, saved to a file only if you ask"
+            }
+          ],
+          "text": "dev-team is a preset four-perspective review for design and planning, inspired by the BMAD method's party mode, where several personas answer at once. The agent boils your topic down to one paragraph, asking one question if it's vague, and reads PROJECT-CONTEXT.md at the repo root if there is one, passing the roles only a short summary of it, leaving out secrets and any instructions hidden in the file; if the file is missing, it offers to create one. Then four subagents answer at the same time, each only analyzing: the PM on user value, scope and what done means, the architect on design, scale and integration risk, the developer on effort, edge cases and debt, and QA on testability, acceptance criteria and failure modes. The synthesis is the main agent's own: it names tensions rather than averaging them, and a concern raised by three or more roles becomes a blocking issue. It then offers to go deeper with one role, settle a tradeoff with ECC's council skill or plan the work.",
+          "permalink": "https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/dev-team"
+        },
         "tags": [
           "category:planning",
           "type:workflow",
@@ -79244,10 +79924,32 @@
       "skillMd": {
         "version": "d2ef2680594f9a17526a6e1a2e18b3d242c5d17b",
         "updated": "2026-11-15",
-        "skew": 869
+        "skew": 0
       },
       "agentReview": {
         "description": "After ECC's council skill drafts a decision, asks OpenAI's Codex, with your consent, to attack the draft before you decide.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "ECC's council skill has drafted a decision that matters, and you want another model to try to break it before you decide"
+            },
+            {
+              "label": "It does",
+              "text": "Builds a small review packet of the positions and draft, asks your consent, then has OpenAI's Codex attack it"
+            },
+            {
+              "label": "You get",
+              "text": "The council's result plus an external critique, labelled as cross-provider or same-provider, or a note that it was absent"
+            },
+            {
+              "label": "Needs",
+              "text": "ECC's council skill and the Codex CLI 0.146.0, signed in to OpenAI"
+            }
+          ],
+          "text": "An optional last step for the council skill of ECC (Everything Claude Code, a large skill collection), which has four skeptical positions debate a decision. After council has drafted its synthesis, this skill packs only what's needed to critique it, the four raw positions, the strongest disagreement and the draft, with secrets removed and no repository files. It shows you the packet and continues only after you agree to send it to OpenAI. A bundled adapter then runs the installed codex CLI in an empty temporary folder with your configuration ignored, every tool, web search and MCP server switched off, a size limit and a timeout, and it refuses any Codex version other than the one it was tested with. If Codex is missing, fails to sign in or times out, the result says \"external review absent\" with the reason, rather than quietly substituting another model. The critique is labelled honestly: cross-provider when you run it from Claude, same-provider when the host agent is itself Codex. You still make the decision.",
+          "permalink": "https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/council-multi-model"
+        },
         "tags": [
           "category:agents",
           "type:workflow",
@@ -79277,10 +79979,32 @@
       "skillMd": {
         "version": "d2ef2680594f9a17526a6e1a2e18b3d242c5d17b",
         "updated": "2026-11-15",
-        "skew": 2090
+        "skew": 0
       },
       "agentReview": {
         "description": "Documents ECC's offline TasteForge engine: interview for a video look, validate style packs, plan cuts over local footage and export editable timelines.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You want to pin down a video look and plan an edit from local footage, entirely offline"
+            },
+            {
+              "label": "It does",
+              "text": "Runs TasteForge, ECC's offline video engine: a taste interview, style-pack checks, cuts planned from a pack's rhythm and timeline export"
+            },
+            {
+              "label": "You get",
+              "text": "A taste profile, validated style packs, a cut plan over your clips, EDL or FCPXML for Resolve, Premiere or Final Cut, and a provenance report"
+            },
+            {
+              "label": "Never",
+              "text": "Calls a generation service, reads an API key or uploads media; those steps belong to taste-application"
+            }
+          ],
+          "text": "TasteForge turns \"make it feel like this reference\" into an inspectable workflow, and this skill covers its offline half. Through python3 -m tasteforge, the agent can interview you about the look you want and save it as a taste profile, inspect and validate style packs, measured looks made by taste-distillation, against their schemas, turn a profile and measurements into a written spec, apply a pack's measured cutting rhythm to your local clips, and export a frame-exact timeline as CMX3600 EDL or FCPXML 1.9. A provenance report shows what was measured locally, what came from a provider and what was only a dry run. Anything that needs generation, such as describing stills with a vision model, generating shots or making 3D props, is refused with the reason, and a provider endpoint named in pack metadata is never treated as a saved workflow. The engine ships inside taste-application's scripts and installs with pip.",
+          "permalink": "https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/tasteforge-video"
+        },
         "tags": [
           "category:media",
           "type:tool",
@@ -79308,10 +80032,32 @@
       "skillMd": {
         "version": "d2ef2680594f9a17526a6e1a2e18b3d242c5d17b",
         "updated": "2026-11-15",
-        "skew": 1418
+        "skew": 0
       },
       "agentReview": {
         "description": "Measures reference videos into a style pack: a color-grade LUT, the shot-length rhythm, hero stills, overlay plates and a spec for a generative model.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You have reference clips whose look you want to capture and reuse, rather than describe in a prompt"
+            },
+            {
+              "label": "It does",
+              "text": "Measures the clips' color by brightness band, contrast, black levels and cutting rhythm, ignoring static on-screen elements"
+            },
+            {
+              "label": "You get",
+              "text": "A style pack: a color grade as a lookup table (LUT), a shot-length distribution, hero stills, overlay plates and a spec for a generative model"
+            },
+            {
+              "label": "Needs",
+              "text": "Python and its listed packages; a key for fal, a paid AI service, only for the spec's vision-model step"
+            }
+          ],
+          "text": "The skill's core finding is that prompting can't deliver a color grade but measurement can: three paid generations asking for a stronger tint barely moved it, while one pass of a measured grade hit the target. So it splits the work: a generative model supplies content and motion, and the pack supplies the look. Its scripts measure color within brightness bands, since a look often lives in one band, using medians rather than means because color data is skewed, contrast as the spread of brightness, and the share of true black. They mask static interface elements, such as captions and black bars, by how little they move, and find cuts with a threshold that adapts to the footage. Overlay plates are the reference's flares and streaks lifted onto black for screen blending. A vision model, grounded in the numbers, writes the spec. Each genre gets its own pack, and the pack feeds taste-application or a colorist.",
+          "permalink": "https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/taste-distillation"
+        },
         "tags": [
           "category:media",
           "type:tool",
@@ -79341,10 +80087,32 @@
       "skillMd": {
         "version": "d2ef2680594f9a17526a6e1a2e18b3d242c5d17b",
         "updated": "2026-11-15",
-        "skew": 3023
+        "skew": 0
       },
       "agentReview": {
         "description": "Generates or gathers takes against a style pack, then grades, cuts and composites them into a finished video and checks it numerically.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You have a style pack, the measured look of reference clips from taste-distillation, and want a finished video in that look, from generated takes or footage you already have"
+            },
+            {
+              "label": "It does",
+              "text": "Plans takes from the pack's rhythm, generates them on fal or uses yours, grades with its color lookup table, cuts, composites overlays and measures the result"
+            },
+            {
+              "label": "You get",
+              "text": "A finished cut, editable timelines for video editors (FCPXML and EDL), and a receipt of the requested and actual duration"
+            },
+            {
+              "label": "Needs",
+              "text": "Python and ffmpeg; a fal account, a paid generation service, and TASTE_FORGE_ALLOW_LIVE=1 only for generation; Blender and Resolve for 3D props and overlays"
+            }
+          ],
+          "text": "The second half of TasteForge, a video pipeline in ECC (Everything Claude Code): taste-distillation measures a look into a style pack, and this skill makes video against it. The model supplies content, motion and framing, and the pack supplies color and rhythm, so generation prompts carry no color words, and what happens is kept separate from how it looks. Rather than one generation per shot, which wastes most of each paid clip, it generates takes of about five seconds and cuts inside them, as an editor would. It grades every shot with the pack's lookup table (LUT), cuts at the measured rhythm, weaves in existing footage, composites the overlay plates with ffmpeg, can make 3D props in Blender and place overlays in DaVinci Resolve, and checks the result's numbers against the reference. Existing takes need no provider at all, and --dry-run shows the whole plan with placeholders. A timed-out paid job isn't resubmitted blindly, and a render is never reported as delivered until it's been inspected.",
+          "permalink": "https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/taste-application"
+        },
         "tags": [
           "category:media",
           "type:tool",
@@ -79377,10 +80145,32 @@
       "skillMd": {
         "version": "d2ef2680594f9a17526a6e1a2e18b3d242c5d17b",
         "updated": "2026-11-15",
-        "skew": 1883
+        "skew": 0
       },
       "agentReview": {
         "description": "A contract for agents that draft messages to customers or partners: a human approves each exact text, and a ledger proves what was sent.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "An agent drafts messages to customers, suppliers or partners, and a human must approve each one before it goes out"
+            },
+            {
+              "label": "It does",
+              "text": "Tracks every draft as an obligation, a message owed to someone, records your decision on the exact text, and lets only that text be sent, once"
+            },
+            {
+              "label": "You get",
+              "text": "A design for a ledger linking each sent message to its draft, who approved it and when, with receipts"
+            },
+            {
+              "label": "Runs",
+              "text": "As a written contract for the system that sends messages; it ships no sending code"
+            }
+          ],
+          "text": "This skill specifies how an agent that talks to outside parties stays under the control of its operator, the human who runs it. Each thing owed to a counterparty is an obligation that moves from drafted to approved or rejected to sent. The draft's exact text is stored with a hash, where it came from and a priority. A decision records the operator, a one-time token and the version of the draft it was made on, so an approval can't release a draft rewritten after it. Sending requires an immutable approval snapshot and a claim, at most one per obligation, so two workers can't deliver the same message twice, and a receipt proves what went out. It also notifies the operator internally when a draft is filed, and checks the ledger before drafting so it doesn't re-ask counterparties for facts already on record. It pairs with counterparty-channel-discipline, another ECC (Everything Claude Code) skill.",
+          "permalink": "https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/operator-approval-loop"
+        },
         "tags": [
           "category:agents",
           "category:business",
@@ -79409,10 +80199,32 @@
       "skillMd": {
         "version": "d2ef2680594f9a17526a6e1a2e18b3d242c5d17b",
         "updated": "2026-11-15",
-        "skew": 1623
+        "skew": 0
       },
       "agentReview": {
         "description": "Builds draft master agreements for many counterparties from one template and a small JSON spec per party.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You send the same framework agreement, such as an NDA or referral agreement, to many counterparties with a few fields changed"
+            },
+            {
+              "label": "It does",
+              "text": "Fills one Markdown template from a small JSON spec per party, picking clauses by each party's role, and builds a draft"
+            },
+            {
+              "label": "You get",
+              "text": "Reproducible drafts, always labelled DRAFT, as Markdown and DOCX, plus notices for adding later deals to a signed agreement (its Schedule A)"
+            },
+            {
+              "label": "Needs",
+              "text": "Node.js, and pandoc for DOCX output; your own counsel-approved clauses"
+            }
+          ],
+          "text": "One master template, one small spec per counterparty, one build step: master-agreement-generator keeps agreements reproducible from tracked source, diffable and free of hand edits. The template is Markdown with {{PLACEHOLDER}} fields for every party-specific value; a skeleton is included, and its generic sentences are meant to be replaced with clauses your counsel approved. The bundled script validates the spec, rejecting bad values before writing anything, fills the template, selects clauses by role and converts the result with pandoc. Every output is labelled DRAFT: generating a document proves nothing about legal completeness, authority to sign or readiness to send. When an executed agreement allows new opportunities to be added by notice, a Schedule A workflow prepares those notices, but only once that authority is established. The signature page keeps a fixed layout, so tools such as ECC's esign-field-placement can place fields on it.",
+          "permalink": "https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/master-agreement-generator"
+        },
         "tags": [
           "category:business",
           "category:documents",
@@ -79440,10 +80252,32 @@
       "skillMd": {
         "version": "d2ef2680594f9a17526a6e1a2e18b3d242c5d17b",
         "updated": "2026-11-15",
-        "skew": 1524
+        "skew": 0
       },
       "agentReview": {
         "description": "A method for placing signature, date and text fields in a web e-signature composer through a signed-in browser session, saved as a draft for review.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "You prepare e-signature envelopes, the document packages sent for signing, for generated agreements through a browser and need fields in the same place every time"
+            },
+            {
+              "label": "It does",
+              "text": "Places signature, date and text fields by typed coordinates rather than dragging, checks each, and saves the envelope as a draft"
+            },
+            {
+              "label": "You get",
+              "text": "A draft envelope with screenshots for an operator to review; sending stays a human step"
+            },
+            {
+              "label": "Needs",
+              "text": "A browser session a human has already signed in to the e-signature service"
+            }
+          ],
+          "text": "A written method for automating envelope preparation in a web e-signature composer through an attached browser session, rather than the vendor's API. It assumes a fixed signature page, your block first, then the counterparty's, and calibrates the real document's geometry before placing anything. Fields go in through the composer's numeric location inputs instead of drag and drop, which drifts, and each field is checked against the right recipient. Before every read or change, it verifies the page against the sites and envelope an operator, the human running the agent, configured outside the page; page text and redirects can never widen that list. The automation never types credentials or codes: if the composer shows a login page, it stops. Its default is save as draft, with screenshots as evidence, and a hard gate keeps sending with a human. It pairs with master-agreement-generator, another ECC (Everything Claude Code) skill.",
+          "permalink": "https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/esign-field-placement"
+        },
         "tags": [
           "category:business",
           "category:browser",
@@ -79471,10 +80305,32 @@
       "skillMd": {
         "version": "d2ef2680594f9a17526a6e1a2e18b3d242c5d17b",
         "updated": "2026-11-15",
-        "skew": 1254
+        "skew": 0
       },
       "agentReview": {
         "description": "Rules for agents in channels outsiders can read: speak only when addressed and allowed, and never leak internal context.",
+        "tldr": {
+          "glance": [
+            {
+              "label": "Use it when",
+              "text": "An agent sits in shared channels, group chats or DMs where customers, suppliers or partners can read every message"
+            },
+            {
+              "label": "It does",
+              "text": "Separates who's in the audience, whether the agent may take part and whether it may send, with quiet as the default"
+            },
+            {
+              "label": "You get",
+              "text": "A policy: speak only when addressed and allowed, reply with business answers only, and never leak internal traces"
+            },
+            {
+              "label": "Runs",
+              "text": "As a written policy for whatever system sends the agent's messages, not as code"
+            }
+          ],
+          "text": "This skill keeps an agent useful but discreet where outsiders are listening. It resolves the exact platform, workspace and channel from verified platform facts and a policy set by the agent's operator, the human who runs it, never from display names, message text or the model's own output, and treats anything unknown as external. Unknown channels stay quiet for unsolicited traffic, and an explicit request is answered only if the access policy allows it. A DM from a person can ask the agent to take part but doesn't make the audience trusted. To external or unknown audiences it gives a useful final business answer or a short safe error, never internal reasoning, tool output or mentions of operators. Risky content goes to a draft for approval, and signing documents or moving money are hard stops. It covers unknown DMs, scheduled deliveries and attachments, and pairs with operator-approval-loop, another ECC (Everything Claude Code) skill, which handles approving each outbound draft.",
+          "permalink": "https://github.com/affaan-m/ecc/tree/d2ef2680594f9a17526a6e1a2e18b3d242c5d17b/skills/counterparty-channel-discipline"
+        },
         "tags": [
           "category:agents",
           "category:business",
