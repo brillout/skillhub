@@ -417,7 +417,10 @@ test("a republished skill's preview says what that means", async ({ page }) => {
   const flag = data.facets
     .find((f) => f.id === "flag")
     ?.values?.find((v) => v.id === "republished");
-  await expect(page.locator("#preview .note")).toHaveText(flag?.description ?? "");
+  // Its skill may have a note of its own beside it, from its review: as its page's test, find the
+  // caution by what it says.
+  const caution = page.locator("#preview .note", { hasText: flag?.description ?? "" });
+  await expect(caution).toHaveText(flag?.description ?? "");
 });
 
 test("each case's preview opens whole, and says what its page says of what it lacks", async ({
