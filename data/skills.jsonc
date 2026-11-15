@@ -8020,11 +8020,11 @@
           "glance": [
             {
               "label": "Use it when",
-              "text": "You audit code or cryptographic protocols and want analysis built on how the code is actually wired, not only on its text"
+              "text": "You audit code or cryptographic protocols and want diagrams, change reviews, test vectors or formal models grounded in the code or the spec"
             },
             {
               "label": "It does",
-              "text": "Draws code diagrams, compares two versions' call graphs for security changes, triages mutation testing, writes crypto test vectors, and turns protocol diagrams into ProVerif models"
+              "text": "Draws code and protocol diagrams, compares two versions' call graphs for security changes, triages mutation testing, writes crypto test vectors, and turns protocol diagrams into ProVerif models"
             },
             {
               "label": "You get",
@@ -8039,7 +8039,7 @@
               "text": "As Trail of Bits' trailmark plugin, which also brings skills SkillHub doesn't list, such as the trailmark skill (an agent's manual for the tool)"
             }
           ],
-          "text": "Trailmark is Trail of Bits' tool for parsing code in many languages into a graph of functions, classes and calls, with passes that mark the code reachable from untrusted input, how far each function's effects spread, and where calls cross a trust boundary. Its plugin builds security work on that graph. diagramming-code draws call graphs, class hierarchies and data flow as Mermaid. graph-evolution diffs the graphs of two versions to find new attack paths a text diff hides. genotoxic runs mutation testing (deliberately changing the code to see whether the tests notice) and sorts the surviving mutants into false positives, missing tests and fuzzing targets; vector-forge relies on that triage to write test vectors for cryptographic code that catch what the existing ones miss. A second pair needs no graph: crypto-protocol-diagram extracts a protocol's messages from code or a spec into a sequence diagram, and mermaid-to-proverif turns that diagram into a ProVerif model for formal verification. Each works alone but vector-forge, which needs genotoxic. The plugin also brings skills SkillHub doesn't list, among them the trailmark skill itself and taint-trace.",
+          "text": "Trailmark is Trail of Bits' tool for parsing code in many languages into a graph of functions, classes and calls, with passes that mark the code reachable from untrusted input, how far each function's effects spread, and where calls cross a trust boundary. Its plugin builds security work on that graph. diagramming-code draws call graphs, class hierarchies and data flow as Mermaid. graph-evolution diffs the graphs of two versions to find new attack paths a text diff hides. genotoxic runs mutation testing (deliberately changing the code to see whether the tests notice) and sorts the surviving mutants into false positives, missing tests and fuzzing targets; vector-forge relies on that triage to write test vectors for cryptographic code that catch what the existing ones miss. A second pair needs no graph: crypto-protocol-diagram extracts a protocol's messages from code or a spec into a sequence diagram, and mermaid-to-proverif turns that diagram into a ProVerif model for formal verification. Each works alone but vector-forge, which needs genotoxic.",
           "permalink": "https://github.com/trailofbits/skills/tree/149d7b21f4067765b82e67029730b42d228ef4b4"
         },
         "skills": [
@@ -84700,7 +84700,7 @@
           "glance": [
             {
               "label": "Use it when",
-              "text": "You run mutation testing with Trail of Bits' mewt or muton, or have another tool's results, and want to know what the changes your tests missed mean"
+              "text": "You run mutation testing with Trail of Bits' mewt or muton, or have another tool's results, and want to know which surviving mutants matter"
             },
             {
               "label": "It does",
@@ -84777,7 +84777,7 @@
               "text": "Unit, precision and conversion bugs only; anything else it notices, such as reentrancy, gets at most one closing line"
             }
           ],
-          "text": "Dimensional analysis, from physics, checks that a formula's units add up: you can't add metres to seconds. This Trail of Bits skill applies it to code, where most languages can't tell a token amount with 6 decimals from one with 18, or a price in dollars per token from one in tokens per dollar. It runs four phases through its plugin's agents. A scanner finds and ranks the files that do arithmetic, and a discoverer builds the project's vocabulary of units, such as tokens, shares, prices and seconds, saved to DIMENSIONAL_UNITS.md. Annotators then add comments in the format of Reserve Protocol's Solidity code, such as D27{UoA/tok} for a price per token, in a unit of account such as dollars, with 27 decimals, and propagators carry the units through each calculation and call. Validators finally confirm or refute each mismatch. It tracks coverage in DIMENSIONAL_SCOPE.json and doesn't finish until every in-scope file has been through all phases. It only adds comments: it doesn't fix code, commit or publish.",
+          "text": "Dimensional analysis, from physics, checks that a formula's units add up: you can't add metres to seconds. This Trail of Bits skill applies it to code, where most languages can't tell a token amount with 6 decimals from one with 18, or a price in dollars per token from one in tokens per dollar. It runs four phases through its plugin's agents. A scanner finds and ranks the files that do arithmetic, and a discoverer builds the project's vocabulary of units, such as tokens, shares, prices and seconds, saved to DIMENSIONAL_UNITS.md. Annotators then add comments in the format of Reserve Protocol's Solidity code, such as D27{UoA/tok} for a price per token, in a unit of account such as dollars, with 27 decimals, and propagators carry the units through each calculation and call. Validators finally confirm or refute each mismatch. It tracks coverage in DIMENSIONAL_SCOPE.json and doesn't finish until every in-scope file has been through all phases. Besides those two files, it only adds comments: it doesn't fix code, commit or publish.",
           "permalink": "https://github.com/trailofbits/skills/tree/149d7b21f4067765b82e67029730b42d228ef4b4/plugins/dimensional-analysis/skills/dimensional-analysis"
         },
         "tags": [
@@ -84890,7 +84890,7 @@
             },
             {
               "label": "You get",
-              "text": "A Mermaid flowchart or class diagram in a code block, centered on a function you name when the codebase is large"
+              "text": "A Mermaid flowchart or class diagram in a code block, and for a large codebase's call graph, one centered on a function you name"
             },
             {
               "label": "Diagram types",
@@ -84905,7 +84905,7 @@
               "text": "That one, from the same plugin, draws the messages a protocol's parties exchange; this one draws the code's structure"
             }
           ],
-          "text": "Part of Trail of Bits' Trailmark plugin. Trailmark parses source code in many languages into a graph of functions, classes and the calls between them, so a diagram drawn from it shows what the code actually does rather than what a reader remembers. The agent picks the diagram type from your question, a focus function and depth for call graphs and data flow, and runs the bundled diagram.py script, or Trailmark's own diagram command on version 0.4 or newer. It checks that the output is a well-formed diagram with nodes in it, and returns it as a Mermaid code block. A complexity heatmap shows the functions above a complexity threshold, colored green, yellow or red; a data-flow diagram traces paths from entry points to a function you name, or to the ten most complex functions when you name none. The script warns when a diagram passes 100 nodes.",
+          "text": "Part of Trail of Bits' Trailmark plugin. Trailmark parses source code in many languages into a graph of functions, classes and the calls between them, so a diagram drawn from it shows what the code actually does rather than what a reader remembers. The agent picks the diagram type from your question and, for call graphs and data flow, a focus function and depth, and runs the bundled diagram.py script, or Trailmark's own diagram command on version 0.4 or newer. It checks that the output is a well-formed diagram with nodes in it, and returns it as a Mermaid code block. A complexity heatmap shows the functions above a complexity threshold, colored green, yellow or red; a data-flow diagram traces paths from entry points to a function you name, or to the ten most complex functions when you name none. The script warns when a diagram passes 100 nodes.",
           "permalink": "https://github.com/trailofbits/skills/tree/149d7b21f4067765b82e67029730b42d228ef4b4/plugins/trailmark/skills/diagramming-code"
         },
         "tags": [
@@ -84963,7 +84963,7 @@
               "text": "That one, from the same repo, reviews a diff line by line with git history; this one compares the call graphs, and the two are meant to work together"
             }
           ],
-          "text": "Part of Trail of Bits' Trailmark plugin. Trailmark turns source code into a graph of functions and calls, and its pre-analysis marks the code reachable from untrusted input (taint), how many functions lie upstream and downstream of each one (blast radius), and calls that cross a trust boundary. Graph evolution builds that graph for a before and an after snapshot, then runs Trailmark's diff for added, removed and changed functions, calls and entry points, plus a bundled script for which functions moved into or out of those marked sets. It reports in priority order: new tainted paths, privilege boundary changes, new entry points, blast radius growth, complexity spikes, then plain additions and removals, checking that removed security functions were replaced. It also guards against a known trap: Trailmark's diff assumes Python unless told otherwise and returns an empty diff for other languages, so the skill passes the language explicitly and treats an empty result as suspect until both graphs check out.",
+          "text": "Part of Trail of Bits' Trailmark plugin. Trailmark turns source code into a graph of functions and calls, and its pre-analysis marks the code reachable from untrusted input (taint), how many functions depend on each one (blast radius), and calls that cross a trust boundary. Graph evolution builds that graph for a before and an after snapshot, then runs Trailmark's diff for added, removed and changed functions, calls and entry points, plus a bundled script for which functions moved into or out of those marked sets. It reports in priority order: new tainted paths, changed calls across trust boundaries, new entry points, blast radius growth, complexity spikes, then plain additions and removals, checking that removed security functions were replaced. It also guards against a known trap: Trailmark's diff assumes Python unless told otherwise and returns an empty diff for other languages, so the skill passes the language explicitly and treats an empty result as suspect until both graphs check out.",
           "permalink": "https://github.com/trailofbits/skills/tree/149d7b21f4067765b82e67029730b42d228ef4b4/plugins/trailmark/skills/graph-evolution"
         },
         "tags": [
@@ -85074,7 +85074,7 @@
             },
             {
               "label": "Needs",
-              "text": "Trailmark and a mutation framework for the implementation's language; it puts its test harness inside the implementation's package"
+              "text": "Trailmark, a mutation framework for the implementation's language and the bundle's genotoxic skill; it puts its test harness inside the implementation's package"
             }
           ],
           "text": "Part of Trail of Bits' Trailmark plugin. Wycheproof is a suite of test vectors, known inputs with expected results, for cryptographic libraries. Vector forge measures how good a set of vectors is with mutation testing: it changes the implementation on purpose and counts how many changes the vectors catch, the kill rate. It looks for implementations, preferring pure code over thin wrappers around a C library, writes a harness that checks both that valid vectors pass and that invalid ones are rejected, and records a baseline. It ranks the mutants that escape by security impact, permissive equality or validation checks first, then designs vectors for each group, such as malformed points or every invalid flag combination, each invalid vector carrying exactly one defect. Every new vector must agree across at least two independent implementations. A final mutation run shows the gain; vectors that don't raise it in a mature library can still catch bugs in new implementations.",
@@ -85128,8 +85128,8 @@
               "text": "A Markdown file with a Mermaid sequence diagram and a summary of parties, rounds, primitives, authentication and forward secrecy, plus an ASCII version in the reply"
             },
             {
-              "label": "Flags",
-              "text": "Every abort path, and with both code and spec, each place the code departs from the spec, marked ⚠️"
+              "label": "Shows",
+              "text": "Every abort path; with both code and spec, ⚠️ marks where the code departs from the spec and where the spec is vague"
             },
             {
               "label": "Unlike diagramming-code",
@@ -85189,15 +85189,15 @@
               "text": "A .pv file ready for ProVerif, plus a summary of what each query tests and the modeling assumptions it made"
             },
             {
-              "label": "Runs",
-              "text": "Not ProVerif itself: it writes the model and leaves the verification run to you"
+              "label": "Leaves to you",
+              "text": "Running ProVerif on the model it writes"
             },
             {
               "label": "Start with",
               "text": "crypto-protocol-diagram, from the same plugin, which draws such a diagram from code or a spec"
             }
           ],
-          "text": "Part of Trail of Bits' Trailmark plugin. ProVerif is a verifier that proves properties of a protocol model against an attacker who controls the network, or finds an attack. This skill writes that model. Each participant becomes a process, messages travel over a public channel the attacker sees, and each crypto operation in the diagram's notes becomes a declared function, with decryption and signature checks written so that a process stops when they fail. It adds events that mark when each party starts and completes authentication, then queries: reachability first, to show the model can actually complete, since otherwise every other result is meaningless; then secrecy of the session key and injective authentication, which rules out replays, in both directions; and a forward-secrecy test when the diagram has ephemeral keys. It declares only what the diagram uses, and checks that every send has a matching receive before writing the file.",
+          "text": "Part of Trail of Bits' Trailmark plugin. ProVerif is a verifier that proves properties of a protocol model against an attacker who controls the network, or finds an attack. This skill writes that model. Each participant becomes a process, messages travel over a public channel the attacker sees, and each crypto operation in the diagram's notes becomes a declared function, with decryption and signature checks written so that a process stops when they fail. It adds events that mark when each party starts and completes authentication, then queries: reachability first, to show the model can actually complete, since otherwise every other result is meaningless; then secrecy of the session key and injective authentication in both directions, which rules out replays; and a forward-secrecy test when the diagram has ephemeral keys. It declares only what the diagram uses, and checks that every send has a matching receive before writing the file.",
           "permalink": "https://github.com/trailofbits/skills/tree/149d7b21f4067765b82e67029730b42d228ef4b4/plugins/trailmark/skills/mermaid-to-proverif"
         },
         "tags": [
@@ -85247,15 +85247,15 @@
               "text": "A ten-section PRD in the skill's template, each gap tagged as an assumption or an open question, and a self-assessment naming its weakest section"
             },
             {
-              "label": "How it asks",
-              "text": "One question at a time, from a context dump you paste, or as a best-guess draft with every assumption labeled; you pick"
+              "label": "Three modes",
+              "text": "One question at a time by default, working from notes you paste, or a best-guess draft with every assumption labeled"
             },
             {
               "label": "Unlike create-prd",
-              "text": "That one, from phuryn/pm-skills, writes a lean one-to-two-page PRD; this one builds a full PRD in phases, over a few days"
+              "text": "That one, from phuryn/pm-skills, writes a lean one-to-two-page PRD; this one builds a full PRD in phases, over a few days of your work"
             }
           ],
-          "text": "From Dean Peters' Product Manager Skills library. The PRD it builds has ten sections: an executive summary; the problem, with evidence such as customer quotes, analytics and support tickets; target personas; strategic context (OKRs, market size, competitors, why now); a solution overview; success metrics, with one primary metric, secondary ones and guardrails that mustn't get worse; user stories with acceptance criteria; what's out of scope; dependencies and risks; and open questions. The skill spreads that work over eight phases and two to four days. Each section of its template coaches you through itself, checks consistency with the sections before it, and points to the library's skills that feed it, such as problem-statement or epic-breakdown-advisor. Notes you paste count as answers already given, so it only asks about what's missing. It warns against writing the PRD alone, specifying the UI pixel by pixel, and leaving out metrics or what's out of scope.",
+          "text": "From Dean Peters' Product Manager Skills library. The PRD it builds has ten sections: an executive summary; the problem, with evidence such as customer quotes, analytics and support tickets; target personas; strategic context (OKRs, market size, competitors, why now); a solution overview; success metrics, with one primary metric, secondary ones and guardrails that mustn't get worse; user stories with acceptance criteria; what's out of scope; dependencies and risks; and open questions. The skill spreads that work over eight phases and two to four days. Each section of its template guides you through writing it, checks consistency with the sections before it, and points to the library's skills that feed it, such as problem-statement or epic-breakdown-advisor. Notes you paste count as answers already given, so it only asks about what's missing. It warns against writing the PRD alone, specifying the UI pixel by pixel, and leaving out metrics or what's out of scope.",
           "permalink": "https://github.com/deanpeters/Product-Manager-Skills/tree/476ae12917b8e77609eb956bcc2203a4e4ec857d/skills/prd-development"
         },
         "tags": [
@@ -85297,23 +85297,23 @@
             },
             {
               "label": "It does",
-              "text": "Writes each story as As a… I want to… so that…, with a specific persona and a real motivation, then adds Given/When/Then acceptance criteria"
+              "text": "Writes each story as \"As a…, I want to…, so that…\", with a specific persona and a real motivation, then adds Given/When/Then acceptance criteria"
             },
             {
               "label": "You get",
-              "text": "Stories with a value-focused summary line, the use case and Gherkin acceptance criteria, each checked against common mistakes"
+              "text": "Stories, each with a value-focused summary line, its \"As a / I want to / so that\" line and Gherkin acceptance criteria, checked against common mistakes"
             },
             {
               "label": "Unlike epic-breakdown-advisor",
-              "text": "That one, from the same library, cuts a large epic into stories; this one writes a single story well"
+              "text": "That one, from the same library, cuts a large epic into stories; this one writes the stories themselves well"
             }
           ],
-          "text": "From Dean Peters' Product Manager Skills library. It combines Mike Cohn's user story format with acceptance criteria in Gherkin, the Given/When/Then language of the Cucumber testing tool. The agent asks who the user is and what they're trying to accomplish if you haven't said, then drafts. Its checks are concrete: the persona is specific (a trial user, not a user), I want to names an action rather than a feature, so that gives a motivation instead of restating the action, and each story has one When and one Then, though several Givens are fine. More than one When or Then means the story should be split, which the library's user-story-splitting skill does. Thens must be measurable, such as a page loading in under 2 seconds rather than a better experience. It rejects technical tasks dressed as stories, such as refactoring the API. An optional Python script prints a Markdown stub from a persona, action and outcome.",
+          "text": "From Dean Peters' Product Manager Skills library. It combines Mike Cohn's user story format with acceptance criteria in Gherkin, the Given/When/Then language of the Cucumber testing tool. The agent asks who the user is and what they're trying to accomplish if you haven't said, then drafts. Its checks are concrete: the persona is specific (a trial user, not a user), \"I want to\" names an action rather than a feature, \"so that\" gives a motivation instead of restating the action, and each story has one When and one Then, though several Givens are fine. More than one When or Then means the story should be split, which the library's user-story-splitting skill does. Thens must be measurable, such as a page loading in under 2 seconds rather than a better experience. It rejects technical tasks dressed as stories, such as refactoring the API. An optional Python script prints a Markdown stub from a persona, action and outcome.",
           "permalink": "https://github.com/deanpeters/Product-Manager-Skills/tree/476ae12917b8e77609eb956bcc2203a4e4ec857d/skills/user-story"
         },
         "tags": [
           "category:planning",
-          "type:command",
+          "type:workflow",
           "effect:none",
           "needs:none",
           "by:community",
@@ -85359,7 +85359,7 @@
               "text": "That one, from phuryn/pm-skills, rewrites an existing roadmap as outcomes; this one builds the roadmap from its inputs"
             }
           ],
-          "text": "From Dean Peters' Product Manager Skills library, a five-phase workflow the skill plans over one to two weeks. Inputs come first: business goals, validated customer problems, technical debt and enabling work, and requests from sales, marketing and customer success, which stay uncommitted. Each initiative becomes an epic hypothesis (we believe that building this for that persona will achieve this outcome, because…) with a success metric, an effort size from S to XL and the business outcome it serves. The agent then helps pick a scoring method with the library's prioritization-advisor, such as RICE, scores the epics and adjusts for strategic bets. It maps dependencies, sequences the work into Now, Next and Later or into quarters, and checks feasibility with engineering. Finally it outlines an eight-slide presentation, including what's not on the roadmap, and plans for feedback before publishing. It warns against feature lists without outcomes, roadmaps set by the highest-paid person's opinion, and treating the roadmap as a commitment.",
+          "text": "From Dean Peters' Product Manager Skills library, a five-phase workflow the skill plans over one to two weeks. Inputs come first: business goals, validated customer problems, technical debt and enabling work, and requests from sales, marketing and customer success, which stay uncommitted. Each initiative becomes an epic hypothesis (we believe that building this for that persona will achieve this outcome, because…) with a success metric, an effort size from S to XL and the business outcome it serves. The agent then helps pick a scoring method with the library's prioritization-advisor, such as RICE, scores the epics and adjusts for strategic bets. It maps dependencies, sequences the work into Now, Next and Later or into quarters, and has you check feasibility with engineering. Finally it outlines an eight-slide presentation, including what's not on the roadmap, and plans for feedback before publishing. It warns against feature lists without outcomes, roadmaps set by the highest-paid person's opinion, and treating the roadmap as a commitment.",
           "permalink": "https://github.com/deanpeters/Product-Manager-Skills/tree/476ae12917b8e77609eb956bcc2203a4e4ec857d/skills/roadmap-planning"
         },
         "tags": [
@@ -85403,14 +85403,14 @@
             },
             {
               "label": "You get",
-              "text": "A brief with dated, cited executive quotes, product strategy and launches, transformations, the role of product management, future plans and challenges, and takeaways"
+              "text": "A brief with dated, cited executive quotes, product strategy and launches, digital, AI and agile transformations, the role of product management, future plans and challenges, and takeaways"
             },
             {
               "label": "Unlike a SWOT analysis",
               "text": "A SWOT judges a company's strengths and weaknesses; this brief records the company's own view of its strategy, and leaves out financial analysis"
             }
           ],
-          "text": "From Dean Peters' Product Manager Skills library. It first asks which company and why, since a brief for an interview and one for a partnership stress different things, and sets a few key questions. Then it fills a template in nine steps: company overview and history; quotes on strategy from the CEO, COO and product leaders, each with its source, date and context; product strategy, recent launches and philosophy; digital, AI and agile transformations; how product management shapes decisions, works with other teams and grows careers; upcoming initiatives, market challenges and competitive threats; product-led growth; and key takeaways with questions left open. It names where to look for each, such as earnings transcripts, Lenny's Podcast, engineering blogs, job postings and Glassdoor, and favors sources from the last 12 to 24 months, with a citation for every claim, facts kept apart from opinion, and challenges as well as successes.",
+          "text": "From Dean Peters' Product Manager Skills library. It first asks which company and why, since a brief for an interview and one for a partnership stress different things, and sets a few key questions. Then it fills the rest of its template: company overview and history; quotes on strategy from the CEO, COO and product leaders, each with its source, date and context; product strategy, recent launches and philosophy; digital, AI and agile transformations; how product management shapes decisions, works with other teams and grows careers; upcoming initiatives, market challenges and competitive threats; product-led growth; and key takeaways with questions left open. It names where to look for each, such as earnings transcripts, Lenny's Podcast, engineering blogs, job postings and Glassdoor, and favors sources from the last 12 to 24 months, with a citation for every claim, facts kept apart from opinion, and challenges as well as successes.",
           "permalink": "https://github.com/deanpeters/Product-Manager-Skills/tree/476ae12917b8e77609eb956bcc2203a4e4ec857d/skills/company-research"
         },
         "tags": [
@@ -85450,11 +85450,11 @@
             },
             {
               "label": "It does",
-              "text": "Runs six phases over two to four weeks: frame the problem, plan the research, interview 5 to 10 customers, synthesize, test solutions, decide"
+              "text": "Guides you through six phases over two to four weeks: frame the problem, plan research, interview 5 to 10 customers, synthesize, test solutions, decide"
             },
             {
               "label": "You get",
-              "text": "A validated problem statement, ranked pain points with customer quotes, experiment results and a go, pivot or kill decision, followed on a go by an epic or PRD"
+              "text": "A validated problem statement, ranked pain points with customer quotes, experiment results and a go, pivot or kill decision, followed on a go by epic hypotheses and a PRD"
             },
             {
               "label": "Unlike continuous-discovery",
@@ -85619,7 +85619,7 @@
               "text": "That one, from the same library, runs a whole discovery cycle; this one prepares the interviews in it"
             }
           ],
-          "text": "From Dean Peters' Product Manager Skills library. Before the questions, it asks for what you have: your hypothesis or concept, the segment, support tickets or churn data, and the assumptions you're testing. Each question offers numbered options, and the method options adapt to your answers, such as exit or switch interviews for churn. The plan follows The Mom Test: ask about the last time something happened rather than whether someone would use a product, ask how they handle it today, and never pitch. It lists the biases to avoid (confirmation, leading and hypothetical questions, yes/no questions, pitching disguised as research) and how to tell the interviews worked: specific stories, past behavior, patterns across three or more interviews, and at least one surprise. Logistics cover recruiting, such as contacting 20 to 30 people to get 5 to 10 interviews, 45 to 60 minutes per interview, recording with consent, and writing up insights right after each one.",
+          "text": "From Dean Peters' Product Manager Skills library. Before the questions, it asks for what you have: your hypothesis or concept, the segment, support tickets or churn data, and the assumptions you're testing. Each question offers numbered options, and the method options adapt to your answers, such as exit or switch interviews for churn. With the Mom Test method, the plan follows its rules: ask about the last time something happened rather than whether someone would use a product, ask how they handle it today, and don't mention your solution until the end, if at all. It lists the biases to avoid (confirmation, leading and hypothetical questions, yes/no questions, pitching disguised as research) and how to tell the interviews worked: specific stories, past behavior, patterns across three or more interviews, and at least one surprise. Logistics cover recruiting, such as contacting 20 to 30 people to get 5 to 10 interviews, 45 to 60 minutes per interview, recording with consent, and writing up insights right after each one.",
           "permalink": "https://github.com/deanpeters/Product-Manager-Skills/tree/476ae12917b8e77609eb956bcc2203a4e4ec857d/skills/discovery-interview-prep"
         },
         "tags": [
@@ -85671,7 +85671,7 @@
               "text": "Other skills of its library, which most of its steps run, so install the library rather than this skill alone"
             }
           ],
-          "text": "From Dean Peters' Product Manager Skills library, the longest of its workflows. It runs about fifteen of the library's skills in order: positioning-workshop, proto-persona and jobs-to-be-done for who you serve; problem-framing-canvas, problem-statement and, optionally, a journey-mapping workshop for the problem; opportunity-solution-tree or lean-ux-canvas, epic-hypothesis and story mapping for solutions; prioritization-advisor and, optionally, TAM/SAM/SOM market sizing for the roadmap; an Amazon-style press release for stakeholder buy-in; and epic-breakdown-advisor and user-story for the first sprint. Three decision points can add a week or two: more customer interviews when context is thin or the problem unproven, and experiments when the solutions are uncertain. The skill itself supplies the sequence, durations, participants and outputs of each step, and warns against skipping problem validation, running it as a solo PM exercise, or starting without an executive sponsor.",
+          "text": "From Dean Peters' Product Manager Skills library, an end-to-end strategy workflow. It runs about fifteen of the library's skills in order: positioning-workshop, proto-persona and jobs-to-be-done for who you serve; problem-framing-canvas, problem-statement and, optionally, a journey-mapping workshop for the problem; opportunity-solution-tree or lean-ux-canvas, epic-hypothesis and, optionally, story mapping for solutions; prioritization-advisor and, optionally, TAM/SAM/SOM market sizing for the roadmap; optionally, an Amazon-style press release for stakeholder buy-in; and epic-breakdown-advisor and user-story for the first sprint. Three decision points can add a week or two: more customer interviews when context is thin or the problem unproven, and experiments when the solutions are uncertain. The skill itself supplies the sequence, durations, participants and outputs of each step, and warns against skipping problem validation, running it as a solo PM exercise, or starting without an executive sponsor.",
           "permalink": "https://github.com/deanpeters/Product-Manager-Skills/tree/476ae12917b8e77609eb956bcc2203a4e4ec857d/skills/product-strategy-session"
         },
         "tags": [
