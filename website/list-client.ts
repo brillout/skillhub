@@ -364,9 +364,11 @@ document.addEventListener("click", (event) => {
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape" || !open) return;
   const range = settings.querySelector(`[data-range-section="${open}"]`);
-  const inside = range?.contains(document.activeElement);
+  // The pill takes the focus first, so that a field left runs its change handler before closing
+  // shows the range in force, as when a click or Tab leaves it.
+  if (range?.contains(document.activeElement))
+    range.querySelector<HTMLElement>(".range-pill")?.focus();
   openRange(null);
-  if (inside) range?.querySelector<HTMLElement>(".range-pill")?.focus();
 });
 // On a narrow screen, Escape also closes the open tags from among them, as it closes a menu: the
 // keyboard's only other way out was through them all, some 150 Tabs, to the button under them.

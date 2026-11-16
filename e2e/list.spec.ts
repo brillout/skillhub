@@ -443,6 +443,30 @@ test("a bound refused for its place goes once its popover closes", async ({ page
   }
 });
 
+test("an amount left unfinished by Escape goes back to the range it was typed over", async ({
+  page,
+}) => {
+  // What isn't an amount is undone however the field is left: Escape kept the amount on its way,
+  // stars=1500..2500 for a 2500x, as did each bound of each number filter.
+  for (const [prop, end, typed, before] of [
+    ["stars", 1, "2500x", "stars=1500.."],
+    ["published", 0, "25dx", ""],
+  ] as const) {
+    await open(page, `/?show=bundles${before ? `&${before}` : ""}`);
+    await page.locator(`.range-pill[data-value="${prop}"]`).click();
+    const field = page.locator(`[data-exact="${prop}"][data-bound="${end}"]`);
+    await field.pressSequentially(typed);
+    await expect(field).toHaveAttribute("aria-invalid", "true");
+    await field.press("Escape");
+    await expect(page.locator(`#range-pop-${prop}`)).toBeHidden();
+    await settled(page);
+    expect(new URL(page.url()).searchParams.get(prop) ?? "").toBe(before.split("=")[1] ?? "");
+    await page.locator(`.range-pill[data-value="${prop}"]`).click();
+    await expect(field).not.toHaveAttribute("aria-invalid");
+    await expect(field).toHaveValue("");
+  }
+});
+
 test("the presets set the sort, the Age range and the Weekly Downloads range", async ({ page }) => {
   await open(page, "/");
   const preset = (id: string) => page.locator(`[data-preset="${id}"]`);
