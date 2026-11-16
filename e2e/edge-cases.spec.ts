@@ -237,6 +237,18 @@ test.describe("a number that's unknown", () => {
     }
   });
 
+  test("leaves its skill out of the place the others' tiles give", async ({ page }) => {
+    const known = data.skills.filter((s) => s["skills.sh"].installs !== null).length;
+    expect(known).toBeLessThan(data.skills.length);
+    await open(page, skillUrl("no-tldr"));
+    const tile = page.locator(".stat", { hasText: "Total Downloads" });
+    // It ranked among the skills with downloads as if they were all the skills the site counts.
+    await expect(tile.locator(":scope > [title]")).toHaveAttribute(
+      "title",
+      new RegExp(`\\. #[\\d,]+ of the ${known} skills with known downloads$`),
+    );
+  });
+
   test("goes last when the list is sorted by it, whichever way", async ({ page }) => {
     for (const sort of ["growth", ...NUMBERS.map((n) => n.param)])
       for (const order of ["", "order=asc"]) {

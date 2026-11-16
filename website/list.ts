@@ -231,6 +231,11 @@ interface PropInfo {
 interface Crowd {
   /** What it ranks, such as "skill". */
   what: string;
+  /**
+   * What it ranks among, counted: "1,385 skills", or "the 1,383 skills with known downloads" when
+   * some have no number, which a page that counts 1,385 would otherwise contradict.
+   */
+  among: string;
   /** Its rank's words at either end: "Top" and "Bottom", or for an age "Newest" and "Oldest". */
   ends: [top: string, bottom: string];
   /** Which way its places go, when it says so, such as "newest first". */
@@ -264,7 +269,11 @@ function crowd(
   what: string,
   values: (number | null)[],
   scale: "log" | "days" | "linear",
-  { ends = ["Top", "Bottom"], order }: { ends?: [string, string]; order?: string } = {},
+  {
+    having,
+    ends = ["Top", "Bottom"],
+    order,
+  }: { having: string; ends?: [string, string]; order?: string },
 ): Crowd {
   const known = values.filter((v) => v !== null);
   const desc = [...known].sort((a, b) => b - a);
@@ -304,6 +313,10 @@ function crowd(
   }
   return {
     what,
+    among:
+      desc.length < values.length
+        ? `the ${plural(desc.length, what)} ${having}`
+        : plural(desc.length, what),
     ends,
     order,
     total: desc.length,
@@ -369,7 +382,7 @@ export const PROPS: Record<Prop, PropInfo> = {
         return d ? days(d) : null;
       }),
       "days",
-      { ends: ["Newest", "Oldest"], order: "newest first" },
+      { having: "with a known age", ends: ["Newest", "Oldest"], order: "newest first" },
     ),
     standing: { more: "Newer than", fewer: "Older than", most: "The newest skill" },
   },
@@ -383,6 +396,7 @@ export const PROPS: Record<Prop, PropInfo> = {
       "repo",
       data.repos.filter((r) => listedRepos.has(r.id)).map((r) => r.stars),
       "log",
+      { having: "with known stars" },
     ),
     standing: {
       more: "More stars than",
@@ -397,7 +411,7 @@ export const PROPS: Record<Prop, PropInfo> = {
     of: installsOf,
     title: (e) => `${most(e)}All-time downloads on skills.sh, ${date(data.asOf.installs)}`,
     ...countStops(installsOf),
-    crowd: crowd("skill", data.skills.map(installsOf), "log"),
+    crowd: crowd("skill", data.skills.map(installsOf), "log", { having: "with known downloads" }),
     standing: {
       more: "More downloads than",
       fewer: "Fewer downloads than",
@@ -411,7 +425,9 @@ export const PROPS: Record<Prop, PropInfo> = {
     of: weekOf,
     title: (e) => `${most(e)}Downloads on skills.sh in the week to ${date(data.asOf.installs)}`,
     ...countStops(weekOf),
-    crowd: crowd("skill", data.skills.map(weekOf), "log"),
+    crowd: crowd("skill", data.skills.map(weekOf), "log", {
+      having: "with known weekly downloads",
+    }),
     standing: {
       more: "More weekly downloads than",
       fewer: "Fewer weekly downloads than",
@@ -574,7 +590,7 @@ const GROWTH = {
   icon: DOWNLOAD,
   tag: "Growth",
   /** Among the skills that have a growth: see growthOf. */
-  crowd: crowd("skill", data.skills.map(growthOf), "linear"),
+  crowd: crowd("skill", data.skills.map(growthOf), "linear", { having: "with a growth" }),
   // No full stop at its end, as the numbers' titles: propsHtml adds one before the place.
   title: (e: Entry) =>
     `${isBundle(e) ? "The most of any of its skills: " : ""}Downloads on skills.sh in an average week of the 2 weeks to ${date(data.asOf.installs)}, against an average week of the 4 weeks before. Only for skills with at least ${compact(GROWTH_MIN)} a week, and at least ${compact(GROWTH_BASE_MIN)} in each of the last ${GROWTH_WEEKS} weeks: a younger skill, or one that took off from almost nothing, shows under ${PRESETS["rising-new"].label}`,
@@ -1458,9 +1474,9 @@ function rankText(c: Crowd, n: number): string {
     : `${bottom} ${Math.ceil(((c.total - place + 1) / c.total) * 100)}%`;
 }
 
-/** Such as "#34 of 1,190 skills", or "#586 of 1,190 skills, newest first". */
+/** Such as "#34 of 1,190 skills", or "#586 of the 1,188 skills with a known age, newest first". */
 const placeText = (c: Crowd, n: number) =>
-  `#${number(c.placeOf(n))} of ${plural(c.total, c.what)}${c.order ? `, ${c.order}` : ""}`;
+  `#${number(c.placeOf(n))} of ${c.among}${c.order ? `, ${c.order}` : ""}`;
 
 /**
  * Where an entry's number stands among the catalog's, for the skill's page: its place, in words,
