@@ -404,6 +404,22 @@ test("the keyboard reaches a SKILL.md's blocks that scroll sideways, and only th
   expect(mismatched).toBe(0);
 });
 
+test("a SKILL.md's block that scrolls sideways shades the edge it goes on past", async ({
+  page,
+}) => {
+  await open(page, wideCodeUrl);
+  // On a phone, whose scrollbar shows only while a finger scrolls, nothing told a block cut off at
+  // the screen's edge from one that ended there.
+  const block = page.locator('.markdown pre[tabindex="0"]').first();
+  const shades = await block.evaluate((pre) => {
+    const style = getComputedStyle(pre);
+    return { attachment: style.backgroundAttachment, image: style.backgroundImage };
+  });
+  // Two covers that scroll with it, and two shades that stay at its edges, over its color.
+  expect(shades.attachment).toMatch(/^local, local, scroll, scroll\b/);
+  expect(shades.image.match(/linear-gradient/g)).toHaveLength(4);
+});
+
 test("a bundle's page: its skills in order, and how to install them", async ({ page }) => {
   const { name, skills, install } = bundle.agentReview;
   await open(page, bundleUrl);

@@ -7,7 +7,7 @@
 import type { Locator, Page } from "@playwright/test";
 import { bundle, bundleUrl, onlyInBundle, repo, skill, skillUrl, smallRepo } from "./data.ts";
 import { skillPage } from "../website/github.ts";
-import { expect, list, open, ready, rowHeads, searchable, settled, test } from "./fixtures.ts";
+import { expect, list, n, open, ready, rowHeads, searchable, settled, test } from "./fixtures.ts";
 
 const preview = (page: Page) => page.locator("#preview");
 /** The name the preview shows: of the row it's about. */
@@ -694,14 +694,37 @@ test.describe("in a window 1,160px wide, just wide enough for the preview", () =
   }) => {
     // The bundles, whose names are followed by the most: what they are, then their repo.
     await open(page, "/?show=bundles");
-    await expect(list(page).rows.first().locator(".details")).toBeVisible();
     const heads = await rowHeads(page);
     expect(heads.length).toBeGreaterThan(20);
-    // In the name's column, which All details and the buttons leave a third of the row, a repo
+    // In the name's column, which All details and the buttons left a third of the row, a repo
     // broke in two or three, beside half a row of nothing.
     expect(heads.filter((head) => head.repoWidth <= head.width && head.repoLines > 1)).toEqual([]);
   });
 });
+
+for (const width of [1160, 1280]) {
+  test.describe(`in a window ${n(width)}px wide, where a row's All details takes its name's room`, () => {
+    test.use({ viewport: { width, height: 800 } });
+
+    test("a row has no All details, and its name keeps a line of its own", async ({ page }) => {
+      await open(page, "/");
+      const row = list(page).rows.first();
+      await expect(row.locator(".details")).toBeHidden();
+      // Beside it, the name took two lines in up to half the rows, "landing-page-" over "design":
+      // of the first 60, which the browser draws, under one in ten now.
+      const wrapped = await page.locator("#results .skill-list > li").evaluateAll((rows) =>
+        rows.slice(0, 60).filter((row) => {
+          (row as HTMLElement).style.contentVisibility = "visible";
+          return (row.querySelector(".skill-name") as Element).getClientRects().length > 1;
+        }),
+      );
+      expect(wrapped.length).toBeLessThan(6);
+      // Its preview has one.
+      await wordsOf(row).click();
+      await expect(preview(page).getByRole("link", { name: "All details" })).toBeVisible();
+    });
+  });
+}
 
 test.describe("in a window 1,100px wide, too narrow for the preview", () => {
   test.use({ viewport: { width: 1100, height: 800 } });

@@ -130,11 +130,20 @@ document.getElementById("filters")?.addEventListener("pointerleave", (event) => 
  */
 let typing = false;
 
+/**
+ * Whether a slider's fields keep an amount refused for its place, while the other field is typed
+ * in: see `typed` and the change handler after it, and syncRanges.
+ */
+let keepFields = false;
+
 /** `typed`: the change is one of a run, a letter of a search or a step of a slider's handle. */
 function go(patch: Partial<State>, typed = false) {
   // Whatever else changes the list, a slider or a preset, the fields then show its ranges again.
   if (!typed) keepFields = false;
   state = patched(state, patch);
+  // In place of the page's entry in the browser's history, on purpose: an entry a change, each
+  // letter of a search and each step of a slider, would bury the page before it under dozens, and
+  // Back would undo one at a time. Back leaves the list as it is, for the page before it.
   history.replaceState(null, "", query(state) || location.pathname);
   // A new order or new filters start the list over, except while typing a search, which happens
   // at the top anyway.
@@ -870,11 +879,6 @@ const sameRange = (a: Range, b: Range) => a[0] === b[0] && a[1] === b[1];
 
 /** A slider's range when one of its fields took the focus: what an amount that's refused goes back to. */
 let since: { p: Prop; range: Range } | null = null;
-/**
- * Whether the fields keep an amount refused for its place, while the other field is typed in: see
- * the change handler below, and syncRanges.
- */
-let keepFields = false;
 app.addEventListener("focusin", (event) => {
   const p = (event.target as HTMLElement).dataset.exact as Prop | undefined;
   if (p) since = { p, range: state.ranges[p] };

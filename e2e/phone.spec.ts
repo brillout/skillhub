@@ -393,6 +393,43 @@ test("the keyboard's Search key brings what the search found into view", async (
   await expect(search).toHaveAttribute("enterkeyhint", "search");
 });
 
+test("what a finger taps is about 44px tall, or reaches as far", async ({ page }) => {
+  // Its height, with its reach where it has one: an ::after around it.
+  const tall = (selector: string) =>
+    page
+      .locator(selector)
+      .first()
+      .evaluate((el) => {
+        const after = getComputedStyle(el, "::after");
+        const reach = (side: string) =>
+          after.content !== "none" && after.position === "absolute" && side.endsWith("px")
+            ? -Number.parseFloat(side)
+            : 0;
+        return el.getBoundingClientRect().height + reach(after.top) + reach(after.bottom);
+      });
+  // They were 31px, 32, 33 and 33.
+  await open(page, "/");
+  for (const selector of [
+    ".site-links a",
+    ".theme-toggle",
+    ".skill-list .thumbs button",
+    ".skill-list .save",
+  ])
+    expect(await tall(selector), selector).toBeGreaterThanOrEqual(42);
+  // 18px and 21: Weekly values and Frontmatter.
+  await open(page, skillUrl);
+  for (const selector of [".spark-table summary", ".frontmatter summary"])
+    expect(await tall(selector), selector).toBeGreaterThanOrEqual(40);
+  // Beside the page's name, they don't make its line taller than the name.
+  const [name, buttons] = await page
+    .locator(".title-row")
+    .evaluate((row) => [
+      (row.querySelector("h1") as Element).getBoundingClientRect().height,
+      row.getBoundingClientRect().height,
+    ]);
+  expect(buttons).toBe(name);
+});
+
 test("a bundle's row keeps each of its skills' names whole on its line", async ({ page }) => {
   await open(page, "/?show=bundles");
   // Broken at its hyphens, "game-" ended a line and "jam" started the next.

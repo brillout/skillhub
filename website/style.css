@@ -22,7 +22,15 @@
  *   dividers, and the edges of fields.
  * - Avoided on purpose: all-caps labels, meta joined with middle dots, arrows appended to links,
  *   a stack of identical rounded cards (the results are one ruled sheet instead), decorative
- *   shadows and gradients.
+ *   shadows and gradients. Each has its exceptions, which aren't to spread:
+ *   - All caps, and smaller than 12px, for the tiniest labels alone, which say what a row's
+ *     numbers are, 8 and 9px, spaced: the word under an icon two numbers share, TOTAL and WEEK,
+ *     and a rank under its bar, TOP #72 or NEWEST 9% (see .prop-tag and .crowd .rank).
+ *   - Middle dots between a tile's name and where its number comes from, "Weekly Downloads ·
+ *     week to Nov 16, 2026" (see .stat-name), between a repo's facts on its page and its
+ *     owner's, and in the pages' titles, "find-skills · vercel-labs/skills · SkillHub".
+ *   - Gradients, and shades, that say something: at the edge of a SKILL.md's code block or table
+ *     that scrolls on past it (see .markdown pre), and a lifted sheet's edge (--shadow-side).
  * - Motion. Transitions, and only for press feedback (scale 0.96), a button's edge on hover
  *   (150ms), the Save, thumbs and dark mode icons' swaps and the Saved switch's knob. Keyframes
  *   only for one nudge: a save draws the eye to the Saved switch's count. Other colors change at
@@ -98,6 +106,8 @@
   --shadow-side: 1px 0 0 var(--ring), 8px 0 24px -6px oklch(0 0 0 / 0.18);
   /* Under what opens over the list, the Sort by menu and a filter's slider, with --shadow-border. */
   --shadow-pop: 0 8px 24px -6px oklch(0 0 0 / 0.18);
+  /* At the edge of a SKILL.md's code block or table that scrolls on past it: see .markdown pre. */
+  --scroll-shade: oklch(0 0 0 / 0.16);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -145,6 +155,7 @@
   --row-hover: oklch(1 0 0 / 0.035);
   --row-picked: oklch(1 0 0 / 0.07);
   --shadow-side: 1px 0 0 var(--ring), 8px 0 24px -6px oklch(0 0 0 / 0.5);
+  --scroll-shade: oklch(0 0 0 / 0.6);
   /* Darker, as the preview's: a menu is the list's own color, and at the light theme's strength
      nothing told it from the rows under it but its ring. */
   --shadow-pop: 0 10px 28px -4px oklch(0 0 0 / 0.7);
@@ -2655,6 +2666,18 @@ input[type="search"]::-webkit-search-cancel-button:hover {
   }
 }
 
+/*
+ * Not where it takes the room the row's name needs: up to 1,340px it left the name so little that
+ * it took two lines in up to half the rows, "landing-page-" over "design" (532 of 1,103 at 1,151px,
+ * 120 at 1,231px). Without it, 68 and 11. A click on the row opens its preview there, which has its
+ * own All details, and the row's name is a link to its page too.
+ */
+@media (min-width: 1151px) and (max-width: 1340px) {
+  .skills-view .skill-list .row-head .details {
+    display: none;
+  }
+}
+
 /* Beside Save, closer to it than to the row's name. */
 .row-head .details {
   margin: -3px -8px -3px 0;
@@ -3902,6 +3925,28 @@ h3 + .cloud {
   font-size: 14px;
 }
 
+/*
+ * A code block or a table that scrolls sideways says so: a shade at the edge past which it goes
+ * on, covered by its own color where it ends, as the covers scroll with it and the shades don't.
+ * On a phone, whose scrollbar shows only while a finger scrolls, nothing told a table cut off at
+ * the screen's edge, mid-word, "thresholc", from one that ended there. Each on its own color: the
+ * code's grey, the table's paper.
+ */
+.markdown pre,
+.markdown table {
+  --scroll-on: var(--paper-2);
+  background:
+    linear-gradient(to right, var(--scroll-on) 40%, transparent) left / 32px 100% no-repeat local,
+    linear-gradient(to left, var(--scroll-on) 40%, transparent) right / 32px 100% no-repeat local,
+    linear-gradient(to right, var(--scroll-shade), transparent) left / 12px 100% no-repeat scroll,
+    linear-gradient(to left, var(--scroll-shade), transparent) right / 12px 100% no-repeat scroll,
+    var(--scroll-on);
+}
+
+.markdown table {
+  --scroll-on: var(--paper);
+}
+
 .markdown th,
 .markdown td {
   padding: 6px 10px;
@@ -5115,15 +5160,16 @@ html[data-logged-in]:not([data-account]) .account::before {
 }
 
 /*
- * As on a phone, in a window just wide enough for a row's numbers beside its words and All details
- * beside its thumbs: the name had 158px of the words' 436 at 1,151px, where a third of the repos
- * broke, and a bundle's name, its kind and its repo took six lines beside half a row of nothing.
- * Only on the skills list, whose rows have All details: a repo's page has the room.
+ * As on a phone, in a window just wide enough for a row's numbers beside its words: what follows
+ * the name goes under it and its thumbs. Beside them, a third of the repos broke, "github/awesome-"
+ * over "copilot", and a bundle's name, its kind and its repo took six lines beside half a row of
+ * nothing. Only on the skills list, whose rows have the numbers beside them: a repo's page has the
+ * room.
  */
 @media (min-width: 1151px) and (max-width: 1230px) {
   .skills-view .row-head {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto auto auto;
+    grid-template-columns: minmax(0, 1fr) auto auto;
     gap: 4px 16px;
   }
 
@@ -5135,16 +5181,12 @@ html[data-logged-in]:not([data-account]) .account::before {
     grid-area: 1 / 1;
   }
 
-  .skills-view .row-head .details {
+  .skills-view .row-head .thumbs {
     grid-area: 1 / 2;
   }
 
-  .skills-view .row-head .thumbs {
-    grid-area: 1 / 3;
-  }
-
   .skills-view .row-head .save {
-    grid-area: 1 / 4;
+    grid-area: 1 / 3;
   }
 
   .skills-view .row-head .skill-meta {
@@ -5219,5 +5261,81 @@ html[data-logged-in]:not([data-account]) .account::before {
   .tag-detail th {
     width: 1%;
     white-space: nowrap;
+  }
+}
+
+/*
+ * What a finger taps, about 44px tall, as phones' own buttons are: on a phone the header's links
+ * were 31px, the theme's toggle 32 by 32, a row's thumbs and Save 33, the order's arrows 32,
+ * Weekly values 18 and Frontmatter 21, a queued skill's name and repo 18. As tall as that where
+ * their line has the room. Where it hasn't, a reach around them, as the tags have (see .chip::after),
+ * which moves nothing: the summaries reach into the room around them, a queued skill's links into
+ * their cell's padding, as far as each other.
+ */
+@media (pointer: coarse) {
+  .site-links a {
+    padding: 11px 0;
+  }
+
+  .theme-toggle {
+    width: 44px;
+    height: 44px;
+    margin-right: -13px;
+  }
+
+  .thumbs button,
+  .save,
+  .row-head .save {
+    padding-block: 11px;
+  }
+
+  /* Without making a row's name's line taller, as with their -3px. */
+  .row-head :is(.save, .thumbs) {
+    margin: -8px 0;
+  }
+
+  .order {
+    height: 44px;
+  }
+
+  .order button {
+    line-height: 44px;
+  }
+
+  .spark-table summary,
+  .frontmatter summary,
+  .queue-name a,
+  .queue-repo {
+    position: relative;
+  }
+
+  .spark-table summary::after,
+  .frontmatter summary::after,
+  .queue-name a::after,
+  .queue-repo::after {
+    content: "";
+    position: absolute;
+  }
+
+  .spark-table summary::after,
+  .frontmatter summary::after {
+    inset: -12px -8px;
+  }
+
+  .queue-name a::after {
+    inset: -10px -4px -2px;
+  }
+
+  .queue-repo::after {
+    inset: -2px -4px -10px;
+  }
+}
+
+/* On a phone, the buttons beside a page's name, as tall as a finger needs, still don't make the
+   name's line taller: see .title-row above. */
+@media (pointer: coarse) and (max-width: 900px) {
+  .title-row :is(.save, .thumbs) {
+    margin-top: -8px;
+    margin-bottom: -8px;
   }
 }
