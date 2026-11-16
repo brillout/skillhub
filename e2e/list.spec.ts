@@ -793,11 +793,13 @@ test("a number filter takes any amount, typed in its fields", async ({ page }) =
   const starsError = stars.locator(".range-error");
   await stars.getByLabel("Under").fill("1K");
   await expect(starsError).toHaveText("“Under” has to be more than “At least”.");
+  // Under's 1K, refused beside At least's 1.5K, stays: At least gone, the range is Under's.
   await stars.getByLabel("At least").fill("");
   await settled(page);
+  await expect(page).toHaveURL("/?sort=stars&order=asc&stars=..1000&show=skills");
   await stars.getByLabel("Under").fill("0");
   await expect(starsError).toHaveText("“Under” has to be more than 0.");
-  await expect(page).toHaveURL("/?sort=stars&order=asc&show=skills");
+  await expect(page).toHaveURL("/?sort=stars&order=asc&stars=..1000&show=skills");
 
   // A link with any amount: its field says it, every digit where 1.2K wouldn't be all of it.
   await open(page, "/?stars=1234..");

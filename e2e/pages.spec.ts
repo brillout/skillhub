@@ -968,9 +968,10 @@ test("the about page's count of skills waiting for an agent review leads to them
   await expect(page).toHaveURL("/queue/");
   await expect(page.locator("h1")).toHaveText("Waiting for agent review");
   // What waits here, also while nothing does: the page then said that and nothing else.
-  // With the minimums in numbers, which "the minimum installs and stars" left to the About page.
+  // With the minimums in numbers, which "the minimum installs and stars" left to the About page,
+  // in downloads, as the columns under it say.
   await expect(page.locator(".lede")).toContainText(
-    `at least ${n(MINIMUMS.installs)} installs and ${n(MINIMUMS.stars)} stars`,
+    `at least ${n(MINIMUMS.installs)} downloads and ${n(MINIMUMS.stars)} stars`,
   );
   // Each of them, in crawl.jsonc's order, most downloaded first: a listed one links to its
   // skills.sh page, which an unlisted one doesn't have yet, and each to its repo.

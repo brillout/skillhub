@@ -120,10 +120,15 @@ test("a reason of the about page's table starts no further left than the label i
   // parent's, "Tool docs" before the "By agent" over it.
   const starts = await page.locator(".breakdown tr").evaluateAll((rows) =>
     rows.map((row) => {
+      // Its first words, not its emoji's: in the cell, or in the span that keeps its last word
+      // with its ⓘ, all of a label of one word.
       const cell = row.querySelector("td") as HTMLElement;
-      const label = [...cell.childNodes].find(
-        (node) => node.nodeType === Node.TEXT_NODE && node.textContent?.trim(),
-      ) as Text;
+      const walker = document.createTreeWalker(cell, NodeFilter.SHOW_TEXT, (node) =>
+        node.textContent?.trim() && !node.parentElement?.closest(".emoji, button")
+          ? NodeFilter.FILTER_ACCEPT
+          : NodeFilter.FILTER_SKIP,
+      );
+      const label = walker.nextNode() as Text;
       const range = document.createRange();
       range.selectNodeContents(label);
       return {
