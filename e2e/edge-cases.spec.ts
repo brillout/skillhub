@@ -249,6 +249,19 @@ test.describe("a number that's unknown", () => {
     );
   });
 
+  test("leaves its skill out of the share the others' tiles say they beat", async ({ page }) => {
+    const known = data.skills.flatMap((s) => s["skills.sh"].installs ?? []);
+    const own = skills["unknown-first-seen"]["skills.sh"].installs as number;
+    const below = known.filter((n) => n < own).length;
+    expect(below).toBeGreaterThanOrEqual(known.length / 2);
+    await open(page, skillUrl("unknown-first-seen"));
+    const tile = page.locator(".stat", { hasText: "Total Downloads" });
+    // It said "of skills", of a share of the skills with known downloads alone.
+    await expect(tile.locator(".stat-standing")).toHaveText(
+      `More downloads than ${Math.floor((below / known.length) * 100)}% of the skills with known downloads`,
+    );
+  });
+
   test("goes last when the list is sorted by it, whichever way", async ({ page }) => {
     for (const sort of ["growth", ...NUMBERS.map((n) => n.param)])
       for (const order of ["", "order=asc"]) {

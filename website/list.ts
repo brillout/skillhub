@@ -231,11 +231,8 @@ interface PropInfo {
 interface Crowd {
   /** What it ranks, such as "skill". */
   what: string;
-  /**
-   * What it ranks among, counted: "1,385 skills", or "the 1,383 skills with known downloads" when
-   * some have no number, which a page that counts 1,385 would otherwise contradict.
-   */
-  among: string;
+  /** Which of them it ranks, such as "with known downloads", when some have no number; else null. */
+  having: string | null;
   /** Its rank's words at either end: "Top" and "Bottom", or for an age "Newest" and "Oldest". */
   ends: [top: string, bottom: string];
   /** Which way its places go, when it says so, such as "newest first". */
@@ -313,10 +310,7 @@ function crowd(
   }
   return {
     what,
-    among:
-      desc.length < values.length
-        ? `the ${plural(desc.length, what)} ${having}`
-        : plural(desc.length, what),
+    having: desc.length < values.length ? having : null,
     ends,
     order,
     total: desc.length,
@@ -1474,9 +1468,12 @@ function rankText(c: Crowd, n: number): string {
     : `${bottom} ${Math.ceil(((c.total - place + 1) / c.total) * 100)}%`;
 }
 
+/** `what`, such as "17 skills", as what a crowd ranks: "the 17 skills with known downloads". */
+const ranked = (c: Crowd, what: string) => (c.having ? `the ${what} ${c.having}` : what);
+
 /** Such as "#34 of 1,190 skills", or "#586 of the 1,188 skills with a known age, newest first". */
 const placeText = (c: Crowd, n: number) =>
-  `#${number(c.placeOf(n))} of ${c.among}${c.order ? `, ${c.order}` : ""}`;
+  `#${number(c.placeOf(n))} of ${ranked(c, plural(c.total, c.what))}${c.order ? `, ${c.order}` : ""}`;
 
 /**
  * Where an entry's number stands among the catalog's, for the skill's page: its place, in words,
@@ -1495,10 +1492,11 @@ export function standingOf(
   const place = c.placeOf(n);
   const below = c.belowOf(n);
   // Past the middle, the share it beats; before it, the share that beats it.
-  const share = (k: number) => `<em>${Math.floor((k / c.total) * 100)}%</em> of ${c.what}s`;
+  const share = (k: number) =>
+    `<em>${Math.floor((k / c.total) * 100)}%</em> of ${ranked(c, `${c.what}s`)}`;
   const words =
     place === 1
-      ? say.most
+      ? `${say.most}${c.having ? ` ${c.having}` : ""}`
       : below >= c.total / 2
         ? `${say.more} ${share(below)}`
         : `${say.fewer} ${share(place - 1)}`;
