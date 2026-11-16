@@ -1767,9 +1767,12 @@ export function facetsHtml(st: State, stackExpanded: boolean): string {
     ? ` of the ${plural(shownOf(st), unitOf(st))}${savedBundlesHtml(st, true)}`
     : "";
   // Where the filters leave nothing, there's no tag for the search to find, whatever its words.
-  const unfound = scopeOf(st)
-    ? `<span class="muted">No tag matches “${esc(term(st))}”.</span>`
-    : none;
+  // Where they leave some, a tag their skills lack isn't found, though others have it.
+  const unfound = !scopeOf(st)
+    ? none
+    : filtersOn(st)
+      ? `<span class="muted">No tag of the ${scopeOf(st)} the filters leave matches “${esc(term(st))}”.</span>`
+      : `<span class="muted">No tag matches “${esc(term(st))}”.</span>`;
   return `${head}<div id="tag-facets" class="tag-facets"><div id="found-tags" class="tag-box"><div class="chips">${
     found || unfound
   }</div></div>${listed ? `<h2 class="tags-of">${plural(listed, "tag")}${of}</h2>${facets}` : ""}</div>`;

@@ -217,6 +217,35 @@ test("a search that finds nothing says so, and offers the agent", async ({ page 
   expect(await right("#results .empty")).toBeLessThanOrEqual(await right("#results"));
 });
 
+test("a tag the filters' skills lack isn't found, which the tags' column says of them", async ({
+  page,
+}) => {
+  // The tag of fewest skills outside Stack, which a stack tag would count without, and a stack
+  // tag's name that none of those skills' tags holds.
+  const carriers = (tag: string) => data.skills.filter((s) => s.agentReview.tags.includes(tag));
+  const lone = [...new Set(data.skills.flatMap((s) => s.agentReview.tags))]
+    .filter((tag) => !tag.startsWith("stack:"))
+    .toSorted((a, b) => carriers(a).length - carriers(b).length)[0];
+  const theirs = carriers(lone).flatMap((s) =>
+    s.agentReview.tags.flatMap((tag) => [
+      tag,
+      ...data.facets.flatMap((f) =>
+        (f.values ?? [])
+          .filter((v) => tag === (f.prefix === false ? v.id : `${f.id}:${v.id}`))
+          .map((v) => (v.label ?? "").toLowerCase()),
+      ),
+    ]),
+  );
+  const sought = [...stackTags]
+    .map((tag) => tag.slice("stack:".length))
+    .find((name) => name.length >= 5 && !theirs.some((t) => t.includes(name))) as string;
+  await open(page, `/?tag=${encodeURIComponent(lone)}&q=${encodeURIComponent(sought)}`);
+  // It said "No tag matches", of a tag that other skills have.
+  await expect(page.locator("#found-tags")).toHaveText(
+    `No tag of the ${n(carriers(lone).length)} skill${carriers(lone).length === 1 ? "" : "s"} the filters leave matches “${sought}”.`,
+  );
+});
+
 test("filters that leave nothing say so, and leave the agent nothing to copy", async ({ page }) => {
   // No skill has it: a tag from an old link, say. The same as a slider's range with nothing in it.
   await open(page, "/?tag=no-such-tag&q=design");
