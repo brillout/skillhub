@@ -649,6 +649,22 @@ test("a repo's or a bundle's kind is a box as tall as its line, beside a name of
   expect(Math.max(...all.map((kind) => kind.off))).toBeLessThan(0.5);
 });
 
+test("a repo's kind says what it means, on its page and its owner's", async ({ page }) => {
+  const kind = data.repos.find((r) => r.id === repo.repo)?.agentReview.kind as string;
+  const meaning = {
+    skills: "A repo that exists to ship skills",
+    project: "A product that also ships a skill",
+    index: "A curated list or catalog of skills",
+  }[kind];
+  // "Project" beside a repo's name was explained nowhere on the site.
+  await open(page, repo.url);
+  await expect(page.locator("h1 .kind")).toHaveAttribute("title", meaning as string);
+  await open(page, owner.url);
+  await expect(
+    page.locator("h2", { has: page.locator(`a[href="${repo.url}"]`) }).locator(".kind"),
+  ).toHaveAttribute("title", meaning as string);
+});
+
 test("an owner is spelled one way, on the way to their page as on it", async ({ page }) => {
   test.skip(!respelledOwner, "no owner's repos spell them in two ways today");
   if (!respelledOwner) return;

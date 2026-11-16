@@ -1,7 +1,7 @@
 import type { PageContextServer } from "vike/types";
 import { esc, glanceEnd, href } from "../../format.ts";
 import { crowdDefsHtml, listingHtml, skillsLink } from "../../list.ts";
-import { KINDS, numbersHtml } from "../../listings.ts";
+import { kindHtml, numbersHtml } from "../../listings.ts";
 import { ownerHref, ownerName } from "../../skills.ts";
 import type { Data } from "./+data.ts";
 
@@ -12,7 +12,7 @@ export default function Page(pageContext: PageContextServer): string {
   return `
     <div class="page listing-page">
       <p class="crumbs"><a href="${href()}">Skills</a> <span aria-hidden="true">/</span> <a href="${ownerHref(repo.id)}">${esc(ownerName(repo.id))}</a></p>
-      <h1>${esc(name)} <span class="kind">${KINDS[repo.agentReview.kind]}</span></h1>
+      <h1>${esc(name)} ${kindHtml(repo)}</h1>
       ${repo.agentReview.description ? `<p class="lede">${esc(glanceEnd(repo.agentReview.description))}</p>` : ""}
       ${repo.agentReview.note ? `<p class="note">${esc(repo.agentReview.note)}</p>` : ""}
       <p class="links"><a href="https://github.com/${esc(repo.id)}">Source on GitHub</a><a href="${skillsLink({ repo: repo.id })}">${skills.length === 1 ? "See it in the skills list" : "Sort and filter them in the skills list"}</a></p>
