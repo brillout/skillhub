@@ -67,6 +67,15 @@ test("logged out, Save and the thumbs say that a click logs in first", async ({ 
   await expect(title.locator("[data-save]")).toHaveAccessibleName(`Save ${skill.name}`);
 });
 
+test("a screen reader hears who's logged in, on the narrowest phone too", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 700 });
+  await openLoggedIn(page, "/about/");
+  // Only the avatar's tooltip said it, and the avatar isn't drawn that narrow.
+  await expect(page.locator("#account .avatar")).toBeHidden();
+  await expect(page.locator("#account")).toContainText("Logged in as test-user");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(320);
+});
+
 test("Log in comes back to the page you were on, its filters included", async ({ page }) => {
   await openLoggedIn(page, "/?show=bundles");
   await expect(page).toHaveURL("/?show=bundles");
