@@ -204,16 +204,16 @@ let links = loginHtml();
 /**
  * The header's links for who's logged in: Log in; or what's theirs, a link to what they saved, the
  * skills list with its Saved switch on, then their avatar and Log out, with their login in words
- * that a screen reader reads at every width. The link is on every page:
- * the switch is on the list alone, so from a skill's page there was no way to what you had just
- * saved there. In its bookmark alone on a phone, whose line has no room for its word (see
+ * that a screen reader reads at every width, the avatar's tooltip being for a pointer alone. The
+ * link is on every page: the switch is on the list alone, so from a skill's page there was no way
+ * to what you had just saved there. In its bookmark alone on a phone, whose line has no room for its word (see
  * .saved-link in style.css): its tooltip says what it is to a pointer on a window that narrow.
  */
 function paintLinks() {
   const el = document.getElementById("account");
   const { user } = account;
   const html = user
-    ? `<a class="saved-link" href="${href("?saved")}" title="What you saved"${onSaved ? ` aria-current="page"` : ""}>${bookmarkSvg}<span class="saved-word">Saved</span></a><span class="me"><span class="sr-only">Logged in as ${esc(user.login)}</span><img class="avatar" src="${esc(user.avatar)}" alt="" width="20" height="20" title="Logged in as ${esc(user.login)}" /><button type="button" class="logout" data-logout>Log out</button></span>`
+    ? `<a class="saved-link" href="${href("?saved")}" title="What you saved"${onSaved ? ` aria-current="page"` : ""}>${bookmarkSvg}<span class="saved-word">Saved</span></a><span class="me"><span class="sr-only">Logged in as ${esc(user.login)}</span><img class="avatar" src="${esc(user.avatar)}" alt="" width="20" height="20" title="Logged in as ${esc(user.login)}" aria-hidden="true" /><button type="button" class="logout" data-logout>Log out</button></span>`
     : loginHtml();
   // Only when they change: a link that's replaced loses the pointer's hover, and its animation.
   if (!el || html === links) return;

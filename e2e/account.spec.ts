@@ -67,12 +67,34 @@ test("logged out, Save and the thumbs say that a click logs in first", async ({ 
   await expect(title.locator("[data-save]")).toHaveAccessibleName(`Save ${skill.name}`);
 });
 
-test("a screen reader hears who's logged in, on the narrowest phone too", async ({ page }) => {
-  await page.setViewportSize({ width: 320, height: 700 });
+test("a screen reader hears who's logged in once, on the narrowest phone too", async ({ page }) => {
+  // What Chrome gives a screen reader that says who's logged in: names and descriptions.
+  const said = async () => {
+    const cdp = await page.context().newCDPSession(page);
+    const { nodes } = (await cdp.send("Accessibility.getFullAXTree")) as {
+      nodes: {
+        ignored: boolean;
+        role?: { value: string };
+        name?: { value: string };
+        description?: { value: string };
+      }[];
+    };
+    await cdp.detach();
+    return nodes.filter(
+      (node) =>
+        !node.ignored &&
+        node.role?.value !== "InlineTextBox" &&
+        [node.name?.value, node.description?.value].includes("Logged in as test-user"),
+    ).length;
+  };
   await openLoggedIn(page, "/about/");
+  // Twice where the avatar is drawn: in words, then as the avatar's tooltip.
+  expect(await said()).toBe(1);
+  await expect(page.locator("#account .avatar")).toHaveAttribute("title", "Logged in as test-user");
+  await page.setViewportSize({ width: 320, height: 700 });
   // Only the avatar's tooltip said it, and the avatar isn't drawn that narrow.
   await expect(page.locator("#account .avatar")).toBeHidden();
-  await expect(page.locator("#account")).toContainText("Logged in as test-user");
+  expect(await said()).toBe(1);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(320);
 });
 
