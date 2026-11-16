@@ -301,8 +301,8 @@ const nameOf = (key: string) =>
   "this item";
 
 /**
- * How a failed request's notice ends: one that never reached the Worker, null, is nearly always the
- * connection's doing.
+ * How a failed request's notice ends: a request that got no response at all, null, as its fetch
+ * threw, asks to check the connection; one the Worker answered with an error asks to try again.
  */
 const tryAgain = (res: Response | null) =>
   res ? "Try again." : "Check your connection and try again.";
