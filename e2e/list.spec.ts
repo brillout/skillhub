@@ -480,6 +480,58 @@ for (const [width, presets] of [
     });
   });
 
+test.describe("in dark", () => {
+  test.use({ colorScheme: "dark" });
+
+  test("a pressed preset, order, Show or tag stands out from its group, its words from it", async ({
+    page,
+  }) => {
+    await open(page, "/?tag=flag%3Adual-use");
+    const pressed = page.locator(
+      ':is(.preset, .order button, .show-switch button, .chip)[aria-pressed="true"]',
+    );
+    await expect(pressed).toHaveCount(4);
+    const ratios = await pressed.evaluateAll((all) => {
+      const rgb = (color: string) => color.match(/[\d.]+/g)?.map(Number) ?? [];
+      const luminance = ([r, g, b]: number[]) => {
+        const [lr, lg, lb] = [r, g, b].map((c) =>
+          c / 255 <= 0.04045 ? c / 255 / 12.92 : ((c / 255 + 0.055) / 1.055) ** 2.4,
+        );
+        return 0.2126 * lr + 0.7152 * lg + 0.0722 * lb;
+      };
+      const ratio = (a: number[], b: number[]) => {
+        const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+        return (hi + 0.05) / (lo + 0.05);
+      };
+      const fill = (el: Element | null) => {
+        for (; el; el = el.parentElement) {
+          const [r, g, b, a = 1] = rgb(getComputedStyle(el).backgroundColor);
+          if (a > 0) return [r, g, b];
+        }
+        return [255, 255, 255];
+      };
+      return all.map((button) => {
+        const own = fill(button);
+        // Each of its words, as drawn: at its opacity, over the button's fill.
+        const words = [...button.querySelectorAll("span"), button].map((el) => {
+          const [r, g, b] = rgb(getComputedStyle(el).color);
+          const opacity = Number(getComputedStyle(el).opacity);
+          return ratio(
+            [r, g, b].map((c, i) => c * opacity + own[i] * (1 - opacity)),
+            own,
+          );
+        });
+        return { group: ratio(own, fill(button.parentElement)), words: Math.min(...words) };
+      });
+    });
+    // The grey was 1.94:1 on the settings' groups, and 1.63:1 on the tags' tile.
+    for (const { group, words } of ratios) {
+      expect(group).toBeGreaterThanOrEqual(3);
+      expect(words).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+});
+
 test.describe("on a tablet, 768px wide", () => {
   test.use({ viewport: { width: 768, height: 900 } });
 
