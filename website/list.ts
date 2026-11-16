@@ -584,7 +584,7 @@ const GROWTH = {
   icon: DOWNLOAD,
   tag: "Growth",
   /** Among the skills that have a growth: see growthOf. */
-  crowd: crowd("skill", data.skills.map(growthOf), "linear", { having: "with a growth" }),
+  crowd: crowd("skill", data.skills.map(growthOf), "linear", { having: "with a Weekly Growth" }),
   // No full stop at its end, as the numbers' titles: propsHtml adds one before the place.
   title: (e: Entry) =>
     `${isBundle(e) ? "The most of any of its skills: " : ""}Downloads on skills.sh in an average week of the 2 weeks to ${date(data.asOf.installs)}, against an average week of the 4 weeks before. Only for skills with at least ${compact(GROWTH_MIN)} a week, and at least ${compact(GROWTH_BASE_MIN)} in each of the last ${GROWTH_WEEKS} weeks: a younger skill, or one that took off from almost nothing, shows under ${PRESETS["rising-new"].label}`,

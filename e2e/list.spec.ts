@@ -67,7 +67,7 @@ test("opens on Rising, with every skill counted and every row in", async ({ page
   // The growth's tooltip ends in its place, after one full stop.
   await expect(rows.first().locator(".props > .on")).toHaveAttribute(
     "title",
-    /shows under Rising & new\. #1 of the [\d,]+ skills with a growth$/,
+    /shows under Rising & new\. #1 of the [\d,]+ skills with a Weekly Growth$/,
   );
 });
 
