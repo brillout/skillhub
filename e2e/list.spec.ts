@@ -217,32 +217,45 @@ test("a search that finds nothing says so, and offers the agent", async ({ page 
   expect(await right("#results .empty")).toBeLessThanOrEqual(await right("#results"));
 });
 
-test("a tag the filters' skills lack isn't found, which the tags' column says of them", async ({
+test("a tag the filters' or Show's skills lack isn't found, which the tags' column says of them", async ({
   page,
 }) => {
-  // The tag of fewest skills outside Stack, which a stack tag would count without, and a stack
-  // tag's name that none of those skills' tags holds.
   const carriers = (tag: string) => data.skills.filter((s) => s.agentReview.tags.includes(tag));
+  /** A stack tag's name that none of these skills' tags, nor their names, holds. */
+  const lacked = (skills: typeof data.skills) => {
+    const theirs = skills.flatMap((s) =>
+      s.agentReview.tags.flatMap((tag) => [
+        tag,
+        ...data.facets.flatMap((f) =>
+          (f.values ?? [])
+            .filter((v) => tag === (f.prefix === false ? v.id : `${f.id}:${v.id}`))
+            .map((v) => (v.label ?? "").toLowerCase()),
+        ),
+      ]),
+    );
+    return [...stackTags]
+      .map((tag) => tag.slice("stack:".length))
+      .find((name) => name.length >= 5 && !theirs.some((t) => t.includes(name))) as string;
+  };
+  // The tag of fewest skills outside Stack, which a stack tag would count without.
   const lone = [...new Set(data.skills.flatMap((s) => s.agentReview.tags))]
     .filter((tag) => !tag.startsWith("stack:"))
     .toSorted((a, b) => carriers(a).length - carriers(b).length)[0];
-  const theirs = carriers(lone).flatMap((s) =>
-    s.agentReview.tags.flatMap((tag) => [
-      tag,
-      ...data.facets.flatMap((f) =>
-        (f.values ?? [])
-          .filter((v) => tag === (f.prefix === false ? v.id : `${f.id}:${v.id}`))
-          .map((v) => (v.label ?? "").toLowerCase()),
-      ),
-    ]),
-  );
-  const sought = [...stackTags]
-    .map((tag) => tag.slice("stack:".length))
-    .find((name) => name.length >= 5 && !theirs.some((t) => t.includes(name))) as string;
+  const sought = lacked(carriers(lone));
   await open(page, `/?tag=${encodeURIComponent(lone)}&q=${encodeURIComponent(sought)}`);
   // It said "No tag matches", of a tag that other skills have.
   await expect(page.locator("#found-tags")).toHaveText(
     `No tag of the ${n(carriers(lone).length)} skill${carriers(lone).length === 1 ? "" : "s"} the filters leave matches “${sought}”.`,
+  );
+
+  // A tag of skills in no bundle, which Show set to Bundles leaves out, with no filter on.
+  const bundled = new Set(data.bundles.flatMap((b) => b.agentReview.skills.map((m) => m.id)));
+  const unbundled = lacked(data.skills.filter((s) => bundled.has(s.id)));
+  await open(page, `/?q=${encodeURIComponent(unbundled)}`);
+  await expect(page.locator("#found-tags")).toContainText(`stack:${unbundled}`);
+  await open(page, `/?q=${encodeURIComponent(unbundled)}&show=bundles`);
+  await expect(page.locator("#found-tags")).toHaveText(
+    `No tag of the ${n(data.bundles.length)} bundles matches “${unbundled}”.`,
   );
 });
 
