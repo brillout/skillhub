@@ -36,8 +36,8 @@ function geometry(values: number[]) {
  * find-skills' "+6% in 8 weeks" beside the "−6%" of its row in the list, sorted by that growth.
  * Without one, that change, from `from` downloads in its first week: from a handful, it reads as
  * an absurd +273,050%, which the list refuses for its growth too; the tile then says "8-week
- * trend", as for a first week of none, which can't be read as part of the week's number beside it.
- * The page passes both, so that this file, which the browser runs too, doesn't take the data in.
+ * trend", as for a first week of none. The page passes both, so that this file, which the browser
+ * runs too, doesn't take the data in.
  */
 export function trendHtml(
   values: number[],
