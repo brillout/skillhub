@@ -58,14 +58,14 @@ export default function Page(): string {
         href: href("queue/"),
         name: `${plural(review.waiting, "skill")} waiting for agent review`,
       },
-      tip: "It has the minimum installs and stars, or it's by an author SkillHub lists every skill of, and is next in line for an agent review.",
+      tip: "It has the minimum downloads and stars, or it's by an author SkillHub lists every skill of, and is next in line for an agent review.",
     },
     {
       label: "Reviewed",
       emoji: "👀",
       depth: 1,
       count: review.reviewed,
-      tip: "SkillHub has a verdict on it: listed, disqualified, or checked on its installs and stars and found under the minimums.",
+      tip: "SkillHub has a verdict on it: listed, disqualified, or checked on its downloads and stars and found under the minimums.",
     },
     {
       label: "Listed",
@@ -76,11 +76,11 @@ export default function Page(): string {
       tip: "An agent review judged it useful to people looking for skills.",
     },
     {
-      label: "Under the minimum installs or stars",
+      label: "Under the minimum downloads or stars",
       emoji: "🌱",
       depth: 2,
       count: review.under,
-      tip: `It has fewer than ${n(minimums.installs)} installs, or its repo fewer than ${n(minimums.stars)} stars. It gets an agent review once it has both.`,
+      tip: `It has fewer than ${n(minimums.installs)} downloads, or its repo fewer than ${n(minimums.stars)} stars. It gets an agent review once it has both.`,
     },
     {
       label: "Disqualified",
@@ -169,7 +169,10 @@ export default function Page(): string {
     const num = link
       ? `<a href="${link.href}" aria-label="${link.name}">${n(count)}</a>`
       : n(count);
-    return `<tr class="d${depth}"><td>${emoji ? `<span class="emoji" aria-hidden="true">${emoji}</span>` : ""}${label}<button type="button" class="tip-i" aria-label="About ${name}" aria-describedby="tip-${i}">i</button></td><td class="bar">${bar}</td><td class="num">${num}<span class="tip-text" role="tooltip" id="tip-${i}">${tip}</span></td></tr>`;
+    // The ⓘ with the label's last word, on its line: on a phone it went to a line of its own.
+    const i_ = `<button type="button" class="tip-i" aria-label="About ${name}" aria-describedby="tip-${i}">i</button>`;
+    const labelled = label.replace(/(\S+)$/, `<span class="nowrap">$1${i_}</span>`);
+    return `<tr class="d${depth}"><td>${emoji ? `<span class="emoji" aria-hidden="true">${emoji}</span>` : ""}${labelled}</td><td class="bar">${bar}</td><td class="num">${num}<span class="tip-text" role="tooltip" id="tip-${i}">${tip}</span></td></tr>`;
   };
   return `
     <div class="page about">
@@ -196,7 +199,7 @@ export default function Page(): string {
       <ul>
         <li><strong>In the list,</strong> a bundle has a row of its own that names its skills in the order they're used. A skill that works alone, and that people would want without the rest of the bundle, such as a test-driven development skill in a bundle for a whole workflow, also keeps a row of its own, which says what bundle it's part of. The others are only listed inside their bundle: those that only work with the rest, such as one that works on another's output, and those that only interest the bundle's audience, such as a game-dev bundle's genre guides. Set to show Skills, the list shows every skill on its own row. Set to show Bundles, it lists only bundles.</li>
         <li><strong>Its page</strong> explains how its skills work together, what each one needs from the others, and how to install them all at once.</li>
-        <li><strong>Its numbers</strong> come from its skills: Age is its oldest skill's, Total and Weekly Downloads are its most downloaded skill's, and Stars are its repo's. The filters' sliders use these numbers, so an old bundle with a few new skills isn't in “Age: ≤ 3 months”.</li>
+        <li><strong>Its numbers</strong> come from its skills: Age is its oldest skill's, Total Downloads its most downloaded skill's, Weekly Downloads the week's most downloaded skill's, which can be another, and Stars its repo's. The filters' sliders use these numbers, so an old bundle with a few new skills isn't in “Age: ≤ 3 months”.</li>
         <li><strong>Tags and the search</strong> match a bundle through any of its skills, and grey out its other skills.</li>
       </ul>
 

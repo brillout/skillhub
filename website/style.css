@@ -270,6 +270,11 @@ code.said {
   color: var(--ink-3);
 }
 
+/* Words kept on one line, such as a date, "Jan 19, 2026", or a label's last word with its ⓘ. */
+.nowrap {
+  white-space: nowrap;
+}
+
 /* Press feedback, for the buttons that have a face of their own. Not the tags, which are too
    small for it to show, nor the segmented presets and Show, whose buttons share one edge. */
 .filters-toggle,
@@ -2905,6 +2910,26 @@ input[type="search"]::-webkit-search-cancel-button:hover {
     grid-row: span 4;
     margin-top: 16px;
   }
+
+  /*
+   * The weekly values, open, take room in their own tile alone: as the last of the rows the tiles
+   * share, they stretched the tile beside it, Total Downloads, by as much, 223px of empty card. Its
+   * neighbors then end with their own last row, the next line of tiles where it was, as each tile
+   * keeps to its column.
+   */
+  @media (min-width: 701px) {
+    .stat:nth-child(odd) {
+      grid-column: 1;
+    }
+
+    .stat:nth-child(even) {
+      grid-column: 2;
+    }
+
+    .stat-tiles:has(.spark-table[open]) > .stat:not(:has(.spark-table)) {
+      grid-row: span 3;
+    }
+  }
 }
 
 /* The number's icon, as in the skills list's rows, then its name and where it comes from. */
@@ -4413,6 +4438,14 @@ h1 .kind {
   text-decoration-color: var(--rule-strong);
 }
 
+/* Each name whole on its line, with its comma, the line breaking between names: broken at their
+   hyphens, "game-" ended a line and "jam" started the next, two names of no skill. A name longer
+   than a line, as principle-separate-before-serializing-shared-state on a phone, still breaks. */
+.member {
+  display: inline-block;
+  max-width: 100%;
+}
+
 .members a:hover {
   color: var(--garnet-text);
   text-decoration-color: currentColor;
@@ -4997,6 +5030,26 @@ html[data-logged-in]:not([data-account]) .account::before {
    name's line where they fit, as if they had no box of their own. */
 .skill-meta {
   display: contents;
+}
+
+/* On a phone, a page's facts each under its label, the line's whole width theirs: beside a label
+   of two fifths (see the 900px rules), 153px were left them at 320px, three words a line, and a
+   file's name broke inside, "Project_Folders_Structur" over "e_Blueprint.md". A row's labels are
+   short, and stay beside their facts. */
+@media (max-width: 480px) {
+  .at-a-glance .glance {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .at-a-glance .glance dt {
+    margin-top: 12px;
+    font-size: 14px;
+  }
+
+  .at-a-glance .glance div:first-child dt {
+    margin-top: 0;
+  }
 }
 
 /*

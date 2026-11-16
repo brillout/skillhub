@@ -132,6 +132,8 @@ let typing = false;
 
 /** `typed`: the change is one of a run, a letter of a search or a step of a slider's handle. */
 function go(patch: Partial<State>, typed = false) {
+  // Whatever else changes the list, a slider or a preset, the fields then show its ranges again.
+  if (!typed) keepFields = false;
   state = patched(state, patch);
   history.replaceState(null, "", query(state) || location.pathname);
   // A new order or new filters start the list over, except while typing a search, which happens
@@ -455,12 +457,14 @@ function syncRanges() {
       input.setAttribute("aria-valuetext", rangeLabel(p, range));
     }
     const fields = [...settings.querySelectorAll<HTMLInputElement>(`[data-exact="${p}"]`)];
+    const kept = keepFields && fields.some((field) => field.dataset.kept !== undefined);
     for (const field of fields)
-      if (field !== document.activeElement) {
+      if (field !== document.activeElement && !(kept && field.dataset.kept !== undefined)) {
         field.value = fieldText(p, range[Number(field.dataset.bound)]);
         field.removeAttribute("aria-invalid");
+        delete field.dataset.kept;
       }
-    if (!fields.includes(document.activeElement as HTMLInputElement)) sayRangeError(p, "");
+    if (!kept && !fields.includes(document.activeElement as HTMLInputElement)) sayRangeError(p, "");
     for (const label of settings.querySelectorAll(`[data-range-label="${p}"]`))
       label.textContent = rangeLabel(p, range);
     settings
@@ -761,6 +765,16 @@ document.addEventListener(
 
 q.addEventListener("input", () => go({ q: q.value }, true));
 
+// The keyboard's Search key, on a touch screen: the keyboard goes, and the list comes into view.
+// It did nothing, the list's first row 342px under the box, behind the settings, and the keyboard
+// over all of it, so nothing found was in sight.
+q.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" || event.isComposing || !matchMedia("(pointer: coarse)").matches)
+    return;
+  q.blur();
+  document.getElementById("count")?.scrollIntoView({ block: "start" });
+});
+
 /**
  * Moves a slider's handle to a stop. The handles can't cross: the range keeps at least a part of a
  * step, so a handle stops short of the other, at the stop before it. The handle shows at its stop
@@ -804,14 +818,13 @@ app.addEventListener("keydown", (event) => {
 
 /**
  * An amount typed in a slider's field: the list follows as it's typed, as it does a search. What
- * isn't an amount, or would put a bound on the wrong side of the other, is said under the fields,
- * and leaves the range as it was.
+ * isn't an amount, or would put a bound on the wrong side of the other, is said under the fields.
  */
 function typed(field: HTMLInputElement) {
   const p = field.dataset.exact as Prop;
   const end = Number(field.dataset.bound) as 0 | 1;
   const text = field.value.trim();
-  let n = text ? (PROPS[p].date ? parseAge(text) : parseCount(text)) : null;
+  let n = amountOf(p, text);
   const wrong = (message: string) => {
     field.setAttribute("aria-invalid", "true");
     sayRangeError(p, message);
@@ -824,26 +837,74 @@ function typed(field: HTMLInputElement) {
     );
   // At least 0 is any count.
   if (n === 0 && end === 0) n = null;
-  const range: Range = end === 0 ? [n, state.ranges[p][1]] : [state.ranges[p][0], n];
+  // The other field's amount, where it was kept on the wrong side of this one (see the change
+  // handler below): this one, set right, makes a range of both.
+  const other = settings.querySelector<HTMLInputElement>(
+    `[data-exact="${p}"][data-bound="${1 - end}"][data-kept]`,
+  );
+  const otherEnd = other ? amountOf(p, other.value.trim()) : state.ranges[p][1 - end];
+  const range: Range = end === 0 ? [n, otherEnd] : [otherEnd, n];
   const error = rangeError(p, range);
-  if (error) return wrong(error);
-  for (const f of settings.querySelectorAll(`[data-exact="${p}"]`))
+  if (error) {
+    wrong(error);
+    // The list as it was before this field was typed in, rather than as the amount on its way,
+    // such as the 10 of a 10K that's then refused: the list stayed filtered by what nobody meant.
+    if (since?.p === p && !sameRange(state.ranges[p], since.range)) {
+      keepFields = true;
+      go({ ranges: { ...state.ranges, [p]: since.range } }, true);
+    }
+    return;
+  }
+  for (const f of settings.querySelectorAll<HTMLElement>(`[data-exact="${p}"]`)) {
     f.removeAttribute("aria-invalid");
+    delete f.dataset.kept;
+  }
   sayRangeError(p, "");
   go({ ranges: { ...state.ranges, [p]: range } }, true);
 }
 
+/** An amount as a field holds it, or null for none, or for what isn't one. */
+const amountOf = (p: Prop, text: string) =>
+  text ? (PROPS[p].date ? parseAge(text) : parseCount(text)) : null;
+const sameRange = (a: Range, b: Range) => a[0] === b[0] && a[1] === b[1];
+
+/** A slider's range when one of its fields took the focus: what an amount that's refused goes back to. */
+let since: { p: Prop; range: Range } | null = null;
+/**
+ * Whether the fields keep an amount refused for its place, while the other field is typed in: see
+ * the change handler below, and syncRanges.
+ */
+let keepFields = false;
+app.addEventListener("focusin", (event) => {
+  const p = (event.target as HTMLElement).dataset.exact as Prop | undefined;
+  if (p) since = { p, range: state.ranges[p] };
+});
+
 // Once a field is left, or Enter pressed in it, it shows its amount as the others do: "2w 3d" is
-// 17d, and what wasn't an amount gives way to the range's own.
+// 17d, and what wasn't an amount gives way to the range's own, the list's as it was before it was
+// typed. But an amount on the wrong side of the other bound stays, with what's wrong with it: the
+// other bound may be the one to set right, and the amount was gone once the field was left for it.
 app.addEventListener("change", (event) => {
   const el = event.target as HTMLInputElement;
-  if (!el.dataset.exact) return;
-  el.value = fieldText(
-    el.dataset.exact as Prop,
-    state.ranges[el.dataset.exact as Prop][Number(el.dataset.bound)],
-  );
+  const p = el.dataset.exact as Prop | undefined;
+  if (!p) return;
+  const text = el.value.trim();
+  if (el.getAttribute("aria-invalid") === "true" && amountOf(p, text) !== null) {
+    el.dataset.kept = "";
+    keepFields = true;
+    return;
+  }
+  if (
+    text &&
+    amountOf(p, text) === null &&
+    since?.p === p &&
+    !sameRange(state.ranges[p], since.range)
+  )
+    go({ ranges: { ...state.ranges, [p]: since.range } });
+  el.value = fieldText(p, state.ranges[p][Number(el.dataset.bound)]);
   el.removeAttribute("aria-invalid");
-  sayRangeError(el.dataset.exact as Prop, "");
+  delete el.dataset.kept;
+  sayRangeError(p, "");
 });
 
 /**

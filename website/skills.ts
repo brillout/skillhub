@@ -198,6 +198,11 @@ const ownerNames = new Map<string, string>();
 }
 /** The owner of a repo (`owner/name`), as the site spells them. */
 export const ownerName = (repo: string) => ownerNames.get(ownerPage(repo)) ?? repo.split("/")[0];
+/**
+ * A repo (`owner/name`) as the site writes it, its owner spelled as above: claude-ads' pages said
+ * "agricidaniel/claude-ads" under crumbs that said "AgriciDaniel".
+ */
+export const repoName = (repo: string) => `${ownerName(repo)}/${repo.split("/")[1]}`;
 
 /** A page (see github.ts) as URL path segments. */
 export const idPath = (page: string) => page.split("/").map(encodeURIComponent).join("/");

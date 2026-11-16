@@ -36,6 +36,7 @@ import {
   publishedOf,
   repoHref,
   repoKey,
+  repoName,
   skillById,
   skillHref,
   starsOf,
@@ -152,14 +153,17 @@ function paneHtml(e: Entry): string {
       : `<div class="install"><code>${commandHtml(installCommand(e))}</code>${copyButton(installCommand(e))}</div>`;
   const end = isBundle(e)
     ? `<section class="preview-part"><h3>Its skills</h3><p class="muted">${aloneLine(e, "Some")}</p><p class="members">${e.agentReview.skills
-        .map(({ id }) => `<a href="${skillHref(id)}">${esc(skillById.get(id)?.name ?? id)}</a>`)
-        .join(", ")}</p></section>`
+        .map(
+          ({ id }, i, all) =>
+            `<span class="member"><a href="${skillHref(id)}">${esc(skillById.get(id)?.name ?? id)}</a>${i < all.length - 1 ? "," : ""}</span>`,
+        )
+        .join(" ")}</p></section>`
     : `<section class="preview-part"><h3>SKILL.md</h3><div data-skill-md>${parts?.md ?? `<p class="muted">Loading its SKILL.md…</p>`}</div></section>`;
   return `
     <div class="preview-head">
       <div class="preview-title">
         <h2>${esc(nameOf(e))}${isBundle(e) ? ` <span class="kind">Bundle of ${plural(e.agentReview.skills.length, "skill")}</span>` : ""}</h2>
-        <p class="skill-source"><a class="repo-link" href="${repoHref(repoKey(e))}">${esc(repoKey(e))}</a></p>
+        <p class="skill-source"><a class="repo-link" href="${repoHref(repoKey(e))}">${esc(repoName(repoKey(e)))}</a></p>
       </div>
       <a class="details" href="${pageOf(e)}">All details</a>
       ${thumbsHtml(saveKey(isBundle(e) ? "bundle" : "skill", e.id), nameOf(e))}

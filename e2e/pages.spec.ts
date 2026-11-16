@@ -164,6 +164,28 @@ test("a skill's numbers are level from one tile to the one beside it", async ({ 
   }
 });
 
+test("the weekly values, open, leave the tile beside theirs as it was", async ({ page }) => {
+  await open(page, skillUrl);
+  const tiles = page.locator(".stat-tiles .stat");
+  const height = async (i: number) =>
+    ((await tiles.nth(i).boundingBox()) as { height: number }).height;
+  const [weekly, total] = [await height(0), await height(1)];
+  await page.locator(".spark-table summary").click();
+  await expect(page.locator(".spark-table table")).toBeVisible();
+  expect(await height(0)).toBeGreaterThan(weekly + 100);
+  // As the last of the rows the tiles share, they stretched Total Downloads by as much, 223px of
+  // empty card.
+  expect(await height(1)).toBeLessThanOrEqual(total);
+  // And the next line of tiles is under both.
+  const bottom = async (i: number) => {
+    const box = (await tiles.nth(i).boundingBox()) as { y: number; height: number };
+    return box.y + box.height;
+  };
+  const next = (await tiles.nth(2).boundingBox()) as { x: number; y: number };
+  expect(next.y).toBeGreaterThan(Math.max(await bottom(0), await bottom(1)));
+  expect(next.x).toBe(((await tiles.nth(0).boundingBox()) as { x: number }).x);
+});
+
 test("the numbers stay level where a tile's label takes more lines than its neighbor's", async ({
   page,
 }) => {
@@ -193,8 +215,22 @@ test("a skill's change over its 8 weeks is told only from a week of 100 download
   await open(page, fromAHandful as string);
   // From a handful, it read as "+273,050% in 8 weeks", which the list refuses for its growth.
   await expect(page.locator(".stat-delta")).toHaveText("8 weeks");
+});
+
+test("a skill's page tells the Weekly Growth its row in the list does", async ({ page }) => {
+  // Sorted by growth, as Rising sorts it, its row tells it; and found by its name, as it's named
+  // like no other skill.
+  await open(page, `/?q=${encodeURIComponent(skill.name)}&sort=growth`);
+  const row = list(page).rows.filter({
+    has: page.locator(".skill-name").getByText(skill.name, { exact: true }),
+  });
+  const growth = await row.locator(".props > .on .prop-value").textContent();
   await open(page, skillUrl);
-  await expect(page.locator(".stat-delta")).toHaveText(/^([+−][\d,]+|0)% in 8 weeks$/);
+  // Its change from its first week to its last told otherwise: find-skills' "+6% in 8 weeks" beside
+  // the "−6%" of its row, in the list sorted by that growth.
+  await expect(page.locator(".stat-delta")).toHaveText(
+    growth === "—" ? /^(([+−][\d,]+|0)% in )?8 weeks$/ : `${growth} growth`,
+  );
 });
 
 test("a skill that only works inside its bundle is installed with it", async ({ page }) => {
@@ -390,10 +426,27 @@ test("a bundle's page: its skills in order, and how to install them", async ({ p
   await expect(page.locator(".install")).toHaveCount(install.length);
   await page.locator(".install .copy").first().click();
   expect(await clipboard(page)).toBe(install[0].command);
+  // Another Copy right after: only it says Copied, as the clipboard holds its command alone. Both
+  // said so.
+  if (install.length > 1) {
+    await page.locator(".install .copy").nth(1).click();
+    expect(await clipboard(page)).toBe(install[1].command);
+    await expect(page.locator(".install .copy[data-copied]")).toHaveCount(1);
+    await expect(page.locator(".install .copy").nth(1)).toHaveAttribute("data-copied", "");
+  }
 
   // Its trend reads out each week with the keyboard, as a skill's does.
   await page.locator(".spark").focus();
   await expect(page.locator(".spark-tip")).toBeVisible();
+
+  // Each tile names the skill its number is, and which it is: the top skill of the week can be
+  // another than the top one of all time, which two tiles both called "its top skill". Nor is the
+  // oldest the first of the list above, as "its first skill" read.
+  const from = page.locator(".stat-tiles .stat-label .muted");
+  await expect(from.nth(0)).toHaveText(/^\S+, its top skill this week$/);
+  await expect(from.nth(1)).toHaveText(/^\S+, its top skill of all time$/);
+  await expect(from.nth(3)).toHaveText(/^\S+, its oldest skill, published \w{3} \d+, \d{4}$/);
+  for (const i of [0, 1, 3]) await expect(from.nth(i).locator("a")).toHaveCount(1);
 });
 
 /**
@@ -588,10 +641,16 @@ test("an owner is spelled one way, on the way to their page as on it", async ({ 
   for (const url of respelledOwner.repos) {
     await open(page, url);
     await expect(page.locator(".crumbs a").nth(1)).toHaveText(spelled);
+    // The repo too, wherever it's written: claude-ads' pages said "agricidaniel/claude-ads" under
+    // crumbs that said "AgriciDaniel".
+    const repoName = `${spelled}/${url.split("/").at(-2)}`;
+    await expect(page).toHaveTitle(`${repoName} · SkillHub`);
     // And on the page of a skill of the repo.
     await page.locator(".skill-list > li h3 a").first().click();
     await ready(page);
     await expect(page.locator(".crumbs a").nth(1)).toHaveText(spelled);
+    await expect(page.locator(".links")).toContainText(`All skills from ${repoName}`);
+    await expect(page.locator(".stat-tiles")).toContainText(`Repo Stars ${repoName}`);
   }
 });
 

@@ -5,11 +5,13 @@ import {
   crumbsHtml,
   data,
   glanceHtml,
+  growthOf,
   installsOf,
   NUMBER_LABELS,
   publishedOf,
   repoHref,
   repoKey,
+  repoName,
   skillHref,
   skillsOf,
   starsOf,
@@ -25,7 +27,10 @@ import type { Data } from "./+data.ts";
 
 /**
  * Its numbers, a tile each (see stat-tiles.ts): as the skills list counts a bundle's, its most
- * downloaded skill's downloads, which each tile names, its repo's stars and its first skill's age.
+ * downloaded skill's downloads, its repo's stars and its oldest skill's age. Each tile names the
+ * skill its number is, and says which it is: the week's top skill can be another than the top one
+ * of all time, as for Superpowers, whose two tiles both said "its top skill" of two skills. And the
+ * oldest isn't the first of the bundle's list, as "its first skill" read.
  */
 function tiles(b: Bundle): string {
   const most = (of: (s: Skill) => number | null) =>
@@ -35,30 +40,35 @@ function tiles(b: Bundle): string {
   const top = most(installsOf);
   const stars = starsOf(b);
   const published = publishedOf(b);
+  const oldest = skillsOf(b).find((s) => publishedOf(s) === published);
   return statTilesHtml(b, [
     {
       p: "week",
       label: NUMBER_LABELS.week,
-      from: `${link(topWeek)}, its top skill`,
+      from: `${link(topWeek)}, its top skill this week`,
       shown: weekOf(topWeek)?.toLocaleString("en") ?? "",
       trend: topWeek["skills.sh"].weeklyInstalls,
+      growth: growthOf(topWeek),
     },
     {
       p: "downloads",
       label: NUMBER_LABELS.downloads,
-      from: `${link(top)}, its top skill`,
+      from: `${link(top)}, its top skill of all time`,
       shown: installsOf(top)?.toLocaleString("en") ?? "",
     },
     {
       p: "stars",
       label: NUMBER_LABELS.stars,
-      from: esc(repoKey(b)),
+      from: esc(repoName(repoKey(b))),
       shown: stars?.toLocaleString("en") ?? "",
     },
     {
       p: "published",
       label: NUMBER_LABELS.published,
-      from: published ? `its first skill, published ${date(published)}` : "",
+      from:
+        oldest && published
+          ? `${link(oldest)}, its oldest skill, published <span class="nowrap">${date(published)}</span>`
+          : "",
       shown: published ? age(published, data.asOf.installs) : "",
     },
   ]);
@@ -102,7 +112,7 @@ export default function Page(pageContext: PageContextServer): string {
                 `<p class="install-label" id="install-${i + 1}">${esc(label)}</p><div class="install"><code>${commandHtml(command)}</code>${copyButton(command, `install-${i + 1}`)}</div>`,
             )
             .join("")}
-          <p class="links"><a href="https://github.com/${esc(repo)}">Source on GitHub</a><a href="${repoHref(repo)}">All skills from ${esc(repo)}</a></p>
+          <p class="links"><a href="https://github.com/${esc(repo)}">Source on GitHub</a><a href="${repoHref(repo)}">All skills from ${esc(repoName(repo))}</a></p>
       </div>
       ${tiles(b)}
       <section aria-labelledby="skills">

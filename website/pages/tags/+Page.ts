@@ -125,7 +125,7 @@ export default function Page(): string {
       <h1>Tags</h1>
       <div class="tag-search">
         <label for="tag-q" class="sr-only">Search tags</label>
-        <input id="tag-q" type="search" placeholder="Search tags" autocomplete="off" spellcheck="false" aria-controls="tag-sections" />
+        <input id="tag-q" type="search" placeholder="Search tags" autocomplete="off" spellcheck="false" enterkeyhint="search" aria-controls="tag-sections" />
       </div>
       <script>${PENDING_SCRIPT}</script>
       <nav class="toc" aria-label="Facets">${FACET_ORDER.map((id) => `<a href="#facet-${id}">${esc(facetById.get(id)?.name ?? id)}</a>`).join("")}</nav>

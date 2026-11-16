@@ -18,8 +18,9 @@ export interface Tile {
   /** Where the number comes from, after the label, as HTML: such as "on skills.sh". */
   from: string;
   shown: string;
-  /** The weekly installs whose trend the tile shows, for Weekly Downloads. */
+  /** The weekly downloads whose trend the tile shows, for Weekly Downloads, and their growth. */
   trend?: number[] | null;
+  growth?: number | null;
 }
 
 /**
@@ -27,7 +28,7 @@ export interface Tile {
  * section when none is known.
  */
 export function statTilesHtml(e: Entry, tiles: Tile[]): string {
-  const html = tiles.flatMap(({ p, label, from, shown, trend }) => {
+  const html = tiles.flatMap(({ p, label, from, shown, trend, growth = null }) => {
     const standing = standingOf(p, e);
     if (!standing) return [];
     // Where it comes from, and its exact place: on its words and chart, not over the trend's own tip.
@@ -35,7 +36,7 @@ export function statTilesHtml(e: Entry, tiles: Tile[]): string {
     return `
       <figure class="stat">
         <figcaption class="stat-label">${PROPS[p].icon}<span><span class="stat-name">${label}</span> <span class="muted">${from}</span></span></figcaption>
-        <div class="stat-head"><div class="stat-value">${shown}</div>${trend ? trendHtml(trend, data.asOf.installs, GROWTH_BASE_MIN) : ""}</div>
+        <div class="stat-head"><div class="stat-value">${shown}</div>${trend ? trendHtml(trend, data.asOf.installs, GROWTH_BASE_MIN, growth) : ""}</div>
         <div title="${title}">
           <p class="stat-standing">${standing.words}</p>
           ${standing.chart}

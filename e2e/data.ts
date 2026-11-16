@@ -122,13 +122,24 @@ export const onlyInBundle = (() => {
 })();
 
 /**
+ * Whether a skill has a Weekly Growth, as website/skills.ts's growthOf counts it: 1,000 downloads in
+ * an average week of its last 2, and 100 in each of its last 7.
+ */
+const grows = (weekly: number[] | null) =>
+  !!weekly &&
+  weekly.length >= 7 &&
+  weekly.slice(-7).every((n) => n >= 100) &&
+  (weekly.at(-1)! + weekly.at(-2)!) / 2 >= 1000;
+
+/**
  * A skill whose 8 weeks began with a handful of downloads, under the 100 its change is told from,
- * if there's one today: the one that grew the most since.
+ * if there's one today: the one that grew the most since. Without a Weekly Growth, which its tile
+ * would tell instead.
  */
 export const fromAHandful = data.skills
   .filter((s) => {
     const weekly = s["skills.sh"].weeklyInstalls;
-    return weekly && weekly.length >= 2 && weekly[0] > 0 && weekly[0] < 100;
+    return weekly && weekly.length >= 2 && weekly[0] > 0 && weekly[0] < 100 && !grows(weekly);
   })
   .toSorted(
     (a, b) =>

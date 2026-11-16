@@ -71,6 +71,41 @@ test("opens on Rising, with every skill counted and every row in", async ({ page
   );
 });
 
+test("a word of a few letters is found where it starts or ends a word, not inside one", async ({
+  page,
+}) => {
+  await open(page, "/");
+  await searchable(page);
+  const { count, search } = list(page);
+  const found = async (q: string) => {
+    await search.fill(q);
+    await settled(page);
+    return fromCount((await count.innerText()).split(" ")[0]);
+  };
+  // "ai" found 1,259 of the 1,385 skills, by email, maintain and the like.
+  expect(await found("ai")).toBeLessThan(data.skills.length / 2);
+  // As it ends postgresql and mysql, "sql" finds the skills that name them alone.
+  const sql = data.skills.filter((s) =>
+    /\b(postgre|my|no)sql\b/i.test(`${s.agentReview.description} ${s.agentReview.tldr?.text}`),
+  );
+  expect(await found("sql")).toBeGreaterThanOrEqual(sql.length);
+});
+
+test("a word with a hyphen finds what it does in one word or in two", async ({ page }) => {
+  await open(page, "/");
+  await searchable(page);
+  const { count, search } = list(page);
+  const found = async (q: string) => {
+    await search.fill(q);
+    await settled(page);
+    return fromCount((await count.innerText()).split(" ")[0]);
+  };
+  // "e-mail" found none of the skills "email" finds.
+  const email = await found("email");
+  expect(email).toBeGreaterThan(0);
+  expect(await found("e-mail")).toBeGreaterThanOrEqual(email);
+});
+
 test("the search narrows the list as you type, best match first", async ({ page }) => {
   await open(page, "/");
   await searchable(page);
@@ -133,6 +168,18 @@ test("a word of a search starts a word of a tag, or isn't found in it", async ({
   }
 });
 
+test("filters that leave nothing show only the facets of the tags picked, the way back", async ({
+  page,
+}) => {
+  // A stack tag, and under a star: no repo has none.
+  const tag = [...stackTags][0];
+  await open(page, `/?tag=${encodeURIComponent(tag)}&stars=..1`);
+  await expect(list(page).count).toHaveText("0 skills");
+  // Every facet said None, the picked tag a thousand pixels down, under Stack.
+  await expect(page.locator("#tag-facets .facet h2")).toHaveText(["Stack"]);
+  await expect(page.locator(`#tag-facets [data-tag="${tag}"]`)).toBeInViewport();
+});
+
 test("a search that finds nothing says so, and offers the agent", async ({ page }) => {
   await open(page, "/");
   const { count, empty, search } = list(page);
@@ -145,7 +192,11 @@ test("a search that finds nothing says so, and offers the agent", async ({ page 
   await expect(page.locator("#facets .facet")).toHaveCount(0);
 
   // The agent gets the search as the need, and the skills it would have looked through.
-  await expect(page.locator("#ask-label")).toContainText(`of all ${n(data.skills.length)} skills.`);
+  // It sums them up: a skill only listed inside its bundle is in its bundle's entry, by its name
+  // alone. "The TL;DR of all of them" said more than the prompt held.
+  await expect(page.locator("#ask-label")).toContainText(
+    `that sums up all ${n(data.skills.length)} skills.`,
+  );
   await empty.locator('[data-action="ask"]').click();
   await expect(page.locator("#ask-label")).toContainText("copied to your clipboard");
   // The link says so too: on a phone, the line under the agent's box is a screen above it.
@@ -279,6 +330,56 @@ test("oversized typed amounts explain the error and keep the previous range", as
     await expect(list(page).count).toHaveText(before as string);
     await page.keyboard.press("Escape");
   }
+});
+
+test("an amount refused as it's typed leaves the list as it was before it", async ({ page }) => {
+  await open(page, "/?week=..5000");
+  const before = (await list(page).count.textContent()) as string;
+  await page.locator('.range-pill[data-value="week"]').click();
+  const pop = page.locator("#range-pop-week");
+  // The 10 of 10K, on its way, is under 5K: the list was left filtered by it once 10K was refused.
+  await pop.getByLabel("At least").pressSequentially("10k");
+  await expect(pop.getByLabel("At least")).toHaveAttribute("aria-invalid", "true");
+  await settled(page);
+  await expect(page).toHaveURL("/?week=..5000");
+  await expect(list(page).count).toHaveText(before);
+  await expect(page.locator('.range-pill[data-value="week"]')).toContainText("< 5K");
+  await page.keyboard.press("Escape");
+
+  // What isn't an amount, such as 12h, once the field is left: the list was filtered by its 12, as
+  // 12 days, and the field said 12d.
+  await page.locator('.range-pill[data-value="published"]').click();
+  const age = page.locator("#range-pop-published").getByLabel("Newer than");
+  await age.pressSequentially("12h");
+  await expect(age).toHaveAttribute("aria-invalid", "true");
+  await age.press("Enter");
+  await settled(page);
+  await expect(age).toHaveValue("");
+  await expect(page).toHaveURL("/?week=..5000");
+  await expect(list(page).count).toHaveText(before);
+});
+
+test("a bound refused for its place stays, for the other bound to be set right", async ({
+  page,
+}) => {
+  await open(page, "/");
+  await page.locator('.range-pill[data-value="stars"]').click();
+  const pop = page.locator("#range-pop-stars");
+  const least = pop.getByLabel("At least");
+  const under = pop.getByLabel("Under");
+  await least.fill("1.5K");
+  await under.click();
+  await under.pressSequentially("1000");
+  await expect(under).toHaveAttribute("aria-invalid", "true");
+  // Left for the other field, it was gone, and setting that one right left the range without it.
+  await least.click();
+  await expect(under).toHaveValue("1000");
+  await expect(pop.locator(".range-error")).not.toHaveText("");
+  await least.fill("500");
+  await settled(page);
+  await expect(page).toHaveURL("/?stars=500..1000");
+  await expect(under).not.toHaveAttribute("aria-invalid");
+  await expect(pop.locator(".range-error")).toHaveText("");
 });
 
 test("the presets set the sort, the Age range and the Weekly Downloads range", async ({ page }) => {

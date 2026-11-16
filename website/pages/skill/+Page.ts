@@ -13,12 +13,14 @@ import {
   facetById,
   facetOf,
   glanceHtml,
+  growthOf,
   inBundleHtml,
   installCommand,
   NUMBER_LABELS,
   publishedOf,
   repoHref,
   repoKey,
+  repoName,
   short,
   starsOf,
   tagChip,
@@ -51,6 +53,7 @@ function tiles(s: Skill): string {
       from: `week to ${date(data.asOf.installs)}`,
       shown: week?.toLocaleString("en") ?? "",
       trend: sh.weeklyInstalls,
+      growth: growthOf(s),
     },
     {
       p: "downloads",
@@ -61,7 +64,7 @@ function tiles(s: Skill): string {
     {
       p: "stars",
       label: NUMBER_LABELS.stars,
-      from: esc(repoKey(s)),
+      from: esc(repoName(repoKey(s))),
       shown: stars?.toLocaleString("en") ?? "",
     },
     {
@@ -121,7 +124,7 @@ export default function Page(pageContext: PageContextServer): string {
     // A skill skills.sh doesn't list yet has no page there.
     ...(sh.unlisted ? [] : [`<a href="${esc(sh.url)}">skills.sh page</a>`]),
     `<a href="https://github.com/${esc(gh.repo)}${gh.dir ? `/tree/HEAD/${esc(encodeURI(gh.dir))}` : ""}">Source on GitHub</a>`,
-    `<a href="${repoHref(repoKey(s))}">All skills from ${esc(repoKey(s))}</a>`,
+    `<a href="${repoHref(repoKey(s))}">All skills from ${esc(repoName(repoKey(s)))}</a>`,
   ];
   const bundle = bundleOf.get(s.id)?.bundle;
   // A skill that only works inside its bundle is installed with it: its page says "Install <the

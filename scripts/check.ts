@@ -111,6 +111,8 @@ function claim(at: string, page: string) {
 for (const repo of data.repos) claim(`repo ${repo.id}`, repoPage(repo.id));
 
 const ids = new Set<string>();
+/** Each skill's name, which the skills CLI's --skill takes. */
+const skillNames = new Map(data.skills.map((s) => [s.id, s.name]));
 for (const skill of data.skills) {
   const at = skill.id;
   if (ids.has(at)) fail(at, "duplicate skill id");
@@ -182,6 +184,19 @@ for (const skill of data.skills) {
     fail(at, "unknown topic");
 }
 
+// One stack tag a technology: stack:node and stack:nodejs split Node.js's skills in two, and its
+// tag in the list held 8 of the 9. Spelled alike but for dashes, dots and a "js" at the end, two
+// tags are one: keep the one more skills carry.
+const stackSpellings = new Map<string, Set<string>>();
+for (const skill of data.skills)
+  for (const tag of skill.agentReview.tags.filter((t) => t.startsWith("stack:"))) {
+    const word = tag.slice("stack:".length).replace(/[-._]/g, "");
+    const key = word.length > 4 ? word.replace(/js$/, "") : word;
+    stackSpellings.set(key, (stackSpellings.get(key) ?? new Set()).add(tag));
+  }
+for (const tags of stackSpellings.values())
+  if (tags.size > 1) fail([...tags].join(" and "), "are one technology's tag: keep one of them");
+
 const bundled = new Map<string, string>();
 const bundleIds = new Set<string>();
 const bundlePages = new Map<string, string>();
@@ -205,6 +220,9 @@ for (const bundle of data.bundles) {
     if (bundled.has(id)) fail(at, `${id} is in ${bundled.get(id)} too`);
     bundled.set(id, bundle.id);
     if (!standalone && !note) fail(at, `${id} isn't standalone, so it needs a note saying why`);
+    // Its page says it after "Only works inside its bundle:", which read "…bundle: Only sets…".
+    if (!standalone && /^only\b/i.test(note ?? ""))
+      fail(at, `${id}'s note follows "Only works inside its bundle:", so it starts otherwise`);
     if (standalone && note) fail(at, `${id} is standalone, so it takes no note`);
     if (standalone && typeof listedOutsideBundle !== "boolean")
       fail(at, `${id} is standalone, so it needs listedOutsideBundle: true or false`);
@@ -219,6 +237,18 @@ for (const bundle of data.bundles) {
     bundle.agentReview.install.some((i) => !i.label || !i.command)
   )
     fail(at, "needs install commands, each with a label");
+  // A skills CLI command that names its skills names them all: a skill added to the bundle later
+  // was left out of it, so Copy installed the bundle without it, and nothing said so. One that
+  // takes the whole repo, with '*', or that asks which, names none.
+  const names = bundle.agentReview.skills.map(({ id }) => skillNames.get(id));
+  for (const { label, command } of bundle.agentReview.install)
+    for (const part of command.split("&&")) {
+      const named = [...part.matchAll(/--skill\s+(\S+)/g)].map((m) => m[1]);
+      if (!/\bskills(@\S+)?\s+add\b/.test(part) || !named.length || named.includes("'*'")) continue;
+      const missing = names.filter((name) => name && !named.includes(name));
+      if (missing.length)
+        fail(at, `its command "${label}" leaves out ${missing.join(", ")}: add a --skill for each`);
+    }
   if (!(Number.isInteger(bundle.skew) && bundle.skew >= 0))
     fail(at, "skew must be a whole number of words");
   if (bundle.agentReview.tldr) {

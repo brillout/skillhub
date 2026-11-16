@@ -4,7 +4,7 @@
  * under the tile (see trendTableHtml), so the tooltip never gates a value.
  */
 
-import { percent, plural } from "./format.ts";
+import { href, percent, plural } from "./format.ts";
 
 const W = 240;
 const H = 56;
@@ -31,12 +31,20 @@ function geometry(values: number[]) {
 }
 
 /**
- * `from`: the fewest downloads of its first week for the change over the weeks to be told. From
- * a handful, it reads as an absurd +273,050%, which the skills list refuses for its Weekly Growth
- * (see growthOf in skills.ts): the tile then says "8 weeks" alone, as for a first week of none.
- * The page passes it, so that this file, which the browser runs too, doesn't take the data in.
+ * The words beside the line: its Weekly Growth, as the skills list shows it, where it has one (see
+ * growthOf in skills.ts), in a word, as the list's rows have it, for the line to keep its room. The change from its first week to its last told otherwise, such as
+ * find-skills' "+6% in 8 weeks" beside the "−6%" of its row in the list, sorted by that growth.
+ * Without one, that change, from `from` downloads in its first week: from a handful, it reads as
+ * an absurd +273,050%, which the list refuses for its growth too; the tile then says "8 weeks"
+ * alone, as for a first week of none. The page passes both, so that this file, which the browser
+ * runs too, doesn't take the data in.
  */
-export function trendHtml(values: number[], snapshot: string, from: number): string {
+export function trendHtml(
+  values: number[],
+  snapshot: string,
+  from: number,
+  growth: number | null,
+): string {
   const weeks = weekEnds(snapshot, values.length);
   const { x, y } = geometry(values);
   const first = values[0];
@@ -58,7 +66,13 @@ export function trendHtml(values: number[], snapshot: string, from: number): str
         </svg>
         <div class="spark-tip" aria-live="polite" hidden><strong></strong><span></span></div>
       </div>
-      <div class="stat-delta">${change === null ? "8 weeks" : `${change} in 8 weeks`}</div>
+      <div class="stat-delta">${
+        growth !== null
+          ? `<a href="${href("about/")}#weekly-growth" title="Weekly Growth: its average weekly downloads of the last 2 weeks against those of the 4 weeks before">${percent(growth)} growth</a>`
+          : change === null
+            ? "8 weeks"
+            : `${change} in 8 weeks`
+      }</div>
     </div>`;
 }
 

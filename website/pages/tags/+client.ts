@@ -102,6 +102,12 @@ input.addEventListener("input", () => {
   const address = typed ? `?q=${encodeURIComponent(typed)}` : location.pathname;
   history.replaceState(history.state, "", address + location.hash);
 });
+// The keyboard's Search key, on a touch screen: the keyboard goes, out of the way of the tags it
+// found. It did nothing.
+input.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" && !event.isComposing && matchMedia("(pointer: coarse)").matches)
+    input.blur();
+});
 const asked = new URLSearchParams(location.search).get("q");
 if (asked !== null) input.value = asked;
 // Or what the browser put back by itself.

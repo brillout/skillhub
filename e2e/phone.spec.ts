@@ -48,6 +48,16 @@ test("a glance's facts keep most of the line, however long a label is", async ({
       (dl.querySelector("dd") as Element).getBoundingClientRect().width,
     ]);
   expect(text).toBeGreaterThan(glance / 2);
+  // Each under its label, the line's whole width its own: beside a label of two fifths, it had
+  // three words a line at 320px, and a file's name broke inside.
+  const off = await page.locator(".at-a-glance .glance > div").evaluateAll((facts) =>
+    facts.map((fact) => {
+      const label = (fact.querySelector("dt") as Element).getBoundingClientRect();
+      const text = (fact.querySelector("dd") as Element).getBoundingClientRect();
+      return { left: Math.abs(text.left - label.left), under: text.top >= label.bottom - 0.5 };
+    }),
+  );
+  expect(off.every(({ left, under }) => left < 0.5 && under)).toBe(true);
 });
 
 test("a page's name keeps its words whole: its buttons go under one that needs their line", async ({
@@ -363,6 +373,39 @@ test("a row's Save is its bookmark alone, as tall as its thumbs, and still calle
   expect(onPage.width).toBeGreaterThan(20);
 });
 
+test("the keyboard's Search key brings what the search found into view", async ({ page }) => {
+  await open(page, "/");
+  await searchable(page);
+  const { count, search } = list(page);
+  await search.tap();
+  await search.fill(skill.name);
+  await settled(page);
+  // It did nothing: the keyboard stayed, and the list's first row was 342px under the box.
+  await search.press("Enter");
+  await expect(search).not.toBeFocused();
+  await expect(count).toBeInViewport();
+  await expect(list(page).rows.first()).toBeInViewport();
+  await expect(search).toHaveAttribute("enterkeyhint", "search");
+});
+
+test("a bundle's row keeps each of its skills' names whole on its line", async ({ page }) => {
+  await open(page, "/?show=bundles");
+  // Broken at its hyphens, "game-" ended a line and "jam" started the next.
+  const broken = await page
+    .locator(".skill-list > li")
+    .first()
+    .evaluate((row) => {
+      (row as HTMLElement).style.contentVisibility = "visible";
+      const width = (row.querySelector(".members") as Element).getBoundingClientRect().width;
+      // On two lines, though it would fit on one.
+      return [...row.querySelectorAll(".members a")].filter((a) => {
+        const lines = [...a.getClientRects()];
+        return lines.length > 1 && lines.reduce((sum, line) => sum + line.width, 0) < width;
+      }).length;
+    });
+  expect(broken).toBe(0);
+});
+
 test("the list's settings and tags open from their buttons", async ({ page }) => {
   await open(page, "/");
   const settings = page.locator("#sort-group");
@@ -493,6 +536,25 @@ test.describe("on a small phone, 360px wide", () => {
     const box = (await chip.boundingBox()) as { x: number; width: number };
     expect(box.x).toBeGreaterThanOrEqual(0);
     expect(box.x + box.width).toBeLessThanOrEqual(SMALL);
+  });
+
+  test("an ⓘ of the about page's table stays on the line of its label's last word", async ({
+    page,
+  }) => {
+    await open(page, "/about/");
+    // On a line of its own, as for "Waiting for agent review" and "Vendor paid service".
+    const alone = await page.locator(".tip-i").evaluateAll(
+      (all) =>
+        all.filter((button) => {
+          const text = button.previousSibling;
+          if (!text) return true;
+          const range = document.createRange();
+          range.selectNodeContents(text);
+          const lines = [...range.getClientRects()];
+          return Math.abs(lines[lines.length - 1].top - button.getBoundingClientRect().top) > 8;
+        }).length,
+    );
+    expect(alone).toBe(0);
   });
 
   test("the Saved switch stays under the finger that taps it", async ({ page }) => {

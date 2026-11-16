@@ -1,5 +1,6 @@
 import type { PageContextServer } from "vike/types";
 import { github } from "../../github.ts";
+import { repoName } from "../../skills.ts";
 import type { Data } from "./+data.ts";
 
 /**
@@ -8,5 +9,5 @@ import type { Data } from "./+data.ts";
  */
 export default (pageContext: PageContextServer) => {
   const { skill } = pageContext.data as Data;
-  return `${skill.name} · ${github(skill).repo} · SkillHub`;
+  return `${skill.name} · ${repoName(github(skill).repo)} · SkillHub`;
 };

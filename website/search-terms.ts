@@ -41,6 +41,8 @@ export interface Term {
    * or is the tag's word the word is another name of (see ALIASES).
    */
   start: RegExp;
+  /** Whether a word of a text ends with one of them, as "sql" does postgresql's. */
+  end: RegExp;
 }
 
 /**
@@ -58,6 +60,15 @@ function spellings(word: string): string[] {
   const inside = /([\p{L}\p{N}])\.(?=[\p{L}\p{N}])/gu;
   return [...new Set([word, named, named.replace(inside, "$1"), named.replace(inside, "$1-")])];
 }
+
+/**
+ * A word with a hyphen inside, as it's also written: in one word and in two. "e-mail" found none of
+ * the 74 skills "email" finds, and "front-end" 2 of frontend's 51.
+ */
+const hyphened = (word: string) =>
+  /[\p{L}\p{N}]-[\p{L}\p{N}]/u.test(word)
+    ? [word, word.replace(/-/g, ""), word.replace(/-/g, " ")]
+    : [word];
 
 /**
  * The name a word is the ".js" of, as people write a library's: vue.js is vue, node.js is node,
@@ -102,7 +113,7 @@ export function terms(phrase: string): Term[] {
       .map((word) => {
         // A plural is cut back in a word spelled one way only: the s of ".js" isn't one.
         const spelled = spellings(word);
-        const forms = spelled.length > 1 ? spelled : [singular(word)];
+        const forms = spelled.length > 1 ? spelled : hyphened(singular(word));
         const library = libraryOf(word);
         const starts = (library ? [...forms, library] : forms).map(escaped);
         // The tag's word whole, not what starts with it.
@@ -112,6 +123,7 @@ export function terms(phrase: string): Term[] {
           w: forms[0],
           forms,
           start: new RegExp(`(^|[^\\p{L}\\p{N}])(?:${starts.join("|")})`, "u"),
+          end: new RegExp(`(?:${forms.map(escaped).join("|")})(?![\\p{L}\\p{N}])`, "u"),
         };
       })
   );

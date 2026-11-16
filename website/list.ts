@@ -36,6 +36,7 @@ import {
   repoById,
   repoHref,
   repoKey,
+  repoName,
   growthOf,
   GROWTH_BASE_MIN,
   GROWTH_MIN,
@@ -348,12 +349,12 @@ export const PROPS: Record<Prop, PropInfo> = {
       const tookOff = publishedOf(e) !== firstSeenOf(e);
       if (isBundle(e))
         return tookOff
-          ? `Published ${on}, the earliest of its skills: when skills.sh first saw one, or the week one took off, after a week of under ${compact(GROWTH_BASE_MIN)} installs`
+          ? `Published ${on}, the earliest of its skills: when skills.sh first saw one, or the week one took off, after a week of under ${compact(GROWTH_BASE_MIN)} downloads`
           : `Published ${on}, when skills.sh first saw one of its skills`;
       return tookOff
         ? // What tookOffOf checks, no more: "under 100 installs a week until then" was said of
           // skills that had got several hundred a week since they were first seen.
-          `Published ${on}, the week it took off on skills.sh: skills.sh first saw it ${date(firstSeenOf(e) as string)}, but until then it got under ${compact(GROWTH_MIN)} installs a week, and under ${compact(GROWTH_BASE_MIN)} the week before`
+          `Published ${on}, the week it took off on skills.sh: skills.sh first saw it ${date(firstSeenOf(e) as string)}, but until then it got under ${compact(GROWTH_MIN)} downloads a week, and under ${compact(GROWTH_BASE_MIN)} the week before`
         : `Published ${on}, when skills.sh first saw it`;
     },
     // Below and above every date, so that the full range takes them all in. The ends' ages place an
@@ -376,7 +377,7 @@ export const PROPS: Record<Prop, PropInfo> = {
     label: "Stars",
     icon: STAR,
     of: starsOf,
-    title: (e) => `GitHub stars of ${repoKey(e)}, ${date(data.asOf.stars)}`,
+    title: (e) => `GitHub stars of ${repoName(repoKey(e))}, ${date(data.asOf.stars)}`,
     ...countStops(starsOf),
     crowd: crowd(
       "repo",
@@ -394,7 +395,7 @@ export const PROPS: Record<Prop, PropInfo> = {
     icon: DOWNLOAD,
     tag: "Total",
     of: installsOf,
-    title: (e) => `${most(e)}All-time installs on skills.sh, ${date(data.asOf.installs)}`,
+    title: (e) => `${most(e)}All-time downloads on skills.sh, ${date(data.asOf.installs)}`,
     ...countStops(installsOf),
     crowd: crowd("skill", data.skills.map(installsOf), "log"),
     standing: {
@@ -408,7 +409,7 @@ export const PROPS: Record<Prop, PropInfo> = {
     icon: DOWNLOAD,
     tag: "Week",
     of: weekOf,
-    title: (e) => `${most(e)}Installs on skills.sh in the week to ${date(data.asOf.installs)}`,
+    title: (e) => `${most(e)}Downloads on skills.sh in the week to ${date(data.asOf.installs)}`,
     ...countStops(weekOf),
     crowd: crowd("skill", data.skills.map(weekOf), "log"),
     standing: {
@@ -576,7 +577,7 @@ const GROWTH = {
   crowd: crowd("skill", data.skills.map(growthOf), "linear"),
   // No full stop at its end, as the numbers' titles: propsHtml adds one before the place.
   title: (e: Entry) =>
-    `${isBundle(e) ? "The most of any of its skills: " : ""}Installs on skills.sh in an average week of the 2 weeks to ${date(data.asOf.installs)}, against an average week of the 4 weeks before. Only for skills with at least ${compact(GROWTH_MIN)} a week, and at least ${compact(GROWTH_BASE_MIN)} in each of the last ${GROWTH_WEEKS} weeks: a younger skill, or one that took off from almost nothing, shows under ${PRESETS["rising-new"].label}`,
+    `${isBundle(e) ? "The most of any of its skills: " : ""}Downloads on skills.sh in an average week of the 2 weeks to ${date(data.asOf.installs)}, against an average week of the 4 weeks before. Only for skills with at least ${compact(GROWTH_MIN)} a week, and at least ${compact(GROWTH_BASE_MIN)} in each of the last ${GROWTH_WEEKS} weeks: a younger skill, or one that took off from almost nothing, shows under ${PRESETS["rising-new"].label}`,
 };
 /**
  * The sort unless another is picked: a search's is best match; the list of what you saved is
@@ -806,11 +807,20 @@ const words = (q: string) => read(q).words;
  * Whether a text has each word of the search: one of its spellings anywhere in it, or the start of
  * a word of `names`, a skill's tags. The second is how a tag is found (see tagScore), so the skills
  * of a tag the search finds are found with it: "vue.js" offered stack:vue beside "0 skills".
+ *
+ * A word of three letters or fewer only where it starts or ends one of the text's, as "sql" ends
+ * postgresql, and "ai" openai: inside them, it's in most texts, "ai" in email and maintain, "ci"
+ * in decide, "cli" in client, and "ai" found 1,259 of the 1,385 skills, the tags' column full of
+ * theirs. Longer, it's found anywhere in a word, such as "code" in vscode's.
  */
 const matches = (text: string, q: string, names = "") =>
   words(q).every(
-    ({ forms, start }) => forms.some((form) => text.includes(form)) || start.test(names),
+    ({ w, forms, start, end }) =>
+      (w.length <= SHORT_WORD
+        ? start.test(text) || end.test(text)
+        : forms.some((form) => text.includes(form))) || start.test(names),
   );
+const SHORT_WORD = 3;
 
 /** Whether a skill has the search: its words, each in its text or at the start of one of its tags'. */
 function has(s: Skill, q: string): boolean {
@@ -1273,7 +1283,7 @@ function filtersText(st: State): string[] {
   if (term(st)) parts.unshift(`the search "${term(st)}"`);
   if (st.thumbs) parts.unshift(`the ones I gave ${THUMB_ONE[st.thumbs]}`);
   if (st.saved) parts.unshift("the ones I saved");
-  if (st.repo) parts.push(`from ${st.repo}`);
+  if (st.repo) parts.push(`from ${repoName(st.repo)}`);
   for (const p of PROP_IDS)
     if (isNarrowed(st.ranges[p])) parts.push(`${PROPS[p].label}: ${rangeLabel(p, st.ranges[p])}`);
   return parts;
@@ -1304,7 +1314,7 @@ function promptEntry(e: Entry): string {
   if (text !== undefined) return text;
   const review = e.agentReview;
   const numbers = [
-    installsOf(e) !== null ? `${compact(installsOf(e) as number)} installs` : "",
+    installsOf(e) !== null ? `${compact(installsOf(e) as number)} downloads` : "",
     starsOf(e) !== null ? `${compact(starsOf(e) as number)} stars` : "",
   ].filter(Boolean);
   const head = isBundle(e)
@@ -1319,7 +1329,7 @@ function promptEntry(e: Entry): string {
     : [`- ${review.description}`];
   text = [
     head,
-    [repoKey(e), ...numbers, tags.length ? `tags: ${tags.join(", ")}` : ""]
+    [repoName(repoKey(e)), ...numbers, tags.length ? `tags: ${tags.join(", ")}` : ""]
       .filter(Boolean)
       .join(" · "),
     ...facts,
@@ -1522,7 +1532,7 @@ const detailsLink = (page: string) =>
 
 /** A row's repo, as a link to its page. */
 const sourceHtml = (e: Entry) =>
-  `<span class="skill-source"><a class="repo-link" href="${repoHref(repoKey(e))}">${esc(repoKey(e))}</a></span>`;
+  `<span class="skill-source"><a class="repo-link" href="${repoHref(repoKey(e))}">${esc(repoName(repoKey(e)))}</a></span>`;
 
 /**
  * What follows a row's name: what it is, where it's from, the bundle it's part of. In one box, which
@@ -1570,9 +1580,10 @@ function bundleRow(b: Bundle, st: State, outside = false): string {
   // When filtering, the skills the bundle doesn't match through are dimmed. The ranges are about the
   // bundle, so only the tags and search dim its skills.
   const hits = isFiltered(st) ? matchedThrough(b, st) : [];
-  const members = b.agentReview.skills.map(({ id }) => {
+  // Each name with its comma, kept whole on its line (see .member in style.css).
+  const members = b.agentReview.skills.map(({ id }, i, all) => {
     const dim = hits.length && !hits.some((s) => s.id === id);
-    return `<a href="${skillHref(id)}"${dim ? ` class="dim"` : ""}>${esc(skillById.get(id)?.name ?? id)}</a>`;
+    return `<span class="member"><a href="${skillHref(id)}"${dim ? ` class="dim"` : ""}>${esc(skillById.get(id)?.name ?? id)}</a>${i < all.length - 1 ? "," : ""}</span>`;
   });
   return `
     <li class="skill bundle">
@@ -1588,7 +1599,7 @@ function bundleRow(b: Bundle, st: State, outside = false): string {
       ${detailsLink(bundleHref(b.id))}${thumbsHtml(saveKey("bundle", b.id), b.agentReview.name)}${saveButton(saveKey("bundle", b.id), b.agentReview.name)}
       </div>
       ${b.agentReview.tldr?.glance.length ? glanceHtml(b.agentReview.tldr.glance, 2) : `<p class="skill-desc">${textHtml(b.agentReview.description)}</p>`}
-      <p class="members">${members.join(", ")}</p>
+      <p class="members">${members.join(" ")}</p>
       </div>
       ${propsHtml(b, st)}
     </li>`;
@@ -1597,14 +1608,15 @@ function bundleRow(b: Bundle, st: State, outside = false): string {
 /**
  * A facet of the sidebar. One with no tag to list says None and keeps its place, rather than go:
  * its heading stays where it is while a search is typed. On purpose also when the search finds
- * nothing, and every facet says None.
+ * nothing, and every facet says None. But not when `drop`: see facetSections.
  */
-function section(title: string, question: string | null, chips: string): string {
+function section(title: string, question: string | null, chips: string, drop = false): string {
+  if (!chips && drop) return "";
   return `<section class="facet"><h2${question ? ` title="${esc(question)}"` : ""}>${esc(title)}</h2><div class="chips">${chips || `<span class="muted">None</span>`}</div></section>`;
 }
 
 /** A facet's tags, with their counts for the other filters. Adds the tags it lists to `listed`. */
-function tagSection(st: State, facetId: string, listed: Set<string>): string {
+function tagSection(st: State, facetId: string, listed: Set<string>, drop: boolean): string {
   const facet = facetById.get(facetId);
   if (!facet) return "";
   const n = counts(st, facetId, valuesIn(facetId));
@@ -1624,7 +1636,7 @@ function tagSection(st: State, facetId: string, listed: Set<string>): string {
       return `${shown(t) ? chip(t) : ""}${children.length ? `<div class="chips sub">${children.map(chip).join("")}</div>` : ""}`;
     })
     .join("");
-  return section(facet.name, facet.question, chips);
+  return section(facet.name, facet.question, chips, drop);
 }
 
 /**
@@ -1642,11 +1654,16 @@ function listedOf(st: State): Set<string> {
 function facetSections(st: State, stackExpanded: boolean): string {
   const sections: string[] = [];
   const listed = new Set<string>();
+  // Filters that leave nothing, a tag among them, which keeps the column from saying it's empty:
+  // only the facets of the tags picked, which are the way back, rather than a column of Nones
+  // with the picked stack:react a thousand pixels down, under Stack. No search is typed, whose
+  // facets keep their places.
+  const drop = !term(st) && shownOf(st) === 0;
   // Flags before Topics and Stack, unlike FACET_ORDER, and on purpose: those two are the long
   // ones, and under them the few flags, which say what to check before installing, would be out
   // of sight.
   for (const f of ["category", "type", "effect", "needs", "by", "flag"])
-    sections.push(tagSection(st, f, listed));
+    sections.push(tagSection(st, f, listed, drop));
   // Topics, by group.
   const topic = facetById.get("topic");
   const topicCounts = counts(st, "topic", (s) =>
@@ -1662,9 +1679,10 @@ function facetSections(st: State, stackExpanded: boolean): string {
       return chips ? `<h3 class="group">${esc(g.name)}</h3><div class="chips">${chips}</div>` : "";
     })
     .join("");
-  sections.push(
-    `<section class="facet"><h2 title="${esc(topic?.question ?? "")}">Topics</h2>${groups || `<p class="muted">None</p>`}</section>`,
-  );
+  if (groups || !drop)
+    sections.push(
+      `<section class="facet"><h2 title="${esc(topic?.question ?? "")}">Topics</h2>${groups || `<p class="muted">None</p>`}</section>`,
+    );
   // Stack, most used first.
   const stackCounts = counts(st, "stack", (s) =>
     s.agentReview.tags.filter((t) => t.startsWith("stack:")),
@@ -1690,6 +1708,7 @@ function facetSections(st: State, stackExpanded: boolean): string {
         (stack.length > 16
           ? `<span class="chips-more"><button type="button" class="link-button" data-action="stack">${stackExpanded ? "Show fewer" : `Show all ${stack.length}`}</button></span>`
           : ""),
+      drop,
     ),
   );
   lastListed = { st, tags: listed };
@@ -1850,7 +1869,7 @@ function filtersOf(st: State): { kind: string; value: string; label: string }[] 
   if (st.saved) filters.push({ kind: "saved", value: "", label: "Saved" });
   if (st.thumbs) filters.push({ kind: "thumbs", value: "", label: THUMB_WORDS[st.thumbs] });
   for (const t of st.tags) filters.push({ kind: "tag", value: t, label: t });
-  if (st.repo) filters.push({ kind: "repo", value: st.repo, label: `from ${st.repo}` });
+  if (st.repo) filters.push({ kind: "repo", value: st.repo, label: `from ${repoName(st.repo)}` });
   for (const p of PROP_IDS)
     if (isNarrowed(st.ranges[p]))
       filters.push({
@@ -1931,7 +1950,10 @@ export function askLabel(st: State): string {
   if (!askable(st)) return "The list below is empty: there's nothing to copy.";
   const of = askState(st);
   const tokens = promptTokens(st);
-  const copies = `Copies a prompt of ${tokensHtml(tokens)} to your clipboard that includes the TL;DR of`;
+  // Sums them up: a skill only listed inside its bundle is in the prompt by its name, in its
+  // bundle's entry, whose TL;DR is that of all of them. "Includes the TL;DR of all 1,385 skills"
+  // said more than the prompt held, 1,059 skills' and 44 bundles'.
+  const copies = `Copies a prompt of ${tokensHtml(tokens)} to your clipboard that sums up`;
   const hint = largeHint(tokens, "Too much for some agents: narrow the list first.");
   if (of !== st)
     return filtersOn(of)
@@ -2296,13 +2318,13 @@ export function listView(
           <div class="agent-field" data-action="focus-need">
             <svg class="ask-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 6.5V4M2 11v3M18 11v3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /><rect x="4" y="6.5" width="12" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.5" /><circle cx="10" cy="3" r="1.25" fill="currentColor" /><circle cx="7.75" cy="10.75" r="1.25" fill="currentColor" /><circle cx="12.25" cy="10.75" r="1.25" fill="currentColor" /><path d="M8.5 13.75h3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
             <label for="need" class="sr-only">What you need, for your agent</label>
-            <textarea id="need" rows="1" placeholder="Describe what you need" autocomplete="off" aria-describedby="ask-label scope"></textarea>
+            <textarea id="need" rows="1" placeholder="Describe what you need" autocomplete="off" enterkeyhint="go" aria-describedby="ask-label scope"></textarea>
             <button type="button" class="ask-button" data-action="ask">Find with your agent</button>
           </div>
           <div class="search-field" data-action="focus-search">
             <svg class="search-icon" viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.5" /><path d="m13 13 4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
             <label for="q" class="sr-only">Search</label>
-            <input id="q" type="search" value="${esc(st.q)}" placeholder="Search" autocomplete="off" spellcheck="false" aria-describedby="search-note scope" />
+            <input id="q" type="search" value="${esc(st.q)}" placeholder="Search" autocomplete="off" spellcheck="false" enterkeyhint="search" aria-describedby="search-note scope" />
           </div>
           <p class="ask-label ask-room" aria-hidden="true">${askLabel(st)}</p>
           <p id="ask-label" class="ask-label" aria-live="polite">${askLabel(st)}</p>

@@ -10,8 +10,8 @@ const num = (n: number | null) => (n === null ? "—" : compact(n));
  */
 export default function Page(): string {
   const { skills, asOf } = queue;
-  // The minimums, in numbers: "the minimum installs and stars" left which ones to the About page.
-  const minimums = `at least ${number(review.minimums.installs)} installs and ${number(review.minimums.stars)} stars`;
+  // The minimums, in numbers: "the minimum downloads and stars" left which ones to the About page.
+  const minimums = `at least ${number(review.minimums.installs)} downloads and ${number(review.minimums.stars)} stars`;
   const lede =
     skills.length === 0
       ? // What the queue is, also while it's empty: the page then said nothing else, and its only

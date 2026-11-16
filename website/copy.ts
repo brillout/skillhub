@@ -21,6 +21,13 @@ export function mountCopyButtons() {
     copy.then(
       () => {
         clearNotice("copy");
+        // Only the last one copied says so: the clipboard holds its command alone. Two clicks
+        // in a row on a bundle's page left both saying Copied.
+        for (const other of document.querySelectorAll<HTMLElement>("[data-copy][data-copied]"))
+          if (other !== button) {
+            clearTimeout(timers.get(other));
+            delete other.dataset.copied;
+          }
         button.dataset.copied = "";
         // The button shows it for a moment, in place of its name: that isn't read out.
         say("Copied to your clipboard.");
