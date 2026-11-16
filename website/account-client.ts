@@ -204,7 +204,7 @@ let links = loginHtml();
 /**
  * The header's links for who's logged in: Log in; or what's theirs, a link to what they saved, the
  * skills list with its Saved switch on, then their avatar and Log out, with their login in words
- * for a screen reader, which the avatar's tooltip alone never told. The link is on every page:
+ * that a screen reader reads at every width. The link is on every page:
  * the switch is on the list alone, so from a skill's page there was no way to what you had just
  * saved there. In its bookmark alone on a phone, whose line has no room for its word (see
  * .saved-link in style.css): its tooltip says what it is to a pointer on a window that narrow.
