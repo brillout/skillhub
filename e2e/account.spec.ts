@@ -858,6 +858,37 @@ test.describe("when an account request fails", () => {
     await expect(save).toBeFocused();
   });
 
+  test.describe("or never reaches the Worker", () => {
+    test.use({
+      expected:
+        /HTTP 503:.*\/api\/(auth\/logout|saves)|console error: Failed to load resource: (the server responded with a status of 503|net::ERR_FAILED)|request failed: POST .*\/api\/saves net::ERR_FAILED/,
+    });
+
+    test("only then a notice says to check the connection", async ({ page }) => {
+      await openLoggedIn(page, LIST);
+      const save = skillRow(page).locator("[data-save]");
+      const status = page.getByRole("status");
+      await page.route("**/api/saves", (route) => route.abort());
+      await save.click();
+      // It said "Try again." alone, where Log out said to check the connection.
+      await expect(status).toContainText(
+        `Couldn't save ${skill.name}. Check your connection and try again.`,
+      );
+      await page.unroute("**/api/saves");
+      await page.route("**/api/saves", (route) =>
+        route.fulfill({ status: 503, body: "Unavailable" }),
+      );
+      await save.click();
+      await expect(status).toContainText(`Couldn't save ${skill.name}. Try again.`);
+      // And Log out said to check the connection of the Worker's own error.
+      await page.route("**/api/auth/logout", (route) =>
+        route.fulfill({ status: 503, body: "Unavailable" }),
+      );
+      await logout(page).click();
+      await expect(status).toContainText("Couldn't log out. Try again.");
+    });
+  });
+
   for (const removing of [false, true])
     test(`a failed thumb ${removing ? "removal" : "addition"} explains the rollback and allows a retry`, async ({
       page,

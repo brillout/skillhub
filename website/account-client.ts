@@ -299,6 +299,13 @@ const nameOf = (key: string) =>
   document.querySelector<HTMLElement>(`[data-save="${CSS.escape(key)}"]`)?.dataset.name ??
   "this item";
 
+/**
+ * How a failed request's notice ends: one that never reached the Worker, null, is nearly always the
+ * connection's doing.
+ */
+const tryAgain = (res: Response | null) =>
+  res ? "Try again." : "Check your connection and try again.";
+
 /** Notes that the tab leaves this page to log in: see LOGIN_FROM in saves.ts. */
 function leaveToLogIn() {
   try {
@@ -357,8 +364,8 @@ async function toggle(key: string) {
     if (on) notSaved(key);
     notice(
       on
-        ? `Couldn't save ${nameOf(key)}. Try again.`
-        : `Couldn't remove ${nameOf(key)} from what you saved. Try again.`,
+        ? `Couldn't save ${nameOf(key)}. ${tryAgain(res)}`
+        : `Couldn't remove ${nameOf(key)} from what you saved. ${tryAgain(res)}`,
       key,
     );
   }
@@ -410,8 +417,8 @@ async function react(key: string, clicked: Reaction) {
   else
     notice(
       after
-        ? `Couldn't give ${nameOf(key)} your thumbs ${after}. Try again.`
-        : `Couldn't take back your thumbs ${before} for ${nameOf(key)}. Try again.`,
+        ? `Couldn't give ${nameOf(key)} your thumbs ${after}. ${tryAgain(res)}`
+        : `Couldn't take back your thumbs ${before} for ${nameOf(key)}. ${tryAgain(res)}`,
       action,
     );
 }
@@ -433,7 +440,7 @@ document.addEventListener("pointerover", (event) => {
 async function logout() {
   const res = await post("api/auth/logout", {}).catch(() => null);
   if (!res?.ok) {
-    notice("Couldn't log out. Check your connection and try again.", "logout");
+    notice(`Couldn't log out. ${tryAgain(res)}`, "logout");
     return;
   }
   clearNotice("logout");
