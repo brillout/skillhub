@@ -565,57 +565,74 @@ for (const [width, presets] of [
     });
   });
 
-test.describe("in dark", () => {
-  test.use({ colorScheme: "dark" });
+for (const scheme of ["light", "dark"] as const)
+  test.describe(`in ${scheme}`, () => {
+    test.use({ colorScheme: scheme });
 
-  test("a pressed preset, order, Show or tag stands out from its group, its words from it", async ({
-    page,
-  }) => {
-    await open(page, "/?tag=flag%3Adual-use");
-    const pressed = page.locator(
-      ':is(.preset, .order button, .show-switch button, .chip)[aria-pressed="true"]',
-    );
-    await expect(pressed).toHaveCount(4);
-    const ratios = await pressed.evaluateAll((all) => {
-      const rgb = (color: string) => color.match(/[\d.]+/g)?.map(Number) ?? [];
-      const luminance = ([r, g, b]: number[]) => {
-        const [lr, lg, lb] = [r, g, b].map((c) =>
-          c / 255 <= 0.04045 ? c / 255 / 12.92 : ((c / 255 + 0.055) / 1.055) ** 2.4,
-        );
-        return 0.2126 * lr + 0.7152 * lg + 0.0722 * lb;
-      };
-      const ratio = (a: number[], b: number[]) => {
-        const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
-        return (hi + 0.05) / (lo + 0.05);
-      };
-      const fill = (el: Element | null) => {
-        for (; el; el = el.parentElement) {
-          const [r, g, b, a = 1] = rgb(getComputedStyle(el).backgroundColor);
-          if (a > 0) return [r, g, b];
-        }
-        return [255, 255, 255];
-      };
-      return all.map((button) => {
-        const own = fill(button);
-        // Each of its words, as drawn: at its opacity, over the button's fill.
-        const words = [...button.querySelectorAll("span"), button].map((el) => {
-          const [r, g, b] = rgb(getComputedStyle(el).color);
-          const opacity = Number(getComputedStyle(el).opacity);
-          return ratio(
-            [r, g, b].map((c, i) => c * opacity + own[i] * (1 - opacity)),
-            own,
+    test("a pressed preset, order, Show or tag stands out from its group, its words and its focus ring from it", async ({
+      page,
+    }) => {
+      await open(page, "/?tag=flag%3Adual-use");
+      const pressed = page.locator(
+        ':is(.preset, .order button, .show-switch button, .chip)[aria-pressed="true"]',
+      );
+      await expect(pressed).toHaveCount(4);
+      // The keyboard's: a focus the pointer gives draws no ring.
+      await page.locator("#q").focus();
+      await page.keyboard.press("Tab");
+      const ratios = await pressed.evaluateAll((all) => {
+        const rgb = (color: string) => color.match(/[\d.]+/g)?.map(Number) ?? [];
+        const luminance = ([r, g, b]: number[]) => {
+          const [lr, lg, lb] = [r, g, b].map((c) =>
+            c / 255 <= 0.04045 ? c / 255 / 12.92 : ((c / 255 + 0.055) / 1.055) ** 2.4,
           );
+          return 0.2126 * lr + 0.7152 * lg + 0.0722 * lb;
+        };
+        const ratio = (a: number[], b: number[]) => {
+          const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+          return (hi + 0.05) / (lo + 0.05);
+        };
+        const fill = (el: Element | null) => {
+          for (; el; el = el.parentElement) {
+            const [r, g, b, a = 1] = rgb(getComputedStyle(el).backgroundColor);
+            if (a > 0) return [r, g, b];
+          }
+          return [255, 255, 255];
+        };
+        return all.map((button) => {
+          const own = fill(button);
+          // Each of its words, as drawn: at its opacity, over the button's fill.
+          const words = [...button.querySelectorAll("span"), button].map((el) => {
+            const [r, g, b] = rgb(getComputedStyle(el).color);
+            const opacity = Number(getComputedStyle(el).opacity);
+            return ratio(
+              [r, g, b].map((c, i) => c * opacity + own[i] * (1 - opacity)),
+              own,
+            );
+          });
+          // Its focus ring, against what's next to it: its fill when it's drawn inside.
+          (button as HTMLElement).focus();
+          const style = getComputedStyle(button);
+          const next =
+            Number.parseFloat(style.outlineOffset) < 0 ? own : fill(button.parentElement);
+          return {
+            group: ratio(own, fill(button.parentElement)),
+            words: Math.min(...words),
+            focused: button.matches(":focus-visible"),
+            ring: ratio(rgb(style.outlineColor), next),
+          };
         });
-        return { group: ratio(own, fill(button.parentElement)), words: Math.min(...words) };
       });
+      // In dark, the grey was 1.94:1 on the settings' groups, and 1.63:1 on the tags' tile. The focus
+      // color, inside a pressed preset, order or Show, was 2.38:1 on light's fill.
+      for (const { group, words, focused, ring } of ratios) {
+        expect(group).toBeGreaterThanOrEqual(3);
+        expect(words).toBeGreaterThanOrEqual(4.5);
+        expect(focused).toBe(true);
+        expect(ring).toBeGreaterThanOrEqual(3);
+      }
     });
-    // The grey was 1.94:1 on the settings' groups, and 1.63:1 on the tags' tile.
-    for (const { group, words } of ratios) {
-      expect(group).toBeGreaterThanOrEqual(3);
-      expect(words).toBeGreaterThanOrEqual(4.5);
-    }
   });
-});
 
 test.describe("on a tablet, 768px wide", () => {
   test.use({ viewport: { width: 768, height: 900 } });
