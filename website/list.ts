@@ -1722,7 +1722,7 @@ function facetSections(st: State, stackExpanded: boolean): string {
         )
         .join("") +
         (stack.length > 16
-          ? `<span class="chips-more"><button type="button" class="link-button" data-action="stack">${stackExpanded ? "Show fewer" : `Show all ${stack.length}`}</button></span>`
+          ? `<span class="chips-more"><button type="button" class="link-button" data-action="stack" aria-expanded="${stackExpanded}">${stackExpanded ? "Show fewer" : `Show all ${stack.length}`}</button></span>`
           : ""),
       drop,
     ),

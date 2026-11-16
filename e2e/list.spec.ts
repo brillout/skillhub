@@ -1016,17 +1016,21 @@ test("Show all, under the stack's tags, is where Show fewer then is, under the p
   test.skip(stackTags.size <= 16, "the stack has too few tags to hide any today");
   await open(page, "/");
   const more = page.locator('#facets [data-action="stack"]');
+  // A screen reader hears whether the stack is open, as for the site's other toggles.
+  await expect(more).toHaveAttribute("aria-expanded", "false");
   await more.scrollIntoViewIfNeeded();
   const box = (await more.boundingBox()) as { x: number; y: number; width: number; height: number };
   const spot = [box.x + box.width / 2, box.y + box.height / 2] as const;
   await page.mouse.click(...spot);
   await settled(page);
   await expect(more).toHaveText("Show fewer");
+  await expect(more).toHaveAttribute("aria-expanded", "true");
   // A second click where the first was: after the last tag, on its line, the button had moved
   // away, and the click was on a tag, which it filtered the list by.
   await page.mouse.click(...spot);
   await settled(page);
   await expect(more).toHaveText(`Show all ${stackTags.size}`);
+  await expect(more).toHaveAttribute("aria-expanded", "false");
   await expect(page).toHaveURL("/");
 });
 
