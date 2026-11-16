@@ -411,6 +411,38 @@ test("a bound refused for its place stays, for the other bound to be set right",
   await expect(pop.locator(".range-error")).toHaveText("");
 });
 
+test("a bound refused for its place goes once its popover closes", async ({ page }) => {
+  await open(page, "/");
+  const pill = page.locator('.range-pill[data-value="stars"]');
+  const pop = page.locator("#range-pop-stars");
+  const least = pop.getByLabel("At least");
+  const under = pop.getByLabel("Under");
+  await pill.click();
+  await least.fill("1.5K");
+  await settled(page);
+  // Closed by Escape in the refused field, or by a click elsewhere once it was left.
+  for (const close of [
+    () => under.press("Escape"),
+    async () => {
+      await least.click();
+      await page.locator("h1").click();
+    },
+  ]) {
+    await under.click();
+    await under.pressSequentially("1000");
+    await expect(under).toHaveAttribute("aria-invalid", "true");
+    await close();
+    await expect(pop).toBeHidden();
+    // Open again, it said Under 1000, with its error, beside a pill that said at least 1.5K.
+    await pill.click();
+    await expect(under).toHaveValue("");
+    await expect(under).not.toHaveAttribute("aria-invalid");
+    await expect(pop.locator(".range-error")).toHaveText("");
+    await expect(least).toHaveValue("1.5K");
+    await expect(page).toHaveURL("/?stars=1500..");
+  }
+});
+
 test("the presets set the sort, the Age range and the Weekly Downloads range", async ({ page }) => {
   await open(page, "/");
   const preset = (id: string) => page.locator(`[data-preset="${id}"]`);
