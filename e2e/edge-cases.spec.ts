@@ -256,7 +256,7 @@ test.describe("a number that's unknown", () => {
     expect(below).toBeGreaterThanOrEqual(known.length / 2);
     await open(page, skillUrl("unknown-first-seen"));
     const tile = page.locator(".stat", { hasText: "Total Downloads" });
-    // It said "of skills", of a share of the skills with known downloads alone.
+    // The share is of the skills with known downloads alone, where it said "of skills".
     await expect(tile.locator(".stat-standing")).toHaveText(
       `More downloads than ${Math.floor((below / known.length) * 100)}% of the skills with known downloads`,
     );

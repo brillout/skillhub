@@ -88,7 +88,7 @@ test("a screen reader hears who's logged in once, on the narrowest phone too", a
     ).length;
   };
   await openLoggedIn(page, "/about/");
-  // Twice where the avatar is drawn: in words, then as the avatar's tooltip.
+  // Once where the avatar is drawn too: in words, the avatar's tooltip being for a pointer.
   expect(await said()).toBe(1);
   await expect(page.locator("#account .avatar")).toHaveAttribute("title", "Logged in as test-user");
   await page.setViewportSize({ width: 320, height: 700 });

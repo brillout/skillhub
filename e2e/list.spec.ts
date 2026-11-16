@@ -446,8 +446,8 @@ test("a bound refused for its place goes once its popover closes", async ({ page
 test("an amount left unfinished by Escape goes back to the range it was typed over", async ({
   page,
 }) => {
-  // What isn't an amount is undone however the field is left: Escape kept the amount on its way,
-  // stars=1500..2500 for a 2500x, as did each bound of each number filter.
+  // What isn't an amount, such as 2500x, is undone however the field is left, Escape included, on
+  // each bound of each number filter: the list goes back to the range it was typed over.
   for (const [prop, end, typed, before] of [
     ["stars", 1, "2500x", "stars=1500.."],
     ["published", 0, "25dx", ""],

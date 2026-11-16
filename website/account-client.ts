@@ -206,8 +206,9 @@ let links = loginHtml();
  * skills list with its Saved switch on, then their avatar and Log out, with their login in words
  * that a screen reader reads at every width, the avatar's tooltip being for a pointer alone. The
  * link is on every page: the switch is on the list alone, so from a skill's page there was no way
- * to what you had just saved there. In its bookmark alone on a phone, whose line has no room for its word (see
- * .saved-link in style.css): its tooltip says what it is to a pointer on a window that narrow.
+ * to what you had just saved there. In its bookmark alone on a phone, whose line has no room for
+ * its word (see .saved-link in style.css): its tooltip says what it is to a pointer on a window
+ * that narrow.
  */
 function paintLinks() {
   const el = document.getElementById("account");
