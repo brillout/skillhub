@@ -35,8 +35,8 @@ function geometry(values: number[]) {
  * growthOf in skills.ts), in a word, as the list's rows have it, for the line to keep its room. The change from its first week to its last told otherwise, such as
  * find-skills' "+6% in 8 weeks" beside the "−6%" of its row in the list, sorted by that growth.
  * Without one, that change, from `from` downloads in its first week: from a handful, it reads as
- * an absurd +273,050%, which the list refuses for its growth too; the tile then says "8 weeks"
- * alone, as for a first week of none. The page passes both, so that this file, which the browser
+ * an absurd +273,050%, which the list refuses for its growth too; the tile then says "8-week
+ * trend", as for a first week of none. The page passes both, so that this file, which the browser
  * runs too, doesn't take the data in.
  */
 export function trendHtml(
@@ -70,7 +70,7 @@ export function trendHtml(
         growth !== null
           ? `<a href="${href("about/")}#weekly-growth" title="Weekly Growth: its average weekly downloads of the last 2 weeks against those of the 4 weeks before">${percent(growth)} growth</a>`
           : change === null
-            ? "8 weeks"
+            ? "8-week trend"
             : `${change} in 8 weeks`
       }</div>
     </div>`;

@@ -231,6 +231,8 @@ interface PropInfo {
 interface Crowd {
   /** What it ranks, such as "skill". */
   what: string;
+  /** Which of them it ranks, such as "with known downloads", when some have no number; else null. */
+  having: string | null;
   /** Its rank's words at either end: "Top" and "Bottom", or for an age "Newest" and "Oldest". */
   ends: [top: string, bottom: string];
   /** Which way its places go, when it says so, such as "newest first". */
@@ -264,7 +266,11 @@ function crowd(
   what: string,
   values: (number | null)[],
   scale: "log" | "days" | "linear",
-  { ends = ["Top", "Bottom"], order }: { ends?: [string, string]; order?: string } = {},
+  {
+    having,
+    ends = ["Top", "Bottom"],
+    order,
+  }: { having: string; ends?: [string, string]; order?: string },
 ): Crowd {
   const known = values.filter((v) => v !== null);
   const desc = [...known].sort((a, b) => b - a);
@@ -304,6 +310,7 @@ function crowd(
   }
   return {
     what,
+    having: desc.length < values.length ? having : null,
     ends,
     order,
     total: desc.length,
@@ -369,7 +376,7 @@ export const PROPS: Record<Prop, PropInfo> = {
         return d ? days(d) : null;
       }),
       "days",
-      { ends: ["Newest", "Oldest"], order: "newest first" },
+      { having: "with a known age", ends: ["Newest", "Oldest"], order: "newest first" },
     ),
     standing: { more: "Newer than", fewer: "Older than", most: "The newest skill" },
   },
@@ -383,6 +390,7 @@ export const PROPS: Record<Prop, PropInfo> = {
       "repo",
       data.repos.filter((r) => listedRepos.has(r.id)).map((r) => r.stars),
       "log",
+      { having: "with known stars" },
     ),
     standing: {
       more: "More stars than",
@@ -397,7 +405,7 @@ export const PROPS: Record<Prop, PropInfo> = {
     of: installsOf,
     title: (e) => `${most(e)}All-time downloads on skills.sh, ${date(data.asOf.installs)}`,
     ...countStops(installsOf),
-    crowd: crowd("skill", data.skills.map(installsOf), "log"),
+    crowd: crowd("skill", data.skills.map(installsOf), "log", { having: "with known downloads" }),
     standing: {
       more: "More downloads than",
       fewer: "Fewer downloads than",
@@ -411,7 +419,9 @@ export const PROPS: Record<Prop, PropInfo> = {
     of: weekOf,
     title: (e) => `${most(e)}Downloads on skills.sh in the week to ${date(data.asOf.installs)}`,
     ...countStops(weekOf),
-    crowd: crowd("skill", data.skills.map(weekOf), "log"),
+    crowd: crowd("skill", data.skills.map(weekOf), "log", {
+      having: "with known weekly downloads",
+    }),
     standing: {
       more: "More weekly downloads than",
       fewer: "Fewer weekly downloads than",
@@ -574,7 +584,7 @@ const GROWTH = {
   icon: DOWNLOAD,
   tag: "Growth",
   /** Among the skills that have a growth: see growthOf. */
-  crowd: crowd("skill", data.skills.map(growthOf), "linear"),
+  crowd: crowd("skill", data.skills.map(growthOf), "linear", { having: "with a Weekly Growth" }),
   // No full stop at its end, as the numbers' titles: propsHtml adds one before the place.
   title: (e: Entry) =>
     `${isBundle(e) ? "The most of any of its skills: " : ""}Downloads on skills.sh in an average week of the 2 weeks to ${date(data.asOf.installs)}, against an average week of the 4 weeks before. Only for skills with at least ${compact(GROWTH_MIN)} a week, and at least ${compact(GROWTH_BASE_MIN)} in each of the last ${GROWTH_WEEKS} weeks: a younger skill, or one that took off from almost nothing, shows under ${PRESETS["rising-new"].label}`,
@@ -1458,9 +1468,12 @@ function rankText(c: Crowd, n: number): string {
     : `${bottom} ${Math.ceil(((c.total - place + 1) / c.total) * 100)}%`;
 }
 
-/** Such as "#34 of 1,190 skills", or "#586 of 1,190 skills, newest first". */
+/** `what`, such as "17 skills", as what a crowd ranks: "the 17 skills with known downloads". */
+const ranked = (c: Crowd, what: string) => (c.having ? `the ${what} ${c.having}` : what);
+
+/** Such as "#34 of 1,190 skills", or "#586 of the 1,188 skills with a known age, newest first". */
 const placeText = (c: Crowd, n: number) =>
-  `#${number(c.placeOf(n))} of ${plural(c.total, c.what)}${c.order ? `, ${c.order}` : ""}`;
+  `#${number(c.placeOf(n))} of ${ranked(c, plural(c.total, c.what))}${c.order ? `, ${c.order}` : ""}`;
 
 /**
  * Where an entry's number stands among the catalog's, for the skill's page: its place, in words,
@@ -1479,10 +1492,11 @@ export function standingOf(
   const place = c.placeOf(n);
   const below = c.belowOf(n);
   // Past the middle, the share it beats; before it, the share that beats it.
-  const share = (k: number) => `<em>${Math.floor((k / c.total) * 100)}%</em> of ${c.what}s`;
+  const share = (k: number) =>
+    `<em>${Math.floor((k / c.total) * 100)}%</em> of ${ranked(c, `${c.what}s`)}`;
   const words =
     place === 1
-      ? say.most
+      ? `${say.most}${c.having ? ` ${c.having}` : ""}`
       : below >= c.total / 2
         ? `${say.more} ${share(below)}`
         : `${say.fewer} ${share(place - 1)}`;
@@ -1706,7 +1720,7 @@ function facetSections(st: State, stackExpanded: boolean): string {
         )
         .join("") +
         (stack.length > 16
-          ? `<span class="chips-more"><button type="button" class="link-button" data-action="stack">${stackExpanded ? "Show fewer" : `Show all ${stack.length}`}</button></span>`
+          ? `<span class="chips-more"><button type="button" class="link-button" data-action="stack" aria-expanded="${stackExpanded}">${stackExpanded ? "Show fewer" : `Show all ${stack.length}`}</button></span>`
           : ""),
       drop,
     ),
@@ -1767,9 +1781,15 @@ export function facetsHtml(st: State, stackExpanded: boolean): string {
     ? ` of the ${plural(shownOf(st), unitOf(st))}${savedBundlesHtml(st, true)}`
     : "";
   // Where the filters leave nothing, there's no tag for the search to find, whatever its words.
-  const unfound = scopeOf(st)
-    ? `<span class="muted">No tag matches “${esc(term(st))}”.</span>`
-    : none;
+  // Where they leave some, or Show leaves the bundles, a tag their skills lack isn't found, though
+  // others have it.
+  const unfound = !scopeOf(st)
+    ? none
+    : filtersOn(st)
+      ? `<span class="muted">No tag of the ${scopeOf(st)} the filters leave matches “${esc(term(st))}”.</span>`
+      : st.show === "bundles"
+        ? `<span class="muted">No tag of the ${scopeOf(st)} matches “${esc(term(st))}”.</span>`
+        : `<span class="muted">No tag matches “${esc(term(st))}”.</span>`;
   return `${head}<div id="tag-facets" class="tag-facets"><div id="found-tags" class="tag-box"><div class="chips">${
     found || unfound
   }</div></div>${listed ? `<h2 class="tags-of">${plural(listed, "tag")}${of}</h2>${facets}` : ""}</div>`;

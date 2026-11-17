@@ -203,16 +203,18 @@ let links = loginHtml();
 
 /**
  * The header's links for who's logged in: Log in; or what's theirs, a link to what they saved, the
- * skills list with its Saved switch on, then their avatar and Log out. The link is on every page:
- * the switch is on the list alone, so from a skill's page there was no way to what you had just
- * saved there. In its bookmark alone on a phone, whose line has no room for its word (see
- * .saved-link in style.css): its tooltip says what it is to a pointer on a window that narrow.
+ * skills list with its Saved switch on, then their avatar and Log out, with their login in words
+ * that a screen reader reads at every width, the avatar's tooltip being for a pointer alone. The
+ * link is on every page: the switch is on the list alone, so from a skill's page there was no way
+ * to what you had just saved there. In its bookmark alone on a phone, whose line has no room for
+ * its word (see .saved-link in style.css): its tooltip says what it is to a pointer on a window
+ * that narrow.
  */
 function paintLinks() {
   const el = document.getElementById("account");
   const { user } = account;
   const html = user
-    ? `<a class="saved-link" href="${href("?saved")}" title="What you saved"${onSaved ? ` aria-current="page"` : ""}>${bookmarkSvg}<span class="saved-word">Saved</span></a><span class="me"><img class="avatar" src="${esc(user.avatar)}" alt="" width="20" height="20" title="Logged in as ${esc(user.login)}" /><button type="button" class="logout" data-logout>Log out</button></span>`
+    ? `<a class="saved-link" href="${href("?saved")}" title="What you saved"${onSaved ? ` aria-current="page"` : ""}>${bookmarkSvg}<span class="saved-word">Saved</span></a><span class="me"><span class="sr-only">Logged in as ${esc(user.login)}</span><img class="avatar" src="${esc(user.avatar)}" alt="" width="20" height="20" title="Logged in as ${esc(user.login)}" aria-hidden="true" /><button type="button" class="logout" data-logout>Log out</button></span>`
     : loginHtml();
   // Only when they change: a link that's replaced loses the pointer's hover, and its animation.
   if (!el || html === links) return;
@@ -299,6 +301,13 @@ const nameOf = (key: string) =>
   document.querySelector<HTMLElement>(`[data-save="${CSS.escape(key)}"]`)?.dataset.name ??
   "this item";
 
+/**
+ * How a failed request's notice ends: a request that got no response at all, null, as its fetch
+ * threw, asks to check the connection; one the Worker answered with an error asks to try again.
+ */
+const tryAgain = (res: Response | null) =>
+  res ? "Try again." : "Check your connection and try again.";
+
 /** Notes that the tab leaves this page to log in: see LOGIN_FROM in saves.ts. */
 function leaveToLogIn() {
   try {
@@ -357,8 +366,8 @@ async function toggle(key: string) {
     if (on) notSaved(key);
     notice(
       on
-        ? `Couldn't save ${nameOf(key)}. Try again.`
-        : `Couldn't remove ${nameOf(key)} from what you saved. Try again.`,
+        ? `Couldn't save ${nameOf(key)}. ${tryAgain(res)}`
+        : `Couldn't remove ${nameOf(key)} from what you saved. ${tryAgain(res)}`,
       key,
     );
   }
@@ -410,8 +419,8 @@ async function react(key: string, clicked: Reaction) {
   else
     notice(
       after
-        ? `Couldn't give ${nameOf(key)} your thumbs ${after}. Try again.`
-        : `Couldn't take back your thumbs ${before} for ${nameOf(key)}. Try again.`,
+        ? `Couldn't give ${nameOf(key)} your thumbs ${after}. ${tryAgain(res)}`
+        : `Couldn't take back your thumbs ${before} for ${nameOf(key)}. ${tryAgain(res)}`,
       action,
     );
 }
@@ -433,7 +442,7 @@ document.addEventListener("pointerover", (event) => {
 async function logout() {
   const res = await post("api/auth/logout", {}).catch(() => null);
   if (!res?.ok) {
-    notice("Couldn't log out. Check your connection and try again.", "logout");
+    notice(`Couldn't log out. ${tryAgain(res)}`, "logout");
     return;
   }
   clearNotice("logout");

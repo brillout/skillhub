@@ -214,7 +214,8 @@ test("a skill's change over its 8 weeks is told only from a week of 100 download
   test.skip(!fromAHandful, "no skill's 8 weeks began with a handful of downloads today");
   await open(page, fromAHandful as string);
   // From a handful, it read as "+273,050% in 8 weeks", which the list refuses for its growth.
-  await expect(page.locator(".stat-delta")).toHaveText("8 weeks");
+  // Not "8 weeks" alone either, which read as part of the week's number beside it.
+  await expect(page.locator(".stat-delta")).toHaveText("8-week trend");
 });
 
 test("a skill's page tells the Weekly Growth its row in the list does", async ({ page }) => {
@@ -229,7 +230,7 @@ test("a skill's page tells the Weekly Growth its row in the list does", async ({
   // Its change from its first week to its last told otherwise: find-skills' "+6% in 8 weeks" beside
   // the "−6%" of its row, in the list sorted by that growth.
   await expect(page.locator(".stat-delta")).toHaveText(
-    growth === "—" ? /^(([+−][\d,]+|0)% in )?8 weeks$/ : `${growth} growth`,
+    growth === "—" ? /^(([+−][\d,]+|0)% in 8 weeks|8-week trend)$/ : `${growth} growth`,
   );
 });
 
@@ -646,6 +647,22 @@ test("a repo's or a bundle's kind is a box as tall as its line, beside a name of
   const all = [...(await kinds(owner.url)), ...(await kinds(repo.url))];
   expect(new Set(all.map((kind) => kind.where))).toEqual(new Set(["H1", "H2", "row"]));
   expect(Math.max(...all.map((kind) => kind.off))).toBeLessThan(0.5);
+});
+
+test("a repo's kind says what it means, on its page and its owner's", async ({ page }) => {
+  const kind = data.repos.find((r) => r.id === repo.repo)?.agentReview.kind as string;
+  const meaning = {
+    skills: "A repo that exists to ship skills",
+    project: "A product that also ships a skill",
+    index: "A curated list or catalog of skills",
+  }[kind];
+  // "Project" beside a repo's name was explained nowhere on the site.
+  await open(page, repo.url);
+  await expect(page.locator("h1 .kind")).toHaveAttribute("title", meaning as string);
+  await open(page, owner.url);
+  await expect(
+    page.locator("h2", { has: page.locator(`a[href="${repo.url}"]`) }).locator(".kind"),
+  ).toHaveAttribute("title", meaning as string);
 });
 
 test("an owner is spelled one way, on the way to their page as on it", async ({ page }) => {

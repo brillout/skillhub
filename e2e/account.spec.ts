@@ -67,6 +67,37 @@ test("logged out, Save and the thumbs say that a click logs in first", async ({ 
   await expect(title.locator("[data-save]")).toHaveAccessibleName(`Save ${skill.name}`);
 });
 
+test("a screen reader hears who's logged in once, on the narrowest phone too", async ({ page }) => {
+  // What Chrome gives a screen reader that says who's logged in: names and descriptions.
+  const said = async () => {
+    const cdp = await page.context().newCDPSession(page);
+    const { nodes } = (await cdp.send("Accessibility.getFullAXTree")) as {
+      nodes: {
+        ignored: boolean;
+        role?: { value: string };
+        name?: { value: string };
+        description?: { value: string };
+      }[];
+    };
+    await cdp.detach();
+    return nodes.filter(
+      (node) =>
+        !node.ignored &&
+        node.role?.value !== "InlineTextBox" &&
+        [node.name?.value, node.description?.value].includes("Logged in as test-user"),
+    ).length;
+  };
+  await openLoggedIn(page, "/about/");
+  // Once where the avatar is drawn too: in words, the avatar's tooltip being for a pointer.
+  expect(await said()).toBe(1);
+  await expect(page.locator("#account .avatar")).toHaveAttribute("title", "Logged in as test-user");
+  await page.setViewportSize({ width: 320, height: 700 });
+  // Only the avatar's tooltip said it, and the avatar isn't drawn that narrow.
+  await expect(page.locator("#account .avatar")).toBeHidden();
+  expect(await said()).toBe(1);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(320);
+});
+
 test("Log in comes back to the page you were on, its filters included", async ({ page }) => {
   await openLoggedIn(page, "/?show=bundles");
   await expect(page).toHaveURL("/?show=bundles");
@@ -856,6 +887,37 @@ test.describe("when an account request fails", () => {
     await page.keyboard.press("Escape");
     await expect(page.getByRole("status")).toHaveCount(0);
     await expect(save).toBeFocused();
+  });
+
+  test.describe("or never reaches the Worker", () => {
+    test.use({
+      expected:
+        /HTTP 503:.*\/api\/(auth\/logout|saves)|console error: Failed to load resource: (the server responded with a status of 503|net::ERR_FAILED)|request failed: POST .*\/api\/saves net::ERR_FAILED/,
+    });
+
+    test("only then a notice says to check the connection", async ({ page }) => {
+      await openLoggedIn(page, LIST);
+      const save = skillRow(page).locator("[data-save]");
+      const status = page.getByRole("status");
+      await page.route("**/api/saves", (route) => route.abort());
+      await save.click();
+      // It said "Try again." alone, where Log out said to check the connection.
+      await expect(status).toContainText(
+        `Couldn't save ${skill.name}. Check your connection and try again.`,
+      );
+      await page.unroute("**/api/saves");
+      await page.route("**/api/saves", (route) =>
+        route.fulfill({ status: 503, body: "Unavailable" }),
+      );
+      await save.click();
+      await expect(status).toContainText(`Couldn't save ${skill.name}. Try again.`);
+      // And Log out said to check the connection of the Worker's own error.
+      await page.route("**/api/auth/logout", (route) =>
+        route.fulfill({ status: 503, body: "Unavailable" }),
+      );
+      await logout(page).click();
+      await expect(status).toContainText("Couldn't log out. Try again.");
+    });
   });
 
   for (const removing of [false, true])

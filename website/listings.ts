@@ -43,12 +43,18 @@ for (const listing of [...listingByPage.values()].sort((a, b) =>
   listingsByOwner.set(page, [...(listingsByOwner.get(page) ?? []), listing]);
 }
 
-/** A repo's kind, as its page and its owner's show it. */
-export const KINDS: Record<Repo["agentReview"]["kind"], string> = {
-  skills: "Skill collection",
-  project: "Project",
-  index: "Catalog",
+/** A repo's kind, as its page and its owner's show it, with what it means. */
+const KINDS: Record<Repo["agentReview"]["kind"], { name: string; meaning: string }> = {
+  skills: { name: "Skill collection", meaning: "A repo that exists to ship skills" },
+  project: { name: "Project", meaning: "A product that also ships a skill" },
+  index: { name: "Catalog", meaning: "A curated list or catalog of skills" },
 };
+
+/** A repo's kind, with its meaning as its tooltip, as a tag has its own. */
+export function kindHtml(repo: Repo): string {
+  const { name, meaning } = KINDS[repo.agentReview.kind];
+  return `<span class="kind" title="${meaning}">${name}</span>`;
+}
 
 /**
  * A repo's stars, and how many skills and bundles it has on the site: each a fact of its own, which

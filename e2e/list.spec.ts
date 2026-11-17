@@ -67,7 +67,7 @@ test("opens on Rising, with every skill counted and every row in", async ({ page
   // The growth's tooltip ends in its place, after one full stop.
   await expect(rows.first().locator(".props > .on")).toHaveAttribute(
     "title",
-    /shows under Rising & new\. #1 of [\d,]+ skills$/,
+    /shows under Rising & new\. #1 of the [\d,]+ skills with a Weekly Growth$/,
   );
 });
 
@@ -215,6 +215,48 @@ test("a search that finds nothing says so, and offers the agent", async ({ page 
     page.locator(selector).evaluate((el) => el.getBoundingClientRect().right);
   expect(await right("#found-tags .muted")).toBeLessThanOrEqual(await right("#found-tags"));
   expect(await right("#results .empty")).toBeLessThanOrEqual(await right("#results"));
+});
+
+test("a tag the filters' or Show's skills lack isn't found, which the tags' column says of them", async ({
+  page,
+}) => {
+  const carriers = (tag: string) => data.skills.filter((s) => s.agentReview.tags.includes(tag));
+  /** A stack tag's name that none of these skills' tags, nor their names, holds. */
+  const lacked = (skills: typeof data.skills) => {
+    const theirs = skills.flatMap((s) =>
+      s.agentReview.tags.flatMap((tag) => [
+        tag,
+        ...data.facets.flatMap((f) =>
+          (f.values ?? [])
+            .filter((v) => tag === (f.prefix === false ? v.id : `${f.id}:${v.id}`))
+            .map((v) => (v.label ?? "").toLowerCase()),
+        ),
+      ]),
+    );
+    return [...stackTags]
+      .map((tag) => tag.slice("stack:".length))
+      .find((name) => name.length >= 5 && !theirs.some((t) => t.includes(name))) as string;
+  };
+  // The tag of fewest skills outside Stack, which a stack tag would count without.
+  const lone = [...new Set(data.skills.flatMap((s) => s.agentReview.tags))]
+    .filter((tag) => !tag.startsWith("stack:"))
+    .toSorted((a, b) => carriers(a).length - carriers(b).length)[0];
+  const sought = lacked(carriers(lone));
+  await open(page, `/?tag=${encodeURIComponent(lone)}&q=${encodeURIComponent(sought)}`);
+  // It said "No tag matches", of a tag that other skills have.
+  await expect(page.locator("#found-tags")).toHaveText(
+    `No tag of the ${n(carriers(lone).length)} skill${carriers(lone).length === 1 ? "" : "s"} the filters leave matches “${sought}”.`,
+  );
+
+  // A tag of skills in no bundle, which Show set to Bundles leaves out, with no filter on.
+  const bundled = new Set(data.bundles.flatMap((b) => b.agentReview.skills.map((m) => m.id)));
+  const unbundled = lacked(data.skills.filter((s) => bundled.has(s.id)));
+  await open(page, `/?q=${encodeURIComponent(unbundled)}`);
+  await expect(page.locator("#found-tags")).toContainText(`stack:${unbundled}`);
+  await open(page, `/?q=${encodeURIComponent(unbundled)}&show=bundles`);
+  await expect(page.locator("#found-tags")).toHaveText(
+    `No tag of the ${n(data.bundles.length)} bundles matches “${unbundled}”.`,
+  );
 });
 
 test("filters that leave nothing say so, and leave the agent nothing to copy", async ({ page }) => {
@@ -382,6 +424,62 @@ test("a bound refused for its place stays, for the other bound to be set right",
   await expect(pop.locator(".range-error")).toHaveText("");
 });
 
+test("a bound refused for its place goes once its popover closes", async ({ page }) => {
+  await open(page, "/");
+  const pill = page.locator('.range-pill[data-value="stars"]');
+  const pop = page.locator("#range-pop-stars");
+  const least = pop.getByLabel("At least");
+  const under = pop.getByLabel("Under");
+  await pill.click();
+  await least.fill("1.5K");
+  await settled(page);
+  // Closed by Escape in the refused field, or by a click elsewhere once it was left.
+  for (const close of [
+    () => under.press("Escape"),
+    async () => {
+      await least.click();
+      await page.locator("h1").click();
+    },
+  ]) {
+    await under.click();
+    await under.pressSequentially("1000");
+    await expect(under).toHaveAttribute("aria-invalid", "true");
+    await close();
+    await expect(pop).toBeHidden();
+    // Open again, it said Under 1000, with its error, beside a pill that said at least 1.5K.
+    await pill.click();
+    await expect(under).toHaveValue("");
+    await expect(under).not.toHaveAttribute("aria-invalid");
+    await expect(pop.locator(".range-error")).toHaveText("");
+    await expect(least).toHaveValue("1.5K");
+    await expect(page).toHaveURL("/?stars=1500..");
+  }
+});
+
+test("an amount left unfinished by Escape goes back to the range it was typed over", async ({
+  page,
+}) => {
+  // What isn't an amount, such as 2500x, is undone however the field is left, Escape included, on
+  // each bound of each number filter: the list goes back to the range it was typed over.
+  for (const [prop, end, typed, before] of [
+    ["stars", 1, "2500x", "stars=1500.."],
+    ["published", 0, "25dx", ""],
+  ] as const) {
+    await open(page, `/?show=bundles${before ? `&${before}` : ""}`);
+    await page.locator(`.range-pill[data-value="${prop}"]`).click();
+    const field = page.locator(`[data-exact="${prop}"][data-bound="${end}"]`);
+    await field.pressSequentially(typed);
+    await expect(field).toHaveAttribute("aria-invalid", "true");
+    await field.press("Escape");
+    await expect(page.locator(`#range-pop-${prop}`)).toBeHidden();
+    await settled(page);
+    expect(new URL(page.url()).searchParams.get(prop) ?? "").toBe(before.split("=")[1] ?? "");
+    await page.locator(`.range-pill[data-value="${prop}"]`).click();
+    await expect(field).not.toHaveAttribute("aria-invalid");
+    await expect(field).toHaveValue("");
+  }
+});
+
 test("the presets set the sort, the Age range and the Weekly Downloads range", async ({ page }) => {
   await open(page, "/");
   const preset = (id: string) => page.locator(`[data-preset="${id}"]`);
@@ -476,6 +574,75 @@ for (const [width, presets] of [
         await page.locator(`[data-preset="${id}"]`).click();
         await settled(page);
         expect(await top(".show-group"), id).toBe(await top(".preset-group"));
+      }
+    });
+  });
+
+for (const scheme of ["light", "dark"] as const)
+  test.describe(`in ${scheme}`, () => {
+    test.use({ colorScheme: scheme });
+
+    test("a pressed preset, order, Show or tag stands out from its group, its words and its focus ring from it", async ({
+      page,
+    }) => {
+      await open(page, "/?tag=flag%3Adual-use");
+      const pressed = page.locator(
+        ':is(.preset, .order button, .show-switch button, .chip)[aria-pressed="true"]',
+      );
+      await expect(pressed).toHaveCount(4);
+      // The keyboard's: a focus the pointer gives draws no ring.
+      await page.locator("#q").focus();
+      await page.keyboard.press("Tab");
+      const ratios = await pressed.evaluateAll((all) => {
+        const rgb = (color: string) => color.match(/[\d.]+/g)?.map(Number) ?? [];
+        const luminance = ([r, g, b]: number[]) => {
+          const [lr, lg, lb] = [r, g, b].map((c) =>
+            c / 255 <= 0.04045 ? c / 255 / 12.92 : ((c / 255 + 0.055) / 1.055) ** 2.4,
+          );
+          return 0.2126 * lr + 0.7152 * lg + 0.0722 * lb;
+        };
+        const ratio = (a: number[], b: number[]) => {
+          const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+          return (hi + 0.05) / (lo + 0.05);
+        };
+        const fill = (el: Element | null) => {
+          for (; el; el = el.parentElement) {
+            const [r, g, b, a = 1] = rgb(getComputedStyle(el).backgroundColor);
+            if (a > 0) return [r, g, b];
+          }
+          return [255, 255, 255];
+        };
+        return all.map((button) => {
+          const own = fill(button);
+          // Each of its words, as drawn: at its opacity, over the button's fill.
+          const words = [...button.querySelectorAll("span"), button].map((el) => {
+            const [r, g, b] = rgb(getComputedStyle(el).color);
+            const opacity = Number(getComputedStyle(el).opacity);
+            return ratio(
+              [r, g, b].map((c, i) => c * opacity + own[i] * (1 - opacity)),
+              own,
+            );
+          });
+          // Its focus ring, against what's next to it: its fill when it's drawn inside.
+          (button as HTMLElement).focus();
+          const style = getComputedStyle(button);
+          const next =
+            Number.parseFloat(style.outlineOffset) < 0 ? own : fill(button.parentElement);
+          return {
+            group: ratio(own, fill(button.parentElement)),
+            words: Math.min(...words),
+            focused: button.matches(":focus-visible"),
+            ring: ratio(rgb(style.outlineColor), next),
+          };
+        });
+      });
+      // In dark, the grey was 1.94:1 on the settings' groups, and 1.63:1 on the tags' tile. The focus
+      // color, inside a pressed preset, order or Show, was 2.38:1 on light's fill.
+      for (const { group, words, focused, ring } of ratios) {
+        expect(group).toBeGreaterThanOrEqual(3);
+        expect(words).toBeGreaterThanOrEqual(4.5);
+        expect(focused).toBe(true);
+        expect(ring).toBeGreaterThanOrEqual(3);
       }
     });
   });
@@ -903,17 +1070,21 @@ test("Show all, under the stack's tags, is where Show fewer then is, under the p
   test.skip(stackTags.size <= 16, "the stack has too few tags to hide any today");
   await open(page, "/");
   const more = page.locator('#facets [data-action="stack"]');
+  // A screen reader hears whether the stack is open, as for the site's other toggles.
+  await expect(more).toHaveAttribute("aria-expanded", "false");
   await more.scrollIntoViewIfNeeded();
   const box = (await more.boundingBox()) as { x: number; y: number; width: number; height: number };
   const spot = [box.x + box.width / 2, box.y + box.height / 2] as const;
   await page.mouse.click(...spot);
   await settled(page);
   await expect(more).toHaveText("Show fewer");
+  await expect(more).toHaveAttribute("aria-expanded", "true");
   // A second click where the first was: after the last tag, on its line, the button had moved
   // away, and the click was on a tag, which it filtered the list by.
   await page.mouse.click(...spot);
   await settled(page);
   await expect(more).toHaveText(`Show all ${stackTags.size}`);
+  await expect(more).toHaveAttribute("aria-expanded", "false");
   await expect(page).toHaveURL("/");
 });
 

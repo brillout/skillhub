@@ -126,8 +126,8 @@
   --ink: #e8ebf6;
   --ink-2: #b7bed6;
   --ink-3: #8f98b8;
-  /* A grey, not the ink, which would glare. */
-  --selected: #4a4a54;
+  /* A grey, not the ink, which would glare: 3:1 on the page and the tiles, white on it 4.5:1. */
+  --selected: #74747e;
   --on-selected: #ffffff;
   --garnet: #c42a66;
   --garnet-text: #ff8db8;
@@ -1405,6 +1405,11 @@ body[data-preview-selecting] :is(#page-head, .skills-view > :not(.preview)) {
   outline-offset: -2px;
 }
 
+/* Inside a pressed one, the ring is its words' color: the focus color is under 3:1 on its fill. */
+:is(.preset, .order button, .show-switch button)[aria-pressed="true"]:focus-visible {
+  outline-color: var(--on-selected);
+}
+
 /* Both, Skills or Bundles: one segmented control. */
 .show-switch {
   display: flex;
@@ -2238,6 +2243,11 @@ input[type="search"]::-webkit-search-cancel-button:hover {
   opacity: 0.8;
 }
 
+/* On the dark theme's lighter grey, a quieter white is under 4.5:1. */
+:root[data-theme="dark"] .chip[aria-pressed="true"] :is(.n, .tag-facet) {
+  opacity: 1;
+}
+
 .link-button {
   padding: 3px 4px;
   border: 0;
@@ -2810,10 +2820,11 @@ input[type="search"]::-webkit-search-cancel-button:hover {
 
 /*
  * What reads together goes to the next line together, and only parts where a line is too short for
- * it, as on a phone: one of several commands joined by &&, and a flag with what it's set to, such
- * as `--skill grill-me`. See commandHtml in format.ts.
+ * it, as on a phone: one of several commands joined by &&, a flag with what it's set to, such as
+ * `--skill grill-me`, and what it's set to, which breaks after a hyphen only when it's wider than
+ * a line by itself. See commandHtml in format.ts.
  */
-.install code :is(.cmd, .pair) {
+.install code :is(.cmd, .pair, .value) {
   display: inline-block;
 }
 

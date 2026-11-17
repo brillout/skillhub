@@ -324,6 +324,31 @@ test("a plugin's name too long for a line of its install command breaks after it
   expect(cut).toBe(0);
 });
 
+test("a skill's name too long for a line of its install command breaks after its hyphens", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 844 });
+  await open(page, longNameUrl2);
+  const code = page.locator(".install code").first();
+  // The name was one word, cut off at the edge of its box, which scrolled sideways for the rest.
+  const cut = await code.evaluate((code) => {
+    const end =
+      code.getBoundingClientRect().right - Number.parseFloat(getComputedStyle(code).paddingRight);
+    return [...code.querySelectorAll(".word")].filter(
+      (word) => word.getBoundingClientRect().right > end + 0.5,
+    ).length;
+  });
+  expect(cut).toBe(0);
+  // Only what a flag is set to: the URL still breaks only after a slash, its repo's name whole.
+  const urlBreaks = await code.evaluate((code) =>
+    [...code.querySelectorAll(":scope > .word")]
+      .filter((word) => word.nextSibling?.nodeName === "WBR")
+      .map((word) => word.textContent),
+  );
+  expect(urlBreaks.length).toBeGreaterThan(0);
+  for (const piece of urlBreaks) expect(piece).toMatch(/\/$/);
+});
+
 test("a number filter's slider opens in view", async ({ page }) => {
   await open(page, "/?show=bundles");
   await page.locator(".filters-toggle").click();

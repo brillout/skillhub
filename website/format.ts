@@ -13,7 +13,9 @@ export const esc = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt
  *   a line, its && first. Not last on the line before: a command too long for a line wraps inside,
  *   and its && was left on a line of its own, as was the `bash` a long `curl` is piped to;
  * - a flag and what it's set to, `--skill grill-me`: a bundle's command names a skill per flag,
- *   and its lines ended on a flag, with the skill on the next.
+ *   and its lines ended on a flag, with the skill on the next. What it's set to also breaks after
+ *   its hyphens, only when it's wider than a line by itself: a skill's name too long for a phone's
+ *   line was cut off at its box's edge.
  */
 export function commandHtml(command: string): string {
   // Not after what starts a word, as in /plugin or @scope/name, nor between the slashes of ://.
@@ -22,6 +24,11 @@ export function commandHtml(command: string): string {
       .split(/(?<=.\/)(?!\/)|(?<=[\p{L}\p{N}]@)/u)
       .map((part) => `<span class="word">${esc(part)}</span>`)
       .join("<wbr>");
+  const value = (w: string) =>
+    `<span class="value">${w
+      .split(/(?<=[\p{L}\p{N}]-)(?=[\p{L}\p{N}])/u)
+      .map(word)
+      .join("<wbr>")}</span>`;
   const joins = (w: string) => /^(&&|\|\|?|;)$/.test(w);
   // The commands, each with what joins it to the one before.
   const commands: string[][] = [[]];
@@ -44,7 +51,7 @@ export function commandHtml(command: string): string {
           !joins(next) &&
           !next.includes("://");
         out.push(
-          set ? `<span class="pair">${word(words[i])} ${word(next)}</span>` : word(words[i]),
+          set ? `<span class="pair">${word(words[i])} ${value(next)}</span>` : word(words[i]),
         );
         if (set) i++;
       }

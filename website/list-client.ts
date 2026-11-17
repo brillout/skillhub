@@ -311,6 +311,14 @@ function focusSelector(): string | null {
 /** The range whose slider's popover is open, if any: one at a time. */
 let open: Prop | null = null;
 function openRange(p: Prop | null) {
+  // Closed, its fields show the range in force again, as its pill and its chip do: an amount
+  // refused for its place, kept for the other bound to be set right, outlived it with its error.
+  if (open && open !== p) {
+    keepFields = false;
+    for (const field of settings.querySelectorAll<HTMLInputElement>(`[data-exact="${open}"]`))
+      showBound(open, field);
+    sayRangeError(open, "");
+  }
   open = p;
   for (const range of settings.querySelectorAll<HTMLElement>("[data-range-section]")) {
     const on = range.dataset.rangeSection === p;
@@ -356,9 +364,11 @@ document.addEventListener("click", (event) => {
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape" || !open) return;
   const range = settings.querySelector(`[data-range-section="${open}"]`);
-  const inside = range?.contains(document.activeElement);
+  // The pill takes the focus first, so that a field left runs its change handler before closing
+  // shows the range in force, as when a click or Tab leaves it.
+  if (range?.contains(document.activeElement))
+    range.querySelector<HTMLElement>(".range-pill")?.focus();
   openRange(null);
-  if (inside) range?.querySelector<HTMLElement>(".range-pill")?.focus();
 });
 // On a narrow screen, Escape also closes the open tags from among them, as it closes a menu: the
 // keyboard's only other way out was through them all, some 150 Tabs, to the button under them.
@@ -468,11 +478,8 @@ function syncRanges() {
     const fields = [...settings.querySelectorAll<HTMLInputElement>(`[data-exact="${p}"]`)];
     const kept = keepFields && fields.some((field) => field.dataset.kept !== undefined);
     for (const field of fields)
-      if (field !== document.activeElement && !(kept && field.dataset.kept !== undefined)) {
-        field.value = fieldText(p, range[Number(field.dataset.bound)]);
-        field.removeAttribute("aria-invalid");
-        delete field.dataset.kept;
-      }
+      if (field !== document.activeElement && !(kept && field.dataset.kept !== undefined))
+        showBound(p, field);
     if (!kept && !fields.includes(document.activeElement as HTMLInputElement)) sayRangeError(p, "");
     for (const label of settings.querySelectorAll(`[data-range-label="${p}"]`))
       label.textContent = rangeLabel(p, range);
@@ -480,6 +487,13 @@ function syncRanges() {
       .querySelector(`[data-range-section="${p}"]`)
       ?.classList.toggle("narrowed", isNarrowed(range));
   }
+}
+
+/** A slider's field with its bound of the range in force, and nothing wrong with it. */
+function showBound(p: Prop, field: HTMLInputElement) {
+  field.value = fieldText(p, state.ranges[p][Number(field.dataset.bound)]);
+  field.removeAttribute("aria-invalid");
+  delete field.dataset.kept;
 }
 
 /** What's wrong with what a slider's field holds, under its fields; "" for nothing. */
@@ -905,9 +919,7 @@ app.addEventListener("change", (event) => {
     !sameRange(state.ranges[p], since.range)
   )
     go({ ranges: { ...state.ranges, [p]: since.range } });
-  el.value = fieldText(p, state.ranges[p][Number(el.dataset.bound)]);
-  el.removeAttribute("aria-invalid");
-  delete el.dataset.kept;
+  showBound(p, el);
   sayRangeError(p, "");
 });
 
