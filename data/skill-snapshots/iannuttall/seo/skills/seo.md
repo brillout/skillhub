@@ -20,7 +20,7 @@ link for them to approve, then run it again.
 | CLI | MCP tool | Returns |
 |---|---|---|
 | `seo next --site <site>` | `seo_next` | The next step in the SEO loop for the site, with its jobs; start here when asked to work on a site's SEO |
-| `seo report --site <site>` | `seo_report` | Search Console overview and sections; with no site, last week across the sites in the weekly site audit |
+| `seo report --site <site>` | `seo_report` | Search Console overview and sections; with no site, last week across the sites in the weekly site audit; `--section teardown` when asked to write a teardown of any site |
 | `seo page --url <url>` | `seo_page` | One URL: live page, index status, queries |
 | `seo compare --site <site> --date <date>` | `seo_compare` | Before and after a date, with Google updates |
 | `seo index --site <site>` | `seo_index` | Google's indexing reasons, labelled, and pages that lost their clicks |
@@ -53,10 +53,11 @@ site again and keeps a list of what it found, each with an id, the latest
 check and what the person marked it. Record what the person decided:
 `--mark fixed` or `--mark ignored` with `--issues <id>,<id>` (`mark`,
 `issues`, optional `note`). "Fixed" is the person's word; the list says
-when the check still finds it. The hosted server keeps the list only for
-sites in the weekly site audit. For any other site the result ends with the
-list as JSON: save it in the person's project, such as `.seo/issues.json`,
-and pass its contents as `saved` with the next call so marks carry over.
+when the check still finds it. The hosted server, and a CLI linked with
+`seo login`, keep the list with the account, for every site; an unlinked CLI
+keeps it on this machine.
+If the person has a list saved from before, such as `.seo/issues.json`,
+pass its contents once as `saved` to carry its marks over.
 
 ## Google updates
 
