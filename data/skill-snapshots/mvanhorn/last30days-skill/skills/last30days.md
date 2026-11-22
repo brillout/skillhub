@@ -1,6 +1,6 @@
 ---
 name: last30days
-version: "4.4.0"
+version: "4.6.0"
 description: "Research what people actually say about any topic in the last 30 days. Pulls posts and engagement from Reddit, X, YouTube, TikTok, Hacker News, Polymarket, GitHub, and the web. Includes a doctor health check to diagnose broken or missing sources."
 argument-hint: 'last30days nvidia earnings reaction | last30days AI video tools | last30days what users want in react'
 allowed-tools: Bash, Read, Write, AskUserQuestion, WebSearch
@@ -70,7 +70,7 @@ metadata:
 ---
 
 
-# last30days v4.4.0: Research Any Topic from the Last 30 Days
+# last30days v4.6.0: Research Any Topic from the Last 30 Days
 
 ## Skill contract
 
@@ -107,18 +107,19 @@ Paths resolve relative to `SKILL_DIR`. A mode selected while reading a reference
 | Hiring intent or an engine `## Hiring Signals`, `## Jobs Digest` or `## Patent Digest` block | Read [references/hiring-signals.md](references/hiring-signals.md) and [references/patent-signals.md](references/patent-signals.md) in full. | Apply the jobs lane and its scoped planning exception; in standard runs, apply each file's section rules. |
 | `--agent` mode or explicit machine-readable JSON | Read [references/agent-mode.md](references/agent-mode.md) in full. | Apply structured output without treating absent consent as permission. |
 | Recommendation intent | Read [references/recommendations.md](references/recommendations.md) in full. | Rank and render the recommended items before the footer/invitation. |
-| Identifiable product requires category peers | Read [references/category-peers.md](references/category-peers.md) in full. | Expand peers during Step 0.55 before planning. |
-| Grok Bot X lane | Read [references/grok-bot-x.md](references/grok-bot-x.md) in full. | Fetch and validate the X envelope before the research engine command. |
+| Identifiable product requires category peers | Read [references/category-peers.md](references/category-peers.md) in full. | Expand peers in Step 0.55. |
+| Grok Bot X lane | Read [references/grok-bot-x.md](references/grok-bot-x.md) in full. | Validate the X envelope. |
+| OpenCode browse lane | Read [references/opencode-browse-lane.md](references/opencode-browse-lane.md) in full. | Before Step 1. |
 | Follow-up on existing research | Read [references/followups.md](references/followups.md) in full. | Answer or re-render existing research; use the explicit cached drill/freshness/queue routes when requested. |
 | HTML/export intent | Read [references/save-html-brief.md](references/save-html-brief.md) in full. | Create the local artifact, then follow its access and explicit publishing choices. |
 
 ## Dispatch before research
 
-Preserve the user's original request while handling setup. Classify library/feed/queue and existing-research follow-ups before entering topic research or setup. Their fast paths skip topic/backend preflight, host WebSearch resolution, and fresh source research; interpreter bootstrap still applies to any engine command. Load the agent-mode reference before the first-run gate when its route applies.
+Preserve the user's original request while handling setup. Classify library/feed/queue and existing-research follow-ups before topic research or setup. Their fast paths skip preflight, host WebSearch resolution, and fresh research; interpreter bootstrap still applies. Load the agent-mode reference before the first-run gate when its route applies.
 
 For library search/feed/queue, run the selected offline procedure and relay its result. Never fall through to fresh research because the library is empty, SQLite lacks FTS5, or a queue name is unknown. An unknown queue-cover name requires listing exact queued names.
 
-Use existing findings for follow-ups unless asked for a new topic, drill, or freshness check. Skip setup. Retain each run's `Follow-up cache ID` in context.
+Use existing findings for follow-ups unless asked for a new topic, drill, or freshness check. Skip setup. Keep each run's `Follow-up cache ID` in context.
 
 For fresh research or discovery, resolve whether the agent session has a usable web-search tool, including a deferred or connector-provided tool. If the host requires loading, selecting, or enabling that tool, do so through the host's mechanism before use. Use the available capability rather than requiring one particular tool name or schema.
 - When host web search is available, use it for applicable pre-research and supplements. Export `LAST30DAYS_NATIVE_SEARCH=1` in the same shell as the engine.
@@ -248,11 +249,11 @@ After the response and required citations, stop and wait unless governing instru
 - Does not post, like, or modify content on any platform
 - Cookie reads require explicit consent. The sidecar requires `AGENTCOOKIE=on` or affirmative `BROWSER_CONSENT`. `--preflight` and `--diagnose` do not read browser-cookie values
 - Does not use Codex ChatGPT auth as an OpenAI provider credential
-- Does not share API keys between providers, except the TikTok legacy fallback: when `SCRAPECREATORS_API_KEY` is unset, `APIFY_API_TOKEN` is sent to ScrapeCreators (`get_tiktok_token` in `scripts/lib/env.py`)
+- Does not share API keys between providers (`APIFY_API_TOKEN` is never sent to ScrapeCreators and does not enable TikTok)
 - Does not log, cache, or write API keys to output files
 - Endpoint destinations follow configured provider base URLs; `--preflight` reports active and ignored endpoint overrides without printing secrets
 - Hacker News and Polymarket are always available (no API key or binary)
-- TikTok and Instagram sources require SCRAPECREATORS_API_KEY (10,000 free calls, then PAYG); `LAST30DAYS_REDDIT_BACKEND=scrapecreators` makes it Reddit's primary path.
+- TikTok and Instagram prefer SCRAPECREATORS_API_KEY (10,000 free calls, then PAYG), else `yt-dlp` on public pages found by web search; `LAST30DAYS_REDDIT_BACKEND=scrapecreators` makes it Reddit's primary path.
 - Agent hosts invoke the slash-command skill contract; if `--agent` appears in the user's slash-command arguments, treat it as skill-level mode guidance, not a Python CLI flag.
 
 **Bundled scripts:** `scripts/last30days.py` (main research engine), the search, enrichment, and rendering modules in its `lib` folder, and the vendored X search client in `lib/vendor/bird-search` (MIT licensed)
